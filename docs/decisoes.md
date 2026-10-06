@@ -79,7 +79,28 @@ Cada decisão relevante, com uma linha de motivo. O que foi cortado também fica
 - **`@preact/preset-vite`, Babel, `tsx`, bibliotecas de ícone e de canvas.**
 - **Eventos planejados e cortados antes da escrita** (o rascunho tinha 112; o teto da fase 1 é 80): tatuagem e cobrir tatuagem, cobrança do FIES, mestrado, viagem de moto, cancelamento na internet, música antiga que viraliza, escândalo do vereador, quitação da casa e do carro, grupo da família, mangueira do vizinho, demissão aos 55, academia, jovem aprendiz, curso técnico, excursão da melhor idade, último desejo, proposta de trabalho no exterior, saudade do Brasil, segunda chance no ENEM, entregador que vira dono, decisão entre bola e escola, primeiros passos, catapora, boletim vermelho, crise dos 25. Ficaram os que sustentam cadeias; alguns viraram linhas curtas.
 
+## Fase 2: life simulator
+
+### Linha de base (06/10/2026, motor da fase 1, 10.000 vidas, 20 vidas por jogador)
+
+| Métrica | Linha de base | Portão do incremento 1 |
+|---|---|---|
+| Saturação V5 | 94,5% | ≤ 80% |
+| Saturação V20 | 99,9% | — |
+| Assinaturas distintas por 1.000 vidas (sem a origem) | 563 (412) | ≥ 845 |
+| Mobilidade: mesmo quintil / Spearman | 23,8% / 0,13 | nem determinista nem aleatória |
+| Patrimônio p90/p10 | 22,3× | — |
+| Desvio-padrão da felicidade média | 5,73 | ≥ 7,45 |
+| Patrimônio negativo ao morrer | 5,7% | — |
+| Mudanças de estado causadas pelo jogador | 24,8% | — |
+| Toques por vida | 110,8 | ≤ 155 |
+| CPU por vida | 2,45 ms | — |
+
+- **Túnel com 20 vidas por jogador** (4 estratégias × 125 jogadores). A saturação V20 precisa de 20 vidas seguidas; o total continua 10.000.
+- **Assinatura com uma marca principal e a categoria da causa da morte.** Com duas marcas e a causa exata, a linha de base já dava 832 de 1.000 e a meta de 1,5× seria impossível; o que distingue duas vidas é a forma delas, não a combinação exata de marcas. Mostramos também a conta sem a origem, para provar que as vidas divergem e não só o rótulo de nascimento.
+- **Causas de morte ganharam categoria** (velhice, coração, doença, acidente, violência) para a assinatura.
+- **Mobilidade quase aleatória hoje** (Spearman 0,13): a origem só trocava a profissão dos pais. É o primeiro sintoma de "a origem não importa".
+
 ## Próximos passos (núcleo)
 
-- Repetição entre vidas: o próximo ganho vem de mais eventos alternativos nas idades com pouca escolha (5–12 e 50–64), não da força da memória.
-- Expansões (relações, carreira, gerações) só depois de o dono jogar 5 vidas e querer a 6ª.
+- Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

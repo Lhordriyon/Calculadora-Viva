@@ -1,74 +1,166 @@
 [
-  { "causa": "de velhice, dormindo, num domingo depois do almoço", "idade": [82, 120], "peso": 5 },
-  { "causa": "em paz, no meio de uma soneca que era para ser rápida", "idade": [78, 120], "peso": 3 },
+  {
+    "causa": "de velhice, dormindo, num domingo depois do almoço",
+    "categoria": "velhice",
+    "idade": [82, 120],
+    "peso": 5
+  },
+  {
+    "causa": "em paz, no meio de uma soneca que era para ser rápida",
+    "categoria": "velhice",
+    "idade": [78, 120],
+    "peso": 3
+  },
   {
     "causa": "de um infarto no meio de uma discussão sobre futebol",
+    "categoria": "coracao",
     "idade": [40, 120],
-    "condicoes": { "algumaMarca": ["sedentario", "workaholic"] },
+    "condicoes": {
+      "algumaMarca": ["sedentario", "workaholic"]
+    },
     "peso": 4
   },
   {
     "causa": "de complicações pulmonares, entre uma tosse e outra",
+    "categoria": "doenca",
     "idade": [35, 120],
-    "condicoes": { "algumaMarca": ["fumante", "ex_fumante"] },
+    "condicoes": {
+      "algumaMarca": ["fumante", "ex_fumante"]
+    },
     "peso": 6
   },
-  { "causa": "de um AVC, numa terça-feira sem graça", "idade": [50, 120], "peso": 2 },
-  { "causa": "de pneumonia, depois de teimar que era só uma gripe", "idade": [65, 120], "peso": 2 },
-  { "causa": "de câncer, depois de uma luta longa e cheia de piadas ruins", "idade": [30, 120], "peso": 2 },
+  {
+    "causa": "de um AVC, numa terça-feira sem graça",
+    "categoria": "coracao",
+    "idade": [50, 120],
+    "peso": 2
+  },
+  {
+    "causa": "de pneumonia, depois de teimar que era só uma gripe",
+    "categoria": "doenca",
+    "idade": [65, 120],
+    "peso": 2
+  },
+  {
+    "causa": "de câncer, depois de uma luta longa e cheia de piadas ruins",
+    "categoria": "doenca",
+    "idade": [30, 120],
+    "peso": 2
+  },
   {
     "causa": "de complicações do diabetes que ninguém levou a sério",
+    "categoria": "doenca",
     "idade": [45, 120],
-    "condicoes": { "marcas": ["sedentario"] },
+    "condicoes": {
+      "marcas": ["sedentario"]
+    },
     "peso": 3
   },
   {
     "causa": "num acidente de moto numa avenida molhada",
+    "categoria": "acidente",
     "idade": [18, 65],
-    "condicoes": { "algumaMarca": ["entregador", "motoqueiro"] },
+    "condicoes": {
+      "algumaMarca": ["entregador", "motoqueiro"]
+    },
     "peso": 5
   },
-  { "causa": "de dengue, num verão em que ninguém virou o pratinho da planta", "peso": 0.4 },
+  {
+    "causa": "de dengue, num verão em que ninguém virou o pratinho da planta",
+    "categoria": "doenca",
+    "peso": 0.4
+  },
   {
     "causa": "cercad{o|a} pela família, de mão dada com {filho}",
+    "categoria": "velhice",
     "idade": [70, 120],
-    "condicoes": { "marcas": ["pai_mae"] },
+    "condicoes": {
+      "marcas": ["pai_mae"]
+    },
     "peso": 4
   },
-  { "causa": "numa cirurgia simples que não foi tão simples", "idade": [30, 120], "peso": 1 },
-  { "causa": "de uma infecção que começou num corte bobo", "peso": 0.5 },
-  { "causa": "de uma febre que ninguém soube explicar", "idade": [0, 14], "peso": 3 },
+  {
+    "causa": "numa cirurgia simples que não foi tão simples",
+    "categoria": "doenca",
+    "idade": [30, 120],
+    "peso": 1
+  },
+  {
+    "causa": "de uma infecção que começou num corte bobo",
+    "categoria": "doenca",
+    "peso": 0.5
+  },
+  {
+    "causa": "de uma febre que ninguém soube explicar",
+    "categoria": "doenca",
+    "idade": [0, 14],
+    "peso": 3
+  },
   {
     "causa": "de tristeza, dizem; o atestado fala em coração",
+    "categoria": "coracao",
     "idade": [55, 120],
-    "condicoes": { "felicidade": { "max": 30 } },
+    "condicoes": {
+      "felicidade": {
+        "max": 30
+      }
+    },
     "peso": 4
   },
   {
     "causa": "de estresse, com o celular do trabalho ainda vibrando no bolso",
+    "categoria": "coracao",
     "idade": [30, 80],
-    "condicoes": { "marcas": ["workaholic"] },
+    "condicoes": {
+      "marcas": ["workaholic"]
+    },
     "peso": 4
   },
   {
     "causa": "rindo de uma piada que só {amigo} entendeu",
+    "categoria": "velhice",
     "idade": [65, 120],
-    "condicoes": { "marcas": ["amigo_de_infancia"] },
+    "condicoes": {
+      "marcas": ["amigo_de_infancia"]
+    },
     "peso": 1.5
   },
-  { "causa": "atropelad{o|a} por um patinete elétrico na contramão", "idade": [15, 90], "peso": 0.3 },
-  { "causa": "num hospital do SUS que fez tudo o que podia, e fez muito", "idade": [40, 120], "peso": 2 },
-  { "causa": "de complicações de uma queda no banheiro", "idade": [70, 120], "peso": 2 },
+  {
+    "causa": "atropelad{o|a} por um patinete elétrico na contramão",
+    "categoria": "acidente",
+    "idade": [15, 90],
+    "peso": 0.3
+  },
+  {
+    "causa": "num hospital do SUS que fez tudo o que podia, e fez muito",
+    "categoria": "doenca",
+    "idade": [40, 120],
+    "peso": 2
+  },
+  {
+    "causa": "de complicações de uma queda no banheiro",
+    "categoria": "acidente",
+    "idade": [70, 120],
+    "peso": 2
+  },
   {
     "causa": "de infarto, segundo o laudo; de boleto, segundo a família",
+    "categoria": "coracao",
     "idade": [25, 120],
-    "condicoes": { "divida": { "min": 30000 } },
+    "condicoes": {
+      "divida": {
+        "min": 30000
+      }
+    },
     "peso": 3
   },
   {
     "causa": "de cirrose, depois de anos de happy hour que não acabava",
+    "categoria": "doenca",
     "idade": [40, 100],
-    "condicoes": { "marcas": ["boemio"] },
+    "condicoes": {
+      "marcas": ["boemio"]
+    },
     "peso": 3
   }
 ]

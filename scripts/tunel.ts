@@ -20,6 +20,10 @@ import { listarCadeias } from '../src/motor/validacao.ts';
 import { avancarAno, escolher, nascer } from '../src/motor/vida.ts';
 import { pontosDeVirada } from '../src/motor/virada.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
+import { ATRIBUTOS } from '../src/motor/constantes.ts';
+import { patrimonio as patrimonioDe } from '../src/motor/condicoes.ts';
+import { aleatorio } from '../src/motor/rng.ts';
+import { assinaturasPorBloco, desvio, mobilidade, saturacao } from './medidas.ts';
 
 const args = new Map(
   process.argv.slice(2).map((a) => {
@@ -29,7 +33,7 @@ const args = new Map(
 );
 const TOTAL = Number(args.get('vidas') ?? 10000);
 const SEMENTE = Number(args.get('semente') ?? 20261006);
-const VIDAS_POR_JOGADOR = 10;
+const VIDAS_POR_JOGADOR = 20;
 const JOGADORES = Math.max(1, Math.round(TOTAL / (ESTRATEGIAS.length * VIDAS_POR_JOGADOR)));
 const JOGADORES_BASE = Math.max(1, Math.round(JOGADORES * 0.4));
 const ANO = 2026;
@@ -50,26 +54,133 @@ interface Vida {
   marcasAtivas: Set<string>;
   causaMorte: string;
   duplicadosProibidos: string[];
+  /** Storylets apresentados (instâncias), para a saturação entre vidas. */
+  instancias: string[];
+  assinatura: string;
+  /** Assinatura sem a origem: mostra se as vidas divergem, não só os rótulos de nascimento. */
+  destino: string;
+  /** Riqueza de origem (posto) e um desempate sorteado, para a matriz de mobilidade. */
+  origem: number;
+  desempate: number;
+  mudancasJogador: number;
+  mudancasTotal: number;
+  toques: number;
+  ms: number;
 }
 
-type Jogada = EstadoVida & { marcasVistas: Set<string>; linhasUsadas: Set<number> };
+type Jogada = EstadoVida & {
+  marcasVistas: Set<string>;
+  linhasUsadas: Set<number>;
+  mudancasJogador: number;
+  mudancasTotal: number;
+  toques: number;
+  ms: number;
+};
+
+interface Foto {
+  atributos: number[];
+  patrimonio: number;
+  renda: number;
+  marcas: Set<string>;
+  personagens: number;
+}
+
+function fotografar(e: EstadoVida): Foto {
+  return {
+    atributos: ATRIBUTOS.map((a) => e.atributos[a]),
+    patrimonio: patrimonioDe(e),
+    renda: e.financas.renda,
+    marcas: new Set(Object.keys(e.marcas)),
+    personagens: Object.keys(e.personagens).length,
+  };
+}
+
+/** Mudanças de estado entre duas fotos (definição em docs/metricas.md). */
+function mudancas(a: Foto, b: Foto): number {
+  let n = 0;
+  a.atributos.forEach((x, i) => {
+    if (Math.abs(b.atributos[i]! - x) >= 0.5) n++;
+  });
+  if (Math.abs(b.patrimonio - a.patrimonio) >= 500) n++;
+  if (Math.abs(b.renda - a.renda) >= 600) n++;
+  for (const m of b.marcas) if (!a.marcas.has(m)) n++;
+  for (const m of a.marcas) if (!b.marcas.has(m)) n++;
+  return n + Math.abs(b.personagens - a.personagens);
+}
 
 function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined): Jogada {
+  const t0 = performance.now();
   const e = nascer(c, { semente, ano: ANO });
   const robo = criarRng(misturar(semente, 77));
   const marcasVistas = new Set(Object.keys(e.marcas));
   const linhasUsadas = new Set<number>();
+  let mudancasJogador = 0;
+  let mudancasTotal = 0;
+  let toques = 1; // nascer
   while (e.vivo) {
+    const antes = fotografar(e);
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
       for (const m of Object.keys(e.marcas)) marcasVistas.add(m);
+      const n = mudancas(antes, fotografar(e));
+      mudancasJogador += n;
+      mudancasTotal += n;
     } else {
       avancarAno(e, c, memoria);
+      mudancasTotal += mudancas(antes, fotografar(e));
       const ultima = e.historico[e.historico.length - 1];
       if (ultima?.tipo === 'linha' && e.linhasRecentes.length > 0) linhasUsadas.add(e.linhasRecentes[e.linhasRecentes.length - 1]!);
     }
+    toques++;
   }
-  return Object.assign(e, { marcasVistas, linhasUsadas });
+  return Object.assign(e, { marcasVistas, linhasUsadas, mudancasJogador, mudancasTotal, toques, ms: performance.now() - t0 });
+}
+
+// ---------------------------------------------------------------- assinatura da vida
+
+/** Classes por patrimônio em reais de hoje (as mesmas faixas servem para origem e destino). */
+const CLASSES = [
+  ['extrema pobreza', 5000],
+  ['pobre', 40000],
+  ['remediada', 200000],
+  ['média', 1000000],
+  ['rica', 5000000],
+  ['muito rica', Infinity],
+] as const;
+const classeDe = (p: number): string => CLASSES.find(([, ate]) => p < ate)![0];
+
+const CARREIRAS: [string, string][] = [
+  ['vereador', 'política'],
+  ['servidor', 'serviço público'],
+  ['empreendedor', 'negócio próprio'],
+  ['socio', 'negócio próprio'],
+  ['influencer', 'internet'],
+  ['criador_conteudo', 'internet'],
+  ['musico', 'música'],
+  ['pesquisador', 'pesquisa'],
+  ['profissional', 'carreira formal'],
+  ['clt', 'carteira assinada'],
+  ['entregador', 'aplicativo'],
+];
+const ORIGENS = ['familia_apertada', 'familia_remediada', 'familia_confortavel'];
+
+function assinaturaDe(c: Conteudo, e: EstadoVida): { assinatura: string; destino: string; origem: number } {
+  const marcas = e.marcas;
+  const origem = ORIGENS.findIndex((m) => m in marcas);
+  const carreira = CARREIRAS.find(([m]) => m in marcas)?.[1] ?? 'bicos';
+  const civil = 'casado' in marcas ? 'casado' : 'separado' in marcas ? 'separado' : 'namoro' in marcas ? 'namorando' : 'solteiro';
+  // Marca principal: a que mais causou eventos depois (citações da entrada que a gravou).
+  const citacoes = new Map<number, number>();
+  for (const h of e.historico) for (const id of h.causas ?? []) citacoes.set(id, (citacoes.get(id) ?? 0) + 1);
+  const principal =
+    Object.entries(marcas)
+      .filter(([, r]) => r.origem !== null)
+      .map(([m, r]) => [m, citacoes.get(r.origem!) ?? 0] as const)
+      .filter(([, n]) => n > 0)
+      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]?.[0] ?? '-';
+  const morte = e.morte?.fonte !== undefined ? c.mortes[e.morte.fonte]!.categoria : 'evento';
+  const destino = [classeDe(patrimonioDe(e)), carreira, civil, principal, morte].join('|');
+  return { assinatura: `${ORIGENS[origem] ?? '?'}|${destino}`, destino, origem };
 }
 
 function positivas(cond: Condicoes | undefined): string[] {
@@ -102,7 +213,17 @@ function medir(c: Conteudo, e: Jogada, estrategia: Estrategia): Vida {
   if (e.morte?.fonte !== undefined) ativar(positivas(c.mortes[e.morte.fonte]?.condicoes));
   for (const m of Object.keys(e.marcas)) if (c.marcas[m]?.porAno || c.marcas[m]?.epitafio) marcasAtivas.add(m);
   const f = e.financas;
+  const { assinatura, destino, origem } = assinaturaDe(c, e);
   return {
+    instancias: eventos,
+    assinatura,
+    destino,
+    origem,
+    desempate: aleatorio(criarRng(misturar(e.semente, 991))),
+    mudancasJogador: e.mudancasJogador,
+    mudancasTotal: e.mudancasTotal,
+    toques: e.toques,
+    ms: e.ms,
     estrategia,
     idade: e.idade,
     patrimonio: f.dinheiro + f.investido - f.divida,
@@ -167,17 +288,22 @@ const novaRepeticao = (): Repeticao => ({
 });
 const repeticao = new Map<Estrategia, Repeticao>();
 const repeticaoSemMemoria = novaRepeticao();
+/** Instâncias de cada vida, por jogador (para a saturação). */
+const sequencias: string[][][] = [];
 
 function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: number, usarMemoria: boolean, destino: Repeticao, guardar: boolean): void {
   let memoria = novaMemoria();
   const vistos = new Set<string>();
   const textosVistos = new Set<string>();
   let ultimaVida = new Set<string>();
+  const sequencia: string[][] = [];
+  if (guardar) sequencias.push(sequencia);
   for (let k = 0; k < VIDAS_POR_JOGADOR; k++) {
     const semente = misturar(SEMENTE, idEstrategia, jogador, k);
     const e = jogar(c, estrategia, semente, usarMemoria ? memoria : undefined);
     const vida = medir(c, e, estrategia);
     if (guardar) vidas.push(vida);
+    sequencia.push(vida.instancias);
     const unicos = new Set(vida.eventos);
     if (k > 0 && unicos.size > 0) {
       let qualquer = 0;
@@ -302,6 +428,27 @@ const semMemoria = {
   anterior: media(repeticaoSemMemoria.anterior.slice(1).flat()),
 };
 
+// ---------------------------------------------------------------- métricas do life simulator
+
+const sat = saturacao(sequencias);
+const satV = (k: number): number => sat[k - 1] ?? 0;
+const assinaturas = assinaturasPorBloco(vidas.map((v) => v.assinatura));
+const destinos = assinaturasPorBloco(vidas.map((v) => v.destino));
+const mob = mobilidade(
+  vidas.map((v) => v.origem),
+  vidas.map((v) => v.patrimonio),
+  vidas.map((v) => v.desempate),
+);
+const patOrd = ordenar(vidas.map((v) => v.patrimonio));
+const p10 = percentil(patOrd, 10);
+const p90 = percentil(patOrd, 90);
+const razao9010 = p10 > 0 ? p90 / p10 : Infinity;
+const desvioFelicidade = desvio(vidas.map((v) => v.felicidade));
+const negativas = vidas.filter((v) => v.patrimonio < 0).length / vidas.length;
+const parteJogador = vidas.reduce((s, v) => s + v.mudancasJogador, 0) / Math.max(1, vidas.reduce((s, v) => s + v.mudancasTotal, 0));
+const toques = media(vidas.map((v) => v.toques));
+const msPorVida = media(vidas.map((v) => v.ms));
+
 // ---------------------------------------------------------------- relatório
 
 const idades = ordenar(vidas.map((v) => v.idade));
@@ -344,12 +491,36 @@ l(
     `vista em qualquer vida anterior ${pct(semMemoria.qualquer)} → ${pct(comMemoria.qualquer)}.`,
 );
 l();
-l('| Vida | ' + repPorVida.map((_, k) => `${k + 1}ª`).slice(1).join(' | ') + ' |');
-l('|---|' + repPorVida.slice(1).map(() => '---').join('|') + '|');
-l('| Já visto antes | ' + repPorVida.slice(1).map((x) => pct(x, 0)).join(' | ') + ' |');
+const colunas = [2, 3, 4, 5, 10, 15, 20].filter((k) => k <= VIDAS_POR_JOGADOR);
+l('| Vida | ' + colunas.map((k) => `${k}ª`).join(' | ') + ' |');
+l('|---|' + colunas.map(() => '---').join('|') + '|');
+l('| Já visto antes | ' + colunas.map((k) => pct(repPorVida[k - 1] ?? 0, 0)).join(' | ') + ' |');
 l();
 const maisRepetidos = [...repetidosNaVida].sort((a, b) => b[1] - a[1]).slice(0, 6);
 l(`Eventos que mais se repetem dentro da mesma vida (repetições a cada 100 aparições de evento): ${maisRepetidos.map(([id, n]) => `\`${id}\` ${num((n / totalAparicoes) * 100)}`).join(' · ')}`);
+l();
+l('## Life simulator (critérios de aceitação)');
+l();
+l('| Métrica | Valor |');
+l('|---|---|');
+l(`| Saturação V5 (instâncias da 5ª vida já vistas antes) | ${pct(satV(5))} |`);
+l(`| Saturação V20 | ${pct(satV(20))} |`);
+l(`| Assinaturas de vida distintas por 1.000 vidas (sem a origem) | ${num(assinaturas, 0)} (${num(destinos, 0)}) |`);
+l(`| Mobilidade: mesmo quintil da origem ao fim | ${pct(mob.diagonal)} |`);
+l(`| Mobilidade: correlação de postos origem × fim (Spearman) | ${num(mob.spearman, 2)} |`);
+l(`| Do quintil mais pobre ao mais rico / do mais rico ao mais pobre | ${pct(mob.baixoParaAlto)} / ${pct(mob.altoParaBaixo)} |`);
+l(`| Patrimônio p90/p10 | ${Number.isFinite(razao9010) ? num(razao9010, 1) + '×' : 'p10 ≤ 0'} (p10 ${formatarDinheiro(p10)}, p90 ${formatarDinheiro(p90)}) |`);
+l(`| Desvio-padrão da felicidade média da vida | ${num(desvioFelicidade, 2)} |`);
+l(`| Vidas com patrimônio negativo ao morrer | ${pct(negativas)} |`);
+l(`| Mudanças de estado causadas pelo jogador | ${pct(parteJogador)} |`);
+l(`| Toques por vida | ${num(toques, 1)} |`);
+l(`| Tempo de CPU por vida | ${num(msPorVida, 2)} ms |`);
+l();
+l('Matriz de mobilidade (linhas: quintil de riqueza da origem; colunas: quintil do patrimônio ao morrer):');
+l();
+l('| Origem ↓ / Fim → | Q1 | Q2 | Q3 | Q4 | Q5 |');
+l('|---|---|---|---|---|---|');
+mob.matriz.forEach((linha, i) => l(`| Q${i + 1} | ${linha.map((x) => pct(x, 0)).join(' | ')} |`));
 l();
 l('## Dilemas');
 l();
@@ -447,6 +618,15 @@ for (const v of vidas) causas.set(v.causaMorte, (causas.get(v.causaMorte) ?? 0) 
 for (const [causa, n] of [...causas].sort((a, b) => b[1] - a[1]).slice(0, 8)) l(`- ${pct(n / vidas.length)} — ${causa}`);
 l();
 
+l('## Como medimos');
+l();
+l('- **Saturação Vk:** das instâncias de storylet distintas apresentadas na k-ésima vida de um jogador (eventos do diretor e de personagens; ações do jogador e linhas curtas não contam), a fração que já tinha aparecido em alguma vida anterior do mesmo jogador. Instância = storylet + quem ele envolve + variante escolhida pelo estado; alternâncias de texto não contam.');
+l('- **Assinatura da vida:** origem (classe e tipo de família), classe final (6 faixas de patrimônio), carreira, estado civil, marca principal (a que mais causou eventos depois) e categoria da causa da morte. Contamos as distintas em blocos intercalados de 1.000 vidas; entre parênteses, a mesma conta sem a origem.');
+l('- **Mobilidade:** quintis da riqueza de origem × quintis do patrimônio ao morrer. Nem determinista (tudo na diagonal) nem aleatória (correlação perto de zero).');
+l('- **Mudança de estado:** atributo que andou 0,5 ponto ou mais, patrimônio R$ 500 ou mais, renda R$ 600 por ano ou mais, marca ganha ou perdida, personagem novo. É do jogador quando acontece numa escolha ou ação dele.');
+l('- **Toques:** nascer + um por ano vivido + um por escolha.');
+l();
+
 const relatorio = linhas.join('\n');
 if (!args.has('sem-arquivo')) writeFileSync(join(RAIZ, 'docs', 'metricas.md'), relatorio);
 
@@ -454,6 +634,11 @@ console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos
 for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${nome} (${detalhe})`);
 console.log(
   `Repetição entre vidas: ${pct(repMedia)} (vida anterior: ${pct(repAnterior)}; texto idêntico: ${pct(repTextos)}) · aleatória vida anterior sem/com memória: ${pct(semMemoria.anterior)} → ${pct(comMemoria.anterior)} · dentro da vida: ${pct(media(repeticaoInterna))}`,
+);
+console.log(
+  `Saturação V5 ${pct(satV(5))} · V20 ${pct(satV(20))} · assinaturas/1000 ${num(assinaturas, 0)} (destino ${num(destinos, 0)}) · mobilidade diag ${pct(mob.diagonal)} ρ ${num(mob.spearman, 2)} · ` +
+    `p90/p10 ${Number.isFinite(razao9010) ? num(razao9010, 1) : 'p10≤0'} · desvio felicidade ${num(desvioFelicidade, 2)} · negativas ${pct(negativas)} · ` +
+    `jogador ${pct(parteJogador)} · toques ${num(toques, 1)} · ${num(msPorVida, 2)} ms/vida`,
 );
 console.log(`Falsos dilemas: ${dilemasFalsos.length} · arriscar nunca compensa: ${semTensao.length} (${semTensao.join(', ')})`);
 console.log(`Mais repetidos na mesma vida (por 100 aparições): ${maisRepetidos.map(([id, n]) => `${id} ${num((n / totalAparicoes) * 100)}`).join(' · ')}`);

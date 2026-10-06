@@ -183,8 +183,12 @@ export const Linha = z.strictObject({
 export type Linha = z.infer<typeof Linha>;
 export const ArquivoLinhas = z.array(Linha);
 
+/** Categoria da causa de morte (agrupa as causas na assinatura da vida). */
+export const CategoriaMorte = z.enum(['velhice', 'coracao', 'doenca', 'acidente', 'violencia']);
+
 export const CausaMorte = z.strictObject({
   causa: z.string().min(3),
+  categoria: CategoriaMorte,
   idade: FaixaIdade.optional(),
   condicoes: Condicoes.optional(),
   peso: z.number().positive().optional(),
