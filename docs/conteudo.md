@@ -1,6 +1,6 @@
 # Conteúdo: formato e guia de escrita
 
-Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
+Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
 
 ## Storylet
 
@@ -87,12 +87,16 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "lugar.regiao": "nordeste", "lugar.capital": true, "lugar.desemprego": { "min": 0.095 },
   "paquera": { "min": 2 },                                      // qualidade numérica (contador)
   "genero": "f", "inflacao": { "min": 9 },
+  "setor": "saude", "ator.setor": ["industria", "construcao"],  // setor de trabalho (12, em mundo.json › setores)
   "marcas": ["todas", "estas"], "algumaMarca": ["uma", "destas"], "semMarcas": ["nenhuma", "ator.ausente"],
+  // fase do país: "marcas": ["pais.expansao"] ou "algumaMarca": ["pais.recessao", "pais.crise"]
   "marcaHa": [{ "marca": "fumante", "min": 12 }, { "marca": "ator.faleceu", "max": 0 }]
 }
 ```
 
 Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condições; os outros exigem o ator vivo.
+
+A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, `pais.crise`; no normal, nenhuma). Storylet que a consulta tem a entrada que anunciou a fase como causa: o cartão da vida pode contar "o país entrou em crise → você perdeu o emprego".
 
 ## Efeitos
 
@@ -105,6 +109,9 @@ Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condi
 | `divida`, `dividaFator` | `35000`, `0.3` | dívida nova (negativo é desconto); acordo que deixa 30% |
 | `patrimonioFator` | `0.5` | multiplica conta e investido (golpe, sociedade que quebrou) |
 | `renda`, `custo` | `20000` ou `{ "definir": 26000 }` | anuais, reais de hoje |
+| `rendaFator`, `custoFator` | `0.8`, `0.5` | multiplicam a renda (corte de salário, proposta) e o custo anual (cortar o padrão) |
+| `custoDoPatrimonio` | `0.06` | soma ao custo anual 6% do patrimônio de agora (subir de padrão com a herança) |
+| caminho com `copiar` | `"eu.setor": { "copiar": "pai.setor" }` | copia o valor de outro caminho da mesma espécie |
 | `transferir` | `{ "de": "ator", "para": "eu", "fracao": 0.2, "max": 30000 }` | dinheiro de uma pessoa para outra; `{transferido}` no texto |
 | `marcas`, `removerMarcas` | `["fumante", "ator.desempregado"]` | a qualidade guarda ano, idade e a entrada que a gravou |
 | `qualidades` | `{ "paquera": 1 }` | soma a um contador |
@@ -145,7 +152,7 @@ Uma escolha grava uma qualidade; anos depois, um storylet a exige ou ela é agen
 
 - `linhas.json`: `{ "idade": [30, 49], "texto": "...", "condicoes": {...}, "peso": 1 }`. Linha com condição é o jeito mais barato de a vida lembrar de escolhas antigas e do lugar onde se vive.
 - `mortes.json`: `{ "causa": "de ...", "categoria": "violencia", "idade": [18, 75], "condicoes": {...}, "peso": 2 }`. Categorias: velhice, coração, doença, acidente, violência.
-- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), as 6 classes (patrimônio, renda, poupança, saúde, ocupações, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, morreu…), nascimento e epitáfios genéricos.
+- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), as 6 classes (patrimônio, renda, poupança, saúde, ocupações com setor, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, faliu, morreu…), os 12 **setores** (quanto sentem o ciclo, quanto crescem, se são estáveis), as 4 **fases** da economia (peso, chances de transição, o que somam à inflação, ao rendimento, ao desemprego e aos salários, e os textos que anunciam cada uma), nascimento e epitáfios genéricos.
 
 ## Guia de escrita
 

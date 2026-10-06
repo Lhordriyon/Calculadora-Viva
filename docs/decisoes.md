@@ -152,6 +152,56 @@ Cada decisão relevante, com uma linha de motivo. O que foi cortado também fica
 - **A mesma ação em anos seguidos vira uma linha curta** ("Estudou para as provas, mais um ano."). Repetir o verbo é rotina, não história.
 - **Painel da família, origem opcional na abertura e chips de vínculo na linha do tempo.** O estado dos personagens fica visível sem tela de gestão; o chip do amor fala "do casal" porque o amor pode mudar de pessoa.
 
+### Incremento 2: o mundo reage e a riqueza vira sistema (06/10/2026)
+
+Mecânicas pontuadas nos 12 critérios (0 a 3 cada): carreira com setor 31, continuar como herdeiro 31, negócio como entidade 30, ativos separados 26, ciclo da economia 25, relações como arestas 19, 2–3 fichas por ano 18. Entraram o ciclo (barato e mexe em tudo) e a carreira por setor; riqueza como sistema entrou pelo padrão de vida e por riscos proporcionais ao patrimônio, sem estado novo. Herdeiro e negócio como entidade ficam para o próximo.
+
+Portões definidos pela linha de base medida no fim do incremento 1:
+
+| Métrica | Incremento 1 | Incremento 2 | Portão |
+|---|---|---|---|
+| Pontos de virada que vêm do mundo | 2,9% | 10,7% | ≥ 2× (5,8%) ✓ |
+| Do quintil mais pobre ao mais rico | 3,0% | 6,3% | ≥ 1,5× (4,5%) ✓ |
+| Do quintil mais rico ao mais pobre | 3,0% | 5,3% | ≥ 1,5× (4,5%) ✓ |
+| Mobilidade: mesmo quintil / Spearman | 37,8% / 0,57 | 32,8% / 0,45 | Spearman entre 0,3 e 0,7 ✓ |
+| Saturação V5 | 77,0% | 69,5% | ≤ 80% ✓ |
+| Saturação V20 | 95,9% | 94,4% | ≤ 95% ✓ |
+| Assinaturas por 1.000 vidas (só o destino) | 893 (528) | 918 (572) | sem regressão ✓ |
+| Patrimônio p90/p10 | 17,9× | 26,8× | — |
+| Desvio-padrão da felicidade média | 8,57 | 8,64 | — |
+| Patrimônio negativo ao morrer | 1,4% | 3,0% | — |
+| Mudanças de estado causadas pelo jogador | 34,4% | 33,4% | — |
+| Toques por vida | 115,2 | 115,1 | ≤ 155 ✓ |
+| CPU por vida | 14,5 ms | 16,9 ms | ≤ 30 ms ✓ |
+| Estratégia dominante / falsos dilemas | nenhuma / 2 | nenhuma / 0 | nenhuma ✓ |
+
+**Motor**
+
+- **Ciclo da economia como cadeia de Markov em dados** (normal, expansão, recessão, crise; 65% / 20% / 12% / 4% dos anos). Fora do normal, a fase é uma qualidade do país cuja causa é a entrada visível que a anunciou (tipo `mundo`, etiqueta "Economia" na linha do tempo). Um storylet que consulta a fase herda essa causa: "o país entrou em crise → você perdeu o emprego". A crise aleatória de inflação da fase 1 saiu; a fase faz o papel dela.
+- **A fase mexe em quatro números:** inflação, rendimento (−12% na crise, +4% na expansão), desemprego (2,4× na crise) e salários. Um mecanismo, muitos efeitos.
+- **12 setores com sensibilidade ao ciclo** (saúde 0,4, construção 1,8; serviço público estável). Toda ocupação dos pais e todo emprego de quem joga tem setor; ocupação com forma masculina e feminina diferentes pode ter setores diferentes.
+- **Curso pela nota do ENEM, em três faixas calibradas pela distribuição medida** (inteligência aos 17: p10 51, mediana 73). Com cortes no chute, o primeiro emprego em artes nunca aparecia; o curso leva ao primeiro emprego no setor.
+- **A demissão de quem joga é agendada pela regra do trabalho** (2,5% ao ano × desemprego do lugar × fase × quanto o setor sente), com a fase como causa: 34% das demissões vêm de uma recessão ou crise. Negócio próprio balança o dobro e entra no aperto nos anos ruins; servidor e setor estável não são demitidos.
+- **O negócio da família pode falir na recessão e na crise**, levando 60% do que foi guardado; a poupança dos pais rende com a fase. A herança passa a sentir o mundo.
+- **Padrão de vida virou variável com decisão.** O custo anual sobe com o salário (`subir_de_padrao`) e com a herança (`custoDoPatrimonio`: 6% do patrimônio), e não desce sozinho. Quando o déficit do ano come a reserva (menos de 5 anos), o motor agenda a conta (`padrao_aperta`), com a escolha que subiu o padrão como causa. Motivo: filho de rico nunca caía jogando com cuidado (0% das vidas da primeira e da cautelosa iam do quintil de cima ao de baixo; 12% da aleatória). A fortuna rendia 4% real sem consumo e a herança chegava aos 55 em milhões.
+- **A conta do padrão chega antes da dívida, não depois.** Como condição (dívida ≥ R$ 20 mil), ela aparecia tarde demais para o jogador reagir. Agendada pelo déficit, chega como aviso, e quem mantém as aparências afunda por escolha.
+- **Efeitos novos no formato dos fatores:** `rendaFator`, `custoFator` e `custoDoPatrimonio`, e `copiar` para caminhos (`"eu.setor": { "copiar": "pai.setor" }`). `custo: { patrimonio }` foi a primeira ideia; o tipo do TypeScript recusava (conflito com o índice dos caminhos), e uma chave numérica ficou mais simples.
+- **Robôs dão valor ao resgate como perda de rendimento**, e a análise de dilemas conta investir e os fatores. Os falsos dilemas foram a zero: os 2 que vinham do incremento 1 (`vo_partiu`, `geladeira_vazia`) e 4 que apareceram no caminho.
+- **Save continua na versão 2.** O formato novo só acrescenta (entradas do mundo, setor, fase); uma vida do incremento 1 segue jogando como se o país estivesse no normal e sem setor (há teste). Recomeçar a vida de quem já jogava não se justificava.
+
+**Conteúdo** (de 143 para 214 eventos, de 59 para 67 iniciativas de personagem e de 440 para 642 escolhas)
+
+- **Carreira:** 3 faixas de curso, 6 primeiros empregos por área, aperto do negócio, e storylets do ciclo (corte de salário, proposta na expansão, bolsa que derrete, dólar, concurso lotado, fila do emprego, pais desempregados na crise).
+- **Setor × fase:** 21 storylets, um para cada combinação que faz sentido (hospital sem insumo na crise, clínica particular contratando na expansão, férias coletivas na fábrica, frete que some, ações da empresa que viram dinheiro, reajuste dos servidores…).
+- **Região e classe × fase:** pousada no Nordeste na expansão, cidadania do bisavô no Sul na crise, agro no Centro-Oeste, cidade dos royalties no RJ e ES, obra grande no Norte, montadora fechando no interior do Sudeste, programa de moradia para quem é pobre, imóvel na baixa para quem tem patrimônio, escola do filho na recessão; e a cadeia do apartamento na planta, que a crise pode deixar no quinto andar.
+- **Riqueza:** a herança virou bifurcação (investir, mudar de vida, apostar num negócio grande, realizar um sonho); riscos proporcionais para quem tem muito (pirâmide no grupo da família, ser fiador, fazenda, franquia, moeda digital, alavancagem na expansão, adiantamento da herança ao filho).
+- **Política continua genérica:** o validador agora varre todo texto atrás de partido com nome próprio.
+
+**Cortes e adiamentos**
+
+- **Ativos separados (imóvel, ações, renda fixa como contas).** Os riscos proporcionais e o padrão de vida deram as duas mobilidades sem estado novo; volta se o negócio próprio pedir.
+- **Negócio próprio como entidade e continuar como herdeiro.** Pontuaram alto; são o próximo incremento.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

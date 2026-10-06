@@ -71,7 +71,7 @@ conteudo/              dados, nunca código
   linhas.json          linhas curtas dos anos sem storylet
   mortes.json          causas de morte (com condições e categoria)
   marcas.json          efeitos passivos e epitáfios de qualidades
-  mundo.json           nomes, cidades, classes, tipos de família, traços, acontecimentos
+  mundo.json           nomes, cidades, classes, tipos de família, traços, setores, fases, acontecimentos
 src/motor/             motor puro, sem UI: roda em Node e no navegador
   vida.ts              nascer → (ficha do ano) → +1 ano → regras → personagens → diretor → escolha
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
@@ -79,6 +79,8 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança)
   origem.ts            origem procedural: classe × tipo de família × traços, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
+  ciclo.ts             ciclo da economia do país (normal, expansão, recessão, crise)
+  trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
   pessoas.ts           criar, promover e matar personagens (luto, herança, viuvez)
   storylets.ts         elegibilidade, aplicar e apresentar storylets, escolher
   diretor.ts           saliência e o storylet do ano
