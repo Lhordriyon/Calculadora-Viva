@@ -1,0 +1,444 @@
+[
+  {
+    "id": "pousada_na_praia",
+    "idade": [25, 65],
+    "condicoes": { "lugar.regiao": "nordeste", "marcas": ["pais.expansao"], "patrimonio": { "min": 30000 } },
+    "peso": 3,
+    "texto": "Com o país crescendo, o turismo explodiu: [gringo de chinelo|excursão de paulista|casal em lua de mel] em toda esquina. Um conhecido quer sócio para abrir uma pousada [em Porto de Galinhas|na Praia do Forte|em Jericoacoara|em Pipa] e jura que a temporada paga tudo.",
+    "resumo": "foi chamad{o|a} para ser sóci{o|a} de uma pousada na praia",
+    "escolhas": [
+      {
+        "texto": "Entrar de sócio",
+        "resumo": "entrou de sóci{o|a} numa pousada na praia",
+        "efeitos": { "dinheiro": -30000 },
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A pousada lotou da primeira temporada em diante. Você aprendeu a dizer \"welcome\" com sotaque e a cobrar em dólar.",
+          "resumo": "virou sóci{o|a} de uma pousada que deu certo",
+          "efeitos": { "renda": 24000, "felicidade": 4, "marcas": ["socio"] }
+        },
+        "fracasso": {
+          "texto": "Choveu a temporada inteira e o sócio descobriu que não gostava de acordar cedo. A pousada virou casa de veraneio de alguém.",
+          "resumo": "perdeu dinheiro numa pousada na praia",
+          "efeitos": { "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Trabalhar na temporada",
+        "resumo": "trabalhou na temporada de turismo",
+        "resultado": {
+          "texto": "Três meses servindo caipirinha na areia. Voltou bronzead{o|a}, cansad{o|a} e com dinheiro no bolso.",
+          "efeitos": { "dinheiro": 8000, "saude": -1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Só aproveitar a praia",
+        "resumo": "aproveitou a praia enquanto os turistas trabalhavam para se divertir",
+        "resultado": {
+          "texto": "Você pegou a melhor hora da maré baixa todo domingo. Turista paga caro pelo que você tem de graça.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cidadania_do_bisavo",
+    "idade": [20, 50],
+    "condicoes": {
+      "lugar.regiao": "sul",
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "semMarcas": ["passaporte_europeu"]
+    },
+    "peso": 3,
+    "texto": "Na crise, metade dos seus conhecidos descobriu um bisavô [italiano|alemão|polonês] e correu atrás da cidadania. A fila do consulado tem mais gente que a do emprego.",
+    "resumo": "pensou em tirar a cidadania europeia na crise",
+    "escolhas": [
+      {
+        "texto": "Correr atrás dos papéis",
+        "resumo": "correu atrás da cidadania europeia",
+        "efeitos": { "dinheiro": -8000 },
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Dois anos de certidão, tradução juramentada e paciência. Chegou o passaporte, vermelho e com o seu nome escrito certo.",
+          "resumo": "conseguiu a cidadania europeia do bisavô",
+          "efeitos": { "marcas": ["passaporte_europeu"], "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O nome do bisavô estava escrito de três jeitos em três certidões. O processo empacou no terceiro.",
+          "resumo": "desistiu da cidadania europeia por causa da papelada",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ficar e esperar passar",
+        "resumo": "ficou no Brasil esperando a crise passar",
+        "resultado": {
+          "texto": "Você ficou. A crise passou devagar, como passa tudo por aqui, e o churrasco de domingo continuou no mesmo lugar.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "agro_na_cidade",
+    "idade": [18, 70],
+    "condicoes": { "lugar.regiao": "centro_oeste", "marcas": ["pais.expansao"], "semMarcas": ["aposentado"] },
+    "peso": 3,
+    "texto": "Com o agro batendo recorde, a cidade virou outra: caminhonete na porta da escola, aluguel dobrando e feira de máquinas com show sertanejo de graça.",
+    "resumo": "viu a cidade crescer com o agro",
+    "escolhas": [
+      {
+        "texto": "Vender serviço para o agro",
+        "resumo": "passou a vender serviço para o agro",
+        "resultado": {
+          "texto": "Você descobriu que fazendeiro paga bem e paga na hora, desde que o serviço fique pronto antes da chuva.",
+          "efeitos": { "rendaFator": 1.2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Comprar um terreno antes que suba",
+        "resumo": "comprou um terreno na cidade que crescia",
+        "condicoes": { "dinheiro": { "min": 40000 } },
+        "bloqueio": "não tem dinheiro para terreno",
+        "efeitos": { "dinheiro": -40000 },
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "O terreno virou esquina de condomínio fechado. Você vendeu pelo dobro e mais um pouco.",
+          "resumo": "lucrou com um terreno na cidade do agro",
+          "efeitos": { "dinheiro": 90000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A cidade cresceu para o outro lado. O terreno virou campo de futebol do bairro, o que também tem o seu valor.",
+          "resumo": "comprou um terreno do lado errado da cidade",
+          "efeitos": { "dinheiro": 25000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Reclamar do aluguel",
+        "resumo": "reclamou do aluguel que dobrou com o agro",
+        "resultado": {
+          "texto": "O aluguel subiu, o salário não, e o show sertanejo foi o mesmo de todo ano.",
+          "efeitos": { "custo": 3000, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "royalties_secaram",
+    "idade": [18, 80],
+    "condicoes": { "lugar.uf": ["RJ", "ES"], "marcas": ["pais.crise"] },
+    "peso": 3,
+    "texto": "Com o petróleo em baixa, a prefeitura que vivia dos royalties atrasou salário, fechou posto de saúde e cancelou a festa da cidade. O prefeito culpa o mercado internacional; o mercado internacional não respondeu.",
+    "resumo": "viu a cidade do petróleo quebrar na crise",
+    "escolhas": [
+      {
+        "texto": "Fazer a festa mesmo assim",
+        "resumo": "ajudou a fazer a festa da cidade sem a prefeitura",
+        "resultado": {
+          "texto": "Bingo, quermesse e banda de garagem. Foi a melhor festa em anos, justamente porque ninguém tinha dinheiro.",
+          "efeitos": { "felicidade": 2, "dinheiro": -500 }
+        }
+      },
+      {
+        "texto": "Procurar trabalho em outra cidade",
+        "resumo": "foi procurar trabalho fora da cidade do petróleo",
+        "resultado": {
+          "texto": "Você passou a pegar a estrada todo dia. Ganha um pouco mais e vê o pôr do sol pelo para-brisa.",
+          "efeitos": { "rendaFator": 1.1, "custo": 6000, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Esperar o petróleo subir",
+        "resumo": "esperou o petróleo voltar a subir",
+        "resultado": {
+          "texto": "Esperou. O petróleo subiu, desceu e subiu de novo. A festa voltou dois anos depois, menor.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "obra_grande_no_norte",
+    "idade": [18, 64],
+    "condicoes": { "lugar.regiao": "norte", "marcas": ["pais.expansao"], "semMarcas": ["aposentado"] },
+    "peso": 3,
+    "texto": "Uma obra enorme chegou à região: [uma ponte sobre o rio|uma estrada nova|um porto de grãos] trouxe dois mil trabalhadores, poeira, promessa e o primeiro engarrafamento da história da cidade.",
+    "resumo": "viu uma obra enorme mudar a cidade",
+    "escolhas": [
+      {
+        "texto": "Trabalhar na obra",
+        "resumo": "foi trabalhar na obra grande da região",
+        "resultado": {
+          "texto": "Capacete, marmita às dez da manhã e salário que a cidade nunca tinha visto. Até a obra acabar.",
+          "efeitos": { "renda": 12000, "saude": -2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Alugar quartos para os peões",
+        "resumo": "alugou quartos para os trabalhadores da obra",
+        "resultado": {
+          "texto": "A casa virou pensão: café às cinco, roupa no varal de todo mundo e dinheiro entrando todo mês.",
+          "efeitos": { "dinheiro": 15000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ficar de fora",
+        "resumo": "ficou de fora da obra grande",
+        "resultado": {
+          "texto": "Você assistiu à cidade mudar da janela. Algumas coisas melhoraram; o trânsito, não.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "montadora_vai_fechar",
+    "idade": [18, 64],
+    "condicoes": { "lugar.regiao": "sudeste", "lugar.interior": true, "marcas": ["pais.crise"] },
+    "peso": 3,
+    "texto": "A montadora da região anunciou que vai fechar. A cidade inteira vive dela, direta ou indiretamente: o restaurante, a oficina, o aluguel e o time de futebol.",
+    "resumo": "viu a fábrica da cidade anunciar o fechamento",
+    "escolhas": [
+      {
+        "texto": "Mudar de cidade",
+        "resumo": "mudou de cidade quando a fábrica fechou",
+        "resultado": {
+          "texto": "Você empacotou a vida num caminhão de mudança e foi para onde ainda tinha vaga. Os amigos ficaram no grupo de mensagens.",
+          "efeitos": { "custo": 4000, "felicidade": -2, "rendaFator": 1.05 }
+        }
+      },
+      {
+        "texto": "Ficar e se virar",
+        "resumo": "ficou na cidade depois do fechamento da fábrica",
+        "resultado": {
+          "texto": "Você ficou. A cidade encolheu, os preços também, e o bar da esquina virou ponto de encontro de desempregado e de aposentado.",
+          "efeitos": { "rendaFator": 0.85 }
+        }
+      },
+      {
+        "texto": "Entrar na luta para a fábrica ficar",
+        "resumo": "entrou na mobilização para a fábrica não fechar",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "Abaixo-assinado, carreata e audiência pública. A fábrica ficou, menor, e você virou figura conhecida na cidade.",
+          "resumo": "ajudou a impedir o fechamento da fábrica da cidade",
+          "efeitos": { "felicidade": 4 }
+        },
+        "fracasso": {
+          "texto": "A fábrica fechou mesmo assim. Ficou a foto da carreata no jornal e uma rouquidão de uma semana.",
+          "resumo": "lutou para a fábrica não fechar e perdeu",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "programa_de_moradia",
+    "idade": [22, 60],
+    "condicoes": { "classe": { "max": 1 }, "marcas": ["pais.expansao"], "semMarcas": ["casa_propria"] },
+    "peso": 3,
+    "texto": "O programa de moradia do governo abriu inscrições: apartamento com parcela que cabe no bolso, no fim da linha do ônibus, com sorteio na televisão.",
+    "resumo": "se viu diante das inscrições de um programa de moradia",
+    "escolhas": [
+      {
+        "texto": "Se inscrever",
+        "resumo": "se inscreveu no programa de moradia",
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "O seu nome saiu no sorteio, ao vivo. Você gritou tão alto que o vizinho veio ver se era gol.",
+          "resumo": "ganhou um apartamento no programa de moradia",
+          "efeitos": { "marcas": ["casa_propria"], "custo": -4000, "felicidade": 6 }
+        },
+        "fracasso": {
+          "texto": "O seu nome não saiu. Saiu o da vizinha, que agora fala do apartamento novo em toda conversa.",
+          "resumo": "não foi sortead{o|a} no programa de moradia",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ficar no aluguel perto do trabalho",
+        "resumo": "preferiu o aluguel perto do trabalho",
+        "resultado": {
+          "texto": "Você fez as contas: duas horas de ônibus por dia também custam. Ficou onde estava.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imovel_na_baixa",
+    "idade": [30, 75],
+    "condicoes": { "marcas": ["pais.crise"], "patrimonio": { "min": 400000 } },
+    "peso": 3,
+    "texto": "Na crise, apareceu de tudo à venda pela metade do preço: apartamento de quem perdeu o emprego, sala comercial de empresa que fechou, casa de praia de quem precisa pagar o banco.",
+    "resumo": "viu imóveis à venda pela metade do preço na crise",
+    "escolhas": [
+      {
+        "texto": "Comprar na baixa",
+        "resumo": "comprou um imóvel pela metade do preço na crise",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "A crise passou e o imóvel voltou a valer o que valia. Você não conta como comprou; conta só que comprou.",
+          "resumo": "comprou um imóvel na baixa e ganhou com a volta",
+          "efeitos": { "patrimonioFator": 1.3, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A crise durou mais que o previsto e o imóvel ficou parado, com condomínio e IPTU chegando todo mês.",
+          "resumo": "comprou um imóvel na crise e ficou com ele parado",
+          "efeitos": { "patrimonioFator": 0.9, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Esperar a poeira baixar",
+        "resumo": "esperou a crise passar antes de comprar",
+        "resultado": {
+          "texto": "Você esperou. Quando a poeira baixou, os preços já tinham subido de novo, mas você dormiu tranquil{o|a}.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mensalidade_da_escola",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [24, 60],
+    "condicoes": {
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "ator.idade": { "min": 6, "max": 17 },
+      "renda": { "min": 20000, "max": 150000 }
+    },
+    "texto": "A mensalidade da escola de {ator.quem} subiu de novo e o salário, não. Na reunião de pais, metade da sala fala em trocar de escola; a outra metade finge que não ouviu.",
+    "resumo": "viu a escola de {ator.quem} ficar cara demais",
+    "escolhas": [
+      {
+        "texto": "Trocar pela escola pública",
+        "resumo": "trocou {ator.quem} para a escola pública",
+        "resultado": {
+          "texto": "{ator.quem} reclamou uma semana e fez amigos para a vida inteira na segunda. A planilha agradeceu.",
+          "efeitos": { "custo": -8000, "ator.vinculo": -2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Apertar o resto e manter",
+        "resumo": "apertou o resto para manter {ator.quem} na escola",
+        "resultado": {
+          "texto": "Cortaram a viagem de férias e o restaurante de domingo. A escola ficou; o resto, não.",
+          "efeitos": { "custo": 3000, "felicidade": -1, "ator.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Pedir bolsa na escola",
+        "resumo": "pediu bolsa na escola de {ator.quem}",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "A coordenadora olhou o boletim de {ator.quem} e aprovou meia bolsa na hora.",
+          "resumo": "conseguiu meia bolsa na escola de {ator.quem}",
+          "efeitos": { "custo": -4000, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A coordenadora disse que as bolsas acabaram em março. Era outubro.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apartamento_na_planta",
+    "idade": [25, 60],
+    "condicoes": {
+      "marcas": ["pais.expansao"],
+      "patrimonio": { "min": 60000 },
+      "semMarcas": ["casa_propria", "apartamento_na_planta"]
+    },
+    "peso": 3,
+    "texto": "Em plena expansão, o estande de vendas do prédio novo tem café, maquete iluminada e um corretor que chama todo mundo de \"investidor\". Entrada facilitada, chaves em três anos.",
+    "resumo": "pensou em comprar um apartamento na planta",
+    "escolhas": [
+      {
+        "texto": "Comprar na planta",
+        "resumo": "comprou um apartamento na planta",
+        "resultado": {
+          "texto": "Você assinou trinta folhas e saiu com uma maquete na cabeça. Agora é esperar três anos e torcer.",
+          "efeitos": {
+            "dinheiro": -50000,
+            "felicidade": 3,
+            "marcas": ["apartamento_na_planta"],
+            "agendar": [{ "evento": "chaves_do_apartamento", "em": 3 }, { "evento": "construtora_quebrou", "em": 3 }]
+          }
+        }
+      },
+      {
+        "texto": "Continuar no aluguel",
+        "resumo": "continuou no aluguel em vez de comprar na planta",
+        "resultado": {
+          "texto": "Você pegou um folheto, comeu dois pães de queijo do estande e voltou para o aluguel.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chaves_do_apartamento",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["apartamento_na_planta"], "semMarcas": ["pais.crise"] },
+    "texto": "As chaves do apartamento chegaram, com três meses de atraso e um vazamento de brinde no banheiro.",
+    "resumo": "recebeu as chaves do apartamento comprado na planta",
+    "escolhas": [
+      {
+        "texto": "Morar nele",
+        "resumo": "se mudou para o apartamento comprado na planta",
+        "resultado": {
+          "texto": "Primeira noite no colchão no chão, pizza na caixa e a sensação de que a parede é sua.",
+          "efeitos": {
+            "custo": -6000,
+            "felicidade": 5,
+            "marcas": ["casa_propria"],
+            "removerMarcas": ["apartamento_na_planta"]
+          }
+        }
+      },
+      {
+        "texto": "Alugar para alguém",
+        "resumo": "pôs o apartamento novo para alugar",
+        "resultado": {
+          "texto": "O inquilino é um casal jovem que reclama do vazamento com muita educação. O aluguel cai todo dia cinco.",
+          "efeitos": { "renda": 14000, "felicidade": 2, "removerMarcas": ["apartamento_na_planta"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "construtora_quebrou",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["apartamento_na_planta", "pais.crise"] },
+    "texto": "A crise pegou a construtora no meio da obra: o prédio parou no quinto andar, o estande virou depósito e o corretor não atende mais ninguém.",
+    "resumo": "viu a construtora do seu apartamento quebrar na crise",
+    "escolhas": [
+      {
+        "texto": "Entrar na associação dos compradores",
+        "resumo": "entrou na associação dos compradores para terminar a obra",
+        "efeitos": { "dinheiro": -15000 },
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Reunião todo sábado, vaquinha, engenheiro voluntário. Dois anos depois, o prédio ficou pronto e virou o mais unido da cidade.",
+          "resumo": "terminou a obra do prédio com os outros compradores",
+          "efeitos": { "marcas": ["casa_propria"], "felicidade": 4, "removerMarcas": ["apartamento_na_planta"] }
+        },
+        "fracasso": {
+          "texto": "A associação brigou, rachou e virou dois grupos de mensagens. O prédio continua no quinto andar.",
+          "resumo": "perdeu o apartamento comprado na planta",
+          "efeitos": { "felicidade": -5, "removerMarcas": ["apartamento_na_planta"] }
+        }
+      },
+      {
+        "texto": "Aceitar o prejuízo",
+        "resumo": "aceitou perder o apartamento comprado na planta",
+        "resultado": {
+          "texto": "Você guardou o contrato numa pasta e a pasta numa gaveta. A maquete ainda aparece em sonho.",
+          "efeitos": { "felicidade": -4, "removerMarcas": ["apartamento_na_planta"] }
+        }
+      }
+    ]
+  }
+]

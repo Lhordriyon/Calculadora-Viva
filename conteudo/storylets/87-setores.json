@@ -1,0 +1,671 @@
+[
+  {
+    "id": "hospital_sem_insumo",
+    "idade": [22, 64],
+    "condicoes": { "setor": "saude", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Na crise, o hospital ficou sem luva, sem gaze e sem metade da equipe. A diretoria pede \"criatividade\"; o paciente do leito 7 pede água.",
+    "resumo": "trabalhou num hospital sem insumos na crise",
+    "escolhas": [
+      {
+        "texto": "Comprar material do próprio bolso",
+        "resumo": "comprou material do próprio bolso para o hospital",
+        "resultado": {
+          "texto": "Você gastou o que não tinha numa farmácia de bairro e salvou um plantão inteiro. Ninguém te reembolsou; ninguém esqueceu.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Denunciar no conselho",
+        "resumo": "denunciou a falta de insumos no hospital",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "A denúncia virou matéria no jornal e o material chegou em uma semana. A diretoria passou a te cumprimentar com cuidado.",
+          "resumo": "denunciou a falta de insumos e o material chegou",
+          "efeitos": { "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A denúncia sumiu numa gaveta e você foi transferid{o|a} para o turno da madrugada.",
+          "resumo": "denunciou a falta de insumos e foi punid{o|a}",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Fazer o possível e ir para casa",
+        "resumo": "fez o possível no hospital sem insumos",
+        "resultado": {
+          "texto": "Você fez o que dava com o que tinha. Em casa, ficou olhando para o teto até tarde.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "giz_do_proprio_bolso",
+    "idade": [22, 64],
+    "condicoes": { "setor": "educacao", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Corte de verba na educação: a escola pediu para os professores \"economizarem material\". Você já compra o giz, o papel e o lanche de um aluno.",
+    "resumo": "deu aula na escola com corte de verba",
+    "escolhas": [
+      {
+        "texto": "Fazer vaquinha com os pais",
+        "resumo": "organizou uma vaquinha com os pais dos alunos",
+        "resultado": {
+          "texto": "A vaquinha comprou papel, tinta e um ventilador. A reunião de pais nunca teve tanta gente.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Aderir à paralisação",
+        "resumo": "parou com os professores contra o corte de verba",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "A paralisação virou notícia, a verba voltou e veio junto um reajuste. Os alunos fizeram um cartaz com o seu nome escrito errado.",
+          "resumo": "fez paralisação e recuperou a verba da escola",
+          "efeitos": { "felicidade": 3, "rendaFator": 1.06 }
+        },
+        "fracasso": {
+          "texto": "A verba não voltou e os dias foram descontados. Ficou a sensação de ter feito a coisa certa, e a conta mais curta.",
+          "resumo": "fez paralisação contra o corte e não adiantou",
+          "efeitos": { "dinheiro": -2000, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filial_fechando",
+    "idade": [18, 64],
+    "condicoes": { "setor": "comercio", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Na crise, a rede de lojas onde você trabalha vai fechar a sua filial. O gerente oferece duas opções: transferência para o outro lado da cidade ou o acerto.",
+    "resumo": "viu a loja onde trabalhava fechar na crise",
+    "escolhas": [
+      {
+        "texto": "Aceitar a transferência",
+        "resumo": "aceitou a transferência para outra loja",
+        "resultado": {
+          "texto": "Duas conduções a mais por dia e um salário igual. Você aprendeu a dormir em pé no ônibus.",
+          "efeitos": { "saude": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pegar o acerto",
+        "resumo": "pegou o acerto quando a loja fechou",
+        "resultado": {
+          "texto": "Você saiu com o acerto, o FGTS e um crachá de lembrança. O próximo emprego vai ter que te achar.",
+          "efeitos": { "dinheiro": 9000, "renda": { "definir": 0 }, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vendas_recorde",
+    "idade": [18, 64],
+    "condicoes": { "setor": "comercio", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Com a economia aquecida, as vendas bateram recorde: a comissão do mês pagou o aluguel e sobrou para um tênis que você namorava fazia um ano.",
+    "resumo": "bateu recorde de vendas com a economia aquecida",
+    "escolhas": [
+      {
+        "texto": "Guardar a comissão",
+        "resumo": "guardou a comissão recorde",
+        "resultado": {
+          "texto": "O tênis ficou na vitrine, a comissão foi para a conta. Você passa na frente da loja e cumprimenta o tênis.",
+          "efeitos": { "dinheiro": 5000, "investir": 3000 }
+        }
+      },
+      {
+        "texto": "Comprar o tênis e comemorar",
+        "resumo": "gastou a comissão recorde comemorando",
+        "resultado": {
+          "texto": "Tênis novo, rodízio com a equipe e uma foto do grupo que virou papel de parede do celular de todo mundo.",
+          "efeitos": { "dinheiro": 2000, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "turno_extra_na_fabrica",
+    "idade": [18, 64],
+    "condicoes": { "setor": "industria", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 2,
+    "texto": "A fábrica abriu um terceiro turno com a economia aquecida. A hora extra paga em dobro, e o seu corpo cobra em triplo.",
+    "resumo": "foi chamad{o|a} para o turno extra na fábrica",
+    "escolhas": [
+      {
+        "texto": "Pegar o turno extra",
+        "resumo": "pegou o turno extra na fábrica",
+        "resultado": {
+          "texto": "Seis meses de madrugada na linha de produção. A reserva cresceu; as olheiras também.",
+          "efeitos": { "dinheiro": 9000, "saude": -3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Recusar o turno",
+        "resumo": "recusou o turno extra",
+        "resultado": {
+          "texto": "Você dormiu à noite como uma pessoa normal. O supervisor anotou o seu nome numa lista que ninguém sabe para que serve.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "segundo_carro",
+    "idade": [20, 64],
+    "condicoes": { "setor": "transporte", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 2,
+    "texto": "Com a economia aquecida, sobra corrida e falta carro: um colega sugere alugar um segundo carro e colocar o primo para rodar no turno da noite.",
+    "resumo": "pensou em montar uma pequena frota",
+    "escolhas": [
+      {
+        "texto": "Alugar o segundo carro",
+        "resumo": "virou dono de uma pequena frota de aplicativo",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "O primo rodou, o carro se pagou e você virou \"empresário de frota\" no grupo da família. Dois carros, uma planilha.",
+          "resumo": "montou uma frota de aplicativo que deu certo",
+          "efeitos": { "rendaFator": 1.4, "marcas": ["empreendedor"], "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O primo bateu o carro no segundo mês. O seguro não cobriu, e o primo sumiu do grupo da família.",
+          "resumo": "montou uma frota de aplicativo e o primo bateu o carro",
+          "efeitos": { "dinheiro": -12000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Continuar sozinh{o|a}",
+        "resumo": "continuou rodando sozinh{o|a}",
+        "resultado": {
+          "texto": "Um carro, um motorista e nenhum primo para se preocupar.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "layoff_por_email",
+    "idade": [22, 64],
+    "condicoes": { "setor": "tecnologia", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Às quatro da manhã, o e-mail da sede: \"layoff global\". Metade do time sumiu do chat antes do café; a outra metade espera a sua vez em silêncio.",
+    "resumo": "viveu um layoff global na tecnologia",
+    "escolhas": [
+      {
+        "texto": "Atualizar o currículo e esperar",
+        "resumo": "se preparou para o layoff na tecnologia",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "A sua vez não chegou. Você ganhou o trabalho de três pessoas e um bônus de \"retenção\" que não retém nada.",
+          "resumo": "sobreviveu a um layoff global",
+          "efeitos": { "rendaFator": 1.05, "saude": -2 }
+        },
+        "fracasso": {
+          "texto": "A sua vez chegou numa sexta, às 16h, com uma videochamada de cinco minutos e um kit de despedida com caneca.",
+          "resumo": "entrou na lista do layoff global",
+          "efeitos": { "agendar": [{ "evento": "demissao", "em": 1 }], "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Sair antes, para uma empresa menor",
+        "resumo": "trocou a gigante por uma empresa menor antes do layoff",
+        "resultado": {
+          "texto": "Você trocou o crachá famoso por uma empresa de quarenta pessoas que sabem o seu nome. Ganhou menos, dormiu mais.",
+          "efeitos": { "rendaFator": 0.85, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "clientes_em_panico",
+    "idade": [22, 64],
+    "condicoes": { "setor": "financas", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Na crise, os clientes do banco entraram em pânico: todo mundo quer sacar tudo, agora, e quem atende é você.",
+    "resumo": "atendeu clientes em pânico na crise",
+    "escolhas": [
+      {
+        "texto": "Segurar os clientes com calma",
+        "resumo": "acalmou os clientes do banco na crise",
+        "resultado": {
+          "texto": "Você explicou, desenhou, repetiu. Ninguém sacou tudo, e o seu gerente te chamou de \"muro de contenção\" na reunião.",
+          "efeitos": { "felicidade": 1, "rendaFator": 1.05 }
+        }
+      },
+      {
+        "texto": "Tirar o próprio dinheiro também",
+        "resumo": "tirou o próprio dinheiro do banco na crise",
+        "resultado": {
+          "texto": "Você sacou tudo e guardou numa conta de outro banco. Perdeu o rendimento, ganhou o sono.",
+          "efeitos": { "investir": -100000000, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "salario_parcelado",
+    "idade": [22, 64],
+    "condicoes": {
+      "marcas": ["servidor"],
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 2,
+    "texto": "Na crise, o governo do estado parcelou o salário dos servidores: um terço no dia 10, o resto \"assim que possível\".",
+    "resumo": "teve o salário parcelado na crise",
+    "escolhas": [
+      {
+        "texto": "Pegar empréstimo consignado",
+        "resumo": "pegou um consignado para atravessar o salário parcelado",
+        "resultado": {
+          "texto": "O banco aprovou em cinco minutos, com juros de quem sabe que você não tem escolha.",
+          "efeitos": { "dinheiro": 8000, "divida": 10000 }
+        }
+      },
+      {
+        "texto": "Apertar o cinto",
+        "resumo": "apertou o cinto com o salário parcelado",
+        "resultado": {
+          "texto": "Arroz, feijão, ovo e nenhuma saída no fim de semana. O salário voltou ao normal em oito meses; você, em nove.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "shows_cancelados",
+    "idade": [20, 64],
+    "condicoes": { "setor": "cultura", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Na crise, os shows foram cancelados, os editais encolheram e os clientes de frila sumiram. A agenda de trabalho ficou parecendo agenda de férias.",
+    "resumo": "viu o trabalho de cultura sumir na crise",
+    "escolhas": [
+      {
+        "texto": "Dar aula para pagar as contas",
+        "resumo": "foi dar aula enquanto a cultura estava parada",
+        "resultado": {
+          "texto": "Oficina de teatro, aula de violão, curso de edição. Pagou as contas e te lembrou por que você começou.",
+          "efeitos": { "dinheiro": 3000, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer show online por contribuição",
+        "resumo": "fez shows online por contribuição",
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "Uma apresentação viralizou e as contribuições pagaram três meses de aluguel. A internet, às vezes, é boa.",
+          "resumo": "fez um show online que viralizou na crise",
+          "efeitos": { "dinheiro": 12000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Vinte pessoas assistiram, metade da família. A contribuição deu para a pizza.",
+          "resumo": "tentou show online na crise e quase ninguém viu",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "gorjeta_boa",
+    "idade": [18, 64],
+    "condicoes": { "setor": "servicos", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Com a economia aquecida, o restaurante lotou todos os dias e as gorjetas dobraram. Um cliente fixo deixou um bilhete: \"o melhor atendimento da cidade\".",
+    "resumo": "teve um ano bom de gorjetas",
+    "efeitos": { "dinheiro": 4000, "felicidade": 2 }
+  },
+  {
+    "id": "pedreiro_vale_ouro",
+    "idade": [18, 64],
+    "condicoes": { "setor": "construcao", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 2,
+    "texto": "Com o boom de obras, quem sabe assentar tijolo virou disputado: três construtoras querem você para ontem, e uma oferece carro da empresa.",
+    "resumo": "foi disputad{o|a} pelas construtoras no boom",
+    "escolhas": [
+      {
+        "texto": "Ir para a que paga mais",
+        "resumo": "foi para a construtora que pagava mais no boom",
+        "resultado": {
+          "texto": "Salário maior, carro da empresa e obra do outro lado da cidade. O dinheiro compensou o trânsito, quase.",
+          "efeitos": { "rendaFator": 1.3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Abrir a própria equipe",
+        "resumo": "abriu a própria equipe de obra no boom",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você juntou três conhecidos, comprou uma betoneira usada e virou \"empreiteiro\". O telefone não para.",
+          "resumo": "abriu a própria equipe de obra no boom",
+          "efeitos": { "rendaFator": 1.6, "marcas": ["empreendedor"], "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A primeira obra atrasou, a segunda não pagou e a terceira nunca começou. A betoneira foi vendida pela metade.",
+          "resumo": "tentou montar uma equipe de obra e não deu",
+          "efeitos": { "dinheiro": -8000, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quebra_de_safra",
+    "idade": [18, 64],
+    "condicoes": { "setor": "agro", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "A seca na hora errada quebrou a safra pela metade. Na fazenda, o patrão fala em \"ano perdido\" e olha para a lista de funcionários.",
+    "resumo": "viu a safra quebrar",
+    "escolhas": [
+      {
+        "texto": "Ficar e segurar a barra",
+        "resumo": "ficou na fazenda no ano da quebra de safra",
+        "resultado": {
+          "texto": "Ano magro, salário atrasado e um patrão que, no fim, lembrou de quem ficou.",
+          "efeitos": { "felicidade": -1, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Ir para a cidade",
+        "resumo": "trocou o campo pela cidade depois da quebra de safra",
+        "resultado": {
+          "texto": "Você trocou o pó da estrada pelo pó da cidade. O salário é menor, a chuva não manda mais em você.",
+          "efeitos": { "renda": { "definir": 22000 }, "eu.setor": { "definir": "servicos" }, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "clinica_particular_contrata",
+    "idade": [22, 64],
+    "condicoes": { "setor": "saude", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 3,
+    "texto": "Com a economia aquecida, uma rede de clínicas particulares está contratando e paga o dobro do hospital. A consulta lá dura doze minutos, com cronômetro.",
+    "resumo": "foi chamad{o|a} para trabalhar numa rede de clínicas particulares",
+    "escolhas": [
+      {
+        "texto": "Ir para a clínica",
+        "resumo": "trocou o hospital por uma rede de clínicas particulares",
+        "resultado": {
+          "texto": "Salário melhor, ar-condicionado e uma fila de pacientes que você mal consegue olhar nos olhos.",
+          "efeitos": { "rendaFator": 1.35, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer as duas coisas",
+        "resumo": "passou a dar plantão no hospital e na clínica",
+        "resultado": {
+          "texto": "Plantão de dia, clínica à noite, café na veia. O dinheiro entrou; o sono saiu.",
+          "efeitos": { "rendaFator": 1.2, "saude": -2, "marcas": ["workaholic"] }
+        }
+      },
+      {
+        "texto": "Ficar no hospital",
+        "resumo": "ficou no hospital mesmo ganhando menos",
+        "resultado": {
+          "texto": "Você ficou onde os pacientes precisam mais. O salário não aumentou; o respeito da equipe, sim.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cursinho_paga_bem",
+    "idade": [22, 64],
+    "condicoes": { "setor": "educacao", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 3,
+    "texto": "Um cursinho pré-vestibular quer você para dar aulas à noite: paga por hora o que a escola paga por semana. Os alunos chamam o professor pelo apelido e o apelido aparece no outdoor.",
+    "resumo": "foi chamad{o|a} para dar aulas num cursinho",
+    "escolhas": [
+      {
+        "texto": "Aceitar as aulas da noite",
+        "resumo": "passou a dar aulas num cursinho à noite",
+        "resultado": {
+          "texto": "Você virou \"{nome} da Química\" num outdoor da avenida. O salário dobrou e o tempo pela metade.",
+          "efeitos": { "renda": 18000, "saude": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Abrir um curso por conta própria",
+        "resumo": "abriu um curso preparatório por conta própria",
+        "efeitos": { "dinheiro": -5000 },
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Uma sala alugada, um quadro branco e vinte alunos no primeiro mês. No segundo, lista de espera.",
+          "resumo": "abriu um curso preparatório que deu certo",
+          "efeitos": { "renda": 25000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Vieram seis alunos, três pagaram. O quadro branco virou lousa de recados na sua cozinha.",
+          "resumo": "abriu um curso preparatório que não vingou",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Recusar e ter vida",
+        "resumo": "recusou o cursinho para ter tempo livre",
+        "resultado": {
+          "texto": "Você disse não e foi ver o pôr do sol numa terça-feira. Pareceu luxo; era só terça.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ferias_coletivas",
+    "idade": [18, 64],
+    "condicoes": { "setor": "industria", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "A fábrica deu férias coletivas de um mês, depois de dois. No terceiro, veio a proposta do RH: reduzir jornada e salário, ou entrar na lista do programa de demissão voluntária.",
+    "resumo": "viu a fábrica parar na recessão",
+    "escolhas": [
+      {
+        "texto": "Aceitar a redução",
+        "resumo": "aceitou reduzir jornada e salário na fábrica",
+        "resultado": {
+          "texto": "Menos horas, menos salário e mais tempo para ver o noticiário dizer que a economia vai melhorar.",
+          "efeitos": { "rendaFator": 0.75, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Pegar a demissão voluntária",
+        "resumo": "pegou a demissão voluntária da fábrica",
+        "resultado": {
+          "texto": "O acordo pagou um bom dinheiro de uma vez. Agora o desafio é o que fazer com ele e com as segundas-feiras.",
+          "efeitos": { "dinheiro": 30000, "renda": { "definir": 0 }, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Arriscar e não assinar nada",
+        "resumo": "não assinou nada e esperou a fábrica voltar",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "A fábrica voltou a rodar no quarto mês. Quem ficou ganhou o turno de quem saiu.",
+          "resumo": "segurou o emprego na fábrica durante a recessão",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A lista saiu numa segunda-feira, e o seu nome estava nela, sem o bônus de quem saiu antes.",
+          "resumo": "foi demitid{o|a} da fábrica na recessão",
+          "efeitos": { "renda": { "definir": 0 }, "dinheiro": 8000, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "frete_sumiu",
+    "idade": [18, 64],
+    "condicoes": { "setor": "transporte", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Com a economia parada, o frete sumiu e o diesel subiu. [O caminhão parado custa mais que o caminhão andando.|Os aplicativos baixaram a tarifa de novo.|O posto da estrada aceita fiado só de quem é conhecido.]",
+    "resumo": "viu o trabalho no transporte minguar na recessão",
+    "escolhas": [
+      {
+        "texto": "Rodar mais horas",
+        "resumo": "passou a rodar mais horas para ganhar o mesmo",
+        "resultado": {
+          "texto": "Madrugada, estrada e café de posto. O dinheiro fechou o mês; as costas, não.",
+          "efeitos": { "saude": -3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Aceitar ganhar menos",
+        "resumo": "aceitou ganhar menos no transporte",
+        "resultado": {
+          "texto": "Você cortou a viagem de férias e o churrasco de domingo. O caminhão continua sendo seu, pelo menos.",
+          "efeitos": { "rendaFator": 0.8, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Mudar de ramo",
+        "resumo": "largou o transporte e mudou de ramo",
+        "resultado": {
+          "texto": "Você vendeu a carteira de clientes e foi trabalhar num depósito de material de construção. Menos estrada, menos dinheiro, mais jantar em casa.",
+          "efeitos": { "renda": { "definir": 26000 }, "eu.setor": { "definir": "comercio" }, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "acoes_da_startup",
+    "idade": [22, 64],
+    "condicoes": {
+      "setor": "tecnologia",
+      "semMarcas": ["aposentado"],
+      "marcas": ["pais.expansao"],
+      "renda": { "min": 30000 }
+    },
+    "peso": 3,
+    "texto": "A empresa em que você trabalha foi comprada por um grupo estrangeiro, e as opções de ações que vinham no contrato viraram dinheiro de verdade. O grupo de mensagens do time virou uma festa de figurinhas.",
+    "resumo": "viu as ações da empresa virarem dinheiro",
+    "escolhas": [
+      {
+        "texto": "Vender tudo agora",
+        "resumo": "vendeu as ações da empresa na compra",
+        "resultado": {
+          "texto": "Você vendeu no dia e o dinheiro caiu na conta antes de você entender a planilha.",
+          "efeitos": { "dinheiro": 60000, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Segurar para valorizar",
+        "resumo": "segurou as ações da empresa para valorizar",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O grupo estrangeiro abriu capital na bolsa e as suas ações triplicaram. Você comprou um apartamento sem financiamento, coisa que nem sabia que existia.",
+          "resumo": "ficou rico{|a} com as ações da empresa",
+          "efeitos": { "dinheiro": 180000, "felicidade": 6 }
+        },
+        "fracasso": {
+          "texto": "O grupo estrangeiro reestruturou tudo e as ações viraram pó. Ficou a caneca com o logo.",
+          "resumo": "viu as ações da empresa virarem pó",
+          "efeitos": { "dinheiro": 5000, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festival_lotado",
+    "idade": [20, 64],
+    "condicoes": { "setor": "cultura", "semMarcas": ["aposentado"], "marcas": ["pais.expansao"] },
+    "peso": 3,
+    "texto": "Com o país crescendo, todo festival quer atração. Você foi chamad{o|a} para [um festival de inverno na serra|uma turnê pelo interior|abrir o show de uma banda famosa] e o telefone não para.",
+    "resumo": "teve a agenda cheia de shows na expansão",
+    "escolhas": [
+      {
+        "texto": "Aceitar tudo que aparecer",
+        "resumo": "aceitou todos os shows da temporada",
+        "resultado": {
+          "texto": "Trinta cidades em quarenta dias. Você voltou com dinheiro, fama no interior e uma rouquidão que durou o inverno.",
+          "efeitos": { "dinheiro": 25000, "saude": -2, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Escolher a dedo",
+        "resumo": "escolheu a dedo os shows da temporada",
+        "resultado": {
+          "texto": "Poucos shows, todos bons. O público cantou junto, e você lembrou por que começou.",
+          "efeitos": { "dinheiro": 8000, "felicidade": 4, "aparencia": 1 }
+        }
+      },
+      {
+        "texto": "Gravar um disco com o dinheiro",
+        "resumo": "gravou um disco com o dinheiro dos shows",
+        "efeitos": { "dinheiro": -10000 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "O disco pegou: tocou na rádio, virou trilha de novela e encheu a agenda do ano seguinte.",
+          "resumo": "gravou um disco que pegou",
+          "efeitos": { "renda": 20000, "felicidade": 5 }
+        },
+        "fracasso": {
+          "texto": "O disco saiu bonito e ninguém ouviu. Você ainda tem duzentas cópias na garagem.",
+          "resumo": "gravou um disco que ninguém ouviu",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "clientes_sumiram",
+    "idade": [18, 64],
+    "condicoes": { "setor": "servicos", "semMarcas": ["aposentado"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "peso": 3,
+    "texto": "Na crise, os clientes cortaram primeiro o que dá para fazer em casa: [o salão|a academia|o restaurante|o estúdio de unhas] está às moscas e o aluguel, em dia só por teimosia.",
+    "resumo": "viu os clientes sumirem na recessão",
+    "escolhas": [
+      {
+        "texto": "Baixar o preço",
+        "resumo": "baixou o preço para segurar os clientes",
+        "resultado": {
+          "texto": "Os clientes voltaram, pagando menos. Você trabalha o mesmo e ganha menos, mas pelo menos trabalha.",
+          "efeitos": { "rendaFator": 0.85, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Atender em domicílio",
+        "resumo": "passou a atender os clientes em casa",
+        "resultado": {
+          "texto": "Você virou especialista em trânsito e em elevador de serviço. Os clientes adoraram; as suas pernas, nem tanto.",
+          "efeitos": { "rendaFator": 0.95, "saude": -1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer entrega nas horas vagas",
+        "resumo": "fez entregas nas horas vagas para fechar as contas",
+        "resultado": {
+          "texto": "Nos intervalos, bicicleta e mochila térmica. A conta fechou; o corpo reclamou.",
+          "efeitos": { "dinheiro": 6000, "saude": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reajuste_dos_servidores",
+    "idade": [22, 64],
+    "condicoes": { "marcas": ["servidor", "pais.expansao"], "semMarcas": ["aposentado"] },
+    "peso": 3,
+    "texto": "Com a arrecadação em alta, saiu o reajuste dos servidores, depois de [quatro|seis|oito] anos de salário congelado. O grupo da repartição comemorou como final de campeonato.",
+    "resumo": "recebeu o reajuste dos servidores",
+    "escolhas": [
+      {
+        "texto": "Comemorar e gastar",
+        "resumo": "comemorou o reajuste trocando de carro",
+        "resultado": {
+          "texto": "Carro novo na garagem e uma prestação nova na planilha. O reajuste durou dois meses; a prestação, quatro anos.",
+          "efeitos": { "rendaFator": 1.12, "custo": 6000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Guardar a diferença",
+        "resumo": "guardou a diferença do reajuste",
+        "resultado": {
+          "texto": "Você fingiu que o reajuste não existia e pôs a diferença para render. Daqui a dez anos, vai agradecer a si mesm{o|a}.",
+          "efeitos": { "rendaFator": 1.12, "investir": 8000, "felicidade": 1 }
+        }
+      }
+    ]
+  }
+]

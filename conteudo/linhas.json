@@ -499,5 +499,85 @@
     "idade": [18, 50],
     "texto": "Colou o edital na parede do quarto e riscou cada matéria que vencia, como quem conta os dias de uma pena.",
     "condicoes": { "marcas": ["concurseiro"] }
+  },
+  {
+    "idade": [18, 24],
+    "texto": "Passou o ano entre [aula de anatomia|estágio no posto de saúde|prova de farmacologia] e decorou o nome de todos os ossos da mão.",
+    "condicoes": { "curso": "saude", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [18, 24],
+    "texto": "Passou o ano [programando de madrugada|caçando um ponto e vírgula|explicando para a família o que é back-end].",
+    "condicoes": { "curso": "tecnologia", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [18, 24],
+    "texto": "Deu a primeira aula de estágio e voltou para casa [rouc{o|a} e feliz|com um desenho de um aluno|achando que talvez fosse isso mesmo].",
+    "condicoes": { "curso": "educacao", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [18, 40],
+    "texto": "Fez [trabalho em grupo|estudo de caso|apresentação de slides] sobre uma empresa que faliu no mesmo semestre.",
+    "condicoes": { "curso": "negocios", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [18, 25],
+    "texto": "Reprovou em cálculo [uma vez|duas vezes|de novo] e passou a respeitar profundamente quem passou de primeira.",
+    "condicoes": { "curso": "engenharia", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [18, 25],
+    "texto": "Editou [um curta|um clipe|um documentário] com o notebook pegando fogo e a nota mais alta da turma.",
+    "condicoes": { "curso": "artes", "marcas": ["cursando"] }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "No almoço de família, alguém pediu receita de remédio e você [explicou pela décima vez que não é assim|receitou chá e repouso|só suspirou].",
+    "condicoes": { "marcas": ["medicina"] }
+  },
+  {
+    "idade": [10, 100],
+    "texto": "O jornal da noite só fala de crise. Em casa, [o feijão virou assunto|desligaram o ar-condicionado|a TV ficou no mudo durante o jornal].",
+    "condicoes": { "marcas": ["pais.crise"] }
+  },
+  {
+    "idade": [18, 100],
+    "texto": "Com a recessão, [o restaurante do bairro fechou|a vizinha voltou a vender bolo|o preço do ônibus subiu e o salário não].",
+    "condicoes": { "marcas": ["pais.recessao"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "Com a economia aquecida, [todo mundo que você conhece trocou de emprego|abriu uma loja nova por semana no bairro|o trânsito piorou, sinal de que tem gente indo trabalhar].",
+    "condicoes": { "marcas": ["pais.expansao"] }
+  },
+  {
+    "idade": [20, 64],
+    "texto": "Mais um ano de [plantão|corredor cheio|ronda de madrugada]. O hospital funciona porque gente como você não falta.",
+    "condicoes": { "setor": "saude", "semMarcas": ["aposentado"] }
+  },
+  {
+    "idade": [20, 64],
+    "texto": "Corrigiu [cento e vinte provas|redação até de madrugada|trabalho copiado da internet] e ainda achou graça.",
+    "condicoes": { "setor": "educacao", "semMarcas": ["aposentado"] }
+  },
+  {
+    "idade": [20, 64],
+    "texto": "Passou o ano [em reunião de alinhamento|consertando um bug que você mesm{o|a} criou|explicando que não dá para fazer em um dia].",
+    "condicoes": { "setor": "tecnologia", "semMarcas": ["aposentado"] }
+  },
+  {
+    "idade": [20, 64],
+    "texto": "Rodou [quarenta mil quilômetros|a cidade inteira|todo bairro com nome de santo] e conhece cada buraco pelo apelido.",
+    "condicoes": { "setor": "transporte", "semMarcas": ["aposentado"] }
+  },
+  {
+    "idade": [25, 95],
+    "texto": "[O condomínio novo tem academia, piscina e um síndico que manda áudio de cinco minutos.|Você aprendeu o nome de três vinhos e a pronúncia de nenhum.|A fatura do cartão chegou com mais páginas que o contrato do apartamento.|Os amigos novos falam de viagem; os antigos, de boleto. Você fala dos dois, em grupos diferentes.]",
+    "condicoes": { "marcas": ["padrao_alto"] }
+  },
+  {
+    "idade": [25, 70],
+    "texto": "Passou na frente da obra do seu apartamento: [o quinto andar ganhou janelas|a placa da construtora trocou de cor|a grua estava parada, de novo|alguém pendurou uma faixa de \"vende-se\" na maquete].",
+    "condicoes": { "marcas": ["apartamento_na_planta"] }
   }
 ]
