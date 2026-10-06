@@ -113,6 +113,7 @@ function compor(p: Pincel, r: ResumoVida, endereco: string): number {
   y = paragrafo(p, r.nomeCompleto, y, `800 68px ${FONTE}`, COR.texto, 78);
   const meta = `${r.anoNascimento}–${r.anoFinal} · ${anos(r.idade)} · ${r.cidade}, ${r.uf}`;
   y = paragrafo(p, meta, y + 4, `500 34px ${FONTE}`, COR.suave, 46);
+  if (r.origem) y = paragrafo(p, `Nasceu numa ${r.origem}.`, y, `500 34px ${FONTE}`, COR.suave, 46);
   if (r.causa) y = paragrafo(p, `Morreu ${r.causa}.`, y + 18, `italic 400 34px ${FONTE}`, COR.texto, 46);
 
   // números
@@ -120,7 +121,7 @@ function compor(p: Pincel, r: ResumoVida, endereco: string): number {
   const caixas = [
     ['Felicidade média', String(Math.round(r.felicidadeMedia))],
     ['Patrimônio', formatarDinheiro(r.patrimonio)],
-    ['Saúde no fim', String(r.atributos.saude)],
+    ['Saúde no fim', String(r.saude)],
   ];
   const largCaixa = (UTIL - 2 * 20) / 3;
   caixas.forEach(([rotulo, valor], i) => {
@@ -155,7 +156,7 @@ function compor(p: Pincel, r: ResumoVida, endereco: string): number {
   for (const ponto of r.pontos) {
     const topo = y - 44;
     ctx.font = `700 34px ${FONTE}`;
-    const de = quebrar(ctx, `Aos ${ponto.idade}, você ${ponto.escolha}`, UTIL - 56);
+    const de = quebrar(ctx, `Aos ${ponto.idade}, ${ponto.causa}`, UTIL - 56);
     ctx.font = `400 32px ${FONTE}`;
     const para = quebrar(ctx, `→ aos ${ponto.consequenciaIdade}, ${ponto.consequencia}`, UTIL - 56);
     const altura = de.length * 44 + para.length * 42 + 44;

@@ -160,6 +160,13 @@ export interface ResumoVida {
   epitafio: string;
 }
 
+/** "família pobre e acolhedora", "classe média, família religiosa". */
+export function descreverOrigem(classe: string | undefined, familia: string | undefined): string {
+  if (!classe || !familia) return classe ?? familia ?? '';
+  const tipo = familia.replace(/^família /, '');
+  return classe.startsWith('família ') ? `${classe} e ${tipo}` : `${classe}, família ${tipo}`;
+}
+
 export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
   const pontos = pontosDeVirada(e);
   const ctx = { ...contexto(e), rng: criarRng(misturar(e.semente, 0x5eed)) };
@@ -192,7 +199,7 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     patrimonio: patrimonioDe(eu),
     felicidadeMedia: e.idade > 0 ? e.somaFelicidade / anos : (eu.n['felicidade'] ?? 0),
     eventos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'acao').length,
-    origem: [classe?.nome, familia?.nome].filter(Boolean).join(', '),
+    origem: descreverOrigem(classe?.nome, familia?.nome),
     pontos,
     epitafio: renderizar(modelo, ctx),
   };

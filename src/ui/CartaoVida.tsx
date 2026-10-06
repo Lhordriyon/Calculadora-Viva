@@ -55,6 +55,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
         <p class="meta">
           {resumo.anoNascimento}–{resumo.anoFinal} · {anos(resumo.idade)} · {resumo.cidade}, {resumo.uf}
         </p>
+        {resumo.origem && <p class="meta">Nasceu numa {resumo.origem}.</p>}
         {resumo.causa && <p class="causa">Morreu {resumo.causa}.</p>}
         <div class="numeros">
           <div>
@@ -72,7 +73,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
           {resumo.pontos.map((p) => (
             <li key={p.origemId}>
               <div class="de">
-                Aos {p.idade}, você {p.escolha}
+                Aos {p.idade}, {p.causa}
               </div>
               <div class="para">
                 → aos {p.consequenciaIdade}, {p.consequencia}

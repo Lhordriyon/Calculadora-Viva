@@ -22,7 +22,7 @@ export interface AcaoDisponivel {
   ator: string | undefined;
   /** O que aparece no botão ("cursinho do ENEM"). */
   rotulo: string;
-  /** Nunca feita, nem nesta vida nem nas anteriores. */
+  /** Nunca feita, nem nesta vida nem nas anteriores (a partir da segunda vida). */
   novo: boolean;
 }
 
@@ -77,7 +77,8 @@ export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJo
     ...a,
     // O rótulo não pode gastar o sorteio da vida: usa um gerador à parte (e o validador proíbe alternâncias nele).
     rotulo: renderizar(a.s.rotulo ?? a.verbo, { ...contexto(e, { ator: a.ator }), rng: criarRng(0) }),
-    novo: !memoria?.acoes[a.s.id] && !e.vistos[instanciaDe(a.s, a.ator)],
+    // Na primeira vida tudo é novo: o selo só aparece depois, para o que nunca foi feito.
+    novo: (memoria?.vidas ?? 0) > 0 && !memoria?.acoes[a.s.id] && !e.vistos[instanciaDe(a.s, a.ator)],
   }));
 }
 
@@ -86,5 +87,6 @@ export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo): Entrada {
   if (!e.vivo || e.pendente) throw new Error('Agora não dá para agir.');
   const a = melhorAcao(e, c, verbo);
   if (!a) throw new Error(`Não dá para ${verbo} agora.`);
-  return aplicarStorylet(e, c, a.s, a.ator, 'acao', { causas: causasDe(a.s.condicoes, e, a.ator) });
+  const repeticao = e.vistos[instanciaDe(a.s, a.ator)]?.at(-1) === e.idade - 1;
+  return aplicarStorylet(e, c, a.s, a.ator, 'acao', { causas: causasDe(a.s.condicoes, e, a.ator), repeticao });
 }

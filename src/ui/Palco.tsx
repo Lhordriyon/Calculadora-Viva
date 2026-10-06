@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
+import { NOMES_VERBO, type AcaoDisponivel } from '../motor/acoes.ts';
+import type { Verbo } from '../motor/constantes.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { anos } from './formato.ts';
 
@@ -7,16 +9,18 @@ const CARENCIA_MS = 450;
 
 interface Props {
   vida: EstadoVida;
+  acoes: AcaoDisponivel[];
   aoAvancar: () => void;
+  aoAgir: (verbo: Verbo) => void;
   aoEscolher: (indice: number) => void;
   aoVerCartao: () => void;
   aoNovaVida: () => void;
 }
 
-export function Palco({ vida, aoAvancar, aoEscolher, aoVerCartao, aoNovaVida }: Props) {
+export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida }: Props) {
   const p = vida.pendente;
   const apareceuEm = useRef(0);
-  const chave = p ? `${vida.idade}:${p.eventoId}` : '';
+  const chave = p ? `${vida.idade}:${p.instancia}` : '';
   useEffect(() => {
     apareceuEm.current = performance.now();
   }, [chave]);
@@ -56,8 +60,26 @@ export function Palco({ vida, aoAvancar, aoEscolher, aoVerCartao, aoNovaVida }: 
   if (vida.vivo) {
     return (
       <div class="palco">
-        <button class="botao grande" type="button" onClick={aoAvancar}>
-          +1 ano <small>fazer {vida.idade + 1}</small>
+        {acoes.length > 0 && (
+          <section class="ficha" aria-labelledby="titulo-ficha">
+            <p class="quando" id="titulo-ficha">
+              Aos {vida.idade}, o que você faz com este ano?
+            </p>
+            <div class="verbos">
+              {acoes.map((a) => (
+                <button class="verbo" type="button" key={a.verbo} onClick={() => aoAgir(a.verbo)}>
+                  <b>
+                    {NOMES_VERBO[a.verbo]}
+                    {a.novo && <span class="novo">novo</span>}
+                  </b>
+                  <small>{a.rotulo}</small>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+        <button class={`botao grande${acoes.length > 0 ? ' secundario' : ''}`} type="button" onClick={aoAvancar}>
+          +1 ano <small>{acoes.length > 0 ? 'só viver' : `fazer ${vida.idade + 1}`}</small>
         </button>
       </div>
     );

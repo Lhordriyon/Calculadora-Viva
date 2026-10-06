@@ -80,6 +80,8 @@ function tipoEntradaDe(s: Storylet): TipoEntrada {
 export interface Extras {
   causas?: number[];
   inflacao?: number | undefined;
+  /** A mesma ação do ano passado: o texto vira uma linha curta ("Estudou para as provas, mais um ano."). */
+  repeticao?: boolean;
 }
 
 /**
@@ -100,7 +102,9 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
   aplicarEfeitos(e, c, s.efeitos, ef);
   const op = { ator, valores: ef.valores, trechos: s.trechos };
-  entrada.texto = capitalizar(renderizar(s.texto, contexto(e, op)));
+  entrada.texto = extras.repeticao
+    ? `${capitalizar(renderizar(s.resumo, contexto(e, op)))}, mais um ano.`
+    : capitalizar(renderizar(s.texto, contexto(e, op)));
   let resumo = s.resumo;
   let morte = s.efeitos?.morte;
   if (s.teste) {

@@ -26,6 +26,9 @@ export interface Chip {
 /** A mordida da inflação aparece só quando pesa e no máximo de tantos em tantos anos. */
 const INFLACAO_MINIMA = 300;
 const INFLACAO_INTERVALO = 5;
+/** Vínculo que mexe menos que isso não vira chip (o ano a ano das regras fica escondido). */
+const VINCULO_MINIMO = 3;
+const PAPEIS_COM_VINCULO = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'];
 
 /** Ids das entradas que mostram a inflação: uma a cada INFLACAO_INTERVALO anos, no máximo. */
 export function avisosDeInflacao(historico: Entrada[]): Set<number> {
@@ -48,25 +51,38 @@ function dinheiro(n: number): string {
   return formatarDinheiro(Math.abs(n));
 }
 
+/** Soma as variações numéricas de uma entrada por caminho ("eu.saude", "mae.vinculo"). */
+export function variacoes(h: Entrada): Map<string, number> {
+  const d = new Map<string, number>();
+  for (const m of h.mudancas ?? []) if (m.d !== undefined) d.set(m.c, (d.get(m.c) ?? 0) + m.d);
+  return d;
+}
+
 /** Os efeitos visíveis de uma entrada, para os chips da linha do tempo. */
-export function chipsDe(h: Entrada, mostrarInflacao = false): Chip[] {
+export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefined, mostrarInflacao = false): Chip[] {
   const chips: Chip[] = [];
-  const d = h.deltas ?? {};
+  const d = variacoes(h);
   for (const a of Object.keys(NOMES) as Atributo[]) {
-    const v = Math.round(d[a] ?? 0);
+    const v = Math.round(d.get(`eu.${a}`) ?? 0);
     if (v !== 0) chips.push({ texto: `${sinal(v)}${Math.abs(v)} ${NOMES[a]}`, cor: CORES[a] });
   }
-  if (d.dinheiro && Math.abs(d.dinheiro) >= 1) {
-    chips.push({ texto: `${sinal(d.dinheiro)}${dinheiro(d.dinheiro)}`, cor: 'var(--dinheiro)', ruim: d.dinheiro < 0 });
-  }
-  if (d.investido && Math.abs(d.investido) >= 1) {
-    chips.push({ texto: `${d.investido > 0 ? 'investiu' : 'resgatou'} ${dinheiro(d.investido)}`, cor: 'var(--dinheiro)' });
-  }
-  if (d.divida && Math.abs(d.divida) >= 1) {
-    chips.push({ texto: `dívida ${sinal(d.divida)}${dinheiro(d.divida)}`, ruim: d.divida > 0, cor: 'var(--dinheiro)' });
-  }
-  if (d.renda && Math.abs(d.renda) >= 1) {
-    chips.push({ texto: `renda ${sinal(d.renda)}${dinheiro(d.renda)}/mês`, cor: 'var(--dinheiro)', ruim: d.renda < 0 });
+  const caixa = d.get('eu.dinheiro') ?? 0;
+  const investido = d.get('eu.investido') ?? 0;
+  const divida = d.get('eu.divida') ?? 0;
+  // Investir só troca o dinheiro de lugar: aparece como "investiu", sem o "−R$" do caixa.
+  const soInvestiu = investido >= 1 && Math.abs(caixa + investido) < 1;
+  if (!soInvestiu && Math.abs(caixa) >= 1) chips.push({ texto: `${sinal(caixa)}${dinheiro(caixa)}`, cor: 'var(--dinheiro)', ruim: caixa < 0 });
+  if (Math.abs(investido) >= 1) chips.push({ texto: `${investido > 0 ? 'investiu' : 'resgatou'} ${dinheiro(investido)}`, cor: 'var(--dinheiro)' });
+  if (Math.abs(divida) >= 1) chips.push({ texto: `dívida ${sinal(divida)}${dinheiro(divida)}`, ruim: divida > 0, cor: 'var(--dinheiro)' });
+  const renda = d.get('eu.renda') ?? 0;
+  if (Math.abs(renda) >= 1) chips.push({ texto: `renda ${sinal(renda)}${dinheiro(renda / 12)}/mês`, cor: 'var(--dinheiro)', ruim: renda < 0 });
+  const custo = d.get('eu.custo') ?? 0;
+  if (Math.abs(custo) >= 1) chips.push({ texto: `gastos ${sinal(custo)}${dinheiro(custo / 12)}/mês`, cor: 'var(--dinheiro)', ruim: custo > 0 });
+  for (const papel of PAPEIS_COM_VINCULO) {
+    const v = Math.round(d.get(`${papel}.vinculo`) ?? 0);
+    // O amor pode mudar de pessoa ao longo da vida: o chip fala do casal, não de um nome.
+    const quem = papel === 'amor' ? 'do casal' : nomeDe(papel) ? `com ${nomeDe(papel)}` : '';
+    if (Math.abs(v) >= VINCULO_MINIMO && quem) chips.push({ texto: `vínculo ${quem} ${sinal(v)}${Math.abs(v)}`, cor: 'var(--vinculo)', ruim: v < 0 });
   }
   if (mostrarInflacao && h.inflacao) chips.push({ texto: `a inflação comeu ${dinheiro(h.inflacao)} do dinheiro parado`, neutro: true });
   return chips;
