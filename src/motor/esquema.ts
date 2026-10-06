@@ -404,7 +404,7 @@ export const Mundo = z.strictObject({
   tracos: z.array(Traco).min(6),
   tracosJogador: z.array(TracoJogador).min(4),
   /** Como morre um personagem ("dormindo", "depois de uma internação"): completa "morreu aos N anos, ...". */
-  mortesPersonagem: z.array(z.string()).min(4),
+  mortesPersonagem: z.array(z.strictObject({ texto: z.string(), idade: FaixaIdade.optional() })).min(4),
   /** O que as regras anuais dos personagens contam na linha do tempo (adoeceu, perdeu o emprego...). */
   acontecimentos: z.record(
     z.enum(GATILHOS),

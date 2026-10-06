@@ -353,6 +353,7 @@
     "ator": ["mae", "pai", "avo"],
     "preferir": "-ator.vinculo",
     "idade": [12, 110],
+    "condicoes": { "semMarcas": ["ator.ausente"] },
     "texto": "Você passou um fim de semana com {ator}. [Teve café com bolo e conversa até tarde.|Ouviu as mesmas histórias de sempre, e riu de todas.|Consertou o chuveiro e ganhou marmita para a semana.]",
     "resumo": "passou um tempo com a família",
     "efeitos": { "ator.vinculo": 7, "felicidade": 0.4, "dinheiro": -150 }
@@ -365,7 +366,7 @@
     "ator": ["mae", "pai", "avo"],
     "preferir": "-ator.vinculo",
     "idade": [18, 110],
-    "condicoes": { "marcas": ["mudou_sp"] },
+    "condicoes": { "marcas": ["mudou_sp"], "semMarcas": ["ator.ausente"] },
     "texto": "Você juntou dinheiro, pegou [um ônibus de vinte horas|um avião na promoção|carona com um primo] e foi ver {ator} em {cidade}. [Chegou cansad{o|a} e foi recebid{o|a} com comida demais.|Ficou uma semana e voltou com dois quilos a mais.]",
     "resumo": "atravessou o país para ver a família",
     "efeitos": { "ator.vinculo": 12, "felicidade": 0.75, "dinheiro": -1800 }

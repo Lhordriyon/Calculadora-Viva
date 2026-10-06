@@ -636,13 +636,16 @@
     }
   ],
   "mortesPersonagem": [
-    "dormindo, sem incomodar ninguém, do jeito que sempre quis",
-    "depois de uma internação longa num hospital do SUS",
-    "do coração, numa tarde de domingo",
-    "de uma pneumonia que começou como gripe",
-    "de complicações de uma cirurgia que era para ser simples",
-    "num acidente bobo, desses que ninguém espera",
-    "depois de uma doença que levou dois anos e muita paciência"
+    { "texto": "dormindo, sem incomodar ninguém, do jeito que sempre quis", "idade": [70, 120] },
+    { "texto": "depois de uma internação longa num hospital do SUS" },
+    { "texto": "do coração, numa tarde de domingo", "idade": [40, 120] },
+    { "texto": "de uma pneumonia que começou como gripe", "idade": [55, 120] },
+    { "texto": "de complicações de uma cirurgia que era para ser simples", "idade": [18, 120] },
+    { "texto": "num acidente bobo, desses que ninguém espera" },
+    { "texto": "depois de uma doença que levou dois anos e muita paciência", "idade": [12, 120] },
+    { "texto": "de uma doença rara que nenhum médico da cidade soube explicar", "idade": [0, 45] },
+    { "texto": "de uma infecção que começou como uma dor de garganta", "idade": [0, 50] },
+    { "texto": "num acidente de moto voltando do trabalho", "idade": [17, 60] }
   ],
   "acontecimentos": {
     "adoeceu": {

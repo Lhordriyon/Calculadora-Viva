@@ -109,7 +109,10 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
     }
     const risco = papel === 'pet' ? riscoDeMorte(idade * 6, en.n['saude'] ?? 80) : riscoDeMorte(idade, en.n['saude'] ?? 70);
     if (aleatorio(e.rng) < risco) {
-      acontecer(e, c, papel, 'faleceu', (reg, id) => morrerPersonagem(e, papel, reg, id), { como: sortear(e.rng, c.mundo.mortesPersonagem) });
+      // O jeito de morrer combina com a idade (a do bicho conta em anos de gente).
+      const idadeGente = papel === 'pet' ? idade * 6 : idade;
+      const jeitos = c.mundo.mortesPersonagem.filter((m) => !m.idade || (idadeGente >= m.idade[0] && idadeGente <= m.idade[1]));
+      acontecer(e, c, papel, 'faleceu', (reg, id) => morrerPersonagem(e, papel, reg, id), { como: sortear(e.rng, jeitos).texto });
       continue;
     }
 

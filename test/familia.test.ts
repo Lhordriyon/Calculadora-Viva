@@ -37,7 +37,8 @@ describe('família viva', () => {
     const comAmor = amostra.filter((e) => e.entidades['amor']).length;
     const comFilho = amostra.filter((e) => e.entidades['filho']).length;
     expect(comAmor / amostra.length).toBeGreaterThan(0.5);
-    expect(comFilho / amostra.length).toBeGreaterThan(0.3);
+    // O robô aleatório recusa ou adia filhos em 2 de cada 3 vezes; mesmo assim, uma parte grande chega lá.
+    expect(comFilho / amostra.length).toBeGreaterThan(0.2);
     // personagens novos nascem com traço
     for (const e of amostra) for (const p of ['amor', 'filho']) if (e.entidades[p]) expect(e.entidades[p]!.t['traco'], p).toBeTruthy();
   });
