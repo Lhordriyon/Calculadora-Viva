@@ -15,7 +15,12 @@
         "resumo": "começou a trabalhar de carteira assinada no telemarketing",
         "resultado": {
           "texto": "Carteira assinada, vale-refeição e um fone que aperta a orelha oito horas por dia.",
-          "efeitos": { "renda": { "definir": 26000 }, "felicidade": -2, "marcas": ["clt"] }
+          "efeitos": {
+            "renda": { "definir": 26000 },
+            "felicidade": -2,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "servicos" }
+          }
         }
       },
       {
@@ -23,7 +28,12 @@
         "resumo": "virou entregador{|a} de aplicativo",
         "resultado": {
           "texto": "Liberdade de horário, chuva na cara e uma bag térmica nas costas. O patrão é um algoritmo.",
-          "efeitos": { "renda": { "definir": 32000 }, "felicidade": 1, "marcas": ["entregador"] }
+          "efeitos": {
+            "renda": { "definir": 32000 },
+            "felicidade": 1,
+            "marcas": ["entregador"],
+            "eu.setor": { "definir": "transporte" }
+          }
         }
       },
       {
@@ -53,71 +63,9 @@
             "felicidade": -1,
             "qualidades": { "balcao": 1 },
             "mae.vinculo": 3,
-            "pai.vinculo": 3
+            "pai.vinculo": 3,
+            "eu.setor": { "definir": "comercio" }
           }
-        }
-      }
-    ]
-  },
-  {
-    "id": "emprego_formado",
-    "idade": [21, 32],
-    "marco": true,
-    "condicoes": {
-      "marcas": ["formado"],
-      "renda": { "max": 15000 },
-      "semMarcas": ["servidor", "empreendedor", "influencer", "profissional", "concurseiro"]
-    },
-    "texto": "Diploma na mão, perfil profissional atualizado e uma foto séria demais. Chegaram propostas, e com elas uma dúvida existencial.",
-    "resumo": "recebeu as primeiras propostas depois do diploma",
-    "escolhas": [
-      {
-        "texto": "Trainee numa multinacional",
-        "resumo": "virou trainee numa multinacional",
-        "resultado": {
-          "texto": "Crachá, escritório aberto e reuniões para marcar reuniões. O salário compensa. Quase sempre.",
-          "efeitos": { "renda": { "definir": 60000 }, "felicidade": -2, "saude": -2, "marcas": ["clt"] }
-        }
-      },
-      {
-        "texto": "Vaga internacional, em inglês",
-        "resumo": "conseguiu uma vaga internacional graças ao inglês",
-        "condicoes": { "marcas": ["fala_ingles"] },
-        "bloqueio": "pedem inglês fluente",
-        "resultado": {
-          "texto": "Reunião às seis da manhã com gente de três fusos horários. O salário também fala inglês.",
-          "efeitos": { "renda": { "definir": 110000 }, "felicidade": 3, "marcas": ["clt"] }
-        }
-      },
-      {
-        "texto": "Startup que paga em ações",
-        "resumo": "apostou numa startup que pagava em ações",
-        "teste": { "chance": 0.25 },
-        "sucesso": {
-          "texto": "A startup foi comprada por uma gigante. Suas ações viraram dinheiro de verdade, com vírgula e tudo.",
-          "resumo": "ficou ric{o|a} com as ações de uma startup",
-          "efeitos": { "dinheiro": 400000, "renda": { "definir": 80000 }, "felicidade": 8 }
-        },
-        "fracasso": {
-          "texto": "A startup fechou em oito meses. Sobrou um moletom com o logotipo e muita história para contar.",
-          "resumo": "trabalhou numa startup que fechou em oito meses",
-          "efeitos": { "renda": { "definir": 30000 }, "felicidade": -3 }
-        }
-      },
-      {
-        "texto": "Seguir carreira de pesquisa",
-        "resumo": "seguiu carreira de pesquisa depois da faculdade",
-        "condicoes": { "marcas": ["pesquisador"] },
-        "bloqueio": "precisa ter feito iniciação científica",
-        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
-        "sucesso": {
-          "texto": "Mestrado, doutorado e um concurso disputado depois, você virou professor{|a} universitári{o|a}.",
-          "resumo": "virou professor{|a} universitári{o|a}",
-          "efeitos": { "renda": { "definir": 90000 }, "inteligencia": 5, "felicidade": 4, "marcas": ["servidor"] }
-        },
-        "fracasso": {
-          "texto": "Mestrado concluído, bolsa encerrada, vagas congeladas. Você virou professor{|a} de cursinho, e {dos bons|das boas}.",
-          "efeitos": { "renda": { "definir": 30000 }, "inteligencia": 4, "marcas": ["clt"] }
         }
       }
     ]
@@ -246,9 +194,9 @@
   {
     "id": "prova_concurso",
     "apenasAgendado": true,
+    "condicoes": { "marcas": ["concurseiro"] },
     "repetivel": true,
     "intervalo": 1,
-    "condicoes": { "marcas": ["concurseiro"] },
     "texto": "[Mais um|Outro|Finalmente o] concurso. Quatrocentos candidatos por vaga e um fiscal com cara de quem odeia barulho de embalagem de bala.",
     "resumo": "prestou concurso público",
     "escolhas": [
@@ -263,13 +211,18 @@
             "renda": { "definir": 75000 },
             "felicidade": 8,
             "removerMarcas": ["concurseiro"],
-            "marcas": ["servidor"]
+            "marcas": ["servidor"],
+            "eu.setor": { "definir": "publico" }
           }
         },
         "fracasso": {
           "texto": "Faltou uma questão. Uma. Você vai lembrar dela para sempre.",
           "resumo": "reprovou no concurso por uma questão",
-          "efeitos": { "felicidade": -5, "agendar": [{ "evento": "prova_concurso", "em": [1, 2] }] }
+          "efeitos": {
+            "felicidade": -5,
+            "agendar": [{ "evento": "prova_concurso", "em": [1, 2] }],
+            "eu.setor": { "definir": "publico" }
+          }
         }
       },
       {
@@ -281,7 +234,8 @@
             "renda": { "definir": 26000 },
             "felicidade": 1,
             "removerMarcas": ["concurseiro"],
-            "marcas": ["clt"]
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "servicos" }
           }
         }
       }
@@ -290,10 +244,10 @@
   {
     "id": "entregador_chuva",
     "idade": [18, 50],
+    "condicoes": { "marcas": ["entregador"] },
     "peso": 4,
     "repetivel": true,
     "intervalo": 8,
-    "condicoes": { "marcas": ["entregador"] },
     "texto": "[Chuva forte|Temporal de verão|Garoa que virou tempestade], pedido com bônus dobrado e a moto pedindo revisão há [três meses|meio ano|tempo demais].",
     "resumo": "pegou um temporal no meio das entregas",
     "escolhas": [
@@ -324,7 +278,12 @@
         "resumo": "largou as entregas por um emprego fixo",
         "resultado": {
           "texto": "Você pendurou a bag e foi trabalhar numa loja. A chuva agora é só paisagem.",
-          "efeitos": { "renda": { "definir": 24000 }, "removerMarcas": ["entregador"], "marcas": ["clt"] }
+          "efeitos": {
+            "renda": { "definir": 24000 },
+            "removerMarcas": ["entregador"],
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "transporte" }
+          }
         }
       }
     ]
@@ -752,8 +711,8 @@
   {
     "id": "mei_negocio",
     "idade": [20, 55],
-    "peso": 4,
     "condicoes": { "marcas": ["vendedor_nato"], "semMarcas": ["empreendedor"] },
+    "peso": 4,
     "texto": "Aquela vontade de vender que você tem desde criança voltou. [Bolo de pote|Marmita fitness|Capinha de celular|Açaí no copo] dá dinheiro, dizem.",
     "resumo": "pensou em abrir o próprio negócio",
     "escolhas": [
@@ -772,7 +731,12 @@
         "sucesso": {
           "texto": "Em seis meses você tinha clientes fiéis, um logotipo feito pelo sobrinho e nenhum fim de semana livre.",
           "resumo": "abriu o próprio negócio e deu certo",
-          "efeitos": { "renda": { "definir": 50000 }, "felicidade": 6, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "renda": { "definir": 50000 },
+            "felicidade": 6,
+            "marcas": ["empreendedor"],
+            "eu.setor": { "definir": "comercio" }
+          }
         },
         "fracasso": {
           "texto": "O negócio não pegou. Sobrou estoque e uma aula prática sobre fluxo de caixa.",
@@ -785,8 +749,8 @@
   {
     "id": "confeitaria_da_vo",
     "idade": [25, 55],
-    "peso": 5,
     "condicoes": { "marcaHa": [{ "marca": "receita_da_vo", "min": 15 }] },
+    "peso": 5,
     "texto": "Num almoço de domingo, alguém prova o bolo de fubá da vó {avo}, feito por você, e decreta: \"isso aqui vendia\".",
     "resumo": "ouviu que o bolo da vó {avo} vendia",
     "escolhas": [
@@ -797,7 +761,12 @@
         "sucesso": {
           "texto": "A Confeitaria da Vó {avo} virou ponto de encontro do bairro. Fila na porta todo sábado.",
           "resumo": "abriu a Confeitaria da Vó {avo}",
-          "efeitos": { "renda": { "definir": 55000 }, "felicidade": 8, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "renda": { "definir": 55000 },
+            "felicidade": 8,
+            "marcas": ["empreendedor"],
+            "eu.setor": { "definir": "comercio" }
+          }
         },
         "fracasso": {
           "texto": "O bolo era ótimo; o ponto, péssimo. Fechou em um ano, cheirando a cravo.",
@@ -851,8 +820,8 @@
   {
     "id": "viralizou",
     "idade": [15, 32],
-    "peso": 5,
     "condicoes": { "marcas": ["criador_conteudo"] },
+    "peso": 5,
     "texto": "Um vídeo seu viralizou: dois milhões de visualizações [de você caindo da bicicleta|explicando matemática com funk|dançando na fila do banco|imitando a vó {avo}].",
     "resumo": "viralizou com um vídeo",
     "escolhas": [
@@ -871,7 +840,12 @@
         "sucesso": {
           "texto": "Publicidade de xampu, convite para festa e uma legião de haters dedicados.",
           "resumo": "virou influencer em tempo integral",
-          "efeitos": { "renda": { "definir": 90000 }, "felicidade": 6, "marcas": ["influencer"] }
+          "efeitos": {
+            "renda": { "definir": 90000 },
+            "felicidade": 6,
+            "marcas": ["influencer"],
+            "eu.setor": { "definir": "cultura" }
+          }
         },
         "fracasso": {
           "texto": "O segundo vídeo flopou. O terceiro também. A internet esquece rápido.",

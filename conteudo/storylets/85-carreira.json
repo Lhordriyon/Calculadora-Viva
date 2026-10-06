@@ -1,0 +1,1443 @@
+[
+  {
+    "id": "curso_nota_alta",
+    "idade": [17, 24],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["cursando"],
+      "marcaHa": [{ "marca": "cursando", "max": 1 }],
+      "curso": "",
+      "inteligencia": { "min": 75 }
+    },
+    "texto": "Com a nota do ENEM, quase toda porta abre. A família tem opinião sobre todas; o mercado, sobre algumas.",
+    "resumo": "escolheu o curso da faculdade",
+    "escolhas": [
+      {
+        "texto": "Medicina",
+        "resumo": "escolheu medicina",
+        "resultado": {
+          "texto": "Seis anos de anatomia, plantão e café de máquina. A família já te chama de doutor{|a} no grupo.",
+          "efeitos": {
+            "inteligencia": 2,
+            "felicidade": -1,
+            "marcas": ["medicina"],
+            "eu.curso": { "definir": "saude" }
+          }
+        }
+      },
+      {
+        "texto": "Engenharia",
+        "resumo": "escolheu engenharia",
+        "resultado": {
+          "texto": "Cálculo 1, cálculo 2 e um professor que reprovou a turma inteira por esporte.",
+          "efeitos": { "inteligencia": 3, "felicidade": -1, "eu.curso": { "definir": "engenharia" } }
+        }
+      },
+      {
+        "texto": "Computação",
+        "resumo": "escolheu computação",
+        "resultado": {
+          "texto": "Você aprendeu a programar, a tomar café às duas da manhã e a explicar para a família que não conserta impressora.",
+          "efeitos": { "inteligencia": 3, "eu.curso": { "definir": "tecnologia" } }
+        }
+      },
+      {
+        "texto": "Direito",
+        "resumo": "escolheu direito",
+        "resultado": {
+          "texto": "Códigos grossos, terno no calor e a certeza de que todo almoço de família vira consulta jurídica.",
+          "efeitos": { "inteligencia": 2, "aparencia": 1, "eu.curso": { "definir": "negocios" } }
+        }
+      }
+    ]
+  },
+  {
+    "id": "curso_nota_media",
+    "idade": [17, 24],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["cursando"],
+      "marcaHa": [{ "marca": "cursando", "max": 1 }],
+      "curso": "",
+      "inteligencia": { "min": 55, "max": 75 }
+    },
+    "texto": "A nota dá para muita coisa, mas não para tudo. Na lista de cursos, cada linha é uma vida diferente.",
+    "resumo": "escolheu o curso da faculdade",
+    "escolhas": [
+      {
+        "texto": "Enfermagem",
+        "resumo": "escolheu enfermagem",
+        "resultado": {
+          "texto": "Estágio no hospital desde o segundo ano. Você viu de tudo e aprendeu a não desmaiar em nenhum.",
+          "efeitos": { "inteligencia": 2, "saude": -1, "eu.curso": { "definir": "saude" } }
+        }
+      },
+      {
+        "texto": "Computação",
+        "resumo": "escolheu computação",
+        "resultado": {
+          "texto": "Metade da turma desistiu no primeiro semestre. Você ficou, por teimosia e por gosto.",
+          "efeitos": { "inteligencia": 3, "felicidade": -1, "eu.curso": { "definir": "tecnologia" } }
+        }
+      },
+      {
+        "texto": "Licenciatura",
+        "resumo": "escolheu ser professor{|a}",
+        "resultado": {
+          "texto": "Você descobriu que gosta de explicar as coisas e que ninguém fica rico fazendo isso. Ficou mesmo assim.",
+          "efeitos": { "inteligencia": 2, "felicidade": 2, "eu.curso": { "definir": "educacao" } }
+        }
+      },
+      {
+        "texto": "Comunicação",
+        "resumo": "escolheu comunicação",
+        "resultado": {
+          "texto": "Você aprendeu a editar vídeo, escrever legenda e defender um trabalho de última hora como se fosse planejado.",
+          "efeitos": { "felicidade": 2, "eu.curso": { "definir": "artes" } }
+        }
+      }
+    ]
+  },
+  {
+    "id": "curso_nota_baixa",
+    "idade": [17, 24],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["cursando"],
+      "marcaHa": [{ "marca": "cursando", "max": 1 }],
+      "curso": "",
+      "inteligencia": { "max": 55 }
+    },
+    "texto": "A nota não ajudou, mas uma faculdade sempre aceita quem paga a matrícula. A escolha agora é de que jeito você quer trabalhar.",
+    "resumo": "escolheu o curso da faculdade",
+    "escolhas": [
+      {
+        "texto": "Administração a distância",
+        "resumo": "escolheu administração a distância",
+        "resultado": {
+          "texto": "Aula gravada no ônibus, prova no polo do bairro. O diploma vem do mesmo jeito.",
+          "efeitos": { "inteligencia": 1, "eu.curso": { "definir": "negocios" } }
+        }
+      },
+      {
+        "texto": "Licenciatura",
+        "resumo": "escolheu ser professor{|a}",
+        "resultado": {
+          "texto": "Você descobriu que gosta de explicar as coisas. A sala de aula também gostou de você.",
+          "efeitos": { "inteligencia": 2, "felicidade": 1, "eu.curso": { "definir": "educacao" } }
+        }
+      },
+      {
+        "texto": "Comunicação",
+        "resumo": "escolheu comunicação",
+        "resultado": {
+          "texto": "Você aprendeu a editar vídeo, escrever legenda e defender um trabalho de última hora como se fosse planejado.",
+          "efeitos": { "felicidade": 2, "eu.curso": { "definir": "artes" } }
+        }
+      },
+      {
+        "texto": "Técnico de enfermagem",
+        "resumo": "escolheu um curso de saúde",
+        "resultado": {
+          "texto": "Curso curto, estágio puxado e emprego garantido em qualquer cidade do país.",
+          "efeitos": { "inteligencia": 1, "saude": -1, "eu.curso": { "definir": "saude" } }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_saude",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "saude"
+    },
+    "texto": "Diploma de saúde na mão. O hospital público tem mais vaga do que gente para cobrir os plantões, e a clínica particular paga por produção.",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Residência médica",
+        "resumo": "entrou na residência médica",
+        "condicoes": { "marcas": ["medicina"] },
+        "bloqueio": "residência é para quem fez medicina",
+        "resultado": {
+          "texto": "Sessenta horas por semana, um salário de residente e a certeza de que a vida vai melhorar em três anos.",
+          "efeitos": {
+            "renda": { "definir": 140000 },
+            "saude": -3,
+            "felicidade": -1,
+            "eu.setor": { "definir": "saude" }
+          }
+        }
+      },
+      {
+        "texto": "Plantões no hospital público",
+        "resumo": "foi trabalhar num hospital público",
+        "resultado": {
+          "texto": "Plantão de doze horas, corredor cheio e uma equipe que vira família. O salário chega; o cansaço também.",
+          "efeitos": {
+            "renda": { "definir": 52000 },
+            "felicidade": -1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "saude" }
+          }
+        }
+      },
+      {
+        "texto": "Concurso da prefeitura",
+        "resumo": "fez concurso para a saúde da prefeitura",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Aprovad{o|a}. Estabilidade, posto de saúde perto de casa e uma pasta de prontuários do tamanho de um armário.",
+          "resumo": "passou num concurso da saúde",
+          "efeitos": {
+            "renda": { "definir": 60000 },
+            "felicidade": 3,
+            "marcas": ["servidor"],
+            "eu.setor": { "definir": "saude" }
+          }
+        },
+        "fracasso": {
+          "texto": "Ficou no cadastro reserva. Enquanto isso, uma clínica popular te contratou para ontem.",
+          "efeitos": { "renda": { "definir": 34000 }, "felicidade": -2, "eu.setor": { "definir": "saude" } }
+        }
+      },
+      {
+        "texto": "Posto de saúde no interior",
+        "resumo": "foi trabalhar num posto de saúde no interior",
+        "resultado": {
+          "texto": "Você virou a pessoa mais importante da cidadezinha, convidad{o|a} para todo batizado. A família reclama da distância.",
+          "efeitos": {
+            "renda": { "definir": 75000 },
+            "felicidade": 2,
+            "mae.vinculo": -3,
+            "eu.setor": { "definir": "saude" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_tecnologia",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "tecnologia"
+    },
+    "texto": "Diploma de computação, e o celular não para: recrutador de banco, de startup e de uma empresa de outro fuso horário.",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Startup que paga em ações",
+        "resumo": "foi trabalhar numa startup que pagava em ações",
+        "teste": { "chance": 0.25 },
+        "sucesso": {
+          "texto": "A startup foi comprada por um gigante. Suas ações viraram um apartamento à vista.",
+          "resumo": "ficou rico com as ações de uma startup",
+          "efeitos": {
+            "dinheiro": 400000,
+            "renda": { "definir": 80000 },
+            "felicidade": 8,
+            "eu.setor": { "definir": "tecnologia" }
+          }
+        },
+        "fracasso": {
+          "texto": "A startup quebrou no segundo ano. Você ficou com a experiência, um moletom e muitas ações de nada.",
+          "resumo": "viu a startup em que trabalhava quebrar",
+          "efeitos": { "renda": { "definir": 30000 }, "felicidade": -3, "eu.setor": { "definir": "tecnologia" } }
+        }
+      },
+      {
+        "texto": "Banco digital",
+        "resumo": "foi trabalhar num banco digital",
+        "resultado": {
+          "texto": "Crachá, mesa de pingue-pongue e reunião de alinhamento todo dia às nove. Paga bem e em dia.",
+          "efeitos": { "renda": { "definir": 72000 }, "marcas": ["clt"], "eu.setor": { "definir": "financas" } }
+        }
+      },
+      {
+        "texto": "Vaga remota de fora, em inglês",
+        "resumo": "foi trabalhar de casa para uma empresa de fora",
+        "condicoes": { "marcas": ["fala_ingles"] },
+        "bloqueio": "a entrevista é toda em inglês",
+        "resultado": {
+          "texto": "Salário em moeda forte, reunião às onze da noite e um vizinho que acha que você não trabalha.",
+          "efeitos": { "renda": { "definir": 130000 }, "felicidade": 2, "eu.setor": { "definir": "tecnologia" } }
+        }
+      },
+      {
+        "texto": "Programar por conta",
+        "resumo": "virou programador{|a} autônom{o|a}",
+        "resultado": {
+          "texto": "Cliente bom, cliente que some e cliente que quer \"um aplicativo igual aquele, só que mais barato\". Dá para viver.",
+          "efeitos": {
+            "renda": { "definir": 45000 },
+            "felicidade": 2,
+            "marcas": ["empreendedor"],
+            "eu.setor": { "definir": "tecnologia" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_educacao",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "educacao"
+    },
+    "texto": "Licenciatura concluída. A escola estadual precisa de professor para ontem; o cursinho também, por um salário de anteontem.",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Contrato na escola estadual",
+        "resumo": "foi dar aula numa escola estadual",
+        "resultado": {
+          "texto": "Quarenta alunos por turma, giz que acaba e um aluno do fundão que te surpreende todo mês.",
+          "efeitos": {
+            "renda": { "definir": 36000 },
+            "felicidade": 1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "educacao" }
+          }
+        }
+      },
+      {
+        "texto": "Concurso para professor",
+        "resumo": "fez concurso para professor",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Aprovad{o|a}. Agora você tem estabilidade, plano de carreira e uma pilha de provas para corrigir no domingo.",
+          "resumo": "passou no concurso para professor",
+          "efeitos": {
+            "renda": { "definir": 52000 },
+            "felicidade": 3,
+            "marcas": ["servidor"],
+            "eu.setor": { "definir": "educacao" }
+          }
+        },
+        "fracasso": {
+          "texto": "Faltou meio ponto. Você foi dar aula com contrato temporário e voltou a estudar para o próximo.",
+          "efeitos": { "renda": { "definir": 30000 }, "felicidade": -2, "eu.setor": { "definir": "educacao" } }
+        }
+      },
+      {
+        "texto": "Cursinho particular",
+        "resumo": "foi dar aula num cursinho",
+        "resultado": {
+          "texto": "Aula show, microfone de lapela e piada pronta sobre a crase. Os alunos te seguem nas redes.",
+          "efeitos": {
+            "renda": { "definir": 48000 },
+            "saude": -1,
+            "felicidade": -1,
+            "eu.setor": { "definir": "educacao" }
+          }
+        }
+      },
+      {
+        "texto": "Abrir um reforço escolar",
+        "resumo": "abriu um reforço escolar",
+        "resultado": {
+          "texto": "Uma sala alugada, um quadro branco e as mães do bairro fazendo propaganda de graça.",
+          "efeitos": {
+            "renda": { "definir": 40000 },
+            "marcas": ["empreendedor"],
+            "eu.setor": { "definir": "educacao" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_negocios",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "negocios"
+    },
+    "texto": "Diploma na mão, perfil profissional atualizado e uma foto séria demais. Chegaram propostas, e com elas uma dúvida existencial.",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Trainee de banco",
+        "resumo": "entrou como trainee num banco",
+        "resultado": {
+          "texto": "Terno, metas e um gerente que fala \"vamos performar\". O salário convence; o resto, nem tanto.",
+          "efeitos": {
+            "renda": { "definir": 66000 },
+            "saude": -2,
+            "felicidade": -1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "financas" }
+          }
+        }
+      },
+      {
+        "texto": "Escritório grande",
+        "resumo": "foi trabalhar num escritório grande",
+        "resultado": {
+          "texto": "Sala com vista, café bom e prazo para ontem. Você aprendeu o caminho de casa no escuro.",
+          "efeitos": {
+            "renda": { "definir": 58000 },
+            "saude": -1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "servicos" }
+          }
+        }
+      },
+      {
+        "texto": "Vaga internacional, em inglês",
+        "resumo": "pegou uma vaga internacional",
+        "condicoes": { "marcas": ["fala_ingles"] },
+        "bloqueio": "a vaga exige inglês fluente",
+        "resultado": {
+          "texto": "Reunião com três fusos horários e um sotaque que você fingia entender. Valeu o salário.",
+          "efeitos": {
+            "renda": { "definir": 110000 },
+            "felicidade": 3,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "financas" }
+          }
+        }
+      },
+      {
+        "texto": "Estudar para concurso",
+        "resumo": "foi estudar para concurso",
+        "resultado": {
+          "texto": "Apostila, cronograma colado na parede e uma frase motivacional no espelho.",
+          "efeitos": {
+            "inteligencia": 2,
+            "felicidade": -1,
+            "marcas": ["concurseiro"],
+            "agendar": [{ "evento": "prova_concurso", "em": [1, 3] }]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_engenharia",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "engenharia"
+    },
+    "texto": "Diploma de engenharia. Uma multinacional, uma construtora e uma mineradora no meio do mato querem conversar.",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Trainee numa multinacional",
+        "resumo": "entrou como trainee numa multinacional",
+        "resultado": {
+          "texto": "Capacete branco, planilha colorida e um programa de trainee com mais siglas que funcionários.",
+          "efeitos": {
+            "renda": { "definir": 64000 },
+            "saude": -2,
+            "felicidade": -1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "industria" }
+          }
+        }
+      },
+      {
+        "texto": "Construtora",
+        "resumo": "foi trabalhar numa construtora",
+        "resultado": {
+          "texto": "Canteiro de obra às sete da manhã, chefe de obra que sabe mais que você e um prédio que, um dia, vai ter o seu nome na placa.",
+          "efeitos": { "renda": { "definir": 58000 }, "marcas": ["clt"], "eu.setor": { "definir": "construcao" } }
+        }
+      },
+      {
+        "texto": "Mineradora no interior",
+        "resumo": "foi trabalhar numa mineradora no interior",
+        "resultado": {
+          "texto": "Salário alto, alojamento, poeira vermelha em tudo e quinze dias de folga para matar a saudade.",
+          "efeitos": {
+            "renda": { "definir": 95000 },
+            "felicidade": -2,
+            "mae.vinculo": -4,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "industria" }
+          }
+        }
+      },
+      {
+        "texto": "Pesquisa na universidade",
+        "resumo": "seguiu carreira de pesquisa",
+        "condicoes": { "marcas": ["pesquisador"] },
+        "bloqueio": "pesquisa exige iniciação científica",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Passou no concurso para professor universitário. Laboratório, alunos e artigos para revisar à meia-noite.",
+          "resumo": "virou pesquisador{|a} numa universidade pública",
+          "efeitos": {
+            "renda": { "definir": 90000 },
+            "inteligencia": 5,
+            "felicidade": 4,
+            "marcas": ["servidor"],
+            "eu.setor": { "definir": "educacao" }
+          }
+        },
+        "fracasso": {
+          "texto": "A bolsa acabou antes do concurso. Você foi para a indústria e leva saudade do laboratório.",
+          "efeitos": {
+            "renda": { "definir": 56000 },
+            "inteligencia": 3,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "industria" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprego_artes",
+    "idade": [21, 34],
+    "marco": true,
+    "condicoes": {
+      "marcas": ["formado"],
+      "renda": { "max": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional",
+        "concurseiro"
+      ],
+      "curso": "artes"
+    },
+    "texto": "Diploma de comunicação e um portfólio que a sua mãe acha lindo. O mercado acha \"interessante\".",
+    "resumo": "recebeu as primeiras propostas depois do diploma",
+    "escolhas": [
+      {
+        "texto": "Agência de publicidade",
+        "resumo": "foi trabalhar numa agência de publicidade",
+        "resultado": {
+          "texto": "Pufe colorido, cliente que muda tudo na sexta às seis e uma campanha sua passando no intervalo da novela.",
+          "efeitos": {
+            "renda": { "definir": 42000 },
+            "saude": -1,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "cultura" }
+          }
+        }
+      },
+      {
+        "texto": "Criar conteúdo por conta",
+        "resumo": "foi criar conteúdo por conta própria",
+        "resultado": {
+          "texto": "Ring light, roteiro no bloco de notas e um algoritmo de humor instável. Os primeiros mil seguidores vieram da família.",
+          "efeitos": {
+            "renda": { "definir": 15000 },
+            "felicidade": 3,
+            "marcas": ["criador_conteudo"],
+            "eu.setor": { "definir": "cultura" }
+          }
+        }
+      },
+      {
+        "texto": "Assessoria de uma prefeitura",
+        "resumo": "fez seleção para a assessoria de uma prefeitura",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você virou a pessoa que escreve os discursos do prefeito e apaga os comentários de madrugada.",
+          "resumo": "foi trabalhar na comunicação de uma prefeitura",
+          "efeitos": { "renda": { "definir": 45000 }, "marcas": ["servidor"], "eu.setor": { "definir": "publico" } }
+        },
+        "fracasso": {
+          "texto": "Ficou em segundo lugar. A vencedora era sobrinha de alguém. Você foi fazer frila.",
+          "efeitos": { "renda": { "definir": 24000 }, "felicidade": -2, "eu.setor": { "definir": "cultura" } }
+        }
+      },
+      {
+        "texto": "Produtora de vídeo",
+        "resumo": "foi trabalhar numa produtora de vídeo",
+        "resultado": {
+          "texto": "Diária longa, equipe divertida e um clipe que viralizou com o seu nome nos créditos, letra miúda.",
+          "efeitos": {
+            "renda": { "definir": 38000 },
+            "felicidade": 2,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "cultura" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "negocio_no_aperto",
+    "apenasAgendado": true,
+    "condicoes": { "algumaMarca": ["empreendedor", "socio", "herdeiro_negocio"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "a crise" }, { "texto": "a recessão" }] },
+    "texto": "Com {fase}, o movimento do seu negócio caiu pela metade. O contador fala em \"segurar o caixa\" como quem fala em segurar uma onda com as mãos.",
+    "resumo": "viu o negócio apertar com {fase}",
+    "escolhas": [
+      {
+        "texto": "Cortar custos e segurar",
+        "resumo": "cortou custos para segurar o negócio",
+        "resultado": {
+          "texto": "Você cortou o café, o estoque e duas pessoas. O negócio ficou de pé, menor e mais triste.",
+          "efeitos": { "rendaFator": 0.85, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Pegar um empréstimo para atravessar",
+        "resumo": "pegou um empréstimo para atravessar a crise",
+        "efeitos": { "divida": 30000 },
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A tempestade passou e você estava de portas abertas quando os concorrentes não estavam mais. Saiu maior.",
+          "resumo": "atravessou a crise com um empréstimo e saiu maior",
+          "efeitos": { "rendaFator": 1.15, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A crise durou mais que o empréstimo. Agora são duas dívidas e o mesmo movimento fraco.",
+          "resumo": "se afundou em dívida tentando salvar o negócio",
+          "efeitos": { "divida": 20000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Fechar as portas",
+        "resumo": "fechou o negócio na crise",
+        "resultado": {
+          "texto": "Você baixou a porta de aço pela última vez numa terça-feira. Doeu menos do que pagar aluguel de loja vazia.",
+          "efeitos": {
+            "removerMarcas": ["empreendedor", "socio", "herdeiro_negocio"],
+            "renda": { "definir": 0 },
+            "felicidade": -4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "corte_de_salario",
+    "idade": [20, 64],
+    "condicoes": {
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "renda": { "min": 20000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional"
+      ]
+    },
+    "peso": 3,
+    "texto": "A empresa propôs cortar 25% dos salários por um ano \"para não demitir ninguém\". O e-mail termina com \"contamos com a compreensão de todos\".",
+    "resumo": "recebeu uma proposta de corte de salário na crise",
+    "escolhas": [
+      {
+        "texto": "Aceitar o corte",
+        "resumo": "aceitou um corte de salário para manter o emprego",
+        "resultado": {
+          "texto": "Você apertou o cinto e manteve o crachá. Metade dos colegas fez o mesmo; a outra metade foi embora.",
+          "efeitos": { "rendaFator": 0.8, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Recusar e torcer",
+        "resumo": "recusou o corte de salário",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "O corte pegou outros setores. Você ficou com o salário e com um pouco de culpa.",
+          "resumo": "recusou o corte de salário e se manteve",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A empresa \"respeitou sua decisão\" e marcou uma reunião de quinze minutos para o mês seguinte.",
+          "resumo": "recusou o corte de salário e entrou na lista",
+          "efeitos": { "felicidade": -2, "agendar": [{ "evento": "demissao", "em": 1 }] }
+        }
+      },
+      {
+        "texto": "Pedir as contas e procurar outra coisa",
+        "resumo": "pediu demissão no meio da crise",
+        "resultado": {
+          "texto": "Você saiu de cabeça erguida para o pior mercado de trabalho em anos. A cabeça continua erguida; a conta, nem tanto.",
+          "efeitos": { "renda": { "definir": 0 }, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "proposta_na_expansao",
+    "idade": [22, 60],
+    "condicoes": {
+      "marcas": ["pais.expansao"],
+      "renda": { "min": 15000 },
+      "semMarcas": [
+        "servidor",
+        "empreendedor",
+        "socio",
+        "herdeiro_negocio",
+        "aposentado",
+        "influencer",
+        "profissional"
+      ]
+    },
+    "peso": 3,
+    "texto": "Com a economia aquecida, uma concorrente te ligou com uma proposta 30% maior. O seu chefe ainda não sabe; o LinkedIn da concorrente, sim.",
+    "resumo": "recebeu uma proposta melhor com a economia aquecida",
+    "escolhas": [
+      {
+        "texto": "Aceitar a proposta",
+        "resumo": "trocou de emprego por um salário maior",
+        "resultado": {
+          "texto": "Crachá novo, colegas novos e o mesmo café ruim. O salário, esse sim, mudou.",
+          "efeitos": { "rendaFator": 1.3, "felicidade": 1, "amigo.vinculo": -2 }
+        }
+      },
+      {
+        "texto": "Usar para negociar",
+        "resumo": "usou a proposta para negociar aumento",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O chefe cobriu metade da diferença e te chamou de \"peça-chave\". Você gostou das duas coisas.",
+          "resumo": "conseguiu um aumento usando outra proposta",
+          "efeitos": { "rendaFator": 1.15, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O chefe disse \"boa sorte lá\". Lá já tinha contratado outra pessoa.",
+          "resumo": "blefou com uma proposta e ficou sem aumento",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ficar onde está",
+        "resumo": "recusou uma proposta melhor por lealdade",
+        "resultado": {
+          "texto": "Você ficou. Lealdade não paga boleto, mas paga uma certa paz.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bolsa_derreteu",
+    "idade": [22, 95],
+    "condicoes": { "marcas": ["pais.crise"], "investido": { "min": 20000 } },
+    "peso": 4,
+    "texto": "A bolsa caiu 30% num mês e o seu investimento foi junto. O aplicativo do banco agora abre com uma mensagem sobre \"visão de longo prazo\".",
+    "resumo": "viu os investimentos derreterem na crise",
+    "escolhas": [
+      {
+        "texto": "Vender tudo antes que piore",
+        "resumo": "vendeu os investimentos no meio da crise",
+        "resultado": {
+          "texto": "Você vendeu, dormiu melhor e assistiu de fora quando tudo voltou a subir dois anos depois.",
+          "efeitos": { "investir": -100000000, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Segurar e não olhar",
+        "resumo": "segurou os investimentos na crise",
+        "resultado": {
+          "texto": "Você apagou o aplicativo do celular e foi cuidar da horta. Funcionou melhor que muito conselho de especialista.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Comprar mais na baixa",
+        "resumo": "comprou mais investimentos na baixa",
+        "condicoes": { "dinheiro": { "min": 20000 } },
+        "bloqueio": "não há R$ 20 mil parados para investir",
+        "resultado": {
+          "texto": "Você comprou com o coração na mão e o dinheiro do fundo da gaveta. Se der certo, vai contar essa história por anos.",
+          "efeitos": { "investir": 20000, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dolar_disparou",
+    "idade": [20, 80],
+    "condicoes": { "marcas": ["pais.crise"], "patrimonio": { "min": 30000 } },
+    "peso": 2,
+    "texto": "O dólar disparou e a viagem dos sonhos, comprada em parcelas, ficou com cara de pesadelo cambial.",
+    "resumo": "viu o dólar disparar antes da viagem dos sonhos",
+    "escolhas": [
+      {
+        "texto": "Ir mesmo assim",
+        "resumo": "viajou para fora com o dólar nas alturas",
+        "resultado": {
+          "texto": "Você comeu sanduíche de mercado e tirou foto de tudo que era de graça. Valeu cada centavo, e foram muitos.",
+          "efeitos": { "dinheiro": -12000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Trocar por uma viagem pelo Brasil",
+        "resumo": "trocou a viagem internacional por uma pelo Brasil",
+        "resultado": {
+          "texto": "Praia de água transparente, comida boa e ninguém pedindo passaporte. A melhor troca do ano.",
+          "efeitos": { "dinheiro": -3000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Cancelar e guardar o dinheiro",
+        "resumo": "cancelou a viagem e guardou o dinheiro",
+        "resultado": {
+          "texto": "O dinheiro foi para a poupança e a viagem, para a lista de \"um dia\".",
+          "efeitos": { "felicidade": -1, "investir": 3000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bico_na_expansao",
+    "idade": [18, 60],
+    "condicoes": { "marcas": ["pais.expansao"], "renda": { "max": 40000 } },
+    "peso": 2,
+    "texto": "A cidade está crescendo e sobra serviço: um conhecido oferece trabalho extra nos fins de semana, pesado, mas pago em dia.",
+    "resumo": "pegou trabalho extra com a economia aquecida",
+    "escolhas": [
+      {
+        "texto": "Pegar o trabalho extra",
+        "resumo": "pegou trabalho extra nos fins de semana",
+        "resultado": {
+          "texto": "Seis meses sem domingo e uma reserva que você nunca tinha visto na conta.",
+          "efeitos": { "dinheiro": 8000, "saude": -2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Guardar o fim de semana",
+        "resumo": "recusou trabalho extra para descansar",
+        "resultado": {
+          "texto": "Você ficou com o fim de semana, o churrasco e a rede. O dinheiro passa; o domingo também, mas você estava lá.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imovel_valorizou",
+    "idade": [30, 85],
+    "condicoes": { "marcas": ["pais.expansao", "casa_propria"], "patrimonio": { "min": 150000 } },
+    "peso": 2,
+    "texto": "O bairro valorizou com a economia aquecida e um corretor quer comprar a sua casa por um valor que você nem sonhava.",
+    "resumo": "recebeu uma proposta alta pela casa",
+    "escolhas": [
+      {
+        "texto": "Vender e ir de aluguel",
+        "resumo": "vendeu a casa no auge e foi morar de aluguel",
+        "resultado": {
+          "texto": "Você vendeu no topo, investiu o dinheiro e descobriu que aluguel também é uma forma de liberdade, e de boleto.",
+          "efeitos": { "dinheiro": 180000, "removerMarcas": ["casa_propria"], "custo": 15000, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ficar na casa",
+        "resumo": "não vendeu a casa",
+        "resultado": {
+          "texto": "Você agradeceu, fechou o portão e foi regar as plantas. Tem coisa que não está à venda, mesmo estando.",
+          "efeitos": { "felicidade": 1.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "concurso_lotado",
+    "idade": [20, 45],
+    "condicoes": {
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "semMarcas": ["servidor", "concurseiro", "aposentado"]
+    },
+    "peso": 2,
+    "texto": "Na crise, todo mundo quer estabilidade: o concurso da prefeitura teve trezentos candidatos por vaga, e a sua prima é um deles.",
+    "resumo": "pensou em fazer concurso na crise",
+    "escolhas": [
+      {
+        "texto": "Estudar à noite",
+        "resumo": "começou a estudar para concurso na crise",
+        "resultado": {
+          "texto": "Apostila no ônibus, videoaula no almoço e a crase finalmente fazendo sentido.",
+          "efeitos": { "qualidades": { "concurso": 2 }, "felicidade": -1, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Não é para mim",
+        "resumo": "decidiu não entrar na corrida dos concursos",
+        "resultado": {
+          "texto": "Você deixou a vaga para a prima. Ela passou e agora te manda foto do crachá.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fila_do_emprego",
+    "idade": [18, 64],
+    "condicoes": {
+      "marcas": ["pais.crise"],
+      "renda": { "max": 9000 },
+      "semMarcas": ["cursando", "concurseiro", "aposentado"]
+    },
+    "peso": 4,
+    "texto": "A fila do feirão de emprego dobrava o quarteirão às cinco da manhã. Na crise, até vaga de estoquista tem entrevista em três etapas.",
+    "resumo": "enfrentou a fila do feirão de emprego na crise",
+    "escolhas": [
+      {
+        "texto": "Entrar na fila",
+        "resumo": "entrou na fila do feirão de emprego",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "Saiu de lá com um contrato de experiência e o pé doendo. O contrato virou efetivo.",
+          "resumo": "conseguiu emprego num feirão na crise",
+          "efeitos": {
+            "renda": { "definir": 24000 },
+            "felicidade": 3,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "servicos" }
+          }
+        },
+        "fracasso": {
+          "texto": "Chegou na sua vez às quatro da tarde. As vagas tinham acabado às duas.",
+          "resumo": "passou o dia na fila de um feirão e não conseguiu vaga",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Rodar de aplicativo",
+        "resumo": "foi rodar de aplicativo na crise",
+        "resultado": {
+          "texto": "Você alugou um carro, baixou o aplicativo e aprendeu o trânsito da cidade inteira em um mês.",
+          "efeitos": { "renda": { "definir": 20000 }, "saude": -1, "eu.setor": { "definir": "transporte" } }
+        }
+      },
+      {
+        "texto": "Fazer um curso gratuito",
+        "resumo": "fez um curso gratuito enquanto procurava emprego",
+        "resultado": {
+          "texto": "Curso técnico gratuito à noite. Não paga as contas, mas dá um rumo.",
+          "efeitos": { "inteligencia": 2, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pais_na_crise",
+    "tipo": "npc",
+    "ator": ["mae", "pai"],
+    "idade": [16, 70],
+    "condicoes": {
+      "marcas": ["ator.desempregado"],
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "ator.idade": { "max": 64 },
+      "ator.dinheiro": { "max": 40000 }
+    },
+    "tensao": 2,
+    "trechos": {
+      "onde": [
+        { "se": { "ator.setor": "industria" }, "texto": "na fábrica" },
+        { "se": { "ator.setor": "construcao" }, "texto": "na obra" },
+        { "se": { "ator.setor": "comercio" }, "texto": "na loja" },
+        { "texto": "de anos" }
+      ]
+    },
+    "texto": "{ator.quem} perdeu o emprego {onde} na crise e não quer pedir ajuda. Mas o aluguel venceu, e você sabe disso.",
+    "resumo": "viu {ator.quem} perder o emprego na crise",
+    "escolhas": [
+      {
+        "texto": "Pagar o aluguel por uns meses",
+        "resumo": "ajudou a pagar o aluguel de {ator.quem}",
+        "condicoes": { "patrimonio": { "min": 6000 } },
+        "bloqueio": "não sobra para o aluguel de ninguém",
+        "resultado": {
+          "texto": "Você fez o Pix sem dizer nada. {ator.quem} agradeceu do jeito que deu: com comida congelada para um mês.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "ator", "valor": 6000 },
+            "ator.vinculo": 8,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Ajudar a procurar vaga",
+        "resumo": "ajudou {ator.quem} a procurar emprego",
+        "resultado": {
+          "texto": "Você atualizou o currículo, criou um e-mail e explicou o que é \"vaga híbrida\". Foi a tarde mais longa e mais bonita do ano.",
+          "efeitos": { "ator.vinculo": 5, "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Dizer que agora não dá",
+        "resumo": "disse que não podia ajudar na crise",
+        "resultado": {
+          "texto": "Você explicou as suas contas. {ator.quem} disse que entendia, e entendia mesmo. Doeu nos dois.",
+          "efeitos": { "ator.vinculo": -5, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "plantao_lotado",
+    "idade": [22, 64],
+    "condicoes": { "setor": "saude", "renda": { "min": 12000 }, "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Plantão de vinte e quatro horas, corredor lotado e um colega que faltou. A chefe pergunta se você \"dá uma força\" e emenda mais doze horas.",
+    "resumo": "foi chamad{o|a} para emendar um plantão",
+    "escolhas": [
+      {
+        "texto": "Dobrar o plantão",
+        "resumo": "dobrou o plantão",
+        "resultado": {
+          "texto": "Você dormiu três horas numa maca vaga e salvou o dia de muita gente. O corpo cobrou a conta na semana seguinte.",
+          "efeitos": { "dinheiro": 3000, "saude": -3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ir para casa dormir",
+        "resumo": "foi para casa depois do plantão",
+        "resultado": {
+          "texto": "Você dormiu catorze horas seguidas e acordou com saudade de nada.",
+          "efeitos": { "felicidade": 1, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_aluno",
+    "idade": [30, 90],
+    "condicoes": { "setor": "educacao" },
+    "repetivel": true,
+    "intervalo": 12,
+    "trechos": {
+      "o_que": [
+        { "se": { "idade": { "min": 55 } }, "texto": "[médico|engenheira|dono de três padarias]" },
+        { "texto": "[enfermeira|técnico de informática|professor também]" }
+      ]
+    },
+    "texto": "Um ex-aluno te para no mercado: \"Professor{|a}! Lembra de mim? Eu sentava no fundo. Hoje sou {o_que}.\" Você lembra, e o carrinho de compras fica parado no corredor.",
+    "resumo": "foi lembrad{o|a} por um ex-aluno",
+    "efeitos": { "felicidade": 4 }
+  },
+  {
+    "id": "proposta_remota",
+    "idade": [22, 60],
+    "condicoes": {
+      "setor": "tecnologia",
+      "marcas": ["fala_ingles", "pais.expansao"],
+      "renda": { "min": 20000 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "texto": "Com a economia aquecida, uma empresa de fora te oferece salário em moeda forte para trabalhar de casa. A reunião diária é às dez da noite.",
+    "resumo": "recebeu uma proposta para trabalhar de casa para fora",
+    "escolhas": [
+      {
+        "texto": "Aceitar",
+        "resumo": "foi trabalhar de casa para uma empresa de fora",
+        "resultado": {
+          "texto": "O salário dobrou e a vida social virou uma janela de videochamada. O cachorro aprovou.",
+          "efeitos": { "rendaFator": 1.6, "felicidade": 1, "amigo.vinculo": -3 }
+        }
+      },
+      {
+        "texto": "Recusar e ficar com o fuso daqui",
+        "resumo": "recusou trabalhar no fuso de outro país",
+        "resultado": {
+          "texto": "Você preferiu dormir de noite. Parece pouco; é muito.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "black_friday",
+    "idade": [18, 64],
+    "condicoes": { "setor": "comercio", "renda": { "min": 12000 }, "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Semana de liquidação: catorze horas de pé, cliente brigando por televisão e um gerente que fala \"bater meta\" como quem reza.",
+    "resumo": "trabalhou na semana de liquidação",
+    "escolhas": [
+      {
+        "texto": "Fazer todas as horas extras",
+        "resumo": "fez todas as horas extras da liquidação",
+        "resultado": {
+          "texto": "Você vendeu como nunca, ganhou comissão e perdeu a voz. Ela voltou em uma semana; a comissão ficou.",
+          "efeitos": { "dinheiro": 2500, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Cumprir só o horário",
+        "resumo": "cumpriu só o horário na liquidação",
+        "resultado": {
+          "texto": "Você foi embora no horário, sob o olhar do gerente. Em casa, ninguém estava brigando por televisão.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "robos_na_fabrica",
+    "idade": [22, 64],
+    "condicoes": { "setor": "industria", "renda": { "min": 12000 }, "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "texto": "A fábrica comprou robôs e metade do setor vai ser \"realocada\". Ninguém sabe para onde; os robôs também não.",
+    "resumo": "viu a fábrica trocar gente por robôs",
+    "escolhas": [
+      {
+        "texto": "Fazer o curso de operador de robô",
+        "resumo": "fez o curso para operar os robôs da fábrica",
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Você virou a pessoa que conserta o robô quando ele trava. Ganhou aumento e um apelido que não vamos repetir.",
+          "resumo": "aprendeu a operar os robôs e ganhou aumento",
+          "efeitos": { "rendaFator": 1.15, "inteligencia": 2 }
+        },
+        "fracasso": {
+          "texto": "O curso era em inglês e o professor, um vídeo. Você não passou; a lista de realocação, sim.",
+          "resumo": "não passou no curso de robótica da fábrica",
+          "efeitos": { "felicidade": -2, "agendar": [{ "evento": "demissao", "em": 1 }] }
+        }
+      },
+      {
+        "texto": "Pegar a demissão voluntária",
+        "resumo": "aderiu ao plano de demissão voluntária",
+        "resultado": {
+          "texto": "Você saiu com um bom acerto e a sensação de que a fábrica nunca foi sua. Agora, o que fazer com o dinheiro?",
+          "efeitos": { "dinheiro": 40000, "renda": { "definir": 0 }, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Esperar para ver",
+        "resumo": "esperou para ver o que os robôs fariam",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você foi realocad{o|a} para o almoxarifado. Menos barulho, mesmo salário.",
+          "resumo": "sobreviveu à chegada dos robôs na fábrica",
+          "efeitos": { "felicidade": 0.5 }
+        },
+        "fracasso": {
+          "texto": "A realocação era para a rua. A reunião durou dez minutos.",
+          "resumo": "perdeu o posto para um robô",
+          "efeitos": { "agendar": [{ "evento": "demissao", "em": 1 }] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "obra_parada",
+    "idade": [20, 64],
+    "condicoes": {
+      "setor": "construcao",
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "renda": { "min": 12000 },
+      "semMarcas": ["empreendedor", "aposentado"]
+    },
+    "peso": 3,
+    "texto": "A obra parou: a construtora atrasou o pagamento de todo mundo e o mestre de obras sumiu com a betoneira.",
+    "resumo": "viu a obra parar na recessão",
+    "escolhas": [
+      {
+        "texto": "Esperar receber",
+        "resumo": "esperou a construtora pagar o atraso",
+        "resultado": {
+          "texto": "Três meses depois, veio metade. A outra metade virou processo, e o processo virou piada no grupo da obra.",
+          "efeitos": { "felicidade": -2, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Ir para uma obra no interior",
+        "resumo": "foi trabalhar numa obra no interior",
+        "resultado": {
+          "texto": "Alojamento, marmita e o salário em dia. A família ficou na cidade, contando os dias.",
+          "efeitos": { "dinheiro": 3000, "mae.vinculo": -2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer reforma por conta",
+        "resumo": "começou a fazer reformas por conta própria",
+        "resultado": {
+          "texto": "Cartão de visita impresso na gráfica da esquina e o primeiro cliente: a vizinha, que pagou em dia e em bolo.",
+          "efeitos": {
+            "renda": { "definir": 28000 },
+            "marcas": ["empreendedor"],
+            "felicidade": 2,
+            "eu.setor": { "definir": "construcao" }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "safra_recorde",
+    "idade": [18, 64],
+    "condicoes": { "setor": "agro", "marcas": ["pais.expansao"], "semMarcas": ["aposentado"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Safra recorde com a economia aquecida: o patrão distribuiu bônus, churrasco e um discurso emocionado sobre a chuva.",
+    "resumo": "ganhou bônus numa safra recorde",
+    "efeitos": { "dinheiro": 6000, "felicidade": 2 }
+  },
+  {
+    "id": "tarifa_do_app",
+    "idade": [18, 64],
+    "condicoes": { "setor": "transporte", "renda": { "min": 12000 }, "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "O aplicativo mudou a tarifa de novo: agora a corrida curta paga menos que o pedágio. No grupo dos motoristas, já se fala em parar.",
+    "resumo": "viu o aplicativo baixar a tarifa",
+    "escolhas": [
+      {
+        "texto": "Rodar mais horas",
+        "resumo": "passou a rodar mais horas para compensar a tarifa",
+        "resultado": {
+          "texto": "Você trocou o almoço por um salgado no carro e o domingo por corrida de aeroporto. As contas fecharam; o corpo reclamou.",
+          "efeitos": { "saude": -2, "dinheiro": 2000 }
+        }
+      },
+      {
+        "texto": "Aderir à paralisação",
+        "resumo": "aderiu à paralisação dos motoristas",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "A paralisação parou a cidade e saiu no jornal. O aplicativo voltou atrás, pelo menos por um tempo.",
+          "resumo": "parou com os motoristas e conseguiu a tarifa de volta",
+          "efeitos": { "rendaFator": 1.1, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A paralisação durou um dia, o aplicativo não mudou nada e você perdeu as corridas da semana.",
+          "resumo": "parou com os motoristas e não adiantou",
+          "efeitos": { "dinheiro": -1500, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Procurar outra coisa",
+        "resumo": "largou o aplicativo para procurar outro trabalho",
+        "resultado": {
+          "texto": "Você devolveu o carro alugado e voltou a mandar currículo. A liberdade do aplicativo tinha um preço que não cabia mais.",
+          "efeitos": { "renda": { "definir": 0 }, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bonus_do_banco",
+    "idade": [24, 64],
+    "condicoes": {
+      "setor": "financas",
+      "marcas": ["pais.expansao"],
+      "renda": { "min": 40000 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Ano bom no mercado: o bônus caiu na conta e o colega da mesa ao lado já trocou de carro, de relógio e de opinião política.",
+    "resumo": "recebeu um bônus gordo num ano bom",
+    "escolhas": [
+      {
+        "texto": "Investir o bônus",
+        "resumo": "investiu o bônus inteiro",
+        "resultado": {
+          "texto": "Você fez o que recomenda aos clientes. Pela primeira vez, sentiu o que eles sentem.",
+          "efeitos": { "dinheiro": 30000, "investir": 30000 }
+        }
+      },
+      {
+        "texto": "Trocar de carro também",
+        "resumo": "trocou de carro com o bônus",
+        "resultado": {
+          "texto": "Carro novo, cheiro de novo e uma parcela que vai durar mais que o cheiro.",
+          "efeitos": { "dinheiro": -50000, "felicidade": 3, "marcas": ["carro"] }
+        }
+      },
+      {
+        "texto": "Guardar para o próximo ano ruim",
+        "resumo": "guardou o bônus para um ano ruim",
+        "resultado": {
+          "texto": "O dinheiro ficou parado, esperando a próxima crise. Ela sempre vem.",
+          "efeitos": { "dinheiro": 30000, "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "greve_do_servidor",
+    "idade": [22, 64],
+    "condicoes": { "marcas": ["servidor"], "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "O sindicato chamou greve por reajuste: os salários estão congelados há três anos e o preço do feijão, não.",
+    "resumo": "foi chamad{o|a} para uma greve",
+    "escolhas": [
+      {
+        "texto": "Aderir à greve",
+        "resumo": "aderiu à greve dos servidores",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Quarenta dias de greve, assembleia em ginásio e um reajuste que, finalmente, saiu.",
+          "resumo": "fez greve e conseguiu reajuste",
+          "efeitos": { "rendaFator": 1.06, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A greve acabou sem reajuste e com os dias descontados. Pelo menos você conheceu o pessoal de outro setor.",
+          "resumo": "fez greve e não conseguiu nada",
+          "efeitos": { "dinheiro": -3000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Continuar trabalhando",
+        "resumo": "continuou trabalhando durante a greve",
+        "resultado": {
+          "texto": "Você trabalhou por três, ouviu piadinha por meses e recebeu o reajuste que os outros conseguiram.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "edital_de_cultura",
+    "idade": [20, 70],
+    "condicoes": { "setor": "cultura", "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Saiu o edital de cultura da prefeitura: o formulário tem trinta páginas e pede uma \"contrapartida social\" que ninguém sabe o que é.",
+    "resumo": "pensou em se inscrever num edital de cultura",
+    "escolhas": [
+      {
+        "texto": "Inscrever o projeto",
+        "resumo": "se inscreveu num edital de cultura",
+        "efeitos": { "felicidade": -1 },
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "Aprovad{o|a}! Você vai passar um ano fazendo o que ama e preenchendo planilha de prestação de contas.",
+          "resumo": "foi aprovad{o|a} num edital de cultura",
+          "efeitos": { "dinheiro": 40000, "felicidade": 4 }
+        },
+        "fracasso": {
+          "texto": "Não passou. O parecer dizia \"projeto interessante, mas\". Você emoldurou o \"interessante\".",
+          "resumo": "não passou num edital de cultura",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer por conta",
+        "resumo": "fez o projeto por conta própria",
+        "resultado": {
+          "texto": "Sem edital, sem planilha, com a ajuda de amigos e uma vaquinha. Saiu menor e mais seu.",
+          "efeitos": { "dinheiro": -3000, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "atendimento_robo",
+    "idade": [20, 64],
+    "condicoes": { "setor": "servicos", "renda": { "min": 12000 }, "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "texto": "A empresa trocou metade do atendimento por um robô que pede desculpas melhor que você. A outra metade vai \"treinar o robô\".",
+    "resumo": "viu o atendimento ser trocado por um robô",
+    "escolhas": [
+      {
+        "texto": "Treinar o robô",
+        "resumo": "foi treinar o robô do atendimento",
+        "resultado": {
+          "texto": "Você passou o ano ensinando um programa a ser simpático. Ele aprendeu; você ficou com o emprego, por enquanto.",
+          "efeitos": { "rendaFator": 1.05, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer um curso de programação",
+        "resumo": "fez um curso de programação para mudar de área",
+        "efeitos": { "dinheiro": -1500 },
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Você trocou o fone de atendimento pelo de programador{|a}. O primeiro salário da área nova pagou o curso em um mês.",
+          "resumo": "trocou o atendimento pela programação",
+          "efeitos": { "rendaFator": 1.4, "inteligencia": 3, "eu.setor": { "definir": "tecnologia" } }
+        },
+        "fracasso": {
+          "texto": "O curso era bom, mas o tempo não deu. A lista de cortes, sim.",
+          "resumo": "tentou mudar de área e perdeu o emprego",
+          "efeitos": { "felicidade": -1, "agendar": [{ "evento": "demissao", "em": 1 }] }
+        }
+      },
+      {
+        "texto": "Esperar a demissão",
+        "resumo": "esperou a demissão chegar",
+        "resultado": {
+          "texto": "Você não esperou muito.",
+          "efeitos": { "agendar": [{ "evento": "demissao", "em": 1 }] }
+        }
+      }
+    ]
+  }
+]

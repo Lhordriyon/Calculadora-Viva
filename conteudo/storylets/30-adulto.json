@@ -77,14 +77,13 @@
   },
   {
     "id": "demissao",
-    "idade": [25, 62],
-    "peso": 1,
-    "repetivel": true,
-    "intervalo": 12,
+    "apenasAgendado": true,
     "condicoes": {
       "renda": { "min": 15000 },
       "semMarcas": ["servidor", "empreendedor", "aposentado", "influencer", "profissional"]
     },
+    "repetivel": true,
+    "intervalo": 3,
     "texto": "Reunião de quinze minutos por vídeo. A palavra \"[reestruturação|sinergia|realinhamento]\" aparece quatro vezes. A sua câmera estava desligada; a deles, não.",
     "resumo": "foi demitid{o|a}",
     "escolhas": [
@@ -131,10 +130,10 @@
   {
     "id": "desempregado",
     "idade": [18, 64],
+    "condicoes": { "renda": { "max": 9000 }, "semMarcas": ["cursando", "concurseiro", "aposentado"] },
     "peso": 8,
     "repetivel": true,
     "intervalo": 2,
-    "condicoes": { "renda": { "max": 9000 }, "semMarcas": ["cursando", "concurseiro", "aposentado"] },
     "texto": "Desemprego. O currículo foi para [quarenta|sessenta|cem] vagas e voltou de nenhuma. [O aplicativo de vagas insiste em oportunidades em outro estado.|Um recrutador visualizou seu perfil e sumiu.|{mae} manda vaga todo dia, inclusive as de estágio.]",
     "resumo": "ficou sem emprego",
     "escolhas": [
@@ -143,7 +142,12 @@
         "resumo": "aceitou o primeiro emprego que apareceu",
         "resultado": {
           "texto": "Não é o emprego dos sonhos. É o emprego do boleto, e paga em dia.",
-          "efeitos": { "renda": { "definir": 22000 }, "felicidade": -3, "marcas": ["clt"] }
+          "efeitos": {
+            "renda": { "definir": 22000 },
+            "felicidade": -3,
+            "marcas": ["clt"],
+            "eu.setor": { "definir": "servicos" }
+          }
         }
       },
       {
@@ -151,7 +155,7 @@
         "resumo": "virou motorista de aplicativo",
         "resultado": {
           "texto": "Você conhece agora a cidade inteira e o humor de cada passageiro.",
-          "efeitos": { "renda": { "definir": 28000 }, "saude": -2 }
+          "efeitos": { "renda": { "definir": 28000 }, "saude": -2, "eu.setor": { "definir": "transporte" } }
         }
       },
       {
@@ -208,8 +212,8 @@
   {
     "id": "sociedade_amigo",
     "idade": [28, 45],
-    "peso": 5,
     "condicoes": { "marcas": ["leal"] },
+    "peso": 5,
     "texto": "{amigo} aparece com uma proposta: abrir juntos [uma hamburgueria artesanal|uma oficina mecânica|um pet shop]. \"Você foi a única pessoa que me defendeu no recreio\", diz.",
     "resumo": "recebeu uma proposta de sociedade de {amigo}",
     "escolhas": [
@@ -228,7 +232,12 @@
         "sucesso": {
           "texto": "Deu certo. Vocês brigam toda segunda-feira e fazem as pazes toda sexta.",
           "resumo": "abriu um negócio com {amigo} e deu certo",
-          "efeitos": { "renda": { "definir": 70000 }, "felicidade": 6, "marcas": ["socio", "empreendedor"] }
+          "efeitos": {
+            "renda": { "definir": 70000 },
+            "felicidade": 6,
+            "marcas": ["socio", "empreendedor"],
+            "eu.setor": { "definir": "comercio" }
+          }
         },
         "fracasso": {
           "texto": "O negócio quebrou. A amizade, por pouco, também.",
@@ -602,8 +611,8 @@
   {
     "id": "vereador",
     "idade": [33, 60],
-    "peso": 3,
     "condicoes": { "marcas": ["politizado"] },
+    "peso": 3,
     "valores": { "campanha": 8000 },
     "texto": "O partido do bairro te convida para ser candidat{o|a} a vereador{|a}. Dizem que você \"tem jeito com as pessoas\". Você tem jeito com o grupo da família, no máximo.",
     "resumo": "foi convidad{o|a} para disputar uma eleição",
@@ -624,7 +633,12 @@
         "sucesso": {
           "texto": "Eleit{o|a} com 1.214 votos! Sua primeira lei: um quebra-molas na sua rua.",
           "resumo": "foi eleit{o|a} vereador{|a}",
-          "efeitos": { "renda": { "definir": 120000 }, "felicidade": 6, "marcas": ["vereador"] }
+          "efeitos": {
+            "renda": { "definir": 120000 },
+            "felicidade": 6,
+            "marcas": ["vereador"],
+            "eu.setor": { "definir": "publico" }
+          }
         },
         "fracasso": {
           "texto": "Trezentos e oitenta e sete votos. Você conhece pessoalmente uns trezentos.",
@@ -671,8 +685,8 @@
   {
     "id": "voltar_estudar",
     "idade": [30, 55],
-    "peso": 3,
     "condicoes": { "algumaMarca": ["largou_faculdade", "trabalhou_cedo"], "semMarcas": ["formado", "cursando"] },
+    "peso": 3,
     "valores": { "mensalidade": 300 },
     "texto": "Uma faculdade a distância promete diploma em quatro anos, com aulas às [onze da noite|seis da manhã|horas que você conseguir] e mensalidade de {mensalidade}.",
     "resumo": "pensou em voltar a estudar",
@@ -690,7 +704,14 @@
         "resumo": "voltou a estudar depois dos trinta e se formou",
         "resultado": {
           "texto": "Quatro anos de café, sono atrasado e prova online. Na colação, sua torcida gritou mais alto que todas.",
-          "efeitos": { "dinheiro": -14000, "inteligencia": 6, "felicidade": -2, "renda": 6000, "marcas": ["formado"] }
+          "efeitos": {
+            "dinheiro": -14000,
+            "inteligencia": 6,
+            "felicidade": -2,
+            "renda": 6000,
+            "marcas": ["formado"],
+            "eu.curso": { "definir": "negocios" }
+          }
         }
       }
     ]
@@ -733,8 +754,8 @@
   {
     "id": "fim_carreira",
     "idade": [32, 37],
-    "peso": 8,
     "condicoes": { "marcas": ["profissional"] },
+    "peso": 8,
     "texto": "Seu joelho começou a reclamar mais que a torcida adversária. Talvez seja hora de pendurar as chuteiras.",
     "resumo": "chegou ao fim da carreira no futebol",
     "escolhas": [
@@ -745,12 +766,22 @@
         "sucesso": {
           "texto": "Você comenta jogos de gravata, com o sotaque de sempre e bordões que viraram figurinha.",
           "resumo": "virou comentarista de futebol na TV",
-          "efeitos": { "renda": { "definir": 90000 }, "felicidade": 5, "removerMarcas": ["profissional"] }
+          "efeitos": {
+            "renda": { "definir": 90000 },
+            "felicidade": 5,
+            "removerMarcas": ["profissional"],
+            "eu.setor": { "definir": "cultura" }
+          }
         },
         "fracasso": {
           "texto": "Travou ao vivo no primeiro teste. Voltou para o bairro e virou técnic{o|a} do time de várzea.",
           "resumo": "travou ao vivo e virou técnic{o|a} de várzea",
-          "efeitos": { "renda": { "definir": 30000 }, "felicidade": -3, "removerMarcas": ["profissional"] }
+          "efeitos": {
+            "renda": { "definir": 30000 },
+            "felicidade": -3,
+            "removerMarcas": ["profissional"],
+            "eu.setor": { "definir": "cultura" }
+          }
         }
       },
       {
@@ -762,7 +793,8 @@
             "renda": { "definir": 45000 },
             "felicidade": 6,
             "removerMarcas": ["profissional"],
-            "marcas": ["empreendedor"]
+            "marcas": ["empreendedor"],
+            "eu.setor": { "definir": "educacao" }
           }
         }
       },
@@ -777,7 +809,8 @@
             "dinheiro": 60000,
             "renda": { "definir": 30000 },
             "felicidade": 3,
-            "removerMarcas": ["profissional"]
+            "removerMarcas": ["profissional"],
+            "eu.setor": { "definir": "cultura" }
           }
         },
         "fracasso": {
@@ -787,7 +820,8 @@
             "saude": -10,
             "renda": { "definir": 20000 },
             "removerMarcas": ["profissional"],
-            "marcas": ["joelho_ruim"]
+            "marcas": ["joelho_ruim"],
+            "eu.setor": { "definir": "cultura" }
           }
         }
       }

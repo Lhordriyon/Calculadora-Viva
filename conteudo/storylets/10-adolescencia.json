@@ -208,13 +208,20 @@
             "dinheiro": 30000,
             "renda": { "definir": 150000 },
             "removerMarcas": ["base_clube"],
-            "marcas": ["profissional"]
+            "marcas": ["profissional"],
+            "eu.setor": { "definir": "cultura" }
           }
         },
         "fracasso": {
           "texto": "Rompeu o ligamento do joelho no último treino antes da estreia. O sonho ficou no departamento médico.",
           "resumo": "rompeu o joelho às vésperas da estreia",
-          "efeitos": { "saude": -12, "felicidade": -10, "removerMarcas": ["base_clube"], "marcas": ["joelho_ruim"] }
+          "efeitos": {
+            "saude": -12,
+            "felicidade": -10,
+            "removerMarcas": ["base_clube"],
+            "marcas": ["joelho_ruim"],
+            "eu.setor": { "definir": "cultura" }
+          }
         }
       },
       {

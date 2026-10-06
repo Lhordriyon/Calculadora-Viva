@@ -3,7 +3,7 @@
     "id": "proposta_sao_paulo",
     "idade": [19, 34],
     "condicoes": { "lugar.regiao": ["nordeste", "norte"], "renda": { "max": 36000 }, "semMarcas": ["mudou_sp"] },
-    "texto": "Um primo que mora em São Paulo arrumou uma vaga [numa obra na Zona Sul|na cozinha de um restaurante caro|num call center que nunca dorme] e um colchão na sala dele. \"Aqui o dinheiro gira\", ele garante.",
+    "texto": "Um primo que mora em São Paulo arrumou uma vaga [na cozinha de um restaurante caro|num call center que nunca dorme|no atendimento de uma loja de departamento] e um colchão na sala dele. \"Aqui o dinheiro gira\", ele garante.",
     "resumo": "recebeu um convite para tentar a vida em São Paulo",
     "escolhas": [
       {
@@ -11,7 +11,14 @@
         "resumo": "foi tentar a vida em São Paulo",
         "resultado": {
           "texto": "Você chegou na rodoviária do Tietê com uma mala e um endereço anotado no celular. O dinheiro gira mesmo; o difícil é ele parar na sua mão.",
-          "efeitos": { "marcas": ["mudou_sp"], "renda": 7000, "custo": 5000, "mae.vinculo": -6, "felicidade": -1 }
+          "efeitos": {
+            "marcas": ["mudou_sp"],
+            "renda": 7000,
+            "custo": 5000,
+            "mae.vinculo": -6,
+            "felicidade": -1,
+            "eu.setor": { "definir": "servicos" }
+          }
         }
       },
       {
@@ -86,7 +93,13 @@
         "resumo": "entrou numa fábrica da Zona Franca",
         "resultado": {
           "texto": "Linha de montagem, turno das seis e o barulho das parafusadeiras no ouvido até no sonho. No fim do mês, o salário caiu certinho.",
-          "efeitos": { "renda": { "definir": 32000 }, "marcas": ["clt"], "saude": -1, "felicidade": 0.5 }
+          "efeitos": {
+            "renda": { "definir": 32000 },
+            "marcas": ["clt"],
+            "saude": -1,
+            "felicidade": 0.5,
+            "eu.setor": { "definir": "industria" }
+          }
         }
       },
       {
@@ -141,7 +154,13 @@
         "resumo": "foi trabalhar numa fazenda de soja",
         "resultado": {
           "texto": "Você aprendeu a dirigir uma máquina do tamanho de uma casa e a dormir às nove. Na safra, o dinheiro sobra; na entressafra, o silêncio.",
-          "efeitos": { "renda": { "definir": 52000 }, "saude": -1, "felicidade": -0.5, "amigo.vinculo": -5 }
+          "efeitos": {
+            "renda": { "definir": 52000 },
+            "saude": -1,
+            "felicidade": -0.5,
+            "amigo.vinculo": -5,
+            "eu.setor": { "definir": "agro" }
+          }
         }
       },
       {
