@@ -1,0 +1,168 @@
+{
+  "nomes": {
+    "f": [
+      "Ana", "Maria", "Juliana", "Fernanda", "Beatriz", "Larissa", "Camila", "Letícia", "Gabriela", "Mariana",
+      "Jéssica", "Bruna", "Aline", "Patrícia", "Vitória", "Isabela", "Sofia", "Helena", "Alice", "Laura",
+      "Manuela", "Valentina", "Lívia", "Yasmin", "Rafaela", "Luana", "Thaís", "Débora", "Raquel", "Priscila",
+      "Natália", "Cláudia", "Sandra", "Adriana", "Simone", "Vanessa", "Kelly", "Daiane", "Tainá", "Iara",
+      "Jaqueline", "Rosângela", "Francisca", "Antônia", "Luciana", "Carla", "Elaine", "Michele", "Bianca", "Lorena",
+      "Cecília", "Heloísa", "Maitê", "Ágatha", "Eduarda", "Giovana", "Kauane", "Joana", "Rita", "Benedita"
+    ],
+    "m": [
+      "João", "José", "Pedro", "Lucas", "Gabriel", "Mateus", "Rafael", "Gustavo", "Felipe", "Bruno",
+      "Thiago", "Diego", "Rodrigo", "Leonardo", "Vinícius", "Caio", "Daniel", "Marcelo", "André", "Eduardo",
+      "Carlos", "Paulo", "Ricardo", "Fábio", "Anderson", "Wellington", "Cleiton", "Jefferson", "Washington", "Davi",
+      "Arthur", "Miguel", "Heitor", "Bernardo", "Théo", "Enzo", "Samuel", "Benjamin", "Lorenzo", "Murilo",
+      "Kauã", "Ryan", "Igor", "Renan", "Wesley", "Everton", "Edson", "Raimundo", "Francisco", "Antônio",
+      "Sebastião", "Luiz", "Otávio", "Henrique", "Nicolas", "Joaquim", "Benedito", "Cauê", "Ícaro", "Josué"
+    ]
+  },
+  "sobrenomes": [
+    "Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes",
+    "Costa", "Ribeiro", "Martins", "Carvalho", "Almeida", "Lopes", "Soares", "Fernandes", "Vieira", "Barbosa",
+    "Rocha", "Dias", "Nascimento", "Andrade", "Moreira", "Nunes", "Marques", "Machado", "Mendes", "Freitas",
+    "Cardoso", "Ramos", "Gonçalves", "Santana", "Teixeira", "Araújo", "Moura", "Cavalcanti", "Batista", "Monteiro",
+    "Pinto", "Correia", "Farias", "Campos", "Brito", "Sales", "Bezerra", "Medeiros", "Xavier", "Queiroz"
+  ],
+  "pets": [
+    { "nome": "Paçoca", "genero": "f" },
+    { "nome": "Pipoca", "genero": "f" },
+    { "nome": "Farofa", "genero": "f" },
+    { "nome": "Jujuba", "genero": "f" },
+    { "nome": "Pandora", "genero": "f" },
+    { "nome": "Mel", "genero": "f" },
+    { "nome": "Biscoito", "genero": "m" },
+    { "nome": "Feijão", "genero": "m" },
+    { "nome": "Amendoim", "genero": "m" },
+    { "nome": "Tobias", "genero": "m" },
+    { "nome": "Chico", "genero": "m" },
+    { "nome": "Thor", "genero": "m" }
+  ],
+  "cidades": [
+    { "nome": "São Paulo", "uf": "SP", "marcas": ["capital", "sudeste", "cidade_sp"] },
+    { "nome": "Rio de Janeiro", "uf": "RJ", "marcas": ["capital", "sudeste", "litoral"] },
+    { "nome": "Belo Horizonte", "uf": "MG", "marcas": ["capital", "sudeste"] },
+    { "nome": "Vitória", "uf": "ES", "marcas": ["capital", "sudeste", "litoral"] },
+    { "nome": "Salvador", "uf": "BA", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Recife", "uf": "PE", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Fortaleza", "uf": "CE", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "São Luís", "uf": "MA", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Natal", "uf": "RN", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "João Pessoa", "uf": "PB", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Maceió", "uf": "AL", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Aracaju", "uf": "SE", "marcas": ["capital", "nordeste", "litoral"] },
+    { "nome": "Teresina", "uf": "PI", "marcas": ["capital", "nordeste"] },
+    { "nome": "Manaus", "uf": "AM", "marcas": ["capital", "norte"] },
+    { "nome": "Belém", "uf": "PA", "marcas": ["capital", "norte"] },
+    { "nome": "Porto Velho", "uf": "RO", "marcas": ["capital", "norte"] },
+    { "nome": "Macapá", "uf": "AP", "marcas": ["capital", "norte"] },
+    { "nome": "Rio Branco", "uf": "AC", "marcas": ["capital", "norte"] },
+    { "nome": "Palmas", "uf": "TO", "marcas": ["capital", "norte"] },
+    { "nome": "Boa Vista", "uf": "RR", "marcas": ["capital", "norte"] },
+    { "nome": "Brasília", "uf": "DF", "marcas": ["capital", "centro_oeste"] },
+    { "nome": "Goiânia", "uf": "GO", "marcas": ["capital", "centro_oeste"] },
+    { "nome": "Cuiabá", "uf": "MT", "marcas": ["capital", "centro_oeste"] },
+    { "nome": "Campo Grande", "uf": "MS", "marcas": ["capital", "centro_oeste"] },
+    { "nome": "Porto Alegre", "uf": "RS", "marcas": ["capital", "sul"] },
+    { "nome": "Curitiba", "uf": "PR", "marcas": ["capital", "sul"] },
+    { "nome": "Florianópolis", "uf": "SC", "marcas": ["capital", "sul", "litoral"] },
+    { "nome": "Campinas", "uf": "SP", "marcas": ["interior", "sudeste"] },
+    { "nome": "Ribeirão Preto", "uf": "SP", "marcas": ["interior", "sudeste"] },
+    { "nome": "Santos", "uf": "SP", "marcas": ["interior", "sudeste", "litoral"] },
+    { "nome": "Uberlândia", "uf": "MG", "marcas": ["interior", "sudeste"] },
+    { "nome": "Juiz de Fora", "uf": "MG", "marcas": ["interior", "sudeste"] },
+    { "nome": "Montes Claros", "uf": "MG", "marcas": ["interior", "sudeste"] },
+    { "nome": "Campos dos Goytacazes", "uf": "RJ", "marcas": ["interior", "sudeste"] },
+    { "nome": "Feira de Santana", "uf": "BA", "marcas": ["interior", "nordeste"] },
+    { "nome": "Vitória da Conquista", "uf": "BA", "marcas": ["interior", "nordeste"] },
+    { "nome": "Ilhéus", "uf": "BA", "marcas": ["interior", "nordeste", "litoral"] },
+    { "nome": "Caruaru", "uf": "PE", "marcas": ["interior", "nordeste"] },
+    { "nome": "Petrolina", "uf": "PE", "marcas": ["interior", "nordeste"] },
+    { "nome": "Campina Grande", "uf": "PB", "marcas": ["interior", "nordeste"] },
+    { "nome": "Mossoró", "uf": "RN", "marcas": ["interior", "nordeste"] },
+    { "nome": "Juazeiro do Norte", "uf": "CE", "marcas": ["interior", "nordeste"] },
+    { "nome": "Imperatriz", "uf": "MA", "marcas": ["interior", "nordeste"] },
+    { "nome": "Santarém", "uf": "PA", "marcas": ["interior", "norte"] },
+    { "nome": "Parintins", "uf": "AM", "marcas": ["interior", "norte"] },
+    { "nome": "Anápolis", "uf": "GO", "marcas": ["interior", "centro_oeste"] },
+    { "nome": "Rondonópolis", "uf": "MT", "marcas": ["interior", "centro_oeste"] },
+    { "nome": "Dourados", "uf": "MS", "marcas": ["interior", "centro_oeste"] },
+    { "nome": "Londrina", "uf": "PR", "marcas": ["interior", "sul"] },
+    { "nome": "Maringá", "uf": "PR", "marcas": ["interior", "sul"] },
+    { "nome": "Joinville", "uf": "SC", "marcas": ["interior", "sul"] },
+    { "nome": "Blumenau", "uf": "SC", "marcas": ["interior", "sul"] },
+    { "nome": "Chapecó", "uf": "SC", "marcas": ["interior", "sul"] },
+    { "nome": "Caxias do Sul", "uf": "RS", "marcas": ["interior", "sul"] },
+    { "nome": "Pelotas", "uf": "RS", "marcas": ["interior", "sul"] }
+  ],
+  "familias": [
+    {
+      "marca": "familia_apertada",
+      "peso": 4,
+      "profissoes": [
+        { "m": "pedreiro", "f": "diarista" },
+        { "m": "vendedor ambulante", "f": "vendedora ambulante" },
+        { "m": "motorista de aplicativo", "f": "motorista de aplicativo" },
+        { "m": "porteiro", "f": "porteira" },
+        { "m": "cozinheiro", "f": "cozinheira" },
+        { "m": "auxiliar de serviços gerais", "f": "auxiliar de serviços gerais" },
+        { "m": "entregador", "f": "entregadora" },
+        { "m": "feirante", "f": "feirante" },
+        { "m": "catador de recicláveis", "f": "catadora de recicláveis" },
+        { "m": "barbeiro", "f": "manicure" },
+        { "m": "servente de obra", "f": "costureira" },
+        { "m": "repositor de supermercado", "f": "caixa de supermercado" }
+      ]
+    },
+    {
+      "marca": "familia_remediada",
+      "peso": 4,
+      "profissoes": [
+        { "m": "professor", "f": "professora" },
+        { "m": "técnico de enfermagem", "f": "técnica de enfermagem" },
+        { "m": "mecânico", "f": "cabeleireira" },
+        { "m": "motorista de ônibus", "f": "recepcionista" },
+        { "m": "dono de mercadinho", "f": "dona de mercadinho" },
+        { "m": "vendedor de loja", "f": "vendedora de loja" },
+        { "m": "eletricista", "f": "auxiliar administrativa" },
+        { "m": "policial militar", "f": "policial militar" },
+        { "m": "caminhoneiro", "f": "vendedora de cosméticos por catálogo" },
+        { "m": "bancário", "f": "bancária" },
+        { "m": "carteiro", "f": "carteira" },
+        { "m": "técnico de informática", "f": "técnica de informática" }
+      ]
+    },
+    {
+      "marca": "familia_confortavel",
+      "peso": 2,
+      "profissoes": [
+        { "m": "médico", "f": "médica" },
+        { "m": "advogado", "f": "advogada" },
+        { "m": "engenheiro", "f": "engenheira" },
+        { "m": "servidor público", "f": "servidora pública" },
+        { "m": "empresário", "f": "empresária" },
+        { "m": "dentista", "f": "dentista" },
+        { "m": "programador", "f": "programadora" },
+        { "m": "gerente de banco", "f": "gerente de banco" },
+        { "m": "arquiteto", "f": "arquiteta" },
+        { "m": "fazendeiro", "f": "fazendeira" }
+      ]
+    }
+  ],
+  "nascimento": [
+    "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {profissao_mae}, e {pai}, {profissao_pai}, choraram mais que você.",
+    "Nasceu {nome}, em {cidade} ({uf}). [Três quilos e duzentos|Três quilos e meio|Quase quatro quilos] de pura teimosia. {mae} é {profissao_mae}; {pai}, {profissao_pai}.",
+    "Primeiro choro registrado em {cidade}, {uf}. A vó {avo} jurou que você tem o nariz da família. {mae} ({profissao_mae}) e {pai} ({profissao_pai}) só queriam dormir.",
+    "{cidade}, {ano}. Você chegou [antes da hora|depois da hora|na hora exata, o que nunca mais se repetiria]. {mae} é {profissao_mae} e {pai} é {profissao_pai}. A conta da maternidade ninguém comentou.",
+    "Você nasceu em {cidade} ({uf}) e foi logo batizad{o|a} de {nome}, depois de uma votação acirrada no grupo da família. {mae} trabalha como {profissao_mae}; {pai}, como {profissao_pai}."
+  ],
+  "epitafios": [
+    "Viveu do jeito que deu, e deu bastante.",
+    "Nunca venceu uma discussão no grupo da família, mas também nunca saiu dele.",
+    "Pagou boletos, contou piadas, deixou saudade.",
+    "Foi feliz em prestações.",
+    "Morreu sem saber a senha do wi-fi da casa da vó.",
+    "Chegava sempre cinco minutos atrasad{o|a}. Até aqui.",
+    "Deixou uma gaveta cheia de sacolinhas e um coração cheio de gente."
+  ]
+}

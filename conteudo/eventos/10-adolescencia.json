@@ -1,0 +1,386 @@
+[
+  {
+    "id": "primeiro_celular",
+    "idade": [11, 13],
+    "peso": 4,
+    "texto": "Você ganhou seu primeiro celular. Usado, com a tela trincada no canto e a capinha de outra pessoa, mas é seu.",
+    "resumo": "ganhou o primeiro celular",
+    "escolhas": [
+      {
+        "texto": "Criar um canal de vídeos",
+        "resumo": "criou um canal de vídeos aos {idade} anos",
+        "resultado": {
+          "texto": "Primeiro vídeo: onze visualizações, nove da família. A vó {avo} comentou \"lindo\" em todos.",
+          "efeitos": { "felicidade": 3, "marcas": ["criador_conteudo"] }
+        }
+      },
+      {
+        "texto": "Entrar em todos os grupos da turma",
+        "resumo": "entrou em todos os grupos da turma",
+        "resultado": {
+          "texto": "Você virou especialista em figurinha, fofoca e em responder \"kkkkk\" sem rir.",
+          "efeitos": { "felicidade": 4, "inteligencia": -1 }
+        }
+      },
+      {
+        "texto": "Baixar um aplicativo de estudo",
+        "resumo": "baixou um aplicativo de estudo e usou duas vezes",
+        "resultado": {
+          "texto": "Usou duas vezes. Mas usou, e isso já é mais do que a média.",
+          "efeitos": { "inteligencia": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vape_festa",
+    "idade": [14, 17],
+    "peso": 4,
+    "texto": "Numa festa, alguém te oferece um vape sabor [melancia|chiclete|menta com uva]. Todo mundo está olhando. Ou parece que está.",
+    "resumo": "foi apresentad{o|a} a um vape numa festa",
+    "escolhas": [
+      {
+        "texto": "Dar uma tragada",
+        "resumo": "deu a primeira tragada num vape numa festa",
+        "resultado": {
+          "texto": "Você tossiu, riu e voltou para casa cheirando a doce. Foi a primeira de muitas.",
+          "efeitos": { "felicidade": 5, "aparencia": 2, "marcas": ["fumante"] }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou o vape na festa",
+        "resultado": {
+          "texto": "Alguém te chamou de careta. Você sobreviveu muito bem a isso.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Dizer que tem asma",
+        "resumo": "inventou uma asma para recusar o vape",
+        "resultado": {
+          "texto": "Mentira eficiente. Ninguém insistiu, e uma pessoa até te emprestou uma bombinha.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "primeiro_beijo",
+    "idade": [13, 16],
+    "peso": 4,
+    "texto": "Na festa de aniversário de alguém, a brincadeira de verdade ou consequência vira para você. Consequência: beijar a pessoa mais bonita da roda.",
+    "resumo": "caiu na brincadeira de verdade ou consequência",
+    "escolhas": [
+      {
+        "texto": "Encarar a consequência",
+        "resumo": "encarou a consequência na roda",
+        "teste": { "atributo": "aparencia", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "Foi rápido, desajeitado e perfeito. {paixao} sorriu para você o resto da festa.",
+          "resumo": "deu o primeiro beijo em {paixao} numa brincadeira",
+          "efeitos": { "felicidade": 6, "personagens": ["paixao"], "marcas": ["primeiro_amor"] }
+        },
+        "fracasso": {
+          "texto": "A pessoa virou o rosto. A roda inteira fez \"uuuh\". Você mudou de escola mentalmente.",
+          "resumo": "levou um fora na frente da roda inteira",
+          "efeitos": { "felicidade": -4, "aparencia": -1 }
+        }
+      },
+      {
+        "texto": "Pedir verdade",
+        "resumo": "pediu verdade e se arrependeu",
+        "resultado": {
+          "texto": "Você contou que ainda dorme com um bicho de pelúcia. A escola inteira soube até segunda.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fugir para o banheiro",
+        "resumo": "fugiu da brincadeira para o banheiro",
+        "resultado": {
+          "texto": "Ficou vinte minutos encarando o espelho e voltou quando o assunto já era outro.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "olimpiada_matematica",
+    "idade": [12, 16],
+    "peso": 6,
+    "condicoes": { "marcas": ["nerd"] },
+    "texto": "A escola te inscreveu na olimpíada de matemática. Prêmio: medalha, uma bolsa de estudos e a inveja silenciosa da turma.",
+    "resumo": "foi inscrit{o|a} na olimpíada de matemática",
+    "escolhas": [
+      {
+        "texto": "Treinar todo dia",
+        "resumo": "treinou meses para a olimpíada de matemática",
+        "efeitos": { "inteligencia": 3, "felicidade": -1 },
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Medalha de prata! Sua foto foi parar no mural da escola e no grupo da família, com legenda em maiúsculas.",
+          "resumo": "ganhou medalha na olimpíada de matemática",
+          "efeitos": { "inteligencia": 3, "felicidade": 6, "marcas": ["medalhista"] }
+        },
+        "fracasso": {
+          "texto": "Menção honrosa. Parece pouco, mas você aprendeu mais em três meses do que em três anos.",
+          "efeitos": { "inteligencia": 2 }
+        }
+      },
+      {
+        "texto": "Ir sem estudar e confiar no talento",
+        "resumo": "fez a olimpíada sem estudar",
+        "teste": { "atributo": "inteligencia", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "Medalha de bronze sem abrir um livro. Os professores ficaram com medo de você.",
+          "resumo": "ganhou medalha na olimpíada sem estudar",
+          "efeitos": { "felicidade": 7, "marcas": ["medalhista"] }
+        },
+        "fracasso": {
+          "texto": "Você terminou a prova em vinte minutos e entendeu, na saída, que não era bom sinal.",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Faltar no dia da prova",
+        "resumo": "faltou à prova da olimpíada",
+        "resultado": {
+          "texto": "Você passou a manhã dormindo. Ninguém da olimpíada sentiu sua falta; a professora sentiu.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peneira",
+    "idade": [12, 15],
+    "peso": 6,
+    "condicoes": { "marcas": ["boleiro"] },
+    "texto": "Um olheiro de um clube grande vai assistir ao treino da escolinha. É a peneira. Seu coração bate no ritmo do apito.",
+    "resumo": "fez peneira num clube grande",
+    "escolhas": [
+      {
+        "texto": "Dar tudo de si",
+        "resumo": "deu tudo de si na peneira",
+        "teste": { "atributo": "saude", "dificuldade": 75 },
+        "sucesso": {
+          "texto": "Você driblou dois, chutou torto e fez o gol mesmo assim. O olheiro anotou seu nome num papel de pão.",
+          "resumo": "passou na peneira de um clube grande",
+          "efeitos": {
+            "felicidade": 6,
+            "marcas": ["base_clube"],
+            "agendar": [{ "evento": "carreira_futebol", "em": [2, 4] }]
+          }
+        },
+        "fracasso": {
+          "texto": "Você tropeçou na bola no lance mais importante. O olheiro nem olhou de novo.",
+          "resumo": "foi reprovad{o|a} na peneira",
+          "efeitos": { "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Jogar sem pressão",
+        "resumo": "jogou a peneira sem pressão e voltou para casa",
+        "resultado": {
+          "texto": "Você se divertiu como nunca. O olheiro levou outros dois, e tudo bem.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carreira_futebol",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["base_clube"] },
+    "texto": "Aos {idade} anos, o técnico do time principal te chamou para treinar com os profissionais. É agora ou nunca, e os estudos estão pela metade.",
+    "resumo": "foi chamad{o|a} para treinar com os profissionais",
+    "escolhas": [
+      {
+        "texto": "Largar a escola e treinar como nunca",
+        "resumo": "largou a escola pelo futebol",
+        "teste": { "atributo": "saude", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "Estreou no profissional, fez um gol de cabeça e virou figurinha. Das difíceis.",
+          "resumo": "largou a escola e estreou no futebol profissional",
+          "efeitos": {
+            "felicidade": 10,
+            "dinheiro": 30000,
+            "renda": { "definir": 150000 },
+            "removerMarcas": ["base_clube"],
+            "marcas": ["profissional"]
+          }
+        },
+        "fracasso": {
+          "texto": "Rompeu o ligamento do joelho no último treino antes da estreia. O sonho ficou no departamento médico.",
+          "resumo": "rompeu o joelho às vésperas da estreia",
+          "efeitos": { "saude": -12, "felicidade": -10, "removerMarcas": ["base_clube"], "marcas": ["joelho_ruim"] }
+        }
+      },
+      {
+        "texto": "Conciliar bola e estudo",
+        "resumo": "pendurou as chuteiras cedo para terminar os estudos",
+        "resultado": {
+          "texto": "O clube não esperou. Você terminou o ensino médio e virou lenda do futebol de domingo.",
+          "efeitos": { "felicidade": -3, "inteligencia": 3, "removerMarcas": ["base_clube"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "banda_garagem",
+    "idade": [13, 17],
+    "peso": 3,
+    "texto": "Uns amigos da escola querem montar uma banda na garagem. Falta [baterista|baixista|alguém que saiba tocar alguma coisa].",
+    "resumo": "foi convidad{o|a} para uma banda de garagem",
+    "escolhas": [
+      {
+        "texto": "Entrar na banda",
+        "resumo": "montou uma banda de garagem",
+        "resultado": {
+          "texto": "O primeiro ensaio foi tão alto que a vizinha ameaçou chamar a polícia. Para vocês, foi sucesso.",
+          "efeitos": { "felicidade": 5, "marcas": ["banda"] }
+        }
+      },
+      {
+        "texto": "Ser empresári{o|a} da banda",
+        "resumo": "virou empresári{o|a} de uma banda de garagem",
+        "resultado": {
+          "texto": "Você conseguiu um show na quermesse. Cachê: um pastel para cada um.",
+          "efeitos": { "inteligencia": 2, "felicidade": 2, "marcas": ["vendedor_nato"] }
+        }
+      },
+      {
+        "texto": "Preferir só ouvir",
+        "resumo": "preferiu ouvir a banda a tocar nela",
+        "resultado": {
+          "texto": "Você virou o fã número um. Também o único, mas isso é detalhe.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "titulo_eleitor",
+    "idade": [16, 17],
+    "peso": 3,
+    "texto": "Aos {idade}, você já pode tirar o título de eleitor. O grupo da família está em guerra por causa da eleição desde março.",
+    "resumo": "decidiu se tirava o título de eleitor",
+    "escolhas": [
+      {
+        "texto": "Tirar e votar",
+        "resumo": "tirou o título aos {idade} e entrou na briga política da família",
+        "resultado": {
+          "texto": "Você pesquisou cada candidato, votou e explicou sua escolha no grupo. Foi removid{o|a} do grupo por um tio.",
+          "efeitos": { "inteligencia": 2, "marcas": ["politizado"] }
+        }
+      },
+      {
+        "texto": "Deixar para os 18",
+        "resumo": "deixou o título para depois",
+        "resultado": {
+          "texto": "Você assistiu à guerra do grupo de longe, com pipoca. Paz é um privilégio.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_sem_pais",
+    "idade": [15, 17],
+    "peso": 3,
+    "texto": "{mae} e {pai} vão viajar no fim de semana. A casa vazia está te olhando.",
+    "resumo": "ficou com a casa vazia no fim de semana",
+    "escolhas": [
+      {
+        "texto": "Dar uma festa",
+        "resumo": "deu uma festa com os pais viajando",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "A festa foi lendária. A casa sobreviveu. Quase toda.",
+          "resumo": "deu uma festa lendária com os pais viajando",
+          "efeitos": { "felicidade": 8, "aparencia": 2 }
+        },
+        "fracasso": {
+          "texto": "Alguém quebrou a TV e o vizinho ligou para {mae}. Você vai pagar essa TV até os trinta.",
+          "resumo": "deu uma festa que quebrou a TV da sala",
+          "efeitos": { "felicidade": -3, "dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Maratonar séries",
+        "resumo": "passou o fim de semana maratonando séries",
+        "resultado": {
+          "texto": "Três temporadas, duas pizzas e nenhum arrependimento.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Estudar (ninguém vai acreditar)",
+        "resumo": "estudou num fim de semana sem os pais em casa",
+        "resultado": {
+          "texto": "Você estudou de verdade. Ninguém acreditou, mas a nota acreditou.",
+          "efeitos": { "inteligencia": 3, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "enem",
+    "idade": [17, 18],
+    "marco": true,
+    "texto": "Chegou o ENEM: dois domingos, um cartão-resposta e uma redação sobre um tema que [ninguém previu|todo mundo previu errado|virou meme na mesma tarde].",
+    "resumo": "fez o ENEM",
+    "escolhas": [
+      {
+        "texto": "Estudar de madrugada por meses",
+        "resumo": "estudou de madrugada para o ENEM",
+        "efeitos": { "inteligencia": 4, "saude": -2 },
+        "teste": { "atributo": "inteligencia", "dificuldade": 52 },
+        "sucesso": {
+          "texto": "Aprovad{o|a} na universidade federal! {mae} imprimiu o resultado e colou na geladeira.",
+          "resumo": "estudou de madrugada e passou na federal",
+          "efeitos": { "felicidade": 7, "marcas": ["cursando"] }
+        },
+        "fracasso": {
+          "texto": "Faltaram poucos pontos. Você chorou, comeu um pote de sorvete e decidiu que a vida tem outros caminhos.",
+          "resumo": "estudou meses e ficou a poucos pontos da federal",
+          "efeitos": { "felicidade": -5, "marcas": ["trabalhou_cedo"] }
+        }
+      },
+      {
+        "texto": "Fazer de qualquer jeito",
+        "resumo": "fez o ENEM de qualquer jeito",
+        "teste": { "atributo": "inteligencia", "dificuldade": 68 },
+        "sucesso": {
+          "texto": "Ninguém entende como você passou na federal. Nem você.",
+          "resumo": "fez o ENEM de qualquer jeito e passou",
+          "efeitos": { "felicidade": 6, "marcas": ["cursando"] }
+        },
+        "fracasso": {
+          "texto": "Você cochilou na prova de matemática e acordou com o fiscal recolhendo o caderno.",
+          "resumo": "cochilou no ENEM",
+          "efeitos": { "felicidade": -2, "marcas": ["trabalhou_cedo"] }
+        }
+      },
+      {
+        "texto": "Pular o ENEM e ir trabalhar",
+        "resumo": "trocou o ENEM por um emprego",
+        "resultado": {
+          "texto": "Enquanto a turma fazia a prova, você recebia o primeiro salário. Os dois lados se acharam espertos.",
+          "efeitos": { "dinheiro": 1500, "felicidade": 1, "marcas": ["trabalhou_cedo"] }
+        }
+      },
+      {
+        "texto": "Faculdade particular, paga pela família",
+        "resumo": "foi para uma faculdade particular paga pela família",
+        "condicoes": { "marcas": ["familia_confortavel"] },
+        "bloqueio": "a mensalidade não cabe no orçamento de casa",
+        "resultado": {
+          "texto": "{pai} fez as contas, suspirou e assinou o contrato. Você ganhou um campus com wi-fi e lanchonete cara.",
+          "efeitos": { "felicidade": 3, "marcas": ["cursando"] }
+        }
+      }
+    ]
+  }
+]

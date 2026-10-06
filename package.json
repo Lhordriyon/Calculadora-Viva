@@ -1,0 +1,32 @@
+{
+  "name": "trajetoria",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "checar": "tsc -p .",
+    "test": "vitest run",
+    "validar": "node scripts/validar.ts",
+    "tunel": "node scripts/tunel.ts",
+    "vida": "node scripts/uma-vida.ts",
+    "verificar": "npm run checar && npm test && npm run validar && npm run tunel && npm run build"
+  },
+  "dependencies": {
+    "preact": "^11.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.3",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.3"
+  },
+  "description": "Trajetória: um simulador de vida em texto, ano a ano, para jogar no celular.",
+  "engines": {
+    "node": ">=22.18"
+  }
+}

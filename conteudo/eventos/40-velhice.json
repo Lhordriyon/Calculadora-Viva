@@ -1,0 +1,396 @@
+[
+  {
+    "id": "exame_rotina",
+    "idade": [45, 88],
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Exames de rotina. O médico do posto tem sete minutos por paciente e muita boa vontade.",
+    "resumo": "foi chamad{o|a} para exames de rotina",
+    "escolhas": [
+      {
+        "texto": "Fazer tudo direitinho",
+        "resumo": "fez os exames de rotina",
+        "resultado": {
+          "texto": "Jejum, coleta e um \"está tudo ótimo, só cuidado com o sal\".",
+          "efeitos": { "saude": 3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pular, que você está ótim{o|a}",
+        "resumo": "pulou os exames de rotina",
+        "teste": { "chance": 0.7 },
+        "sucesso": { "texto": "Você estava ótim{o|a} mesmo. Por enquanto.", "efeitos": { "felicidade": 1 } },
+        "fracasso": {
+          "texto": "O que era pequeno ficou grande. A recuperação demorou meses.",
+          "resumo": "pulou os exames e descobriu um problema tarde",
+          "efeitos": { "saude": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "netos",
+    "idade": [48, 80],
+    "peso": 5,
+    "condicoes": { "marcaHa": [{ "marca": "pai_mae", "min": 22 }] },
+    "texto": "{filho} chega para o almoço de domingo com um envelope. Dentro, um teste de farmácia. Você vai ser av{ô|ó}.",
+    "resumo": "virou av{ô|ó}",
+    "escolhas": [
+      {
+        "texto": "Virar av{ô|ó} babá",
+        "resumo": "virou av{ô|ó} babá",
+        "resultado": {
+          "texto": "Você reaprendeu a trocar fralda e jura que da primeira vez era mais fácil.",
+          "efeitos": { "felicidade": 8, "saude": -1, "marcas": ["avo_coruja"] }
+        }
+      },
+      {
+        "texto": "Ser av{ô|ó} de fim de semana",
+        "resumo": "virou av{ô|ó} de fim de semana",
+        "resultado": {
+          "texto": "Sábado é dia de bolo, desenho animado e regra nenhuma.",
+          "efeitos": { "felicidade": 5, "marcas": ["avo_coruja"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "volta_terra",
+    "idade": [35, 65],
+    "peso": 5,
+    "condicoes": { "marcaHa": [{ "marca": "mudou_sp", "min": 8 }] },
+    "texto": "Bateu saudade de {cidade}. O cheiro da rua, o sotaque, a padaria da esquina que ainda faz o pão do jeito certo.",
+    "resumo": "sentiu saudade de {cidade}",
+    "escolhas": [
+      {
+        "texto": "Voltar para {cidade}",
+        "resumo": "voltou para {cidade} depois de anos em São Paulo",
+        "resultado": {
+          "texto": "Você desceu do ônibus e chorou na rodoviária. O pão continuava igual.",
+          "efeitos": { "custo": -10000, "renda": -8000, "felicidade": 7, "removerMarcas": ["mudou_sp"] }
+        }
+      },
+      {
+        "texto": "Ficar e visitar nas férias",
+        "resumo": "ficou em São Paulo e matou a saudade nas férias",
+        "resultado": {
+          "texto": "Duas semanas por ano de comida de mãe e sotaque de casa. Dá para aguentar o resto.",
+          "efeitos": { "dinheiro": -2000, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aposentadoria",
+    "idade": [62, 75],
+    "marco": true,
+    "repetivel": true,
+    "intervalo": 3,
+    "condicoes": { "renda": { "min": 10000 }, "semMarcas": ["aposentado"] },
+    "texto": "Chegou a hora de pedir a aposentadoria. O INSS marcou a perícia para daqui a oito meses, numa terça-feira às sete da manhã.",
+    "resumo": "chegou à hora da aposentadoria",
+    "escolhas": [
+      {
+        "texto": "Aposentar como servidor{|a}",
+        "resumo": "se aposentou como servidor{|a} públic{o|a}",
+        "condicoes": { "marcas": ["servidor"] },
+        "bloqueio": "só para quem passou em concurso",
+        "resultado": {
+          "texto": "Festa de despedida com bolo de padaria e um discurso do chefe que errou seu nome.",
+          "efeitos": { "renda": { "definir": 60000 }, "felicidade": 6, "marcas": ["aposentado"] }
+        }
+      },
+      {
+        "texto": "Aposentar pelo INSS",
+        "resumo": "se aposentou pelo INSS",
+        "condicoes": { "algumaMarca": ["clt", "empreendedor", "influencer", "socio", "vereador"] },
+        "bloqueio": "faltam anos de contribuição",
+        "resultado": {
+          "texto": "Depois de três perícias e uma fila que deu volta no quarteirão, o benefício saiu.",
+          "efeitos": { "renda": { "definir": 26000 }, "felicidade": 5, "marcas": ["aposentado"] }
+        }
+      },
+      {
+        "texto": "Pedir o benefício mínimo",
+        "resumo": "se aposentou com um salário mínimo",
+        "resultado": {
+          "texto": "Um salário mínimo por mês e todo o tempo do mundo. O tempo, pelo menos, é farto.",
+          "efeitos": { "renda": { "definir": 20000 }, "felicidade": 2, "marcas": ["aposentado"] }
+        }
+      },
+      {
+        "texto": "Continuar trabalhando enquanto der",
+        "resumo": "adiou a aposentadoria para continuar trabalhando",
+        "resultado": {
+          "texto": "Você disse que vai parar \"daqui a pouco\". Os colegas já fizeram um bolão.",
+          "efeitos": { "felicidade": -1, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "hobby_horta",
+    "idade": [50, 85],
+    "peso": 2,
+    "condicoes": { "semMarcas": ["horta"] },
+    "texto": "O quintal tem sol de manhã e um pedaço de terra sem uso. Você imagina tomates.",
+    "resumo": "pensou em plantar uma horta",
+    "escolhas": [
+      {
+        "texto": "Plantar uma horta",
+        "resumo": "plantou uma horta no quintal",
+        "resultado": {
+          "texto": "Alface, cebolinha e um tomateiro que você trata pelo nome.",
+          "efeitos": { "felicidade": 2, "dinheiro": -300, "marcas": ["horta"] }
+        }
+      },
+      {
+        "texto": "Comprar tudo na feira",
+        "resumo": "preferiu a feira à horta",
+        "resultado": {
+          "texto": "Feira de domingo, pastel e caldo de cana. A horta pode esperar.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "hidroginastica",
+    "idade": [62, 88],
+    "peso": 3,
+    "condicoes": { "semMarcas": ["ativo"] },
+    "texto": "A turma da hidroginástica te convidou. Dizem que é mais fofoca que exercício, mas a água é morna.",
+    "resumo": "foi convidad{o|a} para a hidroginástica",
+    "escolhas": [
+      {
+        "texto": "Ir toda terça e quinta",
+        "resumo": "entrou para a turma da hidroginástica",
+        "resultado": {
+          "texto": "Você aprendeu três exercícios e trinta fofocas novas.",
+          "efeitos": { "saude": 4, "felicidade": 4, "dinheiro": -600, "marcas": ["ativo"] }
+        }
+      },
+      {
+        "texto": "Ficar no sofá",
+        "resumo": "recusou a hidroginástica e ficou no sofá",
+        "resultado": { "texto": "O sofá agradeceu. A coluna, nem tanto.", "efeitos": { "felicidade": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "reencontro_amigo",
+    "idade": [58, 88],
+    "peso": 4,
+    "condicoes": { "marcas": ["amigo_de_infancia"] },
+    "texto": "{amigo} te liga depois de muito tempo. Quer marcar um café \"antes que a gente fique velho\". Vocês já estão velhos.",
+    "resumo": "foi chamad{o|a} por {amigo} para um café",
+    "escolhas": [
+      {
+        "texto": "Fazer as pazes de vez",
+        "resumo": "fez as pazes com {amigo}",
+        "condicoes": { "marcas": ["brigou_com_amigo"] },
+        "bloqueio": "não há briga nenhuma para resolver",
+        "resultado": {
+          "texto": "Vocês falaram da sociedade que quebrou e, pela primeira vez, riram disso.",
+          "efeitos": { "felicidade": 8, "removerMarcas": ["brigou_com_amigo"] }
+        }
+      },
+      {
+        "texto": "Ir ao café",
+        "resumo": "reencontrou {amigo} para um café de quatro horas",
+        "resultado": {
+          "texto": "O café durou quatro horas. Vocês falaram do biscoito do primeiro dia de escola como se fosse ontem.",
+          "efeitos": { "felicidade": 6 }
+        }
+      },
+      {
+        "texto": "Desmarcar",
+        "resumo": "desmarcou o café com {amigo}",
+        "resultado": {
+          "texto": "\"Fica para a próxima\", vocês disseram, como quem não acredita.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "queda",
+    "idade": [70, 100],
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Um tapete traiçoeiro no corredor. O chão chegou mais rápido do que você lembrava.",
+    "resumo": "levou um tombo em casa",
+    "escolhas": [
+      {
+        "texto": "Ir ao pronto-socorro",
+        "resumo": "levou um tombo e foi ao pronto-socorro",
+        "resultado": {
+          "texto": "Raio-x, seis horas de espera e um médico que te chamou de \"jovem\". Nada quebrado.",
+          "efeitos": { "saude": -3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Levantar sozinh{o|a} e disfarçar",
+        "resumo": "levantou sozinh{o|a} depois de um tombo",
+        "teste": { "atributo": "saude", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "Ninguém viu. Você jura que foi charme.",
+          "resumo": "levou um tombo e disfarçou com charme",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Quebrou o fêmur. A recuperação foi longa e cheia de novela.",
+          "resumo": "quebrou o fêmur depois de um tombo",
+          "efeitos": { "saude": -15, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "testamento",
+    "idade": [72, 95],
+    "peso": 3,
+    "condicoes": { "patrimonio": { "min": 50000 } },
+    "texto": "Hora de pensar no que fica. Seu patrimônio: {patrimonio}. Seus herdeiros: atentos.",
+    "resumo": "fez o testamento",
+    "escolhas": [
+      {
+        "texto": "Deixar tudo para {filho}",
+        "resumo": "deixou tudo para {filho} em testamento",
+        "condicoes": { "marcas": ["pai_mae"] },
+        "bloqueio": "você não tem filhos",
+        "resultado": {
+          "texto": "Você assinou o testamento e ligou para {filho} só para ouvir a voz.",
+          "efeitos": { "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Doar uma parte para um abrigo de animais",
+        "resumo": "doou parte do patrimônio para um abrigo de animais",
+        "resultado": {
+          "texto": "O abrigo batizou um canil com o seu nome. Os cachorros não sabem ler, mas abanam o rabo.",
+          "efeitos": { "dinheiro": -25000, "felicidade": 6 }
+        }
+      },
+      {
+        "texto": "Gastar tudo antes",
+        "resumo": "decidiu gastar o patrimônio em vida",
+        "resultado": {
+          "texto": "Você chamou de \"planejamento sucessório reverso\". Os herdeiros chamaram de outra coisa.",
+          "efeitos": { "dinheiro": -40000, "felicidade": 8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_80",
+    "idade": [80, 80],
+    "marco": true,
+    "texto": "Oitenta anos! A família organizou uma festa surpresa que todo mundo te contou antes.",
+    "resumo": "chegou aos oitenta",
+    "escolhas": [
+      {
+        "texto": "Fazer um discurso",
+        "resumo": "fez um discurso de quarenta minutos nos oitenta anos",
+        "resultado": {
+          "texto": "Você falou por quarenta minutos. Riram, choraram e cochilaram, nessa ordem.",
+          "efeitos": { "felicidade": 5 }
+        }
+      },
+      {
+        "texto": "Dançar até o fim",
+        "resumo": "dançou na própria festa de oitenta anos",
+        "teste": { "atributo": "saude", "dificuldade": 40 },
+        "sucesso": {
+          "texto": "Você dançou até a última música e ainda pediu bis.",
+          "resumo": "dançou até o fim da própria festa de oitenta anos",
+          "efeitos": { "felicidade": 8 }
+        },
+        "fracasso": {
+          "texto": "Dançou duas músicas e passou o resto da festa com gelo no joelho, feliz da vida.",
+          "resumo": "dançou nos oitenta e terminou com gelo no joelho",
+          "efeitos": { "saude": -5, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Fingir surpresa",
+        "resumo": "fingiu surpresa na festa de oitenta anos",
+        "resultado": {
+          "texto": "Você caprichou no \"nossa!\" e todo mundo fingiu acreditar.",
+          "efeitos": { "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "caramelo_velhinho",
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 10,
+    "condicoes": { "marcas": ["caramelo"] },
+    "texto": "{pet} está velhinh{pet:o|a}: dorme o dia inteiro, não corre mais atrás do carteiro e ainda te espera no portão.",
+    "resumo": "viu {pet} envelhecer",
+    "escolhas": [
+      {
+        "texto": "Ficar junto até o fim",
+        "resumo": "se despediu de {pet}",
+        "resultado": {
+          "texto": "{pet} dormiu no seu colo pela última vez. A casa ficou grande demais.",
+          "efeitos": { "felicidade": -4, "removerMarcas": ["caramelo"] }
+        }
+      },
+      {
+        "texto": "Adotar outro caramelo depois",
+        "resumo": "adotou outro vira-lata caramelo",
+        "resultado": {
+          "texto": "Depois do luto, chegou {pet}, outro caramelo, bagunçando tudo. A casa voltou a ter barulho.",
+          "efeitos": {
+            "felicidade": 1,
+            "removerMarcas": ["caramelo"],
+            "personagens": ["pet"],
+            "marcas": ["caramelo"],
+            "agendar": [{ "evento": "caramelo_velhinho", "em": [12, 15] }],
+            "custo": 1500
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vo_partiu",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["criado_pela_vo"] },
+    "texto": "A vó {avo} se foi, dormindo, do jeito que ela pedia nas orações.",
+    "resumo": "perdeu a vó {avo}",
+    "escolhas": [
+      {
+        "texto": "Fazer o bolo de fubá para o velório",
+        "resumo": "fez o bolo de fubá da vó {avo} no velório dela",
+        "condicoes": { "marcas": ["receita_da_vo"] },
+        "bloqueio": "você nunca aprendeu a receita",
+        "resultado": {
+          "texto": "Todo mundo comeu em silêncio. Era exatamente o gosto.",
+          "efeitos": { "felicidade": -1, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Guardar o caderno de receitas dela",
+        "resumo": "guardou o caderno de receitas da vó {avo}",
+        "resultado": {
+          "texto": "A letra tremida dela ocupa quarenta páginas e três manchas de café.",
+          "efeitos": { "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Chorar no colo de {mae}",
+        "resumo": "chorou no colo de {mae} pela vó {avo}",
+        "resultado": {
+          "texto": "{mae} também chorou. Depois fizeram um café, que é o que se faz.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,369 @@
+[
+  {
+    "id": "primeira_palavra",
+    "idade": [1, 1],
+    "marco": true,
+    "texto": "{mae} aposta que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece o neto|já viu isso acontecer três vezes].",
+    "resumo": "disse a primeira palavra",
+    "escolhas": [
+      {
+        "texto": "\"Mamãe\"",
+        "resumo": "disse \"mamãe\" antes de qualquer outra palavra",
+        "resultado": {
+          "texto": "{mae} chorou, gravou e mandou o vídeo para a família inteira. Duas vezes.",
+          "efeitos": { "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "\"Papai\"",
+        "resumo": "disse \"papai\" primeiro e deixou {mae} com ciúme",
+        "resultado": {
+          "texto": "{pai} contou para todo mundo no trabalho, inclusive para quem não perguntou.",
+          "efeitos": { "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "\"Pix\"",
+        "resumo": "disse \"Pix\" como primeira palavra",
+        "resultado": {
+          "texto": "Ninguém sabe onde você ouviu isso. O gerente do banco ficaria orgulhoso.",
+          "efeitos": { "inteligencia": 2, "marcas": ["tino_financeiro"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "creche_ou_vo",
+    "idade": [2, 3],
+    "peso": 6,
+    "texto": "{mae} e {pai} precisam trabalhar. A creche pública abriu vaga, e a vó {avo} se ofereceu para cuidar de você \"só até crescer um pouquinho\".",
+    "resumo": "foi para a creche ou para a casa da vó",
+    "escolhas": [
+      {
+        "texto": "Creche",
+        "resumo": "foi para a creche e voltou com vocabulário novo",
+        "resultado": {
+          "texto": "Você voltou de lá com três amigos, duas viroses e um vocabulário que {mae} prefere não comentar.",
+          "efeitos": { "inteligencia": 3, "saude": -2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ficar com a vó {avo}",
+        "resumo": "foi criad{o|a} pela vó {avo}",
+        "resultado": {
+          "texto": "A vó {avo} te ensinou a rezar, a fazer bolinho de chuva e a desconfiar de vendedor de porta.",
+          "efeitos": {
+            "felicidade": 4,
+            "marcas": ["criado_pela_vo"],
+            "agendar": [{ "evento": "vo_partiu", "em": [16, 26] }]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_tema",
+    "idade": [3, 5],
+    "peso": 3,
+    "texto": "Seu aniversário vai ter tema e você precisa escolher antes que {mae} compre tudo de [dinossauro|unicórnio|fundo do mar] por conta própria.",
+    "resumo": "escolheu o tema da festa de aniversário",
+    "escolhas": [
+      {
+        "texto": "Dinossauro",
+        "resumo": "fez festa de dinossauro e rugiu para os convidados",
+        "resultado": {
+          "texto": "Você rugiu para cada convidado na porta. Três primos choraram.",
+          "efeitos": { "felicidade": 3, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "O time de futebol de {pai}",
+        "resumo": "fez festa com o tema do time de {pai}",
+        "resultado": {
+          "texto": "{pai} ficou tão emocionado que comprou um uniforme do seu tamanho. Você agora tem um time, para o bem e para o mal.",
+          "efeitos": { "felicidade": 3, "marcas": ["torcedor"] }
+        }
+      },
+      {
+        "texto": "Super-herói",
+        "resumo": "fez festa de super-herói, de capa e tudo",
+        "teste": { "chance": 0.7 },
+        "sucesso": {
+          "texto": "Você passou a festa inteira de capa, pulando do sofá. Os convidados juram que você voou.",
+          "resumo": "fez festa de super-herói e quase voou",
+          "efeitos": { "felicidade": 6 }
+        },
+        "fracasso": {
+          "texto": "O voo do sofá terminou na quina da mesa. Galo na testa, foto icônica.",
+          "resumo": "ganhou um galo na testa na própria festa de super-herói",
+          "efeitos": { "felicidade": 2, "saude": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "primeiro_dia_escola",
+    "idade": [5, 6],
+    "marco": true,
+    "texto": "Primeiro dia na escola. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
+    "resumo": "conheceu {amigo} no primeiro dia de escola",
+    "escolhas": [
+      {
+        "texto": "Aceitar o biscoito",
+        "resumo": "aceitou metade do biscoito de {amigo}",
+        "resultado": {
+          "texto": "No recreio vocês já tinham um aperto de mão secreto. {amigo} virou {amigo:seu melhor amigo|sua melhor amiga}.",
+          "efeitos": { "felicidade": 4, "marcas": ["amigo_de_infancia"] }
+        }
+      },
+      {
+        "texto": "Dizer que trouxe o seu",
+        "resumo": "recusou o biscoito de {amigo} no primeiro dia de aula",
+        "resultado": {
+          "texto": "Você comeu seu lanche sozinh{o|a}, com dignidade. {amigo} fez amizade com a turma do fundão.",
+          "efeitos": { "inteligencia": 1, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cachorro_caramelo",
+    "idade": [5, 13],
+    "peso": 2,
+    "texto": "Um vira-lata caramelo te seguiu da escola até o portão de casa. Agora está sentado ali, te olhando como quem já mora aqui.",
+    "resumo": "foi seguid{o|a} por um vira-lata caramelo",
+    "escolhas": [
+      {
+        "texto": "Implorar para ficar com ele",
+        "resumo": "implorou para adotar um vira-lata",
+        "teste": { "chance": 0.65 },
+        "sucesso": {
+          "texto": "Depois de três dias de greve de fome (a sua), {mae} cedeu. O caramelo ganhou o nome de {pet} e o melhor lugar do sofá.",
+          "resumo": "adotou {pet}, um vira-lata caramelo",
+          "efeitos": {
+            "felicidade": 6,
+            "personagens": ["pet"],
+            "marcas": ["caramelo"],
+            "agendar": [{ "evento": "caramelo_velhinho", "em": [11, 14] }]
+          }
+        },
+        "fracasso": {
+          "texto": "{mae} disse que bicho dá trabalho. Quem deu trabalho foi você, chorando uma semana inteira.",
+          "resumo": "tentou adotar um vira-lata e perdeu a discussão",
+          "efeitos": { "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Dar comida e deixar ir",
+        "resumo": "deu comida a um vira-lata e deixou ele seguir",
+        "resultado": {
+          "texto": "Ele comeu, abanou o rabo e foi seguir outra criança. Sem ressentimento.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "feira_ciencias",
+    "idade": [8, 11],
+    "peso": 3,
+    "texto": "Feira de ciências. Você pode fazer o vulcão de bicarbonato pela milésima vez na história da escola ou montar um robô com sucata e o motor de um ventilador velho.",
+    "resumo": "participou da feira de ciências",
+    "escolhas": [
+      {
+        "texto": "Vulcão de bicarbonato",
+        "resumo": "fez o vulcão de bicarbonato, como manda a tradição",
+        "resultado": {
+          "texto": "O vulcão entrou em erupção na hora certa. Nota oito e uma mancha eterna na toalha da mesa.",
+          "efeitos": { "inteligencia": 1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Robô de sucata",
+        "resumo": "montou um robô de sucata para a feira de ciências",
+        "teste": { "atributo": "inteligencia", "dificuldade": 40 },
+        "sucesso": {
+          "texto": "O robô andou meio metro e ganhou medalha. Você nunca mais olhou um ventilador do mesmo jeito.",
+          "resumo": "ganhou a feira de ciências com um robô de sucata",
+          "efeitos": { "inteligencia": 4, "felicidade": 4, "marcas": ["nerd"] }
+        },
+        "fracasso": {
+          "texto": "O robô soltou fumaça e a professora chamou de \"experiência valiosa\". Você chamou de começo.",
+          "resumo": "quase incendiou a feira de ciências com um robô",
+          "efeitos": { "inteligencia": 2, "felicidade": -2, "marcas": ["nerd"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mesada",
+    "idade": [8, 11],
+    "peso": 3,
+    "valores": { "mesada": 30 },
+    "texto": "{pai} propõe uma mesada de {mesada} por mês. Ou, se preferir, um videogame usado agora e nada de mesada pelo resto do ano.",
+    "resumo": "decidiu o destino da primeira mesada",
+    "escolhas": [
+      {
+        "texto": "Mesada, e guardar tudo",
+        "resumo": "guardou cada centavo da mesada",
+        "resultado": {
+          "texto": "No fim do ano você tinha um cofrinho pesado e a sensação de ser dono do banco.",
+          "efeitos": { "dinheiro": 360, "felicidade": -1, "marcas": ["poupador"] }
+        }
+      },
+      {
+        "texto": "Videogame agora",
+        "resumo": "trocou a mesada por um videogame usado",
+        "resultado": {
+          "texto": "Você zerou dois jogos e esqueceu que existia sol.",
+          "efeitos": { "felicidade": 5, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Mesada, e gastar em figurinha",
+        "resumo": "gastou a mesada inteira em figurinhas",
+        "resultado": {
+          "texto": "Completou o álbum quase todo. Faltou uma. Sempre falta uma.",
+          "efeitos": { "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "esporte_depois_da_aula",
+    "idade": [7, 10],
+    "peso": 4,
+    "texto": "Hora de escolher uma atividade para depois da aula. Tem escolinha de futebol no bairro, natação no clube e, claro, a tela do celular.",
+    "resumo": "escolheu o que fazer depois da aula",
+    "escolhas": [
+      {
+        "texto": "Escolinha de futebol",
+        "resumo": "entrou na escolinha de futebol do bairro",
+        "resultado": {
+          "texto": "Você não era quem jogava melhor, mas era quem mais corria. O treinador gostou disso.",
+          "efeitos": { "saude": 2, "felicidade": 3, "marcas": ["boleiro"] }
+        }
+      },
+      {
+        "texto": "Natação no clube",
+        "resumo": "aprendeu a nadar no clube",
+        "resultado": {
+          "texto": "Aprendeu a nadar e passou a cheirar a cloro vinte e quatro horas por dia.",
+          "efeitos": { "saude": 3, "felicidade": 1, "marcas": ["nadador"] }
+        }
+      },
+      {
+        "texto": "Tela do celular",
+        "resumo": "trocou o esporte pela tela do celular",
+        "resultado": {
+          "texto": "Você subiu de nível em quatro jogos e desceu em fôlego na vida real.",
+          "efeitos": { "felicidade": 5, "saude": -2, "marcas": ["sedentario"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vo_receita",
+    "idade": [7, 12],
+    "peso": 5,
+    "condicoes": { "marcas": ["criado_pela_vo"] },
+    "texto": "A vó {avo} decide que chegou a hora: vai te ensinar a receita do bolo de fubá que ninguém da família consegue acertar.",
+    "resumo": "aprendeu com a vó {avo} a receita do bolo de fubá",
+    "escolhas": [
+      {
+        "texto": "Aprender tudo direitinho",
+        "resumo": "aprendeu com a vó {avo} a receita secreta do bolo de fubá",
+        "resultado": {
+          "texto": "Você descobriu o segredo: é o cravo. Ou o carinho. A vó não quis esclarecer.",
+          "efeitos": { "inteligencia": 2, "felicidade": 4, "marcas": ["receita_da_vo"] }
+        }
+      },
+      {
+        "texto": "Só lamber a colher",
+        "resumo": "preferiu lamber a colher a aprender a receita da vó",
+        "resultado": {
+          "texto": "Você comeu metade da massa crua. A vó fingiu não ver, como sempre.",
+          "efeitos": { "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_junina",
+    "idade": [5, 10],
+    "peso": 3,
+    "texto": "Festa junina na escola. A professora quer saber: você vai dançar a quadrilha ou ajudar numa barraca?",
+    "resumo": "foi à festa junina da escola",
+    "escolhas": [
+      {
+        "texto": "Ser noiv{o|a} da quadrilha",
+        "resumo": "foi noiv{o|a} na quadrilha da escola",
+        "resultado": {
+          "texto": "Casou de mentirinha, levou bronca do padre de mentirinha e comeu paçoca de verdade.",
+          "efeitos": { "felicidade": 4, "aparencia": 1 }
+        }
+      },
+      {
+        "texto": "Vender pé de moleque",
+        "resumo": "vendeu todo o pé de moleque da festa junina",
+        "resultado": {
+          "texto": "Você vendeu tudo antes das oito e ainda negociou o troco com a diretora.",
+          "efeitos": { "dinheiro": 80, "inteligencia": 1, "marcas": ["vendedor_nato"] }
+        }
+      },
+      {
+        "texto": "Passar a noite na pescaria",
+        "resumo": "passou a festa junina na barraca de pescaria",
+        "resultado": {
+          "texto": "Pescou um chaveiro, um apito e um pente. Noite de sucesso.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bullying_recreio",
+    "idade": [8, 12],
+    "peso": 5,
+    "condicoes": { "marcas": ["amigo_de_infancia"] },
+    "texto": "No recreio, uns garotos maiores estão zoando {amigo} por causa dos óculos novos. {amigo} olha para você.",
+    "resumo": "viu {amigo} ser zoad{amigo:o|a} no recreio",
+    "escolhas": [
+      {
+        "texto": "Defender {amigo}",
+        "resumo": "defendeu {amigo} no recreio",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você falou tão alto que a inspetora apareceu e os garotos sumiram. {amigo} nunca esqueceu.",
+          "efeitos": { "felicidade": 4, "marcas": ["leal"] }
+        },
+        "fracasso": {
+          "texto": "Você levou um empurrão e ralou o joelho. {amigo} dividiu o lanche com você por um mês.",
+          "resumo": "apanhou no recreio defendendo {amigo}",
+          "efeitos": { "saude": -3, "felicidade": 2, "marcas": ["leal"] }
+        }
+      },
+      {
+        "texto": "Chamar a professora",
+        "resumo": "chamou a professora em vez de entrar na briga",
+        "resultado": {
+          "texto": "A professora resolveu. {amigo} achou justo, mas esperava um pouco mais de você.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Rir junto",
+        "resumo": "riu junto quando zoaram {amigo}",
+        "resultado": {
+          "texto": "Os garotos riram com você. {amigo}, não. Alguma coisa mudou ali, e você sabe.",
+          "efeitos": {
+            "felicidade": -2,
+            "aparencia": 1,
+            "removerMarcas": ["amigo_de_infancia"],
+            "marcas": ["zoou_amigo"]
+          }
+        }
+      }
+    ]
+  }
+]

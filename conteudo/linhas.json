@@ -1,0 +1,376 @@
+[
+  {
+    "idade": [1, 2],
+    "texto": "Aprendeu a [bater palma|fazer careta|dizer \"não\"] e ninguém em casa falou de outra coisa."
+  },
+  { "idade": [1, 2], "texto": "Descobriu os próprios pés. Um ano de grandes descobertas." },
+  { "idade": [1, 3], "texto": "Dormiu a noite inteira pela primeira vez. {mae} chorou de alívio." },
+  { "idade": [1, 3], "texto": "Mordeu o controle remoto até ele parar de funcionar. {pai} ainda procura as pilhas." },
+  {
+    "idade": [1, 3],
+    "texto": "Passou o ano [babando em tudo|derrubando coisas da mesa|rindo da cara do cachorro do vizinho|escondendo chinelos]."
+  },
+  {
+    "idade": [2, 4],
+    "texto": "Seu primeiro corte de cabelo foi um desastre documentado em [doze|quarenta e sete|trezentas] fotos."
+  },
+  {
+    "idade": [2, 5],
+    "texto": "Perguntou \"por quê?\" umas [quatrocentas|mil|duas mil] vezes por dia. Ninguém tinha resposta para a metade."
+  },
+  {
+    "idade": [3, 5],
+    "texto": "Desenhou a família inteira na parede da sala. {mae} chamou de arte; {pai} chamou o pintor."
+  },
+  {
+    "idade": [3, 6],
+    "texto": "Decorou todas as músicas de [um desenho animado|um comercial de margarina|uma novela que não devia assistir]."
+  },
+  {
+    "idade": [3, 6],
+    "texto": "Teve [catapora|caxumba|piolho] e passou o ano com a sensação de estar sendo observad{o|a}."
+  },
+  { "idade": [4, 6], "texto": "Fez a primeira amizade no parquinho e a primeira inimizade na fila do escorregador." },
+  { "idade": [6, 10], "texto": "Colecionou [figurinhas|tampinhas|pedras bonitas] e trocou as repetidas com juros." },
+  { "idade": [6, 9], "texto": "Aprendeu a andar de bicicleta sem rodinha, com [duas|três] cicatrizes de recibo." },
+  {
+    "idade": [6, 9],
+    "texto": "Perdeu [dois|três] dentes e encontrou [uma moeda|uma nota amassada|um bilhete da fada] debaixo do travesseiro."
+  },
+  { "idade": [6, 11], "texto": "Jogou bola na rua até {mae} gritar seu nome completo da janela." },
+  {
+    "idade": [6, 11],
+    "texto": "Tirou nota boa em [ciências|português|educação física] e se achou gênio por uma semana."
+  },
+  {
+    "idade": [7, 11],
+    "texto": "Passou as férias na casa da vó {avo}, comendo [bolo|pão de queijo|cuscuz] e ouvindo as mesmas histórias de sempre."
+  },
+  {
+    "idade": [7, 12],
+    "texto": "Fingiu estar doente para faltar à aula. Funcionou [uma vez|duas vezes|até a terceira]."
+  },
+  {
+    "idade": [8, 12],
+    "texto": "Aprendeu a [soltar pipa|jogar bolinha de gude|fazer embaixadinha] e virou referência na rua."
+  },
+  {
+    "idade": [12, 15],
+    "texto": "Passou o ano inteiro com [fone de ouvido|a cara no celular|a mesma blusa de moletom]."
+  },
+  { "idade": [12, 17], "texto": "Brigou com {mae} por causa do horário de chegar em casa. Perdeu." },
+  { "idade": [12, 17], "texto": "Descobriu que [ironia|sarcasmo|revirar os olhos] resolve muita coisa. Não resolve." },
+  { "idade": [13, 17], "texto": "Teve uma crise existencial que durou até o lanche." },
+  {
+    "idade": [13, 17],
+    "texto": "Pintou o cabelo de [azul|verde|uma cor sem nome]. A escola não achou graça; você achou."
+  },
+  { "idade": [14, 17], "texto": "Decorou a tabela periódica para a prova e esqueceu na saída da sala." },
+  {
+    "idade": [15, 19],
+    "texto": "Ficou acordad{o|a} até as três da manhã [vendo vídeo de receita que nunca vai fazer|discutindo na internet|ouvindo a mesma música em repetição]."
+  },
+  { "idade": [18, 29], "texto": "Trabalhou, estudou, reclamou e repetiu." },
+  {
+    "idade": [18, 29],
+    "texto": "Mudou de [corte de cabelo|operadora de celular|opinião política] [duas|três|cinco] vezes no mesmo ano."
+  },
+  { "idade": [18, 30], "texto": "Descobriu o preço [do feijão|do aluguel|de um café na padaria] e envelheceu na hora." },
+  {
+    "idade": [18, 35],
+    "texto": "Passou o carnaval [no bloco|dormindo|trabalhando|no interior, na casa de um tio] e não se arrependeu."
+  },
+  {
+    "idade": [18, 35],
+    "texto": "Fez [um curso online|uma dieta da moda|um plano de leitura] e largou no meio, como manda a tradição."
+  },
+  { "idade": [20, 32], "texto": "Aprendeu a cozinhar três pratos e passou a se apresentar como chef." },
+  { "idade": [22, 35], "texto": "Foi a [quatro|cinco|sete] casamentos no mesmo ano e dançou a mesma música em todos." },
+  { "idade": [30, 49], "texto": "Dormiu mal, trabalhou muito, sobreviveu. Um ano adulto clássico." },
+  {
+    "idade": [30, 49],
+    "texto": "Começou a reclamar [da coluna|da música de hoje em dia|do volume da TV dos vizinhos]."
+  },
+  { "idade": [30, 55], "texto": "Gastou o décimo terceiro antes de ele cair na conta." },
+  { "idade": [30, 55], "texto": "Prometeu ir à academia em janeiro. Quando viu, era dezembro." },
+  { "idade": [32, 49], "texto": "Descobriu que [ressaca|joelho|noite mal dormida] não é mais como antes." },
+  { "idade": [30, 60], "texto": "Um ano tranquilo, o que é raro e um pouco suspeito." },
+  {
+    "idade": [35, 60],
+    "texto": "Passou [uma tarde inteira|um domingo inteiro] procurando o [carregador|controle remoto|óculos] que estava na sua mão."
+  },
+  {
+    "idade": [50, 64],
+    "texto": "Começou a [assistir a programas de reforma de casa|conversar com as plantas|dar bom dia ao rádio]."
+  },
+  {
+    "idade": [50, 64],
+    "texto": "Encontrou um fio de cabelo branco [no bigode|na sobrancelha|num lugar que não se comenta]."
+  },
+  { "idade": [50, 70], "texto": "Aprendeu a mandar áudio de quatro minutos e não voltou atrás." },
+  { "idade": [50, 70], "texto": "Fez exame de sangue e comparou o colesterol com os amigos como se fosse campeonato." },
+  {
+    "idade": [55, 75],
+    "texto": "Mandou [bom dia com flores|corrente de oração|vídeo de gatinho] no grupo da família, todo santo dia."
+  },
+  { "idade": [65, 110], "texto": "Contou a mesma história [três|cinco|sete] vezes no mesmo almoço. Riram em todas." },
+  {
+    "idade": [65, 110],
+    "texto": "Virou especialista em [palavras cruzadas|novela das seis|previsão do tempo|preço de remédio]."
+  },
+  { "idade": [65, 110], "texto": "Viu vizinhos novos chegarem e achou todos um pouco estranhos." },
+  { "idade": [65, 110], "texto": "Dormiu na frente da TV todas as noites, jurando que só estava descansando os olhos." },
+  {
+    "idade": [70, 110],
+    "texto": "Ganhou a cadeira da ponta na mesa da família. Ninguém se lembra de quando isso aconteceu."
+  },
+  {
+    "idade": [70, 110],
+    "texto": "Contou a idade com orgulho a todo atendente que perguntou e a alguns que não perguntaram."
+  },
+  { "idade": [75, 120], "texto": "Os anos passaram mais devagar e as tardes, mais compridas. Não foi ruim." },
+  {
+    "idade": [80, 120],
+    "texto": "Viu o mundo mudar [de novo|pela milésima vez|mais rápido do que gostaria] e comentou que no seu tempo era diferente."
+  },
+  {
+    "idade": [0, 14],
+    "texto": "Em casa, o dinheiro era contado; a risada, não.",
+    "condicoes": { "marcas": ["familia_apertada"] }
+  },
+  {
+    "idade": [6, 16],
+    "texto": "Passou as férias [na praia|num hotel-fazenda|num parque de diversões caro] e reclamou do calor.",
+    "condicoes": { "marcas": ["familia_confortavel"] }
+  },
+  {
+    "idade": [6, 16],
+    "texto": "As férias foram no quintal, com mangueira ligada e piscina de plástico. Melhores férias.",
+    "condicoes": { "marcas": ["familia_remediada"] }
+  },
+  {
+    "idade": [3, 90],
+    "texto": "O inverno chegou com [geada|vento minuano|chuva fina] e você não tirou a pantufa até setembro.",
+    "condicoes": { "marcas": ["sul"] }
+  },
+  {
+    "idade": [3, 90],
+    "texto": "No São João, comeu [canjica|pamonha|milho assado] até não aguentar mais e dançou forró do mesmo jeito.",
+    "condicoes": { "marcas": ["nordeste"] }
+  },
+  {
+    "idade": [3, 90],
+    "texto": "Choveu todo dia às três da tarde, mais pontual que qualquer ônibus.",
+    "condicoes": { "marcas": ["norte"] }
+  },
+  {
+    "idade": [3, 90],
+    "texto": "Agosto veio seco: umidade de deserto, céu cor de laranja e lábio rachado.",
+    "condicoes": { "marcas": ["centro_oeste"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "Passou um bom pedaço do ano parad{o|a} no trânsito, [ouvindo podcast|cantando sozinh{o|a}|pensando na vida].",
+    "condicoes": { "marcas": ["sudeste"] }
+  },
+  {
+    "idade": [3, 90],
+    "texto": "Foi à praia [todo fim de semana|quando deu|uma vez só, e saiu queimad{o|a} como camarão].",
+    "condicoes": { "marcas": ["litoral"] }
+  },
+  {
+    "idade": [5, 90],
+    "texto": "A festa da cidade teve [rodeio|quermesse|show de dupla sertaneja] e você foi em todas as noites.",
+    "condicoes": { "marcas": ["interior"] }
+  },
+  {
+    "idade": [10, 90],
+    "texto": "Reclamou do calor, do trânsito e do preço de tudo na capital, e não se mudaria por nada.",
+    "condicoes": { "marcas": ["capital"] }
+  },
+  {
+    "idade": [18, 80],
+    "texto": "Prometeu largar o cigarro [na virada do ano|no aniversário|na segunda-feira]. Não largou.",
+    "condicoes": { "marcas": ["fumante"] }
+  },
+  {
+    "idade": [5, 25],
+    "texto": "{pet} destruiu [um chinelo|o sofá|a paciência de todo mundo] e foi perdoad{pet:o|a} em cinco minutos.",
+    "condicoes": { "marcas": ["caramelo"] }
+  },
+  {
+    "idade": [24, 60],
+    "texto": "{filho} [aprendeu a andar de bicicleta|perdeu o primeiro dente|disse que você é chat{o|a}] e você fingiu não se emocionar.",
+    "condicoes": { "marcas": ["pai_mae"] }
+  },
+  {
+    "idade": [20, 80],
+    "texto": "Você e {amor} brigaram por causa [da louça|do controle da TV|da temperatura do ar-condicionado] e fizeram as pazes no jantar.",
+    "condicoes": { "marcas": ["namoro"] }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "Abriu o aplicativo do banco só para ver os juros trabalhando. Sentiu algo parecido com paz.",
+    "condicoes": { "marcas": ["investidor"] }
+  },
+  {
+    "idade": [18, 80],
+    "texto": "Perdeu [cinquenta reais|o almoço|a dignidade] num jogo de [vôlei de praia|segunda divisão|futebol de botão] e jurou que era a última vez.",
+    "condicoes": { "marcas": ["apostador"] }
+  },
+  {
+    "idade": [25, 70],
+    "texto": "Bateu o ponto, tomou um cafezinho, carimbou um papel. Estabilidade.",
+    "condicoes": { "marcas": ["servidor"] }
+  },
+  {
+    "idade": [18, 50],
+    "texto": "Rodou [três|cinco|oito] mil quilômetros entregando o almoço dos outros e comeu o seu, frio, no semáforo.",
+    "condicoes": { "marcas": ["entregador"] }
+  },
+  {
+    "idade": [25, 70],
+    "texto": "Respondeu e-mail [no Natal|na praia|no casamento de um primo] e ainda se achou produtiv{o|a}.",
+    "condicoes": { "marcas": ["workaholic"] }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "Correu [cinco|dez] quilômetros num domingo de manhã e contou para todo mundo.",
+    "condicoes": { "marcas": ["ativo"] }
+  },
+  {
+    "idade": [50, 100],
+    "texto": "Colheu [tomate|alface|uma abobrinha gigante] na horta e fez questão de mostrar aos vizinhos.",
+    "condicoes": { "marcas": ["horta"] }
+  },
+  {
+    "idade": [14, 40],
+    "texto": "A banda ensaiou [duas|três] vezes e brigou [quatro|cinco|seis].",
+    "condicoes": { "marcas": ["banda"] }
+  },
+  {
+    "idade": [20, 70],
+    "texto": "Passou [uma hora|duas horas] por dia no metrô lotado e aprendeu a dormir em pé.",
+    "condicoes": { "marcas": ["mudou_sp"] }
+  },
+  {
+    "idade": [12, 95],
+    "texto": "Você e {amigo} passaram uma tarde inteira falando bobagem, como sempre.",
+    "condicoes": { "marcas": ["amigo_de_infancia"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "Fez as contas da dívida três vezes e preferiu não fazer a quarta.",
+    "condicoes": { "divida": { "min": 20000 } }
+  },
+  {
+    "idade": [25, 100],
+    "texto": "Descobriu que gente rica também reclama, só que de coisas mais caras.",
+    "condicoes": { "patrimonio": { "min": 500000 } }
+  },
+  {
+    "idade": [12, 110],
+    "texto": "Foi um ano cinza. Você contou os dias.",
+    "condicoes": { "felicidade": { "max": 30 } }
+  },
+  {
+    "idade": [5, 110],
+    "texto": "Foi um daqueles anos em que tudo parece dar certo. Desconfie.",
+    "condicoes": { "felicidade": { "min": 85 } }
+  },
+  {
+    "idade": [30, 110],
+    "texto": "Ficou amig{o|a} de todos os atendentes da farmácia do bairro.",
+    "condicoes": { "saude": { "max": 35 } }
+  },
+  {
+    "idade": [30, 110],
+    "texto": "Desde o golpe, atende número desconhecido com voz de delegad{o|a}.",
+    "condicoes": { "marcas": ["caiu_golpe"] }
+  },
+  {
+    "idade": [22, 70],
+    "texto": "Explicou criptomoeda num churrasco. Ninguém tinha perguntado.",
+    "condicoes": { "marcas": ["cripto"] }
+  },
+  {
+    "idade": [30, 100],
+    "texto": "Seu joelho passou a prever chuva com mais precisão que o jornal.",
+    "condicoes": { "marcas": ["joelho_ruim"] }
+  },
+  {
+    "idade": [25, 80],
+    "texto": "Lavou o carro no domingo, com balde, mangueira e pagode alto.",
+    "condicoes": { "marcas": ["carro"] }
+  },
+  {
+    "idade": [28, 90],
+    "texto": "Viajou [duas|três] vezes no ano e nunca teve que voltar cedo por causa de reunião de escola.",
+    "condicoes": { "marcas": ["sem_filhos"] }
+  },
+  {
+    "idade": [25, 80],
+    "texto": "Separad{o|a}, redescobriu o prazer de ter o controle remoto só para você.",
+    "condicoes": { "marcas": ["separado"] }
+  },
+  {
+    "idade": [30, 90],
+    "texto": "Pintou a parede da casa própria de uma cor que ninguém aprovou. A casa é sua.",
+    "condicoes": { "marcas": ["casa_propria"] }
+  },
+  {
+    "idade": [55, 100],
+    "texto": "Os netos te ensinaram uma dancinha da internet. Você ensinou a eles um truque de baralho.",
+    "condicoes": { "marcas": ["avo_coruja"] }
+  },
+  {
+    "idade": [62, 110],
+    "texto": "Aposentad{o|a}, acordou às seis da manhã mesmo assim, por pura teimosia do corpo.",
+    "condicoes": { "marcas": ["aposentado"] }
+  },
+  {
+    "idade": [40, 80],
+    "texto": "Saiu de moto num domingo de sol, com o vento na cara e a coluna reclamando.",
+    "condicoes": { "marcas": ["motoqueiro"] }
+  },
+  {
+    "idade": [18, 40],
+    "texto": "Virou a noite num [bar universitário|karaokê|aniversário de alguém que mal conhecia] e chegou em casa com o sol.",
+    "condicoes": { "marcas": ["boemio"] }
+  },
+  {
+    "idade": [25, 70],
+    "texto": "Ensaiou a velha música da banda no chuveiro, com plateia imaginária e tudo.",
+    "condicoes": { "marcas": ["musico"] }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "Mesmo longe da política, comentou cada notícia no grupo da família como se fosse debate na TV.",
+    "condicoes": { "marcas": ["politizado"] }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "Postou uma foto com legenda motivacional e respondeu cada comentário como se fosse fã-clube.",
+    "condicoes": { "marcas": ["influencer"] }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "Torceu tanto pelo time num domingo que perdeu a voz na segunda-feira.",
+    "condicoes": { "marcas": ["torcedor"] }
+  },
+  {
+    "idade": [8, 60],
+    "texto": "Atravessou a piscina [duas|dez|vinte] vezes sem parar e saiu se achando peixe.",
+    "condicoes": { "marcas": ["nadador"] }
+  },
+  {
+    "idade": [18, 40],
+    "texto": "Morando por conta própria, descobriu que a geladeira não se enche sozinha.",
+    "condicoes": { "marcas": ["independente"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "A inflação disparou: o preço do [tomate|gás|pãozinho|cafezinho] virou assunto do almoço de domingo.",
+    "condicoes": { "inflacao": { "min": 9 } }
+  }
+]

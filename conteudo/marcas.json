@@ -1,0 +1,41 @@
+{
+  "fumante": { "porAno": { "saude": -0.5 }, "epitafio": "Prometeu parar de fumar em todas as viradas de ano." },
+  "ex_fumante": { "epitafio": "Largou o cigarro e ganhou fôlego para reclamar de tudo." },
+  "sedentario": { "porAno": { "saude": -0.3 } },
+  "ativo": { "porAno": { "saude": 0.25, "felicidade": 0.3 }, "epitafio": "Correu de tudo, menos da vida." },
+  "workaholic": {
+    "porAno": { "saude": -0.5, "felicidade": -0.8 },
+    "epitafio": "Respondeu o último e-mail de cima da maca."
+  },
+  "cursando": { "porAno": { "inteligencia": 1.5 } },
+  "horta": {
+    "porAno": { "saude": 0.3, "felicidade": 0.5 },
+    "epitafio": "Deixou um pé de tomate que ninguém sabe cuidar."
+  },
+  "caramelo": {
+    "porAno": { "felicidade": 1 },
+    "epitafio": "Foi amad{o|a} por um vira-lata caramelo, o que já diz tudo."
+  },
+  "apostador": { "porAno": { "felicidade": -1 }, "epitafio": "Apostou que viveria mais. Odd ruim." },
+  "pai_mae": { "epitafio": "{filho} ainda conta suas piadas ruins nos almoços de domingo." },
+  "servidor": { "epitafio": "Estável até o fim." },
+  "empreendedor": { "epitafio": "Abriu um negócio, fechou outro, nunca fechou a cara." },
+  "investidor": { "epitafio": "Os juros compostos foram seus melhores amigos." },
+  "influencer": { "epitafio": "Última postagem: \"gratidão\"." },
+  "musico": { "epitafio": "A banda nunca acabou oficialmente." },
+  "leal": { "epitafio": "Nunca deixou {amigo} na mão." },
+  "caiu_golpe": { "epitafio": "Morreu desconfiad{o|a} de todo número desconhecido." },
+  "profissional": { "epitafio": "Fez um gol de bicicleta que o bairro inteiro jura ter visto." },
+  "vereador": { "epitafio": "Prometeu asfalto e entregou um quebra-molas." },
+  "receita_da_vo": { "epitafio": "O bolo de fubá da família continua vivo por sua causa." },
+  "medalhista": { "epitafio": "Morreu sabendo de cor uma fórmula que ninguém mais lembra." },
+  "avo_coruja": { "epitafio": "Tinha mais foto dos netos no celular do que memória livre." },
+  "mudou_sp": { "epitafio": "Saiu de {cidade}, mas {cidade} nunca saiu de dentro de você." },
+  "nome_sujo": { "epitafio": "Devia para o banco. O banco que lute." },
+  "casa_propria": {
+    "epitafio": "Deixou uma casa própria e uma infiltração no banheiro.",
+    "porAno": { "felicidade": 0.3 }
+  },
+  "carro": { "porAno": { "felicidade": 0.4 } },
+  "motoqueiro": { "porAno": { "saude": -0.2, "felicidade": 0.5 } }
+}
