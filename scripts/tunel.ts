@@ -13,6 +13,8 @@ import { carregarConteudo, RAIZ } from './disco.ts';
 import { classeDoPatrimonio, nomeDaClasse, patrimonioDe } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
+import { faseDe } from '../src/motor/ciclo.ts';
+import { FASES, type Fase } from '../src/motor/constantes.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
 import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
 import { aleatorio, criarRng, misturar } from '../src/motor/rng.ts';
@@ -43,6 +45,8 @@ interface Jogada {
   toques: number;
   ms: number;
   riquezaOrigem: number;
+  /** Anos vividos em cada fase do ciclo. */
+  anosPorFase: Record<Fase, number>;
 }
 
 function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined): Jogada {
@@ -51,6 +55,7 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
   const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
   const robo = criarRng(misturar(semente, 77));
   let toques = 1; // nascer
+  const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
@@ -58,11 +63,14 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
       // Um toque por ano: num verbo da ficha (age e passa o ano) ou no +1 ano.
       const verbo = decidirAcao(estrategia, e, c, robo);
       if (verbo) agir(e, c, verbo);
-      if (e.vivo) avancarAno(e, c, memoria);
+      if (e.vivo) {
+        avancarAno(e, c, memoria);
+        anosPorFase[faseDe(e)]++;
+      }
     }
     toques++;
   }
-  return { e, toques, ms: performance.now() - t0, riquezaOrigem };
+  return { e, toques, ms: performance.now() - t0, riquezaOrigem, anosPorFase };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -135,6 +143,12 @@ interface Vida {
   ms: number;
   classeOrigem: number;
   mortesNaFamilia: number;
+  anosPorFase: Record<Fase, number>;
+  noticias: number;
+  demissoes: number;
+  demissoesPelaFase: number;
+  /** Setor do último trabalho e o jeito de trabalhar (servidor, dono, empregado). */
+  carreiraSetor: string;
 }
 
 /** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
@@ -207,6 +221,7 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     if (h.causa === 'escolha' || h.causa === 'acao') mudancasJogador += n;
   }
   const pontos = pontosDeVirada(e);
+  const demissoes = e.historico.filter((h) => h.ref === 'demissao');
   return {
     estrategia,
     idade: e.idade,
@@ -235,6 +250,11 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     ms: j.ms,
     classeOrigem,
     mortesNaFamilia: e.historico.filter((h) => h.ref === 'regra:faleceu').length,
+    anosPorFase: j.anosPorFase,
+    noticias: e.historico.filter((h) => h.tipo === 'mundo').length,
+    demissoes: demissoes.length,
+    demissoesPelaFase: demissoes.filter((h) => (h.causas ?? []).some((id) => porId.get(id)?.tipo === 'mundo')).length,
+    carreiraSetor: `${eu.t['setor'] || 'sem setor'}/${'servidor' in q ? 'servidor' : 'empreendedor' in q || 'socio' in q || 'herdeiro_negocio' in q ? 'dono' : 'empregado'}`,
   };
 }
 
@@ -403,11 +423,27 @@ const negativas = vidas.filter((v) => v.patrimonio < 0).length / vidas.length;
 const parteJogador = vidas.reduce((s, v) => s + v.mudancasJogador, 0) / Math.max(1, vidas.reduce((s, v) => s + v.mudancasTotal, 0));
 const toques = media(vidas.map((v) => v.toques));
 const msPorVida = media(vidas.map((v) => v.ms));
+const pontosMundo = vidas.reduce((s, v) => s + v.pontosDoMundo, 0) / Math.max(1, vidas.reduce((s, v) => s + v.pontos, 0));
+const anosTotal = vidas.reduce((s, v) => s + FASES.reduce((t, f) => t + v.anosPorFase[f], 0), 0);
+const parteFase = (f: Fase): number => vidas.reduce((s, v) => s + v.anosPorFase[f], 0) / Math.max(1, anosTotal);
+const demissoesTotal = vidas.reduce((s, v) => s + v.demissoes, 0);
+const carreiras = assinaturasPorBloco(vidas.map((v) => v.carreiraSetor));
 
 // ---------------------------------------------------------------- portões
 
 /** Linha de base de 06/10/2026 (motor da fase 1) e os portões do incremento 1. */
 const BASE = { saturacaoV5: 0.945, assinaturas: 563, desvioFelicidade: 5.73, toques: 110.8 };
+/** Medido no fim do incremento 1 (docs/metricas.md de 06/10/2026): a base dos portões do incremento 2. */
+const BASE2 = { pontosMundo: 0.029, pobreParaRico: 0.03, ricoParaPobre: 0.03, v20: 0.959, assinaturas: 893, ms: 14.5 };
+const portoes2 = [
+  ['O mundo nos pontos de virada ≥ 2× (o mundo reage)', pontosMundo >= 2 * BASE2.pontosMundo, `${pct(pontosMundo)} (base ${pct(BASE2.pontosMundo)}, alvo ${pct(2 * BASE2.pontosMundo)})`],
+  ['Do quintil mais pobre ao mais rico ≥ 1,5×', mob.baixoParaAlto >= 1.5 * BASE2.pobreParaRico, `${pct(mob.baixoParaAlto)} (base ${pct(BASE2.pobreParaRico)}, alvo ${pct(1.5 * BASE2.pobreParaRico)})`],
+  ['Do quintil mais rico ao mais pobre ≥ 1,5×', mob.altoParaBaixo >= 1.5 * BASE2.ricoParaPobre, `${pct(mob.altoParaBaixo)} (base ${pct(BASE2.ricoParaPobre)}, alvo ${pct(1.5 * BASE2.ricoParaPobre)})`],
+  ['Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7)', mob.spearman >= 0.3 && mob.spearman <= 0.7, num(mob.spearman, 2)],
+  ['Saturação V20 ≤ 95%', satV(sat, 20) <= 0.95, `${pct(satV(sat, 20))} (base ${pct(BASE2.v20)})`],
+  ['Assinaturas sem regressão', assinaturas >= BASE2.assinaturas, `${num(assinaturas, 0)} (base ${BASE2.assinaturas})`],
+  ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms (base ${num(BASE2.ms, 1)} ms)`],
+] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
@@ -452,6 +488,12 @@ l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
+l('## Portões do incremento 2');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
 l('## Life simulator');
 l();
 l('| Métrica | Valor |');
@@ -471,7 +513,22 @@ l(`| Toques por vida | ${num(toques, 1)} |`);
 l(`| Tempo de CPU por vida | ${num(msPorVida, 2)} ms |`);
 l(`| Ações (fichas usadas) por vida | ${num(media(vidas.map((v) => v.acoes.length)), 1)} |`);
 l(`| Mortes na família por vida | ${num(media(vidas.map((v) => v.mortesNaFamilia)), 1)} |`);
-l(`| Pontos de virada que vêm do mundo (não do jogador) | ${pct(vidas.reduce((s, v) => s + v.pontosDoMundo, 0) / Math.max(1, vidas.reduce((s, v) => s + v.pontos, 0)))} |`);
+l(`| Pontos de virada que vêm do mundo (não do jogador) | ${pct(pontosMundo)} |`);
+l();
+l('### O mundo reage');
+l();
+l('| Métrica | Valor |');
+l('|---|---|');
+l(`| Anos em cada fase do ciclo (normal / economia aquecida / recessão / crise) | ${FASES.map((f) => pct(parteFase(f), 0)).join(' / ')} |`);
+l(`| Notícias do país por vida | ${num(media(vidas.map((v) => v.noticias)), 1)} |`);
+l(`| Demissões por vida / vindas de uma recessão ou crise | ${num(demissoesTotal / vidas.length, 2)} / ${pct(vidas.reduce((s, v) => s + v.demissoesPelaFase, 0) / Math.max(1, demissoesTotal))} |`);
+l(`| Carreiras distintas (setor × jeito de trabalhar) por 1.000 vidas | ${num(carreiras, 0)} |`);
+const setoresFinais = new Map<string, number>();
+for (const v of vidas) {
+  const setor = v.carreiraSetor.split('/')[0]!;
+  setoresFinais.set(setor, (setoresFinais.get(setor) ?? 0) + 1);
+}
+l(`| Setor do último trabalho | ${[...setoresFinais].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${c.setores.get(k)?.nome ?? k} ${pct(n / vidas.length, 0)}`).join(' · ')} |`);
 l();
 l('| Vida | ' + [2, 3, 4, 5, 10, 15, 20].map((k) => `${k}ª`).join(' | ') + ' |');
 l('|---|---|---|---|---|---|---|---|');
@@ -610,6 +667,7 @@ if (!args.has('sem-arquivo')) writeFileSync(join(RAIZ, 'docs', 'metricas.md'), r
 console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos.toFixed(1)} s`);
 for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes) console.log(`${ok ? '✓' : '·'} portão: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} portão 2: ${nome} (${detalhe})`);
 console.log(
   `Saturação V5 ${pct(satV(sat, 5))} · V20 ${pct(satV(sat, 20))} · com regras ${pct(satV(satRegras, 5))} · assinaturas/1000 ${num(assinaturas, 0)} (destino ${num(destinos, 0)}) · ` +
     `mobilidade diag ${pct(mob.diagonal)} ρ ${num(mob.spearman, 2)} · p90/p10 ${Number.isFinite(razao9010) ? num(razao9010, 1) : 'p10≤0'} · desvio felicidade ${num(desvioFelicidade, 2)} · ` +
