@@ -3,16 +3,16 @@
  * antes do build; aqui só indexamos, sem carregar o Zod no celular.
  */
 import { indexarConteudo, type Conteudo } from './motor/conteudo.ts';
-import type { CausaMorte, Evento, InfoMarca, Linha, Mundo } from './motor/esquema.ts';
+import type { CausaMorte, InfoMarca, Linha, Mundo, Storylet } from './motor/esquema.ts';
 import linhas from '../conteudo/linhas.json';
 import marcas from '../conteudo/marcas.json';
 import mortes from '../conteudo/mortes.json';
 import mundo from '../conteudo/mundo.json';
 
-const arquivos = import.meta.glob<Evento[]>('../conteudo/eventos/*.json', { eager: true, import: 'default' });
+const arquivos = import.meta.glob<Storylet[]>('../conteudo/storylets/*.json', { eager: true, import: 'default' });
 
 export const conteudo: Conteudo = indexarConteudo({
-  eventos: Object.keys(arquivos)
+  storylets: Object.keys(arquivos)
     .sort()
     .map((caminho) => ({ arquivo: caminho.replace('../conteudo/', ''), lista: arquivos[caminho]! })),
   linhas: linhas as unknown as Linha[],

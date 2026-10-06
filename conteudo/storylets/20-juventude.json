@@ -29,7 +29,7 @@
       {
         "texto": "Estudar para concurso",
         "resumo": "foi estudar para concurso público",
-        "condicoes": { "algumaMarca": ["familia_remediada", "familia_confortavel"] },
+        "condicoes": { "classe_origem": { "min": 2 } },
         "bloqueio": "ninguém em casa consegue te bancar enquanto estuda",
         "resultado": {
           "texto": "{mae} e {pai} vão te bancar \"só por um tempinho\". O tempinho tem nome: edital.",
@@ -134,7 +134,7 @@
       {
         "texto": "Tentar a vida em São Paulo",
         "resumo": "foi tentar a vida em São Paulo",
-        "condicoes": { "semMarcas": ["cidade_sp"] },
+        "condicoes": { "semMarcas": ["lugar.cidade_sp"] },
         "bloqueio": "você já mora em São Paulo, e ela já te cansou",
         "resultado": {
           "texto": "Você chegou com duas malas e a certeza de que ia dar certo. A cidade não tinha a mesma certeza.",
@@ -676,7 +676,7 @@
     "id": "intercambio",
     "idade": [18, 28],
     "peso": 4,
-    "condicoes": { "algumaMarca": ["medalhista", "familia_confortavel", "pesquisador"], "semMarcas": ["fala_ingles"] },
+    "condicoes": { "algumaMarca": ["medalhista", "pesquisador"], "semMarcas": ["fala_ingles"] },
     "valores": { "custo": 8000 },
     "texto": "Apareceu uma chance de intercâmbio de seis meses fora do país. Neve, inglês e saudade de feijão. Custa {custo}, entre passagem e casaco.",
     "resumo": "teve a chance de fazer intercâmbio",

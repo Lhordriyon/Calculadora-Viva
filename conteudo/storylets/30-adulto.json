@@ -520,7 +520,7 @@
       {
         "texto": "Vender a casa e dividir com a família",
         "resumo": "vendeu a casa dos pais e dividiu com a família",
-        "condicoes": { "semMarcas": ["familia_apertada"] },
+        "condicoes": { "classe_origem": { "min": 2 } },
         "bloqueio": "a casa era alugada",
         "resultado": {
           "texto": "O dinheiro caiu numa terça-feira. A saudade cai todo dia.",
@@ -530,7 +530,7 @@
       {
         "texto": "Ir morar na casa onde cresceu",
         "resumo": "foi morar na casa onde cresceu",
-        "condicoes": { "semMarcas": ["casa_propria", "familia_apertada"] },
+        "condicoes": { "semMarcas": ["casa_propria"], "classe_origem": { "min": 2 } },
         "bloqueio": "não dá para morar em duas casas",
         "resultado": {
           "texto": "Você se mudou para a casa da infância. Os potes de sorvete continuam no freezer, por respeito.",

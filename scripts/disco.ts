@@ -18,12 +18,12 @@ function lerJson(caminho: string): unknown {
 
 export function lerFontes(raiz = RAIZ): FontesConteudo {
   const dir = join(raiz, 'conteudo');
-  const eventos = readdirSync(join(dir, 'eventos'))
+  const storylets = readdirSync(join(dir, 'storylets'))
     .filter((f) => f.endsWith('.json'))
     .sort()
-    .map((f) => ({ arquivo: `eventos/${f}`, dados: lerJson(join(dir, 'eventos', f)) }));
+    .map((f) => ({ arquivo: `storylets/${f}`, dados: lerJson(join(dir, 'storylets', f)) }));
   return {
-    eventos,
+    storylets,
     linhas: lerJson(join(dir, 'linhas.json')),
     mortes: lerJson(join(dir, 'mortes.json')),
     marcas: lerJson(join(dir, 'marcas.json')),

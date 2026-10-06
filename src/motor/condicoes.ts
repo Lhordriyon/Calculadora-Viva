@@ -1,14 +1,18 @@
-import { ATRIBUTOS } from './constantes.ts';
-import type { Condicoes } from './esquema.ts';
+/**
+ * Condições leem caminhos do estado: "saude" (de quem joga), "mae.saude",
+ * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
+ * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
+ */
+import { entidadeDe, ler, separar } from './campos.ts';
+import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
-import type { EstadoVida } from './tipos.ts';
+import type { EstadoVida, Qualidade } from './tipos.ts';
 
 type Faixa = { min?: number | undefined; max?: number | undefined };
+type Teste = (e: EstadoVida, ator: string | undefined) => boolean;
 
-export function patrimonio(e: EstadoVida): number {
-  const f = e.financas;
-  return f.dinheiro + f.investido - f.divida;
-}
+/** Chaves que não são caminhos de campo. */
+const ESPECIAIS = new Set(['marcas', 'algumaMarca', 'semMarcas', 'marcaHa', 'genero', 'inflacao']);
 
 function dentro(valor: number, faixa: Faixa | undefined): boolean {
   if (!faixa) return true;
@@ -17,107 +21,156 @@ function dentro(valor: number, faixa: Faixa | undefined): boolean {
   return true;
 }
 
-type Teste = (e: EstadoVida) => boolean;
-const compiladas = new WeakMap<Condicoes, Teste>();
+export function qualidadeDe(e: EstadoVida, caminho: string, ator?: string): Qualidade | undefined {
+  const { ent, campo } = separar(caminho);
+  return e.entidades[entidadeDe(ent, ator)]?.q[campo];
+}
 
-/**
- * Transforma a condição numa lista só com as checagens que ela usa (marcas
- * primeiro, que são as que mais eliminam). Compilada uma vez por objeto.
- */
+export function tem(e: EstadoVida, caminho: string, ator?: string): boolean {
+  return (qualidadeDe(e, caminho, ator)?.v ?? 0) > 0;
+}
+
+/** Compara o valor de um caminho com o que a condição pede. Entidade inexistente só atende "false". */
+function compara(v: number | string | boolean | undefined, pedido: ValorCondicao): boolean {
+  if (typeof pedido === 'boolean') {
+    const verdade = typeof v === 'number' ? v > 0 : typeof v === 'string' ? v !== '' : v === true;
+    return verdade === pedido;
+  }
+  if (v === undefined) return false;
+  if (typeof pedido === 'string') return v === pedido;
+  if (Array.isArray(pedido)) return typeof v === 'string' && pedido.includes(v);
+  return typeof v === 'number' && dentro(v, pedido);
+}
+
+function caminhoDaChave(chave: string): string {
+  return chave === 'inflacao' ? 'pais.inflacao' : chave;
+}
+
+function testarCaminho(caminho: string, pedido: ValorCondicao): Teste {
+  const { ent, campo } = separar(caminho);
+  return (e, ator) => compara(ler(e, entidadeDe(ent, ator), campo), pedido);
+}
+
+/** Lista só com as checagens que a condição usa (qualidades primeiro, que são as que mais eliminam). */
 function compilar(cond: Condicoes): Teste {
   const testes: Teste[] = [];
-  if (cond.marcas) for (const m of cond.marcas) testes.push((e) => m in e.marcas);
-  if (cond.semMarcas) for (const m of cond.semMarcas) testes.push((e) => !(m in e.marcas));
+  for (const m of cond.marcas ?? []) testes.push((e, a) => tem(e, m, a));
+  for (const m of cond.semMarcas ?? []) testes.push((e, a) => !tem(e, m, a));
   if (cond.algumaMarca) {
     const ms = cond.algumaMarca;
-    testes.push((e) => ms.some((m) => m in e.marcas));
+    testes.push((e, a) => ms.some((m) => tem(e, m, a)));
   }
   for (const req of cond.marcaHa ?? []) {
-    testes.push((e) => {
-      const reg = e.marcas[req.marca];
-      return reg !== undefined && dentro(e.idade - reg.idade, req);
+    testes.push((e, a) => {
+      const q = qualidadeDe(e, req.marca, a);
+      return q !== undefined && q.v > 0 && dentro(e.idade - q.idade, req);
     });
   }
   if (cond.genero) {
     const g = cond.genero;
-    testes.push((e) => e.pessoa.genero === g);
+    testes.push((e) => e.entidades['eu']?.genero === g);
   }
-  for (const a of ATRIBUTOS) {
-    const faixa = cond[a];
-    if (faixa) testes.push((e) => dentro(e.atributos[a], faixa));
+  if (cond.inflacao) testes.push(testarCaminho('pais.inflacao', cond.inflacao));
+  for (const [chave, pedido] of Object.entries(cond)) {
+    if (ESPECIAIS.has(chave) || pedido === undefined) continue;
+    testes.push(testarCaminho(chave, pedido as ValorCondicao));
   }
-  const { dinheiro, patrimonio: pat, divida, renda, inflacao } = cond;
-  if (dinheiro) testes.push((e) => dentro(e.financas.dinheiro, dinheiro));
-  if (pat) testes.push((e) => dentro(patrimonio(e), pat));
-  if (divida) testes.push((e) => dentro(e.financas.divida, divida));
-  if (renda) testes.push((e) => dentro(e.financas.renda, renda));
-  if (inflacao) testes.push((e) => dentro(e.financas.inflacao, inflacao));
-  return (e) => {
-    for (const t of testes) if (!t(e)) return false;
+  return (e, ator) => {
+    for (const t of testes) if (!t(e, ator)) return false;
     return true;
   };
 }
 
-export function atende(cond: Condicoes | undefined, e: EstadoVida): boolean {
+const compiladas = new WeakMap<Condicoes, Teste>();
+
+export function atende(cond: Condicoes | undefined, e: EstadoVida, ator?: string): boolean {
   if (!cond) return true;
   let teste = compiladas.get(cond);
   if (!teste) {
     teste = compilar(cond);
     compiladas.set(cond, teste);
   }
-  return teste(e);
+  return teste(e, ator);
 }
 
 /** Versão direta, sem cache (referência para os testes). */
-export function atendeDireto(cond: Condicoes | undefined, e: EstadoVida): boolean {
+export function atendeDireto(cond: Condicoes | undefined, e: EstadoVida, ator?: string): boolean {
   if (!cond) return true;
-  for (const a of ATRIBUTOS) if (!dentro(e.atributos[a], cond[a])) return false;
-  const f = e.financas;
-  if (!dentro(f.dinheiro, cond.dinheiro)) return false;
-  if (cond.patrimonio && !dentro(patrimonio(e), cond.patrimonio)) return false;
-  if (!dentro(f.divida, cond.divida)) return false;
-  if (!dentro(f.renda, cond.renda)) return false;
-  if (!dentro(f.inflacao, cond.inflacao)) return false;
-  if (cond.genero && cond.genero !== e.pessoa.genero) return false;
-  if (cond.marcas) for (const m of cond.marcas) if (!(m in e.marcas)) return false;
-  if (cond.algumaMarca && !cond.algumaMarca.some((m) => m in e.marcas)) return false;
-  if (cond.semMarcas) for (const m of cond.semMarcas) if (m in e.marcas) return false;
-  if (cond.marcaHa) {
-    for (const req of cond.marcaHa) {
-      const reg = e.marcas[req.marca];
-      if (!reg) return false;
-      const anos = e.idade - reg.idade;
-      if (!dentro(anos, req)) return false;
-    }
+  if (cond.marcas && !cond.marcas.every((m) => tem(e, m, ator))) return false;
+  if (cond.semMarcas && cond.semMarcas.some((m) => tem(e, m, ator))) return false;
+  if (cond.algumaMarca && !cond.algumaMarca.some((m) => tem(e, m, ator))) return false;
+  for (const req of cond.marcaHa ?? []) {
+    const q = qualidadeDe(e, req.marca, ator);
+    if (!q || q.v <= 0 || !dentro(e.idade - q.idade, req)) return false;
+  }
+  if (cond.genero && e.entidades['eu']?.genero !== cond.genero) return false;
+  for (const [chave, pedido] of Object.entries(cond)) {
+    if (pedido === undefined || (ESPECIAIS.has(chave) && chave !== 'inflacao')) continue;
+    const { ent, campo } = separar(caminhoDaChave(chave));
+    if (!compara(ler(e, entidadeDe(ent, ator), campo), pedido as ValorCondicao)) return false;
   }
   return true;
 }
 
-/** Entradas que gravaram as marcas que esta condição consultou (presentes). */
-export function causasDe(cond: Condicoes | undefined, e: EstadoVida): number[] {
-  if (!cond) return [];
-  const nomes = new Set<string>([
+/** Quantas cláusulas a condição tem: mede a especificidade de um storylet. */
+export function clausulas(cond: Condicoes | undefined): number {
+  if (!cond) return 0;
+  let n = 0;
+  for (const [chave, v] of Object.entries(cond)) {
+    if (v === undefined) continue;
+    n += Array.isArray(v) && (chave === 'marcas' || chave === 'semMarcas' || chave === 'marcaHa') ? v.length : 1;
+  }
+  return n;
+}
+
+/** Qualidades que a condição exige (presentes): de quem joga ou de personagens. */
+function qualidadesExigidas(cond: Condicoes, e: EstadoVida, ator: string | undefined): string[] {
+  const nomes = [
     ...(cond.marcas ?? []),
-    ...(cond.algumaMarca ?? []).filter((m) => m in e.marcas),
+    ...(cond.algumaMarca ?? []).filter((m) => tem(e, m, ator)),
     ...(cond.marcaHa ?? []).map((r) => r.marca),
-  ]);
+  ];
+  for (const [chave, pedido] of Object.entries(cond)) {
+    if (ESPECIAIS.has(chave) || pedido === undefined) continue;
+    const exige = pedido === true || (typeof pedido === 'object' && !Array.isArray(pedido) && (pedido.min ?? 0) > 0);
+    if (exige && qualidadeDe(e, chave, ator)) nomes.push(chave);
+  }
+  return nomes;
+}
+
+/** Entradas que gravaram as qualidades que esta condição consultou. */
+export function causasDe(cond: Condicoes | undefined, e: EstadoVida, ator?: string): number[] {
+  if (!cond) return [];
   const causas: number[] = [];
-  for (const m of nomes) {
-    const origem = e.marcas[m]?.origem;
-    if (origem !== undefined && origem !== null) causas.push(origem);
+  for (const m of new Set(qualidadesExigidas(cond, e, ator))) {
+    const causa = qualidadeDe(e, m, ator)?.causa;
+    if (causa !== undefined && causa !== null) causas.push(causa);
   }
   return causas;
 }
 
-/** Explica por que uma escolha está bloqueada (só para dinheiro; o resto fica implícito). */
+/** Idade (de quem joga) em que a mais recente das qualidades consultadas foi gravada. */
+export function idadeDaCausaMaisRecente(cond: Condicoes | undefined, e: EstadoVida, ator?: string): number | undefined {
+  if (!cond) return undefined;
+  let maior: number | undefined;
+  for (const m of qualidadesExigidas(cond, e, ator)) {
+    const q = qualidadeDe(e, m, ator);
+    if (q && q.causa !== null && (maior === undefined || q.idade > maior)) maior = q.idade;
+  }
+  return maior;
+}
+
+/** Explica por que uma escolha está bloqueada (dinheiro; o resto fica implícito). */
 export function motivoBloqueio(cond: Condicoes | undefined, e: EstadoVida): string | undefined {
   if (!cond) return undefined;
-  if (cond.dinheiro?.min !== undefined && e.financas.dinheiro < cond.dinheiro.min) {
+  const eu = e.entidades['eu']!;
+  if (cond.dinheiro?.min !== undefined && (eu.n['dinheiro'] ?? 0) < cond.dinheiro.min) {
     return `precisa de ${formatarDinheiro(cond.dinheiro.min)}`;
   }
-  if (cond.patrimonio?.min !== undefined && patrimonio(e) < cond.patrimonio.min) {
-    return `precisa de ${formatarDinheiro(cond.patrimonio.min)} guardados`;
+  if (cond.patrimonio?.min !== undefined) {
+    const p = (eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0) - (eu.n['divida'] ?? 0);
+    if (p < cond.patrimonio.min) return `precisa de ${formatarDinheiro(cond.patrimonio.min)} guardados`;
   }
-  if (cond.divida?.max !== undefined && e.financas.divida > cond.divida.max) return 'dívida alta demais';
+  if (cond.divida?.max !== undefined && (eu.n['divida'] ?? 0) > cond.divida.max) return 'dívida alta demais';
   return 'fora de alcance agora';
 }

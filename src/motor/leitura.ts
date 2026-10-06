@@ -1,10 +1,10 @@
 /** Lê o conteúdo cru (JSON já carregado) com os esquemas Zod e indexa. Usado no Node. */
 import type { z } from 'zod';
 import { indexarConteudo, type Conteudo, type DadosConteudo, type Problema } from './conteudo.ts';
-import { ArquivoEventos, ArquivoLinhas, ArquivoMarcas, ArquivoMortes, Mundo } from './esquema.ts';
+import { ArquivoLinhas, ArquivoMarcas, ArquivoMortes, ArquivoStorylets, Mundo } from './esquema.ts';
 
 export interface FontesConteudo {
-  eventos: { arquivo: string; dados: unknown }[];
+  storylets: { arquivo: string; dados: unknown }[];
   linhas: unknown;
   mortes: unknown;
   marcas: unknown;
@@ -36,10 +36,10 @@ function analisar<T>(esquema: z.ZodType<T>, dados: unknown, onde: string, proble
 /** Lê e indexa; devolve problemas em vez de lançar. */
 export function lerConteudo(fontes: FontesConteudo): { conteudo: Conteudo | null; problemas: Problema[] } {
   const problemas: Problema[] = [];
-  const eventos: DadosConteudo['eventos'] = [];
-  for (const { arquivo, dados } of fontes.eventos) {
-    const lista = analisar(ArquivoEventos, dados, arquivo, problemas);
-    if (lista) eventos.push({ arquivo, lista });
+  const storylets: DadosConteudo['storylets'] = [];
+  for (const { arquivo, dados } of fontes.storylets) {
+    const lista = analisar(ArquivoStorylets, dados, arquivo, problemas);
+    if (lista) storylets.push({ arquivo, lista });
   }
   const linhas = analisar(ArquivoLinhas, fontes.linhas, 'linhas.json', problemas);
   const mortes = analisar(ArquivoMortes, fontes.mortes, 'mortes.json', problemas);
@@ -48,7 +48,7 @@ export function lerConteudo(fontes: FontesConteudo): { conteudo: Conteudo | null
   if (!linhas || !mortes || !marcas || !mundo || problemas.some((p) => p.nivel === 'erro')) {
     return { conteudo: null, problemas };
   }
-  const conteudo = indexarConteudo({ eventos, linhas, mortes, marcas, mundo }, problemas);
+  const conteudo = indexarConteudo({ storylets, linhas, mortes, marcas, mundo }, problemas);
   return { conteudo: problemas.some((p) => p.nivel === 'erro') ? null : conteudo, problemas };
 }
 

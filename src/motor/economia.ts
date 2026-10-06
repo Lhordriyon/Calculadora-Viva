@@ -1,10 +1,11 @@
 /**
- * Dinheiro só onde gera decisão. Tudo é contado em reais de hoje: a inflação
- * aparece como o que ela faz com o dinheiro parado (encolhe), o investimento
- * rende juros compostos acima dela e a dívida cresce com juros bem acima dela.
- * O resto (resgatar para cobrir buraco, amortizar com sobra) é automático,
- * porque não é uma decisão interessante.
+ * Dinheiro em reais de hoje. A inflação aparece como o que ela faz com o
+ * dinheiro parado (encolhe), o investimento rende juros compostos acima dela
+ * e a dívida cresce com juros bem acima dela. O resto (resgatar para cobrir
+ * buraco, amortizar com sobra) é automático, porque não é uma decisão.
+ * Toda variação vai para o livro-razão.
  */
+import { anotar } from './livro.ts';
 import { aleatorio, normal, type Rng } from './rng.ts';
 import {
   CHANCE_CRISE,
@@ -21,7 +22,9 @@ import {
   pisoCusto,
   pisoRenda,
 } from './regras.ts';
-import type { EstadoVida, Financas } from './tipos.ts';
+import type { EstadoVida, Mudanca } from './tipos.ts';
+
+type Numeros = Record<string, number>;
 
 export function sortearInflacao(rng: Rng): number {
   let i = normal(rng, INFLACAO_MEDIA, INFLACAO_DESVIO);
@@ -30,21 +33,30 @@ export function sortearInflacao(rng: Rng): number {
 }
 
 /** Cobre dinheiro negativo com investimento e, se não der, com dívida; sobra amortiza dívida. */
-export function acertarCaixa(f: Financas): void {
-  if (f.dinheiro < 0 && f.investido > 0) {
-    const resgate = Math.min(f.investido, -f.dinheiro);
-    f.investido -= resgate;
-    f.dinheiro += resgate;
+export function acertarCaixa(n: Numeros): void {
+  const dinheiro = n['dinheiro'] ?? 0;
+  const investido = n['investido'] ?? 0;
+  if (dinheiro < 0 && investido > 0) {
+    const resgate = Math.min(investido, -dinheiro);
+    n['investido'] = investido - resgate;
+    n['dinheiro'] = dinheiro + resgate;
   }
-  if (f.dinheiro < 0) {
-    f.divida += -f.dinheiro;
-    f.dinheiro = 0;
+  if ((n['dinheiro'] ?? 0) < 0) {
+    n['divida'] = (n['divida'] ?? 0) - n['dinheiro']!;
+    n['dinheiro'] = 0;
   }
-  if (f.dinheiro > 0 && f.divida > 0) {
-    const pago = Math.min(f.dinheiro, f.divida);
-    f.dinheiro -= pago;
-    f.divida -= pago;
+  if ((n['dinheiro'] ?? 0) > 0 && (n['divida'] ?? 0) > 0) {
+    const pago = Math.min(n['dinheiro']!, n['divida']!);
+    n['dinheiro']! -= pago;
+    n['divida']! -= pago;
   }
+}
+
+const CAMPOS_CAIXA = ['dinheiro', 'investido', 'divida'] as const;
+
+/** Anota no livro a diferença do caixa de uma entidade entre dois momentos. */
+function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Numeros, r?: string): void {
+  for (const k of CAMPOS_CAIXA) anotar(reg, `${ent}.${k}`, (n[k] ?? 0) - (antes[k] ?? 0), r);
 }
 
 export interface Ano {
@@ -55,38 +67,44 @@ export interface Ano {
 }
 
 /**
- * Um ano de economia. Da sobra do ano (renda menos custo), uma parte vira
- * padrão de vida (menos, para quem está devendo). Déficit vira dívida só até
- * o limite de crédito; acima dele, a dívida congela (inadimplência) e o resto
+ * Um ano de economia de quem joga. Da sobra do ano (renda menos custo), uma
+ * parte vira padrão de vida (menos, para quem está devendo). Déficit vira
+ * dívida só até o limite de crédito; acima dele, a dívida congela e o resto
  * do déficit vira privação.
  */
-export function economiaDoAno(e: EstadoVida, rng: Rng): Ano {
-  const f = e.financas;
+export function economiaDoAno(e: EstadoVida, rng: Rng, reg: Mudanca[]): Ano {
+  const n = e.entidades['eu']!.n;
+  const antes = { dinheiro: n['dinheiro'] ?? 0, investido: n['investido'] ?? 0, divida: n['divida'] ?? 0 };
   const inflacao = sortearInflacao(rng);
   const retornoReal = normal(rng, RETORNO_REAL_MEDIO, RETORNO_REAL_DESVIO);
-  f.inflacao = Math.round(inflacao * 1000) / 10;
+  const pais = e.entidades['pais']!.n;
+  anotar(reg, 'pais.inflacao', Math.round(inflacao * 1000) / 10 - (pais['inflacao'] ?? 0), 'economia');
+  pais['inflacao'] = Math.round(inflacao * 1000) / 10;
 
-  const antes = f.dinheiro;
-  f.dinheiro /= 1 + inflacao;
-  const comida = antes - f.dinheiro;
-  f.investido *= 1 + retornoReal;
-  const limite = limiteDeCredito(f.renda);
-  const comJuros = Math.min(f.divida, limite);
-  f.divida += comJuros * ((1 + JUROS_DIVIDA) / (1 + inflacao) - 1);
+  const dinheiroAntes = n['dinheiro'] ?? 0;
+  n['dinheiro'] = dinheiroAntes / (1 + inflacao);
+  const comida = dinheiroAntes - n['dinheiro'];
+  n['investido'] = (n['investido'] ?? 0) * (1 + retornoReal);
+  const renda = n['renda'] ?? 0;
+  const limite = limiteDeCredito(renda);
+  const comJuros = Math.min(n['divida'] ?? 0, limite);
+  n['divida'] = (n['divida'] ?? 0) + comJuros * ((1 + JUROS_DIVIDA) / (1 + inflacao) - 1);
 
   let privacao = false;
   if (e.idade >= 18) {
-    const sobra = Math.max(f.renda, pisoRenda(e.idade)) - Math.max(f.custo, pisoCusto(e.idade));
+    const custoVida = e.entidades['lugar']?.n['custo_vida'] ?? 1;
+    const sobra = Math.max(renda, pisoRenda(e.idade)) - Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
     if (sobra >= 0) {
-      f.dinheiro += sobra * (1 - (f.divida > 0 ? PROPENSAO_GASTO_ENDIVIDADO : PROPENSAO_GASTO));
+      n['dinheiro'] += sobra * (1 - ((n['divida'] ?? 0) > 0 ? PROPENSAO_GASTO_ENDIVIDADO : PROPENSAO_GASTO));
     } else {
-      const folga = Math.max(0, f.dinheiro) + f.investido + Math.max(0, limite - f.divida);
+      const folga = Math.max(0, n['dinheiro']) + (n['investido'] ?? 0) + Math.max(0, limite - (n['divida'] ?? 0));
       const coberto = Math.min(-sobra, folga);
-      f.dinheiro -= coberto;
+      n['dinheiro'] -= coberto;
       privacao = coberto < -sobra;
     }
   }
-  acertarCaixa(f);
+  acertarCaixa(n);
+  anotarCaixa(reg, 'eu', antes, n, 'economia');
   return { comida, privacao };
 }
 
@@ -95,31 +113,32 @@ export function limiteDeCredito(renda: number): number {
   return Math.max(LIMITE_CREDITO_MINIMO, renda * LIMITE_CREDITO_RENDAS);
 }
 
-/** Aplica movimentos de dinheiro (reais de hoje); devolve as diferenças visíveis. */
-export function movimentar(
-  e: EstadoVida,
-  mov: { dinheiro?: number | undefined; investir?: number | undefined; divida?: number | undefined },
-): { dinheiro: number; investido: number; divida: number } {
-  const f = e.financas;
-  const antes = { dinheiro: f.dinheiro, investido: f.investido, divida: f.divida };
-  if (mov.dinheiro) f.dinheiro += mov.dinheiro;
+export interface Movimento {
+  dinheiro?: number | undefined;
+  investir?: number | undefined;
+  divida?: number | undefined;
+}
+
+/** Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro. */
+export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 'eu', r?: string): void {
+  const n = e.entidades[ent]?.n;
+  if (!n) return;
+  const antes = { dinheiro: n['dinheiro'] ?? 0, investido: n['investido'] ?? 0, divida: n['divida'] ?? 0 };
+  if (mov.dinheiro) n['dinheiro'] = (n['dinheiro'] ?? 0) + mov.dinheiro;
   // Dívida negativa é desconto ou perdão; para pagar com dinheiro, some também um dinheiro negativo.
-  if (mov.divida) f.divida = Math.max(0, f.divida + mov.divida);
+  if (mov.divida) n['divida'] = Math.max(0, (n['divida'] ?? 0) + mov.divida);
   if (mov.investir) {
     if (mov.investir > 0) {
-      const valor = Math.min(mov.investir, Math.max(f.dinheiro, 0));
-      f.dinheiro -= valor;
-      f.investido += valor;
+      const valor = Math.min(mov.investir, Math.max(n['dinheiro'] ?? 0, 0));
+      n['dinheiro'] = (n['dinheiro'] ?? 0) - valor;
+      n['investido'] = (n['investido'] ?? 0) + valor;
     } else {
-      const valor = Math.min(-mov.investir, f.investido);
-      f.investido -= valor;
-      f.dinheiro += valor;
+      const valor = Math.min(-mov.investir, n['investido'] ?? 0);
+      n['investido'] = (n['investido'] ?? 0) - valor;
+      n['dinheiro'] = (n['dinheiro'] ?? 0) + valor;
     }
   }
-  acertarCaixa(f);
-  return {
-    dinheiro: f.dinheiro - antes.dinheiro,
-    investido: f.investido - antes.investido,
-    divida: f.divida - antes.divida,
-  };
+  // Só quem joga tem banco (crédito, dívida); personagens ficam com o saldo como está.
+  if (ent === 'eu') acertarCaixa(n);
+  anotarCaixa(reg, ent, antes, n, r);
 }

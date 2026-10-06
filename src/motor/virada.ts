@@ -1,25 +1,28 @@
 /**
- * Pontos de virada: cada evento guarda quais entradas anteriores o tornaram
- * possível (marcas consultadas, agendamentos). Isso forma um grafo de causas.
- * A escolha com mais eventos descendentes é a que mais mudou a vida.
+ * Pontos de virada saem do livro-razão: cada entrada guarda quais entradas
+ * anteriores a tornaram possível (qualidades consultadas, agendamentos), o
+ * que forma um grafo. A causa com mais consequências, pesadas pelo impacto,
+ * é a que mais mudou a vida. Causas podem ser do jogador (escolha, ação) ou
+ * do mundo (o pai que perdeu o emprego, a avó que morreu).
  */
-import { patrimonio } from './condicoes.ts';
+import { patrimonioDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import type { Atributo } from './esquema.ts';
+import { contexto } from './contexto.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
 import { renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, Genero } from './tipos.ts';
-import { contexto } from './vida.ts';
 
 export interface PontoDeVirada {
   origemId: number;
   idade: number;
-  /** O que você fez ("trocou o ENEM por um bico"). */
-  escolha: string;
+  /** A causa, já com sujeito: "você trocou o ENEM por um bico", "seu pai perdeu o emprego". */
+  causa: string;
+  /** A causa veio do jogador (escolha ou ação) ou do mundo. */
+  doJogador: boolean;
   consequenciaIdade: number;
-  /** A consequência mais distante, contada pelo que aconteceu ali ("abriu uma hamburgueria com Bruno"). */
+  /** A consequência que melhor conta a história ("abriu uma hamburgueria com Bruno"). */
   consequencia: string;
-  /** Quantos eventos descendem desta escolha. */
+  /** Quantas entradas descendem desta causa. */
   total: number;
 }
 
@@ -47,19 +50,25 @@ export function descendentes(historico: Entrada[]): Map<number, Set<number>> {
   return resultado;
 }
 
-/** Quanto uma entrada mexeu na vida: atributos, dinheiro, morte. */
-function impacto(h: Entrada): number {
-  const d = h.deltas ?? {};
-  // Dinheiro conta pela variação do patrimônio: investir só troca de bolso.
-  const patrimonio = (d.dinheiro ?? 0) + (d.investido ?? 0) - (d.divida ?? 0);
-  let x =
-    Math.abs(d.saude ?? 0) +
-    Math.abs(d.felicidade ?? 0) +
-    Math.abs(d.inteligencia ?? 0) +
-    Math.abs(d.aparencia ?? 0) +
-    Math.abs(patrimonio) / 5000 +
-    Math.abs(d.renda ?? 0) / 500;
+const PATRIMONIO = new Set(['eu.dinheiro', 'eu.investido', 'eu.divida']);
+
+/** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda, vínculos, morte. */
+export function impacto(h: Entrada): number {
+  let x = 0;
+  let patrimonio = 0;
+  for (const m of h.mudancas ?? []) {
+    if (m.d === undefined || m.q !== undefined) {
+      if (m.q !== undefined) x += 0.5;
+      continue;
+    }
+    if (PATRIMONIO.has(m.c)) patrimonio += m.c === 'eu.divida' ? -m.d : m.d;
+    else if (m.c === 'eu.renda') x += Math.abs(m.d) / 6000;
+    else if (m.c.startsWith('eu.')) x += Math.abs(m.d);
+    else if (m.c.endsWith('.vinculo')) x += Math.abs(m.d) / 3;
+  }
+  x += Math.abs(patrimonio) / 5000;
   if (h.tipo === 'morte') x += 30;
+  if (h.ref === 'regra:faleceu') x += 10;
   return x;
 }
 
@@ -77,21 +86,37 @@ function melhorConsequencia(origem: Entrada, descendentes: Entrada[]): Entrada {
   return melhor;
 }
 
+/** Texto da causa, com sujeito. Escolhas e ações são do jogador; o resto já vem com sujeito. */
+function frase(h: Entrada): { texto: string; doJogador: boolean } | null {
+  if (h.escolha) return { texto: `você ${h.escolha.resumo}`, doJogador: true };
+  if (h.tipo === 'acao' && h.resumo) return { texto: `você ${h.resumo}`, doJogador: true };
+  if (h.tipo === 'npc' && h.resumo) return { texto: h.resumo, doJogador: false };
+  return null;
+}
+
+function consequenciaDe(h: Entrada): string {
+  if (h.escolha) return h.escolha.resumo;
+  if (h.tipo === 'acao' && h.resumo) return `você ${h.resumo}`;
+  return h.resumo ?? h.texto;
+}
+
 export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
   const porId = new Map(e.historico.map((h) => [h.id, h]));
   const desc = descendentes(e.historico);
-  const candidatos: { origem: Entrada; ultima: Entrada; total: number; peso: number; alcance: number }[] = [];
+  const candidatos: { origem: Entrada; frase: { texto: string; doJogador: boolean }; ultima: Entrada; total: number; peso: number; alcance: number }[] = [];
   for (const en of e.historico) {
-    if (en.tipo !== 'evento' || !en.escolha) continue;
+    const f = frase(en);
+    if (!f) continue;
     const ids = desc.get(en.id);
     if (!ids || ids.size === 0) continue;
-    const lista = [...ids].map((id) => porId.get(id)).filter((d): d is Entrada => d !== undefined);
+    const lista = [...ids].map((id) => porId.get(id)).filter((d): d is Entrada => d !== undefined && d.tipo !== 'regra');
     if (lista.length === 0) continue;
     const alcance = Math.max(...lista.map((d) => d.idade)) - en.idade;
-    const peso = lista.reduce((s, d) => s + 1 + impacto(d) / 5, 0);
-    candidatos.push({ origem: en, ultima: melhorConsequencia(en, lista), total: lista.length, peso, alcance });
+    // Causas do jogador pesam um pouco mais: o cartão conta a vida que ele causou.
+    const peso = lista.reduce((s, d) => s + 1 + impacto(d) / 5, 0) * (f.doJogador ? 1.25 : 1);
+    candidatos.push({ origem: en, frase: f, ultima: melhorConsequencia(en, lista), total: lista.length, peso, alcance });
   }
-  // Mais peso (consequências, pesadas pelo impacto) primeiro; empate, a que alcançou mais longe.
+  // Mais peso primeiro; empate, a que alcançou mais longe.
   candidatos.sort((a, b) => b.peso - a.peso || b.alcance - a.alcance || a.origem.idade - b.origem.idade);
 
   const escolhidos: PontoDeVirada[] = [];
@@ -102,9 +127,10 @@ export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
     escolhidos.push({
       origemId: c.origem.id,
       idade: c.origem.idade,
-      escolha: c.origem.escolha!.resumo,
+      causa: c.frase.texto,
+      doJogador: c.frase.doJogador,
       consequenciaIdade: c.ultima.idade,
-      consequencia: c.ultima.escolha?.resumo ?? c.ultima.resumo ?? c.ultima.texto,
+      consequencia: consequenciaDe(c.ultima),
       total: c.total,
     });
     if (escolhidos.length >= limite) break;
@@ -123,11 +149,13 @@ export interface ResumoVida {
   idade: number;
   vivo: boolean;
   causa: string | null;
-  atributos: Record<Atributo, number>;
+  saude: number;
   /** Patrimônio em reais de hoje. */
   patrimonio: number;
   felicidadeMedia: number;
   eventos: number;
+  /** "família pobre e acolhedora". */
+  origem: string;
   pontos: PontoDeVirada[];
   epitafio: string;
 }
@@ -135,39 +163,36 @@ export interface ResumoVida {
 export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
   const pontos = pontosDeVirada(e);
   const ctx = { ...contexto(e), rng: criarRng(misturar(e.semente, 0x5eed)) };
+  const eu = e.entidades['eu']!;
 
-  // Epitáfio: metade das vezes vem de uma marca de ponto de virada (se houver); senão, de qualquer
-  // marca com epitáfio ou de um genérico, todos com a mesma chance (marcas comuns não monopolizam).
+  // Epitáfio: metade das vezes vem de uma qualidade de ponto de virada (se houver); senão, de qualquer
+  // qualidade com epitáfio ou de um genérico, todos com a mesma chance.
   const origens = new Set(pontos.map((p) => p.origemId));
-  const comEpitafio = Object.entries(e.marcas).filter(([m]) => c.marcas[m]?.epitafio);
-  const daVirada = comEpitafio.filter(([, reg]) => reg.origem !== null && origens.has(reg.origem));
+  const comEpitafio = Object.entries(eu.q).filter(([m]) => c.marcas[m]?.epitafio);
+  const daVirada = comEpitafio.filter(([, q]) => q.causa !== null && origens.has(q.causa));
   const modelos = [...comEpitafio.map(([m]) => c.marcas[m]!.epitafio!), ...c.mundo.epitafios];
   const modelo =
-    daVirada.length > 0 && aleatorio(ctx.rng) < 0.5
-      ? c.marcas[sortear(ctx.rng, daVirada)[0]]!.epitafio!
-      : sortear(ctx.rng, modelos);
+    daVirada.length > 0 && aleatorio(ctx.rng) < 0.5 ? c.marcas[sortear(ctx.rng, daVirada)[0]]!.epitafio! : sortear(ctx.rng, modelos);
 
+  const classe = c.mundo.classes[eu.n['classe_origem'] ?? 2];
+  const familia = c.mundo.familias.find((f) => f.id === eu.t['familia']);
   const anos = Math.max(1, e.idade);
   return {
-    nome: e.pessoa.nome,
-    nomeCompleto: `${e.pessoa.nome} ${e.pessoa.sobrenome}`,
-    genero: e.pessoa.genero,
-    cidade: e.pessoa.cidade,
-    uf: e.pessoa.uf,
+    nome: eu.nome,
+    nomeCompleto: `${eu.nome} ${e.sobrenome}`,
+    genero: eu.genero ?? 'm',
+    cidade: e.entidades['lugar']?.nome ?? '',
+    uf: e.entidades['lugar']?.t['uf'] ?? '',
     anoNascimento: e.anoNascimento,
     anoFinal: e.ano,
     idade: e.idade,
     vivo: e.vivo,
     causa: e.morte?.causa ?? null,
-    atributos: {
-      saude: Math.round(e.atributos.saude),
-      felicidade: Math.round(e.atributos.felicidade),
-      inteligencia: Math.round(e.atributos.inteligencia),
-      aparencia: Math.round(e.atributos.aparencia),
-    },
-    patrimonio: patrimonio(e),
-    felicidadeMedia: e.idade > 0 ? e.somaFelicidade / anos : e.atributos.felicidade,
-    eventos: e.historico.filter((h) => h.tipo === 'evento').length,
+    saude: Math.round(eu.n['saude'] ?? 0),
+    patrimonio: patrimonioDe(eu),
+    felicidadeMedia: e.idade > 0 ? e.somaFelicidade / anos : (eu.n['felicidade'] ?? 0),
+    eventos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'acao').length,
+    origem: [classe?.nome, familia?.nome].filter(Boolean).join(', '),
     pontos,
     epitafio: renderizar(modelo, ctx),
   };

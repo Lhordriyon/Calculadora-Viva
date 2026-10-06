@@ -1,28 +1,181 @@
 {
   "nomes": {
     "f": [
-      "Ana", "Maria", "Juliana", "Fernanda", "Beatriz", "Larissa", "Camila", "Letícia", "Gabriela", "Mariana",
-      "Jéssica", "Bruna", "Aline", "Patrícia", "Vitória", "Isabela", "Sofia", "Helena", "Alice", "Laura",
-      "Manuela", "Valentina", "Lívia", "Yasmin", "Rafaela", "Luana", "Thaís", "Débora", "Raquel", "Priscila",
-      "Natália", "Cláudia", "Sandra", "Adriana", "Simone", "Vanessa", "Kelly", "Daiane", "Tainá", "Iara",
-      "Jaqueline", "Rosângela", "Francisca", "Antônia", "Luciana", "Carla", "Elaine", "Michele", "Bianca", "Lorena",
-      "Cecília", "Heloísa", "Maitê", "Ágatha", "Eduarda", "Giovana", "Kauane", "Joana", "Rita", "Benedita"
+      "Ana",
+      "Maria",
+      "Juliana",
+      "Fernanda",
+      "Beatriz",
+      "Larissa",
+      "Camila",
+      "Letícia",
+      "Gabriela",
+      "Mariana",
+      "Jéssica",
+      "Bruna",
+      "Aline",
+      "Patrícia",
+      "Vitória",
+      "Isabela",
+      "Sofia",
+      "Helena",
+      "Alice",
+      "Laura",
+      "Manuela",
+      "Valentina",
+      "Lívia",
+      "Yasmin",
+      "Rafaela",
+      "Luana",
+      "Thaís",
+      "Débora",
+      "Raquel",
+      "Priscila",
+      "Natália",
+      "Cláudia",
+      "Sandra",
+      "Adriana",
+      "Simone",
+      "Vanessa",
+      "Kelly",
+      "Daiane",
+      "Tainá",
+      "Iara",
+      "Jaqueline",
+      "Rosângela",
+      "Francisca",
+      "Antônia",
+      "Luciana",
+      "Carla",
+      "Elaine",
+      "Michele",
+      "Bianca",
+      "Lorena",
+      "Cecília",
+      "Heloísa",
+      "Maitê",
+      "Ágatha",
+      "Eduarda",
+      "Giovana",
+      "Kauane",
+      "Joana",
+      "Rita",
+      "Benedita"
     ],
     "m": [
-      "João", "José", "Pedro", "Lucas", "Gabriel", "Mateus", "Rafael", "Gustavo", "Felipe", "Bruno",
-      "Thiago", "Diego", "Rodrigo", "Leonardo", "Vinícius", "Caio", "Daniel", "Marcelo", "André", "Eduardo",
-      "Carlos", "Paulo", "Ricardo", "Fábio", "Anderson", "Wellington", "Cleiton", "Jefferson", "Washington", "Davi",
-      "Arthur", "Miguel", "Heitor", "Bernardo", "Théo", "Enzo", "Samuel", "Benjamin", "Lorenzo", "Murilo",
-      "Kauã", "Ryan", "Igor", "Renan", "Wesley", "Everton", "Edson", "Raimundo", "Francisco", "Antônio",
-      "Sebastião", "Luiz", "Otávio", "Henrique", "Nicolas", "Joaquim", "Benedito", "Cauê", "Ícaro", "Josué"
+      "João",
+      "José",
+      "Pedro",
+      "Lucas",
+      "Gabriel",
+      "Mateus",
+      "Rafael",
+      "Gustavo",
+      "Felipe",
+      "Bruno",
+      "Thiago",
+      "Diego",
+      "Rodrigo",
+      "Leonardo",
+      "Vinícius",
+      "Caio",
+      "Daniel",
+      "Marcelo",
+      "André",
+      "Eduardo",
+      "Carlos",
+      "Paulo",
+      "Ricardo",
+      "Fábio",
+      "Anderson",
+      "Wellington",
+      "Cleiton",
+      "Jefferson",
+      "Washington",
+      "Davi",
+      "Arthur",
+      "Miguel",
+      "Heitor",
+      "Bernardo",
+      "Théo",
+      "Enzo",
+      "Samuel",
+      "Benjamin",
+      "Lorenzo",
+      "Murilo",
+      "Kauã",
+      "Ryan",
+      "Igor",
+      "Renan",
+      "Wesley",
+      "Everton",
+      "Edson",
+      "Raimundo",
+      "Francisco",
+      "Antônio",
+      "Sebastião",
+      "Luiz",
+      "Otávio",
+      "Henrique",
+      "Nicolas",
+      "Joaquim",
+      "Benedito",
+      "Cauê",
+      "Ícaro",
+      "Josué"
     ]
   },
   "sobrenomes": [
-    "Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes",
-    "Costa", "Ribeiro", "Martins", "Carvalho", "Almeida", "Lopes", "Soares", "Fernandes", "Vieira", "Barbosa",
-    "Rocha", "Dias", "Nascimento", "Andrade", "Moreira", "Nunes", "Marques", "Machado", "Mendes", "Freitas",
-    "Cardoso", "Ramos", "Gonçalves", "Santana", "Teixeira", "Araújo", "Moura", "Cavalcanti", "Batista", "Monteiro",
-    "Pinto", "Correia", "Farias", "Campos", "Brito", "Sales", "Bezerra", "Medeiros", "Xavier", "Queiroz"
+    "Silva",
+    "Santos",
+    "Oliveira",
+    "Souza",
+    "Rodrigues",
+    "Ferreira",
+    "Alves",
+    "Pereira",
+    "Lima",
+    "Gomes",
+    "Costa",
+    "Ribeiro",
+    "Martins",
+    "Carvalho",
+    "Almeida",
+    "Lopes",
+    "Soares",
+    "Fernandes",
+    "Vieira",
+    "Barbosa",
+    "Rocha",
+    "Dias",
+    "Nascimento",
+    "Andrade",
+    "Moreira",
+    "Nunes",
+    "Marques",
+    "Machado",
+    "Mendes",
+    "Freitas",
+    "Cardoso",
+    "Ramos",
+    "Gonçalves",
+    "Santana",
+    "Teixeira",
+    "Araújo",
+    "Moura",
+    "Cavalcanti",
+    "Batista",
+    "Monteiro",
+    "Pinto",
+    "Correia",
+    "Farias",
+    "Campos",
+    "Brito",
+    "Sales",
+    "Bezerra",
+    "Medeiros",
+    "Xavier",
+    "Queiroz"
   ],
   "pets": [
     { "nome": "Paçoca", "genero": "f" },
@@ -95,11 +248,36 @@
     { "nome": "Caxias do Sul", "uf": "RS", "marcas": ["interior", "sul"] },
     { "nome": "Pelotas", "uf": "RS", "marcas": ["interior", "sul"] }
   ],
-  "familias": [
+  "classes": [
     {
-      "marca": "familia_apertada",
-      "peso": 4,
-      "profissoes": [
+      "id": "extrema_pobreza",
+      "nome": "extrema pobreza",
+      "peso": 10,
+      "patrimonio": [-4000, 4000],
+      "renda": [5000, 14000],
+      "poupanca": -0.06,
+      "saude": -7,
+      "ocupacoes": [
+        { "m": "catador de recicláveis", "f": "catadora de recicláveis" },
+        { "m": "ajudante de pedreiro", "f": "faxineira sem carteira" },
+        { "m": "chapa de caminhão", "f": "lavadeira" },
+        { "m": "flanelinha", "f": "vendedora de bala no sinal" },
+        { "m": "boia-fria", "f": "boia-fria" },
+        { "m": "vigia de rua", "f": "diarista sem carteira" },
+        { "m": "ajudante de feira", "f": "ajudante de cozinha" },
+        { "m": "pescador", "f": "marisqueira" }
+      ],
+      "negocio": { "m": "dono de um carrinho de pipoca", "f": "dona de um carrinho de pipoca" }
+    },
+    {
+      "id": "pobre",
+      "nome": "família pobre",
+      "peso": 24,
+      "patrimonio": [2000, 35000],
+      "renda": [14000, 30000],
+      "poupanca": 0.0,
+      "saude": -3,
+      "ocupacoes": [
         { "m": "pedreiro", "f": "diarista" },
         { "m": "vendedor ambulante", "f": "vendedora ambulante" },
         { "m": "motorista de aplicativo", "f": "motorista de aplicativo" },
@@ -112,49 +290,444 @@
         { "m": "barbeiro", "f": "manicure" },
         { "m": "servente de obra", "f": "costureira" },
         { "m": "repositor de supermercado", "f": "caixa de supermercado" }
-      ]
+      ],
+      "negocio": { "m": "dono de uma barraca na feira", "f": "dona de uma barraca na feira" }
     },
     {
-      "marca": "familia_remediada",
-      "peso": 4,
-      "profissoes": [
+      "id": "remediada",
+      "nome": "família remediada",
+      "peso": 26,
+      "patrimonio": [35000, 180000],
+      "renda": [30000, 60000],
+      "poupanca": 0.04,
+      "saude": 0,
+      "ocupacoes": [
         { "m": "professor", "f": "professora" },
         { "m": "técnico de enfermagem", "f": "técnica de enfermagem" },
         { "m": "mecânico", "f": "cabeleireira" },
         { "m": "motorista de ônibus", "f": "recepcionista" },
-        { "m": "dono de mercadinho", "f": "dona de mercadinho" },
         { "m": "vendedor de loja", "f": "vendedora de loja" },
         { "m": "eletricista", "f": "auxiliar administrativa" },
         { "m": "policial militar", "f": "policial militar" },
         { "m": "caminhoneiro", "f": "vendedora de cosméticos por catálogo" },
         { "m": "bancário", "f": "bancária" },
         { "m": "carteiro", "f": "carteira" },
-        { "m": "técnico de informática", "f": "técnica de informática" }
-      ]
+        { "m": "técnico de informática", "f": "técnica de informática" },
+        { "m": "cabo da Aeronáutica", "f": "sargenta do Exército" }
+      ],
+      "negocio": { "m": "dono de mercadinho", "f": "dona de mercadinho" }
     },
     {
-      "marca": "familia_confortavel",
-      "peso": 2,
-      "profissoes": [
+      "id": "media",
+      "nome": "classe média",
+      "peso": 20,
+      "patrimonio": [180000, 900000],
+      "renda": [60000, 160000],
+      "poupanca": 0.08,
+      "saude": 2,
+      "ocupacoes": [
+        { "m": "enfermeiro", "f": "enfermeira" },
+        { "m": "contador", "f": "contadora" },
+        { "m": "professor universitário", "f": "professora universitária" },
+        { "m": "analista de sistemas", "f": "analista de sistemas" },
+        { "m": "gerente de loja", "f": "gerente de loja" },
+        { "m": "servidor público", "f": "servidora pública" },
+        { "m": "corretor de imóveis", "f": "corretora de imóveis" },
+        { "m": "farmacêutico", "f": "farmacêutica" },
+        { "m": "jornalista", "f": "jornalista" },
+        { "m": "programador", "f": "programadora" },
+        { "m": "dentista", "f": "dentista" }
+      ],
+      "negocio": {
+        "m": "dono de uma loja de material de construção",
+        "f": "dona de uma loja de material de construção"
+      }
+    },
+    {
+      "id": "rica",
+      "nome": "família rica",
+      "peso": 13,
+      "patrimonio": [900000, 4500000],
+      "renda": [160000, 600000],
+      "poupanca": 0.12,
+      "saude": 4,
+      "ocupacoes": [
         { "m": "médico", "f": "médica" },
         { "m": "advogado", "f": "advogada" },
         { "m": "engenheiro", "f": "engenheira" },
-        { "m": "servidor público", "f": "servidora pública" },
-        { "m": "empresário", "f": "empresária" },
-        { "m": "dentista", "f": "dentista" },
-        { "m": "programador", "f": "programadora" },
+        { "m": "juiz", "f": "juíza" },
+        { "m": "diretor de empresa", "f": "diretora de empresa" },
+        { "m": "fazendeiro", "f": "fazendeira" },
+        { "m": "cirurgião plástico", "f": "cirurgiã-dentista" },
         { "m": "gerente de banco", "f": "gerente de banco" },
-        { "m": "arquiteto", "f": "arquiteta" },
-        { "m": "fazendeiro", "f": "fazendeira" }
-      ]
+        { "m": "arquiteto", "f": "arquiteta" }
+      ],
+      "negocio": { "m": "dono de uma rede de academias", "f": "dona de uma rede de academias" }
+    },
+    {
+      "id": "muito_rica",
+      "nome": "família muito rica",
+      "peso": 7,
+      "patrimonio": [5000000, 60000000],
+      "renda": [600000, 4000000],
+      "poupanca": 0.15,
+      "saude": 5,
+      "ocupacoes": [
+        { "m": "herdeiro", "f": "herdeira" },
+        { "m": "investidor", "f": "investidora" },
+        { "m": "dono de construtora", "f": "dona de construtora" },
+        { "m": "banqueiro", "f": "banqueira" },
+        { "m": "diretor de multinacional", "f": "diretora de multinacional" },
+        { "m": "fazendeiro do agronegócio", "f": "fazendeira do agronegócio" },
+        { "m": "sócio de escritório de advocacia", "f": "sócia de escritório de advocacia" }
+      ],
+      "negocio": { "m": "dono de um grupo de supermercados", "f": "dona de um grupo de supermercados" }
     }
   ],
+  "familias": [
+    {
+      "id": "acolhedora",
+      "nome": "família acolhedora",
+      "peso": 35,
+      "vinculo": 72,
+      "tracos": { "carinhoso": 3, "generoso": 2, "piadista": 1.5 }
+    },
+    {
+      "id": "conflituosa",
+      "nome": "família conflituosa",
+      "peso": 25,
+      "vinculo": 38,
+      "tracos": { "brigao": 3, "ausente": 2, "gastador": 1.5, "rigido": 1 }
+    },
+    {
+      "id": "religiosa",
+      "nome": "família religiosa",
+      "peso": 25,
+      "vinculo": 62,
+      "tracos": { "devoto": 3.5, "rigido": 2, "generoso": 1 }
+    },
+    {
+      "id": "empreendedora",
+      "nome": "família empreendedora",
+      "peso": 15,
+      "vinculo": 56,
+      "tracos": { "trabalhador": 3, "ambicioso": 2, "mao_fechada": 1.5 }
+    }
+  ],
+  "tracos": [
+    {
+      "id": "carinhoso",
+      "nome": { "m": "carinhoso", "f": "carinhosa" },
+      "ajuda": 1.6,
+      "briga": 0.5,
+      "vinculo": 10,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1,
+      "poupanca": 0
+    },
+    {
+      "id": "generoso",
+      "nome": { "m": "generoso", "f": "generosa" },
+      "ajuda": 2.2,
+      "briga": 0.7,
+      "vinculo": 5,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1,
+      "poupanca": -0.03
+    },
+    {
+      "id": "mao_fechada",
+      "nome": { "m": "mão de vaca", "f": "mão de vaca" },
+      "ajuda": 0.3,
+      "briga": 1.1,
+      "vinculo": -5,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1,
+      "poupanca": 0.06
+    },
+    {
+      "id": "brigao",
+      "nome": { "m": "brigão", "f": "brigona" },
+      "ajuda": 0.8,
+      "briga": 2.5,
+      "vinculo": -12,
+      "saude": 0,
+      "doenca": 1.1,
+      "emprego": 1.3,
+      "poupanca": 0
+    },
+    {
+      "id": "ausente",
+      "nome": { "m": "ausente", "f": "ausente" },
+      "ajuda": 0.4,
+      "briga": 0.8,
+      "vinculo": -20,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1,
+      "poupanca": 0
+    },
+    {
+      "id": "trabalhador",
+      "nome": { "m": "trabalhador", "f": "trabalhadora" },
+      "ajuda": 1.1,
+      "briga": 0.9,
+      "vinculo": 0,
+      "saude": -2,
+      "doenca": 1.1,
+      "emprego": 0.5,
+      "poupanca": 0.04
+    },
+    {
+      "id": "gastador",
+      "nome": { "m": "gastador", "f": "gastadeira" },
+      "ajuda": 1,
+      "briga": 1.2,
+      "vinculo": 0,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1.1,
+      "poupanca": -0.08
+    },
+    {
+      "id": "fragil",
+      "nome": { "m": "de saúde frágil", "f": "de saúde frágil" },
+      "ajuda": 1,
+      "briga": 0.8,
+      "vinculo": 3,
+      "saude": -14,
+      "doenca": 2.2,
+      "emprego": 1.2,
+      "poupanca": 0
+    },
+    {
+      "id": "rigido",
+      "nome": { "m": "rígido", "f": "rígida" },
+      "ajuda": 0.9,
+      "briga": 1.8,
+      "vinculo": -6,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 0.8,
+      "poupanca": 0.03
+    },
+    {
+      "id": "piadista",
+      "nome": { "m": "piadista", "f": "piadista" },
+      "ajuda": 1,
+      "briga": 0.6,
+      "vinculo": 8,
+      "saude": 0,
+      "doenca": 1,
+      "emprego": 1,
+      "poupanca": 0
+    },
+    {
+      "id": "devoto",
+      "nome": { "m": "devoto", "f": "devota" },
+      "ajuda": 1.3,
+      "briga": 1,
+      "vinculo": 4,
+      "saude": 1,
+      "doenca": 0.9,
+      "emprego": 0.9,
+      "poupanca": 0.02
+    },
+    {
+      "id": "ambicioso",
+      "nome": { "m": "ambicioso", "f": "ambiciosa" },
+      "ajuda": 0.9,
+      "briga": 1.3,
+      "vinculo": -3,
+      "saude": -1,
+      "doenca": 1.1,
+      "emprego": 0.7,
+      "poupanca": 0.05
+    }
+  ],
+  "tracosJogador": [
+    {
+      "id": "esperto",
+      "nome": { "m": "esperto", "f": "esperta" },
+      "peso": 2,
+      "saude": 0,
+      "felicidade": 0,
+      "inteligencia": 14,
+      "aparencia": 0,
+      "base": 0
+    },
+    {
+      "id": "bonito",
+      "nome": { "m": "bonito", "f": "bonita" },
+      "peso": 2,
+      "saude": 0,
+      "felicidade": 2,
+      "inteligencia": 0,
+      "aparencia": 18,
+      "base": 0
+    },
+    {
+      "id": "forte",
+      "nome": { "m": "de saúde de ferro", "f": "de saúde de ferro" },
+      "peso": 2,
+      "saude": 10,
+      "felicidade": 0,
+      "inteligencia": 0,
+      "aparencia": 0,
+      "base": 0
+    },
+    {
+      "id": "ansioso",
+      "nome": { "m": "ansioso", "f": "ansiosa" },
+      "peso": 2,
+      "saude": -2,
+      "felicidade": -6,
+      "inteligencia": 4,
+      "aparencia": 0,
+      "base": -9
+    },
+    {
+      "id": "otimista",
+      "nome": { "m": "otimista", "f": "otimista" },
+      "peso": 2,
+      "saude": 0,
+      "felicidade": 6,
+      "inteligencia": 0,
+      "aparencia": 0,
+      "base": 9
+    },
+    {
+      "id": "timido",
+      "nome": { "m": "tímido", "f": "tímida" },
+      "peso": 2,
+      "saude": 0,
+      "felicidade": -2,
+      "inteligencia": 5,
+      "aparencia": 0,
+      "base": -3
+    },
+    {
+      "id": "carismatico",
+      "nome": { "m": "carismático", "f": "carismática" },
+      "peso": 2,
+      "saude": 0,
+      "felicidade": 3,
+      "inteligencia": 0,
+      "aparencia": 6,
+      "base": 4
+    },
+    {
+      "id": "teimoso",
+      "nome": { "m": "teimoso", "f": "teimosa" },
+      "peso": 2,
+      "saude": 2,
+      "felicidade": 0,
+      "inteligencia": 0,
+      "aparencia": 0,
+      "base": 0
+    }
+  ],
+  "mortesPersonagem": [
+    "dormindo, sem incomodar ninguém, do jeito que sempre quis",
+    "depois de uma internação longa num hospital do SUS",
+    "do coração, numa tarde de domingo",
+    "de uma pneumonia que começou como gripe",
+    "de complicações de uma cirurgia que era para ser simples",
+    "num acidente bobo, desses que ninguém espera",
+    "depois de uma doença que levou dois anos e muita paciência"
+  ],
+  "acontecimentos": {
+    "adoeceu": {
+      "textos": [
+        "{ator.quem} [foi parar no hospital|recebeu um diagnóstico que ninguém queria ouvir|começou um tratamento longo e caro]. [A família inteira virou especialista em bula.|O grupo da família só fala disso.|Ninguém dormiu direito naquela semana.]"
+      ],
+      "resumo": "{ator.quem} adoeceu"
+    },
+    "curou": {
+      "textos": [
+        "{ator.quem} [teve alta|terminou o tratamento|voltou a reclamar do tempo], sinal de que melhorou.",
+        "{ator.quem} [ficou bo{ator:m|a}|recebeu os exames de volta sem susto]. A família comemorou com bolo."
+      ],
+      "resumo": "{ator.quem} se recuperou"
+    },
+    "demitido": {
+      "textos": [
+        "{ator.quem} perdeu o emprego de {ator.ocupacao}. [A empresa chamou de reestruturação.|A notícia veio por mensagem, numa sexta-feira.|Foram doze anos e uma cesta básica de despedida.]"
+      ],
+      "resumo": "{ator.quem} perdeu o emprego"
+    },
+    "empregado": {
+      "textos": [
+        "{ator.quem} arrumou trabalho de novo, [como {ator.ocupacao}|depois de muita entrevista|graças a um conhecido de um conhecido]. A casa respirou."
+      ],
+      "resumo": "{ator.quem} voltou a trabalhar"
+    },
+    "aposentou": {
+      "textos": [
+        "{ator.quem} se aposentou [depois de anos de contribuição|e ganhou uma placa de homenagem|e, no primeiro dia, acordou às seis por costume]."
+      ],
+      "resumo": "{ator.quem} se aposentou"
+    },
+    "faleceu": {
+      "textos": [
+        "{ator.quem} morreu aos {ator.idade} anos, {como}.",
+        "{ator.quem} se foi aos {ator.idade} anos, {como}. [O velório encheu.|Ninguém sabia o que fazer com as coisas {ator:dele|dela}.|A casa ficou grande demais.]"
+      ],
+      "resumo": "{ator.quem} morreu"
+    }
+  },
   "nascimento": [
-    "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {profissao_mae}, e {pai}, {profissao_pai}, choraram mais que você.",
-    "Nasceu {nome}, em {cidade} ({uf}). [Três quilos e duzentos|Três quilos e meio|Quase quatro quilos] de pura teimosia. {mae} é {profissao_mae}; {pai}, {profissao_pai}.",
-    "Primeiro choro registrado em {cidade}, {uf}. A vó {avo} jurou que você tem o nariz da família. {mae} ({profissao_mae}) e {pai} ({profissao_pai}) só queriam dormir.",
-    "{cidade}, {ano}. Você chegou [antes da hora|depois da hora|na hora exata, o que nunca mais se repetiria]. {mae} é {profissao_mae} e {pai} é {profissao_pai}. A conta da maternidade ninguém comentou.",
-    "Você nasceu em {cidade} ({uf}) e foi logo batizad{o|a} de {nome}, depois de uma votação acirrada no grupo da família. {mae} trabalha como {profissao_mae}; {pai}, como {profissao_pai}."
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, choraram mais que você."
+    },
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Nasceu {nome}, em {cidade} ({uf}). [Três quilos e duzentos|Três quilos e meio|Quase quatro quilos] de pura teimosia. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Primeiro choro registrado em {cidade}, {uf}. A vó {avo} jurou que você tem o nariz da família. {mae} ({mae.ocupacao}) e {pai} ({pai.ocupacao}) só queriam dormir."
+    },
+    {
+      "se": { "pai.ausente": true },
+      "texto": "Você nasceu em {cidade}, {uf}. {mae}, {mae.ocupacao}, segurou sua mão a noite inteira; {pai} [mandou um áudio|prometeu aparecer no fim de semana|soube pelo primo de um amigo]."
+    },
+    {
+      "se": { "pai.ausente": true },
+      "texto": "Nasceu {nome}, em {cidade} ({uf}), com a vó {avo} de um lado e {mae} ({mae.ocupacao}) do outro. A cadeira do pai ficou vazia, e ninguém comentou."
+    },
+    {
+      "se": { "classe_origem": { "max": 0 } },
+      "texto": "Você nasceu em {cidade}, {uf}, numa casa de dois cômodos e muita gente. {mae} é {mae.ocupacao}; o leite foi contado desde o primeiro dia."
+    },
+    {
+      "se": { "classe_origem": { "min": 5 } },
+      "texto": "Você nasceu em {cidade}, {uf}, numa maternidade com nome de hotel. {mae} ({mae.ocupacao}) já tinha escolhido a escola bilíngue antes do enxoval."
+    },
+    {
+      "se": { "classe_origem": { "min": 4 }, "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, com fotógrafo contratado e enxoval importado. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}. O quarto já tinha decoração temática."
+    },
+    {
+      "se": { "familia": "religiosa", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, e foi apresentad{o|a} na igreja antes de ser apresentad{o|a} aos vizinhos. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "empreendedora", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, no meio do expediente: naquela família, folga é palavrão. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "conflituosa", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, no meio de uma briga sobre o seu nome. Venceu {nome}, por cansaço. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "acolhedora" },
+      "texto": "Você nasceu em {cidade}, {uf}, e a sala de espera parecia arquibancada: tios, primos e a vó {avo} com marmita. {mae} trabalha como {mae.ocupacao}."
+    }
   ],
   "epitafios": [
     "Viveu do jeito que deu, e deu bastante.",

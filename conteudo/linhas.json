@@ -78,7 +78,10 @@
     "idade": [18, 29],
     "texto": "Mudou de [corte de cabelo|operadora de celular|opinião política] [duas|três|cinco] vezes no mesmo ano."
   },
-  { "idade": [18, 30], "texto": "Descobriu o preço [do feijão|do aluguel|de um café na padaria] e envelheceu na hora." },
+  {
+    "idade": [18, 30],
+    "texto": "Descobriu o preço [do feijão|do aluguel|de um café na padaria] e envelheceu na hora."
+  },
   {
     "idade": [18, 35],
     "texto": "Passou o carnaval [no bloco|dormindo|trabalhando|no interior, na casa de um tio] e não se arrependeu."
@@ -163,57 +166,57 @@
   {
     "idade": [0, 14],
     "texto": "Em casa, o dinheiro era contado; a risada, não.",
-    "condicoes": { "marcas": ["familia_apertada"] }
+    "condicoes": { "classe_origem": { "max": 1 } }
   },
   {
     "idade": [6, 16],
     "texto": "Passou as férias [na praia|num hotel-fazenda|num parque de diversões caro] e reclamou do calor.",
-    "condicoes": { "marcas": ["familia_confortavel"] }
+    "condicoes": { "classe_origem": { "min": 4 } }
   },
   {
     "idade": [6, 16],
     "texto": "As férias foram no quintal, com mangueira ligada e piscina de plástico. Melhores férias.",
-    "condicoes": { "marcas": ["familia_remediada"] }
+    "condicoes": { "classe_origem": { "min": 2, "max": 3 } }
   },
   {
     "idade": [3, 90],
     "texto": "O inverno chegou com [geada|vento minuano|chuva fina] e você não tirou a pantufa até setembro.",
-    "condicoes": { "marcas": ["sul"] }
+    "condicoes": { "marcas": ["lugar.sul"] }
   },
   {
     "idade": [3, 90],
     "texto": "No São João, comeu [canjica|pamonha|milho assado] até não aguentar mais e dançou forró do mesmo jeito.",
-    "condicoes": { "marcas": ["nordeste"] }
+    "condicoes": { "marcas": ["lugar.nordeste"] }
   },
   {
     "idade": [3, 90],
     "texto": "Choveu todo dia às três da tarde, mais pontual que qualquer ônibus.",
-    "condicoes": { "marcas": ["norte"] }
+    "condicoes": { "marcas": ["lugar.norte"] }
   },
   {
     "idade": [3, 90],
     "texto": "Agosto veio seco: umidade de deserto, céu cor de laranja e lábio rachado.",
-    "condicoes": { "marcas": ["centro_oeste"] }
+    "condicoes": { "marcas": ["lugar.centro_oeste"] }
   },
   {
     "idade": [18, 90],
     "texto": "Passou um bom pedaço do ano parad{o|a} no trânsito, [ouvindo podcast|cantando sozinh{o|a}|pensando na vida].",
-    "condicoes": { "marcas": ["sudeste"] }
+    "condicoes": { "marcas": ["lugar.sudeste"] }
   },
   {
     "idade": [3, 90],
     "texto": "Foi à praia [todo fim de semana|quando deu|uma vez só, e saiu queimad{o|a} como camarão].",
-    "condicoes": { "marcas": ["litoral"] }
+    "condicoes": { "marcas": ["lugar.litoral"] }
   },
   {
     "idade": [5, 90],
     "texto": "A festa da cidade teve [rodeio|quermesse|show de dupla sertaneja] e você foi em todas as noites.",
-    "condicoes": { "marcas": ["interior"] }
+    "condicoes": { "marcas": ["lugar.interior"] }
   },
   {
     "idade": [10, 90],
     "texto": "Reclamou [do calor|da chuva|do barulho], do trânsito e do preço de tudo na capital, e não se mudaria por nada.",
-    "condicoes": { "marcas": ["capital"] }
+    "condicoes": { "marcas": ["lugar.capital"] }
   },
   {
     "idade": [18, 80],

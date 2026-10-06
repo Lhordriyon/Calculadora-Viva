@@ -23,10 +23,11 @@ for (const p of avisos) console.log(`! ${p.onde}: ${p.mensagem}`);
 if (conteudo) {
   const longas = listarCadeias(conteudo).filter((x) => x.anosMin >= ANOS_DE_CADEIA);
   const pares = new Set(longas.map((x) => `${x.de}→${x.para}`));
-  const escolhas = conteudo.eventos.reduce((s, ev) => s + (ev.escolhas?.length ?? 0), 0);
+  const escolhas = conteudo.storylets.reduce((s, ev) => s + (ev.escolhas?.length ?? 0), 0);
   const marcas = new Set(longas.map((x) => x.via));
+  const porTipo = (t: string): number => conteudo.storylets.filter((s) => (s.tipo ?? 'evento') === t).length;
   console.log(
-    `\n${conteudo.eventos.length} eventos · ${escolhas} escolhas · ${conteudo.linhas.length} linhas · ` +
+    `\n${porTipo('evento')} eventos · ${porTipo('npc')} de personagens · ${porTipo('acao')} ações · ${escolhas} escolhas · ${conteudo.linhas.length} linhas · ` +
       `${conteudo.mortes.length} causas de morte · ${pares.size} cadeias de ${ANOS_DE_CADEIA}+ anos (${marcas.size} vias)`,
   );
   if (pares.size < CADEIAS_MINIMAS) {

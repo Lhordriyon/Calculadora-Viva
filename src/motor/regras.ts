@@ -94,3 +94,29 @@ export function dividaPesada(renda: number): number {
 
 /** Patrimônio que dá um pouco de paz (reais de hoje). */
 export const PATRIMONIO_CONFORTO = 200000;
+
+// ---------------------------------------------------------------- personagens
+
+/** Chance anual de um personagem adoecer (antes do traço). */
+export function chanceDoenca(idade: number): number {
+  if (idade < 40) return 0.008;
+  if (idade < 60) return 0.025;
+  if (idade < 75) return 0.05;
+  return 0.09;
+}
+/** Saúde perdida ao adoecer e por ano enquanto doente. */
+export const DOENCA_QUEDA = 14;
+export const DOENCA_POR_ANO = 2.5;
+export const CHANCE_CURA = 0.35;
+/** Chance anual de demissão com o desemprego do lugar em 8%. */
+export const DEMISSAO_BASE = 0.04;
+export const RECOLOCACAO = 0.38;
+export const IDADE_APOSENTADORIA = 65;
+/** O vínculo volta devagar para o ponto de equilíbrio da família. */
+export const RETORNO_VINCULO = 0.06;
+/** Vínculo perdido por ano depois dos 20 de quem joga, sem contato (amigos perdem mais). */
+export const DISTANCIA_ADULTO = 1.2;
+/** Chance anual de um personagem tomar uma iniciativa (quando há storylet para isso). */
+export const ATIVIDADE_PERSONAGEM = 0.22;
+/** Quanto o vínculo médio com quem está perto puxa a felicidade de base (por ponto acima de 50). */
+export const PESO_VINCULO_FELICIDADE = 0.14;
