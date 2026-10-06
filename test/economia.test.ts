@@ -1,11 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { acertarCaixa, economiaDoAno, movimentar } from '../src/motor/economia.ts';
-import { PROPENSAO_GASTO } from '../src/motor/regras.ts';
+import { GASTO_VELHICE, PROPENSAO_GASTO } from '../src/motor/regras.ts';
 import { criarRng } from '../src/motor/rng.ts';
+import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { nascer } from '../src/motor/vida.ts';
 
 const c = carregarConteudo();
+
+function pessoa(semente: number, idade: number, n: Record<string, number>): EstadoVida {
+  const e = nascer(c, { semente, ano: 2026 });
+  e.idade = idade;
+  Object.assign(e.entidades['eu']!.n, { dinheiro: 0, investido: 0, divida: 0, renda: 0, custo: 0 }, n);
+  return e;
+}
 
 describe('economia', () => {
   it('a inflação come dinheiro parado; investimento rende; dívida cresce', () => {
@@ -14,33 +22,43 @@ describe('economia', () => {
     let rendeu = 0;
     let cresceu = 0;
     for (let i = 0; i < 200; i++) {
-      const e = nascer(c, { semente: i, ano: 2026 });
-      e.idade = 10;
-      e.financas = { ...e.financas, dinheiro: 10000, investido: 10000, divida: 0 };
-      economiaDoAno(e, rng);
-      if (e.financas.dinheiro < 10000) encolheu++;
-      if (e.financas.investido > 10000) rendeu++;
-      const d = nascer(c, { semente: i, ano: 2026 });
-      d.idade = 10;
-      d.financas = { ...d.financas, divida: 10000 };
-      economiaDoAno(d, rng);
-      if (d.financas.divida > 10000) cresceu++;
+      const e = pessoa(i, 10, { dinheiro: 10000, investido: 10000 });
+      economiaDoAno(e, rng, []);
+      if (e.entidades['eu']!.n['dinheiro']! < 10000) encolheu++;
+      if (e.entidades['eu']!.n['investido']! > 10000) rendeu++;
+      const d = pessoa(i, 10, { divida: 10000 });
+      economiaDoAno(d, rng, []);
+      if (d.entidades['eu']!.n['divida']! > 10000) cresceu++;
     }
     expect(encolheu).toBe(200);
     expect(rendeu).toBeGreaterThan(130);
     expect(cresceu).toBe(200);
   });
 
-  it('adulto recebe a sobra do ano menos o padrão de vida', () => {
-    const e = nascer(c, { semente: 1, ano: 2026 });
-    e.idade = 30;
-    e.financas = { ...e.financas, renda: 40000, custo: 20000 };
-    economiaDoAno(e, criarRng(1));
-    expect(e.financas.dinheiro).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
+  it('adulto recebe a sobra do ano menos o padrão de vida, e tudo vai para o livro', () => {
+    const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
+    const reg: Mudanca[] = [];
+    economiaDoAno(e, criarRng(1), reg);
+    expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
+    expect(reg.find((m) => m.c === 'eu.dinheiro')?.d).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
+    expect(reg.every((m) => m.r === 'economia')).toBe(true);
+  });
+
+  it('depois dos 65, a velhice consome parte do patrimônio', () => {
+    const e = pessoa(2, 70, { investido: 1_000_000, renda: 18000, custo: 10000 });
+    economiaDoAno(e, criarRng(2), []);
+    const n = e.entidades['eu']!.n;
+    const patrimonio = n['dinheiro']! + n['investido']! - n['divida']!;
+    // rende ~4% e gasta 4%: fica perto de onde estava, nunca cresce como antes dos 65
+    expect(patrimonio).toBeLessThan(1_000_000 * (1 + 0.2) - 1_000_000 * GASTO_VELHICE);
+    const jovem = pessoa(2, 40, { investido: 1_000_000, renda: 18000, custo: 10000 });
+    economiaDoAno(jovem, criarRng(2), []);
+    const nj = jovem.entidades['eu']!.n;
+    expect(nj['dinheiro']! + nj['investido']!).toBeGreaterThan(patrimonio);
   });
 
   it('acertarCaixa usa investimento antes de virar dívida e amortiza com sobra', () => {
-    const f = { dinheiro: -5000, investido: 3000, divida: 0, renda: 0, custo: 0, inflacao: 0 };
+    const f = { dinheiro: -5000, investido: 3000, divida: 0 };
     acertarCaixa(f);
     expect(f).toMatchObject({ dinheiro: 0, investido: 0, divida: 2000 });
     f.dinheiro = 500;
@@ -49,12 +67,12 @@ describe('economia', () => {
   });
 
   it('investir não usa dinheiro que não existe; dívida negativa é desconto', () => {
-    const e = nascer(c, { semente: 1, ano: 2026 });
-    e.financas.dinheiro = 1000;
-    movimentar(e, { investir: 5000 });
-    expect(e.financas).toMatchObject({ dinheiro: 0, investido: 1000 });
-    e.financas.divida = 10000;
-    movimentar(e, { divida: -8000 });
-    expect(e.financas.divida).toBe(2000);
+    const e = pessoa(1, 30, { dinheiro: 1000 });
+    const reg: Mudanca[] = [];
+    movimentar(e, reg, { investir: 5000 });
+    expect(e.entidades['eu']!.n).toMatchObject({ dinheiro: 0, investido: 1000 });
+    e.entidades['eu']!.n['divida'] = 10000;
+    movimentar(e, reg, { divida: -8000 });
+    expect(e.entidades['eu']!.n['divida']).toBe(2000);
   });
 });

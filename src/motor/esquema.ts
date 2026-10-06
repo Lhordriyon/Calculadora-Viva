@@ -388,7 +388,7 @@ export const TracoJogador = z.strictObject({
   /** Ajuste no ponto para onde a felicidade volta todo ano. */
   base: z.number(),
   /** Multiplica a chance anual de alguém aparecer na vida (tímido menos, carismático mais). */
-  amor: z.number().positive().default(1),
+  amor: z.number().positive().optional(),
 });
 export type TracoJogador = z.infer<typeof TracoJogador>;
 
