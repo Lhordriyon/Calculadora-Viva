@@ -70,7 +70,10 @@
     "idade": [15, 19],
     "texto": "Ficou acordad{o|a} até as três da manhã [vendo vídeo de receita que nunca vai fazer|discutindo na internet|ouvindo a mesma música em repetição]."
   },
-  { "idade": [18, 29], "texto": "Trabalhou, estudou, reclamou e repetiu." },
+  {
+    "idade": [18, 29],
+    "texto": "[Trabalhou, estudou, reclamou e repetiu.|Estudou à noite, trabalhou de dia e dormiu no ônibus.|Fez hora extra, fez planos e fez as contas.]"
+  },
   {
     "idade": [18, 29],
     "texto": "Mudou de [corte de cabelo|operadora de celular|opinião política] [duas|três|cinco] vezes no mesmo ano."
@@ -84,17 +87,32 @@
     "idade": [18, 35],
     "texto": "Fez [um curso online|uma dieta da moda|um plano de leitura] e largou no meio, como manda a tradição."
   },
-  { "idade": [20, 32], "texto": "Aprendeu a cozinhar três pratos e passou a se apresentar como chef." },
+  {
+    "idade": [20, 32],
+    "texto": "Aprendeu a cozinhar [três pratos|um risoto e meio|feijoada na panela de pressão] e passou a se apresentar como chef."
+  },
   { "idade": [22, 35], "texto": "Foi a [quatro|cinco|sete] casamentos no mesmo ano e dançou a mesma música em todos." },
-  { "idade": [30, 49], "texto": "Dormiu mal, trabalhou muito, sobreviveu. Um ano adulto clássico." },
   {
     "idade": [30, 49],
-    "texto": "Começou a reclamar [da coluna|da música de hoje em dia|do volume da TV dos vizinhos]."
+    "texto": "[Dormiu mal|Comeu correndo|Pegou trânsito todo dia], trabalhou muito, sobreviveu. Um ano adulto clássico."
   },
-  { "idade": [30, 55], "texto": "Gastou o décimo terceiro antes de ele cair na conta." },
-  { "idade": [30, 55], "texto": "Prometeu ir à academia em janeiro. Quando viu, era dezembro." },
+  {
+    "idade": [30, 49],
+    "texto": "Começou a reclamar [da coluna|da música de hoje em dia|do volume da TV dos vizinhos|do preço do estacionamento|dos joelhos]."
+  },
+  {
+    "idade": [30, 55],
+    "texto": "Gastou o décimo terceiro [antes de ele cair na conta|em presente para gente que nem gosta de você|no conserto da geladeira, de novo]."
+  },
+  {
+    "idade": [30, 55],
+    "texto": "Prometeu [ir à academia|comer melhor|dormir cedo|ler um livro por mês] em janeiro. Quando viu, era dezembro."
+  },
   { "idade": [32, 49], "texto": "Descobriu que [ressaca|joelho|noite mal dormida] não é mais como antes." },
-  { "idade": [30, 60], "texto": "Um ano tranquilo, o que é raro e um pouco suspeito." },
+  {
+    "idade": [30, 60],
+    "texto": "Um ano [tranquilo|sem sustos|morno], o que é [raro e um pouco suspeito|bom e um pouco chato|raro de verdade]."
+  },
   {
     "idade": [35, 60],
     "texto": "Passou [uma tarde inteira|um domingo inteiro] procurando o [carregador|controle remoto|óculos] que estava na sua mão."
@@ -107,8 +125,11 @@
     "idade": [50, 64],
     "texto": "Encontrou um fio de cabelo branco [no bigode|na sobrancelha|num lugar que não se comenta]."
   },
-  { "idade": [50, 70], "texto": "Aprendeu a mandar áudio de quatro minutos e não voltou atrás." },
-  { "idade": [50, 70], "texto": "Fez exame de sangue e comparou o colesterol com os amigos como se fosse campeonato." },
+  { "idade": [50, 70], "texto": "Aprendeu a mandar áudio de [quatro|sete|doze] minutos e não voltou atrás." },
+  {
+    "idade": [50, 70],
+    "texto": "Fez exame de sangue e comparou [o colesterol|a glicose|o ácido úrico] com os amigos como se fosse campeonato."
+  },
   {
     "idade": [55, 75],
     "texto": "Mandou [bom dia com flores|corrente de oração|vídeo de gatinho] no grupo da família, todo santo dia."
@@ -118,8 +139,14 @@
     "idade": [65, 110],
     "texto": "Virou especialista em [palavras cruzadas|novela das seis|previsão do tempo|preço de remédio]."
   },
-  { "idade": [65, 110], "texto": "Viu vizinhos novos chegarem e achou todos um pouco estranhos." },
-  { "idade": [65, 110], "texto": "Dormiu na frente da TV todas as noites, jurando que só estava descansando os olhos." },
+  {
+    "idade": [65, 110],
+    "texto": "Viu vizinhos novos chegarem e achou [todos um pouco estranhos|o cachorro deles o único educado|a música deles alta demais]."
+  },
+  {
+    "idade": [65, 110],
+    "texto": "Dormiu na frente da TV [todas as noites|no meio do jornal|antes de a novela acabar], jurando que só estava descansando os olhos."
+  },
   {
     "idade": [70, 110],
     "texto": "Ganhou a cadeira da ponta na mesa da família. Ninguém se lembra de quando isso aconteceu."
@@ -185,7 +212,7 @@
   },
   {
     "idade": [10, 90],
-    "texto": "Reclamou do calor, do trânsito e do preço de tudo na capital, e não se mudaria por nada.",
+    "texto": "Reclamou [do calor|da chuva|do barulho], do trânsito e do preço de tudo na capital, e não se mudaria por nada.",
     "condicoes": { "marcas": ["capital"] }
   },
   {
@@ -210,7 +237,7 @@
   },
   {
     "idade": [25, 90],
-    "texto": "Abriu o aplicativo do banco só para ver os juros trabalhando. Sentiu algo parecido com paz.",
+    "texto": "Abriu o aplicativo do banco só para ver os juros trabalhando. Sentiu algo parecido com [paz|orgulho|carinho].",
     "condicoes": { "marcas": ["investidor"] }
   },
   {
@@ -300,7 +327,7 @@
   },
   {
     "idade": [25, 80],
-    "texto": "Lavou o carro no domingo, com balde, mangueira e pagode alto.",
+    "texto": "Lavou o carro no domingo, com balde, mangueira e [pagode|sertanejo|forró] alto.",
     "condicoes": { "marcas": ["carro"] }
   },
   {
@@ -315,7 +342,7 @@
   },
   {
     "idade": [30, 90],
-    "texto": "Pintou a parede da casa própria de uma cor que ninguém aprovou. A casa é sua.",
+    "texto": "[Pintou a parede da casa própria de uma cor|Trocou o piso da casa própria por um|Pôs na sala da casa própria um sofá] que ninguém aprovou. A casa é sua.",
     "condicoes": { "marcas": ["casa_propria"] }
   },
   {
@@ -372,5 +399,42 @@
     "idade": [18, 90],
     "texto": "A inflação disparou: o preço do [tomate|gás|pãozinho|cafezinho] virou assunto do almoço de domingo.",
     "condicoes": { "inflacao": { "min": 9 } }
+  },
+  { "idade": [30, 64], "texto": "Trocou de [celular|óculos|operadora] e passou um mês reclamando da troca." },
+  {
+    "idade": [30, 64],
+    "texto": "Passou [o feriado|as férias|o carnaval] arrumando o armário que você jurou arrumar no ano passado."
+  },
+  {
+    "idade": [30, 64],
+    "texto": "Foi [ao aniversário de um colega de escola|ao casamento de um primo distante|à formatura de uma sobrinha] e descobriu que já é a pessoa mais velha da mesa."
+  },
+  {
+    "idade": [30, 64],
+    "texto": "Descobriu [uma série nova|um podcast de crimes|um canal de receitas] e passou o ano inteiro atrasad{o|a} para dormir."
+  },
+  {
+    "idade": [35, 70],
+    "texto": "Começou a dizer \"no meu tempo\" sem perceber. [Duas|Cinco|Doze] vezes num só almoço."
+  },
+  {
+    "idade": [30, 60],
+    "texto": "Fez as contas do mês [duas|três] vezes e chegou a dois resultados diferentes. Preferiu o mais bonito."
+  },
+  {
+    "idade": [40, 70],
+    "texto": "Ganhou de presente um [pijama|perfume|par de meias] igual ao do ano passado. Agradeceu do mesmo jeito."
+  },
+  {
+    "idade": [18, 30],
+    "texto": "Morou num lugar onde [o chuveiro|a geladeira|o portão] tinha personalidade própria. Vocês se entenderam."
+  },
+  {
+    "idade": [65, 100],
+    "texto": "Contou para quem quisesse ouvir quanto custava [o pãozinho|a passagem de ônibus|um sorvete] na sua juventude."
+  },
+  {
+    "idade": [65, 100],
+    "texto": "Passou as tardes na janela, de olho na rua, sabendo da vida de todo mundo [antes do jornal|antes do grupo do bairro|antes dos próprios interessados]."
   }
 ]

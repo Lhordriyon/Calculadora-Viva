@@ -7,7 +7,7 @@
       "renda": { "max": 0 },
       "semMarcas": ["cursando", "formado", "concurseiro", "profissional", "influencer"]
     },
-    "texto": "Hora de arrumar trabalho. No celular, três possibilidades e uma mensagem de {mae}: \"já viu aquela vaga que eu te mandei?\"",
+    "texto": "Hora de arrumar trabalho. No celular, três possibilidades e uma mensagem de {mae}: \"[já viu aquela vaga que eu te mandei?|a filha da vizinha arrumou emprego, viu?|tem vaga no mercado da esquina, hein]\"",
     "resumo": "foi procurar o primeiro emprego",
     "escolhas": [
       {
@@ -112,7 +112,7 @@
     "peso": 4,
     "condicoes": { "semMarcas": ["independente", "mora_com_pais"] },
     "valores": { "aluguel": 1200 },
-    "texto": "{mae} comentou, sem olhar para você, que \"tem gente da sua idade que já mora sozinha\". Um quarto perto do centro custa {aluguel} por mês.",
+    "texto": "{mae} comentou, sem olhar para você, que \"tem gente da sua idade que já mora sozinha\". Um quarto [perto do centro|no bairro vizinho|perto da faculdade] custa {aluguel} por mês.",
     "resumo": "decidiu se saía de casa",
     "escolhas": [
       {
@@ -268,7 +268,7 @@
     "repetivel": true,
     "intervalo": 8,
     "condicoes": { "marcas": ["entregador"] },
-    "texto": "Chuva forte, pedido com bônus dobrado e a moto pedindo revisão há três meses.",
+    "texto": "[Chuva forte|Temporal de verão|Garoa que virou tempestade], pedido com bônus dobrado e a moto pedindo revisão há [três meses|meio ano|tempo demais].",
     "resumo": "pegou um temporal no meio das entregas",
     "escolhas": [
       {
@@ -308,7 +308,7 @@
     "idade": [18, 26],
     "peso": 3,
     "valores": { "limite": 3000 },
-    "texto": "Chegou seu primeiro cartão de crédito, com limite de {limite} e uma carta do banco te dando parabéns. Desconfie de quem te dá parabéns por dívida.",
+    "texto": "Chegou seu primeiro cartão de crédito, com limite de {limite} e uma carta do banco te dando parabéns. [Desconfie de quem te dá parabéns por dívida.|O envelope até brilha.|Junto, um folheto sobre \"realizar sonhos\".]",
     "resumo": "recebeu o primeiro cartão de crédito",
     "escolhas": [
       {
@@ -373,7 +373,7 @@
     "peso": 2,
     "condicoes": { "semMarcas": ["apostador"] },
     "valores": { "aposta": 500 },
-    "texto": "Um anúncio garante que dá para ficar rico apostando em escanteio de jogo da segunda divisão [da Bulgária|do Cazaquistão|de um país que você nem sabia que existia].",
+    "texto": "Um anúncio garante que dá para ficar rico apostando em [escanteio de jogo da segunda divisão da Bulgária|cartão amarelo de jogo do Cazaquistão|placar exato de um campeonato que você nem sabia que existia]. [O jogador do anúncio sorri demais.|O bônus de boas-vindas pisca em verde.]",
     "resumo": "viu um anúncio de apostas online",
     "escolhas": [
       {
@@ -408,7 +408,7 @@
     "repetivel": true,
     "intervalo": 5,
     "condicoes": { "marcaHa": [{ "marca": "apostador", "min": 2 }] },
-    "texto": "Você já sabe de cor a cotação de jogo de vôlei feminino da Bulgária. Seu extrato sabe que isso não é um bom sinal.",
+    "texto": "Você já sabe de cor a cotação de [jogo de vôlei feminino da Bulgária|corrida de cavalo na Argentina|campeonato de dardos na Inglaterra]. Seu extrato sabe que isso não é um bom sinal.",
     "resumo": "afundou nas apostas",
     "escolhas": [
       {
@@ -443,7 +443,7 @@
     "repetivel": true,
     "intervalo": 6,
     "condicoes": { "semMarcas": ["namoro"] },
-    "texto": "Você conhece alguém [num aniversário|num aplicativo de namoro|na fila do posto de saúde|num bloquinho de carnaval|no ponto de ônibus]. A conversa flui como se vocês já se conhecessem.",
+    "texto": "Você conhece alguém [num aniversário|num aplicativo de namoro|na fila do posto de saúde|num bloquinho de carnaval|no ponto de ônibus|num casamento de primo]. [A conversa flui como se vocês já se conhecessem.|Vocês riem das mesmas coisas, o que é raro.|Três horas passam como dez minutos.]",
     "resumo": "conheceu alguém especial",
     "escolhas": [
       {
@@ -459,7 +459,7 @@
         "resumo": "chamou alguém para sair",
         "teste": { "atributo": "aparencia", "dificuldade": 45 },
         "sucesso": {
-          "texto": "Primeiro encontro num rodízio de pizza. {amor} comeu doze fatias e você se apaixonou.",
+          "texto": "Primeiro encontro [num rodízio de pizza|num boteco com música ao vivo|numa feira de domingo]. {amor} [comeu doze fatias|cantou junto todas as músicas|pechinchou até o pastel] e você se apaixonou.",
           "resumo": "começou a namorar {amor}",
           "efeitos": { "felicidade": 7, "personagens": ["amor"], "marcas": ["namoro"] }
         },
@@ -555,7 +555,7 @@
     "peso": 3,
     "condicoes": { "semMarcas": ["carro"], "renda": { "min": 20000 } },
     "valores": { "usado": 25000 },
-    "texto": "O carro dos sonhos está em sessenta parcelas \"que cabem no seu bolso\". O vendedor tem um dente de ouro e muita certeza.",
+    "texto": "O carro dos sonhos está em sessenta parcelas \"que cabem no seu bolso\". O vendedor tem [um dente de ouro e muita certeza|um sorriso de propaganda e pouca paciência|uma gravata estampada e uma calculadora suspeita].",
     "resumo": "pensou em comprar um carro",
     "escolhas": [
       {
@@ -592,7 +592,7 @@
     "idade": [20, 55],
     "peso": 2,
     "valores": { "aposta": 3000 },
-    "texto": "Um primo jura que a moeda digital do cachorrinho vai multiplicar por mil. Ele já comprou um tênis com o lucro.",
+    "texto": "[Um primo|Um colega de trabalho|O cunhado de um amigo] jura que a moeda digital do cachorrinho vai multiplicar por mil. Ele já comprou [um tênis|uma bicicleta elétrica|um relógio que brilha no escuro] com o lucro.",
     "resumo": "ouviu o primo falar da moeda do cachorrinho",
     "escolhas": [
       {
@@ -636,7 +636,7 @@
     "repetivel": true,
     "intervalo": 5,
     "condicoes": { "dinheiro": { "min": 5000 }, "semMarcas": ["investidor"] },
-    "texto": "Sobrou dinheiro: {dinheiro} parados na conta, encolhendo um pouco a cada ano com a inflação. O gerente do banco liga oferecendo \"uma oportunidade\".",
+    "texto": "Sobrou dinheiro: {dinheiro} parados na conta, encolhendo um pouco a cada ano com a inflação. [O gerente do banco liga oferecendo \"uma oportunidade\".|Um vídeo na internet jura que você está perdendo dinheiro.|{mae} pergunta se você vai deixar isso parado mesmo.]",
     "resumo": "decidiu o que fazer com o dinheiro parado",
     "escolhas": [
       {

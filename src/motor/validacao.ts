@@ -6,7 +6,7 @@ import type { Condicoes, Efeitos, Evento } from './esquema.ts';
 import { PAPEIS, PAPEIS_NOVOS } from './esquema.ts';
 import { lerConteudo, type Conteudo, type FontesConteudo, type Problema } from './conteudo.ts';
 import { IDADE_MAXIMA } from './regras.ts';
-import { analisarModelo } from './texto.ts';
+import { analisarModelo, comprimentoMaximo } from './texto.ts';
 
 export const VARIAVEIS_GLOBAIS = [
   'nome',
@@ -181,8 +181,9 @@ function verificarTextosDoEvento(
 
   ver(ev.texto, `${onde} › texto`);
   ver(ev.resumo, `${onde} › resumo`, criadosPor(ev.efeitos));
-  if (ev.texto.length > LIMITE_TEXTO_EVENTO) aviso(onde, `texto com ${ev.texto.length} caracteres (limite ${LIMITE_TEXTO_EVENTO})`);
-  if (ev.resumo.length > LIMITE_RESUMO) aviso(onde, `resumo longo (${ev.resumo.length} caracteres)`);
+  const tamanho = comprimentoMaximo(ev.texto);
+  if (tamanho > LIMITE_TEXTO_EVENTO) aviso(onde, `texto pode chegar a ${tamanho} caracteres (limite ${LIMITE_TEXTO_EVENTO})`);
+  if (comprimentoMaximo(ev.resumo) > LIMITE_RESUMO) aviso(onde, `resumo longo (${comprimentoMaximo(ev.resumo)} caracteres)`);
   if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(ev.resumo)) aviso(onde, 'resumo completa "aos N, ..."; comece com minúscula');
 
   ev.escolhas?.forEach((esc, i) => {
@@ -190,8 +191,8 @@ function verificarTextosDoEvento(
     const exigidas = new Set([...exigidasEvento, ...marcasGarantidas(esc.condicoes)]);
     ver(esc.texto, `${o} › texto`, new Set(), exigidas);
     if (esc.bloqueio) ver(esc.bloqueio, `${o} › bloqueio`, new Set(), exigidas);
-    if (esc.texto.length > LIMITE_TEXTO_ESCOLHA) aviso(o, `texto do botão longo (${esc.texto.length} caracteres)`);
-    if (esc.resumo.length > LIMITE_RESUMO) aviso(o, `resumo longo (${esc.resumo.length} caracteres)`);
+    if (comprimentoMaximo(esc.texto) > LIMITE_TEXTO_ESCOLHA) aviso(o, `texto do botão longo (${comprimentoMaximo(esc.texto)} caracteres)`);
+    if (comprimentoMaximo(esc.resumo) > LIMITE_RESUMO) aviso(o, `resumo longo (${comprimentoMaximo(esc.resumo)} caracteres)`);
     if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(esc.resumo)) aviso(o, 'resumo completa "aos N você ..."; comece com minúscula');
     const daEscolha = criadosPor(esc.efeitos);
     for (const [nome, r] of [['sucesso', esc.sucesso], ['fracasso', esc.fracasso], ['resultado', esc.resultado]] as const) {

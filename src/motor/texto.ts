@@ -107,6 +107,17 @@ export function analisarModelo(modelo: string): AnaliseModelo {
   return { variaveis, concordancias, erros };
 }
 
+/** Comprimento da maior renderização possível (variável conta como 12 caracteres). */
+export function comprimentoMaximo(modelo: string): number {
+  const semAlternancia = modelo.replace(RE_ALTERNANCIA, (_m, corpo: string) =>
+    opcoesDe(corpo).reduce((maior, o) => (o.length > maior.length ? o : maior), ''),
+  );
+  return semAlternancia.replace(RE_VARIAVEL, (_m, corpo: string) => {
+    if (corpo.includes('|')) return corpo.slice(corpo.indexOf(':') + 1).split('|').reduce((a, b) => (b.length > a.length ? b : a), '');
+    return 'x'.repeat(12);
+  }).length;
+}
+
 function umaCasa(x: number): string {
   const r = Math.round(x * 10) / 10;
   return Number.isInteger(r) ? String(r) : String(r).replace('.', ',');

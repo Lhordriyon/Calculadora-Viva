@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { criarRng } from '../src/motor/rng.ts';
-import { analisarModelo, formatarDinheiro, renderizar, type ContextoTexto } from '../src/motor/texto.ts';
+import { analisarModelo, comprimentoMaximo, formatarDinheiro, renderizar, type ContextoTexto } from '../src/motor/texto.ts';
 
 function ctx(genero: 'f' | 'm' = 'f'): ContextoTexto {
   const vars: Record<string, string> = { nome: 'Ana', amigo: 'Bruno' };
@@ -54,5 +54,14 @@ describe('formatarDinheiro', () => {
     [-2000, '-R$ 2 mil'],
   ])('%d → %s', (valor, esperado) => {
     expect(formatarDinheiro(valor)).toBe(esperado);
+  });
+});
+
+describe('comprimentoMaximo', () => {
+  it('conta a maior alternativa e variáveis como 12 caracteres', () => {
+    expect(comprimentoMaximo('[a|bbb] c')).toBe(5);
+    expect(comprimentoMaximo('{nome}!')).toBe(13);
+    expect(comprimentoMaximo('cansad{o|a}')).toBe(7);
+    expect(comprimentoMaximo('{amigo:o amigo|a amiga}')).toBe(7);
   });
 });

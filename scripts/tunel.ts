@@ -40,6 +40,8 @@ interface Vida {
   patrimonio: number;
   felicidade: number;
   eventos: string[];
+  /** Textos renderizados (eventos e linhas), para medir repetição de texto entre vidas. */
+  textos: string[];
   comCausa: number;
   pontos: number;
   maiorDistancia: number;
@@ -106,6 +108,7 @@ function medir(c: Conteudo, e: Jogada, estrategia: Estrategia): Vida {
     patrimonio: f.dinheiro + f.investido - f.divida,
     felicidade: e.somaFelicidade / Math.max(1, e.idade),
     eventos,
+    textos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'linha').map((h) => h.texto),
     comCausa: e.historico.filter((h) => (h.causas?.length ?? 0) > 0).length,
     pontos: pontosDeVirada(e).length,
     maiorDistancia,
@@ -154,10 +157,13 @@ interface Repeticao {
   qualquer: number[][];
   /** [k] = frações da vida k já vistas na vida imediatamente anterior. */
   anterior: number[][];
+  /** [k] = fração dos textos da vida k idênticos a algum texto de vida anterior. */
+  textos: number[][];
 }
 const novaRepeticao = (): Repeticao => ({
   qualquer: Array.from({ length: VIDAS_POR_JOGADOR }, () => []),
   anterior: Array.from({ length: VIDAS_POR_JOGADOR }, () => []),
+  textos: Array.from({ length: VIDAS_POR_JOGADOR }, () => []),
 });
 const repeticao = new Map<Estrategia, Repeticao>();
 const repeticaoSemMemoria = novaRepeticao();
@@ -165,6 +171,7 @@ const repeticaoSemMemoria = novaRepeticao();
 function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: number, usarMemoria: boolean, destino: Repeticao, guardar: boolean): void {
   let memoria = novaMemoria();
   const vistos = new Set<string>();
+  const textosVistos = new Set<string>();
   let ultimaVida = new Set<string>();
   for (let k = 0; k < VIDAS_POR_JOGADOR; k++) {
     const semente = misturar(SEMENTE, idEstrategia, jogador, k);
@@ -181,8 +188,10 @@ function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: num
       }
       destino.qualquer[k]!.push(qualquer / unicos.size);
       destino.anterior[k]!.push(anterior / unicos.size);
+      if (vida.textos.length > 0) destino.textos[k]!.push(vida.textos.filter((t) => textosVistos.has(t)).length / vida.textos.length);
     }
     for (const id of unicos) vistos.add(id);
+    for (const t of vida.textos) textosVistos.add(t);
     ultimaVida = unicos;
     memoria = lembrarVida(memoria, e);
   }
@@ -285,6 +294,7 @@ const repPorVida = Array.from({ length: VIDAS_POR_JOGADOR }, (_, k) =>
 );
 const repMedia = media(repPorVida.slice(1));
 const repAnterior = media(ESTRATEGIAS.flatMap((s) => (repeticao.get(s)?.anterior ?? []).slice(1).flat()));
+const repTextos = media(ESTRATEGIAS.flatMap((s) => (repeticao.get(s)?.textos ?? []).slice(1).flat()));
 const repAleatoria = repeticao.get('aleatoria')!;
 const comMemoria = { qualquer: media(repAleatoria.qualquer.slice(1).flat()), anterior: media(repAleatoria.anterior.slice(1).flat()) };
 const semMemoria = {
@@ -327,6 +337,7 @@ l('## Repetição');
 l();
 l(`- **Dentro de uma vida:** ${pct(media(repeticaoInterna))} das aparições de evento repetem um evento já visto na mesma vida (só repetíveis podem); pior vida: ${pct(Math.max(...repeticaoInterna))}.`);
 l(`- **Entre vidas (2ª à 10ª):** em média ${pct(repMedia)} dos eventos de uma vida já tinham aparecido em alguma vida anterior do mesmo jogador; ${pct(repAnterior)} já tinham aparecido na vida imediatamente anterior.`);
+l(`- **Texto repetido entre vidas:** ${pct(repTextos)} dos textos de uma vida (eventos e linhas, já renderizados) são idênticos a algum texto de uma vida anterior. As alternâncias \`[a|b]\` existem para baixar este número.`);
 l(
   `- **Efeito da memória entre vidas** (estratégia aleatória, mesmas sementes, ${JOGADORES_BASE * VIDAS_POR_JOGADOR} vidas): ` +
     `vista na vida anterior ${pct(semMemoria.anterior)} sem memória → ${pct(comMemoria.anterior)} com memória; ` +
@@ -442,7 +453,7 @@ if (!args.has('sem-arquivo')) writeFileSync(join(RAIZ, 'docs', 'metricas.md'), r
 console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos.toFixed(1)} s`);
 for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${nome} (${detalhe})`);
 console.log(
-  `Repetição entre vidas: ${pct(repMedia)} (vida anterior: ${pct(repAnterior)}) · aleatória vida anterior sem/com memória: ${pct(semMemoria.anterior)} → ${pct(comMemoria.anterior)} · dentro da vida: ${pct(media(repeticaoInterna))}`,
+  `Repetição entre vidas: ${pct(repMedia)} (vida anterior: ${pct(repAnterior)}; texto idêntico: ${pct(repTextos)}) · aleatória vida anterior sem/com memória: ${pct(semMemoria.anterior)} → ${pct(comMemoria.anterior)} · dentro da vida: ${pct(media(repeticaoInterna))}`,
 );
 console.log(`Falsos dilemas: ${dilemasFalsos.length} · arriscar nunca compensa: ${semTensao.length} (${semTensao.join(', ')})`);
 console.log(`Mais repetidos na mesma vida (por 100 aparições): ${maisRepetidos.map(([id, n]) => `${id} ${num((n / totalAparicoes) * 100)}`).join(' · ')}`);

@@ -3,7 +3,7 @@
     "id": "primeiro_celular",
     "idade": [11, 13],
     "peso": 4,
-    "texto": "Você ganhou seu primeiro celular. Usado, com a tela trincada no canto e a capinha de outra pessoa, mas é seu.",
+    "texto": "Você ganhou seu primeiro celular. Usado, com [a tela trincada no canto|a bateria que dura até o almoço|um adesivo de time que não sai] e a capinha de outra pessoa, mas é seu.",
     "resumo": "ganhou o primeiro celular",
     "escolhas": [
       {
@@ -36,7 +36,7 @@
     "id": "vape_festa",
     "idade": [14, 17],
     "peso": 4,
-    "texto": "Numa festa, alguém te oferece um vape sabor [melancia|chiclete|menta com uva]. Todo mundo está olhando. Ou parece que está.",
+    "texto": "Numa festa, alguém te oferece um vape sabor [melancia|chiclete|menta com uva]. [Todo mundo está olhando. Ou parece que está.|A música está alta e a decisão é sua.|Seus amigos já estão soltando fumaça colorida.]",
     "resumo": "foi apresentad{o|a} a um vape numa festa",
     "escolhas": [
       {
@@ -69,7 +69,7 @@
     "id": "primeiro_beijo",
     "idade": [13, 16],
     "peso": 4,
-    "texto": "Na festa de aniversário de alguém, a brincadeira de verdade ou consequência vira para você. Consequência: beijar a pessoa mais bonita da roda.",
+    "texto": "[Na festa de aniversário de alguém|Numa festa do pijama|Na volta de uma excursão da escola], a brincadeira de verdade ou consequência vira para você. Consequência: beijar a pessoa mais bonita da roda.",
     "resumo": "caiu na brincadeira de verdade ou consequência",
     "escolhas": [
       {
@@ -231,7 +231,7 @@
     "id": "banda_garagem",
     "idade": [13, 17],
     "peso": 3,
-    "texto": "Uns amigos da escola querem montar uma banda na garagem. Falta [baterista|baixista|alguém que saiba tocar alguma coisa].",
+    "texto": "Uns amigos da escola querem montar uma banda na garagem[ do vizinho| da tia de alguém|]. Falta [baterista|baixista|alguém que saiba tocar alguma coisa].",
     "resumo": "foi convidad{o|a} para uma banda de garagem",
     "escolhas": [
       {
@@ -329,7 +329,7 @@
     "id": "enem",
     "idade": [17, 18],
     "marco": true,
-    "texto": "Chegou o ENEM: dois domingos, um cartão-resposta e uma redação sobre um tema que [ninguém previu|todo mundo previu errado|virou meme na mesma tarde].",
+    "texto": "Chegou o ENEM: [dois domingos, um cartão-resposta|dois domingos, uma caneta preta|cinco horas por dia, dois domingos seguidos] e uma redação sobre um tema que [ninguém previu|todo mundo previu errado|virou meme na mesma tarde].",
     "resumo": "fez o ENEM",
     "escolhas": [
       {

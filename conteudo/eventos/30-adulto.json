@@ -6,7 +6,7 @@
     "repetivel": true,
     "intervalo": 12,
     "condicoes": { "algumaMarca": ["clt", "servidor"], "renda": { "min": 20000 } },
-    "texto": "Abriu uma vaga de coordenação. Seu chefe insinua que ela é sua, desde que você \"vista a camisa\". A camisa parece apertada.",
+    "texto": "Abriu uma vaga de [coordenação|supervisão|gerência]. Seu chefe insinua que ela é sua, desde que você \"vista a camisa\". [A camisa parece apertada.|A camisa vem com crachá e plantão no fim de semana.|A camisa é tamanho único.]",
     "resumo": "foi sondad{o|a} para uma promoção",
     "escolhas": [
       {
@@ -85,7 +85,7 @@
       "renda": { "min": 15000 },
       "semMarcas": ["servidor", "empreendedor", "aposentado", "influencer", "profissional"]
     },
-    "texto": "Reunião de quinze minutos por vídeo. A palavra \"reestruturação\" aparece quatro vezes. A sua câmera estava desligada; a deles, não.",
+    "texto": "Reunião de quinze minutos por vídeo. A palavra \"[reestruturação|sinergia|realinhamento]\" aparece quatro vezes. A sua câmera estava desligada; a deles, não.",
     "resumo": "foi demitid{o|a}",
     "escolhas": [
       {
@@ -135,7 +135,7 @@
     "repetivel": true,
     "intervalo": 2,
     "condicoes": { "renda": { "max": 9000 }, "semMarcas": ["cursando", "concurseiro", "aposentado"] },
-    "texto": "Desemprego. O currículo foi para quarenta vagas e voltou de nenhuma. O aplicativo de vagas insiste em oportunidades em outro estado.",
+    "texto": "Desemprego. O currículo foi para [quarenta|sessenta|cem] vagas e voltou de nenhuma. [O aplicativo de vagas insiste em oportunidades em outro estado.|Um recrutador visualizou seu perfil e sumiu.|{mae} manda vaga todo dia, inclusive as de estágio.]",
     "resumo": "ficou sem emprego",
     "escolhas": [
       {
@@ -173,7 +173,7 @@
     "peso": 3,
     "condicoes": { "semMarcas": ["casa_propria"], "renda": { "min": 25000 } },
     "valores": { "avista": 200000 },
-    "texto": "O programa habitacional abriu inscrições: casa de dois quartos, longe de tudo, perto de nada. Mas sua.",
+    "texto": "O programa habitacional abriu inscrições: casa de dois quartos, [longe de tudo, perto de nada|no fim da última linha de ônibus|num conjunto onde todas as casas são iguais]. Mas sua.",
     "resumo": "pensou em comprar a casa própria",
     "escolhas": [
       {
@@ -380,7 +380,7 @@
     "idade": [38, 70],
     "peso": 4,
     "condicoes": { "algumaMarca": ["sedentario", "workaholic", "fumante"] },
-    "texto": "O aparelho de pressão da farmácia apitou. A atendente fez aquela cara de quem vai chamar o gerente.",
+    "texto": "O aparelho de pressão [da farmácia|do exame da empresa|da feira de saúde da praça] apitou. [A atendente fez aquela cara de quem vai chamar o gerente.|Mediram duas vezes, para ter certeza. Tinham certeza.]",
     "resumo": "levou um susto com a pressão alta",
     "escolhas": [
       {
@@ -411,7 +411,7 @@
     "idade": [28, 62],
     "peso": 3,
     "condicoes": { "algumaMarca": ["ativo", "boleiro", "nadador"] },
-    "texto": "O grupo de corrida do bairro te desafia para a meia maratona: vinte e um quilômetros de asfalto e autoestima.",
+    "texto": "[O grupo de corrida do bairro|Um colega de trabalho|{amigo}] te desafia para a meia maratona: vinte e um quilômetros de asfalto e autoestima.",
     "resumo": "foi desafiad{o|a} para uma meia maratona",
     "escolhas": [
       {
@@ -444,7 +444,7 @@
     "idade": [30, 90],
     "peso": 2,
     "valores": { "valor": 1500 },
-    "texto": "Mensagem de um número desconhecido: \"Oi, sou eu, troquei de número. Faz um Pix de {valor} pra mim? Te devolvo amanhã.\"",
+    "texto": "Mensagem de um número desconhecido: \"[Oi, sou eu, troquei de número.|Mãe, quebrei o celular, esse é o novo.|Oi, sumido! Lembra de mim?] Faz um Pix de {valor} pra mim? Te devolvo amanhã.\"",
     "resumo": "recebeu uma mensagem suspeita pedindo Pix",
     "escolhas": [
       {
@@ -477,7 +477,7 @@
     "id": "pais_envelhecem",
     "idade": [35, 58],
     "peso": 4,
-    "texto": "{mae} ligou: o médico pediu uns exames e ela está com medo, embora diga que não está.",
+    "texto": "{mae} ligou: o médico pediu uns exames e ela está com medo, embora diga que não está. [Você ouve a TV ligada no fundo, como sempre.|Ela muda de assunto três vezes.|No fim, ela pergunta se você está se alimentando.]",
     "resumo": "viu {mae} envelhecer",
     "escolhas": [
       {
@@ -514,7 +514,7 @@
   {
     "id": "luto_pais",
     "apenasAgendado": true,
-    "texto": "{pai} partiu primeiro; {mae}, poucos anos depois. Ficaram a saudade, uma casa cheia de potes de sorvete com feijão dentro e uma decisão a tomar.",
+    "texto": "{pai} partiu primeiro; {mae}, poucos anos depois. Ficaram a saudade, [uma casa cheia de potes de sorvete com feijão dentro|uma gaveta de documentos em ordem perfeita|um rádio que ninguém tem coragem de desligar] e uma decisão a tomar.",
     "resumo": "perdeu {mae} e {pai}",
     "escolhas": [
       {
@@ -561,7 +561,7 @@
     "id": "crise_40",
     "idade": [39, 44],
     "peso": 3,
-    "texto": "Fez {idade}. Você se pega olhando motos, cursos de bartender e passagens só de ida.",
+    "texto": "Fez {idade}. Você se pega olhando [motos|cursos de bartender|passagens só de ida|anúncios de terreno na praia] e se perguntando se é só isso.",
     "resumo": "teve a crise dos quarenta",
     "escolhas": [
       {
@@ -672,7 +672,7 @@
     "peso": 3,
     "condicoes": { "algumaMarca": ["largou_faculdade", "trabalhou_cedo"], "semMarcas": ["formado", "cursando"] },
     "valores": { "mensalidade": 300 },
-    "texto": "Uma faculdade a distância promete diploma em quatro anos, com aulas às onze da noite e mensalidade de {mensalidade}.",
+    "texto": "Uma faculdade a distância promete diploma em quatro anos, com aulas às [onze da noite|seis da manhã|horas que você conseguir] e mensalidade de {mensalidade}.",
     "resumo": "pensou em voltar a estudar",
     "escolhas": [
       {
@@ -796,7 +796,7 @@
     "idade": [40, 90],
     "peso": 6,
     "condicoes": { "marcaHa": [{ "marca": "investidor", "min": 15 }] },
-    "texto": "Você abre o aplicativo do banco e leva um susto bom: os juros trabalharam enquanto você dormia. Patrimônio: {patrimonio}.",
+    "texto": "Você abre o aplicativo do banco e leva um susto bom: os juros trabalharam enquanto você [dormia|reclamava do governo|assistia novela]. Patrimônio: {patrimonio}.",
     "resumo": "viu os juros compostos trabalharem",
     "escolhas": [
       {
@@ -834,7 +834,7 @@
     "repetivel": true,
     "intervalo": 12,
     "condicoes": { "marcas": ["investidor"], "dinheiro": { "min": 5000 } },
-    "texto": "O dinheiro voltou a se acumular na conta: {dinheiro}. Você abre o aplicativo de investimentos com a seriedade de um cirurgião.",
+    "texto": "O dinheiro voltou a se acumular na conta: {dinheiro}. Você abre o aplicativo de investimentos com a seriedade de [um cirurgião|um piloto de avião|quem desarma bomba].",
     "resumo": "decidiu o destino de uma sobra",
     "escolhas": [
       {

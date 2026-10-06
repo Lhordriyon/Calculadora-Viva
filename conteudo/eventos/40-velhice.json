@@ -58,7 +58,7 @@
     "repetivel": true,
     "intervalo": 3,
     "condicoes": { "renda": { "min": 10000 }, "semMarcas": ["aposentado"] },
-    "texto": "Chegou a hora de pedir a aposentadoria. O INSS marcou a perícia para daqui a oito meses, numa terça-feira às sete da manhã.",
+    "texto": "[Chegou a hora de pedir a aposentadoria.|Os anos de trabalho já dão para pedir a aposentadoria.|O tempo de contribuição finalmente chegou lá.] O INSS marcou a perícia para daqui a [oito meses, numa terça-feira às sete da manhã|cinco meses, num lugar a duas conduções de casa|seis meses, com um aviso para chegar uma hora antes].",
     "resumo": "chegou à hora da aposentadoria",
     "escolhas": [
       {
@@ -104,7 +104,7 @@
     "idade": [50, 85],
     "peso": 2,
     "condicoes": { "semMarcas": ["horta"] },
-    "texto": "O quintal tem sol de manhã e um pedaço de terra sem uso. Você imagina tomates.",
+    "texto": "[O quintal tem sol de manhã e um pedaço de terra sem uso.|A laje pega sol a tarde inteira.|Sobrou um canteiro esquecido no fundo do quintal.] Você imagina tomates.",
     "resumo": "pensou em plantar uma horta",
     "escolhas": [
       {
@@ -130,7 +130,7 @@
     "idade": [62, 88],
     "peso": 3,
     "condicoes": { "semMarcas": ["ativo"] },
-    "texto": "A turma da hidroginástica te convidou. Dizem que é mais fofoca que exercício, mas a água é morna.",
+    "texto": "A turma da hidroginástica te convidou. Dizem que é mais fofoca que exercício, mas [a água é morna|o professor é animado|tem café depois].",
     "resumo": "foi convidad{o|a} para a hidroginástica",
     "escolhas": [
       {
@@ -153,7 +153,7 @@
     "idade": [58, 88],
     "peso": 4,
     "condicoes": { "marcas": ["amigo_de_infancia"] },
-    "texto": "{amigo} te liga depois de muito tempo. Quer marcar um café \"antes que a gente fique velho\". Vocês já estão velhos.",
+    "texto": "{amigo} te liga depois de muito tempo. Quer marcar um café \"antes que a gente fique velho\". [Vocês já estão velhos.|Já passou da hora faz tempo.|Os dois riem da piada, que ninguém mais acharia graça.]",
     "resumo": "foi chamad{o|a} por {amigo} para um café",
     "escolhas": [
       {
@@ -190,7 +190,7 @@
     "peso": 2,
     "repetivel": true,
     "intervalo": 8,
-    "texto": "Um tapete traiçoeiro no corredor. O chão chegou mais rápido do que você lembrava.",
+    "texto": "[Um tapete traiçoeiro no corredor.|Um degrau que não estava ali ontem.|Um chinelo molhado no banheiro.] O chão chegou mais rápido do que você lembrava.",
     "resumo": "levou um tombo em casa",
     "escolhas": [
       {

@@ -3,14 +3,14 @@
     "id": "primeira_palavra",
     "idade": [1, 1],
     "marco": true,
-    "texto": "{mae} aposta que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece {o neto|a neta}|já viu isso acontecer três vezes].",
+    "texto": "[{mae} aposta|{mae} jura de pé junto|{mae} tem certeza] que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece {o neto|a neta}|já viu isso acontecer três vezes].",
     "resumo": "disse a primeira palavra",
     "escolhas": [
       {
         "texto": "\"Mamãe\"",
         "resumo": "disse \"mamãe\" antes de qualquer outra palavra",
         "resultado": {
-          "texto": "{mae} chorou, gravou e mandou o vídeo para a família inteira. Duas vezes.",
+          "texto": "{mae} [chorou, gravou e mandou o vídeo para a família inteira. Duas vezes.|transformou o áudio em toque de celular.|contou para a vizinha, a manicure e o porteiro, nessa ordem.]",
           "efeitos": { "felicidade": 3 }
         }
       },
@@ -18,7 +18,7 @@
         "texto": "\"Papai\"",
         "resumo": "disse \"papai\" primeiro e deixou {mae} com ciúme",
         "resultado": {
-          "texto": "{pai} contou para todo mundo no trabalho, inclusive para quem não perguntou.",
+          "texto": "{pai} [contou para todo mundo no trabalho, inclusive para quem não perguntou.|ficou mais orgulhoso que no dia do próprio casamento.|gravou o momento e assiste até hoje.]",
           "efeitos": { "felicidade": 3 }
         }
       },
@@ -105,7 +105,7 @@
     "id": "primeiro_dia_escola",
     "idade": [5, 6],
     "marco": true,
-    "texto": "Primeiro dia na escola. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
+    "texto": "[Primeiro dia na escola|Primeiro dia de aula|Primeira manhã na escola nova], [mochila maior que você|uniforme dois números acima|lancheira nova em folha]. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
     "resumo": "conheceu {amigo} no primeiro dia de escola",
     "escolhas": [
       {
@@ -130,7 +130,7 @@
     "id": "cachorro_caramelo",
     "idade": [5, 13],
     "peso": 2,
-    "texto": "Um vira-lata caramelo te seguiu da escola até o portão de casa. Agora está sentado ali, te olhando como quem já mora aqui.",
+    "texto": "Um vira-lata caramelo te seguiu [da escola|da padaria|da pracinha] até o portão de casa. Agora está sentado ali, te olhando como quem já mora aqui.",
     "resumo": "foi seguid{o|a} por um vira-lata caramelo",
     "escolhas": [
       {
@@ -167,7 +167,7 @@
     "id": "feira_ciencias",
     "idade": [8, 11],
     "peso": 3,
-    "texto": "Feira de ciências. Você pode fazer o vulcão de bicarbonato pela milésima vez na história da escola ou montar um robô com sucata e o motor de um ventilador velho.",
+    "texto": "[Feira de ciências|Semana da ciência na escola]. Você pode fazer o vulcão de bicarbonato pela milésima vez na história da escola ou montar um robô com sucata e o motor de [um ventilador velho|um carrinho de controle remoto|uma batedeira aposentada].",
     "resumo": "participou da feira de ciências",
     "escolhas": [
       {
@@ -233,7 +233,7 @@
     "id": "esporte_depois_da_aula",
     "idade": [7, 10],
     "peso": 4,
-    "texto": "Hora de escolher uma atividade para depois da aula. Tem escolinha de futebol no bairro, natação no clube e, claro, a tela do celular.",
+    "texto": "[Hora de escolher|{mae} quer que você escolha|A escola mandou um bilhete para você escolher] uma atividade para depois da aula. Tem escolinha de futebol no bairro, natação no clube e, claro, a tela do celular.",
     "resumo": "escolheu o que fazer depois da aula",
     "escolhas": [
       {
@@ -292,7 +292,7 @@
     "id": "festa_junina",
     "idade": [5, 10],
     "peso": 3,
-    "texto": "Festa junina na escola. A professora quer saber: você vai dançar a quadrilha ou ajudar numa barraca?",
+    "texto": "Festa junina na escola[, com bandeirinha até no banheiro| e fogueira de papel crepom|, e a professora já está de chapéu de palha]. Você vai dançar a quadrilha ou ajudar numa barraca?",
     "resumo": "foi à festa junina da escola",
     "escolhas": [
       {
