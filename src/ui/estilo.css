@@ -380,6 +380,29 @@ button {
   color: var(--vinculo);
 }
 
+.ano.mundo .idade {
+  background: color-mix(in srgb, var(--dinheiro) 16%, transparent);
+  color: var(--dinheiro);
+}
+
+.ano.mundo .etiqueta {
+  color: var(--dinheiro);
+}
+
+.entrada.mundo p {
+  color: var(--texto-suave);
+}
+
+.cabecalho .fase {
+  font-weight: 700;
+  color: var(--dinheiro);
+}
+
+.cabecalho .fase.recessao,
+.cabecalho .fase.crise {
+  color: var(--ruim);
+}
+
 .ano.acao .idade {
   background: color-mix(in srgb, var(--inteligencia) 14%, transparent);
   color: var(--inteligencia);

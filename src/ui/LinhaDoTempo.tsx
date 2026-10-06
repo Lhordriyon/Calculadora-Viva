@@ -14,7 +14,7 @@ function verboDe(h: Entrada, c: Conteudo): string | undefined {
 
 function Item({ h, nova, inflacao, nomeDe }: { h: Entrada; nova: boolean; inflacao: boolean; nomeDe: (papel: string) => string | undefined }) {
   const chips = chipsDe(h, nomeDe, inflacao);
-  const verbo = verboDe(h, conteudo);
+  const verbo = h.tipo === 'mundo' ? 'Economia' : verboDe(h, conteudo);
   return (
     <li class={`ano ${h.tipo}`}>
       <span class="idade" aria-label={`${h.idade} anos`}>

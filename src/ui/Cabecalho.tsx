@@ -1,3 +1,5 @@
+import { conteudo } from '../conteudo.ts';
+import { defFase, faseDe } from '../motor/ciclo.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -17,6 +19,9 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
   const investido = n['investido'] ?? 0;
   const divida = n['divida'] ?? 0;
   const renda = n['renda'] ?? 0;
+  const fase = faseDe(vida);
+  const nomeFase = fase === 'normal' ? '' : defFase(conteudo, fase).nome;
+  const setor = renda >= 1 ? conteudo.setores.get(eu.t['setor'] ?? '')?.nome : undefined;
   return (
     <header class="cabecalho">
       <div class="topo">
@@ -26,6 +31,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
           </h1>
           <p class="sub">
             {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
+            {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
           </p>
         </div>
         <div class="botoes-topo">
@@ -82,7 +88,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
         )}
         {renda >= 1 && (
           <span>
-            Renda <b>{formatarDinheiro(renda / 12)}</b>/mês
+            Renda <b>{formatarDinheiro(renda / 12)}</b>/mês{setor ? ` · ${setor}` : ''}
           </span>
         )}
       </div>
