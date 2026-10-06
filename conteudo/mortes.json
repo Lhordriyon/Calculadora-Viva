@@ -24,7 +24,7 @@
   },
   {
     "causa": "num acidente de moto numa avenida molhada",
-    "idade": [18, 80],
+    "idade": [18, 65],
     "condicoes": { "algumaMarca": ["entregador", "motoqueiro"] },
     "peso": 5
   },

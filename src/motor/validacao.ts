@@ -21,6 +21,7 @@ export const VARIAVEIS_GLOBAIS = [
   'dinheiro',
   'patrimonio',
   'salario',
+  'divida',
 ] as const;
 
 const LIMITE_TEXTO_EVENTO = 300;

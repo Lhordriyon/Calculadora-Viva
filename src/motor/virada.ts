@@ -6,7 +6,7 @@
 import { patrimonio } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Atributo } from './esquema.ts';
-import { criarRng, misturar, sortear } from './rng.ts';
+import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
 import { renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, Genero } from './tipos.ts';
 import { contexto } from './vida.ts';
@@ -47,27 +47,52 @@ export function descendentes(historico: Entrada[]): Map<number, Set<number>> {
   return resultado;
 }
 
+/** Quanto uma entrada mexeu na vida: atributos, dinheiro, morte. */
+function impacto(h: Entrada): number {
+  const d = h.deltas ?? {};
+  // Dinheiro conta pela variação do patrimônio: investir só troca de bolso.
+  const patrimonio = (d.dinheiro ?? 0) + (d.investido ?? 0) - (d.divida ?? 0);
+  let x =
+    Math.abs(d.saude ?? 0) +
+    Math.abs(d.felicidade ?? 0) +
+    Math.abs(d.inteligencia ?? 0) +
+    Math.abs(d.aparencia ?? 0) +
+    Math.abs(patrimonio) / 5000 +
+    Math.abs(d.renda ?? 0) / 500;
+  if (h.tipo === 'morte') x += 30;
+  return x;
+}
+
+/** A consequência que melhor conta a história: pesa o impacto e a distância no tempo. */
+function melhorConsequencia(origem: Entrada, descendentes: Entrada[]): Entrada {
+  let melhor = descendentes[0]!;
+  let nota = -Infinity;
+  for (const d of descendentes) {
+    const n = (1 + impacto(d) / 3) * (1 + (d.idade - origem.idade) / 25);
+    if (n > nota || (n === nota && d.idade > melhor.idade)) {
+      melhor = d;
+      nota = n;
+    }
+  }
+  return melhor;
+}
+
 export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
   const porId = new Map(e.historico.map((h) => [h.id, h]));
   const desc = descendentes(e.historico);
-  const candidatos: { origem: Entrada; ultima: Entrada; total: number }[] = [];
+  const candidatos: { origem: Entrada; ultima: Entrada; total: number; peso: number; alcance: number }[] = [];
   for (const en of e.historico) {
     if (en.tipo !== 'evento' || !en.escolha) continue;
     const ids = desc.get(en.id);
     if (!ids || ids.size === 0) continue;
-    let ultima: Entrada | undefined;
-    for (const id of ids) {
-      const d = porId.get(id);
-      if (d && (!ultima || d.idade > ultima.idade || (d.idade === ultima.idade && d.id > ultima.id))) ultima = d;
-    }
-    if (ultima) candidatos.push({ origem: en, ultima, total: ids.size });
+    const lista = [...ids].map((id) => porId.get(id)).filter((d): d is Entrada => d !== undefined);
+    if (lista.length === 0) continue;
+    const alcance = Math.max(...lista.map((d) => d.idade)) - en.idade;
+    const peso = lista.reduce((s, d) => s + 1 + impacto(d) / 5, 0);
+    candidatos.push({ origem: en, ultima: melhorConsequencia(en, lista), total: lista.length, peso, alcance });
   }
-  candidatos.sort(
-    (a, b) =>
-      b.total - a.total ||
-      b.ultima.idade - b.origem.idade - (a.ultima.idade - a.origem.idade) ||
-      a.origem.idade - b.origem.idade,
-  );
+  // Mais peso (consequências, pesadas pelo impacto) primeiro; empate, a que alcançou mais longe.
+  candidatos.sort((a, b) => b.peso - a.peso || b.alcance - a.alcance || a.origem.idade - b.origem.idade);
 
   const escolhidos: PontoDeVirada[] = [];
   const consequenciasUsadas = new Set<number>();
@@ -111,13 +136,16 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
   const pontos = pontosDeVirada(e);
   const ctx = { ...contexto(e), rng: criarRng(misturar(e.semente, 0x5eed)) };
 
-  // Epitáfio: a marca de um ponto de virada fala mais alto; depois qualquer marca; depois o genérico.
+  // Epitáfio: metade das vezes vem de uma marca de ponto de virada (se houver); senão, de qualquer
+  // marca com epitáfio ou de um genérico, todos com a mesma chance (marcas comuns não monopolizam).
   const origens = new Set(pontos.map((p) => p.origemId));
   const comEpitafio = Object.entries(e.marcas).filter(([m]) => c.marcas[m]?.epitafio);
   const daVirada = comEpitafio.filter(([, reg]) => reg.origem !== null && origens.has(reg.origem));
-  const fonte = daVirada.length > 0 ? daVirada : comEpitafio;
+  const modelos = [...comEpitafio.map(([m]) => c.marcas[m]!.epitafio!), ...c.mundo.epitafios];
   const modelo =
-    fonte.length > 0 ? c.marcas[sortear(ctx.rng, fonte)[0]]!.epitafio! : sortear(ctx.rng, c.mundo.epitafios);
+    daVirada.length > 0 && aleatorio(ctx.rng) < 0.5
+      ? c.marcas[sortear(ctx.rng, daVirada)[0]]!.epitafio!
+      : sortear(ctx.rng, modelos);
 
   const anos = Math.max(1, e.idade);
   return {

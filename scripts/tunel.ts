@@ -450,6 +450,7 @@ console.log(
   `Repetição entre vidas: ${pct(repMedia)} (vida anterior: ${pct(repAnterior)}) · aleatória vida anterior sem/com memória: ${pct(semMemoria.anterior)} → ${pct(comMemoria.anterior)} · dentro da vida: ${pct(media(repeticaoInterna))}`,
 );
 console.log(`Falsos dilemas: ${dilemasFalsos.length} · sem tensão risco×recompensa: ${semTensao.length}`);
+console.log(`Mais repetidos na mesma vida (por 100 aparições): ${maisRepetidos.map(([id, n]) => `${id} ${num((n / totalAparicoes) * 100)}`).join(' · ')}`);
 console.log(`Idade média ${num(media(idades))} · patrimônio mediano ${formatarDinheiro(percentil(patrimonios, 50))} · felicidade média ${num(media(felicidades))}`);
 for (const r of porEstrategia) {
   console.log(`  ${r.estrategia.padEnd(10)} idade ${num(r.idade)} · patrimônio ${formatarDinheiro(r.patrimonio)} · felicidade ${num(r.felicidade)} · eventos ${num(r.eventos)} · com causa ${num(r.comCausa)}`);

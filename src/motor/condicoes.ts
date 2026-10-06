@@ -16,7 +16,59 @@ function dentro(valor: number, faixa: Faixa | undefined): boolean {
   return true;
 }
 
+type Teste = (e: EstadoVida) => boolean;
+const compiladas = new WeakMap<Condicoes, Teste>();
+
+/**
+ * Transforma a condição numa lista só com as checagens que ela usa (marcas
+ * primeiro, que são as que mais eliminam). Compilada uma vez por objeto.
+ */
+function compilar(cond: Condicoes): Teste {
+  const testes: Teste[] = [];
+  if (cond.marcas) for (const m of cond.marcas) testes.push((e) => m in e.marcas);
+  if (cond.semMarcas) for (const m of cond.semMarcas) testes.push((e) => !(m in e.marcas));
+  if (cond.algumaMarca) {
+    const ms = cond.algumaMarca;
+    testes.push((e) => ms.some((m) => m in e.marcas));
+  }
+  for (const req of cond.marcaHa ?? []) {
+    testes.push((e) => {
+      const reg = e.marcas[req.marca];
+      return reg !== undefined && dentro(e.idade - reg.idade, req);
+    });
+  }
+  if (cond.genero) {
+    const g = cond.genero;
+    testes.push((e) => e.pessoa.genero === g);
+  }
+  for (const a of ATRIBUTOS) {
+    const faixa = cond[a];
+    if (faixa) testes.push((e) => dentro(e.atributos[a], faixa));
+  }
+  const { dinheiro, patrimonio: pat, divida, renda, inflacao } = cond;
+  if (dinheiro) testes.push((e) => dentro(e.financas.dinheiro, dinheiro));
+  if (pat) testes.push((e) => dentro(patrimonio(e), pat));
+  if (divida) testes.push((e) => dentro(e.financas.divida, divida));
+  if (renda) testes.push((e) => dentro(e.financas.renda, renda));
+  if (inflacao) testes.push((e) => dentro(e.financas.inflacao, inflacao));
+  return (e) => {
+    for (const t of testes) if (!t(e)) return false;
+    return true;
+  };
+}
+
 export function atende(cond: Condicoes | undefined, e: EstadoVida): boolean {
+  if (!cond) return true;
+  let teste = compiladas.get(cond);
+  if (!teste) {
+    teste = compilar(cond);
+    compiladas.set(cond, teste);
+  }
+  return teste(e);
+}
+
+/** Versão direta, sem cache (referência para os testes). */
+export function atendeDireto(cond: Condicoes | undefined, e: EstadoVida): boolean {
   if (!cond) return true;
   for (const a of ATRIBUTOS) if (!dentro(e.atributos[a], cond[a])) return false;
   const f = e.financas;

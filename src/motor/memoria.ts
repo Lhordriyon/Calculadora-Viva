@@ -6,7 +6,7 @@
 import type { EstadoVida, MemoriaJogador } from './tipos.ts';
 
 export const DECAIMENTO_MEMORIA = 0.5;
-export const FORCA_NOVIDADE = 2;
+export const FORCA_NOVIDADE = 4;
 
 export function novaMemoria(): MemoriaJogador {
   return { vidas: 0, recencia: {} };

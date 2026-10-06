@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { acertarCaixa, economiaDoAno, movimentar } from '../src/motor/economia.ts';
+import { PROPENSAO_GASTO } from '../src/motor/regras.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { nascer } from '../src/motor/vida.ts';
 
@@ -35,7 +36,7 @@ describe('economia', () => {
     e.idade = 30;
     e.financas = { ...e.financas, renda: 40000, custo: 20000 };
     economiaDoAno(e, criarRng(1));
-    expect(e.financas.dinheiro).toBeCloseTo(8000, 0);
+    expect(e.financas.dinheiro).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
   });
 
   it('acertarCaixa usa investimento antes de virar dívida e amortiza com sobra', () => {

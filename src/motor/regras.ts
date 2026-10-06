@@ -5,12 +5,12 @@
 
 /** Chance de um ano trazer evento (se houver evento elegível), por idade. */
 export function ritmo(idade: number): number {
-  if (idade <= 4) return 0.35;
-  if (idade <= 12) return 0.6;
-  if (idade <= 29) return 0.8;
-  if (idade <= 49) return 0.65;
-  if (idade <= 64) return 0.55;
-  return 0.45;
+  if (idade <= 4) return 0.3;
+  if (idade <= 12) return 0.5;
+  if (idade <= 29) return 0.65;
+  if (idade <= 49) return 0.5;
+  if (idade <= 64) return 0.45;
+  return 0.35;
 }
 
 /** Risco anual de morte natural: curva de Gompertz ajustada pela saúde. */
@@ -64,7 +64,16 @@ export const RETORNO_REAL_DESVIO = 0.05;
 export const JUROS_DIVIDA = 0.22;
 
 /** Da sobra de cada ano (renda menos custo-base), quanto vira padrão de vida. */
-export const PROPENSAO_GASTO = 0.6;
+export const PROPENSAO_GASTO = 0.75;
+/** Quem está devendo aperta o cinto: gasta menos da sobra e paga a dívida. */
+export const PROPENSAO_GASTO_ENDIVIDADO = 0.4;
+
+/** Limite de crédito: o banco empresta (e cobra juros) até tantas rendas anuais, com um mínimo. */
+export const LIMITE_CREDITO_MINIMO = 30000;
+export const LIMITE_CREDITO_RENDAS = 2;
+
+/** Felicidade perdida num ano de privação (o déficit não coube no crédito). */
+export const PRIVACAO_FELICIDADE = 2;
 
 /** Renda mínima de bicos e auxílios (reais de hoje por ano). */
 export function pisoRenda(idade: number): number {

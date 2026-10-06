@@ -12,7 +12,10 @@ import {
   INFLACAO_DESVIO,
   INFLACAO_MEDIA,
   JUROS_DIVIDA,
+  LIMITE_CREDITO_MINIMO,
+  LIMITE_CREDITO_RENDAS,
   PROPENSAO_GASTO,
+  PROPENSAO_GASTO_ENDIVIDADO,
   RETORNO_REAL_DESVIO,
   RETORNO_REAL_MEDIO,
   pisoCusto,
@@ -44,11 +47,20 @@ export function acertarCaixa(f: Financas): void {
   }
 }
 
+export interface Ano {
+  /** Quanto a inflação comeu do dinheiro parado. */
+  comida: number;
+  /** O déficit do ano não coube no crédito: a pessoa cortou o que não podia. */
+  privacao: boolean;
+}
+
 /**
- * Um ano de economia. Devolve quanto a inflação comeu do dinheiro parado.
- * Da sobra do ano (renda menos custo), uma parte vira padrão de vida; o resto fica.
+ * Um ano de economia. Da sobra do ano (renda menos custo), uma parte vira
+ * padrão de vida (menos, para quem está devendo). Déficit vira dívida só até
+ * o limite de crédito; acima dele, a dívida congela (inadimplência) e o resto
+ * do déficit vira privação.
  */
-export function economiaDoAno(e: EstadoVida, rng: Rng): number {
+export function economiaDoAno(e: EstadoVida, rng: Rng): Ano {
   const f = e.financas;
   const inflacao = sortearInflacao(rng);
   const retornoReal = normal(rng, RETORNO_REAL_MEDIO, RETORNO_REAL_DESVIO);
@@ -58,14 +70,29 @@ export function economiaDoAno(e: EstadoVida, rng: Rng): number {
   f.dinheiro /= 1 + inflacao;
   const comida = antes - f.dinheiro;
   f.investido *= 1 + retornoReal;
-  f.divida *= (1 + JUROS_DIVIDA) / (1 + inflacao);
+  const limite = limiteDeCredito(f.renda);
+  const comJuros = Math.min(f.divida, limite);
+  f.divida += comJuros * ((1 + JUROS_DIVIDA) / (1 + inflacao) - 1);
 
+  let privacao = false;
   if (e.idade >= 18) {
     const sobra = Math.max(f.renda, pisoRenda(e.idade)) - Math.max(f.custo, pisoCusto(e.idade));
-    f.dinheiro += sobra > 0 ? sobra * (1 - PROPENSAO_GASTO) : sobra;
+    if (sobra >= 0) {
+      f.dinheiro += sobra * (1 - (f.divida > 0 ? PROPENSAO_GASTO_ENDIVIDADO : PROPENSAO_GASTO));
+    } else {
+      const folga = Math.max(0, f.dinheiro) + f.investido + Math.max(0, limite - f.divida);
+      const coberto = Math.min(-sobra, folga);
+      f.dinheiro -= coberto;
+      privacao = coberto < -sobra;
+    }
   }
   acertarCaixa(f);
-  return comida;
+  return { comida, privacao };
+}
+
+/** Até onde o banco empresta (e cobra juros): reais de hoje. */
+export function limiteDeCredito(renda: number): number {
+  return Math.max(LIMITE_CREDITO_MINIMO, renda * LIMITE_CREDITO_RENDAS);
 }
 
 /** Aplica movimentos de dinheiro (reais de hoje); devolve as diferenças visíveis. */

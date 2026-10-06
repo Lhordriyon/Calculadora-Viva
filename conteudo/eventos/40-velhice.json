@@ -1,35 +1,5 @@
 [
   {
-    "id": "exame_rotina",
-    "idade": [45, 88],
-    "peso": 2,
-    "repetivel": true,
-    "intervalo": 6,
-    "texto": "Exames de rotina. O médico do posto tem sete minutos por paciente e muita boa vontade.",
-    "resumo": "foi chamad{o|a} para exames de rotina",
-    "escolhas": [
-      {
-        "texto": "Fazer tudo direitinho",
-        "resumo": "fez os exames de rotina",
-        "resultado": {
-          "texto": "Jejum, coleta e um \"está tudo ótimo, só cuidado com o sal\".",
-          "efeitos": { "saude": 3, "felicidade": -1 }
-        }
-      },
-      {
-        "texto": "Pular, que você está ótim{o|a}",
-        "resumo": "pulou os exames de rotina",
-        "teste": { "chance": 0.7 },
-        "sucesso": { "texto": "Você estava ótim{o|a} mesmo. Por enquanto.", "efeitos": { "felicidade": 1 } },
-        "fracasso": {
-          "texto": "O que era pequeno ficou grande. A recuperação demorou meses.",
-          "resumo": "pulou os exames e descobriu um problema tarde",
-          "efeitos": { "saude": -8 }
-        }
-      }
-    ]
-  },
-  {
     "id": "netos",
     "idade": [48, 80],
     "peso": 5,
@@ -219,7 +189,7 @@
     "idade": [70, 100],
     "peso": 2,
     "repetivel": true,
-    "intervalo": 6,
+    "intervalo": 8,
     "texto": "Um tapete traiçoeiro no corredor. O chão chegou mais rápido do que você lembrava.",
     "resumo": "levou um tombo em casa",
     "escolhas": [

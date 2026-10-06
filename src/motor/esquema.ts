@@ -81,6 +81,8 @@ export const Efeitos = z.strictObject({
   investir: z.number().optional(),
   /** Reais de hoje de dívida nova; negativo é desconto (para pagar com dinheiro, some um dinheiro negativo). */
   divida: z.number().optional(),
+  /** Multiplica a dívida (acordo: 0.3 = sobra 30% para pagar). */
+  dividaFator: z.number().min(0).max(1).optional(),
   renda: Ajuste.optional(),
   custo: Ajuste.optional(),
   marcas: z.array(IdMarca).optional(),

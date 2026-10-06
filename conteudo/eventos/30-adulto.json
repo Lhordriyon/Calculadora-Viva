@@ -4,7 +4,7 @@
     "idade": [27, 58],
     "peso": 3,
     "repetivel": true,
-    "intervalo": 7,
+    "intervalo": 12,
     "condicoes": { "algumaMarca": ["clt", "servidor"], "renda": { "min": 20000 } },
     "texto": "Abriu uma vaga de coordenação. Seu chefe insinua que ela é sua, desde que você \"vista a camisa\". A camisa parece apertada.",
     "resumo": "foi sondad{o|a} para uma promoção",
@@ -78,9 +78,9 @@
   {
     "id": "demissao",
     "idade": [25, 62],
-    "peso": 2,
+    "peso": 1,
     "repetivel": true,
-    "intervalo": 10,
+    "intervalo": 12,
     "condicoes": {
       "renda": { "min": 15000 },
       "semMarcas": ["servidor", "empreendedor", "aposentado", "influencer", "profissional"]
@@ -443,8 +443,6 @@
     "id": "golpe_pix",
     "idade": [30, 90],
     "peso": 2,
-    "repetivel": true,
-    "intervalo": 12,
     "valores": { "valor": 1500 },
     "texto": "Mensagem de um número desconhecido: \"Oi, sou eu, troquei de número. Faz um Pix de {valor} pra mim? Te devolvo amanhã.\"",
     "resumo": "recebeu uma mensagem suspeita pedindo Pix",
@@ -832,9 +830,9 @@
   {
     "id": "investimento_rotina",
     "idade": [25, 70],
-    "peso": 3,
+    "peso": 2,
     "repetivel": true,
-    "intervalo": 6,
+    "intervalo": 12,
     "condicoes": { "marcas": ["investidor"], "dinheiro": { "min": 5000 } },
     "texto": "O dinheiro voltou a se acumular na conta: {dinheiro}. Você abre o aplicativo de investimentos com a seriedade de um cirurgião.",
     "resumo": "decidiu o destino de uma sobra",
@@ -917,6 +915,44 @@
         "resultado": {
           "texto": "Um abraço de um minuto inteiro. {filho} fingiu que achou exagero.",
           "efeitos": { "felicidade": 6, "custo": -12000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "renegociar_divida",
+    "idade": [20, 90],
+    "peso": 5,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "divida": { "min": 30000 } },
+    "texto": "A dívida virou bola de neve: {divida}. Um feirão de renegociação promete \"limpar seu nome\" com um desconto de [dar inveja|parar o trânsito|fazer o gerente chorar].",
+    "resumo": "foi engolid{o|a} por uma dívida que virou bola de neve",
+    "escolhas": [
+      {
+        "texto": "Fechar o acordo e pagar em parcelas",
+        "resumo": "renegociou uma dívida que tinha virado bola de neve",
+        "resultado": {
+          "texto": "Você assinou o acordo, chorou um pouco e fez uma planilha. Pela primeira vez em anos, a conta fecha.",
+          "efeitos": { "dividaFator": 0.3, "felicidade": 4, "removerMarcas": ["nome_sujo"] }
+        }
+      },
+      {
+        "texto": "Vender o carro para abater",
+        "resumo": "vendeu o carro para abater a dívida",
+        "condicoes": { "marcas": ["carro"] },
+        "bloqueio": "não há carro para vender",
+        "resultado": {
+          "texto": "O carro foi embora num domingo. A dívida caiu bastante; o orgulho também, mas ele se recupera.",
+          "efeitos": { "dividaFator": 0.4, "felicidade": -2, "removerMarcas": ["carro"] }
+        }
+      },
+      {
+        "texto": "Fingir que a dívida não existe",
+        "resumo": "fingiu que a dívida não existia",
+        "resultado": {
+          "texto": "O telefone toca às oito da manhã todo dia. Você atende fingindo ser outra pessoa.",
+          "efeitos": { "felicidade": 1, "marcas": ["nome_sujo"] }
         }
       }
     ]

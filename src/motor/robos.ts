@@ -31,6 +31,7 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   let v = valorAtributos(ef);
   v += ((ef.dinheiro ?? 0) - (ef.divida ?? 0)) / REAIS_POR_PONTO;
   const f = e.financas;
+  if (ef.dividaFator !== undefined) v += (f.divida * (1 - ef.dividaFator)) / REAIS_POR_PONTO;
   // Investir troca dinheiro parado (que encolhe) por dinheiro que rende: ~4% reais em 10 anos de horizonte.
   if (ef.investir && ef.investir > 0) v += (Math.min(ef.investir, f.dinheiro) * 0.48) / REAIS_POR_PONTO;
   if (ef.renda !== undefined) {

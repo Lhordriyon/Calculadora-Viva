@@ -12,6 +12,7 @@ import {
   FELICIDADE_BASE,
   IDADE_MAXIMA,
   PATRIMONIO_CONFORTO,
+  PRIVACAO_FELICIDADE,
   RETORNO_FELICIDADE,
   derivaAparencia,
   derivaInteligencia,
@@ -78,6 +79,8 @@ function variavelDe(e: EstadoVida, nome: string, valores: Record<string, number>
       return formatarDinheiro(f.dinheiro + f.investido - f.divida);
     case 'salario':
       return formatarDinheiro(f.renda / 12);
+    case 'divida':
+      return formatarDinheiro(f.divida);
   }
   const valor = valores?.[nome];
   if (valor !== undefined) return formatarDinheiro(valor);
@@ -163,8 +166,9 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   if (e.pendente) throw new Error('Há uma escolha esperando resposta.');
   e.idade++;
   e.ano++;
-  const comida = economiaDoAno(e, e.rng);
-  const inflacao = comida >= LIMITE_CHIP_INFLACAO ? comida : undefined;
+  const ano = economiaDoAno(e, e.rng);
+  const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
+  if (ano.privacao) e.atributos.felicidade -= PRIVACAO_FELICIDADE;
   envelhecer(e, c);
   e.somaFelicidade += e.atributos.felicidade;
 
@@ -360,10 +364,15 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     const dif = e.atributos[at] - antes;
     if (dif !== 0) d[at] = dif;
   }
+  if (ef.dividaFator !== undefined) {
+    const antes = e.financas.divida;
+    e.financas.divida *= ef.dividaFator;
+    if (antes - e.financas.divida >= 1) d.divida = e.financas.divida - antes;
+  }
   if (ef.dinheiro || ef.investir || ef.divida) {
     const m = movimentar(e, ef);
     if (Math.abs(m.dinheiro) >= 1) d.dinheiro = m.dinheiro;
-    if (Math.abs(m.divida) >= 1) d.divida = m.divida;
+    if (Math.abs(m.divida) >= 1) d.divida = (d.divida ?? 0) + m.divida;
     if (Math.abs(m.investido) >= 1) d.investido = m.investido;
   }
   const f = e.financas;
