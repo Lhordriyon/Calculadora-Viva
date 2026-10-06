@@ -61,5 +61,12 @@
   "balcao": { "epitafio": "Deu troco de cabeça até o último dia." },
   "casado": { "porAno": { "felicidade": 0.4 } },
   "viuvo": { "epitafio": "Ficou viúv{o|a} e descobriu que a cama de casal é grande demais para uma pessoa só." },
-  "passaporte_europeu": { "epitafio": "Tinha um passaporte europeu na gaveta e o Brasil inteiro no peito." }
+  "passaporte_europeu": { "epitafio": "Tinha um passaporte europeu na gaveta e o Brasil inteiro no peito." },
+  "medicina": {
+    "epitafio": "Salvou muita gente e nunca conseguiu explicar para a família que não atende por WhatsApp."
+  },
+  "padrao_alto": {
+    "porAno": { "felicidade": 0.5 },
+    "epitafio": "Viveu no padrão que achava que merecia e mandou a conta para o futuro."
+  }
 }

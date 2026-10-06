@@ -1,0 +1,338 @@
+[
+  {
+    "id": "alavancagem",
+    "idade": [30, 70],
+    "condicoes": { "marcas": ["pais.expansao"], "patrimonio": { "min": 800000 } },
+    "peso": 3,
+    "texto": "Com a economia aquecida, um gestor de fala mansa sugere \"alavancar\": pegar dinheiro emprestado contra os seus investimentos para dobrar a aposta. Ele usa a palavra \"oportunidade\" sete vezes.",
+    "resumo": "foi convidad{o|a} a alavancar os investimentos",
+    "escolhas": [
+      {
+        "texto": "Alavancar",
+        "resumo": "alavancou os investimentos",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O mercado subiu como o gestor prometeu. Você vendeu no topo e nunca mais atendeu a ligação dele, por superstição.",
+          "resumo": "alavancou os investimentos e quase dobrou o patrimônio",
+          "efeitos": { "patrimonioFator": 1.8, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O mercado virou na semana seguinte. A chamada de margem chegou num domingo e levou quase tudo junto.",
+          "resumo": "alavancou os investimentos e perdeu quase tudo",
+          "efeitos": { "patrimonioFator": 0.3, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Ficar como está",
+        "resumo": "recusou alavancar os investimentos",
+        "resultado": {
+          "texto": "Você agradeceu, desligou e foi fazer café. O gestor mandou um áudio de quatro minutos que você nunca ouviu.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "socio_sumiu",
+    "idade": [25, 70],
+    "condicoes": {
+      "algumaMarca": ["empreendedor", "socio", "herdeiro_negocio"],
+      "patrimonio": { "min": 150000 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "trechos": {
+      "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "crise" }, { "texto": "recessão" }],
+      "quem": [{ "se": { "marcas": ["socio"] }, "texto": "o seu sócio" }, { "texto": "o gerente de confiança" }]
+    },
+    "texto": "Na {fase}, {quem} sumiu com o caixa e deixou as dívidas no seu nome. O celular dá caixa postal; a conta da empresa, saldo negativo.",
+    "resumo": "foi passad{o|a} para trás dentro da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Processar e ir atrás",
+        "resumo": "processou quem sumiu com o dinheiro da empresa",
+        "efeitos": { "patrimonioFator": 0.5, "dinheiro": -15000 },
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "Três anos de processo e um advogado teimoso depois, a justiça bloqueou os bens do fugitivo. Parte do dinheiro voltou.",
+          "resumo": "recuperou na justiça parte do dinheiro roubado da empresa",
+          "efeitos": { "dinheiro": 150000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O processo andou, parou e andou de novo. O fugitivo, ninguém sabe onde andou.",
+          "resumo": "perdeu metade do patrimônio num golpe dentro da própria empresa",
+          "efeitos": { "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Recomeçar do zero",
+        "resumo": "recomeçou do zero depois de um golpe na empresa",
+        "resultado": {
+          "texto": "Você pagou o que deu, fechou a empresa e abriu uma conta nova, com uma senha que ninguém mais sabe.",
+          "efeitos": {
+            "patrimonioFator": 0.5,
+            "removerMarcas": ["socio", "empreendedor"],
+            "renda": { "definir": 0 },
+            "felicidade": -4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "padrao_de_vida",
+    "idade": [24, 55],
+    "condicoes": {
+      "classe_origem": { "min": 4 },
+      "renda": { "max": 150000 },
+      "semMarcas": ["herdeiro_negocio", "padrao_alto"]
+    },
+    "peso": 3,
+    "texto": "Você cresceu com [motorista|casa de praia|viagem duas vezes por ano] e se acostumou. Só que agora quem paga a conta é você, e a conta não fecha com o que você ganha.",
+    "resumo": "teve que decidir o padrão de vida que conseguia bancar",
+    "escolhas": [
+      {
+        "texto": "Cortar o padrão",
+        "resumo": "cortou o padrão de vida que vinha de família",
+        "resultado": {
+          "texto": "Você vendeu o carro importado, trocou o clube por uma academia de bairro e descobriu que dá para ser feliz com menos garçom.",
+          "efeitos": { "custo": -20000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Manter as aparências",
+        "resumo": "manteve o padrão de vida da família",
+        "resultado": {
+          "texto": "Restaurante caro, roupa de marca e cartão no limite. Por fora, a mesma vida; por dentro, uma planilha que ninguém abre.",
+          "efeitos": { "custo": 40000, "felicidade": 2, "marcas": ["padrao_alto"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "negocio_da_familia_quebra",
+    "idade": [25, 75],
+    "condicoes": { "marcas": ["herdeiro_negocio", "pais.crise"] },
+    "tensao": 2,
+    "texto": "A crise acertou o negócio da família em cheio: o banco cortou o crédito, os fornecedores querem receber à vista e os clientes sumiram.",
+    "resumo": "viu o negócio da família quebrar na crise",
+    "escolhas": [
+      {
+        "texto": "Pôr o patrimônio pessoal para salvar",
+        "resumo": "pôs o patrimônio pessoal para salvar o negócio da família",
+        "efeitos": { "patrimonioFator": 0.5 },
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você hipotecou até o relógio do avô, e deu certo: a empresa saiu da crise menor, mais esperta e com o seu nome na história da família.",
+          "resumo": "salvou o negócio da família na crise",
+          "efeitos": { "rendaFator": 1.4, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Não deu. A empresa fechou e levou junto o que você tinha posto nela. Sobrou o sobrenome na placa, que foi a leilão.",
+          "resumo": "perdeu o patrimônio tentando salvar o negócio da família",
+          "efeitos": {
+            "removerMarcas": ["herdeiro_negocio"],
+            "renda": { "definir": 0 },
+            "divida": 80000,
+            "felicidade": -6
+          }
+        }
+      },
+      {
+        "texto": "Pedir recuperação judicial",
+        "resumo": "pediu recuperação judicial do negócio da família",
+        "resultado": {
+          "texto": "Advogados, credores e uma assembleia num hotel de beira de estrada. O negócio sobreviveu, encolhido e sob vigilância.",
+          "efeitos": { "rendaFator": 0.5, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Vender a preço de banana",
+        "resumo": "vendeu o negócio da família na crise",
+        "resultado": {
+          "texto": "Um grupo grande comprou tudo por uma fração do que valia. Você ficou com o dinheiro e com a culpa dos almoços de domingo.",
+          "efeitos": {
+            "dinheiro": 120000,
+            "removerMarcas": ["herdeiro_negocio"],
+            "renda": { "definir": 0 },
+            "felicidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprestimo_ao_irmao",
+    "idade": [25, 80],
+    "condicoes": {
+      "irmaos": { "min": 1 },
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "patrimonio": { "min": 60000 },
+      "mae.vivo": true
+    },
+    "peso": 2,
+    "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "crise" }, { "texto": "recessão" }] },
+    "texto": "Um dos seus irmãos te liga com a voz de quem ensaiou: precisa de um empréstimo \"só até o mês que vem\" para não perder o apartamento na {fase}.",
+    "resumo": "foi pedid{o|a} em empréstimo por um irmão",
+    "escolhas": [
+      {
+        "texto": "Emprestar",
+        "resumo": "emprestou dinheiro para um irmão na crise",
+        "efeitos": { "dinheiro": -30000 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "O mês que vem virou o ano que vem, mas o dinheiro voltou, com um churrasco de agradecimento.",
+          "resumo": "emprestou dinheiro para um irmão e recebeu de volta",
+          "efeitos": { "dinheiro": 30000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O dinheiro nunca voltou. O assunto também não; agora ele só aparece no Natal, e evita o seu olhar.",
+          "resumo": "emprestou dinheiro para um irmão e nunca mais viu",
+          "efeitos": { "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Negar com jeito",
+        "resumo": "negou um empréstimo para um irmão",
+        "resultado": {
+          "texto": "Você explicou as suas contas. Ele disse que entendia. A sua mãe ligou dois dias depois para dizer que não entendia.",
+          "efeitos": { "felicidade": -1, "mae.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "perdeu_emprego_na_crise",
+    "tipo": "npc",
+    "ator": ["amigo", "amor", "filho"],
+    "idade": [20, 80],
+    "condicoes": { "algumaMarca": ["pais.recessao", "pais.crise"], "ator.idade": { "min": 20, "max": 64 } },
+    "tensao": 2,
+    "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "crise" }, { "texto": "recessão" }] },
+    "texto": "{ator.quem} perdeu o emprego na {fase} e está mandando currículo até para vaga que nem existe.",
+    "resumo": "viu {ator.quem} perder o emprego na crise",
+    "escolhas": [
+      {
+        "texto": "Indicar para uma vaga",
+        "resumo": "indicou {ator.quem} para uma vaga",
+        "condicoes": { "renda": { "min": 30000 } },
+        "bloqueio": "você não tem onde indicar ninguém",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "A vaga saiu. {ator.quem} te mandou uma cesta de café da manhã e a frase \"te devo uma, para sempre\".",
+          "resumo": "arrumou emprego para {ator.quem} na crise",
+          "efeitos": { "ator.vinculo": 10, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A empresa congelou as contratações no dia seguinte. Pelo menos {ator.quem} viu que você tentou.",
+          "resumo": "tentou arrumar emprego para {ator.quem} na crise",
+          "efeitos": { "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Emprestar um dinheiro",
+        "resumo": "emprestou dinheiro para {ator.quem} na crise",
+        "condicoes": { "dinheiro": { "min": 5000 } },
+        "bloqueio": "não sobra para emprestar",
+        "resultado": {
+          "texto": "Você fez o Pix sem perguntar quando volta. Algumas coisas não são empréstimo, mesmo que se chamem assim.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 5000 }, "ator.vinculo": 6 }
+        }
+      },
+      {
+        "texto": "Dar força e pagar um almoço",
+        "resumo": "deu força para {ator.quem} na crise",
+        "resultado": {
+          "texto": "Um almoço longo, uma conversa franca e a promessa de que vai passar. Passou, mais devagar do que vocês queriam.",
+          "efeitos": { "ator.vinculo": 3, "dinheiro": -150 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vaga_na_empresa_dele",
+    "tipo": "npc",
+    "ator": ["amigo", "amor"],
+    "idade": [20, 60],
+    "condicoes": {
+      "marcas": ["pais.expansao"],
+      "renda": { "min": 12000, "max": 60000 },
+      "semMarcas": ["servidor", "empreendedor", "aposentado"],
+      "ator.idade": { "min": 20, "max": 64 }
+    },
+    "texto": "Com a economia aquecida, {ator.quem} conseguiu uma vaga boa e jura que tem outra igual na empresa: \"Manda o currículo hoje, eu falo com o chefe amanhã.\"",
+    "resumo": "recebeu uma indicação de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Mandar o currículo",
+        "resumo": "aceitou a indicação de {ator.quem} para uma vaga",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Entrevista curta, contratação rápida e um colega de mesa que você já conhecia de churrasco.",
+          "resumo": "trocou de emprego por indicação de {ator.quem}",
+          "efeitos": { "rendaFator": 1.25, "ator.vinculo": 5, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A vaga foi para o sobrinho do diretor. {ator.quem} ficou mais sem graça do que você.",
+          "resumo": "foi indicad{o|a} por {ator.quem} e não passou",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ficar onde está",
+        "resumo": "recusou a indicação de {ator.quem}",
+        "resultado": {
+          "texto": "Você agradeceu e ficou. {ator.quem} disse que a oferta vale até o fim do ano, e no fim do ano repetiu.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aposentadoria_nao_da",
+    "tipo": "npc",
+    "ator": ["mae", "pai"],
+    "idade": [25, 95],
+    "condicoes": {
+      "marcas": ["ator.aposentado"],
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "ator.dinheiro": { "max": 60000 }
+    },
+    "tensao": 2,
+    "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "crise" }, { "texto": "recessão" }] },
+    "texto": "A inflação da {fase} comeu a aposentadoria de {ator.quem}: o dinheiro do mês acaba no dia vinte, e o remédio da pressão subiu de novo.",
+    "resumo": "viu a aposentadoria de {ator.quem} não dar na crise",
+    "escolhas": [
+      {
+        "texto": "Completar a renda todo mês",
+        "resumo": "passou a completar a aposentadoria de {ator.quem}",
+        "condicoes": { "patrimonio": { "min": 8000 } },
+        "bloqueio": "não sobra para completar a renda de ninguém",
+        "resultado": {
+          "texto": "Todo dia cinco, um Pix com a descrição \"remédio\". {ator.quem} nunca agradeceu em voz alta, e sempre agradeceu.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "ator", "valor": 8000 },
+            "ator.vinculo": 8,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Ajudar com as contas da casa",
+        "resumo": "ajudou {ator.quem} a organizar as contas na crise",
+        "resultado": {
+          "texto": "Você sentou na mesa da cozinha, trocou a operadora, o plano do celular e a marca do café. Sobrou um pouco no fim do mês.",
+          "efeitos": { "ator.vinculo": 5, "ator.saude": 2 }
+        }
+      },
+      {
+        "texto": "Dizer que agora não dá",
+        "resumo": "disse que não podia ajudar com a aposentadoria de {ator.quem}",
+        "resultado": {
+          "texto": "{ator.quem} disse que se vira, e se virou: voltou a costurar para fora, aos setenta e tantos.",
+          "efeitos": { "ator.vinculo": -5, "felicidade": -1 }
+        }
+      }
+    ]
+  }
+]

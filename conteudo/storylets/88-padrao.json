@@ -1,0 +1,326 @@
+[
+  {
+    "id": "subir_de_padrao",
+    "idade": [27, 60],
+    "condicoes": { "renda": { "min": 150000 }, "semMarcas": ["padrao_alto", "aposentado"] },
+    "peso": 2,
+    "texto": "Com o salário novo, todo mundo à sua volta trocou de [carro|bairro|escola dos filhos] ao mesmo tempo. [O colega da mesa ao lado mostrou fotos de Orlando.|O condomínio novo tem piscina com borda infinita e taxa infinita também.|Até o seu dentista passou a te chamar de doutor{|a}.]",
+    "resumo": "viu o padrão de vida querer subir junto com o salário",
+    "escolhas": [
+      {
+        "texto": "Subir junto",
+        "resumo": "subiu de padrão junto com o salário",
+        "resultado": {
+          "texto": "Carro do ano, apartamento com varanda gourmet e um clube onde ninguém nada. A vida ficou mais bonita nas fotos e mais cara no extrato.",
+          "efeitos": { "custo": 45000, "felicidade": 4, "aparencia": 1, "marcas": ["padrao_alto"] }
+        }
+      },
+      {
+        "texto": "Subir um degrau só",
+        "resumo": "subiu um degrau no padrão de vida",
+        "resultado": {
+          "texto": "Trocou o sofá, fez a viagem que vivia adiando e manteve o carro velho, que agora você chama de clássico.",
+          "efeitos": { "custo": 12000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Investir a diferença",
+        "resumo": "investiu o aumento em vez de gastar",
+        "resultado": {
+          "texto": "Você ficou no mesmo apartamento e pôs o aumento para render. No churrasco, virou a pessoa chata que fala de juros compostos.",
+          "efeitos": { "investir": 40000, "felicidade": -1, "marcas": ["investidor"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "padrao_aperta",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["padrao_alto"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "trechos": {
+      "situacao": [
+        { "se": { "divida": { "min": 5000 } }, "texto": "comeu o que estava guardado e agora come o cheque especial" },
+        { "texto": "está comendo a reserva, e no ritmo de hoje ela não chega a cinco anos" }
+      ]
+    },
+    "texto": "O extrato chegou com cara de boletim ruim: o padrão de vida {situacao}. [O porteiro do prédio já sabe o seu nome. O gerente do banco também.|Os amigos do clube sugeriram uma viagem para a Europa. O cartão sugeriu calma.|A escola cara, o carro novo e o condomínio com piscina mandaram boleto no mesmo dia.]",
+    "resumo": "viu o padrão de vida engolir as economias",
+    "escolhas": [
+      {
+        "texto": "Cortar pela metade",
+        "resumo": "cortou o padrão de vida pela metade",
+        "resultado": {
+          "texto": "Você trocou o carro por um menor, o clube por uma praça e o restaurante por churrasco no quintal. Os amigos do clube sumiram; os de verdade apareceram no churrasco.",
+          "efeitos": { "custoFator": 0.5, "felicidade": -5, "removerMarcas": ["padrao_alto"] }
+        }
+      },
+      {
+        "texto": "Vender tudo e viver simples",
+        "resumo": "vendeu quase tudo e foi viver uma vida simples",
+        "resultado": {
+          "texto": "Apartamento menor, ônibus e marmita. A venda do carro pagou parte da dívida, e o sono voltou antes do saldo.",
+          "efeitos": {
+            "custo": { "definir": 18000 },
+            "divida": -15000,
+            "felicidade": -8,
+            "removerMarcas": ["padrao_alto"]
+          }
+        }
+      },
+      {
+        "texto": "Manter as aparências",
+        "resumo": "manteve as aparências no cheque especial",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Mais um ano de fachada. Ninguém percebeu, nem você, de tanto não olhar o extrato.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "O cartão foi recusado no meio do jantar com os amigos do clube. A conta foi dividida; a vergonha, não.",
+          "resumo": "teve o cartão recusado na frente dos amigos e o nome sujo",
+          "efeitos": { "felicidade": -4, "aparencia": -1, "marcas": ["nome_sujo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "piramide_no_grupo",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo", "amor"],
+    "idade": [25, 85],
+    "condicoes": { "patrimonio": { "min": 30000 }, "ator.idade": { "min": 25 } },
+    "texto": "{ator.quem} mandou no grupo da família: um investimento que rende [cinco|oito|dez] por cento ao mês, \"tudo registrado\", com vídeo de um rapaz de terno numa lancha. {ator:Ele|Ela} já pôs as economias e quer você junto.",
+    "resumo": "foi chamad{o|a} por {ator.quem} para um investimento milagroso",
+    "escolhas": [
+      {
+        "texto": "Entrar com uma parte",
+        "resumo": "pôs uma parte do dinheiro no investimento milagroso de {ator.quem}",
+        "teste": { "chance": 0.25 },
+        "sucesso": {
+          "texto": "Rendeu mesmo, por seis meses. Você sacou a tempo, por pura preguiça de reinvestir.",
+          "efeitos": { "patrimonioFator": 1.12, "felicidade": 2, "ator.vinculo": 3 }
+        },
+        "fracasso": {
+          "texto": "O rapaz da lancha sumiu, o site saiu do ar e o grupo da família virou um velório com figurinha.",
+          "resumo": "perdeu dinheiro numa pirâmide que {ator.quem} indicou",
+          "efeitos": { "patrimonioFator": 0.8, "felicidade": -3, "marcas": ["caiu_golpe"] }
+        }
+      },
+      {
+        "texto": "Pôr quase tudo",
+        "resumo": "pôs quase tudo o que tinha no investimento milagroso de {ator.quem}",
+        "condicoes": { "patrimonio": { "min": 100000 } },
+        "bloqueio": "você não tem tanto assim para pôr",
+        "teste": { "chance": 0.2 },
+        "sucesso": {
+          "texto": "Contra todas as leis da matemática, você sacou no pico. Comprou um carro à vista e jurou nunca mais.",
+          "resumo": "sacou no pico de uma pirâmide e saiu no lucro",
+          "efeitos": { "patrimonioFator": 1.7, "felicidade": 4 }
+        },
+        "fracasso": {
+          "texto": "Era pirâmide. Quando ela caiu, levou quase tudo o que você tinha; a polícia levou o rapaz da lancha, mas não trouxe o dinheiro de volta.",
+          "resumo": "perdeu quase tudo numa pirâmide financeira",
+          "efeitos": { "patrimonioFator": 0.2, "felicidade": -8, "marcas": ["caiu_golpe"] }
+        }
+      },
+      {
+        "texto": "Avisar que é pirâmide",
+        "resumo": "avisou {ator.quem} que era pirâmide",
+        "resultado": {
+          "texto": "Você mandou três reportagens e um áudio calmo. {ator.quem} ficou ofendid{ator:o|a}, mas tirou o dinheiro a tempo.",
+          "efeitos": { "ator.vinculo": -4, "inteligencia": 1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fiador",
+    "tipo": "npc",
+    "ator": ["amigo", "amor", "filho"],
+    "idade": [25, 80],
+    "condicoes": { "patrimonio": { "min": 40000 }, "ator.idade": { "min": 21, "max": 70 } },
+    "texto": "{ator.quem} precisa de um fiador para [o aluguel da loja nova|um empréstimo no banco|o financiamento de um caminhão] e jura que é só uma assinatura. [O seu avô dizia que fiador é quem paga a dívida dos outros com antecedência.|Todo mundo conhece alguém que perdeu a casa assim. Ninguém conhece alguém que admita.]",
+    "resumo": "foi chamad{o|a} para ser fiador{|a} de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Assinar",
+        "resumo": "assinou como fiador{|a} de {ator.quem}",
+        "efeitos": { "ator.vinculo": 6 },
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "{ator.quem} pagou tudo em dia e, no fim, apareceu com um vinho de supermercado. Você nunca ficou tão feliz com um vinho ruim.",
+          "efeitos": { "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "{ator.quem} parou de pagar no oitavo mês. O banco não ligou para {ator:ele|ela}: ligou para você.",
+          "resumo": "pagou a dívida de {ator.quem} como fiador{|a}",
+          "efeitos": { "patrimonioFator": 0.75, "divida": 20000, "felicidade": -5, "ator.vinculo": -12 }
+        }
+      },
+      {
+        "texto": "Recusar com jeito",
+        "resumo": "recusou ser fiador{|a} de {ator.quem}",
+        "resultado": {
+          "texto": "Você explicou que prometeu à sua avó nunca ser fiador{|a} de ninguém. {ator.quem} sorriu amarelo e foi pedir para outra pessoa.",
+          "efeitos": { "ator.vinculo": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_quer_capital",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [45, 85],
+    "condicoes": { "dinheiro": { "min": 60000 }, "ator.idade": { "min": 22, "max": 45 } },
+    "texto": "{ator.quem} quer abrir [uma cervejaria artesanal|um estúdio de tatuagem|um aplicativo de entrega|uma clínica veterinária] e pediu um adiantamento da herança. Trouxe planilha, logotipo e um otimismo que você reconhece de algum lugar.",
+    "resumo": "ouviu {ator.quem} pedir um adiantamento da herança",
+    "escolhas": [
+      {
+        "texto": "Dar o adiantamento",
+        "resumo": "deu um adiantamento da herança para {ator.quem}",
+        "resultado": {
+          "texto": "Você transferiu {transferido} e ganhou um abraço demorado. O resto é com {ator:ele|ela}.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "ator", "fracao": 0.3 },
+            "ator.vinculo": 12,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Emprestar com contrato",
+        "resumo": "emprestou dinheiro com contrato para {ator.quem}",
+        "resultado": {
+          "texto": "Você emprestou {transferido} com contrato, juros simbólicos e firma reconhecida. {ator.quem} achou exagero; o cartório achou normal.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "fracao": 0.12 }, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Dizer que não",
+        "resumo": "negou o adiantamento da herança para {ator.quem}",
+        "resultado": {
+          "texto": "Você disse que herança é para depois. {ator.quem} respondeu que depois pode ser tarde e foi trabalhar para os outros.",
+          "efeitos": { "ator.vinculo": -10, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fazenda_a_venda",
+    "idade": [35, 75],
+    "condicoes": { "patrimonio": { "min": 1500000 } },
+    "peso": 2,
+    "texto": "Um corretor de botina e caminhonete oferece uma fazenda no [oeste da Bahia|Mato Grosso|Tocantins|sul do Pará]: [soja|gado|café], porteira fechada, \"negócio de pai para filho\". O preço é quase tudo o que você tem.",
+    "resumo": "recebeu a oferta de uma fazenda",
+    "escolhas": [
+      {
+        "texto": "Comprar a fazenda",
+        "resumo": "comprou uma fazenda com quase tudo o que tinha",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Duas safras boas, preço lá em cima e a terra valorizou. Você aprendeu a falar de chuva com autoridade.",
+          "resumo": "ficou rico{|a} com uma fazenda",
+          "efeitos": { "patrimonioFator": 1.7, "felicidade": 4, "saude": 1 }
+        },
+        "fracasso": {
+          "texto": "Seca no primeiro ano, preço no chão no segundo e praga no terceiro. A fazenda foi vendida para o vizinho por bem menos do que custou.",
+          "resumo": "perdeu boa parte do patrimônio com uma fazenda",
+          "efeitos": { "patrimonioFator": 0.4, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Deixar o dinheiro onde está",
+        "resumo": "recusou comprar uma fazenda",
+        "resultado": {
+          "texto": "Você ficou com o dinheiro rendendo no banco, sem chuva nem praga. O corretor saiu cantando pneu.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "franquia",
+    "idade": [28, 62],
+    "condicoes": {
+      "patrimonio": { "min": 300000 },
+      "semMarcas": ["empreendedor", "socio", "herdeiro_negocio", "aposentado"]
+    },
+    "texto": "Na feira de franquias, um rapaz de crachá jura que [uma loja de açaí|uma hamburgueria artesanal|uma lavanderia de autoatendimento|uma escola de inglês] se paga em dezoito meses. O investimento é quase metade do que você tem.",
+    "resumo": "pensou em comprar uma franquia",
+    "escolhas": [
+      {
+        "texto": "Comprar a franquia",
+        "resumo": "comprou uma franquia",
+        "efeitos": { "patrimonioFator": 0.55 },
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A loja encheu desde a inauguração. Você virou dono{|a} de um negócio que funciona até quando você dorme, e você quase não dorme.",
+          "resumo": "abriu uma franquia que deu certo",
+          "efeitos": { "renda": 60000, "felicidade": 3, "marcas": ["empreendedor"] }
+        },
+        "fracasso": {
+          "texto": "O ponto era ruim, a franqueadora mudou as regras e a concorrência abriu do lado. A loja fechou com estoque e dívida.",
+          "resumo": "perdeu metade do patrimônio numa franquia",
+          "efeitos": { "divida": 40000, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Guardar o folheto",
+        "resumo": "desistiu de comprar uma franquia",
+        "resultado": {
+          "texto": "O folheto foi para a gaveta. Quando você passa na frente de uma loja da rede, calcula quanto teria perdido. Ou ganhado.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "moeda_digital",
+    "idade": [20, 60],
+    "condicoes": { "patrimonio": { "min": 50000 } },
+    "texto": "Um colega jura que uma moeda digital nova vai [multiplicar por dez|chegar à Lua|aposentar o dólar] até o fim do ano. Ele já comprou um carro com o lucro, segundo ele mesmo.",
+    "resumo": "pensou em apostar numa moeda digital",
+    "escolhas": [
+      {
+        "texto": "Pôr metade do que tem",
+        "resumo": "pôs metade do patrimônio numa moeda digital",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "A moeda subiu como um foguete e você vendeu antes do pouso. Não sabe explicar como, e nem tenta.",
+          "resumo": "multiplicou o patrimônio com uma moeda digital",
+          "efeitos": { "patrimonioFator": 1.8, "felicidade": 4 }
+        },
+        "fracasso": {
+          "texto": "A moeda caiu noventa por cento numa terça-feira. O colega agora vende um curso de investimentos.",
+          "resumo": "perdeu metade do patrimônio numa moeda digital",
+          "efeitos": { "patrimonioFator": 0.55, "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Pôr só um trocado",
+        "resumo": "pôs um trocado numa moeda digital",
+        "efeitos": { "dinheiro": -2000 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "Os dois mil viraram nove. Você contou para todo mundo, inclusive para quem não perguntou.",
+          "efeitos": { "dinheiro": 9000, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Os dois mil viraram duzentos. Você ficou especialista em dizer que era só para aprender.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Passar",
+        "resumo": "não entrou na moeda digital",
+        "resultado": {
+          "texto": "Você não entrou. A moeda [subiu, caiu e sumiu|nunca mais foi notícia|virou piada no grupo do trabalho].",
+          "efeitos": { "inteligencia": 0.5 }
+        }
+      }
+    ]
+  }
+]

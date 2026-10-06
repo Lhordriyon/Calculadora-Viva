@@ -45,7 +45,7 @@
         "resumo": "comeu na casa da vizinha num mês difícil",
         "resultado": {
           "texto": "A vizinha fingiu que tinha feito comida demais. Você fingiu que acreditou.",
-          "efeitos": { "felicidade": -1, "saude": 1 }
+          "efeitos": { "felicidade": -1, "saude": 1, "mae.vinculo": -2 }
         }
       },
       {
@@ -53,7 +53,7 @@
         "resumo": "dormiu cedo para não sentir fome",
         "resultado": {
           "texto": "Funcionou até as três da manhã. Você nunca esqueceu esse barulho do estômago.",
-          "efeitos": { "saude": -2, "felicidade": -3 }
+          "efeitos": { "saude": -2, "felicidade": -3, "mae.vinculo": 3 }
         }
       }
     ]
@@ -201,7 +201,8 @@
             "inteligencia": 2,
             "felicidade": -1,
             "marcas": ["clt"],
-            "pai.vinculo": 6
+            "pai.vinculo": 6,
+            "eu.setor": { "copiar": "pai.setor" }
           }
         }
       },
@@ -508,7 +509,8 @@
             "marcas": ["herdeiro_negocio"],
             "renda": { "definir": 110000 },
             "ator.vinculo": 12,
-            "inteligencia": 1
+            "inteligencia": 1,
+            "eu.setor": { "copiar": "ator.setor" }
           }
         }
       },
@@ -521,7 +523,8 @@
             "marcas": ["herdeiro_negocio"],
             "renda": { "definir": 80000 },
             "ator.vinculo": 12,
-            "felicidade": -1
+            "felicidade": -1,
+            "eu.setor": { "copiar": "ator.setor" }
           }
         }
       },
@@ -703,7 +706,8 @@
         "renda": { "definir": 72000 },
         "marcas": ["servidor"],
         "removerMarcas": ["concurseiro"],
-        "felicidade": 8
+        "felicidade": 8,
+        "eu.setor": { "definir": "publico" }
       }
     },
     "fracasso": {
@@ -717,7 +721,7 @@
     "idade": [18, 100],
     "condicoes": { "marcaHa": [{ "marca": "herdou", "max": 1 }], "dinheiro": { "min": 10000 } },
     "tensao": 3,
-    "texto": "O inventário terminou. A herança caiu na sua conta: mais dinheiro do que você já viu junto, e um silêncio esquisito no lugar de quem deixou.",
+    "texto": "O inventário terminou e a herança caiu na sua conta: agora você tem {dinheiro} e um silêncio esquisito no lugar de quem deixou. [O gerente do banco ligou no mesmo dia.|Um primo distante mandou mensagem pela primeira vez em dez anos.|Todo mundo tem uma opinião sobre o que fazer com ela.]",
     "resumo": "recebeu uma herança",
     "escolhas": [
       {
@@ -729,6 +733,33 @@
         }
       },
       {
+        "texto": "Mudar de vida: casa, carro e viagens",
+        "resumo": "subiu de padrão com a herança",
+        "condicoes": { "patrimonio": { "min": 150000 } },
+        "bloqueio": "a herança não dá para mudar de vida",
+        "resultado": {
+          "texto": "Casa maior, carro do ano, viagem todo ano. O padrão subiu junto com o saldo; a diferença é que o padrão não desce sozinho.",
+          "efeitos": { "custoDoPatrimonio": 0.06, "felicidade": 6, "aparencia": 1, "marcas": ["padrao_alto"] }
+        }
+      },
+      {
+        "texto": "Apostar num negócio grande",
+        "resumo": "apostou a herança num negócio próprio",
+        "condicoes": { "patrimonio": { "min": 100000 } },
+        "bloqueio": "a herança não dá para abrir um negócio",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "[O restaurante|O posto de gasolina|A loja de material de construção] deu certo desde o primeiro mês. Os parentes passaram a te chamar de empresári{o|a}, com uma ponta de inveja.",
+          "resumo": "multiplicou a herança num negócio próprio",
+          "efeitos": { "patrimonioFator": 1.6, "renda": 40000, "felicidade": 5, "marcas": ["empreendedor"] }
+        },
+        "fracasso": {
+          "texto": "O negócio comeu a herança em dois anos: aluguel, funcionários, fornecedor e um sócio que entendia de tudo, menos do negócio.",
+          "resumo": "perdeu a maior parte da herança num negócio",
+          "efeitos": { "patrimonioFator": 0.35, "felicidade": -7 }
+        }
+      },
+      {
         "texto": "Realizar um sonho antigo",
         "resumo": "realizou um sonho antigo com a herança",
         "condicoes": { "dinheiro": { "min": 60000 } },
@@ -736,16 +767,6 @@
         "resultado": {
           "texto": "Você [viajou para o outro lado do mundo|comprou a casa com quintal|abriu o bar que sempre quis] e pensou em quem deixou o dinheiro a cada dia.",
           "efeitos": { "dinheiro": -60000, "felicidade": 6 }
-        }
-      },
-      {
-        "texto": "Dividir com os primos",
-        "resumo": "dividiu a herança com os primos",
-        "condicoes": { "dinheiro": { "min": 20000 } },
-        "bloqueio": "a herança foi pequena demais para dividir",
-        "resultado": {
-          "texto": "Ninguém pediu, mas você dividiu. No Natal seguinte, você era a pessoa preferida da família.",
-          "efeitos": { "dinheiro": -20000, "felicidade": 3 }
         }
       }
     ]
@@ -1003,7 +1024,13 @@
         "sucesso": {
           "texto": "Deu muito certo. Em três anos, vocês tinham filiais e você, um contador.",
           "resumo": "ficou rico com um negócio",
-          "efeitos": { "renda": 60000, "patrimonioFator": 1.8, "marcas": ["empreendedor"], "felicidade": 6 }
+          "efeitos": {
+            "renda": 60000,
+            "patrimonioFator": 1.8,
+            "marcas": ["empreendedor"],
+            "felicidade": 6,
+            "eu.setor": { "definir": "comercio" }
+          }
         },
         "fracasso": {
           "texto": "O negócio quebrou em um ano e levou metade das suas economias junto.",
@@ -1017,7 +1044,12 @@
         "teste": { "chance": 0.4 },
         "sucesso": {
           "texto": "O negócio pegou. Sua parte virou uma renda extra que paga o aluguel.",
-          "efeitos": { "renda": 15000, "marcas": ["empreendedor"], "felicidade": 3 }
+          "efeitos": {
+            "renda": 15000,
+            "marcas": ["empreendedor"],
+            "felicidade": 3,
+            "eu.setor": { "definir": "comercio" }
+          }
         },
         "fracasso": {
           "texto": "Não deu. Você perdeu pouco e aprendeu muito, como dizem os coaches.",
