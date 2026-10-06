@@ -27,7 +27,7 @@ jobs:
       - run: npm run checar
       - run: npm test
       - run: npm run validar
-      - name: Túnel de vento (falha se uma meta da fase 1 quebrar)
+      - name: Túnel de vento (falha se uma meta quebrar)
         run: npm run tunel -- --sem-arquivo
       - run: npm run build
         env:
