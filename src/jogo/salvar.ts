@@ -59,7 +59,7 @@ const Entrada = z.object({
   id: z.number(),
   idade: z.number(),
   ano: z.number(),
-  tipo: z.enum(['nascimento', 'evento', 'acao', 'npc', 'linha', 'regra', 'morte']),
+  tipo: z.enum(['nascimento', 'evento', 'acao', 'npc', 'mundo', 'linha', 'regra', 'morte']),
   causa: Causa,
   ref: z.optional(z.string()),
   ator: z.optional(z.string()),

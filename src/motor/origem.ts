@@ -85,8 +85,10 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
     en.n['renda'] = 0;
     return en;
   };
-  const ocupar = (en: Entidade, ocupacao: { m: string; f: string }): void => {
+  const setorDe = (en: Entidade, setor: string | { m: string; f: string }): string => (typeof setor === 'string' ? setor : en.genero === 'f' ? setor.f : setor.m);
+  const ocupar = (en: Entidade, ocupacao: { m: string; f: string; setor: string | { m: string; f: string } }): void => {
     en.t['ocupacao'] = en.genero === 'f' ? ocupacao.f : ocupacao.m;
+    en.t['setor'] = setorDe(en, ocupacao.setor);
     if (aleatorio(rng) < chanceDesemprego) {
       en.q['desempregado'] = { v: 1, ano: e.ano, idade: 0, causa: null };
       en.n['renda'] = Math.round(rendaAdulto() * 0.3);
@@ -107,6 +109,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   if (tipo.id === 'empreendedora') {
     const dono = aleatorio(rng) < 0.5 ? mae : pai;
     dono.t['ocupacao'] = dono.genero === 'f' ? classe.negocio.f : classe.negocio.m;
+    dono.t['setor'] = setorDe(dono, classe.negocio.setor);
     delete dono.q['desempregado'];
     dono.n['renda'] = rendaAdulto();
     dono.q['dono_do_negocio'] = { v: 1, ano: e.ano, idade: 0, causa: null };

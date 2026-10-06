@@ -90,7 +90,7 @@ function melhorConsequencia(origem: Entrada, descendentes: Entrada[]): Entrada {
 function frase(h: Entrada): { texto: string; doJogador: boolean } | null {
   if (h.escolha) return { texto: `você ${h.escolha.resumo}`, doJogador: true };
   if (h.tipo === 'acao' && h.resumo) return { texto: `você ${h.resumo}`, doJogador: true };
-  if (h.tipo === 'npc' && h.resumo) return { texto: h.resumo, doJogador: false };
+  if ((h.tipo === 'npc' || h.tipo === 'mundo') && h.resumo) return { texto: h.resumo, doJogador: false };
   return null;
 }
 

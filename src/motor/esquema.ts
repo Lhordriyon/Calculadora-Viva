@@ -9,6 +9,7 @@ import {
   ATRIBUTOS,
   CATEGORIAS_MORTE,
   CLASSES,
+  FASES,
   PAPEIS,
   PAPEIS_NOVOS,
   TIPOS_FAMILIA,
@@ -107,8 +108,14 @@ const EFEITOS_FIXOS = {
   dividaFator: z.number().min(0).max(1).optional(),
   /** Multiplica o dinheiro e o investido (golpe, sociedade que quebrou, aposta que deu certo): perdas e ganhos proporcionais à riqueza. */
   patrimonioFator: z.number().min(0).max(3).optional(),
+  /** Multiplica a renda (corte de salário, proposta melhor): 0,8 = −20%. */
+  rendaFator: z.number().min(0).max(3).optional(),
   renda: Ajuste.optional(),
   custo: Ajuste.optional(),
+  /** Soma ao custo anual uma fração do patrimônio de agora (o padrão de vida que sobe com o que se tem). */
+  custoDoPatrimonio: z.number().gt(0).max(0.2).optional(),
+  /** Multiplica o custo de vida anual (cortar o padrão: 0,5 = metade). */
+  custoFator: z.number().min(0).max(3).optional(),
   /** Qualidades ganhas (aceitam caminho: "mae.doente"). */
   marcas: z.array(Caminho).optional(),
   removerMarcas: z.array(Caminho).optional(),
@@ -136,7 +143,12 @@ const EFEITOS_FIXOS = {
 export const CHAVES_EFEITO = new Set(Object.keys(EFEITOS_FIXOS));
 
 /** Efeito por caminho: soma um número ou define um valor ("mae.vinculo": 10; "ator.ocupacao": {"definir": "..."}). */
-const ValorEfeito = z.union([z.number(), z.strictObject({ definir: z.union([z.number(), z.string()]) })]);
+const ValorEfeito = z.union([
+  z.number(),
+  z.strictObject({ definir: z.union([z.number(), z.string()]) }),
+  /** Copia o valor de outro caminho ("eu.setor": { "copiar": "pai.setor" }). */
+  z.strictObject({ copiar: Caminho }),
+]);
 
 export const Efeitos = z
   .object(EFEITOS_FIXOS)
@@ -319,11 +331,47 @@ export const InfoMarca = z.strictObject({
 export type InfoMarca = z.infer<typeof InfoMarca>;
 export const ArquivoMarcas = z.record(id, InfoMarca);
 
-const Profissao = z.strictObject({ m: z.string(), f: z.string() });
+/** Setor de uma ocupação: um só, ou um para cada gênero quando as duas formas são trabalhos diferentes. */
+const SetorDaOcupacao = z.union([id, z.strictObject({ m: id, f: id })]);
+const Profissao = z.strictObject({ m: z.string(), f: z.string(), setor: SetorDaOcupacao });
+
+/** Setor da economia: quanto sente o ciclo e quanto os salários crescem por ano (real). */
+export const DefSetor = z.strictObject({
+  id,
+  nome: z.string(),
+  /** 0 = não sente o ciclo; 1 = sente como a média; 2 = sente o dobro. */
+  ciclo: z.number().min(0).max(3),
+  crescimento: z.number().min(-0.05).max(0.05),
+  /** Emprego estável: ninguém é demitido (serviço público). */
+  estavel: z.boolean().optional(),
+});
+export type DefSetor = z.infer<typeof DefSetor>;
 
 /** Mudanças que as regras dos personagens produzem sozinhas. */
-export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu'] as const;
+export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu'] as const;
 export type Gatilho = (typeof GATILHOS)[number];
+
+/** Uma fase do ciclo econômico: para onde vai no ano seguinte e o que muda na economia. */
+export const DefFase = z.strictObject({
+  id: z.enum(FASES),
+  /** Como aparece no cabeçalho ("recessão"); vazio no normal. */
+  nome: z.string(),
+  /** Peso no sorteio da fase em que a vida começa. */
+  peso: z.number().positive(),
+  /** Chance de passar a cada outra fase no ano (o resto fica). */
+  transicoes: z.partialRecord(z.enum(FASES), z.number().min(0).max(1)),
+  /** Somado à inflação média e ao rendimento real médio do ano (0,02 = 2 pontos). */
+  inflacao: z.number(),
+  retorno: z.number(),
+  /** Multiplica a chance de demissão (e divide a de recolocação). */
+  desemprego: z.number().positive(),
+  /** Variação real dos salários no ano (0,02 = +2%). */
+  salario: z.number(),
+  /** O que a linha do tempo conta quando o país entra nesta fase. */
+  textos: z.array(z.string()).min(1),
+  resumo: z.string().min(3),
+});
+export type DefFase = z.infer<typeof DefFase>;
 const NomeGenero = z.strictObject({ m: z.string(), f: z.string() });
 const Intervalo = z.tuple([z.number(), z.number()]);
 
@@ -410,6 +458,10 @@ export const Mundo = z.strictObject({
     z.enum(GATILHOS),
     z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string().min(3) }),
   ),
+  /** Setores da economia (o emprego de quem joga e dos pais pertence a um). */
+  setores: z.array(DefSetor).min(6),
+  /** O ciclo econômico do país, uma fase por id. */
+  fases: z.array(DefFase).length(FASES.length),
   /** Textos da primeira linha da vida (sorteado entre os que a origem permite). */
   nascimento: z.array(z.strictObject({ se: Condicoes.optional(), texto: z.string() })).min(1),
   /** Epitáfios genéricos quando nenhuma marca tem um. */

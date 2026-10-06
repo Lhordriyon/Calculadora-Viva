@@ -258,16 +258,16 @@
       "poupanca": -0.06,
       "saude": -7,
       "ocupacoes": [
-        { "m": "catador de recicláveis", "f": "catadora de recicláveis" },
-        { "m": "ajudante de pedreiro", "f": "faxineira sem carteira" },
-        { "m": "chapa de caminhão", "f": "lavadeira" },
-        { "m": "flanelinha", "f": "vendedora de bala no sinal" },
-        { "m": "boia-fria", "f": "boia-fria" },
-        { "m": "vigia de rua", "f": "diarista sem carteira" },
-        { "m": "ajudante de feira", "f": "ajudante de cozinha" },
-        { "m": "pescador", "f": "marisqueira" }
+        { "m": "catador de recicláveis", "f": "catadora de recicláveis", "setor": "servicos" },
+        { "m": "ajudante de pedreiro", "f": "faxineira sem carteira", "setor": { "m": "construcao", "f": "servicos" } },
+        { "m": "chapa de caminhão", "f": "lavadeira", "setor": { "m": "transporte", "f": "servicos" } },
+        { "m": "flanelinha", "f": "vendedora de bala no sinal", "setor": { "m": "servicos", "f": "comercio" } },
+        { "m": "boia-fria", "f": "boia-fria", "setor": "agro" },
+        { "m": "vigia de rua", "f": "diarista sem carteira", "setor": "servicos" },
+        { "m": "ajudante de feira", "f": "ajudante de cozinha", "setor": { "m": "comercio", "f": "servicos" } },
+        { "m": "pescador", "f": "marisqueira", "setor": "agro" }
       ],
-      "negocio": { "m": "dono de um carrinho de pipoca", "f": "dona de um carrinho de pipoca" }
+      "negocio": { "m": "dono de um carrinho de pipoca", "f": "dona de um carrinho de pipoca", "setor": "comercio" }
     },
     {
       "id": "pobre",
@@ -278,20 +278,20 @@
       "poupanca": 0.0,
       "saude": -3,
       "ocupacoes": [
-        { "m": "pedreiro", "f": "diarista" },
-        { "m": "vendedor ambulante", "f": "vendedora ambulante" },
-        { "m": "motorista de aplicativo", "f": "motorista de aplicativo" },
-        { "m": "porteiro", "f": "porteira" },
-        { "m": "cozinheiro", "f": "cozinheira" },
-        { "m": "auxiliar de serviços gerais", "f": "auxiliar de serviços gerais" },
-        { "m": "entregador", "f": "entregadora" },
-        { "m": "feirante", "f": "feirante" },
-        { "m": "catador de recicláveis", "f": "catadora de recicláveis" },
-        { "m": "barbeiro", "f": "manicure" },
-        { "m": "servente de obra", "f": "costureira" },
-        { "m": "repositor de supermercado", "f": "caixa de supermercado" }
+        { "m": "pedreiro", "f": "diarista", "setor": { "m": "construcao", "f": "servicos" } },
+        { "m": "vendedor ambulante", "f": "vendedora ambulante", "setor": "comercio" },
+        { "m": "motorista de aplicativo", "f": "motorista de aplicativo", "setor": "transporte" },
+        { "m": "porteiro", "f": "porteira", "setor": "servicos" },
+        { "m": "cozinheiro", "f": "cozinheira", "setor": "servicos" },
+        { "m": "auxiliar de serviços gerais", "f": "auxiliar de serviços gerais", "setor": "servicos" },
+        { "m": "entregador", "f": "entregadora", "setor": "transporte" },
+        { "m": "feirante", "f": "feirante", "setor": "comercio" },
+        { "m": "catador de recicláveis", "f": "catadora de recicláveis", "setor": "servicos" },
+        { "m": "barbeiro", "f": "manicure", "setor": "servicos" },
+        { "m": "servente de obra", "f": "costureira", "setor": { "m": "construcao", "f": "industria" } },
+        { "m": "repositor de supermercado", "f": "caixa de supermercado", "setor": "comercio" }
       ],
-      "negocio": { "m": "dono de uma barraca na feira", "f": "dona de uma barraca na feira" }
+      "negocio": { "m": "dono de uma barraca na feira", "f": "dona de uma barraca na feira", "setor": "comercio" }
     },
     {
       "id": "remediada",
@@ -302,20 +302,24 @@
       "poupanca": 0.04,
       "saude": 0,
       "ocupacoes": [
-        { "m": "professor", "f": "professora" },
-        { "m": "técnico de enfermagem", "f": "técnica de enfermagem" },
-        { "m": "mecânico", "f": "cabeleireira" },
-        { "m": "motorista de ônibus", "f": "recepcionista" },
-        { "m": "vendedor de loja", "f": "vendedora de loja" },
-        { "m": "eletricista", "f": "auxiliar administrativa" },
-        { "m": "policial militar", "f": "policial militar" },
-        { "m": "caminhoneiro", "f": "vendedora de cosméticos por catálogo" },
-        { "m": "bancário", "f": "bancária" },
-        { "m": "carteiro", "f": "carteira" },
-        { "m": "técnico de informática", "f": "técnica de informática" },
-        { "m": "cabo da Aeronáutica", "f": "sargenta do Exército" }
+        { "m": "professor", "f": "professora", "setor": "educacao" },
+        { "m": "técnico de enfermagem", "f": "técnica de enfermagem", "setor": "saude" },
+        { "m": "mecânico", "f": "cabeleireira", "setor": "servicos" },
+        { "m": "motorista de ônibus", "f": "recepcionista", "setor": { "m": "transporte", "f": "servicos" } },
+        { "m": "vendedor de loja", "f": "vendedora de loja", "setor": "comercio" },
+        { "m": "eletricista", "f": "auxiliar administrativa", "setor": { "m": "construcao", "f": "servicos" } },
+        { "m": "policial militar", "f": "policial militar", "setor": "publico" },
+        {
+          "m": "caminhoneiro",
+          "f": "vendedora de cosméticos por catálogo",
+          "setor": { "m": "transporte", "f": "comercio" }
+        },
+        { "m": "bancário", "f": "bancária", "setor": "financas" },
+        { "m": "carteiro", "f": "carteira", "setor": "publico" },
+        { "m": "técnico de informática", "f": "técnica de informática", "setor": "tecnologia" },
+        { "m": "cabo da Aeronáutica", "f": "sargenta do Exército", "setor": "publico" }
       ],
-      "negocio": { "m": "dono de mercadinho", "f": "dona de mercadinho" }
+      "negocio": { "m": "dono de mercadinho", "f": "dona de mercadinho", "setor": "comercio" }
     },
     {
       "id": "media",
@@ -326,21 +330,22 @@
       "poupanca": 0.08,
       "saude": 2,
       "ocupacoes": [
-        { "m": "enfermeiro", "f": "enfermeira" },
-        { "m": "contador", "f": "contadora" },
-        { "m": "professor universitário", "f": "professora universitária" },
-        { "m": "analista de sistemas", "f": "analista de sistemas" },
-        { "m": "gerente de loja", "f": "gerente de loja" },
-        { "m": "servidor público", "f": "servidora pública" },
-        { "m": "corretor de imóveis", "f": "corretora de imóveis" },
-        { "m": "farmacêutico", "f": "farmacêutica" },
-        { "m": "jornalista", "f": "jornalista" },
-        { "m": "programador", "f": "programadora" },
-        { "m": "dentista", "f": "dentista" }
+        { "m": "enfermeiro", "f": "enfermeira", "setor": "saude" },
+        { "m": "contador", "f": "contadora", "setor": "financas" },
+        { "m": "professor universitário", "f": "professora universitária", "setor": "educacao" },
+        { "m": "analista de sistemas", "f": "analista de sistemas", "setor": "tecnologia" },
+        { "m": "gerente de loja", "f": "gerente de loja", "setor": "comercio" },
+        { "m": "servidor público", "f": "servidora pública", "setor": "publico" },
+        { "m": "corretor de imóveis", "f": "corretora de imóveis", "setor": "construcao" },
+        { "m": "farmacêutico", "f": "farmacêutica", "setor": "saude" },
+        { "m": "jornalista", "f": "jornalista", "setor": "cultura" },
+        { "m": "programador", "f": "programadora", "setor": "tecnologia" },
+        { "m": "dentista", "f": "dentista", "setor": "saude" }
       ],
       "negocio": {
         "m": "dono de uma loja de material de construção",
-        "f": "dona de uma loja de material de construção"
+        "f": "dona de uma loja de material de construção",
+        "setor": "construcao"
       }
     },
     {
@@ -352,17 +357,17 @@
       "poupanca": 0.12,
       "saude": 4,
       "ocupacoes": [
-        { "m": "médico", "f": "médica" },
-        { "m": "advogado", "f": "advogada" },
-        { "m": "engenheiro", "f": "engenheira" },
-        { "m": "juiz", "f": "juíza" },
-        { "m": "diretor de empresa", "f": "diretora de empresa" },
-        { "m": "fazendeiro", "f": "fazendeira" },
-        { "m": "cirurgião plástico", "f": "cirurgiã-dentista" },
-        { "m": "gerente de banco", "f": "gerente de banco" },
-        { "m": "arquiteto", "f": "arquiteta" }
+        { "m": "médico", "f": "médica", "setor": "saude" },
+        { "m": "advogado", "f": "advogada", "setor": "servicos" },
+        { "m": "engenheiro", "f": "engenheira", "setor": "industria" },
+        { "m": "juiz", "f": "juíza", "setor": "publico" },
+        { "m": "diretor de empresa", "f": "diretora de empresa", "setor": "industria" },
+        { "m": "fazendeiro", "f": "fazendeira", "setor": "agro" },
+        { "m": "cirurgião plástico", "f": "cirurgiã-dentista", "setor": "saude" },
+        { "m": "gerente de banco", "f": "gerente de banco", "setor": "financas" },
+        { "m": "arquiteto", "f": "arquiteta", "setor": "construcao" }
       ],
-      "negocio": { "m": "dono de uma rede de academias", "f": "dona de uma rede de academias" }
+      "negocio": { "m": "dono de uma rede de academias", "f": "dona de uma rede de academias", "setor": "servicos" }
     },
     {
       "id": "muito_rica",
@@ -373,15 +378,19 @@
       "poupanca": 0.15,
       "saude": 5,
       "ocupacoes": [
-        { "m": "herdeiro", "f": "herdeira" },
-        { "m": "investidor", "f": "investidora" },
-        { "m": "dono de construtora", "f": "dona de construtora" },
-        { "m": "banqueiro", "f": "banqueira" },
-        { "m": "diretor de multinacional", "f": "diretora de multinacional" },
-        { "m": "fazendeiro do agronegócio", "f": "fazendeira do agronegócio" },
-        { "m": "sócio de escritório de advocacia", "f": "sócia de escritório de advocacia" }
+        { "m": "herdeiro", "f": "herdeira", "setor": "financas" },
+        { "m": "investidor", "f": "investidora", "setor": "financas" },
+        { "m": "dono de construtora", "f": "dona de construtora", "setor": "construcao" },
+        { "m": "banqueiro", "f": "banqueira", "setor": "financas" },
+        { "m": "diretor de multinacional", "f": "diretora de multinacional", "setor": "industria" },
+        { "m": "fazendeiro do agronegócio", "f": "fazendeira do agronegócio", "setor": "agro" },
+        { "m": "sócio de escritório de advocacia", "f": "sócia de escritório de advocacia", "setor": "servicos" }
       ],
-      "negocio": { "m": "dono de um grupo de supermercados", "f": "dona de um grupo de supermercados" }
+      "negocio": {
+        "m": "dono de um grupo de supermercados",
+        "f": "dona de um grupo de supermercados",
+        "setor": "comercio"
+      }
     }
   ],
   "familias": [
@@ -685,8 +694,92 @@
         "{ator.quem} se foi aos {ator.idade} anos, {como}. [O velório encheu.|Ninguém sabia o que fazer com as coisas {ator:dele|dela}.|A casa ficou grande demais.]"
       ],
       "resumo": "{ator.quem} morreu"
+    },
+    "faliu": {
+      "textos": [
+        "O negócio de {ator.quem} quebrou na crise: [o banco cortou o crédito e os fornecedores cobraram tudo de uma vez|o movimento caiu pela metade e o aluguel, não|um concorrente grande abriu do lado e baixou os preços até o fim]. Foi junto boa parte do que a família tinha guardado.",
+        "{ator.quem} fechou as portas do negócio de uma vida inteira. [A placa foi a leilão.|O estoque virou bazar no quintal.|Os clientes antigos ainda perguntam quando reabre.]"
+      ],
+      "resumo": "{ator.quem} faliu na crise"
     }
   },
+  "setores": [
+    { "id": "comercio", "nome": "comércio", "ciclo": 1.2, "crescimento": 0.004 },
+    { "id": "servicos", "nome": "serviços", "ciclo": 1.1, "crescimento": 0.003 },
+    { "id": "industria", "nome": "indústria", "ciclo": 1.5, "crescimento": 0.007 },
+    { "id": "construcao", "nome": "construção", "ciclo": 1.8, "crescimento": 0.005 },
+    { "id": "agro", "nome": "agro", "ciclo": 0.7, "crescimento": 0.009 },
+    { "id": "tecnologia", "nome": "tecnologia", "ciclo": 1.0, "crescimento": 0.02 },
+    { "id": "saude", "nome": "saúde", "ciclo": 0.4, "crescimento": 0.011 },
+    { "id": "educacao", "nome": "educação", "ciclo": 0.5, "crescimento": 0.006 },
+    { "id": "publico", "nome": "serviço público", "ciclo": 0, "crescimento": 0.008, "estavel": true },
+    { "id": "transporte", "nome": "transporte e entregas", "ciclo": 1.3, "crescimento": 0.0 },
+    { "id": "financas", "nome": "finanças", "ciclo": 1.2, "crescimento": 0.016 },
+    { "id": "cultura", "nome": "cultura e internet", "ciclo": 1.6, "crescimento": 0.01 }
+  ],
+  "fases": [
+    {
+      "id": "normal",
+      "nome": "",
+      "peso": 62,
+      "transicoes": { "expansao": 0.06, "recessao": 0.05 },
+      "inflacao": 0,
+      "retorno": 0,
+      "desemprego": 1,
+      "salario": 0.005,
+      "textos": [
+        "A economia voltou ao normal, seja lá o que isso signifique. [O jornal parou de usar a palavra \"crise\".|O desemprego caiu um pouco; o preço do café, nada.|Os economistas já discordam sobre o ano que vem.]",
+        "A economia esfriou. [Os anúncios de vaga ficaram mais modestos.|O shopping voltou a ter vaga no estacionamento.|Ninguém mais fala em \"oportunidade imperdível\".]",
+        "O país saiu do sufoco. [A padaria voltou a fazer o pão de sempre, do tamanho de sempre.|As placas de \"aluga-se\" no centro começaram a sumir.|O noticiário trocou o gráfico vermelho pela previsão do tempo.]"
+      ],
+      "resumo": "a economia do país voltou ao normal"
+    },
+    {
+      "id": "expansao",
+      "nome": "economia aquecida",
+      "peso": 21,
+      "transicoes": { "normal": 0.17, "recessao": 0.04 },
+      "inflacao": 0.01,
+      "retorno": 0.04,
+      "desemprego": 0.65,
+      "salario": 0.025,
+      "textos": [
+        "O país entrou num ciclo de crescimento. [Tem placa de \"contrata-se\" em toda esquina.|O shopping abriu outra ala e a fila do restaurante dobrou.|Todo mundo que você conhece trocou de emprego, para melhor.]",
+        "A economia acelerou. [Guindaste no horizonte virou paisagem.|O crédito ficou fácil e as concessionárias, cheias.|Até o tio pessimista admitiu que \"as coisas melhoraram\".]"
+      ],
+      "resumo": "o país entrou num ciclo de crescimento"
+    },
+    {
+      "id": "recessao",
+      "nome": "recessão",
+      "peso": 13,
+      "transicoes": { "normal": 0.28, "crise": 0.15, "expansao": 0.02 },
+      "inflacao": 0.005,
+      "retorno": -0.05,
+      "desemprego": 1.6,
+      "salario": -0.01,
+      "textos": [
+        "O país entrou em recessão. [As lojas do centro começaram a fechar mais cedo.|A palavra \"corte\" apareceu em todas as reuniões.|O jornal da noite agora tem um gráfico vermelho fixo.]",
+        "A economia encolheu dois trimestres seguidos, e os economistas finalmente concordaram em alguma coisa: recessão. [Vaga de emprego virou notícia.|O mercado do bairro trocou a marca do arroz.|O grupo da família começou a mandar dica de economia doméstica.]"
+      ],
+      "resumo": "o país entrou em recessão"
+    },
+    {
+      "id": "crise",
+      "nome": "crise",
+      "peso": 4,
+      "transicoes": { "recessao": 0.35, "normal": 0.15 },
+      "inflacao": 0.06,
+      "retorno": -0.12,
+      "desemprego": 2.4,
+      "salario": -0.03,
+      "textos": [
+        "A recessão virou crise: [a inflação disparou e o mercado remarca o preço duas vezes por semana.|fábricas fecharam turnos e o desemprego bateu recorde.|o dinheiro guardado parece derreter na conta.]",
+        "Crise. [Fila de emprego dobrando o quarteirão, juros nas alturas e o dólar fazendo o que quer.|O governo anunciou um pacote de medidas que ninguém entendeu.|Até a feira de domingo diminuiu.]"
+      ],
+      "resumo": "o país mergulhou numa crise econômica"
+    }
+  ],
   "nascimento": [
     {
       "se": { "pai.ausente": false },

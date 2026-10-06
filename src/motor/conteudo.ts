@@ -4,7 +4,7 @@
  * já validou e só indexa.
  */
 import { VERBOS, type Verbo } from './constantes.ts';
-import type { CausaMorte, InfoMarca, Linha, Mundo, Storylet, Traco, TracoJogador } from './esquema.ts';
+import type { CausaMorte, DefSetor, InfoMarca, Linha, Mundo, Storylet, Traco, TracoJogador } from './esquema.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 
 export interface Problema {
@@ -41,6 +41,7 @@ export interface Conteudo {
   mundo: Mundo;
   tracos: Map<string, Traco>;
   tracosJogador: Map<string, TracoJogador>;
+  setores: Map<string, DefSetor>;
 }
 
 export function tipoDe(s: Storylet): 'evento' | 'acao' | 'npc' {
@@ -109,5 +110,6 @@ export function indexarConteudo(dados: DadosConteudo, problemas: Problema[] = []
     mundo: dados.mundo,
     tracos: new Map(dados.mundo.tracos.map((t) => [t.id, t])),
     tracosJogador: new Map(dados.mundo.tracosJogador.map((t) => [t.id, t])),
+    setores: new Map(dados.mundo.setores.map((s) => [s.id, s])),
   };
 }

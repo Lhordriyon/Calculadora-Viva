@@ -29,4 +29,8 @@ export const TIPOS_FAMILIA = ['acolhedora', 'conflituosa', 'religiosa', 'empreen
 export type TipoFamilia = (typeof TIPOS_FAMILIA)[number];
 
 export const CATEGORIAS_MORTE = ['velhice', 'coracao', 'doenca', 'acidente', 'violencia'] as const;
+
+/** Fases do ciclo da economia do país. Fora do normal, a fase é uma qualidade do país (`pais.recessao`). */
+export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
+export type Fase = (typeof FASES)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];

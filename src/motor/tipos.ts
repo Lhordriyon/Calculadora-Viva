@@ -60,7 +60,7 @@ export interface Mudanca {
   r?: string;
 }
 
-export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'npc' | 'linha' | 'regra' | 'morte';
+export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'npc' | 'mundo' | 'linha' | 'regra' | 'morte';
 
 /** Entrada do livro-razão. As de tipo `regra` não aparecem na linha do tempo. */
 export interface Entrada {

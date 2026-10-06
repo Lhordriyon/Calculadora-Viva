@@ -33,6 +33,10 @@ const PESSOA: Record<string, DefCampo> = {
   renda: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   custo: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   ocupacao: { tipo: 'texto', sistema: 'carreira' },
+  /** Setor da economia em que a pessoa trabalha (id de mundo.json › setores). */
+  setor: { tipo: 'texto', sistema: 'carreira' },
+  /** Área da faculdade (saude, tecnologia, educacao, negocios, engenharia, artes). */
+  curso: { tipo: 'texto', sistema: 'mente' },
   traco: { tipo: 'texto', sistema: 'carater' },
   /** Origem de quem joga: classe (0 a 5), riqueza da família ao nascer e tipo de família. */
   classe_origem: { tipo: 'num', sistema: 'origem', limites: [0, 5] },
