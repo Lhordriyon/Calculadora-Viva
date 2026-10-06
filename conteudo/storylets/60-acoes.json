@@ -1,0 +1,852 @@
+[
+  {
+    "id": "estudar_tabuada",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "fazer a lição de casa",
+    "idade": [6, 10],
+    "texto": "Você [fez a lição sem ninguém mandar|decorou a tabuada do sete, a mais traiçoeira|leu um livro inteiro com figura e tudo]. {mae} [contou para a vizinha|colou a prova na geladeira|fingiu que não estava orgulhosa].",
+    "resumo": "fez a lição de casa",
+    "efeitos": { "inteligencia": 1.8, "felicidade": -0.3, "mae.vinculo": 1 }
+  },
+  {
+    "id": "estudar_escola",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "estudar para as provas",
+    "idade": [11, 17],
+    "texto": "Você [trocou o recreio por resumos coloridos|estudou para a prova de física na véspera, e na antevéspera|fez simulado até sonhar com alternativa C].",
+    "resumo": "estudou para as provas",
+    "efeitos": { "inteligencia": 2, "felicidade": -0.5, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "olimpiada",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "treinar para a olimpíada",
+    "idade": [10, 18],
+    "condicoes": { "marcas": ["nerd"] },
+    "texto": "Você treinou para a olimpíada de matemática com [lista de exercícios impressa|um professor que acreditava em você mais do que você|vídeos em inglês com legenda automática]. [Medalha de bronze e um certificado plastificado.|Não ganhou nada, mas aprendeu muito.|Menção honrosa, que você colocou no currículo até os trinta.]",
+    "resumo": "treinou para a olimpíada de matemática",
+    "efeitos": { "inteligencia": 3, "felicidade": 0.25, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "estudar_enem",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "estudar para o ENEM",
+    "idade": [16, 19],
+    "condicoes": { "semMarcas": ["cursando", "formado"] },
+    "texto": "Você [montou um cronograma colorido e seguiu metade|fez redação todo domingo|passou o ano com cheiro de café e marca-texto]. O ENEM [parece mais perto|virou assunto até no almoço de família].",
+    "resumo": "estudou para o ENEM",
+    "efeitos": { "inteligencia": 2.5, "felicidade": -0.75, "saude": -0.3, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "cursinho_pago",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "cursinho particular",
+    "idade": [16, 19],
+    "condicoes": { "semMarcas": ["cursando", "formado"], "mae.dinheiro": { "min": 40000 }, "mae.vivo": true },
+    "texto": "Cursinho particular com apostila de capa dura e professor que fazia stand-up entre uma fórmula e outra. {mae} pagou sem reclamar. Muito.",
+    "resumo": "fez cursinho particular",
+    "efeitos": { "inteligencia": 3.5, "felicidade": -0.5, "mae.dinheiro": -9000, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "estudar_faculdade",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "estudar na faculdade",
+    "idade": [17, 40],
+    "condicoes": { "marcas": ["cursando"] },
+    "texto": "Você [virou a noite na biblioteca|montou um grupo de estudo que mais conversou do que estudou|leu o texto inteiro, não só o resumo]. [O professor elogiou.|A nota veio.|Passou por meio ponto, mas passou.]",
+    "resumo": "estudou para as provas da faculdade",
+    "efeitos": { "inteligencia": 2.5, "felicidade": -0.5, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "estudar_concurso",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "estudar para concurso",
+    "idade": [18, 55],
+    "condicoes": { "renda": { "max": 40000 }, "semMarcas": ["servidor", "cursando"] },
+    "texto": "Você [resolveu questões até decorar o jeito da banca|fez um mapa mental do tamanho da parede|assistiu videoaula em velocidade dois]. O edital ainda não saiu, mas você já sabe a lei de cor.",
+    "resumo": "estudou para concurso",
+    "efeitos": { "inteligencia": 2, "felicidade": -0.75, "qualidades": { "concurso": 1 } }
+  },
+  {
+    "id": "curso_online",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "fazer um curso online",
+    "idade": [19, 64],
+    "condicoes": { "semMarcas": ["cursando"] },
+    "texto": "Você comprou um curso online de [Excel avançado|marketing digital|inglês para negócios|programação para iniciantes], [assistiu até o fim|assistiu metade, o que já é acima da média|pegou o certificado e mandou para o grupo da família].",
+    "resumo": "fez um curso online",
+    "efeitos": { "inteligencia": 1.5, "dinheiro": -600, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "pos_graduacao",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "fazer uma pós",
+    "idade": [23, 55],
+    "condicoes": { "marcas": ["formado"], "dinheiro": { "min": 4000 } },
+    "intervalo": 6,
+    "texto": "Você fez uma pós aos sábados. [O diploma veio com moldura.|O TCC foi escrito de madrugada.|A turma virou grupo de churrasco.] {pai} perguntou se agora você é doutor{|a}.",
+    "resumo": "fez uma pós-graduação",
+    "efeitos": { "inteligencia": 2.5, "dinheiro": -4000, "renda": 1500 }
+  },
+  {
+    "id": "voltar_a_estudar",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "voltar a estudar",
+    "idade": [22, 50],
+    "condicoes": { "algumaMarca": ["largou_faculdade", "trabalhou_cedo"], "semMarcas": ["cursando", "formado"] },
+    "texto": "Você [se matriculou no supletivo da noite|pediu o histórico na antiga faculdade|comprou um caderno novo, que é sempre o primeiro passo]. Estudar depois do trabalho cansa, mas dá orgulho.",
+    "resumo": "voltou a estudar",
+    "efeitos": { "inteligencia": 2, "felicidade": 0.25, "saude": -0.5, "qualidades": { "estudo": 1 } }
+  },
+  {
+    "id": "ler_livros",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "ler um livro por mês",
+    "idade": [60, 110],
+    "texto": "Você leu [um romance de quinhentas páginas|biografias de gente que já morreu|livros de história, para entender onde o mundo errou] e discutiu cada um no clube de leitura da biblioteca.",
+    "resumo": "leu um livro por mês",
+    "efeitos": { "inteligencia": 1.5, "felicidade": 0.3, "dinheiro": -200 }
+  },
+  {
+    "id": "ajudar_em_casa",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "ajudar em casa",
+    "idade": [7, 13],
+    "texto": "Você [lavou a louça sem reclamar, o que assustou todo mundo|varreu o quintal|cuidou do irmão do vizinho por umas moedas]. {mae} ficou desconfiada e grata, nessa ordem.",
+    "resumo": "ajudou em casa",
+    "efeitos": { "felicidade": -0.25, "mae.vinculo": 3, "dinheiro": 50 }
+  },
+  {
+    "id": "vender_doce",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "vender doce na escola",
+    "idade": [12, 17],
+    "texto": "Você vendeu [brigadeiro|geladinho|trufa de maracujá] na escola. [O lucro virou fone de ouvido.|A diretora fingiu não ver.|Concorrência apareceu na outra sala.]",
+    "resumo": "vendeu doce na escola",
+    "efeitos": { "dinheiro": 500, "inteligencia": 0.5, "felicidade": -0.25 }
+  },
+  {
+    "id": "vender_doce_nato",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "montar um negócio de doces",
+    "idade": [12, 17],
+    "condicoes": { "marcas": ["vendedor_nato"] },
+    "texto": "Com seu talento de vendedor{|a}, a trufa virou franquia: três revendedores, uma planilha e um caderno de fiados. Você tinha quinze anos.",
+    "resumo": "montou um negócio de doces na escola",
+    "efeitos": { "dinheiro": 1500, "inteligencia": 1, "felicidade": 0.25 }
+  },
+  {
+    "id": "bico_adolescente",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "fazer bico no fim de semana",
+    "idade": [14, 17],
+    "condicoes": { "classe_origem": { "max": 3 } },
+    "texto": "Fim de semana de bico: [panfletagem no sinal|garçom em festa de quinze anos|ajudante numa oficina]. O dinheiro veio; o dever de casa, não.",
+    "resumo": "fez bico no fim de semana",
+    "efeitos": { "dinheiro": 1200, "inteligencia": -0.8, "felicidade": -0.25 }
+  },
+  {
+    "id": "balcao_negocio",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "ajudar no negócio da família",
+    "idade": [10, 30],
+    "condicoes": { "marcas": ["negocio_familiar"] },
+    "texto": "Você passou o ano no negócio da família: [no caixa|no estoque|no atendimento, sorrindo para cliente chato]. {pai} [ensinou os segredos do ofício|reclamou do seu jeito de dobrar sacola|disse que um dia tudo isso vai ser seu].",
+    "resumo": "ajudou no negócio da família",
+    "efeitos": {
+      "dinheiro": 1800,
+      "inteligencia": 0.5,
+      "pai.vinculo": 3,
+      "mae.vinculo": 3,
+      "qualidades": { "balcao": 1 }
+    }
+  },
+  {
+    "id": "hora_extra",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "fazer hora extra",
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["clt"] },
+    "texto": "Você [fez hora extra todo sábado|cobriu as férias de dois colegas|respondeu e-mail no domingo]. [O chefe notou.|O chefe não notou.|O banco notou, e agradeceu.]",
+    "resumo": "fez hora extra",
+    "efeitos": { "dinheiro": 5500, "saude": -0.3, "felicidade": -0.5 }
+  },
+  {
+    "id": "bico_adulto",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "fazer um bico",
+    "idade": [18, 72],
+    "texto": "Você fez bico de [garçom em evento|motorista de aplicativo|pintura de parede|revenda de roupa pela internet] nos fins de semana. Cansa, mas o Pix cai.",
+    "resumo": "fez bicos nos fins de semana",
+    "efeitos": { "dinheiro": 3800, "saude": -0.25, "felicidade": -0.35 }
+  },
+  {
+    "id": "entregas",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "fazer entregas extras",
+    "idade": [18, 60],
+    "condicoes": { "algumaMarca": ["entregador", "motoqueiro"] },
+    "texto": "Você rodou entregando até tarde da noite, [na chuva|no sol de meio-dia|com o celular em 3% de bateria].",
+    "resumo": "fez entregas extras",
+    "efeitos": { "dinheiro": 4800, "saude": -0.3 },
+    "teste": { "chance": 0.9 },
+    "sucesso": { "texto": "Chegou inteiro{|a} em todas, com nota cinco no aplicativo." },
+    "fracasso": {
+      "texto": "Uma moto cortou sua frente. Você levantou, mas o joelho ficou de lembrança.",
+      "resumo": "se machucou fazendo entregas",
+      "efeitos": { "saude": -6, "marcas": ["joelho_ruim"] }
+    }
+  },
+  {
+    "id": "conteudo_extra",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "postar mais conteúdo",
+    "idade": [15, 60],
+    "condicoes": { "algumaMarca": ["criador_conteudo", "influencer"] },
+    "texto": "Você postou todo dia, [respondeu comentário de madrugada|fez dancinha contra a vontade|testou um formato novo].",
+    "resumo": "postou conteúdo todo dia",
+    "efeitos": { "felicidade": -0.25 },
+    "teste": { "atributo": "aparencia", "dificuldade": 55 },
+    "sucesso": { "texto": "Um vídeo viralizou e trouxe publi paga.", "efeitos": { "dinheiro": 5000, "felicidade": 1 } },
+    "fracasso": {
+      "texto": "O algoritmo te ignorou o ano inteiro. Os seguidores também.",
+      "efeitos": { "dinheiro": 300, "felicidade": -0.75 }
+    }
+  },
+  {
+    "id": "tocar_empresa",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "tocar a empresa até tarde",
+    "idade": [22, 75],
+    "condicoes": { "algumaMarca": ["empreendedor", "socio", "herdeiro_negocio"] },
+    "texto": "Você virou noites na empresa, [refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente]. [O mês fechou no azul.|O mês fechou, e é isso que importa.]",
+    "resumo": "tocou a empresa até tarde",
+    "efeitos": { "dinheiro": 10000, "saude": -0.4, "felicidade": -0.5 }
+  },
+  {
+    "id": "brincar_na_rua",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "brincar na rua",
+    "idade": [4, 11],
+    "texto": "Você passou o ano [de bicicleta|jogando bola na rua|subindo em árvore e descendo de qualquer jeito]. Joelho ralado, sono pesado.",
+    "resumo": "brincou na rua até escurecer",
+    "efeitos": { "saude": 1, "felicidade": 0.5, "amigo.vinculo": 2 }
+  },
+  {
+    "id": "esporte_escola",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "treinar na escola",
+    "idade": [12, 17],
+    "texto": "Você entrou no time da escola de [vôlei|handebol|futsal]. [Perdeu todas, riu de todas.|Ganhou um campeonato regional e uma medalha que está até hoje na gaveta.|Virou titular no segundo semestre.]",
+    "resumo": "treinou no time da escola",
+    "efeitos": { "saude": 1, "aparencia": 0.8, "felicidade": 0.25 }
+  },
+  {
+    "id": "pelada",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "jogar a pelada",
+    "idade": [12, 70],
+    "condicoes": { "marcas": ["boleiro"], "semMarcas": ["joelho_ruim"] },
+    "texto": "A pelada de [sábado|quinta à noite|domingo de manhã] continuou firme: [dois times, uma bola murcha e muita reclamação|gol de canela vale|o dono da bola escolhe o time]. {amigo} [tocou de calcanhar|perdeu um gol feito|chegou atrasad{amigo:o|a} e ainda assim jogou].",
+    "resumo": "jogou bola toda semana",
+    "efeitos": { "saude": 0.8, "felicidade": 0.5, "amigo.vinculo": 3 }
+  },
+  {
+    "id": "academia",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "pagar academia",
+    "idade": [16, 80],
+    "condicoes": { "dinheiro": { "min": 1400 } },
+    "texto": "Você pagou o ano inteiro de academia e [foi três vezes por semana|foi em janeiro e em julho|virou amigo do professor de musculação]. [O espelho agradeceu.|A balança não mudou de ideia.|As escadas ficaram mais curtas.]",
+    "resumo": "fez academia",
+    "efeitos": { "saude": 0.8, "aparencia": 0.8, "dinheiro": -1400 }
+  },
+  {
+    "id": "caminhada",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "caminhar todo dia",
+    "idade": [18, 95],
+    "texto": "Você caminhou todo dia [na praça|no calçadão|em volta do quarteirão, contando as voltas]. [Os vizinhos começaram a te cumprimentar.|O podcast acabou antes da caminhada.|A pressão agradeceu.]",
+    "resumo": "caminhou todo dia",
+    "efeitos": { "saude": 0.6, "felicidade": -0.15, "aparencia": 0.3 }
+  },
+  {
+    "id": "correr",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "treinar para uma corrida",
+    "idade": [20, 65],
+    "condicoes": { "saude": { "min": 55 }, "semMarcas": ["fumante", "joelho_ruim"] },
+    "texto": "Você treinou e correu uma prova de [5|10|21] quilômetros. [Chegou andando, mas chegou.|Chorou na linha de chegada.|Comprou um relógio que mede tudo, inclusive a sua paciência.]",
+    "resumo": "correu uma prova de rua",
+    "efeitos": { "saude": 1, "felicidade": 0.3, "dinheiro": -500 }
+  },
+  {
+    "id": "parar_de_fumar",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "tentar parar de fumar",
+    "idade": [16, 90],
+    "condicoes": { "marcas": ["fumante"] },
+    "texto": "Você [jogou o maço fora no Ano-Novo|comprou adesivo de nicotina|baixou um aplicativo que conta os dias sem cigarro].",
+    "resumo": "tentou parar de fumar",
+    "efeitos": { "felicidade": -0.5 },
+    "teste": { "chance": 0.35 },
+    "sucesso": {
+      "texto": "Deu certo. O cheiro do café voltou a ter gosto.",
+      "resumo": "largou o cigarro",
+      "efeitos": { "saude": 3, "removerMarcas": ["fumante"], "marcas": ["ex_fumante"] }
+    },
+    "fracasso": { "texto": "Durou até a primeira briga no trabalho.", "efeitos": { "felicidade": -0.5 } }
+  },
+  {
+    "id": "check_up",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "fazer check-up",
+    "idade": [40, 100],
+    "texto": "Você fez [exame de sangue, de esteira e de paciência|todos os exames que o médico do posto pediu|um check-up completo, com direito a jejum de doze horas]. [Colesterol no limite, mas tudo bem.|Tudo em ordem, por enquanto.|Descobriu uma coisinha cedo, que é quando dá para resolver.]",
+    "resumo": "fez check-up",
+    "efeitos": { "saude": 0.8, "felicidade": -0.15, "dinheiro": -300 }
+  },
+  {
+    "id": "hidro_com_a_turma",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "fazer hidroginástica",
+    "idade": [58, 110],
+    "texto": "Hidroginástica três vezes por semana, com a turma que [discute novela na piscina|faz aniversário todo mês|tem mais energia que você].",
+    "resumo": "fez hidroginástica com a turma",
+    "efeitos": { "saude": 0.8, "felicidade": 0.4, "dinheiro": -500 }
+  },
+  {
+    "id": "visitar_familia",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "visitar {ator}",
+    "ator": ["mae", "pai", "avo"],
+    "preferir": "-ator.vinculo",
+    "idade": [12, 110],
+    "texto": "Você passou um fim de semana com {ator}. [Teve café com bolo e conversa até tarde.|Ouviu as mesmas histórias de sempre, e riu de todas.|Consertou o chuveiro e ganhou marmita para a semana.]",
+    "resumo": "passou um tempo com a família",
+    "efeitos": { "ator.vinculo": 7, "felicidade": 0.4, "dinheiro": -150 }
+  },
+  {
+    "id": "visitar_de_longe",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "viajar para ver {ator}",
+    "ator": ["mae", "pai", "avo"],
+    "preferir": "-ator.vinculo",
+    "idade": [18, 110],
+    "condicoes": { "marcas": ["mudou_sp"] },
+    "texto": "Você juntou dinheiro, pegou [um ônibus de vinte horas|um avião na promoção|carona com um primo] e foi ver {ator} em {cidade}. [Chegou cansad{o|a} e foi recebid{o|a} com comida demais.|Ficou uma semana e voltou com dois quilos a mais.]",
+    "resumo": "atravessou o país para ver a família",
+    "efeitos": { "ator.vinculo": 12, "felicidade": 0.75, "dinheiro": -1800 }
+  },
+  {
+    "id": "cuidar_de_doente",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "cuidar de {ator}",
+    "ator": ["mae", "pai", "avo", "amor", "filho", "amigo"],
+    "idade": [12, 110],
+    "condicoes": { "ator.doente": true },
+    "texto": "Você [dormiu no hospital numa cadeira dura|levou {ator} em todas as consultas|aprendeu o nome de cada remédio e a hora de cada um]. Cuidar cansa, e ninguém dá medalha por isso.",
+    "resumo": "cuidou de {ator.quem} doente",
+    "efeitos": { "ator.saude": 5, "ator.vinculo": 10, "felicidade": -0.75, "saude": -0.5 }
+  },
+  {
+    "id": "brincar_com_irmao_avo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "passar a tarde com a avó",
+    "idade": [3, 12],
+    "condicoes": { "avo.vivo": true },
+    "texto": "Você passou as tardes com a vó {avo}, [ouvindo histórias de assombração|aprendendo a fazer bolo de fubá|vendo novela que não entendia]. Ela te deixava comer antes do almoço.",
+    "resumo": "passou as tardes com a avó",
+    "efeitos": { "avo.vinculo": 6, "felicidade": 0.5 }
+  },
+  {
+    "id": "almoco_domingo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "almoço de domingo",
+    "idade": [6, 40],
+    "condicoes": { "familia": ["acolhedora", "religiosa", "empreendedora"] },
+    "texto": "Almoço de domingo em casa: [lasanha|frango assado com farofa|macarronada], briga por política e sobremesa que ninguém fez. Mesmo assim, todo mundo voltou no domingo seguinte.",
+    "resumo": "foi a todos os almoços de domingo",
+    "efeitos": { "mae.vinculo": 4, "pai.vinculo": 4, "felicidade": 0.3 }
+  },
+  {
+    "id": "ligar_amigo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "ligar para {amigo}",
+    "idade": [13, 110],
+    "condicoes": { "amigo.vivo": true },
+    "intervalo": 2,
+    "texto": "Você ligou para {amigo} [só para saber como estava|e ficaram duas horas no telefone|numa terça à noite, sem motivo nenhum]. [Marcaram um café que vai acontecer em algum ano.|Riram de coisas que só vocês entendem.]",
+    "resumo": "manteve contato com {amigo}",
+    "efeitos": { "amigo.vinculo": 5, "felicidade": 0.2 }
+  },
+  {
+    "id": "tempo_com_amor",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "fazer um programa a dois",
+    "idade": [16, 110],
+    "condicoes": { "marcas": ["namoro"], "amor.vivo": true },
+    "texto": "Você e {amor} [fizeram uma viagem curta|cozinharam juntos todo sábado|maratonaram uma série inteira num fim de semana]. [Discutiram uma vez, fizeram as pazes duas.|Foi bom lembrar por que estão juntos.]",
+    "resumo": "cuidou do relacionamento",
+    "efeitos": { "amor.vinculo": 8, "felicidade": 0.5, "dinheiro": -500 }
+  },
+  {
+    "id": "tempo_com_filho",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "tempo com {filho}",
+    "idade": [18, 110],
+    "condicoes": { "marcas": ["pai_mae"], "filho.vivo": true },
+    "texto": "Você passou o ano mais perto de {filho}: [levou para a escola todo dia|aprendeu os nomes dos personagens do desenho|ouviu as dúvidas de adolescente sem dar sermão]. {filho} vai lembrar disso.",
+    "resumo": "passou mais tempo com {filho}",
+    "efeitos": { "filho.vinculo": 9, "felicidade": 0.6, "dinheiro": -300 }
+  },
+  {
+    "id": "cuidar_netos",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "cuidar dos netos",
+    "idade": [45, 110],
+    "condicoes": { "marcas": ["avo_coruja"], "filho.vivo": true },
+    "texto": "Os netos passaram as férias na sua casa. [Você reaprendeu a esconder biscoito.|O sofá não sobreviveu.|Você contou as mesmas histórias que ouviu da sua avó.]",
+    "resumo": "cuidou dos netos",
+    "efeitos": { "filho.vinculo": 5, "felicidade": 1, "saude": -0.3 }
+  },
+  {
+    "id": "brincar_amigos",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "brincar com {amigo}",
+    "idade": [5, 12],
+    "condicoes": { "amigo.vivo": true },
+    "texto": "Você e {amigo} [construíram uma cabana de lençol|inventaram uma língua secreta|venderam limonada para os vizinhos].",
+    "resumo": "brincou com {amigo} o ano inteiro",
+    "efeitos": { "amigo.vinculo": 5, "felicidade": 0.5 }
+  },
+  {
+    "id": "role",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "dar um rolê",
+    "idade": [13, 17],
+    "texto": "Você passou o ano [no shopping sem comprar nada|na praça com a turma|em festa de aniversário de quem você mal conhecia]. Voltou para casa depois do horário combinado só duas vezes.",
+    "resumo": "deu muito rolê com a turma",
+    "efeitos": { "felicidade": 0.6, "amigo.vinculo": 3, "inteligencia": -0.4 }
+  },
+  {
+    "id": "paquerar",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "sair para paquerar",
+    "idade": [16, 60],
+    "condicoes": { "semMarcas": ["namoro"] },
+    "texto": "Você saiu [para festas|para o bar da esquina|para o samba de sexta] decidid{o|a} a conhecer alguém.",
+    "resumo": "saiu para paquerar",
+    "efeitos": { "dinheiro": -400, "felicidade": 0.25 },
+    "teste": { "atributo": "aparencia", "dificuldade": 50 },
+    "sucesso": {
+      "texto": "Trocou contato com alguém interessante. A conversa continuou no dia seguinte.",
+      "efeitos": { "felicidade": 1.2, "qualidades": { "paquera": 1 } }
+    },
+    "fracasso": {
+      "texto": "Voltou para casa sozinh{o|a}, com o pé doendo e uma história boa para contar.",
+      "efeitos": { "felicidade": -0.25 }
+    }
+  },
+  {
+    "id": "paquerar_timido",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "tomar coragem e sair",
+    "idade": [16, 60],
+    "condicoes": { "traco": "timido", "semMarcas": ["namoro"] },
+    "texto": "Você respirou fundo e foi [a um aniversário onde só conhecia o aniversariante|a um curso de dança de salão|a um encontro de aplicativo].",
+    "resumo": "tomou coragem e saiu para conhecer gente",
+    "efeitos": { "dinheiro": -300 },
+    "teste": { "atributo": "felicidade", "dificuldade": 62 },
+    "sucesso": {
+      "texto": "No meio da noite, a timidez cansou e foi embora. Você conversou com alguém por horas.",
+      "efeitos": { "felicidade": 1, "qualidades": { "paquera": 1 } }
+    },
+    "fracasso": {
+      "texto": "Você ficou no canto, mexendo no celular, e saiu mais cedo.",
+      "efeitos": { "felicidade": -0.75 }
+    }
+  },
+  {
+    "id": "encontro",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "sair com {amor}",
+    "idade": [16, 110],
+    "condicoes": { "marcas": ["namoro"], "amor.vivo": true },
+    "texto": "Você e {amor} saíram [para jantar fora|para dançar|para um show de uma banda que só vocês dois conhecem]. [Foi como no começo.|Brigaram no caminho, riram na volta.]",
+    "resumo": "saiu muito com {amor}",
+    "efeitos": { "amor.vinculo": 6, "felicidade": 0.5, "dinheiro": -600 }
+  },
+  {
+    "id": "happy_hour",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "emendar o happy hour",
+    "idade": [20, 70],
+    "condicoes": { "marcas": ["boemio"] },
+    "texto": "Você não perdeu um happy hour: [chope com a firma|samba de sexta|pagode de domingo]. [A conta veio dividida por doze.|O garçom já sabe seu pedido.]",
+    "resumo": "não perdeu um happy hour",
+    "efeitos": { "felicidade": 0.75, "saude": -0.8, "dinheiro": -700 }
+  },
+  {
+    "id": "tocar_no_bar",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "tocar no bar",
+    "idade": [16, 80],
+    "condicoes": { "marcas": ["musico"] },
+    "texto": "Você tocou no bar todo fim de semana, [com repertório pedido pelo dono|com uma música autoral escondida no meio|para três pessoas e um cachorro]. O cachê pagou as cordas e o lanche.",
+    "resumo": "tocou em bar todo fim de semana",
+    "efeitos": { "felicidade": 0.9, "dinheiro": 600, "saude": -0.3 }
+  },
+  {
+    "id": "praia",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir à praia",
+    "idade": [6, 100],
+    "condicoes": { "lugar.litoral": true },
+    "texto": "Você foi à praia [todo fim de semana|sempre que deu|e voltou com areia até no ouvido]. [Milho, mate e picolé.|O sol foi generoso; o protetor, nem tanto.]",
+    "resumo": "aproveitou a praia",
+    "efeitos": { "felicidade": 0.6, "saude": 0.4, "aparencia": 0.2 }
+  },
+  {
+    "id": "festa_da_cidade",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir à festa da cidade",
+    "idade": [8, 100],
+    "condicoes": { "lugar.interior": true },
+    "texto": "A festa da cidade teve [rodeio|quermesse|show de dupla sertaneja] e você foi em todas as noites. Encontrou metade da escola e um ex que fingiu não te ver.",
+    "resumo": "não perdeu a festa da cidade",
+    "efeitos": { "felicidade": 0.6, "amigo.vinculo": 2, "dinheiro": -200 }
+  },
+  {
+    "id": "sao_joao",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "dançar no São João",
+    "idade": [6, 100],
+    "condicoes": { "lugar.regiao": "nordeste" },
+    "texto": "No São João, você comeu [canjica|pamonha|milho assado] até não aguentar mais e dançou forró do mesmo jeito.",
+    "resumo": "dançou forró em todo São João",
+    "efeitos": { "felicidade": 0.75, "saude": 0.3, "dinheiro": -250 }
+  },
+  {
+    "id": "baile_terceira_idade",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir ao baile da saudade",
+    "idade": [60, 110],
+    "texto": "Baile da saudade toda sexta: [bolero|forró pé de serra|valsa], salgadinho frio e um par que pisa no seu pé com muito carinho.",
+    "resumo": "dançou no baile da saudade",
+    "efeitos": { "felicidade": 0.75, "saude": 0.5, "dinheiro": -150 }
+  },
+  {
+    "id": "cofrinho",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "guardar no cofrinho",
+    "idade": [6, 14],
+    "texto": "Você guardou [as moedas do troco|o dinheiro do aniversário|o que a vó {avo} deu escondido] num cofrinho de porquinho. Resistiu a quebrar ele [o ano inteiro|até dezembro|até o lançamento de um jogo novo].",
+    "resumo": "guardou dinheiro no cofrinho",
+    "efeitos": { "felicidade": -0.2, "qualidades": { "cofrinho": 1 } }
+  },
+  {
+    "id": "guardar_dinheiro",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "guardar parte do salário",
+    "idade": [16, 80],
+    "condicoes": { "dinheiro": { "min": 2000 } },
+    "texto": "Você separou uma parte de todo dinheiro que entrou, [antes de gastar com qualquer coisa|numa conta que fingiu não existir|com um aplicativo que te dava bronca].",
+    "resumo": "guardou parte do salário",
+    "efeitos": { "investir": 2000, "felicidade": -0.4 }
+  },
+  {
+    "id": "cortar_gastos",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "cortar gastos",
+    "idade": [18, 90],
+    "condicoes": { "custo": { "min": 12000 } },
+    "texto": "Você cancelou [três streamings|a academia que não frequentava|o delivery de quinta-feira] e trocou de plano de celular. A vida ficou mais barata e um pouco mais sem graça.",
+    "resumo": "cortou gastos",
+    "efeitos": { "custo": -1500, "felicidade": -0.5 }
+  },
+  {
+    "id": "investir_tesouro",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "investir com método",
+    "idade": [18, 90],
+    "condicoes": { "algumaMarca": ["tino_financeiro", "poupador", "investidor"], "dinheiro": { "min": 5000 } },
+    "texto": "Você leu, comparou taxas e investiu [no Tesouro|num CDB de banco grande|num fundo de índice], com a calma de quem já guardava moeda no cofrinho.",
+    "resumo": "investiu com método",
+    "efeitos": { "investir": 5000, "inteligencia": 0.5 }
+  },
+  {
+    "id": "fugir_inflacao",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "proteger da inflação",
+    "idade": [18, 90],
+    "condicoes": { "pais.inflacao": { "min": 7.5 }, "dinheiro": { "min": 4000 } },
+    "texto": "Com a inflação em {pais.inflacao}% ao ano, você tirou o dinheiro da conta e pôs para render antes que encolhesse mais. [O gerente sugeriu um título de capitalização. Você recusou.|O vizinho achou exagero. O vizinho perdeu dinheiro.]",
+    "resumo": "protegeu o dinheiro da inflação",
+    "efeitos": { "investir": 4000, "felicidade": 0.15 }
+  },
+  {
+    "id": "cripto_de_novo",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "comprar mais cripto",
+    "idade": [18, 80],
+    "condicoes": { "marcas": ["cripto"], "dinheiro": { "min": 2000 } },
+    "texto": "Você comprou mais da moeda digital que o grupo do primo recomendou.",
+    "resumo": "apostou em moeda digital",
+    "efeitos": { "dinheiro": -2000, "felicidade": 0.25 },
+    "teste": { "chance": 0.45 },
+    "sucesso": {
+      "texto": "Ela subiu, e você vendeu na hora certa, por pura sorte.",
+      "efeitos": { "dinheiro": 4500, "felicidade": 0.75 }
+    },
+    "fracasso": { "texto": "Ela despencou. Você vai segurar até voltar, diz você.", "efeitos": { "felicidade": -1 } }
+  },
+  {
+    "id": "renegociar_cartao",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "renegociar o cartão",
+    "idade": [18, 90],
+    "condicoes": { "marcas": ["rotativo"], "divida": { "min": 2000 } },
+    "intervalo": 3,
+    "texto": "Você ligou para o banco, esperou quarenta minutos ouvindo música de espera e saiu com um acordo melhor que o rotativo.",
+    "resumo": "renegociou a dívida do cartão",
+    "efeitos": { "dividaFator": 0.75, "felicidade": 0.25 }
+  },
+  {
+    "id": "previdencia",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "pensar na aposentadoria",
+    "idade": [35, 62],
+    "condicoes": { "renda": { "min": 40000 }, "dinheiro": { "min": 6000 } },
+    "texto": "Você fez as contas da aposentadoria, levou um susto e começou a guardar todo mês num plano de previdência.",
+    "resumo": "começou a guardar para a aposentadoria",
+    "efeitos": { "investir": 6000, "felicidade": -0.25 }
+  },
+  {
+    "id": "rebalancear",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "rebalancear a carteira",
+    "idade": [25, 95],
+    "condicoes": { "investido": { "min": 60000 }, "dinheiro": { "min": 1000 } },
+    "texto": "Você revisou os investimentos, [vendeu o que estava caro|comprou o que estava barato|leu o relatório do fundo inteiro, o que nenhum ser humano faz]. A carteira ficou mais calma, e você também.",
+    "resumo": "rebalanceou os investimentos",
+    "efeitos": { "inteligencia": 0.8, "felicidade": 0.4, "investir": 1000 }
+  },
+  {
+    "id": "chimarrao",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "roda de chimarrão",
+    "idade": [10, 100],
+    "condicoes": { "lugar.regiao": "sul" },
+    "texto": "Você passou as tardes frias numa roda de chimarrão na praça, [discutindo futebol|reclamando do minuano|ouvindo causo de quem viu tudo acontecer].",
+    "resumo": "fez parte da roda de chimarrão",
+    "efeitos": { "felicidade": 0.6, "amigo.vinculo": 2, "saude": 0.2 }
+  },
+  {
+    "id": "boi_bumba",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "brincar no boi-bumbá",
+    "idade": [6, 100],
+    "condicoes": { "lugar.regiao": "norte" },
+    "texto": "Você passou o ano ensaiando para o festival do boi: [tambor|fantasia de pena|grito de torcida que deixa a garganta em carne viva].",
+    "resumo": "brincou no festival do boi",
+    "efeitos": { "felicidade": 0.8, "saude": 0.4, "dinheiro": -150 }
+  },
+  {
+    "id": "cachoeira",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir à cachoeira",
+    "idade": [8, 90],
+    "condicoes": { "lugar.regiao": "centro_oeste" },
+    "texto": "Fim de semana de cachoeira, rio e churrasco com farofa de areia. [Pescou um lambari.|Não pescou nada, mas voltou contente.|Torrou no sol do cerrado.]",
+    "resumo": "passou os fins de semana na cachoeira",
+    "efeitos": { "felicidade": 0.65, "saude": 0.4, "dinheiro": -200 }
+  },
+  {
+    "id": "show_no_estadio",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir a um show grande",
+    "idade": [14, 70],
+    "condicoes": { "lugar.capital": true },
+    "texto": "Você enfrentou [três horas de fila|um metrô lotado|um ingresso de meia que quase não passou] para ver um show num estádio. Voltou rouco{|a} e feliz.",
+    "resumo": "foi a um show num estádio",
+    "efeitos": { "felicidade": 0.75, "dinheiro": -600, "saude": -0.2 }
+  },
+  {
+    "id": "passear_pet",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "passear com {pet}",
+    "idade": [6, 100],
+    "condicoes": { "marcas": ["caramelo"], "pet.vivo": true },
+    "texto": "Você e {pet} passearam todo dia, [no mesmo horário, porque {pet} não aceita atraso|cheirando cada poste do bairro|fazendo amizade com todos os cachorros da praça].",
+    "resumo": "passeou com {pet} todo dia",
+    "efeitos": { "saude": 0.5, "felicidade": 0.4 }
+  },
+  {
+    "id": "treinar_no_clube",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "treinar no clube",
+    "idade": [13, 24],
+    "condicoes": { "marcas": ["base_clube"], "semMarcas": ["joelho_ruim"] },
+    "texto": "Treino de manhã, escola à tarde, fisioterapia à noite. O técnico do clube [apostou em você|gritou com você|fez as duas coisas, nessa ordem].",
+    "resumo": "treinou nas categorias de base",
+    "efeitos": { "saude": 1.2, "inteligencia": -0.5, "felicidade": 0.25 }
+  },
+  {
+    "id": "blindar_contas",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "blindar as contas do banco",
+    "idade": [18, 95],
+    "condicoes": { "marcas": ["caiu_golpe"] },
+    "intervalo": 10,
+    "texto": "Depois do golpe, você ativou todas as travas do banco, trocou senhas e saiu de três grupos de família. Agora desconfia até de mensagem da própria mãe.",
+    "resumo": "blindou as contas contra golpes",
+    "efeitos": { "felicidade": 0.25, "inteligencia": 0.5 }
+  },
+  {
+    "id": "recomecar_amor",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "voltar a conhecer gente",
+    "idade": [25, 85],
+    "condicoes": { "algumaMarca": ["separado", "viuvo"], "semMarcas": ["namoro"] },
+    "trechos": {
+      "depois": [
+        { "se": { "marcas": ["viuvo"] }, "texto": "Com a aliança ainda na gaveta da cabeceira" },
+        { "texto": "Depois da separação" }
+      ],
+      "depois_resumo": [
+        { "se": { "marcas": ["viuvo"] }, "texto": "depois da viuvez" },
+        { "texto": "depois da separação" }
+      ]
+    },
+    "texto": "{depois}, você [baixou um aplicativo de namoro|aceitou ir a um churrasco de solteiros|entrou numa aula de dança de salão].",
+    "resumo": "voltou a conhecer gente {depois_resumo}",
+    "efeitos": { "dinheiro": -300 },
+    "teste": { "atributo": "felicidade", "dificuldade": 55 },
+    "sucesso": {
+      "texto": "Conheceu alguém que ri das mesmas coisas. Sem pressa, desta vez.",
+      "efeitos": { "felicidade": 1, "qualidades": { "paquera": 1 } }
+    },
+    "fracasso": {
+      "texto": "Cada encontro lembrava por que você estava sozinh{o|a}. Melhor assim, por enquanto.",
+      "efeitos": { "felicidade": -0.5 }
+    }
+  },
+  {
+    "id": "terapia",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "fazer terapia",
+    "idade": [16, 90],
+    "condicoes": { "dinheiro": { "min": 2400 }, "felicidade": { "max": 45 } },
+    "texto": "Toda [terça|quinta] às sete, cinquenta minutos falando de [{mae}|trabalho|um sonho esquisito com dentes caindo|coisas que você nunca tinha dito em voz alta]. A terapeuta [anotou bastante|disse \"e como você se sente com isso?\" duas vezes|deixou o silêncio trabalhar].",
+    "resumo": "fez terapia",
+    "efeitos": { "felicidade": 1.6, "dinheiro": -2400, "inteligencia": 0.3 }
+  },
+  {
+    "id": "trabalho_grande",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "pegar um trabalho grande",
+    "idade": [20, 68],
+    "texto": "Você pegou [um projeto que ninguém queria|uma obra com prazo impossível|uma consultoria para um cliente famoso por não pagar] e mergulhou nele o ano inteiro.",
+    "resumo": "pegou um trabalho grande e arriscado",
+    "efeitos": { "saude": -0.3 },
+    "teste": { "chance": 0.55 },
+    "sucesso": {
+      "texto": "Deu certo: o cliente pagou, elogiou e indicou para mais dois.",
+      "efeitos": { "dinheiro": 9000, "felicidade": 0.3 }
+    },
+    "fracasso": {
+      "texto": "O cliente sumiu com metade do pagamento. Você aprendeu a pedir adiantamento.",
+      "efeitos": { "dinheiro": 1000, "felicidade": -0.5 }
+    }
+  },
+  {
+    "id": "mochilao",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "viajar de mochila",
+    "idade": [17, 55],
+    "intervalo": 2,
+    "texto": "Você juntou o que deu e saiu [pela América do Sul de ônibus|pelo Nordeste de carona|por cidades históricas de Minas com uma mochila e um mapa] sem roteiro fechado.",
+    "resumo": "viajou de mochila sem roteiro",
+    "efeitos": { "dinheiro": -3000 },
+    "teste": { "chance": 0.7 },
+    "sucesso": {
+      "texto": "Voltou com amigos em três países, histórias para uma década e uma cicatriz de praia que você mostra para todo mundo.",
+      "efeitos": { "felicidade": 2.5, "inteligencia": 1 }
+    },
+    "fracasso": {
+      "texto": "Uma intoxicação alimentar, uma mala perdida e um pronto-socorro de fronteira. Mesmo assim, valeu a história.",
+      "efeitos": { "saude": -4, "felicidade": 0.5 }
+    }
+  }
+]

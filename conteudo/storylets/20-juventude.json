@@ -40,6 +40,22 @@
             "agendar": [{ "evento": "prova_concurso", "em": [1, 3] }]
           }
         }
+      },
+      {
+        "texto": "Trabalhar no negócio da família",
+        "resumo": "foi trabalhar no negócio da família",
+        "condicoes": { "marcas": ["negocio_familiar"] },
+        "bloqueio": "a família não tem negócio",
+        "resultado": {
+          "texto": "Salário de parente: pontual, curto e com sermão incluído. Mas você aprende tudo por dentro.",
+          "efeitos": {
+            "renda": { "definir": 30000 },
+            "felicidade": -1,
+            "qualidades": { "balcao": 1 },
+            "mae.vinculo": 3,
+            "pai.vinculo": 3
+          }
+        }
       }
     ]
   },
@@ -109,8 +125,8 @@
   {
     "id": "sair_de_casa",
     "idade": [18, 28],
-    "peso": 4,
     "condicoes": { "semMarcas": ["independente", "mora_com_pais"] },
+    "peso": 4,
     "valores": { "aluguel": 1200 },
     "texto": "{mae} comentou, sem olhar para você, que \"tem gente da sua idade que já mora sozinha\". Um quarto [perto do centro|no bairro vizinho|perto da faculdade] custa {aluguel} por mês.",
     "resumo": "decidiu se saía de casa",
@@ -144,6 +160,16 @@
             "felicidade": 2,
             "marcas": ["independente", "mudou_sp"]
           }
+        }
+      },
+      {
+        "texto": "Deixar os pais pagarem o aluguel",
+        "resumo": "saiu de casa com o aluguel pago pelos pais",
+        "condicoes": { "pai.renda": { "min": 150000 }, "pai.ausente": false },
+        "bloqueio": "ninguém em casa banca aluguel",
+        "resultado": {
+          "texto": "Independência com patrocínio. {pai} paga o aluguel e liga toda semana para saber se você está comendo.",
+          "efeitos": { "custo": { "definir": 6000 }, "felicidade": 3, "marcas": ["independente"], "pai.vinculo": 3 }
         }
       }
     ]
@@ -438,26 +464,33 @@
   },
   {
     "id": "namoro",
-    "idade": [17, 45],
+    "idade": [16, 75],
+    "condicoes": { "semMarcas": ["namoro"] },
     "peso": 4,
     "repetivel": true,
-    "intervalo": 6,
-    "condicoes": { "semMarcas": ["namoro"] },
-    "texto": "Você conhece alguém [num aniversário|num aplicativo de namoro|na fila do posto de saúde|num bloquinho de carnaval|no ponto de ônibus|num casamento de primo]. [A conversa flui como se vocês já se conhecessem.|Vocês riem das mesmas coisas, o que é raro.|Três horas passam como dez minutos.]",
+    "intervalo": 3,
+    "trechos": {
+      "onde": [
+        {
+          "se": { "idade": { "min": 58 } },
+          "texto": "[no baile da terceira idade|na excursão para Caldas Novas|na fila da vacina|no grupo de caminhada da praça]"
+        },
+        {
+          "se": { "idade": { "min": 30 } },
+          "texto": "[no trabalho, entre uma reunião e outra|num aplicativo de namoro|no aniversário de um amigo|na fila do cartório|num casamento de primo]"
+        },
+        {
+          "texto": "[num aniversário|num aplicativo de namoro|na fila do posto de saúde|num bloquinho de carnaval|no ponto de ônibus|num casamento de primo]"
+        }
+      ]
+    },
+    "texto": "Você conhece alguém {onde}. [A conversa flui como se vocês já se conhecessem.|Vocês riem das mesmas coisas, o que é raro.|Três horas passam como dez minutos.]",
     "resumo": "conheceu alguém especial",
     "escolhas": [
       {
-        "texto": "Deixar a conversa morrer",
-        "resumo": "deixou um flerte morrer na conversa",
-        "resultado": {
-          "texto": "Você respondeu com \"haha\" e a conversa morreu ali, como a maioria das conversas.",
-          "efeitos": {}
-        }
-      },
-      {
         "texto": "Chamar para sair",
         "resumo": "chamou alguém para sair",
-        "teste": { "atributo": "aparencia", "dificuldade": 45 },
+        "teste": { "atributo": "aparencia", "dificuldade": 40 },
         "sucesso": {
           "texto": "Primeiro encontro [num rodízio de pizza|num boteco com música ao vivo|numa feira de domingo]. {amor} [comeu doze fatias|cantou junto todas as músicas|pechinchou até o pastel] e você se apaixonou.",
           "resumo": "começou a namorar {amor}",
@@ -468,14 +501,29 @@
           "resumo": "levou um vácuo depois de um papo ótimo",
           "efeitos": { "felicidade": -3 }
         }
+      },
+      {
+        "texto": "Deixar a conversa morrer",
+        "resumo": "deixou um flerte morrer na conversa",
+        "resultado": {
+          "texto": "Você respondeu com \"haha\" e a conversa morreu ali, como a maioria das conversas.",
+          "efeitos": {}
+        }
       }
     ]
   },
   {
     "id": "casamento",
-    "idade": [21, 55],
-    "peso": 5,
-    "condicoes": { "marcas": ["namoro"], "marcaHa": [{ "marca": "namoro", "min": 2 }], "semMarcas": ["casado"] },
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 80],
+    "condicoes": {
+      "marcas": ["namoro"],
+      "marcaHa": [{ "marca": "namoro", "min": 2 }],
+      "semMarcas": ["casado"],
+      "familia": ["acolhedora", "conflituosa", "empreendedora"]
+    },
+    "tensao": 2,
     "valores": { "festa": 35000, "cartorio": 600 },
     "texto": "{amor} quer casar. A festa dos sonhos custa {festa}. O cartório custa {cartorio}, mais um churrasco.",
     "resumo": "foi pedid{o|a} em casamento por {amor}",
@@ -508,11 +556,13 @@
   },
   {
     "id": "filho",
-    "idade": [22, 44],
-    "peso": 4,
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 46],
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["pai_mae", "sem_filhos"] },
+    "tensao": 2,
     "repetivel": true,
     "intervalo": 4,
-    "condicoes": { "marcas": ["namoro"], "semMarcas": ["pai_mae", "sem_filhos"] },
     "texto": "Vocês estão pensando em ter um filho. {amor} já escolheu três nomes; você já fez as contas duas vezes.",
     "resumo": "pensou em ter filhos com {amor}",
     "escolhas": [

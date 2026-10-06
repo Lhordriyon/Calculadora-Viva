@@ -22,7 +22,7 @@
   "apostador": { "porAno": { "felicidade": -1 }, "epitafio": "Apostou que viveria mais. Odd ruim." },
   "pai_mae": {
     "epitafio": "{filho} ainda conta suas piadas ruins nos almoços de domingo.",
-    "porAno": { "felicidade": 0.3 }
+    "porAno": { "felicidade": 0.6 }
   },
   "servidor": { "epitafio": "Estável até o fim." },
   "empreendedor": { "epitafio": "Abriu um negócio, fechou outro, nunca fechou a cara." },
@@ -49,8 +49,17 @@
   "carro": { "porAno": { "felicidade": 0.4 } },
   "motoqueiro": { "porAno": { "saude": -0.2, "felicidade": 0.5 } },
   "namoro": {
-    "porAno": { "felicidade": 0.6 },
+    "porAno": { "felicidade": 1.0 },
     "epitafio": "Teve {amor} do lado nos dias bons e, principalmente, nos ruins."
   },
-  "amigo_de_infancia": { "porAno": { "felicidade": 0.3 } }
+  "amigo_de_infancia": { "porAno": { "felicidade": 0.3 } },
+  "cuidou_dos_pais": { "epitafio": "Cuidou de quem cuidou del{e|a}, e achou que era pouco." },
+  "herdou": { "epitafio": "Herdou dinheiro e saudade, e só soube gastar o dinheiro." },
+  "bolsista": { "epitafio": "Entrou pela porta da bolsa e saiu pela porta da frente." },
+  "grupo_da_igreja": { "epitafio": "Cantou no coral desafinando com fé." },
+  "pais_separados": { "epitafio": "Cresceu entre duas casas e fez de cada uma um lar." },
+  "balcao": { "epitafio": "Deu troco de cabeça até o último dia." },
+  "casado": { "porAno": { "felicidade": 0.4 } },
+  "viuvo": { "epitafio": "Ficou viúv{o|a} e descobriu que a cama de casal é grande demais para uma pessoa só." },
+  "passaporte_europeu": { "epitafio": "Tinha um passaporte europeu na gaveta e o Brasil inteiro no peito." }
 }

@@ -110,5 +110,40 @@
     "idade": [40, 100],
     "condicoes": { "marcas": ["boemio"] },
     "peso": 3
+  },
+  {
+    "causa": "por uma bala perdida, a duas quadras de casa",
+    "categoria": "violencia",
+    "idade": [12, 70],
+    "condicoes": { "lugar.capital": true, "classe": { "max": 2 } },
+    "peso": 1.5
+  },
+  {
+    "causa": "num assalto, por causa de um celular que nem era tão bom",
+    "categoria": "violencia",
+    "idade": [15, 80],
+    "condicoes": { "lugar.capital": true },
+    "peso": 0.8
+  },
+  {
+    "causa": "numa briga de trânsito que começou com uma buzina e terminou no jornal da noite",
+    "categoria": "violencia",
+    "idade": [18, 75],
+    "condicoes": { "traco": "teimoso" },
+    "peso": 2
+  },
+  {
+    "causa": "numa discussão de bar sobre um pênalti de vinte anos atrás",
+    "categoria": "violencia",
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["boemio"] },
+    "peso": 1.5
+  },
+  {
+    "causa": "num crime que a polícia chamou de latrocínio e a cidade inteira chamou de outra coisa",
+    "categoria": "violencia",
+    "idade": [25, 90],
+    "condicoes": { "marcas": ["vereador"] },
+    "peso": 3
   }
 ]

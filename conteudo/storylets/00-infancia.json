@@ -36,7 +36,13 @@
     "id": "creche_ou_vo",
     "idade": [2, 3],
     "peso": 6,
-    "texto": "{mae} e {pai} precisam trabalhar. A creche pública abriu vaga, e a vó {avo} se ofereceu para cuidar de você \"só até crescer um pouquinho\".",
+    "trechos": {
+      "quem_trabalha": [
+        { "se": { "pai.ausente": true }, "texto": "{mae} precisa trabalhar" },
+        { "texto": "{mae} e {pai} precisam trabalhar" }
+      ]
+    },
+    "texto": "{quem_trabalha}. A creche pública abriu vaga, e a vó {avo} se ofereceu para cuidar de você \"só até crescer um pouquinho\".",
     "resumo": "foi para a creche ou para a casa da vó",
     "escolhas": [
       {
@@ -52,11 +58,19 @@
         "resumo": "foi criad{o|a} pela vó {avo}",
         "resultado": {
           "texto": "A vó {avo} te ensinou a rezar, a fazer bolinho de chuva e a desconfiar de vendedor de porta.",
-          "efeitos": {
-            "felicidade": 4,
-            "marcas": ["criado_pela_vo"],
-            "agendar": [{ "evento": "vo_partiu", "em": [16, 26] }]
-          }
+          "efeitos": { "felicidade": 4, "marcas": ["criado_pela_vo"], "avo.vinculo": 10 }
+        },
+        "condicoes": { "avo.vivo": true },
+        "bloqueio": "a vó já não está aqui"
+      },
+      {
+        "texto": "Berçário bilíngue",
+        "resumo": "foi para um berçário bilíngue",
+        "condicoes": { "classe_origem": { "min": 4 } },
+        "bloqueio": "o berçário custa um salário por mês",
+        "resultado": {
+          "texto": "Você aprendeu a pedir água em dois idiomas antes de aprender a pedir desculpas em um.",
+          "efeitos": { "inteligencia": 6, "felicidade": 1, "mae.dinheiro": -15000 }
         }
       }
     ]
@@ -65,7 +79,17 @@
     "id": "festa_tema",
     "idade": [3, 5],
     "peso": 3,
-    "texto": "Seu aniversário vai ter tema e você precisa escolher antes que {mae} compre tudo de [dinossauro|unicórnio|fundo do mar] por conta própria.",
+    "trechos": {
+      "festa": [
+        { "se": { "classe_origem": { "min": 4 } }, "texto": "buffet com piscina de bolinha, animador e mágico" },
+        {
+          "se": { "classe_origem": { "max": 1 } },
+          "texto": "bolo da vizinha, refrigerante de dois litros e o quintal enfeitado"
+        },
+        { "texto": "festa no salão do prédio" }
+      ]
+    },
+    "texto": "Seu aniversário vai ter {festa}, e você precisa escolher o tema antes que {mae} compre tudo de [dinossauro|unicórnio|fundo do mar] por conta própria.",
     "resumo": "escolheu o tema da festa de aniversário",
     "escolhas": [
       {
@@ -105,7 +129,17 @@
     "id": "primeiro_dia_escola",
     "idade": [5, 6],
     "marco": true,
-    "texto": "[Primeiro dia na escola|Primeiro dia de aula|Primeira manhã na escola nova], [mochila maior que você|uniforme dois números acima|lancheira nova em folha]. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
+    "trechos": {
+      "escola": [
+        {
+          "se": { "classe_origem": { "min": 4 } },
+          "texto": "escola particular bilíngue, com horta orgânica e aula de mandarim"
+        },
+        { "se": { "classe_origem": { "min": 2 } }, "texto": "escolinha do bairro" },
+        { "texto": "escola municipal, com fila no portão" }
+      ]
+    },
+    "texto": "Primeiro dia na {escola}, [mochila maior que você|uniforme dois números acima|lancheira nova em folha]. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
     "resumo": "conheceu {amigo} no primeiro dia de escola",
     "escolhas": [
       {
@@ -148,12 +182,7 @@
         "sucesso": {
           "texto": "Depois de três dias de greve de fome (a sua), {mae} cedeu. O caramelo ganhou o nome de {pet} e o melhor lugar do sofá.",
           "resumo": "adotou {pet}, um vira-lata caramelo",
-          "efeitos": {
-            "felicidade": 6,
-            "personagens": ["pet"],
-            "marcas": ["caramelo"],
-            "agendar": [{ "evento": "caramelo_velhinho", "em": [11, 14] }]
-          }
+          "efeitos": { "felicidade": 6, "personagens": ["pet"], "marcas": ["caramelo"] }
         },
         "fracasso": {
           "texto": "{mae} disse que bicho dá trabalho. Quem deu trabalho foi você, chorando uma semana inteira.",
@@ -192,6 +221,33 @@
           "resumo": "quase incendiou a feira de ciências com um robô",
           "efeitos": { "inteligencia": 2, "felicidade": -2, "marcas": ["nerd"] }
         }
+      },
+      {
+        "texto": "Pedir ajuda para {mae}",
+        "resumo": "montou o projeto da feira com {mae}",
+        "condicoes": {
+          "mae.ocupacao": [
+            "professora",
+            "professora universitária",
+            "engenheira",
+            "médica",
+            "enfermeira",
+            "farmacêutica",
+            "analista de sistemas",
+            "programadora",
+            "técnica de informática",
+            "técnica de enfermagem",
+            "dentista",
+            "cirurgiã-dentista",
+            "arquiteta"
+          ],
+          "mae.vivo": true
+        },
+        "bloqueio": "ninguém em casa entende de ciência",
+        "resultado": {
+          "texto": "{mae} trouxe do trabalho um material que nenhum outro aluno tinha. O professor desconfiou; o júri premiou.",
+          "efeitos": { "inteligencia": 4, "felicidade": 3, "mae.vinculo": 5, "marcas": ["nerd"] }
+        }
       }
     ]
   },
@@ -199,8 +255,14 @@
     "id": "mesada",
     "idade": [8, 11],
     "peso": 3,
-    "valores": { "mesada": 30 },
-    "texto": "{pai} propõe uma mesada de {mesada} por mês. Ou, se preferir, um videogame usado agora e nada de mesada pelo resto do ano.",
+    "trechos": {
+      "valor_mesada": [
+        { "se": { "classe_origem": { "min": 4 } }, "texto": "R$ 200" },
+        { "se": { "classe_origem": { "min": 2 } }, "texto": "R$ 50" },
+        { "texto": "R$ 20, quando der" }
+      ]
+    },
+    "texto": "{pai} propõe uma mesada de {valor_mesada} por mês. Ou, se preferir, um videogame usado agora e nada de mesada pelo resto do ano.",
     "resumo": "decidiu o destino da primeira mesada",
     "escolhas": [
       {
@@ -258,7 +320,9 @@
         "resultado": {
           "texto": "Aprendeu a nadar e passou a cheirar a cloro vinte e quatro horas por dia.",
           "efeitos": { "saude": 3, "felicidade": 1, "marcas": ["nadador"] }
-        }
+        },
+        "condicoes": { "classe_origem": { "min": 3 } },
+        "bloqueio": "a mensalidade do clube não cabe"
       }
     ]
   },
@@ -292,7 +356,18 @@
     "id": "festa_junina",
     "idade": [5, 10],
     "peso": 3,
-    "texto": "Festa junina na escola[, com bandeirinha até no banheiro| e fogueira de papel crepom|, e a professora já está de chapéu de palha]. Você vai dançar a quadrilha ou ajudar numa barraca?",
+    "trechos": {
+      "festa": [
+        {
+          "se": { "lugar.regiao": "nordeste" },
+          "texto": "São João da escola, com forró de verdade e quadrilha ensaiada desde abril"
+        },
+        {
+          "texto": "Festa junina na escola[, com bandeirinha até no banheiro| e fogueira de papel crepom|, e a professora já está de chapéu de palha]"
+        }
+      ]
+    },
+    "texto": "{festa}. Você vai dançar a quadrilha ou ajudar numa barraca?",
     "resumo": "foi à festa junina da escola",
     "escolhas": [
       {

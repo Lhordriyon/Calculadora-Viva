@@ -151,8 +151,8 @@
   {
     "id": "reencontro_amigo",
     "idade": [58, 88],
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": true },
     "peso": 4,
-    "condicoes": { "marcas": ["amigo_de_infancia"] },
     "texto": "{amigo} te liga depois de muito tempo. Quer marcar um café \"antes que a gente fique velho\". [Vocês já estão velhos.|Já passou da hora faz tempo.|Os dois riem da piada, que ninguém mais acharia graça.]",
     "resumo": "foi chamad{o|a} por {amigo} para um café",
     "escolhas": [
@@ -295,44 +295,13 @@
     ]
   },
   {
-    "id": "caramelo_velhinho",
-    "apenasAgendado": true,
-    "repetivel": true,
-    "intervalo": 10,
-    "condicoes": { "marcas": ["caramelo"] },
-    "texto": "{pet} está velhinh{pet:o|a}: dorme o dia inteiro, não corre mais atrás do carteiro e ainda te espera no portão.",
-    "resumo": "viu {pet} envelhecer",
-    "escolhas": [
-      {
-        "texto": "Ficar junto até o fim",
-        "resumo": "se despediu de {pet}",
-        "resultado": {
-          "texto": "{pet} dormiu no seu colo pela última vez. A casa ficou grande demais.",
-          "efeitos": { "felicidade": -4, "removerMarcas": ["caramelo"] }
-        }
-      },
-      {
-        "texto": "Adotar outro caramelo depois",
-        "resumo": "adotou outro vira-lata caramelo",
-        "resultado": {
-          "texto": "Depois do luto, chegou {pet}, outro caramelo, bagunçando tudo. A casa voltou a ter barulho.",
-          "efeitos": {
-            "felicidade": 1,
-            "removerMarcas": ["caramelo"],
-            "personagens": ["pet"],
-            "marcas": ["caramelo"],
-            "agendar": [{ "evento": "caramelo_velhinho", "em": [12, 15] }],
-            "custo": 1500
-          }
-        }
-      }
-    ]
-  },
-  {
     "id": "vo_partiu",
-    "apenasAgendado": true,
-    "condicoes": { "marcas": ["criado_pela_vo"] },
-    "texto": "A vó {avo} se foi, dormindo, do jeito que ela pedia nas orações.",
+    "tipo": "npc",
+    "ator": ["avo"],
+    "idade": [5, 110],
+    "condicoes": { "marcas": ["criado_pela_vo"], "marcaHa": [{ "marca": "ator.faleceu", "max": 0 }] },
+    "tensao": 3,
+    "texto": "A vó {avo} se foi, do jeito que ela pedia nas orações. A cozinha dela ficou com cheiro de café por semanas.",
     "resumo": "perdeu a vó {avo}",
     "escolhas": [
       {
@@ -359,7 +328,9 @@
         "resultado": {
           "texto": "{mae} também chorou. Depois fizeram um café, que é o que se faz.",
           "efeitos": { "felicidade": -2 }
-        }
+        },
+        "condicoes": { "mae.vivo": true },
+        "bloqueio": "sua mãe já não está aqui"
       }
     ]
   }

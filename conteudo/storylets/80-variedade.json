@@ -1,0 +1,858 @@
+[
+  {
+    "id": "proposta_sao_paulo",
+    "idade": [19, 34],
+    "condicoes": { "lugar.regiao": ["nordeste", "norte"], "renda": { "max": 36000 }, "semMarcas": ["mudou_sp"] },
+    "texto": "Um primo que mora em São Paulo arrumou uma vaga [numa obra na Zona Sul|na cozinha de um restaurante caro|num call center que nunca dorme] e um colchão na sala dele. \"Aqui o dinheiro gira\", ele garante.",
+    "resumo": "recebeu um convite para tentar a vida em São Paulo",
+    "escolhas": [
+      {
+        "texto": "Ir para São Paulo",
+        "resumo": "foi tentar a vida em São Paulo",
+        "resultado": {
+          "texto": "Você chegou na rodoviária do Tietê com uma mala e um endereço anotado no celular. O dinheiro gira mesmo; o difícil é ele parar na sua mão.",
+          "efeitos": { "marcas": ["mudou_sp"], "renda": 7000, "custo": 5000, "mae.vinculo": -6, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ficar perto de casa",
+        "resumo": "ficou na terra, perto da família",
+        "resultado": {
+          "texto": "Você agradeceu ao primo e ficou. O salário é menor; o almoço de domingo, maior.",
+          "efeitos": { "mae.vinculo": 4, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "seca_no_sertao",
+    "idade": [8, 70],
+    "condicoes": { "lugar.regiao": "nordeste", "lugar.interior": true, "semMarcas": ["mudou_sp"] },
+    "texto": "A seca deste ano veio forte. O caminhão-pipa passa de quinze em quinze dias e a caixa d'água virou o assunto mais importante da família.",
+    "resumo": "atravessou um ano de seca",
+    "escolhas": [
+      {
+        "texto": "Fazer uma cisterna",
+        "resumo": "fez uma cisterna em casa na seca",
+        "resultado": {
+          "texto": "Você juntou dinheiro, cimento e dois vizinhos. Na próxima chuva, a cisterna encheu e você ficou olhando para ela como quem olha um filho.",
+          "efeitos": { "dinheiro": -2500, "saude": 1, "felicidade": 1.5 }
+        }
+      },
+      {
+        "texto": "Racionar e esperar a chuva",
+        "resumo": "racionou água esperando a chuva",
+        "resultado": {
+          "texto": "Banho de canequinha, louça acumulada e a previsão do tempo assistida como novela. A chuva veio em março, atrasada e linda.",
+          "efeitos": { "saude": -1, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cheia_do_rio",
+    "idade": [6, 85],
+    "condicoes": { "lugar.regiao": "norte", "semMarcas": ["mudou_sp"] },
+    "texto": "O rio subiu como ninguém lembrava. A rua virou igarapé, as crianças viraram remadoras e a casa da vizinha está com água na canela.",
+    "resumo": "viu a cidade alagar na cheia do rio",
+    "escolhas": [
+      {
+        "texto": "Ajudar os vizinhos de canoa",
+        "resumo": "ajudou os vizinhos na cheia do rio",
+        "resultado": {
+          "texto": "Você passou a semana levando colchão, geladeira e uma avó brava de canoa. Voltou com o braço doendo e metade do bairro te devendo um favor.",
+          "efeitos": { "saude": -1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Subir os móveis e esperar",
+        "resumo": "subiu os móveis e esperou a água baixar",
+        "resultado": {
+          "texto": "Os móveis foram para cima dos tijolos e a família para a casa da tia. A água baixou e deixou uma linha de barro na parede, de lembrança.",
+          "efeitos": { "dinheiro": -1500, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "zona_franca",
+    "idade": [18, 40],
+    "condicoes": { "lugar.uf": "AM", "renda": { "max": 28000 }, "semMarcas": ["clt", "servidor", "mudou_sp"] },
+    "texto": "A fábrica de motos da Zona Franca está contratando para a linha de montagem: carteira assinada, ônibus fretado e um uniforme que você vai lavar todo domingo.",
+    "resumo": "teve a chance de entrar numa fábrica da Zona Franca",
+    "escolhas": [
+      {
+        "texto": "Entrar na fábrica",
+        "resumo": "entrou numa fábrica da Zona Franca",
+        "resultado": {
+          "texto": "Linha de montagem, turno das seis e o barulho das parafusadeiras no ouvido até no sonho. No fim do mês, o salário caiu certinho.",
+          "efeitos": { "renda": { "definir": 32000 }, "marcas": ["clt"], "saude": -1, "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Seguir no que já faz",
+        "resumo": "preferiu não entrar na fábrica",
+        "resultado": {
+          "texto": "Você ficou no que fazia. Às seis da manhã, quando o ônibus da fábrica passa lotado, você vira para o outro lado e dorme mais um pouco.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "concurso_em_brasilia",
+    "idade": [19, 38],
+    "condicoes": { "lugar.uf": "DF", "semMarcas": ["servidor", "mudou_sp"] },
+    "texto": "Em Brasília, concurso é esporte olímpico. Sua turma inteira estuda para o mesmo edital e o assunto do churrasco é a banca organizadora.",
+    "resumo": "entrou no clima de concurso de Brasília",
+    "escolhas": [
+      {
+        "texto": "Entrar no cursinho",
+        "resumo": "entrou num cursinho para concurso",
+        "resultado": {
+          "texto": "Apostila, videoaula em 1,5x e simulado aos sábados. Você passou a sonhar com crase e direito administrativo.",
+          "efeitos": { "dinheiro": -3000, "inteligencia": 2, "felicidade": -1, "qualidades": { "concurso": 2 } }
+        }
+      },
+      {
+        "texto": "Ficar no setor privado",
+        "resumo": "preferiu o setor privado ao concurso",
+        "resultado": {
+          "texto": "Você é a única pessoa do churrasco que não sabe o que é \"cadastro reserva\". E está em paz com isso.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vaga_no_agro",
+    "idade": [18, 45],
+    "condicoes": {
+      "lugar.regiao": "centro_oeste",
+      "lugar.interior": true,
+      "renda": { "max": 45000 },
+      "semMarcas": ["mudou_sp"]
+    },
+    "texto": "Uma fazenda de soja está contratando operador de máquina: casa na fazenda, comida e um salário que ninguém da cidade paga. O GPS da colheitadeira faz quase tudo; o calor, não.",
+    "resumo": "recebeu uma proposta para trabalhar no agro",
+    "escolhas": [
+      {
+        "texto": "Ir para a fazenda",
+        "resumo": "foi trabalhar numa fazenda de soja",
+        "resultado": {
+          "texto": "Você aprendeu a dirigir uma máquina do tamanho de uma casa e a dormir às nove. Na safra, o dinheiro sobra; na entressafra, o silêncio.",
+          "efeitos": { "renda": { "definir": 52000 }, "saude": -1, "felicidade": -0.5, "amigo.vinculo": -5 }
+        }
+      },
+      {
+        "texto": "Ficar na cidade",
+        "resumo": "ficou na cidade em vez de ir para o agro",
+        "resultado": {
+          "texto": "Você ficou. Um amigo foi e voltou de caminhonete nova, e passa toda sexta na sua porta para mostrar.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ceu_de_fumaca",
+    "idade": [6, 90],
+    "condicoes": { "lugar.regiao": ["centro_oeste", "norte"], "semMarcas": ["mudou_sp"] },
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "A fumaça das queimadas cobriu a cidade de agosto a outubro. O sol nasce laranja, o carro amanhece cinza e todo mundo tosse em coro.",
+    "resumo": "passou meses respirando a fumaça das queimadas",
+    "escolhas": [
+      {
+        "texto": "Comprar um purificador de ar",
+        "resumo": "comprou um purificador de ar na época da fumaça",
+        "resultado": {
+          "texto": "O aparelho zumbe a noite toda no quarto. Você dorme melhor e ouve o motor nos sonhos.",
+          "efeitos": { "dinheiro": -900, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Toalha molhada e paciência",
+        "resumo": "enfrentou a fumaça com toalha molhada e paciência",
+        "resultado": {
+          "texto": "Toalha molhada na janela, soro no nariz e reclamação no grupo da família. Em novembro, choveu e todo mundo esqueceu, até o ano seguinte.",
+          "efeitos": { "saude": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cidadania_italiana",
+    "idade": [20, 60],
+    "condicoes": {
+      "lugar.regiao": ["sul", "sudeste"],
+      "classe_origem": { "min": 2 },
+      "semMarcas": ["passaporte_europeu"]
+    },
+    "texto": "Uma tia descobriu, num baú, que o seu bisavô veio de um vilarejo no Vêneto. Com a papelada certa, a família toda pode tirar a cidadania italiana.",
+    "resumo": "descobriu que podia tirar cidadania italiana",
+    "escolhas": [
+      {
+        "texto": "Pagar a assessoria",
+        "resumo": "pagou uma assessoria para tirar a cidadania italiana",
+        "condicoes": { "dinheiro": { "min": 12000 } },
+        "bloqueio": "a assessoria cobra uns R$ 12 mil",
+        "efeitos": { "dinheiro": -12000 },
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Dois anos de certidões, traduções e filas depois, chegou o passaporte vermelho. Você mostrou para a família inteira, inclusive para quem não perguntou.",
+          "resumo": "tirou a cidadania italiana",
+          "efeitos": { "marcas": ["passaporte_europeu"], "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O cartório da cidadezinha italiana perdeu a certidão do bisavô. A assessoria disse que \"faz parte do processo\".",
+          "resumo": "gastou dinheiro tentando a cidadania italiana",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Deixar a papelada no baú",
+        "resumo": "deixou a cidadania italiana no baú",
+        "resultado": {
+          "texto": "O baú voltou para o armário da tia. De vez em quando, você pensa no vilarejo e procura no mapa.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tentar_a_vida_na_europa",
+    "idade": [22, 55],
+    "condicoes": { "marcaHa": [{ "marca": "passaporte_europeu", "min": 1 }] },
+    "texto": "Com o passaporte europeu na gaveta, um conhecido em Lisboa jura que arruma emprego para você em uma semana. \"Lá ninguém morre de bala perdida\", ele diz, e manda foto de um pastel de nata.",
+    "resumo": "pensou em ir morar na Europa",
+    "escolhas": [
+      {
+        "texto": "Ir para a Europa",
+        "resumo": "foi morar na Europa com o passaporte da família",
+        "resultado": {
+          "texto": "Você trocou o sol por um aquecedor elétrico e a família por videochamadas de domingo. O salário rende; a saudade, também.",
+          "efeitos": {
+            "renda": 9000,
+            "custo": 8000,
+            "mae.vinculo": -8,
+            "amigo.vinculo": -8,
+            "felicidade": -1,
+            "saude": 1
+          }
+        }
+      },
+      {
+        "texto": "Ficar no Brasil",
+        "resumo": "ficou no Brasil apesar do passaporte",
+        "resultado": {
+          "texto": "O passaporte ficou na gaveta, como seguro. Toda crise, alguém da família pergunta se você não vai usar.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "transito_de_sp",
+    "idade": [22, 60],
+    "condicoes": { "lugar.cidade_sp": true, "renda": { "min": 15000 }, "semMarcas": ["motoqueiro"] },
+    "texto": "Você passa três horas por dia no trânsito. Já ouviu todos os podcasts do mundo e dois audiolivros sobre produtividade, o que é irônico.",
+    "resumo": "perdeu três horas por dia no trânsito de São Paulo",
+    "escolhas": [
+      {
+        "texto": "Mudar para perto do trabalho",
+        "resumo": "mudou para perto do trabalho para fugir do trânsito",
+        "resultado": {
+          "texto": "O apartamento é menor e mais caro. Em compensação, você descobriu o que fazer com as três horas: dormir.",
+          "efeitos": { "custo": 6000, "saude": 1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Comprar uma moto",
+        "resumo": "comprou uma moto para fugir do trânsito",
+        "resultado": {
+          "texto": "Corredor entre os carros, capacete quente e vinte minutos até o trabalho. Sua mãe reza um terço por dia por isso.",
+          "efeitos": { "dinheiro": -9000, "marcas": ["motoqueiro"], "felicidade": 1.5 }
+        }
+      },
+      {
+        "texto": "Aceitar a vida no trânsito",
+        "resumo": "aceitou passar a vida no trânsito",
+        "resultado": {
+          "texto": "Você virou especialista em rota alternativa que todo mundo também conhece. O carro virou escritório, refeitório e consultório de terapia.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "enchente_na_rua",
+    "idade": [10, 85],
+    "condicoes": { "lugar.regiao": ["sudeste", "sul"], "lugar.capital": true },
+    "repetivel": true,
+    "intervalo": 15,
+    "texto": "Choveu em uma hora o que estava previsto para o mês. A rua virou rio, o carro do vizinho virou barco e a prefeitura virou nota de repúdio.",
+    "resumo": "viu a rua virar rio numa enchente",
+    "escolhas": [
+      {
+        "texto": "Ajudar a tirar a lama das casas",
+        "resumo": "ajudou os vizinhos depois da enchente",
+        "resultado": {
+          "texto": "Você passou o fim de semana de bota e rodo. A dona Cida da esquina te deu um bolo de fubá por mês durante um ano.",
+          "efeitos": { "saude": -1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Filmar tudo da janela",
+        "resumo": "filmou a enchente da janela",
+        "resultado": {
+          "texto": "O vídeo do sofá boiando teve dez mil visualizações. A dona Cida não achou graça.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vaga_na_capital",
+    "idade": [18, 32],
+    "condicoes": { "lugar.interior": true, "renda": { "max": 40000 }, "semMarcas": ["mudou_sp"] },
+    "texto": "Abriu uma vaga boa na capital do estado. Lá tem metrô, show internacional e um aluguel que custa o salário de um primo.",
+    "resumo": "teve a chance de se mudar para a capital",
+    "escolhas": [
+      {
+        "texto": "Ir para a capital",
+        "resumo": "se mudou do interior para a capital",
+        "resultado": {
+          "texto": "Você descobriu que na capital ninguém dá bom-dia no elevador e que dá para comer pastel às três da manhã. Foi uma troca justa.",
+          "efeitos": { "renda": 6000, "custo": 4500, "mae.vinculo": -4, "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Ficar no interior",
+        "resumo": "ficou no interior perto da família",
+        "resultado": {
+          "texto": "Você ficou. No interior, todo mundo sabe da sua vida, inclusive as partes que você ainda não viveu.",
+          "efeitos": { "felicidade": 1, "mae.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mutirao_da_laje",
+    "idade": [22, 55],
+    "condicoes": { "classe_origem": { "max": 1 }, "semMarcas": ["casa_propria"] },
+    "texto": "Os vizinhos toparam um mutirão para bater a laje da sua casa no sábado. Você entra com o cimento, a carne e a cerveja; eles entram com as costas.",
+    "resumo": "chamou os vizinhos para bater a laje da casa",
+    "escolhas": [
+      {
+        "texto": "Bater a laje",
+        "resumo": "bateu a laje da casa própria em mutirão",
+        "condicoes": { "dinheiro": { "min": 7000 } },
+        "bloqueio": "o cimento e a carne custam uns R$ 7 mil",
+        "resultado": {
+          "texto": "Às seis da manhã tinha betoneira, às dez tinha laje, ao meio-dia tinha churrasco. A casa é sua, tijolo por tijolo.",
+          "efeitos": { "dinheiro": -7000, "marcas": ["casa_propria"], "felicidade": 3, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Continuar no aluguel por enquanto",
+        "resumo": "adiou o sonho da casa própria",
+        "resultado": {
+          "texto": "O terreno ficou esperando, com a ferragem de fora e um varal improvisado. Ano que vem, quem sabe.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "despejo",
+    "idade": [18, 65],
+    "condicoes": {
+      "classe": { "max": 1 },
+      "semMarcas": ["casa_propria", "mora_com_pais"],
+      "algumaMarca": ["privacao", "nome_sujo", "rotativo"]
+    },
+    "tensao": 2,
+    "texto": "O dono da casa quer o imóvel de volta em trinta dias. Disse que é para a filha, mas a placa de \"aluga-se\" já está na loja.",
+    "resumo": "recebeu uma ordem de despejo",
+    "escolhas": [
+      {
+        "texto": "Voltar para a casa de {mae}",
+        "resumo": "voltou a morar com {mae} depois do despejo",
+        "condicoes": { "mae.vivo": true },
+        "bloqueio": "não há para onde voltar",
+        "resultado": {
+          "texto": "Seu quarto virou depósito, mas voltou a ser seu. {mae} reorganizou a geladeira como quem reorganiza a vida.",
+          "efeitos": { "marcas": ["mora_com_pais"], "mae.vinculo": 3, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Alugar um quarto e cozinha",
+        "resumo": "foi para um quarto e cozinha depois do despejo",
+        "resultado": {
+          "texto": "Um cômodo, um banheiro e uma janela para o muro do vizinho. Cabe tudo, desde que você não compre mais nada.",
+          "efeitos": { "custo": -2000, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carteira_da_diarista",
+    "idade": [30, 85],
+    "condicoes": { "classe": { "min": 3 }, "renda": { "min": 60000 } },
+    "texto": "A diarista que trabalha na sua casa há seis anos pediu para ter carteira assinada. Ela conhece a sua casa melhor que você.",
+    "resumo": "teve que decidir se assinava a carteira da diarista",
+    "escolhas": [
+      {
+        "texto": "Assinar a carteira",
+        "resumo": "assinou a carteira da diarista",
+        "resultado": {
+          "texto": "Férias, décimo terceiro e FGTS. Custa mais, e ela passou a chegar cantando.",
+          "efeitos": { "custo": 9000, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Deixar como está",
+        "resumo": "não assinou a carteira da diarista",
+        "teste": { "chance": 0.65 },
+        "sucesso": {
+          "texto": "Ela ficou mais um tempo e depois arrumou uma casa que assinava. Saiu sem brigar e sem olhar para trás.",
+          "resumo": "perdeu a diarista para uma casa que assinava carteira",
+          "efeitos": { "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "Dois anos depois, chegou a intimação da Justiça do Trabalho. O juiz fez as contas de seis anos de uma vez só.",
+          "resumo": "perdeu um processo trabalhista da diarista",
+          "efeitos": { "dinheiro": -35000, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "consorcio",
+    "idade": [24, 60],
+    "condicoes": { "classe": { "min": 1, "max": 3 }, "renda": { "min": 18000 }, "semMarcas": ["carro"] },
+    "texto": "O gerente do banco ofereceu um consórcio de carro: \"sem juros, só uma taxinha de administração\". Você pode ser contemplad{o|a} no primeiro mês ou no sexagésimo.",
+    "resumo": "recebeu uma proposta de consórcio do gerente",
+    "escolhas": [
+      {
+        "texto": "Entrar no consórcio",
+        "resumo": "entrou num consórcio de carro",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "Contemplad{o|a} no terceiro mês! Você saiu da concessionária buzinando para ninguém.",
+          "resumo": "foi contemplad{o|a} cedo no consórcio",
+          "efeitos": { "marcas": ["carro"], "custo": 5000, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Você pagou cinco anos de parcela e foi contemplad{o|a} no último mês, quando o carro do plano já nem era fabricado.",
+          "resumo": "pagou o consórcio inteiro antes de ver o carro",
+          "efeitos": { "custo": 5000, "felicidade": -1.5 }
+        }
+      },
+      {
+        "texto": "Recusar o consórcio",
+        "resumo": "recusou o consórcio do gerente",
+        "resultado": { "texto": "O gerente disse \"qualquer coisa, estamos aí\". Estão mesmo: ele liga todo mês." }
+      }
+    ]
+  },
+  {
+    "id": "plano_de_saude_subiu",
+    "idade": [45, 90],
+    "condicoes": { "renda": { "min": 30000 }, "custo": { "min": 15000 } },
+    "texto": "O plano de saúde subiu 23% no aniversário do contrato. A carta explica o reajuste em quatro páginas e nenhuma frase.",
+    "resumo": "viu o plano de saúde subir de novo",
+    "escolhas": [
+      {
+        "texto": "Pagar e reclamar",
+        "resumo": "pagou o reajuste do plano de saúde",
+        "resultado": {
+          "texto": "Você pagou, reclamou na ouvidoria e recebeu um protocolo de dezoito dígitos. Ao menos a consulta continua em dois dias.",
+          "efeitos": { "custo": 3000, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Trocar por um plano mais simples",
+        "resumo": "trocou o plano de saúde por um mais simples",
+        "resultado": {
+          "texto": "O plano novo tem rede menor e carência maior. O hospital bom ficou no outro bairro, e no outro plano.",
+          "efeitos": { "custo": -1500, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Cancelar e usar o SUS",
+        "resumo": "cancelou o plano e passou a usar o SUS",
+        "resultado": {
+          "texto": "Você trocou a mensalidade pela fila do posto. O médico de família é ótimo; a espera pelo especialista, nem tanto.",
+          "efeitos": { "custo": -6000, "saude": -2, "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "casa_na_praia",
+    "idade": [35, 75],
+    "condicoes": { "classe": { "min": 4 } },
+    "texto": "Um corretor apareceu com uma casa de praia \"abaixo do preço de mercado\", com varanda, rede e uma infiltração que ele chamou de charme.",
+    "resumo": "pensou em comprar uma casa na praia",
+    "escolhas": [
+      {
+        "texto": "Comprar a casa",
+        "resumo": "comprou uma casa na praia",
+        "condicoes": { "patrimonio": { "min": 600000 } },
+        "bloqueio": "falta patrimônio para uma casa de praia",
+        "resultado": {
+          "texto": "A casa virou o lugar dos feriados, das fotos da família e de toda a sua manutenção de fim de semana. Mas a rede é ótima.",
+          "efeitos": { "dinheiro": -280000, "custo": 9000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Alugar uma por temporada",
+        "resumo": "alugou uma casa de praia por temporada",
+        "resultado": {
+          "texto": "Duas semanas de varanda e nenhuma infiltração sua. O corretor ainda manda mensagem todo verão.",
+          "efeitos": { "dinheiro": -4000, "felicidade": 1.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crise_de_ansiedade",
+    "idade": [15, 50],
+    "condicoes": { "traco": "ansioso" },
+    "tensao": 2,
+    "trechos": {
+      "vespera": [
+        { "se": { "idade": { "max": 19 } }, "texto": "uma prova importante" },
+        { "texto": "[uma entrevista de emprego|uma reunião com a diretoria|uma conversa difícil em casa]" }
+      ]
+    },
+    "texto": "Na véspera de {vespera}, o coração disparou, as mãos gelaram e o ar sumiu. No pronto-socorro, o médico disse \"é ansiedade\" como quem diz \"é sexta-feira\".",
+    "resumo": "teve uma crise de ansiedade",
+    "escolhas": [
+      {
+        "texto": "Procurar tratamento",
+        "resumo": "procurou tratamento para a ansiedade",
+        "resultado": {
+          "texto": "Psiquiatra, terapia e um exercício de respiração que você faz até na fila do banco. Não sumiu; ficou administrável.",
+          "efeitos": { "dinheiro": -2000, "felicidade": 4, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Respirar fundo e seguir",
+        "resumo": "respirou fundo e seguiu sem tratar a ansiedade",
+        "resultado": {
+          "texto": "Você foi assim mesmo e deu tudo certo. Na próxima, o coração disparou de novo, só que mais cedo.",
+          "efeitos": { "felicidade": -3, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "convite_para_candidatura",
+    "idade": [28, 60],
+    "condicoes": { "traco": "carismatico", "semMarcas": ["politizado", "vereador"] },
+    "texto": "Um partido pequeno, de nome comprido e sigla de quatro letras, quer você como candidat{o|a} a vereador. \"Você conversa com todo mundo, isso é meio caminho\", diz o presidente municipal.",
+    "resumo": "foi convidad{o|a} a se candidatar a vereador",
+    "escolhas": [
+      {
+        "texto": "Topar a campanha",
+        "resumo": "entrou para a política local",
+        "resultado": {
+          "texto": "Você ganhou um número de urna, um jingle com o seu nome rimando com \"futuro\" e um grupo de WhatsApp que nunca mais parou de tocar.",
+          "efeitos": { "marcas": ["politizado"], "felicidade": 1, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Recusar com educação",
+        "resumo": "recusou o convite para entrar na política",
+        "resultado": {
+          "texto": "Você disse que ia pensar, o que em política quer dizer não. O presidente do partido ainda te cumprimenta na padaria, com intenção."
+        }
+      }
+    ]
+  },
+  {
+    "id": "apresentacao_para_a_diretoria",
+    "idade": [20, 50],
+    "condicoes": { "traco": "timido", "renda": { "min": 15000 } },
+    "texto": "Seu chefe pediu para você apresentar o projeto para a diretoria inteira. Você leu o e-mail quatro vezes, procurando o erro de digitação.",
+    "resumo": "teve que apresentar um projeto para a diretoria",
+    "escolhas": [
+      {
+        "texto": "Ensaiar até decorar",
+        "resumo": "ensaiou e apresentou o projeto para a diretoria",
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Você tremeu nos dois primeiros slides e brilhou no resto. O diretor pediu o seu contato, e depois um aumento para você.",
+          "resumo": "brilhou numa apresentação para a diretoria",
+          "efeitos": { "renda": 5000, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O projetor travou, a voz falhou e o slide doze tinha um \"conclução\". Sobreviveu, mas foi por pouco.",
+          "resumo": "travou numa apresentação para a diretoria",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Pedir para um colega apresentar",
+        "resumo": "deixou um colega apresentar o projeto",
+        "resultado": {
+          "texto": "O colega apresentou o seu projeto muito bem. Tão bem que, seis meses depois, foi promovido por ele.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bater_o_pe_com_o_chefe",
+    "idade": [22, 60],
+    "condicoes": { "traco": "teimoso", "renda": { "min": 15000 }, "semMarcas": ["empreendedor", "socio"] },
+    "texto": "Você e seu chefe discordam sobre o projeto. Você tem certeza de que está cert{o|a}; ele tem certeza de que manda.",
+    "resumo": "bateu de frente com o chefe",
+    "escolhas": [
+      {
+        "texto": "Bater o pé",
+        "resumo": "bateu o pé contra o chefe",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Você estava cert{o|a}, o projeto deu certo e o chefe contou para todo mundo que a ideia era dele. Pelo menos veio uma promoção.",
+          "resumo": "bateu o pé com o chefe e estava cert{o|a}",
+          "efeitos": { "renda": 6000, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Você estava cert{o|a} e foi transferid{o|a} para um setor no subsolo. Ter razão custou caro.",
+          "resumo": "foi rebaixad{o|a} por bater o pé com o chefe",
+          "efeitos": { "renda": -7000, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Engolir o sapo",
+        "resumo": "engoliu o sapo e fez do jeito do chefe",
+        "resultado": {
+          "texto": "Você fez do jeito dele. Deu errado, como você avisou, e ninguém lembrou que você avisou.",
+          "efeitos": { "felicidade": -1.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cara_de_comercial",
+    "idade": [16, 30],
+    "condicoes": { "traco": "bonito" },
+    "texto": "Um olheiro de agência te parou no shopping e entregou um cartão: \"Você tem cara de comercial de margarina\". Era um elogio.",
+    "resumo": "foi abordad{o|a} por um olheiro de agência",
+    "escolhas": [
+      {
+        "texto": "Fazer o book",
+        "resumo": "fez um book para agência de modelos",
+        "efeitos": { "dinheiro": -1500 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "Você fez um comercial de margarina, outro de banco e um outdoor na marginal. A família inteira passou de carro para ver.",
+          "resumo": "fez comerciais de TV",
+          "efeitos": { "dinheiro": 14000, "felicidade": 2, "aparencia": 2 }
+        },
+        "fracasso": {
+          "texto": "O book ficou lindo e caro. A agência sumiu com ele e com o seu telefone.",
+          "resumo": "pagou por um book que não deu em nada",
+          "efeitos": { "felicidade": -1.5 }
+        }
+      },
+      {
+        "texto": "Guardar o cartão na carteira",
+        "resumo": "guardou o cartão do olheiro e seguiu a vida",
+        "resultado": {
+          "texto": "O cartão ficou na carteira por anos, amarelando. Às vezes você olha comercial de margarina e pensa."
+        }
+      }
+    ]
+  },
+  {
+    "id": "mestrado_fora",
+    "idade": [22, 35],
+    "condicoes": { "traco": "esperto", "marcas": ["formado"], "semMarcas": ["fala_ingles"] },
+    "texto": "Um professor indicou você para um mestrado com bolsa numa universidade do exterior. A bolsa paga o aluguel, se o aluguel for pequeno.",
+    "resumo": "recebeu a indicação para um mestrado com bolsa no exterior",
+    "escolhas": [
+      {
+        "texto": "Ir estudar fora",
+        "resumo": "fez mestrado com bolsa no exterior",
+        "resultado": {
+          "texto": "Dois anos de biblioteca, inverno e miojo importado. Você voltou com um diploma, um sotaque esquisito e um inglês que ninguém tira.",
+          "efeitos": { "marcas": ["fala_ingles"], "inteligencia": 5, "felicidade": 1, "mae.vinculo": -4 }
+        }
+      },
+      {
+        "texto": "Ficar e trabalhar",
+        "resumo": "recusou o mestrado fora para trabalhar",
+        "resultado": {
+          "texto": "Você ficou e começou a ganhar dinheiro mais cedo. O professor ainda manda link de edital todo ano.",
+          "efeitos": { "renda": 3000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carregar_a_geladeira",
+    "idade": [18, 45],
+    "condicoes": { "traco": "forte", "amigo.vivo": true },
+    "texto": "{amigo} vai se mudar e chamou \"só você\" para carregar a geladeira, o sofá-cama e uma máquina de lavar que pesa o mesmo que um carro.",
+    "resumo": "foi chamad{o|a} para ajudar na mudança de {amigo}",
+    "escolhas": [
+      {
+        "texto": "Carregar tudo",
+        "resumo": "carregou a mudança de {amigo}",
+        "resultado": {
+          "texto": "Três andares de escada, uma quina de parede a menos e uma pizza de agradecimento. A amizade subiu junto com a geladeira.",
+          "efeitos": { "saude": -1, "amigo.vinculo": 7, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Inventar um compromisso",
+        "resumo": "inventou um compromisso para fugir da mudança de {amigo}",
+        "resultado": {
+          "texto": "Você disse que tinha um batizado. {amigo} disse que tudo bem, e postou a foto da mudança marcando todo mundo que foi.",
+          "efeitos": { "amigo.vinculo": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "este_e_o_ano",
+    "idade": [22, 60],
+    "condicoes": { "traco": "otimista" },
+    "repetivel": true,
+    "intervalo": 10,
+    "trechos": {
+      "plano": [
+        {
+          "se": { "idade": { "min": 45 } },
+          "texto": "[abrir uma pousada|revender vinho importado|montar um sítio de lazer para alugar]"
+        },
+        { "texto": "[abrir um food truck|revender perfume importado|virar coach de produtividade]" }
+      ]
+    },
+    "texto": "Você tem certeza de que este é o ano: vai {plano}. Já tem até o nome no Instagram.",
+    "resumo": "teve certeza de que aquele era o ano",
+    "escolhas": [
+      {
+        "texto": "Ir com tudo",
+        "resumo": "foi com tudo atrás do plano do ano",
+        "efeitos": { "dinheiro": -6000 },
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "Deu certo. Não ficou ric{o|a}, mas o plano se pagou, sobrou e você ganhou a razão que tanto queria.",
+          "resumo": "apostou num plano do ano e deu certo",
+          "efeitos": { "dinheiro": 15000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Não deu. Você vendeu o equipamento pela metade e continua achando que foi quase.",
+          "resumo": "apostou num plano do ano e não deu certo",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Deixar para o ano que vem",
+        "resumo": "deixou o plano para o ano que vem",
+        "resultado": {
+          "texto": "O ano que vem chegou com outro plano, mais bonito ainda.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "natal_com_politica",
+    "idade": [18, 85],
+    "condicoes": { "familia": "conflituosa", "mae.vivo": true },
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "No Natal, o tio do Partido Amarelo e a prima do Partido Verde começaram a discutir antes do pavê. A avó aumentou o volume da novela.",
+    "resumo": "viu o Natal da família virar debate político",
+    "escolhas": [
+      {
+        "texto": "Entrar na briga",
+        "resumo": "entrou na briga política do Natal",
+        "resultado": {
+          "texto": "Você tinha argumentos, dados e um print. Ganhou o debate e perdeu o convite do ano que vem.",
+          "efeitos": { "felicidade": -1.5, "mae.vinculo": -4 }
+        }
+      },
+      {
+        "texto": "Fazer a piada do pavê",
+        "resumo": "fez a piada do pavê para salvar o Natal",
+        "resultado": {
+          "texto": "\"É pavê ou pra comer?\" Metade da mesa riu, a outra metade revirou os olhos, e a briga acabou. Missão cumprida.",
+          "efeitos": { "felicidade": 1, "mae.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "proposta_pelo_negocio",
+    "idade": [35, 80],
+    "condicoes": { "marcas": ["herdeiro_negocio"] },
+    "texto": "Uma rede grande quer comprar o negócio da família. A proposta vem num envelope pardo e tem mais zeros do que você esperava.",
+    "resumo": "recebeu uma proposta pelo negócio da família",
+    "escolhas": [
+      {
+        "texto": "Vender o negócio",
+        "resumo": "vendeu o negócio da família",
+        "resultado": {
+          "texto": "Você assinou, apertou mãos e viu a placa com o sobrenome da família ser trocada por um logotipo. O dinheiro caiu; a ficha, só depois.",
+          "efeitos": { "dinheiro": 180000, "removerMarcas": ["herdeiro_negocio"], "felicidade": -1, "mae.vinculo": -5 }
+        }
+      },
+      {
+        "texto": "Manter na família",
+        "resumo": "recusou vender o negócio da família",
+        "resultado": {
+          "texto": "Você guardou o envelope numa gaveta e abriu a loja na segunda-feira como sempre. O sobrenome continua na placa.",
+          "efeitos": { "felicidade": 1.5, "mae.vinculo": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "promessa_da_mae",
+    "idade": [18, 70],
+    "condicoes": { "familia": "religiosa", "mae.vivo": true },
+    "trechos": {
+      "motivo": [
+        { "se": { "marcas": ["formado"] }, "texto": "se formar" },
+        { "se": { "renda": { "min": 20000 } }, "texto": "arrumar emprego" },
+        { "texto": "sarar daquela gripe forte" }
+      ]
+    },
+    "texto": "{mae} fez uma promessa para você {motivo} e agora você precisa pagar: subir a escadaria da igreja da cidade de joelhos.",
+    "resumo": "teve que pagar uma promessa que a mãe fez",
+    "escolhas": [
+      {
+        "texto": "Subir de joelhos",
+        "resumo": "pagou a promessa da mãe de joelhos",
+        "resultado": {
+          "texto": "Cento e doze degraus. No final, {mae} chorou, você chorou e o joelho também.",
+          "efeitos": { "saude": -1, "mae.vinculo": 7, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Pagar com uma doação",
+        "resumo": "pagou a promessa com uma doação",
+        "resultado": {
+          "texto": "Você negociou com o santo uma doação para a reforma do telhado. {mae} achou um meio-termo aceitável.",
+          "efeitos": { "dinheiro": -500, "mae.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Não pagar",
+        "resumo": "não pagou a promessa da mãe",
+        "resultado": {
+          "texto": "{mae} não falou nada. Mas acendeu uma vela a mais, olhando para você.",
+          "efeitos": { "mae.vinculo": -5 }
+        }
+      }
+    ]
+  }
+]

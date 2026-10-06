@@ -374,7 +374,7 @@
       {
         "texto": "Faculdade particular, paga pela família",
         "resumo": "foi para uma faculdade particular paga pela família",
-        "condicoes": { "classe_origem": { "min": 4 } },
+        "condicoes": { "mae.renda": { "min": 90000 } },
         "bloqueio": "a mensalidade não cabe no orçamento de casa",
         "resultado": {
           "texto": "{pai} fez as contas, suspirou e assinou o contrato. Você ganhou um campus com wi-fi e lanchonete cara.",

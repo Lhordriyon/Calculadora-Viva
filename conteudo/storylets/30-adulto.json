@@ -123,7 +123,7 @@
         "resumo": "tirou um ano sabático depois de ser demitid{o|a}",
         "resultado": {
           "texto": "Você viajou, dormiu, leu e descobriu que o tédio também cansa.",
-          "efeitos": { "dinheiro": 12000, "renda": { "definir": 0 }, "felicidade": 6 }
+          "efeitos": { "dinheiro": 12000, "renda": { "definir": 0 }, "felicidade": 3 }
         }
       }
     ]
@@ -475,47 +475,49 @@
   },
   {
     "id": "pais_envelhecem",
-    "idade": [35, 58],
-    "peso": 4,
-    "texto": "{mae} ligou: o médico pediu uns exames e ela está com medo, embora diga que não está. [Você ouve a TV ligada no fundo, como sempre.|Ela muda de assunto três vezes.|No fim, ela pergunta se você está se alimentando.]",
-    "resumo": "viu {mae} envelhecer",
+    "tipo": "npc",
+    "ator": ["mae", "pai"],
+    "preferir": "-ator.saude",
+    "idade": [28, 80],
+    "condicoes": { "ator.idade": { "min": 66 }, "ator.saude": { "max": 60 } },
+    "texto": "{ator} ligou: o médico pediu uns exames e {ator:ele|ela} está com medo, embora diga que não está. [Você ouve a TV ligada no fundo, como sempre.|{ator:Ele|Ela} muda de assunto três vezes.|No fim, pergunta se você está se alimentando.]",
+    "resumo": "viu {ator.quem} envelhecer",
     "escolhas": [
       {
-        "texto": "Ir morar perto dela",
-        "resumo": "mudou-se para perto de {mae}",
+        "texto": "Ir morar perto de {ator}",
+        "resumo": "mudou-se para perto de {ator.quem}",
         "resultado": {
           "texto": "Você trocou de bairro e ganhou almoços de domingo, broncas de graça e muito colo.",
-          "efeitos": {
-            "felicidade": 3,
-            "custo": 3000,
-            "marcas": ["cuidou_dos_pais"],
-            "agendar": [{ "evento": "luto_pais", "em": [5, 15] }]
-          }
+          "efeitos": { "felicidade": 3, "custo": 3000, "marcas": ["cuidou_dos_pais"], "ator.vinculo": 10 }
         }
       },
       {
         "texto": "Mandar dinheiro",
-        "resumo": "ajudou {mae} com dinheiro",
+        "resumo": "ajudou {ator.quem} com dinheiro",
         "resultado": {
-          "texto": "O dinheiro pagou exames, remédios e uma cuidadora. Ela durou mais e reclamou menos.",
-          "efeitos": { "dinheiro": -15000, "felicidade": 2, "agendar": [{ "evento": "luto_pais", "em": [8, 18] }] }
-        }
+          "texto": "O dinheiro pagou exames, remédios e uma cuidadora. {ator:Ele|Ela} durou mais e reclamou menos.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 15000 }, "ator.saude": 6, "felicidade": 2 }
+        },
+        "condicoes": { "dinheiro": { "min": 15000 } },
+        "bloqueio": "você não tem esse dinheiro"
       },
       {
         "texto": "Ligar mais vezes",
-        "resumo": "passou a ligar mais para {mae}",
+        "resumo": "passou a ligar mais para {ator.quem}",
         "resultado": {
-          "texto": "Você liga toda quarta. Ela conta da vizinha, do preço do tomate e, às vezes, do medo.",
-          "efeitos": { "felicidade": 1, "agendar": [{ "evento": "luto_pais", "em": [5, 15] }] }
+          "texto": "Você liga toda quarta. {ator:Ele|Ela} conta da vizinha, do preço do tomate e, às vezes, do medo.",
+          "efeitos": { "felicidade": 1, "ator.vinculo": 5 }
         }
       }
     ]
   },
   {
-    "id": "luto_pais",
-    "apenasAgendado": true,
-    "texto": "{pai} partiu primeiro; {mae}, poucos anos depois. Ficaram a saudade, [uma casa cheia de potes de sorvete com feijão dentro|uma gaveta de documentos em ordem perfeita|um rádio que ninguém tem coragem de desligar] e uma decisão a tomar.",
-    "resumo": "perdeu {mae} e {pai}",
+    "id": "casa_dos_pais",
+    "idade": [18, 95],
+    "condicoes": { "mae.vivo": false, "pai.vivo": false, "classe_origem": { "min": 2 } },
+    "tensao": 2,
+    "texto": "{pai} e {mae} já se foram. Ficou a casa da família, com [uma casa cheia de potes de sorvete com feijão dentro|uma gaveta de documentos em ordem perfeita|um rádio que ninguém tem coragem de desligar] e uma decisão a tomar.",
+    "resumo": "decidiu o destino da casa dos pais",
     "escolhas": [
       {
         "texto": "Vender a casa e dividir com a família",
@@ -538,12 +540,12 @@
         }
       },
       {
-        "texto": "Estar perto até o fim",
-        "resumo": "esteve perto de {mae} até o fim",
+        "texto": "Lembrar que esteve perto",
+        "resumo": "guardou a memória de ter cuidado dos pais",
         "condicoes": { "marcas": ["cuidou_dos_pais"] },
         "bloqueio": "você estava longe quando aconteceu",
         "resultado": {
-          "texto": "Você segurou a mão dela no hospital e ouviu a última piada ruim. Dói, mas não pesa.",
+          "texto": "Você segurou a mão deles no fim, cada um a seu tempo. Dói, mas não pesa.",
           "efeitos": { "felicidade": 2 }
         }
       },

@@ -1,0 +1,1100 @@
+[
+  {
+    "id": "merenda",
+    "idade": [6, 12],
+    "condicoes": { "classe_origem": { "max": 1 } },
+    "texto": "Na escola pública, a merenda era a refeição mais garantida do dia. [A tia da cozinha sabia o seu nome e o seu prato preferido.|Arroz, feijão e uma fruta que ninguém sabia o nome.|Às sextas tinha bolo, e ninguém faltava às sextas.]",
+    "resumo": "dependeu da merenda da escola",
+    "efeitos": { "saude": 3, "felicidade": 1, "inteligencia": 1 }
+  },
+  {
+    "id": "ajudar_na_coleta",
+    "idade": [10, 14],
+    "condicoes": { "classe_origem": { "max": 0 }, "mae.vivo": true },
+    "texto": "{mae} trabalha como {mae.ocupacao} e chega tarde. Com você ajudando depois da aula, [sobra um dinheirinho para o gás|a casa não para|dá para pagar a conta de luz em dia].",
+    "resumo": "ajudou a família no trabalho desde criança",
+    "escolhas": [
+      {
+        "texto": "Ajudar depois da aula",
+        "resumo": "ajudou a família no trabalho desde criança",
+        "resultado": {
+          "texto": "Você [vendeu bala no sinal|cuidou dos irmãos menores|separou recicláveis com a vizinha] e aprendeu a contar dinheiro rápido. A lição de casa ficou para a madrugada.",
+          "efeitos": { "dinheiro": 300, "inteligencia": -2, "mae.vinculo": 8, "marcas": ["trabalhou_cedo"] }
+        }
+      },
+      {
+        "texto": "Ficar estudando",
+        "resumo": "ficou só estudando enquanto a família se virava",
+        "resultado": {
+          "texto": "{mae} disse para você estudar \"para não precisar disso\". Você estudou com culpa e com força.",
+          "efeitos": { "inteligencia": 3, "felicidade": -2, "mae.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "geladeira_vazia",
+    "idade": [5, 17],
+    "condicoes": { "classe_origem": { "max": 1 }, "algumaMarca": ["mae.desempregado", "pai.desempregado", "privacao"] },
+    "tensao": 2,
+    "texto": "O mês acabou antes do dinheiro. Na geladeira, [meia garrafa d'água e um limão|um pote de margarina com feijão dentro|nada que dê para chamar de janta].",
+    "resumo": "passou fome num fim de mês",
+    "escolhas": [
+      {
+        "texto": "Comer na casa da vizinha",
+        "resumo": "comeu na casa da vizinha num mês difícil",
+        "resultado": {
+          "texto": "A vizinha fingiu que tinha feito comida demais. Você fingiu que acreditou.",
+          "efeitos": { "felicidade": -1, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Dormir cedo para não sentir fome",
+        "resumo": "dormiu cedo para não sentir fome",
+        "resultado": {
+          "texto": "Funcionou até as três da manhã. Você nunca esqueceu esse barulho do estômago.",
+          "efeitos": { "saude": -2, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bolsa_de_estudos",
+    "idade": [11, 15],
+    "condicoes": { "classe_origem": { "max": 2 }, "inteligencia": { "min": 40 } },
+    "texto": "Uma escola particular abriu prova de bolsa integral para alunos de escola pública. A diretora acha que você tem chance.",
+    "resumo": "fez prova para bolsa numa escola particular",
+    "escolhas": [
+      {
+        "texto": "Fazer a prova",
+        "resumo": "fez a prova da bolsa",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Bolsa integral. No primeiro dia, você era a única pessoa da sala que pegava ônibus. No último, era a melhor nota.",
+          "resumo": "ganhou bolsa integral numa escola particular",
+          "efeitos": { "inteligencia": 5, "felicidade": 2, "marcas": ["bolsista"] }
+        },
+        "fracasso": {
+          "texto": "Passou perto. A diretora disse que ano que vem tem outra. Ano que vem você já estaria velh{o|a} demais.",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ficar com os amigos da pública",
+        "resumo": "preferiu ficar na escola pública com os amigos",
+        "resultado": {
+          "texto": "Você ficou com sua turma, seus professores e seu caminho de casa. Também dá.",
+          "efeitos": { "felicidade": 1, "amigo.vinculo": 5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cursinho_comunitario",
+    "idade": [16, 19],
+    "condicoes": { "classe_origem": { "max": 2 }, "semMarcas": ["cursando", "formado"] },
+    "texto": "Um cursinho popular abriu inscrições no centro comunitário: professores voluntários, apostila xerocada e aula à noite.",
+    "resumo": "entrou num cursinho popular",
+    "escolhas": [
+      {
+        "texto": "Fazer o cursinho",
+        "resumo": "fez cursinho popular à noite",
+        "resultado": {
+          "texto": "Você ia direto do trabalho, de mochila e marmita. O professor de redação chorou quando leu seu texto.",
+          "efeitos": { "inteligencia": 4, "saude": -1, "felicidade": 1, "qualidades": { "estudo": 2 } }
+        }
+      },
+      {
+        "texto": "Não dá tempo",
+        "resumo": "não teve tempo para o cursinho",
+        "resultado": {
+          "texto": "Entre o bico e a casa, não sobrava hora nenhuma. Você guardou o panfleto.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "intercambio_pago",
+    "idade": [15, 19],
+    "condicoes": { "classe_origem": { "min": 3 }, "mae.dinheiro": { "min": 80000 }, "semMarcas": ["fala_ingles"] },
+    "texto": "{mae} acha que um ano fora vai te fazer bem. \"Inglês fluente, maturidade, currículo.\" O pacote de intercâmbio custa o preço de um carro.",
+    "resumo": "teve a chance de fazer intercâmbio no ensino médio",
+    "escolhas": [
+      {
+        "texto": "Ir para o intercâmbio",
+        "resumo": "fez intercâmbio no ensino médio",
+        "resultado": {
+          "texto": "Um ano com uma família que jantava às seis da tarde. Você voltou falando inglês, comendo pão sem graça e com saudade de tudo.",
+          "efeitos": { "mae.dinheiro": -60000, "inteligencia": 4, "felicidade": 3, "marcas": ["fala_ingles"] }
+        }
+      },
+      {
+        "texto": "Ficar com a turma",
+        "resumo": "não quis ir para o intercâmbio",
+        "resultado": {
+          "texto": "Você disse que não ia trocar a formatura por neve. {mae} guardou o folheto por anos.",
+          "efeitos": { "felicidade": 1, "amigo.vinculo": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carro_de_presente",
+    "idade": [18, 19],
+    "condicoes": { "classe_origem": { "min": 4 }, "pai.dinheiro": { "min": 150000 }, "pai.ausente": false },
+    "texto": "Dezoito anos. Na garagem, um carro com laço vermelho. Na porta, {pai} filmando sua reação para o grupo da família.",
+    "resumo": "ganhou um carro de presente aos 18",
+    "escolhas": [
+      {
+        "texto": "Aceitar o carro",
+        "resumo": "aceitou o carro de presente",
+        "resultado": {
+          "texto": "Você chorou no vídeo, que tem mais visualizações que qualquer coisa que você postou depois.",
+          "efeitos": { "felicidade": 4, "marcas": ["carro"], "pai.vinculo": 5 }
+        }
+      },
+      {
+        "texto": "Pedir o valor para investir",
+        "resumo": "pediu o dinheiro do carro para investir",
+        "resultado": {
+          "texto": "{pai} ficou decepcionado com a falta de emoção e orgulhoso da cabeça. Nessa ordem.",
+          "efeitos": {
+            "transferir": { "de": "pai", "para": "eu", "valor": 60000 },
+            "investir": 60000,
+            "inteligencia": 1,
+            "marcas": ["investidor"]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "estagio_do_pai",
+    "idade": [18, 24],
+    "condicoes": {
+      "pai.ocupacao": [
+        "advogado",
+        "engenheiro",
+        "médico",
+        "juiz",
+        "diretor de empresa",
+        "diretor de multinacional",
+        "sócio de escritório de advocacia",
+        "dono de construtora",
+        "banqueiro",
+        "investidor"
+      ],
+      "pai.ausente": false,
+      "semMarcas": ["clt"]
+    },
+    "texto": "{pai} conseguiu um estágio para você \"num lugar bom, com gente boa\". Por coincidência, o lugar é dele e a gente boa é a turma dele.",
+    "resumo": "ganhou um estágio por indicação do pai",
+    "escolhas": [
+      {
+        "texto": "Aceitar o estágio",
+        "resumo": "aceitou o estágio arranjado pelo pai",
+        "resultado": {
+          "texto": "Você aprendeu muito, inclusive como os colegas te olhavam quando chegava atrasad{o|a} sem levar bronca.",
+          "efeitos": {
+            "renda": { "definir": 36000 },
+            "inteligencia": 2,
+            "felicidade": -1,
+            "marcas": ["clt"],
+            "pai.vinculo": 6
+          }
+        }
+      },
+      {
+        "texto": "Procurar sozinh{o|a}",
+        "resumo": "recusou o estágio do pai e procurou sozinh{o|a}",
+        "resultado": {
+          "texto": "Você mandou quarenta currículos e foi a nove entrevistas. O emprego que veio foi seu de verdade.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1, "pai.vinculo": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_de_15",
+    "idade": [14, 15],
+    "condicoes": { "classe_origem": { "min": 3 }, "mae.dinheiro": { "min": 40000 }, "mae.vivo": true },
+    "texto": "{mae} quer uma festa de quinze anos com valsa, bolo de cinco andares e uma entrada com fumaça de gelo seco.",
+    "resumo": "teve uma festa de quinze anos",
+    "escolhas": [
+      {
+        "texto": "Topar a festa completa",
+        "resumo": "teve festa de quinze anos com valsa e tudo",
+        "resultado": {
+          "texto": "A valsa foi ensaiada por dois meses e errada em dois segundos. Ninguém percebeu, todo mundo filmou.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 6, "mae.dinheiro": -20000 }
+        }
+      },
+      {
+        "texto": "Trocar por uma viagem",
+        "resumo": "trocou a festa de quinze anos por uma viagem",
+        "resultado": {
+          "texto": "Você conheceu [Buenos Aires|o Nordeste inteiro de carro|a Disney, com fila e tudo] e mandou cartão-postal para quem esperava a valsa.",
+          "efeitos": { "felicidade": 4, "inteligencia": 1, "mae.dinheiro": -15000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apartamento_de_presente",
+    "idade": [22, 32],
+    "condicoes": { "classe_origem": { "min": 5 }, "semMarcas": ["casa_propria"], "mae.vivo": true },
+    "texto": "Os pais acharam que estava na hora: um apartamento [na planta|perto do metrô|com varanda gourmet], no seu nome. A única condição é almoço de domingo garantido.",
+    "resumo": "ganhou um apartamento dos pais",
+    "escolhas": [
+      {
+        "texto": "Aceitar e morar",
+        "resumo": "aceitou o apartamento que os pais deram",
+        "resultado": {
+          "texto": "Você ganhou um teto e uma dívida de afeto que se paga em domingos.",
+          "efeitos": { "marcas": ["casa_propria"], "custo": -8000, "mae.vinculo": 5, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Recusar e alugar o seu",
+        "resumo": "recusou o apartamento para pagar o próprio aluguel",
+        "resultado": {
+          "texto": "Você quis provar alguma coisa para alguém. Talvez para você mesm{o|a}. O aluguel não achou graça.",
+          "efeitos": { "felicidade": 1, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "herdeiro_gastao",
+    "idade": [20, 45],
+    "condicoes": { "classe_origem": { "min": 4 }, "patrimonio": { "min": 150000 } },
+    "peso": 2,
+    "texto": "Com o dinheiro da família por trás, a vida ficou fácil demais: [camarote toda semana|um carro esportivo por ano|uma lancha com o seu nome]. Um amigo de infância comenta que você está gastando como se não houvesse amanhã.",
+    "resumo": "gastou como herdeiro",
+    "escolhas": [
+      {
+        "texto": "Aproveitar enquanto dá",
+        "resumo": "torrou dinheiro como herdeiro",
+        "resultado": {
+          "texto": "Foi o melhor ano da sua vida, segundo as fotos. A conta veio no ano seguinte.",
+          "efeitos": { "felicidade": 4, "patrimonioFator": 0.7, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Botar o pé no freio",
+        "resumo": "botou o pé no freio dos gastos",
+        "resultado": {
+          "texto": "Você vendeu a lancha e comprou um livro de finanças. Os amigos de camarote sumiram.",
+          "efeitos": { "felicidade": -1, "inteligencia": 1, "marcas": ["investidor"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "grupo_de_jovens",
+    "idade": [13, 17],
+    "condicoes": { "familia": "religiosa" },
+    "texto": "O grupo de jovens da igreja vai fazer um retiro de fim de semana: violão, fogueira, testemunho e cachorro-quente.",
+    "resumo": "foi chamado para o grupo de jovens da igreja",
+    "escolhas": [
+      {
+        "texto": "Entrar no grupo",
+        "resumo": "entrou no grupo de jovens da igreja",
+        "resultado": {
+          "texto": "Você ganhou amigos, uma camiseta com versículo e um lugar para ir todo sábado.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 5, "marcas": ["grupo_da_igreja"] }
+        }
+      },
+      {
+        "texto": "Inventar uma prova",
+        "resumo": "fugiu do grupo de jovens",
+        "resultado": {
+          "texto": "A prova inventada foi a primeira de muitas desculpas. {mae} começou a rezar mais por você.",
+          "efeitos": { "felicidade": 1, "mae.vinculo": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "casamento_na_igreja",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 70],
+    "condicoes": { "familia": "religiosa", "marcas": ["namoro"], "semMarcas": ["casado"] },
+    "tensao": 2,
+    "texto": "Você e {amor} querem casar. A família faz questão de igreja, padrinho, véu e uma recepção para trezentas pessoas.",
+    "resumo": "decidiu como seria o casamento",
+    "escolhas": [
+      {
+        "texto": "Casar na igreja",
+        "resumo": "casou na igreja como a família queria",
+        "resultado": {
+          "texto": "A cerimônia teve choro, sermão longo e um tio que discursou sem ser convidado. A família inteira aprovou.",
+          "efeitos": {
+            "dinheiro": -12000,
+            "marcas": ["casado"],
+            "mae.vinculo": 10,
+            "amor.vinculo": 6,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Casar só no cartório",
+        "resumo": "casou só no cartório",
+        "resultado": {
+          "texto": "Assinatura, almoço num restaurante bom e mensagem de áudio da família perguntando se é verdade.",
+          "efeitos": { "dinheiro": -1500, "marcas": ["casado"], "mae.vinculo": -8, "amor.vinculo": 5, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dizimo",
+    "idade": [22, 70],
+    "condicoes": { "algumaMarca": ["grupo_da_igreja"], "renda": { "min": 15000 } },
+    "texto": "O pastor falou de dízimo três domingos seguidos olhando para você. {mae} acha que é sinal.",
+    "resumo": "foi cobrado pelo dízimo",
+    "escolhas": [
+      {
+        "texto": "Contribuir todo mês",
+        "resumo": "passou a contribuir com a igreja",
+        "resultado": {
+          "texto": "Você contribuiu e sentiu uma paz que o extrato não explica.",
+          "efeitos": { "dinheiro": -3000, "felicidade": 2, "mae.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Ajudar de outro jeito",
+        "resumo": "ajudou a igreja com trabalho voluntário",
+        "resultado": {
+          "texto": "Você pintou a parede da creche da igreja. Ficou torta e linda.",
+          "efeitos": { "felicidade": 1, "saude": -0.5, "mae.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "briga_dos_pais",
+    "idade": [4, 14],
+    "condicoes": { "familia": "conflituosa", "pai.ausente": false },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "De madrugada, a briga dos pais atravessou a parede. [Uma porta bateu.|Um prato quebrou.|Alguém falou em separação.] Você ficou acordad{o|a} olhando para o teto.",
+    "resumo": "ouviu os pais brigando de madrugada",
+    "escolhas": [
+      {
+        "texto": "Se esconder debaixo da coberta",
+        "resumo": "se escondeu das brigas dos pais",
+        "resultado": {
+          "texto": "A coberta virou forte. O barulho, não.",
+          "efeitos": { "felicidade": -3, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Ir para a casa da avó",
+        "resumo": "fugiu das brigas para a casa da avó",
+        "condicoes": { "avo.vivo": true },
+        "bloqueio": "a avó não está mais aqui",
+        "resultado": {
+          "texto": "A vó {avo} abriu a porta sem perguntar nada e esquentou um leite. Você dormiu lá muitas outras vezes.",
+          "efeitos": { "felicidade": -1, "avo.vinculo": 10 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "separacao_dos_pais",
+    "idade": [5, 17],
+    "condicoes": {
+      "familia": "conflituosa",
+      "pai.ausente": false,
+      "mae.vivo": true,
+      "pai.vivo": true,
+      "mae.vinculo": { "max": 60 }
+    },
+    "tensao": 2,
+    "texto": "Os pais sentaram você no sofá e disseram que iam se separar \"mas que nada vai mudar\". Mudou tudo.",
+    "resumo": "viu os pais se separarem",
+    "escolhas": [
+      {
+        "texto": "Morar com a mãe",
+        "resumo": "foi morar com a mãe depois da separação",
+        "resultado": {
+          "texto": "Fim de semana sim, fim de semana não, você arrumava uma mochila. {pai} virou visita.",
+          "efeitos": { "felicidade": -4, "mae.vinculo": 8, "pai.vinculo": -10, "marcas": ["pais_separados"] }
+        }
+      },
+      {
+        "texto": "Morar com o pai",
+        "resumo": "foi morar com o pai depois da separação",
+        "resultado": {
+          "texto": "{pai} aprendeu a fazer quatro pratos e repetia os quatro. {mae} ligava toda noite.",
+          "efeitos": { "felicidade": -4, "pai.vinculo": 8, "mae.vinculo": -10, "marcas": ["pais_separados"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sair_de_casa_cedo",
+    "idade": [16, 19],
+    "condicoes": { "familia": "conflituosa", "semMarcas": ["independente"] },
+    "texto": "Em casa, cada jantar vira briga. Um amigo oferece o quarto dos fundos por um preço camarada.",
+    "resumo": "pensou em sair de casa cedo",
+    "escolhas": [
+      {
+        "texto": "Sair de casa",
+        "resumo": "saiu de casa antes dos vinte",
+        "resultado": {
+          "texto": "Você saiu com duas sacolas e um ventilador. A liberdade era um colchão no chão e um silêncio novo.",
+          "efeitos": { "felicidade": 3, "custo": { "definir": 12000 }, "mae.vinculo": -8, "marcas": ["independente"] }
+        }
+      },
+      {
+        "texto": "Aguentar mais um pouco",
+        "resumo": "aguentou mais um pouco em casa",
+        "resultado": {
+          "texto": "Você contou os meses como quem conta os dias de prisão. Faltavam muitos.",
+          "efeitos": { "felicidade": -3, "dinheiro": 1000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pais_separados_natal",
+    "idade": [8, 40],
+    "condicoes": { "marcas": ["pais_separados"], "mae.vivo": true, "pai.vivo": true },
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Natal de pais separados: ceia com {mae} às dez, peru requentado com {pai} à meia-noite, e um tio perguntando com quem você gosta mais.",
+    "resumo": "passou o Natal dividido entre pai e mãe",
+    "escolhas": [
+      {
+        "texto": "Ir às duas ceias",
+        "resumo": "foi às duas ceias de Natal",
+        "resultado": {
+          "texto": "Você jantou duas vezes e pediu antiácido na farmácia de plantão.",
+          "efeitos": { "felicidade": 1, "mae.vinculo": 3, "pai.vinculo": 3, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Passar com amigos",
+        "resumo": "passou o Natal com os amigos",
+        "resultado": {
+          "texto": "Amigo secreto, pizza e ninguém perguntando nada. Os dois mandaram mensagem chateados.",
+          "efeitos": { "felicidade": 2, "amigo.vinculo": 5, "mae.vinculo": -3, "pai.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "assumir_negocio",
+    "ator": ["mae", "pai"],
+    "idade": [22, 38],
+    "condicoes": { "ator.dono_do_negocio": true },
+    "peso": 3,
+    "texto": "{ator.quem} quer passar o negócio adiante: \"ser {ator.ocupacao} não é só trabalho, é o nome da família\".",
+    "resumo": "teve a chance de assumir o negócio da família",
+    "escolhas": [
+      {
+        "texto": "Assumir e modernizar tudo",
+        "resumo": "assumiu o negócio da família e modernizou tudo",
+        "condicoes": { "balcao": { "min": 2 } },
+        "bloqueio": "você nunca trabalhou lá",
+        "resultado": {
+          "texto": "Você já conhecia cada prateleira. Trocou o caderno de fiados por aplicativo e os clientes antigos reclamaram, mas voltaram.",
+          "efeitos": {
+            "marcas": ["herdeiro_negocio"],
+            "renda": { "definir": 110000 },
+            "ator.vinculo": 12,
+            "inteligencia": 1
+          }
+        }
+      },
+      {
+        "texto": "Assumir o negócio",
+        "resumo": "assumiu o negócio da família",
+        "resultado": {
+          "texto": "Você ganhou a chave, o caderno de fiados e funcionários que te viram nascer.",
+          "efeitos": {
+            "marcas": ["herdeiro_negocio"],
+            "renda": { "definir": 80000 },
+            "ator.vinculo": 12,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Seguir o próprio caminho",
+        "resumo": "não quis assumir o negócio da família",
+        "resultado": {
+          "texto": "{ator} vendeu o negócio para um concorrente e nunca mais tocou no assunto. Quase nunca.",
+          "efeitos": { "ator.vinculo": -10, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "negocio_em_crise",
+    "idade": [25, 70],
+    "condicoes": { "marcas": ["herdeiro_negocio"], "inflacao": { "min": 6 } },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "valores": { "valor_venda": 250000, "aporte": 30000 },
+    "texto": "O negócio da família está no vermelho: [a inflação comeu a margem|um concorrente abriu do lado|o principal cliente parou de pagar]. O contador fala em \"medidas duras\".",
+    "resumo": "viu o negócio da família entrar em crise",
+    "escolhas": [
+      {
+        "texto": "Botar dinheiro do bolso",
+        "resumo": "pôs dinheiro do bolso para salvar o negócio",
+        "condicoes": { "dinheiro": { "min": 30000 } },
+        "bloqueio": "não tem esse dinheiro guardado",
+        "resultado": {
+          "texto": "Você tirou {aporte} da poupança e pôs no caixa. O negócio respirou; você, nem tanto.",
+          "efeitos": { "dinheiro": -30000, "felicidade": -2, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Cortar custos e demitir",
+        "resumo": "cortou custos e demitiu gente",
+        "resultado": {
+          "texto": "Você demitiu pessoas que conhecia pelo nome. O balanço fechou. O sono, não.",
+          "efeitos": { "felicidade": -4, "renda": -10000 }
+        }
+      },
+      {
+        "texto": "Vender o negócio",
+        "resumo": "vendeu o negócio da família",
+        "resultado": {
+          "texto": "Você vendeu por {valor_venda}, menos do que valia e mais do que esperava.",
+          "efeitos": {
+            "dinheiro": 250000,
+            "removerMarcas": ["herdeiro_negocio"],
+            "renda": { "definir": 30000 },
+            "felicidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "balcao_de_crianca",
+    "idade": [9, 14],
+    "condicoes": { "marcas": ["negocio_familiar"] },
+    "texto": "No negócio da família, você ganhou um banquinho atrás do balcão. Os clientes mais antigos te chamam de \"patrãozinho\" ou \"patroazinha\".",
+    "resumo": "cresceu atrás do balcão do negócio da família",
+    "escolhas": [
+      {
+        "texto": "Aprender o ofício",
+        "resumo": "aprendeu o ofício da família ainda criança",
+        "resultado": {
+          "texto": "Você aprendeu a dar troco de cabeça, a sorrir para cliente chato e a fechar o caixa sem chorar.",
+          "efeitos": {
+            "inteligencia": 2,
+            "felicidade": -1,
+            "qualidades": { "balcao": 1 },
+            "marcas": ["vendedor_nato"]
+          }
+        }
+      },
+      {
+        "texto": "Preferir brincar",
+        "resumo": "preferiu brincar a ficar no balcão",
+        "resultado": {
+          "texto": "O banquinho ficou vazio. {pai} suspirou e disse que um dia você ia entender.",
+          "efeitos": { "felicidade": 2, "pai.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_surpresa",
+    "idade": [15, 70],
+    "condicoes": { "familia": "acolhedora", "mae.vivo": true },
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "Você chegou em casa e acendeu a luz: \"SURPRESA!\" A família inteira, um bolo com o seu nome escrito errado e {avo} segurando o balão.",
+    "resumo": "ganhou uma festa surpresa da família",
+    "efeitos": { "felicidade": 4, "mae.vinculo": 3 }
+  },
+  {
+    "id": "casa_cheia",
+    "idade": [6, 16],
+    "condicoes": { "familia": "acolhedora", "avo.vivo": true },
+    "texto": "Domingo na casa da família: primos, tios, um cachorro de alguém e a vó {avo} reclamando que fizeram pouca comida. Fizeram comida para trinta.",
+    "resumo": "cresceu numa casa sempre cheia",
+    "efeitos": { "felicidade": 2, "avo.vinculo": 3, "mae.vinculo": 2 }
+  },
+  {
+    "id": "cofrinho_cheio",
+    "idade": [9, 15],
+    "condicoes": { "cofrinho": { "min": 3 } },
+    "texto": "O cofrinho de porquinho não fecha mais. Você chacoalha e ouve o barulho mais bonito do mundo.",
+    "resumo": "encheu o primeiro cofrinho",
+    "escolhas": [
+      {
+        "texto": "Abrir uma conta no banco",
+        "resumo": "abriu a primeira conta no banco com o cofrinho",
+        "resultado": {
+          "texto": "{mae} te levou ao banco. O gerente contou as moedas com cara de quem merecia aumento.",
+          "efeitos": { "dinheiro": 600, "marcas": ["poupador"], "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Gastar tudo numa coisa só",
+        "resumo": "gastou o cofrinho inteiro de uma vez",
+        "resultado": {
+          "texto": "Você comprou [um videogame usado|uma bicicleta com marcha|um tênis de luzinha] e foi a pessoa mais feliz do bairro por uma semana.",
+          "efeitos": { "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "alguem_especial",
+    "idade": [16, 70],
+    "condicoes": { "paquera": { "min": 2 }, "semMarcas": ["namoro"] },
+    "peso": 3,
+    "texto": "Das saídas do último ano, uma conversa continuou. E continuou. Já tem piada interna, música de vocês dois e uma pessoa perguntando \"o que nós somos?\".",
+    "resumo": "conheceu alguém especial",
+    "escolhas": [
+      {
+        "texto": "Assumir o namoro",
+        "resumo": "começou a namorar sério",
+        "resultado": {
+          "texto": "Vocês mudaram o status, conheceram as famílias e brigaram pela primeira vez por causa de pizza. Está oficial.",
+          "efeitos": { "personagens": ["amor"], "marcas": ["namoro"], "felicidade": 5 }
+        }
+      },
+      {
+        "texto": "Manter sem rótulo",
+        "resumo": "preferiu não rotular a relação",
+        "resultado": {
+          "texto": "Sem rótulo, sem cobrança e, alguns meses depois, sem a outra pessoa.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vestibular_preparado",
+    "idade": [17, 19],
+    "condicoes": { "estudo": { "min": 4 }, "semMarcas": ["cursando", "formado"] },
+    "trechos": { "estudo_anos": [{ "se": { "estudo": { "min": 7 } }, "texto": "muitos" }, { "texto": "alguns" }] },
+    "texto": "Você chegou ao ENEM com {estudo_anos} anos de estudo nas costas e um caderno de redações corrigidas.",
+    "resumo": "chegou ao vestibular bem preparad{o|a}",
+    "efeitos": { "inteligencia": 3, "felicidade": 2 }
+  },
+  {
+    "id": "aprovado_concurso_estudo",
+    "idade": [20, 58],
+    "condicoes": { "concurso": { "min": 3 }, "semMarcas": ["servidor"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Saiu o resultado do concurso. Você procurou seu nome na lista com o coração na boca.",
+    "resumo": "fez concurso depois de anos estudando",
+    "teste": { "atributo": "inteligencia", "dificuldade": 58 },
+    "sucesso": {
+      "texto": "Estava lá. Você releu sete vezes. Estabilidade, plano de saúde e um crachá que você vai usar até no mercado.",
+      "resumo": "passou no concurso",
+      "efeitos": {
+        "renda": { "definir": 72000 },
+        "marcas": ["servidor"],
+        "removerMarcas": ["concurseiro"],
+        "felicidade": 8
+      }
+    },
+    "fracasso": {
+      "texto": "Ficou a três questões da vaga. Você jurou que no próximo edital vai.",
+      "resumo": "bateu na trave no concurso",
+      "efeitos": { "felicidade": -3 }
+    }
+  },
+  {
+    "id": "heranca",
+    "idade": [18, 100],
+    "condicoes": { "marcaHa": [{ "marca": "herdou", "max": 1 }], "dinheiro": { "min": 10000 } },
+    "tensao": 3,
+    "texto": "O inventário terminou. A herança caiu na sua conta: mais dinheiro do que você já viu junto, e um silêncio esquisito no lugar de quem deixou.",
+    "resumo": "recebeu uma herança",
+    "escolhas": [
+      {
+        "texto": "Investir quase tudo",
+        "resumo": "investiu a herança",
+        "resultado": {
+          "texto": "Você pôs o dinheiro para render e não contou para ninguém. O primo distante descobriu mesmo assim.",
+          "efeitos": { "investir": 10000000, "inteligencia": 1, "marcas": ["investidor"] }
+        }
+      },
+      {
+        "texto": "Realizar um sonho antigo",
+        "resumo": "realizou um sonho antigo com a herança",
+        "condicoes": { "dinheiro": { "min": 60000 } },
+        "bloqueio": "a herança não dá para tanto",
+        "resultado": {
+          "texto": "Você [viajou para o outro lado do mundo|comprou a casa com quintal|abriu o bar que sempre quis] e pensou em quem deixou o dinheiro a cada dia.",
+          "efeitos": { "dinheiro": -60000, "felicidade": 6 }
+        }
+      },
+      {
+        "texto": "Dividir com os primos",
+        "resumo": "dividiu a herança com os primos",
+        "condicoes": { "dinheiro": { "min": 20000 } },
+        "bloqueio": "a herança foi pequena demais para dividir",
+        "resultado": {
+          "texto": "Ninguém pediu, mas você dividiu. No Natal seguinte, você era a pessoa preferida da família.",
+          "efeitos": { "dinheiro": -20000, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aperto_do_mes",
+    "idade": [18, 80],
+    "condicoes": { "marcas": ["privacao"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "O mês acabou antes do salário de novo. [A luz está atrasada.|O cartão está no limite.|O gás acabou no meio do feijão.]",
+    "resumo": "passou por um aperto de dinheiro",
+    "escolhas": [
+      {
+        "texto": "Vender alguma coisa",
+        "resumo": "vendeu coisas para fechar o mês",
+        "resultado": {
+          "texto": "Você vendeu [o videogame|a bicicleta|a TV do quarto] num grupo de compra e venda. Fechou o mês, faltou o resto.",
+          "efeitos": { "dinheiro": 1500, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer um bico urgente",
+        "resumo": "fez bico de emergência",
+        "resultado": {
+          "texto": "Três fins de semana trabalhando em festa. Os pés pediram demissão; a conta de luz agradeceu.",
+          "efeitos": { "dinheiro": 2500, "saude": -2, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tentar_outra_cidade",
+    "idade": [20, 45],
+    "condicoes": { "lugar.desemprego": { "min": 0.095 }, "renda": { "max": 40000 }, "semMarcas": ["mudou_sp"] },
+    "texto": "Em {cidade}, o desemprego está alto e as vagas que aparecem pagam pouco. Um conhecido diz que em outra cidade está contratando.",
+    "resumo": "pensou em tentar a vida em outra cidade",
+    "escolhas": [
+      {
+        "texto": "Ir tentar a sorte",
+        "resumo": "foi tentar a vida em outra cidade",
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Você arrumou trabalho em duas semanas e um quarto em três. A saudade chegou junto com o primeiro salário.",
+          "efeitos": { "renda": 12000, "felicidade": 1, "marcas": ["mudou_sp"], "mae.vinculo": -5 }
+        },
+        "fracasso": {
+          "texto": "Não deu certo. Você voltou depois de seis meses, com menos dinheiro e mais história.",
+          "efeitos": { "dinheiro": -3000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Ficar e insistir",
+        "resumo": "ficou na cidade e insistiu",
+        "resultado": {
+          "texto": "Você ficou perto de quem ama e longe das vagas. Fez bico e esperou.",
+          "efeitos": { "felicidade": 1, "dinheiro": 1000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aluguel_caro",
+    "idade": [20, 60],
+    "condicoes": { "lugar.custo_vida": { "min": 1.2 }, "custo": { "min": 10000 }, "semMarcas": ["casa_propria"] },
+    "texto": "O aluguel em {cidade} subiu de novo. O que você paga num quarto daria uma casa inteira no interior.",
+    "resumo": "sentiu o aluguel da cidade grande pesar",
+    "escolhas": [
+      {
+        "texto": "Dividir apartamento",
+        "resumo": "foi dividir apartamento para pagar menos",
+        "resultado": {
+          "texto": "Você ganhou um colega de apê que ouve música alta e deixa a louça de molho. E economizou.",
+          "efeitos": { "custo": -4000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Mudar para longe do centro",
+        "resumo": "se mudou para longe do centro",
+        "resultado": {
+          "texto": "O aluguel caiu pela metade; o tempo no ônibus dobrou.",
+          "efeitos": { "custo": -5000, "saude": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pagar e reclamar",
+        "resumo": "pagou o aluguel caro e reclamou",
+        "resultado": {
+          "texto": "Você pagou e reclamou com todo mundo, inclusive com o proprietário, que concordou e não baixou nada.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "recaida_cigarro",
+    "idade": [20, 85],
+    "condicoes": { "marcas": ["ex_fumante"] },
+    "texto": "Uma semana horrível, um colega fumando na porta do trabalho, e a vontade voltou com tudo depois de anos sem fumar.",
+    "resumo": "sentiu vontade de voltar a fumar",
+    "escolhas": [
+      {
+        "texto": "Aceitar só um",
+        "resumo": "aceitou um cigarro depois de anos",
+        "resultado": {
+          "texto": "Só um virou um maço. O fôlego que você tinha recuperado foi embora em dois meses.",
+          "efeitos": { "saude": -3, "removerMarcas": ["ex_fumante"], "marcas": ["fumante"], "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Mascar chiclete e respirar",
+        "resumo": "resistiu à vontade de fumar",
+        "resultado": {
+          "texto": "Você mascou três chicletes e foi andar no quarteirão. Passou.",
+          "efeitos": { "felicidade": -1, "saude": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reencontro_amigo_brigado",
+    "idade": [30, 80],
+    "condicoes": { "marcas": ["brigou_com_amigo"] },
+    "texto": "Num enterro de um conhecido em comum, você encontrou o ex-sócio com quem brigou feio. Ele está mais velho e parece cansado.",
+    "resumo": "reencontrou o amigo com quem tinha brigado",
+    "escolhas": [
+      {
+        "texto": "Puxar conversa",
+        "resumo": "fez as pazes com o ex-sócio",
+        "resultado": {
+          "texto": "Vocês tomaram um café. Ninguém pediu desculpas, mas os dois riram de uma coisa antiga.",
+          "efeitos": { "felicidade": 3, "removerMarcas": ["brigou_com_amigo"] }
+        }
+      },
+      {
+        "texto": "Fingir que não viu",
+        "resumo": "fingiu não ver o ex-sócio",
+        "resultado": {
+          "texto": "Você olhou para o celular até ele ir embora. O café do velório estava frio, como sempre.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "doenca_de_quem_ama",
+    "ator": ["amor", "filho", "amigo"],
+    "preferir": "-ator.saude",
+    "idade": [18, 100],
+    "condicoes": { "ator.saude": { "max": 45 } },
+    "texto": "{ator} anda abatid{ator:o|a}, emagreceu e jura que é só cansaço.",
+    "resumo": "notou {ator.quem} doente",
+    "escolhas": [
+      {
+        "texto": "Levar ao médico",
+        "resumo": "levou {ator} ao médico a tempo",
+        "resultado": {
+          "texto": "Era coisa séria e foi pega cedo. O médico disse que você salvou um ano de tratamento.",
+          "efeitos": { "ator.saude": 10, "ator.vinculo": 6, "dinheiro": -500 }
+        }
+      },
+      {
+        "texto": "Acreditar que é cansaço",
+        "resumo": "acreditou que era só cansaço",
+        "resultado": {
+          "texto": "Era cansaço também. E outra coisa, que ficou para depois.",
+          "efeitos": { "ator.saude": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lembranca_primeiro_amor",
+    "idade": [25, 90],
+    "condicoes": { "marcas": ["primeiro_amor"], "paixao.vinculo": { "min": 20 } },
+    "repetivel": true,
+    "intervalo": 15,
+    "texto": "Uma música no rádio e, de repente, você tem quinze anos de novo e {paixao} está do outro lado da roda.",
+    "resumo": "lembrou do primeiro amor",
+    "efeitos": { "felicidade": 1 }
+  },
+  {
+    "id": "bolsa_na_faculdade",
+    "idade": [17, 20],
+    "condicoes": { "marcas": ["bolsista"], "semMarcas": ["cursando", "formado"] },
+    "peso": 3,
+    "texto": "Com o histórico de ex-bolsista, apareceu a chance de uma bolsa integral pelo programa do governo numa faculdade que você só via da janela do ônibus.",
+    "resumo": "conseguiu bolsa integral na faculdade",
+    "escolhas": [
+      {
+        "texto": "Aceitar a bolsa",
+        "resumo": "entrou na faculdade com bolsa integral",
+        "resultado": {
+          "texto": "Primeira pessoa da família com carteirinha de universitário. {mae} imprimiu e colou na geladeira.",
+          "efeitos": { "marcas": ["cursando"], "felicidade": 6, "inteligencia": 1, "mae.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Trabalhar primeiro",
+        "resumo": "adiou a faculdade para trabalhar",
+        "resultado": {
+          "texto": "A conta de casa falou mais alto. A bolsa ficou guardada num e-mail que você relê de vez em quando.",
+          "efeitos": { "dinheiro": 2000, "felicidade": -3, "marcas": ["trabalhou_cedo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "investimento_furado",
+    "idade": [28, 80],
+    "condicoes": { "patrimonio": { "min": 300000 } },
+    "peso": 2,
+    "texto": "Um conhecido do clube te chamou para um fundo \"exclusivo\" que rende o dobro do mercado. Ele mostra o próprio extrato no celular, com o dedo cobrindo metade da tela.",
+    "resumo": "foi chamad{o|a} para um investimento bom demais para ser verdade",
+    "escolhas": [
+      {
+        "texto": "Colocar uma boa parte",
+        "resumo": "apostou alto num fundo de um conhecido",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "Para surpresa de todo mundo, era verdade. Por enquanto.",
+          "efeitos": { "patrimonioFator": 1.35, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O fundo sumiu, o conhecido sumiu, e o grupo do clube virou um silêncio só.",
+          "resumo": "perdeu boa parte do patrimônio num fundo furado",
+          "efeitos": { "patrimonioFator": 0.55, "felicidade": -6, "marcas": ["caiu_golpe"] }
+        }
+      },
+      {
+        "texto": "Ficar no que já conhece",
+        "resumo": "recusou o fundo milagroso",
+        "resultado": {
+          "texto": "Você ficou com o seu investimento sem graça. Dois anos depois, saiu uma reportagem sobre o fundo.",
+          "efeitos": { "inteligencia": 1, "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oportunidade_de_negocio",
+    "idade": [24, 55],
+    "condicoes": { "semMarcas": ["empreendedor", "socio"] },
+    "peso": 2,
+    "texto": "Um conhecido quer abrir [uma hamburgueria artesanal|uma loja de açaí|uma empresa de energia solar|um aplicativo de entrega de marmita] e precisa de um sócio. \"Não tem como dar errado\", ele diz, o que sempre preocupa.",
+    "resumo": "teve a chance de virar sócio num negócio",
+    "escolhas": [
+      {
+        "texto": "Entrar com tudo",
+        "resumo": "entrou com tudo num negócio novo",
+        "condicoes": { "patrimonio": { "min": 20000 } },
+        "bloqueio": "você não tem com o que entrar",
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "Deu muito certo. Em três anos, vocês tinham filiais e você, um contador.",
+          "resumo": "ficou rico com um negócio",
+          "efeitos": { "renda": 60000, "patrimonioFator": 1.8, "marcas": ["empreendedor"], "felicidade": 6 }
+        },
+        "fracasso": {
+          "texto": "O negócio quebrou em um ano e levou metade das suas economias junto.",
+          "resumo": "perdeu as economias num negócio que quebrou",
+          "efeitos": { "patrimonioFator": 0.5, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Entrar com pouco",
+        "resumo": "entrou com pouco num negócio novo",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "O negócio pegou. Sua parte virou uma renda extra que paga o aluguel.",
+          "efeitos": { "renda": 15000, "marcas": ["empreendedor"], "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Não deu. Você perdeu pouco e aprendeu muito, como dizem os coaches.",
+          "efeitos": { "dinheiro": -5000, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou sociedade num negócio",
+        "resultado": {
+          "texto": "Você agradeceu e seguiu. Às vezes passa na frente do lugar e confere se ainda está aberto.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarto_dividido",
+    "idade": [6, 14],
+    "condicoes": { "irmaos": { "min": 2 }, "classe_origem": { "max": 3 } },
+    "trechos": {
+      "quantos": [
+        { "se": { "irmaos": { "min": 4 } }, "texto": "quatro" },
+        { "se": { "irmaos": { "min": 3 } }, "texto": "três" },
+        { "texto": "dois" }
+      ]
+    },
+    "texto": "Você divide o quarto com {quantos} irmãos. Tem beliche, briga por tomada e um armário em que ninguém sabe o que é de quem.",
+    "resumo": "dividiu o quarto com os irmãos",
+    "escolhas": [
+      {
+        "texto": "Fazer um acordo de paz",
+        "resumo": "fez um acordo de paz com os irmãos",
+        "resultado": {
+          "texto": "Vocês dividiram as gavetas com fita crepe e nomes. Durou três semanas, um recorde.",
+          "efeitos": { "felicidade": 1, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Brigar pela cama de cima",
+        "resumo": "brigou com os irmãos pela cama de cima",
+        "resultado": {
+          "texto": "Você ganhou a cama de cima e um galo na testa, nessa ordem.",
+          "efeitos": { "felicidade": 2, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "briga_por_heranca",
+    "idade": [25, 95],
+    "condicoes": { "marcaHa": [{ "marca": "herdou", "max": 1 }], "irmaos": { "min": 1 } },
+    "tensao": 2,
+    "texto": "Mal acabou o inventário e os irmãos começaram: quem fica com a casa, quem fica com o carro, quem cuidou mais de quem.",
+    "resumo": "brigou com os irmãos pela herança",
+    "escolhas": [
+      {
+        "texto": "Dividir certinho e manter a paz",
+        "resumo": "dividiu a herança em paz com os irmãos",
+        "resultado": {
+          "texto": "Você abriu mão do relógio do pai e ganhou o Natal de volta.",
+          "efeitos": { "felicidade": 2, "dinheiro": -3000 }
+        }
+      },
+      {
+        "texto": "Ir para a justiça",
+        "resumo": "levou a briga da herança para a justiça",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O juiz te deu razão. Os irmãos nunca mais te deram bom-dia.",
+          "efeitos": { "dinheiro": 25000, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "Perdeu a causa, pagou o advogado e ficou sem os irmãos.",
+          "efeitos": { "dinheiro": -15000, "felicidade": -5 }
+        }
+      }
+    ]
+  }
+]

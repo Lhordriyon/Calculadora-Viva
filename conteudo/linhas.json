@@ -181,27 +181,27 @@
   {
     "idade": [3, 90],
     "texto": "O inverno chegou com [geada|vento minuano|chuva fina] e você não tirou a pantufa até setembro.",
-    "condicoes": { "marcas": ["lugar.sul"] }
+    "condicoes": { "lugar.regiao": "sul" }
   },
   {
     "idade": [3, 90],
     "texto": "No São João, comeu [canjica|pamonha|milho assado] até não aguentar mais e dançou forró do mesmo jeito.",
-    "condicoes": { "marcas": ["lugar.nordeste"] }
+    "condicoes": { "lugar.regiao": "nordeste" }
   },
   {
     "idade": [3, 90],
     "texto": "Choveu todo dia às três da tarde, mais pontual que qualquer ônibus.",
-    "condicoes": { "marcas": ["lugar.norte"] }
+    "condicoes": { "lugar.regiao": "norte" }
   },
   {
     "idade": [3, 90],
     "texto": "Agosto veio seco: umidade de deserto, céu cor de laranja e lábio rachado.",
-    "condicoes": { "marcas": ["lugar.centro_oeste"] }
+    "condicoes": { "lugar.regiao": "centro_oeste" }
   },
   {
     "idade": [18, 90],
     "texto": "Passou um bom pedaço do ano parad{o|a} no trânsito, [ouvindo podcast|cantando sozinh{o|a}|pensando na vida].",
-    "condicoes": { "marcas": ["lugar.sudeste"] }
+    "condicoes": { "lugar.regiao": "sudeste" }
   },
   {
     "idade": [3, 90],
@@ -439,5 +439,65 @@
   {
     "idade": [65, 100],
     "texto": "Passou as tardes na janela, de olho na rua, sabendo da vida de todo mundo [antes do jornal|antes do grupo do bairro|antes dos próprios interessados]."
+  },
+  {
+    "idade": [8, 25],
+    "texto": "Virou a pessoa que os outros procuram na véspera da prova. Cobrou em coxinha.",
+    "condicoes": { "estudo": { "min": 4 } }
+  },
+  {
+    "idade": [20, 60],
+    "texto": "Sonhou com uma questão de direito administrativo e acordou sabendo a resposta.",
+    "condicoes": { "concurso": { "min": 2 } }
+  },
+  {
+    "idade": [16, 60],
+    "texto": "Passou o ano respondendo mensagem com três emojis de fogo e nenhuma intenção séria.",
+    "condicoes": { "paquera": { "min": 1 }, "semMarcas": ["namoro"] }
+  },
+  {
+    "idade": [7, 16],
+    "texto": "Chacoalhava o cofrinho toda noite só para ouvir o barulho.",
+    "condicoes": { "cofrinho": { "min": 1 } }
+  },
+  {
+    "idade": [12, 40],
+    "texto": "Reconhece cliente pelo jeito de abrir a porta da loja da família.",
+    "condicoes": { "balcao": { "min": 2 } }
+  },
+  {
+    "idade": [12, 30],
+    "texto": "Foi a primeira pessoa da família a ter bolsa numa escola particular, e o tio fala disso até hoje.",
+    "condicoes": { "marcas": ["bolsista"] }
+  },
+  {
+    "idade": [14, 60],
+    "texto": "Cantou no coral da igreja [no Natal|na Páscoa|num casamento em que não conhecia ninguém].",
+    "condicoes": { "marcas": ["grupo_da_igreja"] }
+  },
+  {
+    "idade": [8, 30],
+    "texto": "Aprendeu a ter duas escovas de dente, dois pijamas e duas versões da mesma história.",
+    "condicoes": { "marcas": ["pais_separados"] }
+  },
+  {
+    "idade": [18, 70],
+    "texto": "Pegou o metrô na hora do rush e voltou para casa com o formato de outra pessoa.",
+    "condicoes": { "lugar.cidade_sp": true }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "Viu {paixao} numa rede social, com filhos e cachorro, e ficou feliz por ter sido o primeiro amor de alguém.",
+    "condicoes": { "marcas": ["primeiro_amor"], "paixao.vinculo": { "min": 40 } }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "Ainda sonha com a casa da família, com o cheiro do café de quem já foi.",
+    "condicoes": { "marcas": ["herdou"] }
+  },
+  {
+    "idade": [18, 50],
+    "texto": "Colou o edital na parede do quarto e riscou cada matéria que vencia, como quem conta os dias de uma pena.",
+    "condicoes": { "marcas": ["concurseiro"] }
   }
 ]

@@ -1,0 +1,586 @@
+[
+  {
+    "id": "amor_gastador",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 80],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": "gastador" },
+    "afinidade": "briga",
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "{amor} chegou em casa com uma TV de 75 polegadas em doze vezes \"sem juros\". A sala tem três metros de parede e uma janela.",
+    "resumo": "discutiu com {amor} por causa de uma compra parcelada",
+    "escolhas": [
+      {
+        "texto": "Devolver a TV",
+        "resumo": "fez {amor} devolver a TV parcelada",
+        "resultado": {
+          "texto": "A loja aceitou de volta. {amor} ficou dois dias sem falar com você e com a TV antiga.",
+          "efeitos": { "ator.vinculo": -8, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Separar as contas",
+        "resumo": "separou as contas com {amor}",
+        "resultado": {
+          "texto": "Cada um com o seu Pix e a sua fatura. O romance perdeu um pouco; o extrato, muito menos.",
+          "efeitos": { "ator.vinculo": -3, "dinheiro": 2500 }
+        }
+      },
+      {
+        "texto": "Ver a final na tela nova",
+        "resumo": "entrou na onda da TV nova com {amor}",
+        "resultado": {
+          "texto": "A final foi épica, a pipoca acabou no intervalo e a parcela chegou no dia 10, como prometido.",
+          "efeitos": { "dinheiro": -4800, "felicidade": 2, "ator.vinculo": 5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_proposta_fora",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 60],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": ["ambicioso", "trabalhador"] },
+    "tensao": 2,
+    "texto": "{amor} recebeu uma proposta para trabalhar em outra cidade: salário dobrado, chefe novo e uma pergunta pendurada no ar da cozinha.",
+    "resumo": "teve que decidir se ia junto quando {amor} mudou de cidade",
+    "escolhas": [
+      {
+        "texto": "Ir junto",
+        "resumo": "mudou de cidade pela carreira de {amor}",
+        "resultado": {
+          "texto": "Você largou o emprego, encaixotou a vida e recomeçou do zero numa cidade onde ninguém sabia o seu nome. {amor} sabia, e isso ajudou.",
+          "efeitos": { "renda": -6000, "dinheiro": -3000, "ator.vinculo": 12, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Namoro a distância",
+        "resumo": "topou um relacionamento a distância com {amor}",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Videochamada toda noite e rodoviária todo fim de semana. Contra todas as estatísticas, deu certo.",
+          "resumo": "segurou um relacionamento a distância com {amor}",
+          "efeitos": { "ator.vinculo": 4, "dinheiro": -2400 }
+        },
+        "fracasso": {
+          "texto": "As chamadas ficaram mais curtas, depois mais raras. Vocês ainda se gostam; só não se veem.",
+          "resumo": "viu o relacionamento a distância com {amor} esfriar",
+          "efeitos": { "ator.vinculo": -22, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Pedir para {amor} ficar",
+        "resumo": "pediu para {amor} recusar a proposta",
+        "resultado": {
+          "texto": "{amor} ficou. Nos primeiros anos, falou da proposta só de vez em quando. Depois, só nas brigas.",
+          "efeitos": { "ator.vinculo": -10, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_igreja",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 75],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": "devoto", "semMarcas": ["grupo_da_igreja"] },
+    "texto": "{amor} quer que vocês frequentem a igreja juntos aos domingos. Já guardou dois lugares no banco da frente.",
+    "resumo": "foi convidad{o|a} por {amor} para a igreja",
+    "escolhas": [
+      {
+        "texto": "Ir junto",
+        "resumo": "passou a ir à igreja com {amor}",
+        "resultado": {
+          "texto": "Você aprendeu os hinos, a hora de sentar e de levantar, e o nome de todas as tias do cafezinho.",
+          "efeitos": { "marcas": ["grupo_da_igreja"], "ator.vinculo": 7, "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Respeitar, mas ficar em casa",
+        "resumo": "preferiu não ir à igreja com {amor}",
+        "resultado": {
+          "texto": "Domingo virou dia de você fazer o almoço e de {amor} voltar contando as novidades da comunidade.",
+          "efeitos": { "ator.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_planilha",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 85],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": "mao_fechada" },
+    "afinidade": "briga",
+    "texto": "{amor} montou uma planilha das despesas da casa. Tem uma aba só para o seu café da padaria, com gráfico.",
+    "resumo": "recebeu a planilha de gastos de {amor}",
+    "escolhas": [
+      {
+        "texto": "Entrar na planilha",
+        "resumo": "entrou na planilha de gastos de {amor}",
+        "resultado": {
+          "texto": "Em um ano, o café virou garrafa térmica e a sobra virou reserva de emergência. Você reclamou de tudo e guardou o dobro.",
+          "efeitos": { "dinheiro": 5000, "felicidade": -1, "ator.vinculo": 4, "marcas": ["poupador"] }
+        }
+      },
+      {
+        "texto": "Defender o café",
+        "resumo": "defendeu o café da padaria contra a planilha de {amor}",
+        "resultado": {
+          "texto": "O café ficou, a aba também. Toda vez que você chega com o copinho, {amor} suspira.",
+          "efeitos": { "ator.vinculo": -5, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_sempre_trabalhando",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [24, 70],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": ["trabalhador", "ambicioso", "ausente"] },
+    "texto": "{amor} trabalha até tarde todo dia. O jantar virou uma mensagem: \"chego às 22h, não me espera\".",
+    "resumo": "viu {amor} sumir no trabalho",
+    "escolhas": [
+      {
+        "texto": "Sequestrar {amor} para uma viagem",
+        "resumo": "levou {amor} para uma viagem surpresa",
+        "resultado": {
+          "texto": "Três dias numa pousada sem sinal de celular. {amor} reclamou no primeiro dia, dormiu no segundo e chorou de rir no terceiro.",
+          "efeitos": { "dinheiro": -4000, "ator.vinculo": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Aceitar a rotina",
+        "resumo": "aceitou a rotina de trabalho de {amor}",
+        "resultado": {
+          "texto": "Você aprendeu a jantar vendo série e a guardar um prato no micro-ondas com um bilhete em cima.",
+          "efeitos": { "ator.vinculo": -5, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Cobrar presença",
+        "resumo": "cobrou mais presença de {amor}",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "{amor} ouviu, pediu desculpas e passou a sair às seis às quintas. Já é alguma coisa.",
+          "resumo": "conseguiu que {amor} tirasse o pé do trabalho",
+          "efeitos": { "ator.vinculo": 5 }
+        },
+        "fracasso": {
+          "texto": "A conversa virou briga, e a briga virou um silêncio de uma semana.",
+          "resumo": "brigou com {amor} por causa do trabalho",
+          "efeitos": { "ator.vinculo": -9, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_piada_interna",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [18, 95],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": ["piadista", "carinhoso"] },
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "{amor} transformou a sua pior semana numa piada interna. Até hoje, basta um dos dois dizer \"[o pato|a reunião das três|o Uber errado]\" para o outro chorar de rir.",
+    "resumo": "{ator} transformou uma semana ruim numa piada interna",
+    "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
+  },
+  {
+    "id": "amor_quadro_de_tarefas",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 85],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": ["rigido", "brigao"] },
+    "afinidade": "briga",
+    "texto": "{amor} decidiu que a casa vai funcionar com horários, regras e um quadro de tarefas imantado na geladeira. O seu nome aparece em vermelho.",
+    "resumo": "recebeu um quadro de tarefas de {amor}",
+    "escolhas": [
+      {
+        "texto": "Seguir o quadro",
+        "resumo": "passou a seguir o quadro de tarefas de {amor}",
+        "resultado": {
+          "texto": "A casa nunca esteve tão limpa e você nunca esteve tão cansad{o|a}. Mas acharam a chave reserva.",
+          "efeitos": { "felicidade": -1, "saude": 1, "ator.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Esconder o ímã",
+        "resumo": "escondeu o quadro de tarefas de {amor}",
+        "resultado": {
+          "texto": "O quadro sumiu. A guerra fria que veio depois durou um mês inteiro.",
+          "efeitos": { "ator.vinculo": -7, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_paga_a_conta",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [18, 90],
+    "condicoes": {
+      "marcas": ["namoro"],
+      "ator.traco": ["generoso", "carinhoso"],
+      "algumaMarca": ["privacao", "nome_sujo", "rotativo"]
+    },
+    "tensao": 2,
+    "afinidade": "ajuda",
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{amor} percebeu o aperto e pagou a fatura do cartão sem dizer nada. Você só descobriu porque o banco mandou mensagem.",
+    "resumo": "{ator} pagou uma conta sua num aperto",
+    "efeitos": { "dinheiro": 3000, "ator.vinculo": 4, "felicidade": 1 }
+  },
+  {
+    "id": "amor_viaja_demais",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 75],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": "ausente", "amigo.vivo": true },
+    "texto": "{amor} vive viajando a trabalho. O porteiro sabe mais da sua semana do que {amor}.",
+    "resumo": "sentiu falta de {amor}, que vivia viajando",
+    "escolhas": [
+      {
+        "texto": "Ir junto numa viagem",
+        "resumo": "foi junto numa viagem de trabalho de {amor}",
+        "resultado": {
+          "texto": "Você conheceu o hotel, o centro de convenções e um restaurante ótimo na última noite. Valeu pelo restaurante.",
+          "efeitos": { "dinheiro": -2500, "ator.vinculo": 8, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ocupar a agenda com os amigos",
+        "resumo": "encheu a agenda com os amigos enquanto {amor} viajava",
+        "resultado": {
+          "texto": "Você voltou a jogar bola, a ir a aniversários e a ter assunto. Quando {amor} volta, vocês têm novidade para contar.",
+          "efeitos": { "amigo.vinculo": 6, "ator.vinculo": -4, "felicidade": 1.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_saude_fragil",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["namoro"], "ator.traco": "fragil" },
+    "texto": "{amor} vive com alguma coisa: rinite, enxaqueca, um joelho que avisa quando vai chover. Agora o médico pediu uma bateria de exames.",
+    "resumo": "cuidou da saúde frágil de {amor}",
+    "escolhas": [
+      {
+        "texto": "Ir em todas as consultas",
+        "resumo": "acompanhou {amor} em todas as consultas",
+        "resultado": {
+          "texto": "Você virou especialista em sala de espera e em nome de remédio. {amor} nunca esqueceu.",
+          "efeitos": { "ator.vinculo": 8, "ator.saude": 4, "felicidade": -1, "dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Confiar que vai dar tudo certo",
+        "resumo": "deixou {amor} cuidar dos exames sozinh{ator:o|a}",
+        "resultado": {
+          "texto": "Deu tudo certo, dessa vez. {amor} comentou, sem olhar para você, que a sala de espera é fria.",
+          "efeitos": { "ator.vinculo": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_briga_na_escola",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [26, 70],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 7, "max": 15 },
+      "ator.traco": ["brigao", "rigido", "ambicioso"]
+    },
+    "afinidade": "briga",
+    "texto": "A escola ligou: {filho} brigou no recreio de novo. Desta vez, o outro estava com o lanche d{filho:ele|ela}.",
+    "resumo": "foi chamad{o|a} na escola por causa de uma briga de {filho}",
+    "escolhas": [
+      {
+        "texto": "Defender {filho}",
+        "resumo": "defendeu {filho} na diretoria",
+        "resultado": {
+          "texto": "Você chegou na diretoria com o argumento pronto e o sangue quente. {filho} saiu de lá com uma advertência e a certeza de que você está do lado d{filho:ele|ela}.",
+          "efeitos": { "ator.vinculo": 7, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Botar de castigo",
+        "resumo": "pôs {filho} de castigo pela briga",
+        "resultado": {
+          "texto": "Um mês sem videogame. {filho} chamou você de injust{o|a} e, dez anos depois, de razoável.",
+          "efeitos": { "ator.vinculo": -4, "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Procurar uma psicóloga",
+        "resumo": "levou {filho} a uma psicóloga",
+        "resultado": {
+          "texto": "Descobriram que o problema não era o lanche. Levou tempo, mas as brigas diminuíram.",
+          "efeitos": { "dinheiro": -2400, "ator.vinculo": 4, "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_passou_longe",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [34, 75],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 17, "max": 19 },
+      "ator.traco": ["ambicioso", "trabalhador", "rigido"]
+    },
+    "tensao": 2,
+    "valores": { "mesada": 1500 },
+    "texto": "{filho} passou numa universidade federal em outra cidade. Falta pagar a república, o mercado e a passagem para o Natal: uns {mesada} por mês.",
+    "resumo": "ajudou ou não {filho} a estudar em outra cidade",
+    "escolhas": [
+      {
+        "texto": "Bancar tudo",
+        "resumo": "bancou a faculdade de {filho} em outra cidade",
+        "condicoes": { "patrimonio": { "min": 20000 } },
+        "bloqueio": "não sobra {mesada} por mês",
+        "resultado": {
+          "texto": "Você mandou o Pix todo dia 5 por quatro anos. {filho} mandou foto da formatura com uma faixa escrita \"isso é seu também\".",
+          "efeitos": { "dinheiro": -18000, "ator.vinculo": 10, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Ajudar com metade",
+        "resumo": "ajudou {filho} com metade das despesas",
+        "resultado": {
+          "texto": "Metade você, metade um estágio. {filho} aprendeu a cozinhar arroz em panela de pressão e a negociar aluguel.",
+          "efeitos": { "dinheiro": -9000, "ator.vinculo": 5, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Não dá",
+        "resumo": "não conseguiu bancar a faculdade de {filho}",
+        "resultado": {
+          "texto": "{filho} arranjou dois estágios e um colchão emprestado, e nunca reclamou. Você reclamou por el{filho:e|a}.",
+          "efeitos": { "ator.vinculo": -4, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_hamburgueria",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [40, 85],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 22, "max": 45 },
+      "ator.traco": ["gastador", "ambicioso", "piadista"]
+    },
+    "texto": "{filho} quer abrir uma hamburgueria artesanal com pão de fermentação natural e precisa de um investidor-anjo. O anjo é você.",
+    "resumo": "foi chamad{o|a} para investir no negócio de {filho}",
+    "escolhas": [
+      {
+        "texto": "Investir",
+        "resumo": "investiu na hamburgueria de {filho}",
+        "condicoes": { "patrimonio": { "min": 25000 } },
+        "bloqueio": "não há R$ 20 mil para arriscar",
+        "efeitos": { "dinheiro": -20000 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "A fila dobrou a esquina no primeiro mês. {filho} devolveu o dinheiro com juros e um combo vitalício.",
+          "resumo": "investiu na hamburgueria de {filho}, que deu certo",
+          "efeitos": { "dinheiro": 32000, "ator.vinculo": 10, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O pão era ótimo; o aluguel, maior. Fechou em oito meses. {filho} nunca esqueceu que você acreditou.",
+          "resumo": "perdeu dinheiro na hamburgueria de {filho}",
+          "efeitos": { "ator.vinculo": 8, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Dizer não",
+        "resumo": "não investiu no negócio de {filho}",
+        "resultado": {
+          "texto": "{filho} disse que entendia. Abriu com o dinheiro de um amigo. Nas festas, ninguém toca no assunto.",
+          "efeitos": { "ator.vinculo": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_imitacao",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [30, 95],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 10 },
+      "ator.traco": ["piadista", "carinhoso", "generoso"]
+    },
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "No almoço de domingo, {filho} imitou você com uma precisão ofensiva: o jeito de atender o telefone, o \"[ô de casa|bença|pois não]\", tudo. A mesa inteira chorou de rir.",
+    "resumo": "{ator} imitou você no almoço de domingo",
+    "efeitos": { "felicidade": 1.5, "ator.vinculo": 3 }
+  },
+  {
+    "id": "filho_desenho",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [24, 60],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 4, "max": 10 },
+      "ator.traco": ["carinhoso", "piadista", "devoto", "generoso"]
+    },
+    "trechos": {
+      "pet_ou_nada": [
+        { "se": { "marcas": ["caramelo"], "pet.vivo": true }, "texto": "{pet} do lado" },
+        { "texto": "um sol de óculos escuros" }
+      ]
+    },
+    "texto": "{filho} fez um desenho da família para a escola. Você aparece maior que a casa, sorrindo, com {pet_ou_nada}.",
+    "resumo": "{ator} desenhou você maior que a casa",
+    "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
+  },
+  {
+    "id": "filho_saude_fragil",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [20, 60],
+    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 1, "max": 10 }, "ator.traco": "fragil" },
+    "tensao": 2,
+    "texto": "{filho} vive no pronto-socorro: bronquite, alergia, febre de madrugada. A pediatra já atende você pelo nome.",
+    "resumo": "cuidou da saúde frágil de {filho}",
+    "escolhas": [
+      {
+        "texto": "Fazer um plano de saúde",
+        "resumo": "fez um plano de saúde para {filho}",
+        "condicoes": { "renda": { "min": 30000 } },
+        "bloqueio": "o plano não cabe na renda",
+        "resultado": {
+          "texto": "O plano custa um aluguel pequeno por mês. Em compensação, a madrugada tem hora marcada.",
+          "efeitos": { "custo": 4800, "ator.saude": 10, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Contar com o posto e o SUS",
+        "resumo": "contou com o posto de saúde para cuidar de {filho}",
+        "resultado": {
+          "texto": "A fila é longa, mas a pediatra do posto virou quase da família. {filho} cresceu e a bronquite foi junto, aos poucos.",
+          "efeitos": { "ator.saude": 5, "felicidade": -1, "ator.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_foi_embora",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [45, 95],
+    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 21 }, "ator.traco": ["ausente", "ambicioso"] },
+    "texto": "{filho} se mudou para outro país e manda foto de neve, de mercado caro e de um apartamento do tamanho do seu banheiro.",
+    "resumo": "viu {filho} ir morar fora do país",
+    "escolhas": [
+      {
+        "texto": "Juntar e ir visitar",
+        "resumo": "foi visitar {filho} no exterior",
+        "condicoes": { "dinheiro": { "min": 9000 } },
+        "bloqueio": "a passagem custa uns R$ 9 mil",
+        "resultado": {
+          "texto": "Você enfrentou doze horas de voo, um aeroporto do tamanho de uma cidade e um frio de doer os dentes. Valeu cada minuto do abraço.",
+          "efeitos": { "dinheiro": -9000, "ator.vinculo": 12, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Videochamada aos domingos",
+        "resumo": "manteve videochamadas de domingo com {filho}",
+        "resultado": {
+          "texto": "Domingo, onze da manhã, o celular apoiado na garrafa de café. {filho} mostra a neve; você mostra o almoço.",
+          "efeitos": { "ator.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_missao",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [42, 90],
+    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 18, "max": 30 }, "ator.traco": "devoto" },
+    "texto": "{filho} anunciou que vai passar dois anos numa missão da igreja no interior do Amazonas, sem internet e com muita fé.",
+    "resumo": "viu {filho} partir para uma missão",
+    "escolhas": [
+      {
+        "texto": "Abençoar a viagem",
+        "resumo": "apoiou a missão de {filho}",
+        "resultado": {
+          "texto": "Você mandou um terço, protetor solar e uma lanterna. As cartas chegavam meses depois, cheias de rio e de gente.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Tentar convencer a ficar",
+        "resumo": "tentou convencer {filho} a desistir da missão",
+        "resultado": {
+          "texto": "{filho} foi mesmo assim. Voltou dois anos depois, mais magr{filho:o|a} e mais em paz, e demorou para perdoar.",
+          "efeitos": { "ator.vinculo": -7 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_primeiro_salario",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [38, 90],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 18, "max": 26 },
+      "ator.traco": ["trabalhador", "mao_fechada", "rigido", "ambicioso"]
+    },
+    "texto": "{filho} recebeu o primeiro salário com carteira assinada e fez questão de pagar o almoço. Pediu a sobremesa mais cara só para mostrar que podia.",
+    "resumo": "{ator} pagou o almoço com o primeiro salário",
+    "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
+  },
+  {
+    "id": "filho_planilha_da_velhice",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [55, 95],
+    "condicoes": {
+      "marcas": ["pai_mae"],
+      "ator.idade": { "min": 25 },
+      "ator.traco": ["mao_fechada", "ambicioso", "rigido"],
+      "semMarcas": ["investidor"]
+    },
+    "texto": "{filho} mandou uma planilha \"para a sua velhice\": quanto investir, onde, e uma aba chamada \"pare de comprar coisa na TV\".",
+    "resumo": "recebeu de {filho} um plano para a velhice",
+    "escolhas": [
+      {
+        "texto": "Seguir a planilha",
+        "resumo": "seguiu o plano de investimentos de {filho}",
+        "condicoes": { "dinheiro": { "min": 15000 } },
+        "bloqueio": "não há dinheiro parado para investir",
+        "resultado": {
+          "texto": "Você moveu o dinheiro parado para onde {filho} mandou. Rende mais que a poupança e menos que a sua desconfiança.",
+          "efeitos": { "investir": 15000, "ator.vinculo": 5, "marcas": ["investidor"] }
+        }
+      },
+      {
+        "texto": "Agradecer e guardar",
+        "resumo": "agradeceu a planilha de {filho} e fez do seu jeito",
+        "resultado": {
+          "texto": "Você imprimiu a planilha, guardou numa pasta e continuou fazendo exatamente o que fazia.",
+          "efeitos": { "ator.vinculo": -2, "felicidade": 0.5 }
+        }
+      }
+    ]
+  }
+]
