@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { carregarConteudo, RAIZ } from './disco.ts';
 import { classeDoPatrimonio, nomeDaClasse, patrimonioDe } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
-import type { Condicoes } from '../src/motor/esquema.ts';
+import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
 import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
 import { aleatorio, criarRng, misturar } from '../src/motor/rng.ts';
@@ -56,8 +56,8 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
       escolher(e, c, decidir(estrategia, e, c, robo));
     } else {
       // Um toque por ano: num verbo da ficha (age e passa o ano) ou no +1 ano.
-      const verbo = decidirAcao(estrategia, e, c, robo, memoria);
-      if (verbo) agir(e, c, verbo, memoria);
+      const verbo = decidirAcao(estrategia, e, c, robo);
+      if (verbo) agir(e, c, verbo);
       if (e.vivo) avancarAno(e, c, memoria);
     }
     toques++;
@@ -137,8 +137,15 @@ interface Vida {
   mortesNaFamilia: number;
 }
 
+/** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
 function positivas(cond: Condicoes | undefined): string[] {
-  return [...(cond?.marcas ?? []), ...(cond?.algumaMarca ?? []), ...(cond?.marcaHa ?? []).map((x) => x.marca)];
+  if (!cond) return [];
+  const saida = [...(cond.marcas ?? []), ...(cond.algumaMarca ?? []), ...(cond.marcaHa ?? []).map((x) => x.marca)];
+  for (const [chave, v] of Object.entries(cond)) {
+    if (CHAVES_CONDICAO.has(chave) || chave.includes('.')) continue;
+    if (v === true || (typeof v === 'object' && !Array.isArray(v) && 'min' in v && (v.min ?? 0) > 0)) saida.push(chave);
+  }
+  return saida;
 }
 
 function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
