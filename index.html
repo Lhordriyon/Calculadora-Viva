@@ -2,11 +2,25 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Trajetória</title>
+    <meta name="description" content="Uma vida inteira em poucos minutos, no celular. Cada escolha deixa marca, e algumas voltam décadas depois." />
+    <meta name="theme-color" content="#f6f1e9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15130f" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="Trajetória" />
+    <meta property="og:description" content="Uma vida inteira em poucos minutos. Cada escolha deixa marca." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <style>
+      /* Antes do CSS carregar: sem flash branco no tema escuro. */
+      html { background: #f6f1e9; }
+      @media (prefers-color-scheme: dark) { html { background: #15130f; } }
+    </style>
   </head>
   <body>
     <div id="app"></div>
+    <noscript>O Trajetória precisa de JavaScript para funcionar.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

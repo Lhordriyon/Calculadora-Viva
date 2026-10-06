@@ -1,9 +1,5 @@
 import { render } from 'preact';
-import { useState } from 'preact/hooks';
-
-function App() {
-  const [n, setN] = useState(0);
-  return <button onClick={() => setN(n + 1)}>{n}</button>;
-}
+import { App } from './ui/App.tsx';
+import './ui/estilo.css';
 
 render(<App />, document.getElementById('app')!);

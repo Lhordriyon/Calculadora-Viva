@@ -17,7 +17,7 @@ export interface PontoDeVirada {
   /** O que você fez ("trocou o ENEM por um bico"). */
   escolha: string;
   consequenciaIdade: number;
-  /** A consequência mais distante ("abriu uma hamburgueria com Bruno"). */
+  /** A consequência mais distante, contada pelo que aconteceu ali ("abriu uma hamburgueria com Bruno"). */
   consequencia: string;
   /** Quantos eventos descendem desta escolha. */
   total: number;
@@ -79,7 +79,7 @@ export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
       idade: c.origem.idade,
       escolha: c.origem.escolha!.resumo,
       consequenciaIdade: c.ultima.idade,
-      consequencia: c.ultima.resumo ?? c.ultima.texto,
+      consequencia: c.ultima.escolha?.resumo ?? c.ultima.resumo ?? c.ultima.texto,
       total: c.total,
     });
     if (escolhidos.length >= limite) break;

@@ -631,36 +631,44 @@
   },
   {
     "id": "primeiro_investimento",
-    "idade": [19, 40],
-    "peso": 5,
-    "condicoes": {
-      "algumaMarca": ["poupador", "tino_financeiro"],
-      "dinheiro": { "min": 2000 },
-      "semMarcas": ["investidor"]
-    },
-    "texto": "Sobrou dinheiro no fim do mês, um milagre. São {dinheiro} parados na conta, perdendo para a inflação em silêncio.",
-    "resumo": "pensou no que fazer com a primeira sobra de dinheiro",
+    "idade": [19, 75],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "dinheiro": { "min": 5000 }, "semMarcas": ["investidor"] },
+    "texto": "Sobrou dinheiro: {dinheiro} parados na conta, encolhendo um pouco a cada ano com a inflação. O gerente do banco liga oferecendo \"uma oportunidade\".",
+    "resumo": "decidiu o que fazer com o dinheiro parado",
     "escolhas": [
       {
-        "texto": "Investir tudo no Tesouro Direto",
+        "texto": "Investir no Tesouro Direto",
         "resumo": "fez o primeiro investimento da vida",
         "resultado": {
-          "texto": "Você leu três artigos, viu dois vídeos e investiu. O cofrinho de criança ficaria orgulhoso.",
+          "texto": "Você leu três artigos, viu dois vídeos e investiu. Rende devagar, mas rende acima da inflação.",
           "efeitos": { "investir": 1000000, "inteligencia": 1, "marcas": ["investidor"] }
         }
       },
       {
-        "texto": "Viajar para a praia",
-        "resumo": "gastou a sobra numa viagem para a praia",
+        "texto": "Gastar numa viagem",
+        "resumo": "gastou a sobra numa viagem",
         "resultado": {
           "texto": "Água de coco, protetor vencido e uma semana sem olhar o celular. Valeu cada centavo.",
-          "efeitos": { "dinheiro": -3000, "felicidade": 6 }
+          "efeitos": { "dinheiro": -4000, "felicidade": 6 }
         }
       },
       {
         "texto": "Deixar na conta",
         "resumo": "deixou o dinheiro parado na conta",
         "resultado": { "texto": "O dinheiro ficou lá, quietinho, encolhendo um pouco por mês.", "efeitos": {} }
+      },
+      {
+        "texto": "Investir como no tempo do cofrinho",
+        "resumo": "investiu com o hábito que vinha do cofrinho de criança",
+        "condicoes": { "algumaMarca": ["poupador", "tino_financeiro"] },
+        "bloqueio": "coisa de quem guardava a mesada",
+        "resultado": {
+          "texto": "Você já sabia o caminho: reserva de emergência, Tesouro e paciência. Seu eu de dez anos sorriu.",
+          "efeitos": { "investir": 1000000, "inteligencia": 2, "felicidade": 2, "marcas": ["investidor"] }
+        }
       }
     ]
   },

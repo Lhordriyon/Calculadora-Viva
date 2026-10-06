@@ -12,7 +12,8 @@
     "validar": "node scripts/validar.ts",
     "tunel": "node scripts/tunel.ts",
     "vida": "node scripts/uma-vida.ts",
-    "verificar": "npm run checar && npm test && npm run validar && npm run tunel && npm run build"
+    "verificar": "npm run checar && npm test && npm run validar && npm run tunel && npm run build",
+    "icones": "node scripts/icones.ts"
   },
   "dependencies": {
     "preact": "^11.0.0",
