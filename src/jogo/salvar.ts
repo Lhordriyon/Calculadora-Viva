@@ -3,7 +3,7 @@
  * sobe; um save antigo ou corrompido é descartado sem quebrar o jogo (a
  * memória entre vidas é preservada quando ainda for legível).
  */
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EstadoVida, MemoriaJogador } from '../motor/tipos.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
@@ -30,13 +30,13 @@ const Entrada = z.object({
   ano: z.number(),
   tipo: z.enum(['nascimento', 'evento', 'linha', 'morte']),
   texto: z.string(),
-  eventoId: z.string().optional(),
-  resumo: z.string().optional(),
-  escolha: z.object({ indice: z.number(), texto: z.string(), resumo: z.string() }).optional(),
-  resultado: z.string().optional(),
-  causas: z.array(z.number()).optional(),
-  deltas: Numeros.optional(),
-  inflacao: z.number().optional(),
+  eventoId: z.optional(z.string()),
+  resumo: z.optional(z.string()),
+  escolha: z.optional(z.object({ indice: z.number(), texto: z.string(), resumo: z.string() })),
+  resultado: z.optional(z.string()),
+  causas: z.optional(z.array(z.number())),
+  deltas: z.optional(Numeros),
+  inflacao: z.optional(z.number()),
 });
 
 const Vida = z.object({
@@ -65,22 +65,22 @@ const Vida = z.object({
     custo: z.number(),
     inflacao: z.number(),
   }),
-  marcas: z.record(z.string(), z.object({ ano: z.number(), idade: z.number(), origem: z.number().nullable() })),
-  agenda: z.array(z.object({ evento: z.string(), ano: z.number(), origem: z.number().nullable() })),
+  marcas: z.record(z.string(), z.object({ ano: z.number(), idade: z.number(), origem: z.nullable(z.number()) })),
+  agenda: z.array(z.object({ evento: z.string(), ano: z.number(), origem: z.nullable(z.number()) })),
   vistos: z.record(z.string(), z.array(z.number())),
   linhasRecentes: z.array(z.number()),
   historico: z.array(Entrada),
-  pendente: z
-    .object({
+  pendente: z.nullable(
+    z.object({
       eventoId: z.string(),
       texto: z.string(),
       causas: z.array(z.number()),
-      opcoes: z.array(z.object({ texto: z.string(), disponivel: z.boolean(), motivo: z.string().optional() })),
-      inflacao: z.number().optional(),
-    })
-    .nullable(),
+      opcoes: z.array(z.object({ texto: z.string(), disponivel: z.boolean(), motivo: z.optional(z.string()) })),
+      inflacao: z.optional(z.number()),
+    }),
+  ),
   vivo: z.boolean(),
-  morte: z.object({ idade: z.number(), ano: z.number(), causa: z.string(), fonte: z.number().optional() }).nullable(),
+  morte: z.nullable(z.object({ idade: z.number(), ano: z.number(), causa: z.string(), fonte: z.optional(z.number()) })),
   somaFelicidade: z.number(),
   proximoId: z.number(),
 });
@@ -91,7 +91,7 @@ const EsquemaSave = z.object({
   versao: z.number(),
   vida: z.unknown(),
   memoria: z.unknown(),
-  vidas: z.number().optional(),
+  vidas: z.optional(z.number()),
 });
 
 export function saveVazio(): Save {

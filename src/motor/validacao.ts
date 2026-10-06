@@ -3,8 +3,9 @@
  * (marcas, agendamentos, variáveis, personagens) e sinais de texto ruim.
  */
 import type { Condicoes, Efeitos, Evento } from './esquema.ts';
-import { PAPEIS, PAPEIS_NOVOS } from './esquema.ts';
-import { lerConteudo, type Conteudo, type FontesConteudo, type Problema } from './conteudo.ts';
+import { PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
+import type { Conteudo, Problema } from './conteudo.ts';
+import { lerConteudo, type FontesConteudo } from './leitura.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 import { analisarModelo, comprimentoMaximo } from './texto.ts';
 

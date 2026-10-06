@@ -6,7 +6,8 @@
 import { atende, causasDe, motivoBloqueio, patrimonio } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { economiaDoAno, movimentar } from './economia.ts';
-import { ATRIBUTOS, type Efeitos, type Evento, type Papel, type PapelNovo, type Resultado, type Teste } from './esquema.ts';
+import { ATRIBUTOS, type Papel, type PapelNovo } from './constantes.ts';
+import type { Efeitos, Evento, Resultado, Teste } from './esquema.ts';
 import { fatorNovidade } from './memoria.ts';
 import {
   FELICIDADE_BASE,

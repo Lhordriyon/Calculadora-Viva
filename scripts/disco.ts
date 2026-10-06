@@ -2,7 +2,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { montarConteudo, type Conteudo, type FontesConteudo } from '../src/motor/conteudo.ts';
+import type { Conteudo } from '../src/motor/conteudo.ts';
+import { montarConteudo, type FontesConteudo } from '../src/motor/leitura.ts';
 
 export const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 

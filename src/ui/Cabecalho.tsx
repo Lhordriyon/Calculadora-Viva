@@ -1,4 +1,4 @@
-import { ATRIBUTOS } from '../motor/esquema.ts';
+import { ATRIBUTOS } from '../motor/constantes.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { anos, CORES, NOMES } from './formato.ts';

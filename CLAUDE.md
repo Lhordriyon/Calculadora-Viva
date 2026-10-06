@@ -46,8 +46,10 @@ conteudo/            dados, nunca código
   mundo.json         nomes, cidades, famílias, textos de nascimento
 src/motor/           motor puro, sem UI: roda em Node e no navegador
   vida.ts            nascer → +1 ano → evento elegível → escolha → efeitos → morte
-  esquema.ts         esquemas Zod do conteúdo
-  conteudo.ts        indexa o conteúdo já lido (quem lê é o chamador)
+  esquema.ts         esquemas Zod do conteúdo (só Node: validador, túnel, testes)
+  leitura.ts         valida as fontes com o esquema e indexa
+  conteudo.ts        indexa o conteúdo já lido, sem Zod (o navegador usa direto)
+  constantes.ts      atributos e papéis, sem dependências
   condicoes.ts       condições e causas (marcas consultadas)
   economia.ts        dinheiro em reais de hoje, inflação, juros, investimento
   texto.ts           variáveis, concordância de gênero, alternâncias, R$
@@ -56,7 +58,8 @@ src/motor/           motor puro, sem UI: roda em Node e no navegador
   validacao.ts       checagens além do esquema (marcas, variáveis, cadeias)
   memoria.ts         memória do jogador entre vidas (reduz repetição)
   regras.ts          números de equilíbrio (ritmo, mortalidade, juros…)
-src/jogo/salvar.ts   save versionado no localStorage
+src/jogo/salvar.ts   save versionado no localStorage (zod/mini)
+src/conteudo.ts      conteúdo embutido no bundle (já validado no CI)
 src/ui/              Preact: App, Cabecalho, LinhaDoTempo, Palco, CartaoVida
 scripts/             validar, tunel, uma-vida, icones (Node com TypeScript nativo)
 test/                Vitest

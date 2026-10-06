@@ -8,6 +8,7 @@ Cada decisão relevante, com uma linha de motivo. O que foi cortado também fica
 - **Sem `@preact/preset-vite`:** o JSX é compilado pelo próprio Vite (oxc). Uma dependência e o Babel a menos; recarga completa basta.
 - **Scripts em TypeScript rodam direto no Node 22.18+.** Sem `tsx` nem build de scripts; o túnel usa exatamente o código do jogo.
 - **O motor recebe o conteúdo já lido.** O mesmo motor roda no Node (lê do disco) e no navegador (`import.meta.glob`).
+- **Zod só no Node; o navegador recebe o conteúdo já validado no CI** e o save usa `zod/mini`. Bundle de 84 para 61 KB gzip; um teste garante que o conteúdo do bundle é o mesmo que o validador aprova.
 - **Condições compiladas uma vez por objeto.** O túnel caiu de 22 s para 17 s sem mudar resultado (há teste comparando com a avaliação direta).
 - **Ícones PNG desenhados por um script sem dependências.** Quatro PNGs não justificam uma biblioteca de imagem.
 - **Deploy confere se o Pages está ativo antes de publicar** e deixa um aviso com o passo para ativar. Pages desligado não deve deixar a `main` vermelha.
@@ -80,6 +81,5 @@ Cada decisão relevante, com uma linha de motivo. O que foi cortado também fica
 
 ## Próximos passos (núcleo)
 
-- Tirar o Zod do bundle do navegador (o conteúdo já é validado no CI; o save pode usar `zod/mini`): cerca de 20 KB gzip a menos.
 - Repetição entre vidas: o próximo ganho vem de mais eventos alternativos nas idades com pouca escolha (5–12 e 50–64), não da força da memória.
 - Expansões (relações, carreira, gerações) só depois de o dono jogar 5 vidas e querer a 6ª.

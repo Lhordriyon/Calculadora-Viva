@@ -3,19 +3,13 @@
  * esquemas; nada de conteúdo vira código.
  */
 import { z } from 'zod';
+import { ATRIBUTOS, PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
 
-export const ATRIBUTOS = ['saude', 'felicidade', 'inteligencia', 'aparencia'] as const;
+export { ATRIBUTOS, PAPEIS, PAPEIS_FIXOS, PAPEIS_NOVOS, type Papel } from './constantes.ts';
 export const Atributo = z.enum(ATRIBUTOS);
 export type Atributo = z.infer<typeof Atributo>;
-
-/** Personagens que nascem com a vida. */
-export const PAPEIS_FIXOS = ['mae', 'pai', 'avo', 'amigo'] as const;
-/** Personagens que um efeito pode criar no meio da vida. */
-export const PAPEIS_NOVOS = ['amor', 'filho', 'paixao', 'pet'] as const;
-export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS] as const;
 export const PapelNovo = z.enum(PAPEIS_NOVOS);
 export type PapelNovo = z.infer<typeof PapelNovo>;
-export type Papel = (typeof PAPEIS)[number];
 
 const id = z.string().regex(/^[a-z0-9_]+$/, 'use só minúsculas, números e _');
 const IdEvento = id;

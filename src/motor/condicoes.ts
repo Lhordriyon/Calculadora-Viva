@@ -1,4 +1,5 @@
-import { ATRIBUTOS, type Condicoes } from './esquema.ts';
+import { ATRIBUTOS } from './constantes.ts';
+import type { Condicoes } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida } from './tipos.ts';
 

@@ -1,6 +1,7 @@
 /** Conteúdo de teste: o mundo, as linhas e as mortes reais, com eventos sob medida. */
 import { lerFontes } from '../scripts/disco.ts';
-import { montarConteudo, type Conteudo } from '../src/motor/conteudo.ts';
+import type { Conteudo } from '../src/motor/conteudo.ts';
+import { montarConteudo } from '../src/motor/leitura.ts';
 
 export function conteudoCom(eventos: unknown[], marcas: Record<string, unknown> = {}): Conteudo {
   const reais = lerFontes();
