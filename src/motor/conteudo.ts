@@ -76,6 +76,7 @@ export function indexarConteudo(dados: DadosConteudo, problemas: Problema[] = []
       continue;
     }
     if (tipo === 'npc') {
+      if (s.apenasAgendado) continue;
       for (const papel of s.ator ?? []) {
         const l = npcPorPapel.get(papel) ?? [];
         l.push(s);

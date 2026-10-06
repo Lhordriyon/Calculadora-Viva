@@ -23,10 +23,17 @@ export function instanciaDe(s: Storylet, ator?: string): string {
   return ator ? `${s.id}#${ator}` : s.id;
 }
 
+const aceitaMortoCache = new WeakMap<Storylet, boolean>();
+
 /** Storylets que falam de quem já morreu pedem isso nas condições; os outros exigem o ator vivo. */
 function aceitaMorto(s: Storylet): boolean {
-  const cond = s.condicoes;
-  return cond !== undefined && ('ator.vivo' in cond || (cond.marcas ?? []).includes('ator.faleceu') || (cond.marcaHa ?? []).some((m) => m.marca === 'ator.faleceu'));
+  let r = aceitaMortoCache.get(s);
+  if (r === undefined) {
+    const cond = s.condicoes;
+    r = cond !== undefined && ('ator.vivo' in cond || (cond.marcas ?? []).includes('ator.faleceu') || (cond.marcaHa ?? []).some((m) => m.marca === 'ator.faleceu'));
+    aceitaMortoCache.set(s, r);
+  }
+  return r;
 }
 
 /** Papéis que podem ocupar o ator agora (sem ator: um só candidato, `undefined`). */

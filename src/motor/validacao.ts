@@ -67,6 +67,9 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     return defCampo(ent, campo)?.sistema ?? 'historia';
   };
   for (const at of ATRIBUTOS) if (ef[at]) out.push({ caminho: `eu.${at}`, sistema: sistemaDe(at) });
+  if (ef.patrimonioFator !== undefined) {
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'eu.investido', sistema: 'dinheiro' });
+  }
   if (ef.dinheiro || ef.divida || ef.dividaFator !== undefined || ef.investir) {
     if (ef.dinheiro || ef.investir) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
     if (ef.investir) out.push({ caminho: 'eu.investido', sistema: 'dinheiro' });
@@ -87,9 +90,10 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
       for (const c of concretos(`${lado}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
     }
   }
-  for (const p of ef.personagens ?? []) out.push({ caminho: `${p}.vinculo`, sistema: 'relacoes' });
+  // Caminho vazio: mexe no sistema sem escrever um campo (o bicho não tem vínculo; a agenda não é campo).
+  for (const p of ef.personagens ?? []) out.push({ caminho: p === 'pet' ? '' : `${p}.vinculo`, sistema: 'relacoes' });
   if (ef.matar) for (const c of concretos(`${ef.matar}.faleceu`, atores)) out.push({ caminho: c, sistema: 'relacoes' });
-  if (ef.agendar?.length) out.push({ caminho: 'agenda', sistema: 'historia' });
+  if (ef.agendar?.length) out.push({ caminho: '', sistema: 'historia' });
   return out;
 }
 
@@ -132,6 +136,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
 
   const escritores = new Map<string, string[]>();
   const leitores = new Map<string, Leitor[]>();
+  /** Lido via "ator.x": basta existir para algum dos papéis possíveis. */
+  const irmaos = new Map<string, string[]>();
   const escrever = (chave: string, onde: string): void => {
     const l = escritores.get(chave);
     if (l) l.push(onde);
@@ -181,7 +187,11 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     for (const caminho of leiturasDe(cond)) {
       const legado = CHAVES_CONDICAO.has(caminho) || caminho === 'pais.inflacao' || caminho === 'eu.genero';
       if (!legado && !conferirCaminho(caminho, onde, atores)) continue;
-      for (const k of concretos(caminho, atores)) ler(k, { ...leitor, onde });
+      const ks = concretos(caminho, atores);
+      for (const k of ks) {
+        ler(k, { ...leitor, onde });
+        if (caminho.startsWith('ator.')) irmaos.set(k, ks);
+      }
     }
   };
 
@@ -210,7 +220,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (defCampo(ent === 'ator' ? 'mae' : ent, campo)) erro(b.onde, `"${m}" é campo, não qualidade`);
       }
       for (const w of escritasDe(ef, atores)) {
-        if (w.caminho !== 'agenda') escrever(w.caminho, b.onde);
+        if (w.caminho) escrever(w.caminho, b.onde);
       }
       const criados = [...(ef.personagens ?? []), ...(ef.promover ? [ef.promover.para] : [])];
       for (const papel of criados) {
@@ -231,6 +241,10 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     const onde = nomeDe(s);
     const tipo = tipoDe(s);
     const atores = s.ator;
+    for (const b of blocosDe(s, onde)) {
+      const t = b.efeitos.transferir;
+      if (t) for (const k of concretos(`${t.de}.dinheiro`, atores)) ler(k, { sistema: tipo, decide: true, onde: b.onde });
+    }
     conferirCondicao(s.condicoes, onde, atores, { sistema: tipo, decide: true });
     if (s.preferir) for (const k of concretos(s.preferir.slice(1), atores)) ler(k, { sistema: tipo, decide: true, onde });
     if (s.teste?.atributo && conferirCaminho(s.teste.atributo, onde, atores)) {
@@ -267,11 +281,14 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     const onde = nomeDe(s);
     for (const t of textosDe(s)) lerTexto(t, onde, s.ator);
   }
+  c.mundo.nascimento.forEach((n, i) => lerTexto(n.texto, `mundo.json › nascimento[${i}]`, undefined));
+  for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) for (const t of ac.textos) lerTexto(t, `mundo.json › acontecimentos.${g}`, PAPEIS);
 
   // ---- qualidades consultadas que nada cria
   for (const [chave, lista] of leitores) {
     const { ent, campo } = separar(chave);
     if (defCampo(ent, campo) || escritores.has(chave)) continue;
+    if ((irmaos.get(chave) ?? []).some((k) => escritores.has(k))) continue;
     const doConteudo = lista.find((l) => l.sistema !== 'motor');
     if (doConteudo) erro(doConteudo.onde, `consulta "${chave}", que nenhum efeito ou regra cria`);
   }
@@ -374,7 +391,10 @@ function verificarTextos(
   ver(s.texto, `${onde} › texto`, criadosPor(s.efeitos));
   ver(s.resumo, `${onde} › resumo`, criadosPor(s.efeitos));
   if (s.rotulo) ver(s.rotulo, `${onde} › rotulo`);
-  for (const [nome, trechos] of Object.entries(s.trechos ?? {})) trechos.forEach((t, i) => ver(t.texto, `${onde} › trechos.${nome}[${i}]`));
+  // O trecho só aparece quando a condição dele vale: as qualidades que ela exige também garantem personagens.
+  for (const [nome, trechos] of Object.entries(s.trechos ?? {})) {
+    trechos.forEach((t, i) => ver(t.texto, `${onde} › trechos.${nome}[${i}]`, new Set(), new Set([...exigidasStorylet, ...qualidadesGarantidas(t.se)])));
+  }
   for (const [nome, r] of [['sucesso', s.sucesso], ['fracasso', s.fracasso]] as const) {
     if (r) ver(r.texto, `${onde} › ${nome}`, new Set([...criadosPor(s.efeitos), ...criadosPor(r.efeitos)]));
   }

@@ -10,7 +10,7 @@ import { idadeDe } from './campos.ts';
 import { causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
-import { candidatosDe, type Candidato } from './diretor.ts';
+import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho } from './esquema.ts';
 import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { morrerPersonagem } from './pessoas.ts';
@@ -18,23 +18,27 @@ import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_CURA,
   DEMISSAO_BASE,
+  DESGASTE_CASAL,
   DISTANCIA_ADULTO,
+  DISTANCIA_FILHO,
   DOENCA_POR_ANO,
   DOENCA_QUEDA,
   IDADE_APOSENTADORIA,
   RECOLOCACAO,
   RETORNO_VINCULO,
+  PAQUERA_AMOR,
+  chanceDeAmor,
   chanceDoenca,
   derivaSaude,
   riscoDeMorte,
 } from './regras.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
-import { aplicarStorylet } from './storylets.ts';
+import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
 
 /** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes). */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', 'filho', 'amigo', 'paixao', 'pet'] as const;
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', 'filho', 'amigo', 'pet'] as const;
 
 /** Uma mudança notável vira entrada visível na linha do tempo, com a regra como causa. */
 function acontecer(
@@ -68,8 +72,7 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   const traco = c.tracos.get(en.t['traco'] ?? '');
   if (papel === 'amigo') return 50 + (traco?.vinculo ?? 0);
   if (papel === 'amor') return 62 + (traco?.vinculo ?? 0);
-  if (papel === 'filho') return 68;
-  if (papel === 'pet') return 85;
+  if (papel === 'filho') return 68 + (traco?.vinculo ?? 0);
   if (papel === 'paixao') return 30;
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
@@ -88,9 +91,9 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
     const fatorDoenca = traco?.doenca ?? 1;
 
     // ---- saúde, doença, morte
-    const deriva = derivaSaude(idade, en.n['saude'] ?? 70);
+    const deriva = derivaSaude(papel === 'pet' ? idade * 6 : idade, en.n['saude'] ?? 70);
     somar(e, regAno, papel, 'saude', (deriva < 0 ? deriva * fatorDoenca : deriva) + normal(e.rng, 0, 1.5) - (en.q['doente'] ? DOENCA_POR_ANO : 0), 'saude');
-    if (papel !== 'pet' && papel !== 'paixao') {
+    if (papel !== 'pet') {
       if (!en.q['doente'] && aleatorio(e.rng) < chanceDoenca(idade) * fatorDoenca) {
         acontecer(e, c, papel, 'adoeceu', (reg, id) => {
           ganhar(e, reg, papel, 'doente', id);
@@ -136,27 +139,52 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
 
     // ---- dinheiro da família
     if (papel === 'mae' || papel === 'pai' || papel === 'avo') {
-      const guarda = (en.n['renda'] ?? 0) * (classe.poupanca + (traco?.poupanca ?? 0));
+      const dinheiro = en.n['dinheiro'] ?? 0;
+      const trabalhando = idade < IDADE_APOSENTADORIA && !en.q['aposentado'] && !en.q['desempregado'];
+      const guarda = trabalhando ? (en.n['renda'] ?? 0) * (classe.poupanca + (traco?.poupanca ?? 0)) : 0;
       const aperto = en.q['desempregado'] ? 6000 * (lugar?.n['custo_vida'] ?? 1) : 0;
-      const rende = Math.max(0, en.n['dinheiro'] ?? 0) * 0.015;
+      // Rende um pouco acima da inflação; depois dos 65, a saúde e a família consomem parte do que foi guardado.
+      const rende = Math.max(0, dinheiro) * (idade >= IDADE_APOSENTADORIA ? -0.03 : 0.01);
       somar(e, regAno, papel, 'dinheiro', guarda - aperto + rende, 'dinheiro');
     }
 
-    // ---- vínculo: volta para o jeito da família; esfria sem contato na vida adulta
+    // ---- vínculo: volta para o jeito da família; esfria sem contato na vida adulta (bicho não tem)
+    if (papel === 'pet') continue;
     const v = en.n['vinculo'] ?? 50;
     let dv = (equilibrioVinculo(e, c, papel) - v) * RETORNO_VINCULO;
     if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || papel === 'amigo')) {
       const junto = papel === 'avo' ? en.q['mora_junto'] : eu.q['mora_com_pais'];
       if (!junto) dv -= DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1);
     }
+    // A rotina gasta o namoro; filho adulto cria a própria vida.
+    if (papel === 'amor') dv -= DESGASTE_CASAL;
+    if (papel === 'filho' && idade >= 18) dv -= DISTANCIA_ADULTO * DISTANCIA_FILHO;
     somar(e, regAno, papel, 'vinculo', dv, 'vinculo');
   }
 }
 
 /**
- * Cada personagem pode tomar uma iniciativa no ano. As sem escolha acontecem
- * já (entram no livro com causa "npc"); as com escolha voltam como candidatas
- * para o diretor, que dá o toque ao jogador.
+ * Alguém aparece na vida de quem está sem namoro: a regra agenda o storylet
+ * "namoro" para o ano. Sair e conhecer gente (paquera), a aparência e o traço
+ * mudam a chance; a última paquera vira a causa do encontro.
+ */
+export function regraDoAmor(e: EstadoVida, c: Conteudo): void {
+  const eu = e.entidades['eu']!;
+  if (eu.q['namoro'] || !c.porId.has('namoro') || e.agenda.some((a) => a.evento === 'namoro')) return;
+  const paquera = eu.q['paquera'];
+  const traco = c.tracosJogador.get(eu.t['traco'] ?? '');
+  const aparencia = 0.6 + (eu.n['aparencia'] ?? 50) / 125;
+  const chance = chanceDeAmor(e.idade) * (1 + PAQUERA_AMOR * Math.min(3, paquera?.v ?? 0)) * aparencia * (traco?.amor ?? 1);
+  if (aleatorio(e.rng) < chance) e.agenda.push({ evento: 'namoro', ano: e.ano, origem: paquera?.causa ?? null });
+}
+
+/**
+ * Cada personagem pode tomar uma iniciativa no ano: a regra dele sorteia um
+ * storylet entre os possíveis (pela saliência) e decide se age, com chance
+ * que cresce com a tensão do storylet e com a afinidade do traço (o generoso
+ * ajuda mais, o brigão briga mais). Tensão 3 ou mais: age com certeza. As
+ * iniciativas sem escolha acontecem já (causa "npc"); as com escolha voltam
+ * como candidatas para o diretor, que dá o toque ao jogador.
  */
 export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJogador | undefined): Candidato[] {
   const comEscolha: Candidato[] = [];
@@ -164,20 +192,25 @@ export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJoga
     const lista = c.npcPorPapel.get(papel);
     const en = e.entidades[papel];
     if (!lista || !en || !e.vivo) continue;
-    const candidatos = candidatosDe(lista, e, memoria, 'npc', (s) => (s.tensao ?? 1) >= 2).filter((x) => x.ator === papel);
-    if (candidatos.length === 0) continue;
+    const vivo = en.vivo !== false;
+    const elegiveis = lista.filter((s) => (vivo || atoresPossiveis(s, e).includes(papel)) && elegivel(s, e, papel));
+    if (elegiveis.length === 0) continue;
+    // A chance de agir vem do storylet mais tenso e do traço; a saliência só é calculada se alguém age.
     const traco = c.tracos.get(en.t['traco'] ?? '');
-    for (const x of candidatos) {
-      if (x.s.afinidade) x.saliencia *= traco?.[x.s.afinidade] ?? 1;
+    let chance = 0;
+    for (const s of elegiveis) {
+      const tensao = s.tensao ?? 1;
+      const afinidade = s.afinidade ? (traco?.[s.afinidade] ?? 1) : 1;
+      chance = Math.max(chance, tensao >= 3 ? 1 : Math.min(1, ATIVIDADE_PERSONAGEM * tensao * afinidade));
     }
-    const urgentes = candidatos.filter((x) => x.urgente);
-    if (urgentes.length === 0 && aleatorio(e.rng) >= ATIVIDADE_PERSONAGEM) continue;
-    const pool = urgentes.length > 0 ? urgentes : candidatos;
-    const i = sortearIndice(e.rng, pool.map((x) => x.saliencia));
+    if (aleatorio(e.rng) >= chance) continue;
+    const pesos = elegiveis.map((s) => saliencia(s, e, papel, memoria) * (s.afinidade ? (traco?.[s.afinidade] ?? 1) : 1));
+    const i = sortearIndice(e.rng, pesos);
     if (i < 0) continue;
-    const escolhido = pool[i]!;
-    if (escolhido.s.escolhas) comEscolha.push(escolhido);
-    else aplicarStorylet(e, c, escolhido.s, papel, 'npc', { causas: causasDe(escolhido.s.condicoes, e, papel) });
+    const s = elegiveis[i]!;
+    const escolhido: Candidato = { s, ator: papel, causa: 'npc', causas: causasDe(s.condicoes, e, papel), saliencia: pesos[i]!, urgente: (s.tensao ?? 1) >= 2 };
+    if (s.escolhas) comEscolha.push(escolhido);
+    else aplicarStorylet(e, c, s, papel, 'npc', { causas: escolhido.causas });
   }
   return comEscolha;
 }

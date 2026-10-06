@@ -41,29 +41,50 @@ function nota(s: Storylet, e: EstadoVida, ator: string | undefined): number {
   return (1 + 0.5 * clausulas(s.condicoes)) * (s.peso ?? 1) / (1 + 0.15 * vezes);
 }
 
-export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador): AcaoDisponivel[] {
-  if (!e.vivo || e.pendente) return [];
-  const saida: AcaoDisponivel[] = [];
-  for (const verbo of VERBOS) {
-    let melhor: { s: Storylet; ator: string | undefined; nota: number } | null = null;
-    for (const s of c.acoes.get(verbo) ?? []) {
-      for (const ator of preferidos(s, e, atoresPossiveis(s, e).filter((a) => elegivel(s, e, a)))) {
-        const n = nota(s, e, ator);
-        if (!melhor || n > melhor.nota + 1e-9) melhor = { s, ator, nota: n };
-      }
+export interface AcaoPossivel {
+  verbo: Verbo;
+  s: Storylet;
+  ator: string | undefined;
+}
+
+/** A ação que o verbo faria agora (ou null, se o verbo não está disponível). */
+export function melhorAcao(e: EstadoVida, c: Conteudo, verbo: Verbo): AcaoPossivel | null {
+  let melhor: { s: Storylet; ator: string | undefined; nota: number } | null = null;
+  for (const s of c.acoes.get(verbo) ?? []) {
+    if (s.idade && (e.idade < s.idade[0] || e.idade > s.idade[1])) continue;
+    for (const ator of preferidos(s, e, atoresPossiveis(s, e).filter((a) => elegivel(s, e, a)))) {
+      const n = nota(s, e, ator);
+      if (!melhor || n > melhor.nota + 1e-9) melhor = { s, ator, nota: n };
     }
-    if (!melhor) continue;
-    // O rótulo não pode gastar o sorteio da vida: usa um gerador à parte (e o validador proíbe alternâncias nele).
-    const rotulo = renderizar(melhor.s.rotulo ?? verbo, { ...contexto(e, { ator: melhor.ator }), rng: criarRng(0) });
-    const novo = !memoria?.acoes[melhor.s.id] && !e.vistos[instanciaDe(melhor.s, melhor.ator)];
-    saida.push({ verbo, s: melhor.s, ator: melhor.ator, rotulo, novo });
+  }
+  return melhor ? { verbo, s: melhor.s, ator: melhor.ator } : null;
+}
+
+/** Os verbos disponíveis agora, cada um com a ação que faria (sem os textos da interface). */
+export function acoesPossiveis(e: EstadoVida, c: Conteudo): AcaoPossivel[] {
+  if (!e.vivo || e.pendente) return [];
+  const saida: AcaoPossivel[] = [];
+  for (const verbo of VERBOS) {
+    const a = melhorAcao(e, c, verbo);
+    if (a) saida.push(a);
   }
   return saida;
 }
 
+/** Para a interface: as ações possíveis com o rótulo do botão e a marca de novidade. */
+export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador): AcaoDisponivel[] {
+  return acoesPossiveis(e, c).map((a) => ({
+    ...a,
+    // O rótulo não pode gastar o sorteio da vida: usa um gerador à parte (e o validador proíbe alternâncias nele).
+    rotulo: renderizar(a.s.rotulo ?? a.verbo, { ...contexto(e, { ator: a.ator }), rng: criarRng(0) }),
+    novo: !memoria?.acoes[a.s.id] && !e.vistos[instanciaDe(a.s, a.ator)],
+  }));
+}
+
 /** Gasta a ficha do ano no verbo. Devolve a entrada da ação. */
-export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo, memoria?: MemoriaJogador): Entrada {
-  const a = acoesDisponiveis(e, c, memoria).find((x) => x.verbo === verbo);
+export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo): Entrada {
+  if (!e.vivo || e.pendente) throw new Error('Agora não dá para agir.');
+  const a = melhorAcao(e, c, verbo);
   if (!a) throw new Error(`Não dá para ${verbo} agora.`);
   return aplicarStorylet(e, c, a.s, a.ator, 'acao', { causas: causasDe(a.s.condicoes, e, a.ator) });
 }

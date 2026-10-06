@@ -10,14 +10,14 @@
  * (saúde perdida, dívida contraída, chance de morrer). Gastar dinheiro ou
  * perder felicidade com certeza é custo, não risco.
  */
-import { acoesDisponiveis } from './acoes.ts';
+import { acoesPossiveis } from './acoes.ts';
 import { entidadeDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Verbo } from './constantes.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
-import type { EstadoVida, MemoriaJogador } from './tipos.ts';
+import type { EstadoVida } from './tipos.ts';
 
 export const ESTRATEGIAS = ['primeira', 'cautelosa', 'arriscada', 'aleatoria'] as const;
 export type Estrategia = (typeof ESTRATEGIAS)[number];
@@ -41,6 +41,7 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   let v = valorAtributos(ef);
   v += ((ef.dinheiro ?? 0) - (ef.divida ?? 0)) / REAIS_POR_PONTO;
   if (ef.dividaFator !== undefined) v += ((eu.n['divida'] ?? 0) * (1 - ef.dividaFator)) / REAIS_POR_PONTO;
+  if (ef.patrimonioFator !== undefined) v += ((ef.patrimonioFator - 1) * (Math.max(0, eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0))) / REAIS_POR_PONTO;
   // Investir troca dinheiro parado (que encolhe) por dinheiro que rende: ~4% reais em 10 anos de horizonte.
   if (ef.investir && ef.investir > 0) v += (Math.min(ef.investir, eu.n['dinheiro'] ?? 0) * 0.48) / REAIS_POR_PONTO;
   const renda = eu.n['renda'] ?? 0;
@@ -91,6 +92,10 @@ export interface Avaliacao {
 function exposicao(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo): number {
   if (!ef) return 0;
   let x = Math.max(0, -(ef.saude ?? 0)) * 1.2 + Math.max(0, ef.divida ?? 0) / REAIS_POR_PONTO;
+  if (ef.patrimonioFator !== undefined && ef.patrimonioFator < 1) {
+    const eu = e.entidades['eu']!;
+    x += ((1 - ef.patrimonioFator) * (Math.max(0, eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0))) / REAIS_POR_PONTO;
+  }
   for (const m of ef.marcas ?? []) {
     const s = c.marcas[m]?.porAno?.saude ?? 0;
     if (s < 0 && !(m in e.entidades['eu']!.q)) x += -s * HORIZONTE_MARCA * 1.2;
@@ -147,8 +152,8 @@ function corpoDaAcao(s: Storylet): Corpo {
 }
 
 /** O verbo que a estratégia gasta na ficha do ano (null: deixa o ano passar). */
-export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng, memoria?: MemoriaJogador): Verbo | null {
-  const acoes = acoesDisponiveis(e, c, memoria);
+export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Verbo | null {
+  const acoes = acoesPossiveis(e, c);
   if (acoes.length === 0) return null;
   if (estrategia === 'primeira') return acoes[0]!.verbo;
   if (estrategia === 'aleatoria') return sortear<Verbo | null>(rng, [...acoes.map((a) => a.verbo), null]);

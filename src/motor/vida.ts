@@ -10,7 +10,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { escolherDoAno } from './diretor.ts';
 import { economiaDoAno } from './economia.ts';
-import { personagensAgem, regrasDosPersonagens } from './familia.ts';
+import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
 import { gerarOrigem, type EscolhaOrigem } from './origem.ts';
@@ -19,7 +19,9 @@ import {
   FELICIDADE_BASE,
   IDADE_MAXIMA,
   PATRIMONIO_CONFORTO,
+  CONFORTO_FELICIDADE,
   PESO_VINCULO_FELICIDADE,
+  TETO_VINCULO_FELICIDADE,
   PRIVACAO_FELICIDADE,
   RETORNO_FELICIDADE,
   derivaAparencia,
@@ -42,7 +44,7 @@ const MEMORIA_LINHAS = 15;
 /** A perda do dinheiro parado para a inflação só aparece a partir deste valor. */
 const LIMITE_CHIP_INFLACAO = 200;
 /** Quem está perto pesa na felicidade de base (vínculo médio). */
-const PERTO = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet'] as const;
+const PERTO = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'] as const;
 
 export interface OpcoesNascimento {
   semente: number;
@@ -98,7 +100,7 @@ export function felicidadeDeBase(e: EstadoVida, c: Conteudo): number {
   const traco = c.tracosJogador.get(eu.t['traco'] ?? '');
   const vinculos = PERTO.map((p) => e.entidades[p]).filter((x) => x && x.vivo !== false && !x.q['ausente']).map((x) => x!.n['vinculo'] ?? 50);
   const media = vinculos.length > 0 ? vinculos.reduce((s, v) => s + v, 0) / vinculos.length : 30;
-  return FELICIDADE_BASE + (traco?.base ?? 0) + (media - 50) * PESO_VINCULO_FELICIDADE;
+  return FELICIDADE_BASE + (traco?.base ?? 0) + (Math.min(media, TETO_VINCULO_FELICIDADE) - 50) * PESO_VINCULO_FELICIDADE;
 }
 
 function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
@@ -119,7 +121,7 @@ function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
       somar(e, reg, 'eu', 'felicidade', -1.5, 'economia');
       somar(e, reg, 'eu', 'saude', -0.3, 'economia');
     }
-    if (patrimonioDe(eu) > PATRIMONIO_CONFORTO) somar(e, reg, 'eu', 'felicidade', 1, 'economia');
+    if (patrimonioDe(eu) > PATRIMONIO_CONFORTO) somar(e, reg, 'eu', 'felicidade', CONFORTO_FELICIDADE, 'economia');
   }
 }
 
@@ -151,6 +153,7 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
     morrer(e, c);
     return;
   }
+  regraDoAmor(e, c);
   const dePersonagens = personagensAgem(e, c, memoria);
   if (!e.vivo) return;
   const escolhido = escolherDoAno(e, c, memoria, dePersonagens);

@@ -9,6 +9,8 @@ import { anotar } from './livro.ts';
 import { aleatorio, normal, type Rng } from './rng.ts';
 import {
   CHANCE_CRISE,
+  GASTO_VELHICE,
+  IDADE_GASTO_VELHICE,
   INFLACAO_CRISE,
   INFLACAO_DESVIO,
   INFLACAO_MEDIA,
@@ -102,6 +104,10 @@ export function economiaDoAno(e: EstadoVida, rng: Rng, reg: Mudanca[]): Ano {
       n['dinheiro'] -= coberto;
       privacao = coberto < -sobra;
     }
+  }
+  if (e.idade >= IDADE_GASTO_VELHICE) {
+    const patrimonio = (n['dinheiro'] ?? 0) + (n['investido'] ?? 0) - (n['divida'] ?? 0);
+    if (patrimonio > 0) n['dinheiro'] = (n['dinheiro'] ?? 0) - patrimonio * GASTO_VELHICE;
   }
   acertarCaixa(n);
   anotarCaixa(reg, 'eu', antes, n, 'economia');

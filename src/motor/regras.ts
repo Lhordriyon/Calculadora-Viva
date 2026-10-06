@@ -82,6 +82,14 @@ export function pisoRenda(idade: number): number {
   return 18000;
 }
 
+/**
+ * Depois da aposentadoria, a velhice consome uma parte do patrimônio por ano
+ * (remédio, plano de saúde, ajuda aos filhos): quem vive mais não acumula
+ * para sempre.
+ */
+export const GASTO_VELHICE = 0.04;
+export const IDADE_GASTO_VELHICE = 65;
+
 /** Custo mínimo de vida de um adulto (reais de hoje por ano). */
 export function pisoCusto(idade: number): number {
   return idade < 18 ? 0 : 10000;
@@ -92,8 +100,9 @@ export function dividaPesada(renda: number): number {
   return Math.max(10000, renda * 0.5);
 }
 
-/** Patrimônio que dá um pouco de paz (reais de hoje). */
+/** Patrimônio que dá um pouco de paz (reais de hoje), e quanta paz por ano. */
 export const PATRIMONIO_CONFORTO = 200000;
+export const CONFORTO_FELICIDADE = 0.5;
 
 // ---------------------------------------------------------------- personagens
 
@@ -116,7 +125,27 @@ export const IDADE_APOSENTADORIA = 65;
 export const RETORNO_VINCULO = 0.06;
 /** Vínculo perdido por ano depois dos 20 de quem joga, sem contato (amigos perdem mais). */
 export const DISTANCIA_ADULTO = 1.2;
+/** Filho adulto cria a própria vida: fração da distância de quem joga que ele perde por ano. */
+export const DISTANCIA_FILHO = 1.2;
+/** Vínculo do casal que a rotina gasta por ano, sem cuidado. */
+export const DESGASTE_CASAL = 1.4;
+/** Chance anual de alguém aparecer na vida de quem está sem namoro (antes de paquera, aparência e traço). */
+export function chanceDeAmor(idade: number): number {
+  if (idade < 16) return 0;
+  if (idade < 18) return 0.06;
+  if (idade < 30) return 0.18;
+  if (idade < 45) return 0.12;
+  if (idade < 60) return 0.07;
+  return 0.035;
+}
+/** Cada ponto de paquera (sair, conhecer gente) aumenta a chance em tanto, até 3 pontos. */
+export const PAQUERA_AMOR = 0.6;
+/** Namoro que dura isso (anos) já é união: a morte de quem você ama deixa você viúv{o|a}. */
+export const ANOS_UNIAO = 5;
+
 /** Chance anual de um personagem tomar uma iniciativa (quando há storylet para isso). */
 export const ATIVIDADE_PERSONAGEM = 0.22;
 /** Quanto o vínculo médio com quem está perto puxa a felicidade de base (por ponto acima de 50). */
-export const PESO_VINCULO_FELICIDADE = 0.14;
+export const PESO_VINCULO_FELICIDADE = 0.09;
+/** Acima disso, mais vínculo não traz mais felicidade de base (retorno decrescente). */
+export const TETO_VINCULO_FELICIDADE = 78;

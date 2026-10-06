@@ -18,9 +18,10 @@ export interface LeituraMotor {
 
 const de = (papeis: readonly string[], campo: string): string[] => papeis.map((p) => `${p}.${campo}`);
 const PAIS_E_AVO = ['mae', 'pai', 'avo'] as const;
-const FIXOS = ['mae', 'pai', 'avo', 'amigo'] as const;
 const DOENTES = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'] as const;
-const TODOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'paixao', 'pet'] as const;
+const TODOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet'] as const;
+/** O bicho não tem vínculo: a alegria dele já está na qualidade de ter um. */
+const PESSOAS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
   // economia e idade de quem joga
@@ -33,28 +34,31 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.divida',
   'eu.privacao',
   'eu.herdou',
+  'eu.viuvo',
   'pais.inflacao',
   // origem
   'eu.classe_origem',
+  'eu.irmaos',
   'eu.familia',
   'eu.traco',
   'eu.negocio_familiar',
-  ...de(FIXOS, 'traco'),
-  ...de(['mae', 'pai', 'avo'], 'ocupacao'),
+  ...de(PESSOAS, 'traco'),
+  ...de(['mae', 'pai'], 'ocupacao'),
   ...de(['mae', 'pai'], 'dono_do_negocio'),
   'pai.ausente',
   'avo.mora_junto',
   'lugar.desemprego',
   'lugar.custo_vida',
+  'lugar.regiao',
   // regras anuais dos personagens
   ...de(TODOS, 'saude'),
-  ...de(TODOS, 'vinculo'),
+  ...de(PESSOAS, 'vinculo'),
   ...de(TODOS, 'faleceu'),
   ...de(PAIS_E_AVO, 'dinheiro'),
   ...de(PAIS_E_AVO, 'renda'),
   ...de(DOENTES, 'doente'),
   ...de(['mae', 'pai'], 'desempregado'),
-  ...de(PAIS_E_AVO, 'aposentado'),
+  ...de(['mae', 'pai'], 'aposentado'),
 ];
 
 const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[] => caminhos.map((caminho) => ({ caminho, regra, decide }));
@@ -66,13 +70,15 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.traco'], 'felicidade de base', false),
   ...ler(['eu.familia'], 'equilíbrio do vínculo', false),
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),
+  ...ler(['eu.irmaos'], 'divisão da herança', true),
   ...ler(['eu.mora_com_pais'], 'distância da família', false),
   ...ler(['pais.inflacao'], 'economia', false),
   ...ler(['lugar.desemprego'], 'demissão e recolocação dos pais', true),
   ...ler(['lugar.custo_vida'], 'custo mínimo de vida', true),
   ...ler(de(TODOS, 'saude'), 'mortalidade dos personagens', true),
-  ...ler(de(TODOS, 'vinculo'), 'luto e felicidade de base', false),
-  ...ler(de(FIXOS, 'traco'), 'iniciativas dos personagens (afinidade)', true),
+  ...ler(de(PESSOAS, 'vinculo'), 'luto e felicidade de base', false),
+  ...ler(de(PESSOAS, 'traco'), 'iniciativas dos personagens (afinidade) e vínculo', true),
+  ...ler(['eu.paquera', 'eu.aparencia', 'eu.traco'], 'chance de alguém aparecer', true),
   ...ler(de(PAIS_E_AVO, 'renda'), 'poupança dos personagens', false),
   ...ler(de(TODOS, 'dinheiro'), 'herança', false),
   ...ler(de(DOENTES, 'doente'), 'saúde dos personagens', true),

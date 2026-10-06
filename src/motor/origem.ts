@@ -125,10 +125,8 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
 
   // ---- avó (mãe da mãe)
   const avo = pessoa('avo', 'f', mae.nascimento! - inteiro(rng, 17, 30), sortearTraco(rng, c, tipo), tipo.vinculo + 4, 62 + classe.saude / 2);
-  avo.t['ocupacao'] = 'aposentada';
-  avo.q['aposentado'] = { v: 1, ano: e.ano, idade: 0, causa: null };
   avo.n['renda'] = Math.round(classe.renda[0] * 0.8);
-  avo.n['dinheiro'] = Math.round(Math.max(0, riqueza) * (0.2 + aleatorio(rng) * 0.5));
+  avo.n['dinheiro'] = Math.round(Math.max(0, riqueza) * (0.05 + aleatorio(rng) * 0.25));
   const moraJunto = [0.45, 0.35, 0.2, 0.1, 0.05, 0.05][iClasse] ?? 0.1;
   if (aleatorio(rng) < moraJunto) {
     avo.q['mora_junto'] = { v: 1, ano: e.ano, idade: 0, causa: null };
@@ -147,6 +145,8 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   eu.t['familia'] = tipo.id;
   eu.t['ocupacao'] = '';
   eu.n['classe_origem'] = iClasse;
+  // Famílias mais pobres têm, em média, mais filhos.
+  eu.n['irmaos'] = Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2][iClasse] ?? 1.5, 1.1))));
   eu.n['riqueza_origem'] = riqueza;
   eu.n['saude'] = Math.round(limitar(normal(rng, 80, 7) + classe.saude + traco.saude, 40, 99));
   eu.n['felicidade'] = Math.round(limitar(normal(rng, 65, 8) + traco.felicidade, 25, 97));

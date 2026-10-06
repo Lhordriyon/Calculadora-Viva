@@ -38,6 +38,8 @@ const PESSOA: Record<string, DefCampo> = {
   classe_origem: { tipo: 'num', sistema: 'origem', limites: [0, 5] },
   riqueza_origem: { tipo: 'num', sistema: 'origem', reais: true },
   familia: { tipo: 'texto', sistema: 'origem' },
+  /** Irmãos de quem joga: dividem a herança dos pais. */
+  irmaos: { tipo: 'num', sistema: 'origem', limites: [0, 8] },
   idade: { tipo: 'num', sistema: 'corpo', derivado: true },
   vivo: { tipo: 'bool', sistema: 'corpo', derivado: true },
   patrimonio: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },

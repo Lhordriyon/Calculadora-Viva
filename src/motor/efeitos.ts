@@ -42,6 +42,11 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.dividaFator !== undefined) {
     somar(e, reg, 'eu', 'divida', (eu.n['divida'] ?? 0) * (ef.dividaFator - 1));
   }
+  if (ef.patrimonioFator !== undefined) {
+    const f = ef.patrimonioFator - 1;
+    somar(e, reg, 'eu', 'dinheiro', Math.max(0, eu.n['dinheiro'] ?? 0) * f);
+    somar(e, reg, 'eu', 'investido', (eu.n['investido'] ?? 0) * f);
+  }
   if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, ef);
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
   if (ef.custo !== undefined) definirNumero(e, reg, 'eu', 'custo', ajustar(eu.n['custo'] ?? 0, ef.custo));
@@ -96,7 +101,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     somarQualidade(e, reg, q.ent, q.nome, delta, origem);
   }
   for (const papel of ef.personagens ?? []) criarPersonagem(e, c, papel as PapelNovo, reg);
-  if (ef.promover) promover(e, ef.promover.de, ef.promover.para, reg);
+  if (ef.promover) promover(e, c, ef.promover.de, ef.promover.para, reg);
   for (const ag of ef.agendar ?? []) {
     const anos = typeof ag.em === 'number' ? ag.em : inteiro(e.rng, ag.em[0], ag.em[1]);
     e.agenda.push(ator ? { evento: ag.evento, ano: e.ano + anos, origem, ator } : { evento: ag.evento, ano: e.ano + anos, origem });

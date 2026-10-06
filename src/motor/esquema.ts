@@ -105,6 +105,8 @@ const EFEITOS_FIXOS = {
   divida: z.number().optional(),
   /** Multiplica a dívida (acordo: 0.3 = sobra 30% para pagar). */
   dividaFator: z.number().min(0).max(1).optional(),
+  /** Multiplica o dinheiro e o investido (golpe, sociedade que quebrou, aposta que deu certo): perdas e ganhos proporcionais à riqueza. */
+  patrimonioFator: z.number().min(0).max(3).optional(),
   renda: Ajuste.optional(),
   custo: Ajuste.optional(),
   /** Qualidades ganhas (aceitam caminho: "mae.doente"). */
@@ -385,6 +387,8 @@ export const TracoJogador = z.strictObject({
   aparencia: z.number(),
   /** Ajuste no ponto para onde a felicidade volta todo ano. */
   base: z.number(),
+  /** Multiplica a chance anual de alguém aparecer na vida (tímido menos, carismático mais). */
+  amor: z.number().positive().default(1),
 });
 export type TracoJogador = z.infer<typeof TracoJogador>;
 
