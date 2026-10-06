@@ -3,7 +3,7 @@
     "id": "primeira_palavra",
     "idade": [1, 1],
     "marco": true,
-    "texto": "{mae} aposta que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece o neto|já viu isso acontecer três vezes].",
+    "texto": "{mae} aposta que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece {o neto|a neta}|já viu isso acontecer três vezes].",
     "resumo": "disse a primeira palavra",
     "escolhas": [
       {
@@ -44,7 +44,7 @@
         "resumo": "foi para a creche e voltou com vocabulário novo",
         "resultado": {
           "texto": "Você voltou de lá com três amigos, duas viroses e um vocabulário que {mae} prefere não comentar.",
-          "efeitos": { "inteligencia": 3, "saude": -2, "felicidade": 1 }
+          "efeitos": { "inteligencia": 5, "saude": -1, "felicidade": 1 }
         }
       },
       {
@@ -134,6 +134,14 @@
     "resumo": "foi seguid{o|a} por um vira-lata caramelo",
     "escolhas": [
       {
+        "texto": "Dar comida e deixar ir",
+        "resumo": "deu comida a um vira-lata e deixou ele seguir",
+        "resultado": {
+          "texto": "Ele comeu, abanou o rabo e foi seguir outra criança. Sem ressentimento.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
         "texto": "Implorar para ficar com ele",
         "resumo": "implorou para adotar um vira-lata",
         "teste": { "chance": 0.65 },
@@ -151,14 +159,6 @@
           "texto": "{mae} disse que bicho dá trabalho. Quem deu trabalho foi você, chorando uma semana inteira.",
           "resumo": "tentou adotar um vira-lata e perdeu a discussão",
           "efeitos": { "felicidade": -3 }
-        }
-      },
-      {
-        "texto": "Dar comida e deixar ir",
-        "resumo": "deu comida a um vira-lata e deixou ele seguir",
-        "resultado": {
-          "texto": "Ele comeu, abanou o rabo e foi seguir outra criança. Sem ressentimento.",
-          "efeitos": { "felicidade": 1 }
         }
       }
     ]
@@ -207,7 +207,7 @@
         "texto": "Mesada, e guardar tudo",
         "resumo": "guardou cada centavo da mesada",
         "resultado": {
-          "texto": "No fim do ano você tinha um cofrinho pesado e a sensação de ser dono do banco.",
+          "texto": "No fim do ano você tinha um cofrinho pesado e a sensação de ser {dono|dona} do banco.",
           "efeitos": { "dinheiro": 360, "felicidade": -1, "marcas": ["poupador"] }
         }
       },
@@ -237,6 +237,14 @@
     "resumo": "escolheu o que fazer depois da aula",
     "escolhas": [
       {
+        "texto": "Tela do celular",
+        "resumo": "trocou o esporte pela tela do celular",
+        "resultado": {
+          "texto": "Você subiu de nível em quatro jogos e desceu em fôlego na vida real.",
+          "efeitos": { "felicidade": 5, "saude": -2, "marcas": ["sedentario"] }
+        }
+      },
+      {
         "texto": "Escolinha de futebol",
         "resumo": "entrou na escolinha de futebol do bairro",
         "resultado": {
@@ -250,14 +258,6 @@
         "resultado": {
           "texto": "Aprendeu a nadar e passou a cheirar a cloro vinte e quatro horas por dia.",
           "efeitos": { "saude": 3, "felicidade": 1, "marcas": ["nadador"] }
-        }
-      },
-      {
-        "texto": "Tela do celular",
-        "resumo": "trocou o esporte pela tela do celular",
-        "resultado": {
-          "texto": "Você subiu de nível em quatro jogos e desceu em fôlego na vida real.",
-          "efeitos": { "felicidade": 5, "saude": -2, "marcas": ["sedentario"] }
         }
       }
     ]
@@ -330,6 +330,14 @@
     "resumo": "viu {amigo} ser zoad{amigo:o|a} no recreio",
     "escolhas": [
       {
+        "texto": "Chamar a professora",
+        "resumo": "chamou a professora em vez de entrar na briga",
+        "resultado": {
+          "texto": "A professora resolveu. {amigo} achou justo, mas esperava um pouco mais de você.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      },
+      {
         "texto": "Defender {amigo}",
         "resumo": "defendeu {amigo} no recreio",
         "teste": { "chance": 0.5 },
@@ -341,14 +349,6 @@
           "texto": "Você levou um empurrão e ralou o joelho. {amigo} dividiu o lanche com você por um mês.",
           "resumo": "apanhou no recreio defendendo {amigo}",
           "efeitos": { "saude": -3, "felicidade": 2, "marcas": ["leal"] }
-        }
-      },
-      {
-        "texto": "Chamar a professora",
-        "resumo": "chamou a professora em vez de entrar na briga",
-        "resultado": {
-          "texto": "A professora resolveu. {amigo} achou justo, mas esperava um pouco mais de você.",
-          "efeitos": { "inteligencia": 1 }
         }
       },
       {

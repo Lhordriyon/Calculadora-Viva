@@ -34,19 +34,19 @@
     "resumo": "sentiu saudade de {cidade}",
     "escolhas": [
       {
-        "texto": "Voltar para {cidade}",
-        "resumo": "voltou para {cidade} depois de anos em São Paulo",
-        "resultado": {
-          "texto": "Você desceu do ônibus e chorou na rodoviária. O pão continuava igual.",
-          "efeitos": { "custo": -10000, "renda": -8000, "felicidade": 7, "removerMarcas": ["mudou_sp"] }
-        }
-      },
-      {
         "texto": "Ficar e visitar nas férias",
         "resumo": "ficou em São Paulo e matou a saudade nas férias",
         "resultado": {
           "texto": "Duas semanas por ano de comida de mãe e sotaque de casa. Dá para aguentar o resto.",
           "efeitos": { "dinheiro": -2000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Voltar para {cidade}",
+        "resumo": "voltou para {cidade} depois de anos em São Paulo",
+        "resultado": {
+          "texto": "Você desceu do ônibus e chorou na rodoviária. O pão continuava igual.",
+          "efeitos": { "custo": -10000, "renda": -8000, "felicidade": 7, "removerMarcas": ["mudou_sp"] }
         }
       }
     ]
@@ -108,19 +108,19 @@
     "resumo": "pensou em plantar uma horta",
     "escolhas": [
       {
-        "texto": "Plantar uma horta",
-        "resumo": "plantou uma horta no quintal",
-        "resultado": {
-          "texto": "Alface, cebolinha e um tomateiro que você trata pelo nome.",
-          "efeitos": { "felicidade": 2, "dinheiro": -300, "marcas": ["horta"] }
-        }
-      },
-      {
         "texto": "Comprar tudo na feira",
         "resumo": "preferiu a feira à horta",
         "resultado": {
           "texto": "Feira de domingo, pastel e caldo de cana. A horta pode esperar.",
           "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Plantar uma horta",
+        "resumo": "plantou uma horta no quintal",
+        "resultado": {
+          "texto": "Alface, cebolinha e um tomateiro que você trata pelo nome.",
+          "efeitos": { "felicidade": 2, "dinheiro": -300, "marcas": ["horta"] }
         }
       }
     ]
@@ -134,17 +134,17 @@
     "resumo": "foi convidad{o|a} para a hidroginástica",
     "escolhas": [
       {
+        "texto": "Ficar no sofá",
+        "resumo": "recusou a hidroginástica e ficou no sofá",
+        "resultado": { "texto": "O sofá agradeceu. A coluna, nem tanto.", "efeitos": { "felicidade": -1 } }
+      },
+      {
         "texto": "Ir toda terça e quinta",
         "resumo": "entrou para a turma da hidroginástica",
         "resultado": {
           "texto": "Você aprendeu três exercícios e trinta fofocas novas.",
           "efeitos": { "saude": 4, "felicidade": 4, "dinheiro": -600, "marcas": ["ativo"] }
         }
-      },
-      {
-        "texto": "Ficar no sofá",
-        "resumo": "recusou a hidroginástica e ficou no sofá",
-        "resultado": { "texto": "O sofá agradeceu. A coluna, nem tanto.", "efeitos": { "felicidade": -1 } }
       }
     ]
   },
@@ -276,12 +276,12 @@
         "sucesso": {
           "texto": "Você dançou até a última música e ainda pediu bis.",
           "resumo": "dançou até o fim da própria festa de oitenta anos",
-          "efeitos": { "felicidade": 8 }
+          "efeitos": { "felicidade": 10 }
         },
         "fracasso": {
           "texto": "Dançou duas músicas e passou o resto da festa com gelo no joelho, feliz da vida.",
           "resumo": "dançou nos oitenta e terminou com gelo no joelho",
-          "efeitos": { "saude": -5, "felicidade": 3 }
+          "efeitos": { "saude": -3, "felicidade": 4 }
         }
       },
       {

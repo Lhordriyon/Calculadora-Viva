@@ -80,12 +80,12 @@
         "sucesso": {
           "texto": "A startup foi comprada por uma gigante. Suas ações viraram dinheiro de verdade, com vírgula e tudo.",
           "resumo": "ficou ric{o|a} com as ações de uma startup",
-          "efeitos": { "dinheiro": 250000, "renda": { "definir": 80000 }, "felicidade": 8 }
+          "efeitos": { "dinheiro": 400000, "renda": { "definir": 80000 }, "felicidade": 8 }
         },
         "fracasso": {
           "texto": "A startup fechou em oito meses. Sobrou um moletom com o logotipo e muita história para contar.",
           "resumo": "trabalhou numa startup que fechou em oito meses",
-          "efeitos": { "renda": { "definir": 24000 }, "felicidade": -4 }
+          "efeitos": { "renda": { "definir": 30000 }, "felicidade": -3 }
         }
       },
       {
@@ -100,7 +100,7 @@
           "efeitos": { "renda": { "definir": 90000 }, "inteligencia": 5, "felicidade": 4, "marcas": ["servidor"] }
         },
         "fracasso": {
-          "texto": "Mestrado concluído, bolsa encerrada, vagas congeladas. Você virou professor{|a} de cursinho, e dos bons.",
+          "texto": "Mestrado concluído, bolsa encerrada, vagas congeladas. Você virou professor{|a} de cursinho, e {dos bons|das boas}.",
           "efeitos": { "renda": { "definir": 30000 }, "inteligencia": 4, "marcas": ["clt"] }
         }
       }
@@ -272,6 +272,14 @@
     "resumo": "pegou um temporal no meio das entregas",
     "escolhas": [
       {
+        "texto": "Esperar a chuva passar",
+        "resumo": "recusou uma entrega no temporal",
+        "resultado": {
+          "texto": "Perdeu o bônus e ganhou um cochilo no posto de gasolina.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
         "texto": "Fazer a entrega",
         "resumo": "fez entrega debaixo de temporal",
         "teste": { "chance": 0.8 },
@@ -283,14 +291,6 @@
           "texto": "Derrapou na curva. A moto ficou boa; você, nem tanto.",
           "resumo": "derrapou de moto numa entrega na chuva",
           "efeitos": { "saude": -10, "dinheiro": -1500, "felicidade": -3 }
-        }
-      },
-      {
-        "texto": "Esperar a chuva passar",
-        "resumo": "recusou uma entrega no temporal",
-        "resultado": {
-          "texto": "Perdeu o bônus e ganhou um cochilo no posto de gasolina.",
-          "efeitos": { "felicidade": -1 }
         }
       },
       {
@@ -447,6 +447,14 @@
     "resumo": "conheceu alguém especial",
     "escolhas": [
       {
+        "texto": "Deixar a conversa morrer",
+        "resumo": "deixou um flerte morrer na conversa",
+        "resultado": {
+          "texto": "Você respondeu com \"haha\" e a conversa morreu ali, como a maioria das conversas.",
+          "efeitos": {}
+        }
+      },
+      {
         "texto": "Chamar para sair",
         "resumo": "chamou alguém para sair",
         "teste": { "atributo": "aparencia", "dificuldade": 45 },
@@ -459,14 +467,6 @@
           "texto": "Visualizou e não respondeu. Acontece nas melhores famílias.",
           "resumo": "levou um vácuo depois de um papo ótimo",
           "efeitos": { "felicidade": -3 }
-        }
-      },
-      {
-        "texto": "Deixar a conversa morrer",
-        "resumo": "deixou um flerte morrer na conversa",
-        "resultado": {
-          "texto": "Você respondeu com \"haha\" e a conversa morreu ali, como a maioria das conversas.",
-          "efeitos": {}
         }
       }
     ]
@@ -596,6 +596,14 @@
     "resumo": "ouviu o primo falar da moeda do cachorrinho",
     "escolhas": [
       {
+        "texto": "Ignorar o primo",
+        "resumo": "ignorou o conselho financeiro do primo",
+        "resultado": {
+          "texto": "Você deixou o primo no vácuo. No Natal, ele chegou de tênis novo e humor ruim.",
+          "efeitos": {}
+        }
+      },
+      {
         "texto": "Colocar {aposta} na moeda",
         "resumo": "apostou na moeda do cachorrinho",
         "teste": { "chance": 0.15 },
@@ -617,14 +625,6 @@
         "resultado": {
           "texto": "Rende devagar, não late e não viraliza. Exatamente como deve ser.",
           "efeitos": { "investir": 3000, "inteligencia": 1, "marcas": ["investidor"] }
-        }
-      },
-      {
-        "texto": "Ignorar o primo",
-        "resumo": "ignorou o conselho financeiro do primo",
-        "resultado": {
-          "texto": "Você deixou o primo no vácuo. No Natal, ele chegou de tênis novo e humor ruim.",
-          "efeitos": {}
         }
       }
     ]
@@ -682,19 +682,19 @@
     "resumo": "teve a chance de fazer intercâmbio",
     "escolhas": [
       {
-        "texto": "Ir",
-        "resumo": "fez intercâmbio fora do país",
-        "resultado": {
-          "texto": "Você voltou falando inglês, reclamando do frio que passou e chamando pão de queijo de \"cheese bread\".",
-          "efeitos": { "dinheiro": -8000, "inteligencia": 5, "felicidade": 5, "marcas": ["fala_ingles"] }
-        }
-      },
-      {
         "texto": "Ficar",
         "resumo": "recusou o intercâmbio",
         "resultado": {
           "texto": "Você ficou. O feijão agradece; o seu inglês, nem tanto.",
           "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ir",
+        "resumo": "fez intercâmbio fora do país",
+        "resultado": {
+          "texto": "Você voltou falando inglês, reclamando do frio que passou e chamando pão de queijo de \"cheese bread\".",
+          "efeitos": { "dinheiro": -8000, "inteligencia": 5, "felicidade": 5, "marcas": ["fala_ingles"] }
         }
       }
     ]
@@ -708,6 +708,14 @@
     "resumo": "pensou em abrir o próprio negócio",
     "escolhas": [
       {
+        "texto": "Deixar como ideia",
+        "resumo": "deixou a ideia de negócio na gaveta",
+        "resultado": {
+          "texto": "A ideia ficou na gaveta, ao lado do violão que você ia aprender a tocar.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
         "texto": "Abrir um MEI e começar",
         "resumo": "abriu o próprio negócio",
         "teste": { "atributo": "inteligencia", "dificuldade": 50 },
@@ -720,14 +728,6 @@
           "texto": "O negócio não pegou. Sobrou estoque e uma aula prática sobre fluxo de caixa.",
           "resumo": "abriu um negócio que não vingou",
           "efeitos": { "divida": 12000, "felicidade": -5 }
-        }
-      },
-      {
-        "texto": "Deixar como ideia",
-        "resumo": "deixou a ideia de negócio na gaveta",
-        "resultado": {
-          "texto": "A ideia ficou na gaveta, ao lado do violão que você ia aprender a tocar.",
-          "efeitos": { "felicidade": -1 }
         }
       }
     ]
@@ -774,6 +774,14 @@
     "resumo": "fez um show com a banda",
     "escolhas": [
       {
+        "texto": "Largar a banda",
+        "resumo": "largou a banda",
+        "resultado": {
+          "texto": "Você vendeu a guitarra para pagar uma conta. Às vezes ainda sonha com o refrão.",
+          "efeitos": { "felicidade": -2, "removerMarcas": ["banda"] }
+        }
+      },
+      {
         "texto": "Tocar como se fosse um estádio",
         "resumo": "tocou com a banda como se fosse um estádio",
         "teste": { "chance": 0.3 },
@@ -787,14 +795,6 @@
           "resumo": "tocou num bar para seis pessoas",
           "efeitos": { "felicidade": 1 }
         }
-      },
-      {
-        "texto": "Largar a banda",
-        "resumo": "largou a banda",
-        "resultado": {
-          "texto": "Você vendeu a guitarra para pagar uma conta. Às vezes ainda sonha com o refrão.",
-          "efeitos": { "felicidade": -2, "removerMarcas": ["banda"] }
-        }
       }
     ]
   },
@@ -806,6 +806,14 @@
     "texto": "Um vídeo seu viralizou: dois milhões de visualizações [de você caindo da bicicleta|explicando matemática com funk|dançando na fila do banco|imitando a vó {avo}].",
     "resumo": "viralizou com um vídeo",
     "escolhas": [
+      {
+        "texto": "Voltar à vida normal",
+        "resumo": "deixou a fama passar e voltou à vida normal",
+        "resultado": {
+          "texto": "Em duas semanas ninguém lembrava. Você lembra, e sorri.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
       {
         "texto": "Virar influencer em tempo integral",
         "resumo": "tentou virar influencer em tempo integral",
@@ -819,14 +827,6 @@
           "texto": "O segundo vídeo flopou. O terceiro também. A internet esquece rápido.",
           "resumo": "tentou viver de internet e flopou",
           "efeitos": { "felicidade": -5 }
-        }
-      },
-      {
-        "texto": "Voltar à vida normal",
-        "resumo": "deixou a fama passar e voltou à vida normal",
-        "resultado": {
-          "texto": "Em duas semanas ninguém lembrava. Você lembra, e sorri.",
-          "efeitos": { "felicidade": 2 }
         }
       }
     ]

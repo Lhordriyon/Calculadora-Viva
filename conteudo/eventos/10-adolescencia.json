@@ -73,6 +73,14 @@
     "resumo": "caiu na brincadeira de verdade ou consequência",
     "escolhas": [
       {
+        "texto": "Pedir verdade",
+        "resumo": "pediu verdade e se arrependeu",
+        "resultado": {
+          "texto": "Você contou que ainda dorme com um bicho de pelúcia. A escola inteira soube até segunda.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
         "texto": "Encarar a consequência",
         "resumo": "encarou a consequência na roda",
         "teste": { "atributo": "aparencia", "dificuldade": 45 },
@@ -85,14 +93,6 @@
           "texto": "A pessoa virou o rosto. A roda inteira fez \"uuuh\". Você mudou de escola mentalmente.",
           "resumo": "levou um fora na frente da roda inteira",
           "efeitos": { "felicidade": -4, "aparencia": -1 }
-        }
-      },
-      {
-        "texto": "Pedir verdade",
-        "resumo": "pediu verdade e se arrependeu",
-        "resultado": {
-          "texto": "Você contou que ainda dorme com um bicho de pelúcia. A escola inteira soube até segunda.",
-          "efeitos": { "felicidade": -1 }
         }
       },
       {
@@ -114,6 +114,20 @@
     "resumo": "foi inscrit{o|a} na olimpíada de matemática",
     "escolhas": [
       {
+        "texto": "Ir sem estudar e confiar no talento",
+        "resumo": "fez a olimpíada sem estudar",
+        "teste": { "atributo": "inteligencia", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "Medalha de bronze sem abrir um livro. Os professores ficaram com medo de você.",
+          "resumo": "ganhou medalha na olimpíada sem estudar",
+          "efeitos": { "felicidade": 7, "marcas": ["medalhista"] }
+        },
+        "fracasso": {
+          "texto": "Você terminou a prova em vinte minutos e entendeu, na saída, que não era bom sinal.",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
         "texto": "Treinar todo dia",
         "resumo": "treinou meses para a olimpíada de matemática",
         "efeitos": { "inteligencia": 3, "felicidade": -1 },
@@ -126,20 +140,6 @@
         "fracasso": {
           "texto": "Menção honrosa. Parece pouco, mas você aprendeu mais em três meses do que em três anos.",
           "efeitos": { "inteligencia": 2 }
-        }
-      },
-      {
-        "texto": "Ir sem estudar e confiar no talento",
-        "resumo": "fez a olimpíada sem estudar",
-        "teste": { "atributo": "inteligencia", "dificuldade": 70 },
-        "sucesso": {
-          "texto": "Medalha de bronze sem abrir um livro. Os professores ficaram com medo de você.",
-          "resumo": "ganhou medalha na olimpíada sem estudar",
-          "efeitos": { "felicidade": 7, "marcas": ["medalhista"] }
-        },
-        "fracasso": {
-          "texto": "Você terminou a prova em vinte minutos e entendeu, na saída, que não era bom sinal.",
-          "efeitos": { "felicidade": -2 }
         }
       },
       {
@@ -161,6 +161,14 @@
     "resumo": "fez peneira num clube grande",
     "escolhas": [
       {
+        "texto": "Jogar sem pressão",
+        "resumo": "jogou a peneira sem pressão e voltou para casa",
+        "resultado": {
+          "texto": "Você se divertiu como nunca. O olheiro levou outros dois, e tudo bem.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
         "texto": "Dar tudo de si",
         "resumo": "deu tudo de si na peneira",
         "teste": { "atributo": "saude", "dificuldade": 75 },
@@ -177,14 +185,6 @@
           "texto": "Você tropeçou na bola no lance mais importante. O olheiro nem olhou de novo.",
           "resumo": "foi reprovad{o|a} na peneira",
           "efeitos": { "felicidade": -5 }
-        }
-      },
-      {
-        "texto": "Jogar sem pressão",
-        "resumo": "jogou a peneira sem pressão e voltou para casa",
-        "resultado": {
-          "texto": "Você se divertiu como nunca. O olheiro levou outros dois, e tudo bem.",
-          "efeitos": { "felicidade": 2 }
         }
       }
     ]
@@ -235,6 +235,14 @@
     "resumo": "foi convidad{o|a} para uma banda de garagem",
     "escolhas": [
       {
+        "texto": "Preferir só ouvir",
+        "resumo": "preferiu ouvir a banda a tocar nela",
+        "resultado": {
+          "texto": "Você virou {o|a} fã número um. Também {o único|a única}, mas isso é detalhe.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
         "texto": "Entrar na banda",
         "resumo": "montou uma banda de garagem",
         "resultado": {
@@ -248,14 +256,6 @@
         "resultado": {
           "texto": "Você conseguiu um show na quermesse. Cachê: um pastel para cada um.",
           "efeitos": { "inteligencia": 2, "felicidade": 2, "marcas": ["vendedor_nato"] }
-        }
-      },
-      {
-        "texto": "Preferir só ouvir",
-        "resumo": "preferiu ouvir a banda a tocar nela",
-        "resultado": {
-          "texto": "Você virou o fã número um. Também o único, mas isso é detalhe.",
-          "efeitos": { "felicidade": 1 }
         }
       }
     ]
@@ -293,6 +293,14 @@
     "resumo": "ficou com a casa vazia no fim de semana",
     "escolhas": [
       {
+        "texto": "Maratonar séries",
+        "resumo": "passou o fim de semana maratonando séries",
+        "resultado": {
+          "texto": "Três temporadas, duas pizzas e nenhum arrependimento.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
         "texto": "Dar uma festa",
         "resumo": "deu uma festa com os pais viajando",
         "teste": { "chance": 0.5 },
@@ -305,14 +313,6 @@
           "texto": "Alguém quebrou a TV e o vizinho ligou para {mae}. Você vai pagar essa TV até os trinta.",
           "resumo": "deu uma festa que quebrou a TV da sala",
           "efeitos": { "felicidade": -3, "dinheiro": -1500 }
-        }
-      },
-      {
-        "texto": "Maratonar séries",
-        "resumo": "passou o fim de semana maratonando séries",
-        "resultado": {
-          "texto": "Três temporadas, duas pizzas e nenhum arrependimento.",
-          "efeitos": { "felicidade": 2 }
         }
       },
       {

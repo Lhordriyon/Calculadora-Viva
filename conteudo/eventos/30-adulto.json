@@ -10,19 +10,19 @@
     "resumo": "foi sondad{o|a} para uma promoção",
     "escolhas": [
       {
-        "texto": "Vestir a camisa",
-        "resumo": "aceitou a promoção e vestiu a camisa da empresa",
-        "resultado": {
-          "texto": "Salário maior, sala com janela e um celular que vibra até nos seus sonhos.",
-          "efeitos": { "renda": 20000, "felicidade": -2, "saude": -3, "marcas": ["workaholic"] }
-        }
-      },
-      {
         "texto": "Recusar e manter a sanidade",
         "resumo": "recusou uma promoção para ter vida própria",
         "resultado": {
           "texto": "Você continua no mesmo cargo, saindo às seis em ponto. Tem colega que te inveja em silêncio.",
           "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Vestir a camisa",
+        "resumo": "aceitou a promoção e vestiu a camisa da empresa",
+        "resultado": {
+          "texto": "Salário maior, sala com janela e um celular que vibra até nos seus sonhos.",
+          "efeitos": { "renda": 20000, "felicidade": -2, "saude": -3, "marcas": ["workaholic"] }
         }
       },
       {
@@ -214,6 +214,14 @@
     "resumo": "recebeu uma proposta de sociedade de {amigo}",
     "escolhas": [
       {
+        "texto": "Recusar com carinho",
+        "resumo": "recusou a sociedade com {amigo}",
+        "resultado": {
+          "texto": "{amigo} entendeu. Abriu sozinh{amigo:o|a} e te convidou para a inauguração.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
         "texto": "Topar a sociedade",
         "resumo": "abriu um negócio com {amigo}",
         "teste": { "chance": 0.55 },
@@ -227,14 +235,6 @@
           "resumo": "abriu um negócio com {amigo} que quebrou",
           "efeitos": { "divida": 25000, "felicidade": -6, "marcas": ["brigou_com_amigo"] }
         }
-      },
-      {
-        "texto": "Recusar com carinho",
-        "resumo": "recusou a sociedade com {amigo}",
-        "resultado": {
-          "texto": "{amigo} entendeu. Abriu sozinh{amigo:o|a} e te convidou para a inauguração.",
-          "efeitos": { "felicidade": -1 }
-        }
       }
     ]
   },
@@ -244,14 +244,14 @@
     "peso": 6,
     "condicoes": { "marcas": ["zoou_amigo"] },
     "texto": "Primeiro dia no emprego novo. Entra na sala {amigo:o novo diretor|a nova diretora}: é {amigo}, de quem você riu no recreio.",
-    "resumo": "descobriu que {amigo}, de quem riu no recreio, era seu novo chefe",
+    "resumo": "descobriu que {amigo}, de quem riu no recreio, era {amigo:seu novo chefe|sua nova chefe}",
     "escolhas": [
       {
         "texto": "Pedir desculpas, anos depois",
         "resumo": "pediu desculpas a {amigo} pelo recreio",
         "teste": { "chance": 0.6 },
         "sucesso": {
-          "texto": "{amigo} riu: \"a gente era criança\". Vocês almoçaram juntos e você ganhou um aliado.",
+          "texto": "{amigo} riu: \"a gente era criança\". Vocês almoçaram juntos e você ganhou {amigo:um aliado|uma aliada}.",
           "resumo": "pediu desculpas a {amigo} décadas depois do recreio",
           "efeitos": { "felicidade": 4, "renda": 8000, "removerMarcas": ["zoou_amigo"] }
         },
@@ -415,6 +415,14 @@
     "resumo": "foi desafiad{o|a} para uma meia maratona",
     "escolhas": [
       {
+        "texto": "Torcer na linha de chegada",
+        "resumo": "torceu pelos amigos na meia maratona",
+        "resultado": {
+          "texto": "Você levou cartaz, água e banana. Foi a pessoa mais querida do percurso.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
         "texto": "Correr",
         "resumo": "encarou uma meia maratona",
         "teste": { "atributo": "saude", "dificuldade": 55 },
@@ -427,14 +435,6 @@
           "texto": "Abandonou no quilômetro catorze, com o joelho pedindo socorro em três idiomas.",
           "resumo": "abandonou uma meia maratona no quilômetro catorze",
           "efeitos": { "saude": -5, "felicidade": -2 }
-        }
-      },
-      {
-        "texto": "Torcer na linha de chegada",
-        "resumo": "torceu pelos amigos na meia maratona",
-        "resultado": {
-          "texto": "Você levou cartaz, água e banana. Foi a pessoa mais querida do percurso.",
-          "efeitos": { "felicidade": 2 }
         }
       }
     ]
@@ -607,6 +607,14 @@
     "resumo": "foi convidad{o|a} para disputar uma eleição",
     "escolhas": [
       {
+        "texto": "Recusar e seguir reclamando no grupo",
+        "resumo": "recusou a candidatura e seguiu reclamando no grupo da família",
+        "resultado": {
+          "texto": "Você recusou. Seus áudios de quatro minutos no grupo da família continuam firmes.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
         "texto": "Topar a campanha ({campanha})",
         "resumo": "se candidatou a vereador{|a}",
         "efeitos": { "dinheiro": -8000 },
@@ -620,14 +628,6 @@
           "texto": "Trezentos e oitenta e sete votos. Você conhece pessoalmente uns trezentos.",
           "resumo": "perdeu a eleição para vereador{|a}",
           "efeitos": { "felicidade": -4 }
-        }
-      },
-      {
-        "texto": "Recusar e seguir reclamando no grupo",
-        "resumo": "recusou a candidatura e seguiu reclamando no grupo da família",
-        "resultado": {
-          "texto": "Você recusou. Seus áudios de quatro minutos no grupo da família continuam firmes.",
-          "efeitos": { "felicidade": 1 }
         }
       }
     ]
@@ -676,19 +676,19 @@
     "resumo": "pensou em voltar a estudar",
     "escolhas": [
       {
-        "texto": "Encarar",
-        "resumo": "voltou a estudar depois dos trinta e se formou",
-        "resultado": {
-          "texto": "Quatro anos de café, sono atrasado e prova online. Na colação, sua torcida gritou mais alto que todas.",
-          "efeitos": { "dinheiro": -14000, "inteligencia": 6, "felicidade": -2, "renda": 6000, "marcas": ["formado"] }
-        }
-      },
-      {
         "texto": "Não é para mim",
         "resumo": "desistiu de voltar a estudar",
         "resultado": {
           "texto": "Você fechou a aba do anúncio. Ele te perseguiu por três semanas em todos os sites.",
           "efeitos": {}
+        }
+      },
+      {
+        "texto": "Encarar",
+        "resumo": "voltou a estudar depois dos trinta e se formou",
+        "resultado": {
+          "texto": "Quatro anos de café, sono atrasado e prova online. Na colação, sua torcida gritou mais alto que todas.",
+          "efeitos": { "dinheiro": -14000, "inteligencia": 6, "felicidade": -2, "renda": 6000, "marcas": ["formado"] }
         }
       }
     ]
@@ -746,7 +746,7 @@
           "efeitos": { "renda": { "definir": 90000 }, "felicidade": 5, "removerMarcas": ["profissional"] }
         },
         "fracasso": {
-          "texto": "Travou ao vivo no primeiro teste. Voltou para o bairro e virou técnico do time de várzea.",
+          "texto": "Travou ao vivo no primeiro teste. Voltou para o bairro e virou técnic{o|a} do time de várzea.",
           "resumo": "travou ao vivo e virou técnic{o|a} de várzea",
           "efeitos": { "renda": { "definir": 30000 }, "felicidade": -3, "removerMarcas": ["profissional"] }
         }

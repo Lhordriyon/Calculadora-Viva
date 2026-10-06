@@ -174,3 +174,40 @@ export function falsosDilemas(c: Conteudo, e: EstadoVida): { evento: string; esc
   }
   return achados;
 }
+
+/** Um estado típico para a idade de um evento (atributos médios daquela fase). */
+export function estadoTipico(base: EstadoVida, idade: number): EstadoVida {
+  const e = structuredClone(base);
+  e.idade = idade;
+  const crianca = idade < 18;
+  e.atributos = {
+    saude: crianca ? 85 : idade < 60 ? 65 : 45,
+    felicidade: 60,
+    inteligencia: crianca ? 30 + idade * 1.5 : 55,
+    aparencia: 50,
+  };
+  e.financas = { ...e.financas, renda: crianca ? 0 : 30000, custo: crianca ? 0 : 18000, dinheiro: crianca ? 0 : 10000, investido: 0, divida: 0 };
+  return e;
+}
+
+/**
+ * Eventos em que arriscar nunca compensa: há opção com risco, mas a opção mais
+ * segura também tem o maior valor esperado. (Armadilhas de propósito, como
+ * apostar para recuperar o prejuízo, entram aqui e tudo bem; o número serve
+ * para não deixar o jogo inteiro assim.)
+ */
+export function arriscarNaoCompensa(c: Conteudo, base: EstadoVida): string[] {
+  const achados: string[] = [];
+  for (const ev of c.eventos) {
+    if (!ev.escolhas || ev.escolhas.length < 2) continue;
+    const idade = ev.idade ? Math.round((ev.idade[0] + ev.idade[1]) / 2) : 30;
+    const e = estadoTipico(base, idade);
+    // Opções com condição são situacionais (dependem de marcas ou dinheiro): ficam de fora.
+    const av = ev.escolhas.filter((esc) => !esc.condicoes).map((esc) => avaliarEscolha(esc, e, c));
+    if (av.length < 2) continue;
+    if (!av.some((a) => a.risco > 1e-9)) continue;
+    const segura = av.reduce((m, a, i) => (a.risco < av[m]!.risco - 1e-9 || (Math.abs(a.risco - av[m]!.risco) <= 1e-9 && a.esperado > av[m]!.esperado) ? i : m), 0);
+    if (av.every((a) => a.esperado <= av[segura]!.esperado + 1e-9)) achados.push(ev.id);
+  }
+  return achados;
+}

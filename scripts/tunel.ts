@@ -13,7 +13,7 @@ import { carregarConteudo, RAIZ } from './disco.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import type { Condicoes } from '../src/motor/esquema.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
-import { ESTRATEGIAS, avaliarEscolha, decidir, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
+import { ESTRATEGIAS, arriscarNaoCompensa, decidir, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
@@ -240,18 +240,11 @@ for (const v of vidas) {
 }
 const totalAparicoes = vidas.reduce((s, v) => s + v.eventos.length, 0);
 
-// Dilemas: avaliados num adulto típico (atributos 50, renda e custo medianos).
-const tipico = nascer(c, { semente: 1, ano: ANO });
-tipico.idade = 30;
-tipico.atributos = { saude: 50, felicidade: 50, inteligencia: 50, aparencia: 50 };
-tipico.financas = { ...tipico.financas, renda: 30000, custo: 18000 };
-const dilemasFalsos = falsosDilemas(c, tipico);
-const semTensao = c.eventos.filter((ev) => {
-  if (!ev.escolhas || ev.escolhas.length < 2) return false;
-  const av = ev.escolhas.map((esc) => avaliarEscolha(esc, tipico, c));
-  const segura = av.reduce((m, a, i) => (a.risco < av[m]!.risco - 1e-9 || (Math.abs(a.risco - av[m]!.risco) <= 1e-9 && a.esperado > av[m]!.esperado) ? i : m), 0);
-  return av.every((a) => a.esperado <= av[segura]!.esperado + 1e-9);
-});
+// Dilemas: avaliados num estado típico da idade de cada evento.
+const base = nascer(c, { semente: 1, ano: ANO });
+const dilemasFalsos = falsosDilemas(c, estadoTipico(base, 30));
+const semTensao = arriscarNaoCompensa(c, base);
+const comRisco = c.eventos.filter((ev) => (ev.escolhas?.length ?? 0) > 1).length;
 
 interface ResumoEstrategia {
   estrategia: Estrategia;
@@ -350,7 +343,9 @@ l();
 l('## Dilemas');
 l();
 l(`- **Falsos dilemas** (uma opção é melhor ou igual em tudo, com as mesmas consequências futuras): ${dilemasFalsos.length ? dilemasFalsos.map((d) => `\`${d.evento}\``).join(', ') : 'nenhum'}`);
-l(`- **Sem tensão entre risco e recompensa** (a opção mais segura também tem o maior valor esperado): ${semTensao.length} de ${c.eventos.filter((ev) => (ev.escolhas?.length ?? 0) > 1).length} eventos.`);
+l(
+  `- **Arriscar nunca compensa** (há opção arriscada, mas a mais segura também tem o maior valor esperado, num estado típico da idade): ${semTensao.length} de ${comRisco} eventos — ${semTensao.map((id) => `\`${id}\``).join(', ')}. Algumas são armadilhas de propósito.`,
+);
 l();
 l('## Eventos');
 l();
@@ -449,7 +444,7 @@ for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${no
 console.log(
   `Repetição entre vidas: ${pct(repMedia)} (vida anterior: ${pct(repAnterior)}) · aleatória vida anterior sem/com memória: ${pct(semMemoria.anterior)} → ${pct(comMemoria.anterior)} · dentro da vida: ${pct(media(repeticaoInterna))}`,
 );
-console.log(`Falsos dilemas: ${dilemasFalsos.length} · sem tensão risco×recompensa: ${semTensao.length}`);
+console.log(`Falsos dilemas: ${dilemasFalsos.length} · arriscar nunca compensa: ${semTensao.length} (${semTensao.join(', ')})`);
 console.log(`Mais repetidos na mesma vida (por 100 aparições): ${maisRepetidos.map(([id, n]) => `${id} ${num((n / totalAparicoes) * 100)}`).join(' · ')}`);
 console.log(`Idade média ${num(media(idades))} · patrimônio mediano ${formatarDinheiro(percentil(patrimonios, 50))} · felicidade média ${num(media(felicidades))}`);
 for (const r of porEstrategia) {
