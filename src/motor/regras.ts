@@ -50,11 +50,9 @@ export function derivaAparencia(idade: number): number {
   return -0.6;
 }
 
-/** Inflação anual sorteada: média de 4,5% com anos de crise ocasionais. */
+/** Inflação anual sorteada: média de 4,5%; as fases do ciclo (mundo.json) somam ou tiram. */
 export const INFLACAO_MEDIA = 0.045;
 export const INFLACAO_DESVIO = 0.02;
-export const CHANCE_CRISE = 0.08;
-export const INFLACAO_CRISE = 0.06;
 
 /** Retorno real (acima da inflação) dos investimentos, com anos ruins. */
 export const RETORNO_REAL_MEDIO = 0.04;
@@ -117,10 +115,19 @@ export function chanceDoenca(idade: number): number {
 export const DOENCA_QUEDA = 14;
 export const DOENCA_POR_ANO = 2.5;
 export const CHANCE_CURA = 0.35;
-/** Chance anual de demissão com o desemprego do lugar em 8%. */
+/** Chance anual de demissão com o desemprego do lugar em 8% (personagens). */
 export const DEMISSAO_BASE = 0.04;
+/** Chance anual de quem joga ser demitido, no normal, num setor médio, com desemprego de 8%. */
+export const DEMISSAO_JOGADOR = 0.025;
+/** Negócio próprio: desvio-padrão do faturamento no ano e chance de aperto por ponto de piora do ciclo. */
+export const VARIACAO_NEGOCIO = 0.05;
+export const CHANCE_APERTO_NEGOCIO = 0.25;
 export const RECOLOCACAO = 0.38;
 export const IDADE_APOSENTADORIA = 65;
+/** O padrão de vida aperta quando a reserva cobre menos que estes anos de déficit. */
+export const ANOS_DE_RESERVA = 5;
+/** Chance anual de o negócio de um personagem quebrar, por ponto de piora do ciclo (vezes quanto o setor sente). */
+export const CHANCE_FALENCIA = 0.08;
 /** O vínculo volta devagar para o ponto de equilíbrio da família. */
 export const RETORNO_VINCULO = 0.06;
 /** Vínculo perdido por ano depois dos 20 de quem joga, sem contato (amigos perdem mais). */

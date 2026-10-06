@@ -3,6 +3,8 @@
  * agem → o diretor escolhe → escolha → efeitos. Funções puras sobre o estado
  * (mutam o objeto recebido; a interface clona antes).
  */
+import { cicloDoAno, sortearFaseInicial } from './ciclo.ts';
+import { regraDoPadrao, regraDoTrabalho } from './trabalho.ts';
 import { ATRIBUTOS } from './constantes.ts';
 import { patrimonioDe } from './campos.ts';
 import { atende } from './condicoes.ts';
@@ -81,6 +83,7 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   e.entidades['eu'] = novaEntidade({ id: 'eu', tipo: 'pessoa', nome: sortear(rng, c.mundo.nomes[genero]), genero, nascimento: op.ano, vivo: true });
   e.sobrenome = `${sortear(rng, c.mundo.sobrenomes)} ${sortear(rng, c.mundo.sobrenomes)}`;
   gerarOrigem(e, c, op.origem);
+  sortearFaseInicial(e, c);
   e.historico.push({
     id: 0,
     idade: 0,
@@ -131,11 +134,13 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   e.idade++;
   e.ano++;
   const eu = e.entidades['eu']!;
+  const inicio = e.historico.length;
+  // O país primeiro: a fase do ciclo vale para a economia, os empregos e os storylets do ano.
+  const fase = cicloDoAno(e, c);
   const regAno: Mudanca[] = [];
   const idRegras = e.proximoId++;
-  const inicio = e.historico.length;
 
-  const ano = economiaDoAno(e, e.rng, regAno);
+  const ano = economiaDoAno(e, e.rng, regAno, fase);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {
     somar(e, regAno, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');
@@ -144,7 +149,9 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
     perder(e, regAno, 'eu', 'privacao', 'economia');
   }
   envelhecer(e, c, regAno);
-  regrasDosPersonagens(e, c, regAno);
+  regrasDosPersonagens(e, c, regAno, fase);
+  regraDoTrabalho(e, c, fase, regAno);
+  regraDoPadrao(e, c, ano.deficit);
   e.somaFelicidade += eu.n['felicidade'] ?? 0;
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   lancar(e, { id: idRegras, idade: e.idade, ano: e.ano, tipo: 'regra', causa: 'regra', ref: 'ano', texto: '' }, regAno);

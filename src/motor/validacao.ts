@@ -11,7 +11,7 @@ import { ATRIBUTOS, PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
-import { ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR } from './manifesto.ts';
+import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR } from './manifesto.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 import { analisarModelo, comprimentoMaximo } from './texto.ts';
 
@@ -96,8 +96,8 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     if (ef.investir) out.push({ caminho: 'eu.investido', sistema: 'dinheiro' });
     if (ef.divida || ef.dividaFator !== undefined) out.push({ caminho: 'eu.divida', sistema: 'dinheiro' });
   }
-  if (ef.renda !== undefined) out.push({ caminho: 'eu.renda', sistema: 'dinheiro' });
-  if (ef.custo !== undefined) out.push({ caminho: 'eu.custo', sistema: 'dinheiro' });
+  if (ef.renda !== undefined || ef.rendaFator !== undefined) out.push({ caminho: 'eu.renda', sistema: 'dinheiro' });
+  if (ef.custo !== undefined || ef.custoFator !== undefined || ef.custoDoPatrimonio !== undefined) out.push({ caminho: 'eu.custo', sistema: 'dinheiro' });
   for (const chave of Object.keys(ef)) {
     if (!chave.includes('.')) continue;
     for (const c of concretos(chave, atores)) out.push({ caminho: c, sistema: sistemaDe(c) });
@@ -186,7 +186,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       erro(onde, `"${caminho}" usa ator, mas o storylet não declara ator`);
       return false;
     }
-    if ((ent === 'lugar' || ent === 'pais') && !defCampo(ent, campo) && !c.mundo.cidades.some((x) => x.marcas.includes(campo))) {
+    if ((ent === 'lugar' || ent === 'pais') && !defCampo(ent, campo) && !c.mundo.cidades.some((x) => x.marcas.includes(campo)) && !escritores.has(`${ent}.${campo}`)) {
       erro(onde, `"${caminho}" não é campo nem qualidade de ${ent}`);
       return false;
     }
@@ -218,7 +218,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
 
   // ---- personagens que um efeito cria e as qualidades que os garantem
   const marcasDoPapel = new Map<string, Set<string>>();
-  const agendados = new Set<string>();
+  const agendados = new Set<string>(AGENDADOS_PELO_MOTOR);
   for (const s of c.storylets) {
     const atores = s.ator;
     for (const b of blocosDe(s, nomeDe(s))) {
@@ -231,8 +231,18 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (!def) erro(b.onde, `"${chave}" não é campo (qualidades vão em "marcas" ou "qualidades")`);
         else if (def.derivado) erro(b.onde, `"${chave}" é calculado; não dá para escrever`);
         const v = ef[chave];
-        if (def?.tipo === 'texto' && !(typeof v === 'object' && v !== null && 'definir' in v && typeof v.definir === 'string')) {
-          erro(b.onde, `"${chave}" é texto; use { "definir": "..." }`);
+        const copia = typeof v === 'object' && v !== null && 'copiar' in v ? v.copiar : undefined;
+        if (def?.tipo === 'texto' && copia === undefined && !(typeof v === 'object' && v !== null && 'definir' in v && typeof v.definir === 'string')) {
+          erro(b.onde, `"${chave}" é texto; use { "definir": "..." } ou { "copiar": "caminho" }`);
+        }
+        if (copia !== undefined && conferirCaminho(copia, b.onde, atores)) {
+          const { ent: entOrigem, campo: campoOrigem } = separar(copia);
+          const defOrigem = defCampo(entOrigem === 'ator' ? 'mae' : entOrigem, campoOrigem);
+          if (!defOrigem || defOrigem.tipo !== def?.tipo) erro(b.onde, `"${chave}" copia "${copia}", que não é um campo do mesmo tipo`);
+          for (const k of concretos(copia, atores)) ler(k, { sistema: 'efeito', decide: false, onde: b.onde });
+        }
+        if (def && campo === 'setor' && typeof v === 'object' && v !== null && 'definir' in v && !c.mundo.setores.some((x) => x.id === v.definir)) {
+          erro(b.onde, `setor desconhecido "${String(v.definir)}" (veja mundo.json › setores)`);
         }
       }
       for (const m of [...(ef.marcas ?? []), ...(ef.removerMarcas ?? []), ...Object.keys(ef.qualidades ?? {})]) {

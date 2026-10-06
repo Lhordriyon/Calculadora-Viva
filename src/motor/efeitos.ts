@@ -3,7 +3,7 @@
  * entrada que a causou (o livro-razão); `ator` resolve os caminhos "ator.x".
  */
 import { ATRIBUTOS, type PapelNovo } from './constantes.ts';
-import { defCampo, entidadeDe, patrimonioDe, separar } from './campos.ts';
+import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { movimentar } from './economia.ts';
 import type { Efeitos } from './esquema.ts';
@@ -48,8 +48,11 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     somar(e, reg, 'eu', 'investido', (eu.n['investido'] ?? 0) * f);
   }
   if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, ef);
+  if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
   if (ef.custo !== undefined) definirNumero(e, reg, 'eu', 'custo', ajustar(eu.n['custo'] ?? 0, ef.custo));
+  if (ef.custoDoPatrimonio !== undefined) somar(e, reg, 'eu', 'custo', Math.max(0, patrimonioDe(eu)) * ef.custoDoPatrimonio);
+  if (ef.custoFator !== undefined) somar(e, reg, 'eu', 'custo', (eu.n['custo'] ?? 0) * (ef.custoFator - 1));
 
   // Campos por caminho ("mae.vinculo": 10, "ator.ocupacao": {"definir": "..."}).
   for (const [chave, valor] of Object.entries(ef)) {
@@ -65,6 +68,10 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     } else if (typeof valor === 'object' && 'definir' in valor) {
       if (typeof valor.definir === 'string') definirTexto(e, reg, ent, campo, valor.definir);
       else definirNumero(e, reg, ent, campo, valor.definir);
+    } else if (typeof valor === 'object' && 'copiar' in valor) {
+      const v = lerCaminho(e, String(valor.copiar), ator);
+      if (typeof v === 'string' && v !== '') definirTexto(e, reg, ent, campo, v);
+      else if (typeof v === 'number') definirNumero(e, reg, ent, campo, v);
     }
   }
 

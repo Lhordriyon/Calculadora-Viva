@@ -11,11 +11,12 @@ import { causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
-import type { Gatilho } from './esquema.ts';
+import type { DefFase, Gatilho } from './esquema.ts';
 import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { morrerPersonagem } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
+  CHANCE_FALENCIA,
   CHANCE_CURA,
   DEMISSAO_BASE,
   DESGASTE_CASAL,
@@ -34,6 +35,7 @@ import {
 } from './regras.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
+import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
 
@@ -48,9 +50,11 @@ function acontecer(
   gatilho: Gatilho,
   aplicar: (reg: Mudanca[], id: number) => void,
   textos: Record<string, string> = {},
+  causas: number[] = [],
 ): Entrada {
   const ac = c.mundo.acontecimentos[gatilho];
   const entrada = novaEntrada(e, { tipo: 'npc', causa: 'regra', ref: `regra:${gatilho}`, ator: papel, instancia: `regra:${gatilho}#${papel}`, texto: '' });
+  if (causas.length > 0) entrada.causas = causas;
   const reg: Mudanca[] = [];
   aplicar(reg, entrada.id);
   const ctx = contexto(e, { ator: papel, textos });
@@ -79,7 +83,12 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
 }
 
 /** Roda as regras do ano de cada personagem vivo. Variações miúdas vão para `regAno`. */
-export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca[]): void {
+export function regrasDosPersonagens(
+  e: EstadoVida,
+  c: Conteudo,
+  regAno: Mudanca[],
+  fase: Pick<DefFase, 'desemprego' | 'retorno'> = { desemprego: 1, retorno: 0 },
+): void {
   const eu = e.entidades['eu']!;
   const lugar = e.entidades['lugar'];
   const classe = c.mundo.classes[eu.n['classe_origem'] ?? 2] ?? c.mundo.classes[2]!;
@@ -88,6 +97,7 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
     if (!en || en.vivo === false) continue;
     const idade = idadeDe(e, en);
     const traco = c.tracos.get(en.t['traco'] ?? '');
+    const setor = c.setores.get(en.t['setor'] ?? '');
     const fatorDoenca = traco?.doenca ?? 1;
 
     // ---- saúde, doença, morte
@@ -124,13 +134,43 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
           perder(e, reg, papel, 'desempregado');
           somar(e, reg, papel, 'renda', Math.max(18000, (en.n['renda'] ?? 0) * 0.7) - (en.n['renda'] ?? 0));
         });
-      } else if (!en.q['ausente'] && !en.q['dono_do_negocio'] && idade >= 18) {
-        const desemprego = (lugar?.n['desemprego'] ?? 0.08) / 0.08;
-        if (!en.q['desempregado'] && aleatorio(e.rng) < DEMISSAO_BASE * desemprego * (traco?.emprego ?? 1)) {
-          acontecer(e, c, papel, 'demitido', (reg, id) => {
+      } else if (en.q['dono_do_negocio'] && fase.desemprego > 1 && aleatorio(e.rng) < CHANCE_FALENCIA * (fase.desemprego - 1) * (setor?.ciclo ?? 1)) {
+        // Na recessão e na crise, o negócio da família pode quebrar: vai junto boa parte do que foi guardado.
+        const pelaFase = causaDaFase(e);
+        acontecer(
+          e,
+          c,
+          papel,
+          'faliu',
+          (reg, id) => {
+            perder(e, reg, papel, 'dono_do_negocio');
             ganhar(e, reg, papel, 'desempregado', id);
+            somar(e, reg, papel, 'dinheiro', -Math.max(0, en.n['dinheiro'] ?? 0) * 0.6);
             somar(e, reg, papel, 'renda', -(en.n['renda'] ?? 0) * 0.7);
-          });
+            const outro = e.entidades[papel === 'mae' ? 'pai' : 'mae'];
+            if (!outro?.q['dono_do_negocio']) perder(e, reg, 'eu', 'negocio_familiar');
+          },
+          {},
+          pelaFase === null ? [] : [pelaFase],
+        );
+      } else if (!en.q['ausente'] && !en.q['dono_do_negocio'] && !setor?.estavel && idade >= 18) {
+        // Desemprego do lugar (relativo a 8%) vezes o momento do país, conforme o setor sente o ciclo.
+        const desemprego = ((lugar?.n['desemprego'] ?? 0.08) / 0.08) * (1 + (fase.desemprego - 1) * (setor?.ciclo ?? 1));
+        if (!en.q['desempregado'] && aleatorio(e.rng) < DEMISSAO_BASE * desemprego * (traco?.emprego ?? 1)) {
+          // Numa recessão ou crise, a fase do país entra como causa da demissão (ela aumentou a chance).
+          const pelaFase = fase.desemprego > 1 && (setor?.ciclo ?? 1) > 0 ? causaDaFase(e) : null;
+          acontecer(
+            e,
+            c,
+            papel,
+            'demitido',
+            (reg, id) => {
+              ganhar(e, reg, papel, 'desempregado', id);
+              somar(e, reg, papel, 'renda', -(en.n['renda'] ?? 0) * 0.7);
+            },
+            {},
+            pelaFase === null ? [] : [pelaFase],
+          );
         } else if (en.q['desempregado'] && aleatorio(e.rng) < RECOLOCACAO / desemprego) {
           acontecer(e, c, papel, 'empregado', (reg) => {
             perder(e, reg, papel, 'desempregado');
@@ -146,8 +186,8 @@ export function regrasDosPersonagens(e: EstadoVida, c: Conteudo, regAno: Mudanca
       const trabalhando = idade < IDADE_APOSENTADORIA && !en.q['aposentado'] && !en.q['desempregado'];
       const guarda = trabalhando ? (en.n['renda'] ?? 0) * (classe.poupanca + (traco?.poupanca ?? 0)) : 0;
       const aperto = en.q['desempregado'] ? 6000 * (lugar?.n['custo_vida'] ?? 1) : 0;
-      // Rende um pouco acima da inflação; depois dos 65, a saúde e a família consomem parte do que foi guardado.
-      const rende = Math.max(0, dinheiro) * (idade >= IDADE_APOSENTADORIA ? -0.03 : 0.01);
+      // Rende um pouco acima da inflação (e sobe e desce com o ciclo); depois dos 65, a saúde e a família consomem parte do que foi guardado.
+      const rende = Math.max(0, dinheiro) * ((idade >= IDADE_APOSENTADORIA ? -0.03 : 0.01) + fase.retorno);
       somar(e, regAno, papel, 'dinheiro', guarda - aperto + rende, 'dinheiro');
     }
 
