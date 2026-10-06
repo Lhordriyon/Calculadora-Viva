@@ -11,7 +11,7 @@
  * perder felicidade com certeza é custo, não risco.
  */
 import { acoesPossiveis } from './acoes.ts';
-import { entidadeDe, separar } from './campos.ts';
+import { entidadeDe, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Verbo } from './constantes.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
@@ -42,8 +42,11 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   v += ((ef.dinheiro ?? 0) - (ef.divida ?? 0)) / REAIS_POR_PONTO;
   if (ef.dividaFator !== undefined) v += ((eu.n['divida'] ?? 0) * (1 - ef.dividaFator)) / REAIS_POR_PONTO;
   if (ef.patrimonioFator !== undefined) v += ((ef.patrimonioFator - 1) * (Math.max(0, eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0))) / REAIS_POR_PONTO;
+  if (ef.rendaFator !== undefined) v += ((ef.rendaFator - 1) * (eu.n['renda'] ?? 0) * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   // Investir troca dinheiro parado (que encolhe) por dinheiro que rende: ~4% reais em 10 anos de horizonte.
   if (ef.investir && ef.investir > 0) v += (Math.min(ef.investir, eu.n['dinheiro'] ?? 0) * 0.48) / REAIS_POR_PONTO;
+  // Resgatar é o contrário: o dinheiro sai do que rende e volta a encolher.
+  if (ef.investir && ef.investir < 0) v -= (Math.min(-ef.investir, eu.n['investido'] ?? 0) * 0.48) / REAIS_POR_PONTO;
   const renda = eu.n['renda'] ?? 0;
   if (ef.renda !== undefined) {
     const nova = typeof ef.renda === 'number' ? renda + ef.renda : ef.renda.definir;
@@ -54,6 +57,8 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
     const novo = typeof ef.custo === 'number' ? custo + ef.custo : ef.custo.definir;
     v -= ((novo - custo) * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   }
+  if (ef.custoDoPatrimonio !== undefined) v -= (Math.max(0, patrimonioDe(eu)) * ef.custoDoPatrimonio * HORIZONTE_RENDA) / REAIS_POR_PONTO;
+  if (ef.custoFator !== undefined) v -= ((ef.custoFator - 1) * custo * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   for (const [chave, valor] of Object.entries(ef)) {
     if (!chave.includes('.') || typeof valor !== 'number') continue;
     const { ent, campo } = separar(chave);
@@ -192,7 +197,7 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       v.inteligencia += p * (ef.inteligencia ?? 0);
       v.aparencia += p * (ef.aparencia ?? 0);
       const so: Record<string, unknown> = {};
-      for (const k of ['dinheiro', 'divida', 'renda', 'custo'] as const) if (ef[k] !== undefined) so[k] = ef[k];
+      for (const k of ['dinheiro', 'investir', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator'] as const) if (ef[k] !== undefined) so[k] = ef[k];
       v.dinheiro += p * valorEfeitos(so as Efeitos, e, c);
       if (ef.morte) v.morte += p;
       const outros = Object.keys(ef).filter((k) => k.includes('.')).map((k) => `${k}=${String(ef[k])}`);

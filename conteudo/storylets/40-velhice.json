@@ -319,7 +319,7 @@
         "resumo": "guardou o caderno de receitas da vó {avo}",
         "resultado": {
           "texto": "A letra tremida dela ocupa quarenta páginas e três manchas de café.",
-          "efeitos": { "felicidade": -3 }
+          "efeitos": { "felicidade": -3, "marcas": ["receita_da_vo"] }
         }
       },
       {
@@ -327,7 +327,7 @@
         "resumo": "chorou no colo de {mae} pela vó {avo}",
         "resultado": {
           "texto": "{mae} também chorou. Depois fizeram um café, que é o que se faz.",
-          "efeitos": { "felicidade": -2 }
+          "efeitos": { "felicidade": -2, "mae.vinculo": 5 }
         },
         "condicoes": { "mae.vivo": true },
         "bloqueio": "sua mãe já não está aqui"
