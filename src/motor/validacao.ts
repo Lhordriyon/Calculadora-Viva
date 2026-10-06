@@ -21,13 +21,34 @@ const LIMITE_TEXTO = 300;
 const LIMITE_TEXTO_ESCOLHA = 60;
 const LIMITE_RESUMO = 90;
 const LIMITE_ROTULO = 28;
+/** "Partido Fulano": nome próprio de partido (qualquer um pode existir de verdade). */
+const RE_PARTIDO_COM_NOME = /\b[Pp]artido (d[aeo]s? )?[A-ZÁÉÍÓÚÂÊÔÃÕ]/;
 
 type Reporter = (onde: string, mensagem: string) => void;
 
 export function validarConteudo(fontes: FontesConteudo): { conteudo: Conteudo | null; problemas: Problema[] } {
   const { conteudo, problemas } = lerConteudo(fontes);
   if (conteudo) verificarReferencias(conteudo, problemas);
+  verificarPolitica(fontes, problemas);
   return { conteudo, problemas };
+}
+
+/** Política é fictícia e genérica: partido com nome próprio pode coincidir com um real. Vale para todo texto. */
+function verificarPolitica(fontes: FontesConteudo, problemas: Problema[]): void {
+  const visitar = (v: unknown, onde: string): void => {
+    if (typeof v === 'string') {
+      if (RE_PARTIDO_COM_NOME.test(v)) problemas.push({ nivel: 'erro', onde, mensagem: 'partido com nome próprio; use algo genérico ("o partido do tio")' });
+    } else if (Array.isArray(v)) {
+      v.forEach((x, i) => visitar(x, `${onde}[${i}]`));
+    } else if (v && typeof v === 'object') {
+      for (const [k, x] of Object.entries(v)) visitar(x, `${onde}.${k}`);
+    }
+  };
+  for (const { arquivo, dados } of fontes.storylets) visitar(dados, arquivo);
+  visitar(fontes.linhas, 'linhas.json');
+  visitar(fontes.mortes, 'mortes.json');
+  visitar(fontes.marcas, 'marcas.json');
+  visitar(fontes.mundo, 'mundo.json');
 }
 
 // ---------------------------------------------------------------- blocos de efeitos

@@ -107,6 +107,12 @@ describe('validador', () => {
     expect(soTexto).toMatch(/enfeite/);
   });
 
+  it('não aceita partido com nome próprio (política é fictícia e genérica)', () => {
+    const erros = errosCom([{ id: 'eleicao_real', idade: [20, 60], texto: 'O Partido Azul ganhou a eleição.', resumo: 'viu uma eleição', efeitos: { felicidade: 1 } }]);
+    expect(erros).toMatch(/partido com nome próprio/);
+    expect(errosCom([{ id: 'eleicao_generica', idade: [20, 60], texto: 'O partido do seu tio ganhou a eleição.', resumo: 'viu uma eleição', efeitos: { felicidade: 1 } }])).not.toMatch(/partido/);
+  });
+
   it('exige que uma ação mexa em pelo menos dois sistemas', () => {
     const erros = errosCom([{ id: 'acao_rasa', tipo: 'acao', verbo: 'sair', rotulo: 'dar uma volta', idade: [18, 60], texto: 'Deu uma volta.', resumo: 'deu uma volta', efeitos: { felicidade: 1 } }]);
     expect(erros).toMatch(/acao_rasa.*2 sistemas/);
