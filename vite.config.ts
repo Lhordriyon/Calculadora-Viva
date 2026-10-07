@@ -2,13 +2,16 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // No GitHub Pages o jogo mora em /<repositório>/; o workflow passa BASE_PATH.
-const base = process.env['BASE_PATH'] ?? '/';
+// O app Android (ALVO=android) leva os arquivos dentro do APK: caminhos relativos e sem service worker.
+const android = process.env['ALVO'] === 'android';
+const base = android ? './' : (process.env['BASE_PATH'] ?? '/');
 
 export default defineConfig({
   base,
   oxc: { jsx: { runtime: 'automatic', importSource: 'preact' } },
-  build: { target: 'es2022' },
+  build: { target: 'es2022', outDir: android ? 'dist-android' : 'dist' },
   plugins: [
+    !android &&
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'script-defer',
