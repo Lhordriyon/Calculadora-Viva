@@ -959,65 +959,6 @@
       "resumo": "o país mergulhou numa crise econômica"
     }
   ],
-  "nascimento": [
-    {
-      "se": { "pai.ausente": false },
-      "texto": "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, choraram mais que você."
-    },
-    {
-      "se": { "pai.ausente": false },
-      "texto": "Nasceu {nome}, em {cidade} ({uf}). [Três quilos e duzentos|Três quilos e meio|Quase quatro quilos] de pura teimosia. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
-    },
-    {
-      "se": { "pai.ausente": false },
-      "texto": "Primeiro choro registrado em {cidade}, {uf}. A vó {avo} jurou que você tem o nariz da família. {mae} ({mae.ocupacao}) e {pai} ({pai.ocupacao}) só queriam dormir."
-    },
-    {
-      "se": { "pai.ausente": true },
-      "texto": "Você nasceu em {cidade}, {uf}. {mae}, {mae.ocupacao}, segurou sua mão a noite inteira; {pai} [mandou um áudio|prometeu aparecer no fim de semana|soube pelo primo de um amigo]."
-    },
-    {
-      "se": { "pai.ausente": true },
-      "texto": "Nasceu {nome}, em {cidade} ({uf}), com a vó {avo} de um lado e {mae} ({mae.ocupacao}) do outro. A cadeira do pai ficou vazia, e ninguém comentou."
-    },
-    {
-      "se": { "classe_origem": { "max": 0 } },
-      "texto": "Você nasceu em {cidade}, {uf}, numa casa de dois cômodos e muita gente. {mae} é {mae.ocupacao}; o leite foi contado desde o primeiro dia."
-    },
-    {
-      "se": { "classe_origem": { "min": 5 } },
-      "texto": "Você nasceu em {cidade}, {uf}, numa maternidade com nome de hotel. {mae} ({mae.ocupacao}) já tinha escolhido a escola bilíngue antes do enxoval."
-    },
-    {
-      "se": { "classe_origem": { "min": 4 }, "pai.ausente": false },
-      "texto": "Você nasceu em {cidade}, {uf}, com fotógrafo contratado e enxoval importado. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}. O quarto já tinha decoração temática."
-    },
-    {
-      "se": { "familia": "religiosa", "pai.ausente": false },
-      "texto": "Você nasceu em {cidade}, {uf}, e foi apresentad{o|a} na igreja antes de ser apresentad{o|a} aos vizinhos. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
-    },
-    {
-      "se": { "familia": "empreendedora", "pai.ausente": false },
-      "texto": "Você nasceu em {cidade}, {uf}, no meio do expediente: naquela família, folga é palavrão. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
-    },
-    {
-      "se": { "familia": "conflituosa", "pai.ausente": false },
-      "texto": "Você nasceu em {cidade}, {uf}, no meio de uma briga sobre o seu nome. Venceu {nome}, por cansaço. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
-    },
-    {
-      "se": { "familia": "acolhedora" },
-      "texto": "Você nasceu em {cidade}, {uf}, e a sala de espera parecia arquibancada: tios, primos e a vó {avo} com marmita. {mae} trabalha como {mae.ocupacao}."
-    }
-  ],
-  "epitafios": [
-    "Viveu do jeito que deu, e deu bastante.",
-    "Nunca venceu uma discussão no grupo da família, mas também nunca saiu dele.",
-    "Pagou boletos, contou piadas, deixou saudade.",
-    "Foi feliz em prestações.",
-    "Morreu sem saber a senha do wi-fi da casa da vó.",
-    "Chegava sempre cinco minutos atrasad{o|a}. Até aqui.",
-    "Deixou uma gaveta cheia de sacolinhas e um coração cheio de gente."
-  ],
   "ativos": [
     {
       "id": "renda_fixa",
@@ -1069,5 +1010,1447 @@
       "descricao": "mais da metade em ações e um pedaço em cripto: sobe muito e cai muito",
       "carteira": { "renda_fixa": 0.15, "acoes": 0.55, "fii": 0.1, "dolar": 0.05, "cripto": 0.15 }
     }
+  ],
+  "bens": [
+    {
+      "id": "kitnet",
+      "nome": "kitnet",
+      "categoria": "moradia",
+      "preco": 190000,
+      "manutencao": 0.012,
+      "valorizacao": 0.005,
+      "conforto": 2,
+      "status": 0,
+      "marca": "imovel",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "Pequena, mas a chave é sua."
+    },
+    {
+      "id": "apartamento",
+      "nome": "apartamento de dois quartos",
+      "categoria": "moradia",
+      "preco": 480000,
+      "manutencao": 0.015,
+      "valorizacao": 0.005,
+      "conforto": 4,
+      "status": 1,
+      "marca": "imovel",
+      "financiavel": true,
+      "descricao": "Vaga na garagem e reunião de condomínio inclusas."
+    },
+    {
+      "id": "casa",
+      "nome": "casa com quintal",
+      "categoria": "moradia",
+      "preco": 750000,
+      "manutencao": 0.013,
+      "valorizacao": 0.006,
+      "conforto": 5,
+      "status": 1,
+      "marca": "imovel",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "Quintal, churrasqueira e um vizinho que corta grama no domingo às sete."
+    },
+    {
+      "id": "cobertura",
+      "nome": "cobertura com vista",
+      "categoria": "moradia",
+      "preco": 2800000,
+      "manutencao": 0.016,
+      "valorizacao": 0.006,
+      "conforto": 7,
+      "status": 4,
+      "marca": "cobertura",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "A vista compensa o condomínio. Quase sempre."
+    },
+    {
+      "id": "mansao",
+      "nome": "mansão",
+      "categoria": "moradia",
+      "preco": 12000000,
+      "manutencao": 0.02,
+      "valorizacao": 0.004,
+      "conforto": 9,
+      "status": 8,
+      "marca": "mansao",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "Doze quartos; em três você nunca entrou."
+    },
+    {
+      "id": "sala_comercial",
+      "nome": "sala comercial",
+      "categoria": "imovel",
+      "preco": 420000,
+      "manutencao": 0.015,
+      "valorizacao": 0.0,
+      "aluguel": 0.065,
+      "conforto": 0,
+      "status": 0,
+      "marca": "imovel_comercial",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "Aluga para dentista, contador ou coach, nessa ordem de preferência."
+    },
+    {
+      "id": "loja",
+      "nome": "loja de rua",
+      "categoria": "imovel",
+      "preco": 1200000,
+      "manutencao": 0.012,
+      "valorizacao": 0.003,
+      "aluguel": 0.065,
+      "conforto": 0,
+      "status": 1,
+      "marca": "imovel_comercial",
+      "financiavel": true,
+      "feminino": true,
+      "descricao": "Ponto bom: já foi farmácia, açaí e farmácia de novo."
+    },
+    {
+      "id": "galpao",
+      "nome": "galpão logístico",
+      "categoria": "imovel",
+      "preco": 18000000,
+      "manutencao": 0.01,
+      "valorizacao": 0.005,
+      "aluguel": 0.07,
+      "conforto": 0,
+      "status": 2,
+      "marca": "imovel_comercial",
+      "descricao": "Caixas de papelão do tamanho de um bairro, e o aluguel cai todo mês."
+    },
+    {
+      "id": "predio",
+      "nome": "prédio comercial",
+      "categoria": "imovel",
+      "preco": 28000000,
+      "manutencao": 0.015,
+      "valorizacao": 0.004,
+      "aluguel": 0.065,
+      "conforto": 0,
+      "status": 3,
+      "marca": "imovel_comercial",
+      "descricao": "Doze andares, duas catracas e um síndico que é você."
+    },
+    {
+      "id": "shopping",
+      "nome": "shopping center",
+      "categoria": "imovel",
+      "preco": 450000000,
+      "manutencao": 0.02,
+      "valorizacao": 0.005,
+      "desvio": 0.06,
+      "aluguel": 0.07,
+      "conforto": 1,
+      "status": 8,
+      "marca": "shopping",
+      "descricao": "Praça de alimentação, cinema e o seu nome na placa da inauguração."
+    },
+    {
+      "id": "sitio",
+      "nome": "sítio no interior",
+      "categoria": "lazer",
+      "preco": 650000,
+      "manutencao": 0.02,
+      "valorizacao": 0.005,
+      "conforto": 3,
+      "status": 1,
+      "marca": "sitio",
+      "descricao": "Piscina, pé de manga e nenhum sinal de celular."
+    },
+    {
+      "id": "casa_de_praia",
+      "nome": "casa de praia",
+      "categoria": "lazer",
+      "preco": 1400000,
+      "manutencao": 0.02,
+      "valorizacao": 0.006,
+      "conforto": 4,
+      "status": 2,
+      "marca": "casa_de_praia",
+      "feminino": true,
+      "descricao": "Todo feriado aparece um parente que você não via desde 2009."
+    },
+    {
+      "id": "fazenda",
+      "nome": "fazenda",
+      "categoria": "lazer",
+      "preco": 9000000,
+      "manutencao": 0.015,
+      "valorizacao": 0.01,
+      "desvio": 0.06,
+      "aluguel": 0.055,
+      "conforto": 2,
+      "status": 3,
+      "marca": "fazenda",
+      "feminino": true,
+      "descricao": "Soja, gado e uma caminhonete que ninguém sabe de quem é."
+    },
+    {
+      "id": "ilha",
+      "nome": "ilha particular",
+      "categoria": "lazer",
+      "preco": 90000000,
+      "manutencao": 0.025,
+      "valorizacao": 0.01,
+      "conforto": 9,
+      "status": 12,
+      "marca": "ilha",
+      "feminino": true,
+      "descricao": "Areia branca, um píer e a sensação de ter escapado do mundo."
+    },
+    {
+      "id": "moto",
+      "nome": "moto",
+      "categoria": "veiculo",
+      "preco": 18000,
+      "manutencao": 0.08,
+      "valorizacao": -0.08,
+      "conforto": 1,
+      "status": 0,
+      "marca": "moto",
+      "feminino": true,
+      "descricao": "Chega em qualquer lugar em metade do tempo e com o dobro do susto."
+    },
+    {
+      "id": "carro_popular",
+      "nome": "carro popular",
+      "categoria": "veiculo",
+      "preco": 80000,
+      "manutencao": 0.09,
+      "valorizacao": -0.1,
+      "conforto": 2,
+      "status": 0,
+      "marca": "carro",
+      "descricao": "Ar-condicionado, quatro portas e a liberdade de pegar trânsito sentado."
+    },
+    {
+      "id": "suv",
+      "nome": "SUV",
+      "categoria": "veiculo",
+      "preco": 280000,
+      "manutencao": 0.08,
+      "valorizacao": -0.1,
+      "conforto": 3,
+      "status": 1,
+      "marca": "carro",
+      "descricao": "Alto, largo e impossível de estacionar no centro."
+    },
+    {
+      "id": "esportivo",
+      "nome": "carro esportivo",
+      "categoria": "veiculo",
+      "preco": 950000,
+      "manutencao": 0.07,
+      "valorizacao": -0.08,
+      "conforto": 4,
+      "status": 3,
+      "marca": "carro_de_luxo",
+      "descricao": "Zero a cem em quatro segundos, e o quebra-molas em meio."
+    },
+    {
+      "id": "superesportivo",
+      "nome": "superesportivo importado",
+      "categoria": "veiculo",
+      "preco": 4500000,
+      "manutencao": 0.06,
+      "valorizacao": -0.04,
+      "conforto": 5,
+      "status": 5,
+      "marca": "carro_de_luxo",
+      "descricao": "O ronco acorda a rua inteira, e a rua inteira tira foto."
+    },
+    {
+      "id": "helicoptero",
+      "nome": "helicóptero",
+      "categoria": "veiculo",
+      "preco": 14000000,
+      "manutencao": 0.1,
+      "valorizacao": -0.06,
+      "conforto": 4,
+      "status": 6,
+      "marca": "helicoptero",
+      "descricao": "São Paulo vista de cima não tem trânsito."
+    },
+    {
+      "id": "iate",
+      "nome": "iate",
+      "categoria": "veiculo",
+      "preco": 35000000,
+      "manutencao": 0.1,
+      "valorizacao": -0.05,
+      "conforto": 7,
+      "status": 8,
+      "marca": "iate",
+      "descricao": "Tripulação de seis, e um deles só cuida das toalhas."
+    },
+    {
+      "id": "jatinho",
+      "nome": "jatinho",
+      "categoria": "veiculo",
+      "preco": 70000000,
+      "manutencao": 0.12,
+      "valorizacao": -0.05,
+      "conforto": 6,
+      "status": 10,
+      "marca": "jatinho",
+      "descricao": "Sem fila, sem raio-x e sem desculpa para não ir."
+    },
+    {
+      "id": "relogio",
+      "nome": "relógio de luxo",
+      "categoria": "luxo",
+      "preco": 120000,
+      "manutencao": 0.01,
+      "valorizacao": 0.02,
+      "desvio": 0.05,
+      "conforto": 1,
+      "status": 1,
+      "marca": "joias",
+      "descricao": "Atrasa dois minutos por mês e custa um apartamento no interior."
+    },
+    {
+      "id": "joias",
+      "nome": "coleção de joias",
+      "categoria": "luxo",
+      "preco": 600000,
+      "manutencao": 0.01,
+      "valorizacao": 0.02,
+      "desvio": 0.05,
+      "conforto": 1,
+      "status": 2,
+      "marca": "joias",
+      "feminino": true,
+      "descricao": "Vive num cofre e sai três vezes por ano."
+    },
+    {
+      "id": "arte",
+      "nome": "obra de arte de nome conhecido",
+      "categoria": "luxo",
+      "preco": 3000000,
+      "manutencao": 0.01,
+      "valorizacao": 0.04,
+      "desvio": 0.2,
+      "conforto": 2,
+      "status": 4,
+      "marca": "obra_de_arte",
+      "feminino": true,
+      "descricao": "Ninguém da família entende, todo mundo que visita elogia."
+    },
+    {
+      "id": "cavalo",
+      "nome": "cavalo de raça",
+      "categoria": "luxo",
+      "preco": 800000,
+      "manutencao": 0.12,
+      "valorizacao": -0.05,
+      "conforto": 2,
+      "status": 2,
+      "marca": "cavalo",
+      "descricao": "Come melhor do que você e tem veterinário particular."
+    },
+    {
+      "id": "clube",
+      "nome": "clube de futebol",
+      "categoria": "luxo",
+      "preco": 600000000,
+      "manutencao": 0.08,
+      "valorizacao": 0.0,
+      "desvio": 0.15,
+      "conforto": 4,
+      "status": 20,
+      "marca": "clube_de_futebol",
+      "descricao": "Quarenta mil pessoas cantam o hino e xingam o dono. O dono é você."
+    },
+    {
+      "id": "radio",
+      "nome": "rádio FM",
+      "categoria": "midia",
+      "preco": 25000000,
+      "manutencao": 0.05,
+      "valorizacao": 0.0,
+      "desvio": 0.06,
+      "conforto": 0,
+      "status": 7,
+      "marca": "radio",
+      "feminino": true,
+      "descricao": "Programa de manhã, futebol à tarde e o seu recado quando quiser."
+    },
+    {
+      "id": "jornal",
+      "nome": "jornal",
+      "categoria": "midia",
+      "preco": 60000000,
+      "manutencao": 0.06,
+      "valorizacao": -0.02,
+      "desvio": 0.08,
+      "conforto": 0,
+      "status": 12,
+      "marca": "jornal",
+      "descricao": "Manchete de domingo, e político ligando na segunda."
+    },
+    {
+      "id": "emissora",
+      "nome": "emissora de TV",
+      "categoria": "midia",
+      "preco": 1500000000,
+      "manutencao": 0.05,
+      "valorizacao": 0.0,
+      "desvio": 0.08,
+      "conforto": 1,
+      "status": 25,
+      "marca": "emissora",
+      "feminino": true,
+      "descricao": "Novela das nove, telejornal e o país inteiro na sala de casa."
+    }
+  ],
+  "carreiras": [
+    {
+      "id": "entregador",
+      "nome": "entregador de aplicativo|entregadora de aplicativo",
+      "setor": "transporte",
+      "exige": "nada: só disposição",
+      "chance": 0.9,
+      "talento": "saude",
+      "salario": [22000, 42000],
+      "cargos": [
+        "entregador|entregadora",
+        "entregador de elite|entregadora de elite",
+        "dono de três motos|dona de três motos"
+      ],
+      "promocao": 0.12,
+      "idade": [16, 60]
+    },
+    {
+      "id": "motorista_app",
+      "nome": "motorista de aplicativo",
+      "setor": "transporte",
+      "requisitos": { "marcas": ["carro"] },
+      "exige": "ter carro",
+      "chance": 0.9,
+      "talento": "saude",
+      "salario": [30000, 62000],
+      "cargos": ["motorista", "motorista nota cinco", "dono de frota pequena|dona de frota pequena"],
+      "promocao": 0.1
+    },
+    {
+      "id": "vendedor",
+      "nome": "vendedor de loja|vendedora de loja",
+      "setor": "comercio",
+      "exige": "nada",
+      "chance": 0.75,
+      "talento": "aparencia",
+      "salario": [24000, 96000],
+      "cargos": ["vendedor|vendedora", "vendedor do mês|vendedora do mês", "gerente de loja", "gerente regional"],
+      "promocao": 0.17
+    },
+    {
+      "id": "garcom",
+      "nome": "garçom|garçonete",
+      "setor": "servicos",
+      "exige": "nada",
+      "chance": 0.8,
+      "talento": "aparencia",
+      "salario": [22000, 50000],
+      "cargos": ["garçom|garçonete", "garçom de restaurante caro|garçonete de restaurante caro", "maître"],
+      "promocao": 0.12
+    },
+    {
+      "id": "pedreiro",
+      "nome": "pedreiro|pedreira",
+      "setor": "construcao",
+      "requisitos": { "saude": { "min": 50 } },
+      "exige": "saúde 50",
+      "chance": 0.8,
+      "talento": "saude",
+      "salario": [30000, 96000],
+      "cargos": ["ajudante", "pedreiro|pedreira", "mestre de obras", "empreiteiro|empreiteira"],
+      "promocao": 0.15
+    },
+    {
+      "id": "cozinheiro",
+      "nome": "cozinheiro|cozinheira",
+      "setor": "servicos",
+      "exige": "nada",
+      "chance": 0.7,
+      "talento": "inteligencia",
+      "salario": [26000, 72000],
+      "cargos": ["auxiliar de cozinha", "cozinheiro|cozinheira", "chefe de cozinha"],
+      "promocao": 0.15
+    },
+    {
+      "id": "telemarketing",
+      "nome": "atendente de telemarketing",
+      "setor": "servicos",
+      "exige": "nada",
+      "chance": 0.9,
+      "talento": "inteligencia",
+      "salario": [20000, 36000],
+      "cargos": ["atendente", "supervisor de turno|supervisora de turno"],
+      "promocao": 0.12
+    },
+    {
+      "id": "rural",
+      "nome": "trabalhador rural|trabalhadora rural",
+      "setor": "agro",
+      "requisitos": { "saude": { "min": 45 } },
+      "exige": "saúde 45",
+      "chance": 0.85,
+      "talento": "saude",
+      "salario": [20000, 46000],
+      "cargos": ["safrista", "tratorista", "capataz"],
+      "promocao": 0.1
+    },
+    {
+      "id": "operario",
+      "nome": "operário de fábrica|operária de fábrica",
+      "setor": "industria",
+      "exige": "nada",
+      "chance": 0.7,
+      "talento": "saude",
+      "salario": [30000, 72000],
+      "cargos": [
+        "operador de linha|operadora de linha",
+        "operador líder|operadora líder",
+        "supervisor de produção|supervisora de produção"
+      ],
+      "promocao": 0.14
+    },
+    {
+      "id": "seguranca",
+      "nome": "segurança",
+      "setor": "servicos",
+      "requisitos": { "saude": { "min": 55 } },
+      "exige": "saúde 55",
+      "chance": 0.75,
+      "talento": "saude",
+      "salario": [28000, 56000],
+      "cargos": ["vigilante", "chefe de segurança"],
+      "promocao": 0.1
+    },
+    {
+      "id": "cabeleireiro",
+      "nome": "cabeleireiro|cabeleireira",
+      "setor": "servicos",
+      "exige": "nada",
+      "chance": 0.75,
+      "talento": "aparencia",
+      "salario": [24000, 130000],
+      "cargos": [
+        "auxiliar de salão",
+        "cabeleireiro|cabeleireira",
+        "dono de salão|dona de salão",
+        "dono de rede de salões|dona de rede de salões"
+      ],
+      "promocao": 0.14
+    },
+    {
+      "id": "eletricista",
+      "nome": "eletricista",
+      "setor": "construcao",
+      "requisitos": { "inteligencia": { "min": 40 } },
+      "exige": "inteligência 40",
+      "chance": 0.7,
+      "talento": "inteligencia",
+      "salario": [36000, 110000],
+      "cargos": [
+        "ajudante",
+        "eletricista",
+        "eletricista industrial",
+        "dono de empresa de instalação|dona de empresa de instalação"
+      ],
+      "promocao": 0.15
+    },
+    {
+      "id": "mecanico",
+      "nome": "mecânico|mecânica",
+      "setor": "servicos",
+      "requisitos": { "inteligencia": { "min": 40 } },
+      "exige": "inteligência 40",
+      "chance": 0.7,
+      "talento": "inteligencia",
+      "salario": [34000, 100000],
+      "cargos": ["aprendiz", "mecânico|mecânica", "dono de oficina|dona de oficina"],
+      "promocao": 0.14
+    },
+    {
+      "id": "tecnico_enfermagem",
+      "nome": "técnico de enfermagem|técnica de enfermagem",
+      "setor": "saude",
+      "requisitos": { "inteligencia": { "min": 45 } },
+      "exige": "inteligência 45",
+      "chance": 0.6,
+      "talento": "inteligencia",
+      "salario": [36000, 72000],
+      "cargos": ["técnico de enfermagem|técnica de enfermagem", "técnico de UTI|técnica de UTI"],
+      "promocao": 0.12
+    },
+    {
+      "id": "policial",
+      "nome": "policial militar",
+      "setor": "publico",
+      "requisitos": { "saude": { "min": 60 } },
+      "exige": "concurso, saúde 60, até 35 anos",
+      "chance": 0.35,
+      "talento": "saude",
+      "salario": [60000, 180000],
+      "cargos": ["soldado", "cabo", "sargento", "tenente", "capitão|capitã"],
+      "promocao": 0.14,
+      "estavel": true,
+      "idade": [18, 35]
+    },
+    {
+      "id": "bombeiro",
+      "nome": "bombeiro|bombeira",
+      "setor": "publico",
+      "requisitos": { "saude": { "min": 65 } },
+      "exige": "concurso, saúde 65, até 30 anos",
+      "chance": 0.3,
+      "talento": "saude",
+      "salario": [62000, 170000],
+      "cargos": ["soldado", "cabo", "sargento", "tenente"],
+      "promocao": 0.12,
+      "estavel": true,
+      "idade": [18, 30]
+    },
+    {
+      "id": "militar",
+      "nome": "militar do Exército",
+      "setor": "publico",
+      "requisitos": { "saude": { "min": 55 } },
+      "exige": "saúde 55, até 30 anos",
+      "chance": 0.45,
+      "talento": "saude",
+      "salario": [40000, 320000],
+      "cargos": ["recruta", "cabo", "sargento", "tenente", "coronel", "general"],
+      "promocao": 0.12,
+      "estavel": true,
+      "idade": [17, 30]
+    },
+    {
+      "id": "servidor_publico",
+      "nome": "servidor público|servidora pública",
+      "setor": "publico",
+      "requisitos": { "inteligencia": { "min": 55 } },
+      "exige": "concurso (inteligência 55)",
+      "chance": 0.25,
+      "talento": "inteligencia",
+      "salario": [55000, 220000],
+      "cargos": [
+        "analista",
+        "analista sênior",
+        "coordenador|coordenadora",
+        "diretor de departamento|diretora de departamento"
+      ],
+      "promocao": 0.12,
+      "estavel": true
+    },
+    {
+      "id": "professor",
+      "nome": "professor|professora",
+      "setor": "educacao",
+      "requisitos": { "marcas": ["formado"] },
+      "exige": "faculdade",
+      "chance": 0.65,
+      "talento": "inteligencia",
+      "salario": [42000, 130000],
+      "cargos": [
+        "professor substituto|professora substituta",
+        "professor efetivo|professora efetiva",
+        "coordenador pedagógico|coordenadora pedagógica",
+        "diretor de escola|diretora de escola"
+      ],
+      "promocao": 0.12
+    },
+    {
+      "id": "professor_universitario",
+      "nome": "professor universitário|professora universitária",
+      "setor": "educacao",
+      "requisitos": { "marcas": ["formado"], "inteligencia": { "min": 75 } },
+      "exige": "faculdade e inteligência 75",
+      "chance": 0.25,
+      "talento": "inteligencia",
+      "salario": [100000, 360000],
+      "cargos": [
+        "professor adjunto|professora adjunta",
+        "professor associado|professora associada",
+        "professor titular|professora titular",
+        "reitor|reitora"
+      ],
+      "promocao": 0.1,
+      "estavel": true
+    },
+    {
+      "id": "enfermeiro",
+      "nome": "enfermeiro|enfermeira",
+      "setor": "saude",
+      "requisitos": { "marcas": ["formado"], "curso": "saude" },
+      "exige": "faculdade de saúde",
+      "chance": 0.6,
+      "talento": "inteligencia",
+      "salario": [55000, 160000],
+      "cargos": ["enfermeiro|enfermeira", "enfermeiro-chefe|enfermeira-chefe", "gerente de enfermagem"],
+      "promocao": 0.12
+    },
+    {
+      "id": "medico",
+      "nome": "médico|médica",
+      "setor": "saude",
+      "requisitos": { "marcas": ["formado"], "curso": "saude", "inteligencia": { "min": 70 } },
+      "exige": "faculdade de saúde e inteligência 70",
+      "chance": 0.45,
+      "talento": "inteligencia",
+      "salario": [96000, 840000],
+      "cargos": ["residente", "plantonista", "especialista", "chefe de equipe", "diretor clínico|diretora clínica"],
+      "promocao": 0.18
+    },
+    {
+      "id": "dentista",
+      "nome": "dentista",
+      "setor": "saude",
+      "requisitos": { "marcas": ["formado"], "curso": "saude" },
+      "exige": "faculdade de saúde",
+      "chance": 0.55,
+      "talento": "inteligencia",
+      "salario": [70000, 420000],
+      "cargos": ["dentista", "dentista com consultório", "dono de clínica|dona de clínica"],
+      "promocao": 0.14
+    },
+    {
+      "id": "psicologo",
+      "nome": "psicólogo|psicóloga",
+      "setor": "saude",
+      "requisitos": { "marcas": ["formado"], "curso": "saude" },
+      "exige": "faculdade de saúde",
+      "chance": 0.55,
+      "talento": "inteligencia",
+      "salario": [48000, 240000],
+      "cargos": [
+        "psicólogo|psicóloga",
+        "psicólogo de agenda cheia|psicóloga de agenda cheia",
+        "supervisor clínico|supervisora clínica"
+      ],
+      "promocao": 0.12
+    },
+    {
+      "id": "advogado",
+      "nome": "advogado|advogada",
+      "setor": "servicos",
+      "requisitos": { "marcas": ["formado"], "curso": "negocios" },
+      "exige": "faculdade de negócios e humanas",
+      "chance": 0.5,
+      "talento": "inteligencia",
+      "salario": [60000, 1200000],
+      "cargos": [
+        "advogado júnior|advogada júnior",
+        "advogado pleno|advogada plena",
+        "advogado sênior|advogada sênior",
+        "sócio do escritório|sócia do escritório"
+      ],
+      "promocao": 0.15
+    },
+    {
+      "id": "juiz",
+      "nome": "juiz|juíza",
+      "setor": "publico",
+      "requisitos": { "marcas": ["formado"], "curso": "negocios", "inteligencia": { "min": 82 } },
+      "exige": "faculdade de negócios e humanas, inteligência 82 (concurso duríssimo)",
+      "chance": 0.15,
+      "talento": "inteligencia",
+      "salario": [420000, 650000],
+      "cargos": ["juiz substituto|juíza substituta", "juiz titular|juíza titular", "desembargador|desembargadora"],
+      "promocao": 0.1,
+      "estavel": true,
+      "idade": [25, 60]
+    },
+    {
+      "id": "delegado",
+      "nome": "delegado|delegada",
+      "setor": "publico",
+      "requisitos": { "marcas": ["formado"], "curso": "negocios", "inteligencia": { "min": 70 } },
+      "exige": "faculdade de negócios e humanas, inteligência 70",
+      "chance": 0.2,
+      "talento": "inteligencia",
+      "salario": [240000, 420000],
+      "cargos": ["delegado|delegada", "delegado regional|delegada regional", "chefe da polícia civil"],
+      "promocao": 0.1,
+      "estavel": true
+    },
+    {
+      "id": "diplomata",
+      "nome": "diplomata",
+      "setor": "publico",
+      "requisitos": { "marcas": ["formado", "fala_ingles"], "inteligencia": { "min": 80 } },
+      "exige": "faculdade, inglês e inteligência 80",
+      "chance": 0.12,
+      "talento": "inteligencia",
+      "salario": [250000, 520000],
+      "cargos": [
+        "terceiro-secretário|terceira-secretária",
+        "conselheiro|conselheira",
+        "ministro|ministra",
+        "embaixador|embaixadora"
+      ],
+      "promocao": 0.1,
+      "estavel": true
+    },
+    {
+      "id": "engenheiro",
+      "nome": "engenheiro|engenheira",
+      "setor": "construcao",
+      "requisitos": { "marcas": ["formado"], "curso": "engenharia" },
+      "exige": "faculdade de engenharia",
+      "chance": 0.55,
+      "talento": "inteligencia",
+      "salario": [90000, 480000],
+      "cargos": [
+        "engenheiro trainee|engenheira trainee",
+        "engenheiro pleno|engenheira plena",
+        "engenheiro sênior|engenheira sênior",
+        "gerente de obras",
+        "diretor de engenharia|diretora de engenharia"
+      ],
+      "promocao": 0.15
+    },
+    {
+      "id": "arquiteto",
+      "nome": "arquiteto|arquiteta",
+      "setor": "construcao",
+      "requisitos": { "marcas": ["formado"], "curso": ["engenharia", "artes"] },
+      "exige": "faculdade de engenharia ou artes",
+      "chance": 0.5,
+      "talento": "inteligencia",
+      "salario": [60000, 300000],
+      "cargos": [
+        "arquiteto|arquiteta",
+        "arquiteto de grife|arquiteta de grife",
+        "dono de escritório|dona de escritório"
+      ],
+      "promocao": 0.12
+    },
+    {
+      "id": "programador",
+      "nome": "programador|programadora",
+      "setor": "tecnologia",
+      "requisitos": { "inteligencia": { "min": 62 } },
+      "exige": "inteligência 62 (faculdade ajuda, mas não é obrigatória)",
+      "chance": 0.5,
+      "talento": "inteligencia",
+      "salario": [60000, 720000],
+      "cargos": [
+        "programador júnior|programadora júnior",
+        "programador pleno|programadora plena",
+        "programador sênior|programadora sênior",
+        "tech lead",
+        "diretor de tecnologia|diretora de tecnologia"
+      ],
+      "promocao": 0.2
+    },
+    {
+      "id": "cientista_dados",
+      "nome": "cientista de dados",
+      "setor": "tecnologia",
+      "requisitos": {
+        "marcas": ["formado"],
+        "curso": ["tecnologia", "engenharia", "negocios"],
+        "inteligencia": { "min": 72 }
+      },
+      "exige": "faculdade (tecnologia, engenharia ou negócios) e inteligência 72",
+      "chance": 0.35,
+      "talento": "inteligencia",
+      "salario": [110000, 800000],
+      "cargos": [
+        "cientista de dados júnior",
+        "cientista de dados",
+        "líder de dados",
+        "diretor de dados|diretora de dados"
+      ],
+      "promocao": 0.16
+    },
+    {
+      "id": "contador",
+      "nome": "contador|contadora",
+      "setor": "financas",
+      "requisitos": { "marcas": ["formado"], "curso": "negocios" },
+      "exige": "faculdade de negócios",
+      "chance": 0.6,
+      "talento": "inteligencia",
+      "salario": [50000, 240000],
+      "cargos": [
+        "assistente contábil",
+        "contador|contadora",
+        "dono de escritório contábil|dona de escritório contábil"
+      ],
+      "promocao": 0.12
+    },
+    {
+      "id": "analista_investimentos",
+      "nome": "analista de investimentos",
+      "setor": "financas",
+      "requisitos": {
+        "marcas": ["formado"],
+        "curso": ["negocios", "tecnologia", "engenharia"],
+        "inteligencia": { "min": 70 }
+      },
+      "exige": "faculdade (negócios, tecnologia ou engenharia) e inteligência 70",
+      "chance": 0.3,
+      "talento": "inteligencia",
+      "salario": [100000, 2400000],
+      "cargos": [
+        "analista",
+        "gestor de fundos|gestora de fundos",
+        "sócio da gestora|sócia da gestora",
+        "lenda do mercado"
+      ],
+      "promocao": 0.13
+    },
+    {
+      "id": "bancario",
+      "nome": "bancário|bancária",
+      "setor": "financas",
+      "requisitos": { "marcas": ["formado"] },
+      "exige": "faculdade",
+      "chance": 0.55,
+      "talento": "inteligencia",
+      "salario": [55000, 260000],
+      "cargos": ["caixa", "gerente de contas", "gerente de agência", "superintendente regional"],
+      "promocao": 0.13
+    },
+    {
+      "id": "jornalista",
+      "nome": "jornalista",
+      "setor": "cultura",
+      "requisitos": { "marcas": ["formado"] },
+      "exige": "faculdade",
+      "chance": 0.45,
+      "talento": "inteligencia",
+      "salario": [45000, 420000],
+      "cargos": ["repórter", "editor|editora", "colunista", "âncora do jornal da noite"],
+      "promocao": 0.12,
+      "fama": 35
+    },
+    {
+      "id": "publicitario",
+      "nome": "publicitário|publicitária",
+      "setor": "cultura",
+      "requisitos": { "marcas": ["formado"], "curso": ["artes", "negocios"] },
+      "exige": "faculdade de artes ou negócios",
+      "chance": 0.5,
+      "talento": "inteligencia",
+      "salario": [55000, 500000],
+      "cargos": ["redator|redatora", "diretor de criação|diretora de criação", "dono de agência|dona de agência"],
+      "promocao": 0.14
+    },
+    {
+      "id": "veterinario",
+      "nome": "veterinário|veterinária",
+      "setor": "agro",
+      "requisitos": { "marcas": ["formado"], "curso": "saude" },
+      "exige": "faculdade de saúde",
+      "chance": 0.5,
+      "talento": "inteligencia",
+      "salario": [55000, 260000],
+      "cargos": ["veterinário|veterinária", "dono de clínica veterinária|dona de clínica veterinária"],
+      "promocao": 0.12
+    },
+    {
+      "id": "agronomo",
+      "nome": "agrônomo|agrônoma",
+      "setor": "agro",
+      "requisitos": { "marcas": ["formado"], "curso": "engenharia" },
+      "exige": "faculdade de engenharia",
+      "chance": 0.55,
+      "talento": "inteligencia",
+      "salario": [80000, 400000],
+      "cargos": [
+        "agrônomo de campo|agrônoma de campo",
+        "consultor do agro|consultora do agro",
+        "gerente de fazenda grande"
+      ],
+      "promocao": 0.13
+    },
+    {
+      "id": "piloto",
+      "nome": "piloto de avião",
+      "setor": "transporte",
+      "requisitos": { "inteligencia": { "min": 60 }, "saude": { "min": 65 }, "patrimonio": { "min": 120000 } },
+      "exige": "inteligência 60, saúde 65 e R$ 120 mil para o curso",
+      "chance": 0.4,
+      "talento": "inteligencia",
+      "salario": [100000, 660000],
+      "cargos": ["copiloto", "comandante", "comandante de voo internacional", "chefe de pilotos"],
+      "promocao": 0.14
+    },
+    {
+      "id": "pesquisador",
+      "nome": "cientista",
+      "setor": "educacao",
+      "requisitos": { "marcas": ["formado", "pesquisador"], "inteligencia": { "min": 78 } },
+      "exige": "faculdade, ter pesquisado e inteligência 78",
+      "chance": 0.3,
+      "talento": "inteligencia",
+      "salario": [60000, 420000],
+      "cargos": [
+        "bolsista",
+        "pesquisador|pesquisadora",
+        "chefe de laboratório",
+        "cientista premiado|cientista premiada"
+      ],
+      "promocao": 0.1,
+      "fama": 25
+    },
+    {
+      "id": "jogador_futebol",
+      "nome": "jogador de futebol|jogadora de futebol",
+      "setor": "cultura",
+      "requisitos": { "algumaMarca": ["base_clube", "boleiro"], "saude": { "min": 70 } },
+      "exige": "ter jogado na base ou no campinho, saúde 70, até 34 anos",
+      "chance": 0.25,
+      "talento": "saude",
+      "salario": [24000, 36000000],
+      "cargos": [
+        "jogador da segunda divisão|jogadora da segunda divisão",
+        "titular de time grande",
+        "convocado para a seleção|convocada para a seleção",
+        "craque internacional"
+      ],
+      "promocao": 0.18,
+      "fama": 95,
+      "idade": [16, 34],
+      "fim": 37
+    },
+    {
+      "id": "cantor",
+      "nome": "cantor|cantora",
+      "setor": "cultura",
+      "requisitos": { "algumaMarca": ["banda", "musico"] },
+      "exige": "ter tocado numa banda ou ser músico",
+      "chance": 0.3,
+      "talento": "aparencia",
+      "salario": [18000, 18000000],
+      "cargos": [
+        "cantor de barzinho|cantora de barzinho",
+        "cantor com um hit|cantora com um hit",
+        "artista de turnê nacional",
+        "estrela da música"
+      ],
+      "promocao": 0.13,
+      "fama": 90
+    },
+    {
+      "id": "ator",
+      "nome": "ator|atriz",
+      "setor": "cultura",
+      "requisitos": { "aparencia": { "min": 55 } },
+      "exige": "aparência 55",
+      "chance": 0.2,
+      "talento": "aparencia",
+      "salario": [24000, 9000000],
+      "cargos": [
+        "figurante",
+        "ator de teatro|atriz de teatro",
+        "ator de novela|atriz de novela",
+        "protagonista",
+        "estrela de cinema"
+      ],
+      "promocao": 0.12,
+      "fama": 90
+    },
+    {
+      "id": "influenciador",
+      "nome": "influenciador digital|influenciadora digital",
+      "setor": "cultura",
+      "requisitos": { "algumaMarca": ["criador_conteudo", "influencer"] },
+      "exige": "já criar conteúdo",
+      "chance": 0.5,
+      "talento": "aparencia",
+      "salario": [6000, 7200000],
+      "cargos": [
+        "perfil com mil seguidores",
+        "microinfluenciador|microinfluenciadora",
+        "influenciador com contrato|influenciadora com contrato",
+        "celebridade da internet"
+      ],
+      "promocao": 0.15,
+      "fama": 80,
+      "idade": [14, 70]
+    },
+    {
+      "id": "modelo",
+      "nome": "modelo",
+      "setor": "cultura",
+      "requisitos": { "aparencia": { "min": 78 } },
+      "exige": "aparência 78, até 32 anos",
+      "chance": 0.3,
+      "talento": "aparencia",
+      "salario": [20000, 4800000],
+      "cargos": ["modelo de catálogo", "modelo de passarela", "top model"],
+      "promocao": 0.12,
+      "fama": 70,
+      "idade": [16, 32],
+      "fim": 40
+    },
+    {
+      "id": "escritor",
+      "nome": "escritor|escritora",
+      "setor": "cultura",
+      "requisitos": { "inteligencia": { "min": 70 } },
+      "exige": "inteligência 70",
+      "chance": 0.35,
+      "talento": "inteligencia",
+      "salario": [12000, 1800000],
+      "cargos": [
+        "escritor inédito|escritora inédita",
+        "autor publicado|autora publicada",
+        "autor de best-seller|autora de best-seller"
+      ],
+      "promocao": 0.08,
+      "fama": 50
+    },
+    {
+      "id": "chef",
+      "nome": "chef de cozinha",
+      "setor": "servicos",
+      "requisitos": { "inteligencia": { "min": 50 } },
+      "exige": "inteligência 50",
+      "chance": 0.35,
+      "talento": "inteligencia",
+      "salario": [40000, 1500000],
+      "cargos": ["sous-chef", "chef", "chef com restaurante próprio", "chef estrelado|chef estrelada"],
+      "promocao": 0.11,
+      "fama": 55
+    },
+    {
+      "id": "atleta",
+      "nome": "atleta olímpico|atleta olímpica",
+      "setor": "cultura",
+      "requisitos": { "marcas": ["medalhista"], "saude": { "min": 75 } },
+      "exige": "medalha na escola e saúde 75, até 34 anos",
+      "chance": 0.4,
+      "talento": "saude",
+      "salario": [30000, 2400000],
+      "cargos": ["atleta de clube", "atleta da seleção", "medalhista olímpico|medalhista olímpica"],
+      "promocao": 0.14,
+      "fama": 70,
+      "idade": [16, 34],
+      "fim": 36
+    }
+  ],
+  "cargos": [
+    {
+      "id": "vereador",
+      "nome": "vereador|vereadora",
+      "esfera": "municipal",
+      "idade": 18,
+      "influencia": 8,
+      "dificuldade": 18,
+      "campanha": 30000,
+      "salario": 220000,
+      "mandato": 4,
+      "poder": 8,
+      "onde": "de {cidade}"
+    },
+    {
+      "id": "prefeito",
+      "nome": "prefeito|prefeita",
+      "esfera": "municipal",
+      "idade": 21,
+      "influencia": 20,
+      "dificuldade": 32,
+      "campanha": 600000,
+      "salario": 300000,
+      "mandato": 4,
+      "poder": 18,
+      "onde": "de {cidade}"
+    },
+    {
+      "id": "deputado_estadual",
+      "nome": "deputado estadual|deputada estadual",
+      "esfera": "geral",
+      "idade": 21,
+      "influencia": 15,
+      "dificuldade": 26,
+      "campanha": 400000,
+      "salario": 380000,
+      "mandato": 4,
+      "poder": 14,
+      "onde": "por {uf}"
+    },
+    {
+      "id": "deputado_federal",
+      "nome": "deputado federal|deputada federal",
+      "esfera": "geral",
+      "idade": 21,
+      "influencia": 22,
+      "dificuldade": 34,
+      "campanha": 1500000,
+      "salario": 480000,
+      "mandato": 4,
+      "poder": 22,
+      "onde": "por {uf}"
+    },
+    {
+      "id": "governador",
+      "nome": "governador|governadora",
+      "esfera": "geral",
+      "idade": 30,
+      "influencia": 35,
+      "dificuldade": 48,
+      "campanha": 12000000,
+      "salario": 420000,
+      "mandato": 4,
+      "poder": 32,
+      "onde": "de {uf}"
+    },
+    {
+      "id": "senador",
+      "nome": "senador|senadora",
+      "esfera": "geral",
+      "idade": 35,
+      "influencia": 35,
+      "dificuldade": 46,
+      "campanha": 8000000,
+      "salario": 480000,
+      "mandato": 8,
+      "poder": 30,
+      "onde": "por {uf}"
+    },
+    {
+      "id": "presidente",
+      "nome": "presidente da República",
+      "esfera": "geral",
+      "idade": 35,
+      "influencia": 50,
+      "dificuldade": 62,
+      "campanha": 80000000,
+      "salario": 550000,
+      "mandato": 4,
+      "poder": 50,
+      "onde": "do Brasil"
+    },
+    {
+      "id": "rei",
+      "nome": "monarca",
+      "esfera": "vitalicio",
+      "idade": 16,
+      "influencia": 0,
+      "dificuldade": 0,
+      "campanha": 0,
+      "salario": 4000000,
+      "mandato": 0,
+      "poder": 45,
+      "onde": "do Brasil"
+    },
+    {
+      "id": "ditador",
+      "nome": "chefe do Regime",
+      "esfera": "vitalicio",
+      "idade": 16,
+      "influencia": 0,
+      "dificuldade": 0,
+      "campanha": 0,
+      "salario": 6000000,
+      "mandato": 0,
+      "poder": 60,
+      "onde": "do Brasil"
+    }
+  ],
+  "linhagens": [
+    {
+      "id": "realeza",
+      "nome": "família real",
+      "descricao": "Neste mundo, o plebiscito de 1993 deu monarquia. Você nasce na linha de sucessão.",
+      "peso": 2,
+      "classe": 6,
+      "marcas": ["principe"],
+      "papel": { "ocupacao": "rei do Brasil|rainha do Brasil", "setor": "publico", "marca": "monarca" },
+      "pais": ["monarquia"],
+      "influencia": 40,
+      "fama": 60
+    },
+    {
+      "id": "regime",
+      "nome": "família do Regime",
+      "descricao": "Neste mundo, o país vive sob um regime há décadas, e quem manda é da sua família.",
+      "peso": 1.5,
+      "classe": 6,
+      "marcas": ["herdeiro_regime"],
+      "papel": { "ocupacao": "chefe do Regime", "setor": "publico", "marca": "ditador" },
+      "pais": ["regime"],
+      "influencia": 45,
+      "fama": 50
+    },
+    {
+      "id": "celebridade",
+      "nome": "família famosa",
+      "descricao": "Um dos seus pais aparece na TV toda noite.",
+      "peso": 4,
+      "classe": 5,
+      "marcas": ["filho_de_famoso"],
+      "papel": { "ocupacao": "ator de novela|atriz de novela", "setor": "cultura", "marca": "famoso" },
+      "influencia": 12,
+      "fama": 25
+    },
+    {
+      "id": "craque",
+      "nome": "família do futebol",
+      "descricao": "Um dos seus pais jogou na seleção. A expectativa nasce junto com você.",
+      "peso": 3,
+      "classe": 5,
+      "marcas": ["filho_de_craque"],
+      "papel": { "ocupacao": "ex-jogador da seleção|ex-jogadora da seleção", "setor": "cultura", "marca": "craque" },
+      "influencia": 8,
+      "fama": 15
+    },
+    {
+      "id": "politica",
+      "nome": "família de políticos",
+      "descricao": "Um dos seus pais é senador. O sobrenome abre portas e processos.",
+      "peso": 4,
+      "classe": 4,
+      "marcas": ["filho_de_politico"],
+      "papel": { "ocupacao": "senador|senadora", "setor": "publico", "marca": "politico_da_familia" },
+      "influencia": 15,
+      "fama": 10
+    },
+    {
+      "id": "agro",
+      "nome": "família do agro",
+      "descricao": "Fazenda de soja, caminhonete na garagem e previsão do tempo como religião.",
+      "peso": 4,
+      "classe": 5,
+      "marcas": ["filho_do_agro"],
+      "papel": { "ocupacao": "dono de fazenda|dona de fazenda", "setor": "agro", "marca": "fazendeiro" },
+      "influencia": 8
+    },
+    {
+      "id": "circo",
+      "nome": "família de circo",
+      "descricao": "Você nasce entre duas cidades, no trailer do circo.",
+      "peso": 3,
+      "classe": 1,
+      "marcas": ["filho_do_circo"],
+      "papel": { "ocupacao": "palhaço|trapezista", "setor": "cultura", "marca": "artista_de_circo" },
+      "fama": 3
+    },
+    {
+      "id": "imigrantes",
+      "nome": "família imigrante",
+      "descricao": "Seus pais chegaram ao Brasil com duas malas, um sotaque e muita vontade.",
+      "peso": 4,
+      "classe": 1,
+      "marcas": ["filho_de_imigrantes"],
+      "papel": { "ocupacao": "costureiro|costureira", "setor": "industria", "marca": "imigrante" }
+    },
+    {
+      "id": "militar",
+      "nome": "família militar",
+      "descricao": "Um dos seus pais é coronel: cama arrumada às seis e mudança de cidade a cada três anos.",
+      "peso": 3,
+      "classe": 3,
+      "marcas": ["filho_de_militar"],
+      "papel": { "ocupacao": "coronel do Exército", "setor": "publico", "marca": "militar_da_familia" },
+      "influencia": 5
+    }
+  ],
+  "nascimento": [
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, choraram mais que você."
+    },
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Nasceu {nome}, em {cidade} ({uf}). [Três quilos e duzentos|Três quilos e meio|Quase quatro quilos] de pura teimosia. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "pai.ausente": false },
+      "texto": "Primeiro choro registrado em {cidade}, {uf}. A vó {avo} jurou que você tem o nariz da família. {mae} ({mae.ocupacao}) e {pai} ({pai.ocupacao}) só queriam dormir."
+    },
+    {
+      "se": { "pai.ausente": true },
+      "texto": "Você nasceu em {cidade}, {uf}. {mae}, {mae.ocupacao}, segurou sua mão a noite inteira; {pai} [mandou um áudio|prometeu aparecer no fim de semana|soube pelo primo de um amigo]."
+    },
+    {
+      "se": { "pai.ausente": true },
+      "texto": "Nasceu {nome}, em {cidade} ({uf}), com a vó {avo} de um lado e {mae} ({mae.ocupacao}) do outro. A cadeira do pai ficou vazia, e ninguém comentou."
+    },
+    {
+      "se": { "classe_origem": { "max": 0 } },
+      "texto": "Você nasceu em {cidade}, {uf}, numa casa de dois cômodos e muita gente. {mae} é {mae.ocupacao}; o leite foi contado desde o primeiro dia."
+    },
+    {
+      "se": { "classe_origem": { "min": 5 } },
+      "texto": "Você nasceu em {cidade}, {uf}, numa maternidade com nome de hotel. {mae} ({mae.ocupacao}) já tinha escolhido a escola bilíngue antes do enxoval."
+    },
+    {
+      "se": { "classe_origem": { "min": 4 }, "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, com fotógrafo contratado e enxoval importado. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}. O quarto já tinha decoração temática."
+    },
+    {
+      "se": { "familia": "religiosa", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, e foi apresentad{o|a} na igreja antes de ser apresentad{o|a} aos vizinhos. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "empreendedora", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, no meio do expediente: naquela família, folga é palavrão. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "conflituosa", "pai.ausente": false },
+      "texto": "Você nasceu em {cidade}, {uf}, no meio de uma briga sobre o seu nome. Venceu {nome}, por cansaço. {mae} é {mae.ocupacao}; {pai}, {pai.ocupacao}."
+    },
+    {
+      "se": { "familia": "acolhedora" },
+      "texto": "Você nasceu em {cidade}, {uf}, e a sala de espera parecia arquibancada: tios, primos e a vó {avo} com marmita. {mae} trabalha como {mae.ocupacao}."
+    },
+    {
+      "se": { "marcas": ["principe"] },
+      "texto": "Você nasceu no Palácio, em {cidade}, sob vinte e um tiros de canhão e transmissão ao vivo. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, acenaram da sacada. O país ganhou um feriado; você, uma linha de sucessão."
+    },
+    {
+      "se": { "marcas": ["herdeiro_regime"] },
+      "texto": "Você nasceu no hospital militar de {cidade}, com o andar inteiro fechado. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, receberam os parabéns por decreto. A rádio oficial tocou o hino três vezes."
+    },
+    {
+      "se": { "marcas": ["filho_de_famoso"] },
+      "texto": "Você nasceu em {cidade} com fotógrafo na porta da maternidade. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, venderam a primeira foto sua para uma revista e doaram o dinheiro. A foto viralizou mesmo assim."
+    },
+    {
+      "se": { "marcas": ["filho_de_craque"] },
+      "texto": "Você nasceu em {cidade} em dia de clássico. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, ganharam do clube uma camisa com o seu nome antes de você ter nome."
+    },
+    {
+      "se": { "marcas": ["filho_de_politico"] },
+      "texto": "Você nasceu em {cidade} em ano de eleição. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, posaram com você no colo para o jornal da cidade. Você chorou na foto; a assessoria gostou."
+    },
+    {
+      "se": { "marcas": ["filho_do_agro"] },
+      "texto": "Você nasceu em {cidade}, mas a primeira foto é na fazenda, em cima de um trator. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, comemoraram com churrasco para duzentas pessoas."
+    },
+    {
+      "se": { "marcas": ["filho_do_circo"] },
+      "texto": "Você nasceu entre {cidade} e a próxima parada, no trailer do circo. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, anunciaram a sua chegada no microfone do picadeiro. O público aplaudiu de pé."
+    },
+    {
+      "se": { "marcas": ["filho_de_imigrantes"] },
+      "texto": "Você nasceu em {cidade}, a primeira pessoa da família com certidão brasileira. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, ligaram para o outro lado do oceano e choraram em duas línguas."
+    },
+    {
+      "se": { "marcas": ["filho_de_militar"] },
+      "texto": "Você nasceu no hospital da guarnição de {cidade}, às seis em ponto. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, já tinham a mala pronta: a próxima transferência sai em março."
+    }
+  ],
+  "epitafios": [
+    "Viveu do jeito que deu, e deu bastante.",
+    "Nunca venceu uma discussão no grupo da família, mas também nunca saiu dele.",
+    "Pagou boletos, contou piadas, deixou saudade.",
+    "Foi feliz em prestações.",
+    "Morreu sem saber a senha do wi-fi da casa da vó.",
+    "Chegava sempre cinco minutos atrasad{o|a}. Até aqui.",
+    "Deixou uma gaveta cheia de sacolinhas e um coração cheio de gente."
   ]
 }

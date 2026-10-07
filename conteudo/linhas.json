@@ -739,5 +739,98 @@
     "idade": [60, 99],
     "texto": "Você enxerga as placas de novo. Leu todas as do caminho, em voz alta.",
     "condicoes": { "marcas": ["operou_catarata"] }
+  },
+  {
+    "idade": [4, 17],
+    "texto": "Na escola, a professora corrige a sua prova com mais cuidado do que a dos outros. Você percebeu.",
+    "condicoes": { "algumaMarca": ["mae.monarca", "pai.monarca"] }
+  },
+  {
+    "idade": [4, 17],
+    "texto": "Os colegas brincam de soldado no recreio. Você não acha graça, e sabe por quê.",
+    "condicoes": { "algumaMarca": ["mae.ditador", "pai.ditador"] }
+  },
+  {
+    "idade": [18, 99],
+    "texto": "A moeda nova tem o rosto de alguém da sua família. Você paga o café com ele.",
+    "condicoes": { "marcas": ["pais.monarquia"] }
+  },
+  {
+    "idade": [10, 99],
+    "texto": "Na rádio oficial, o hino tocou três vezes antes do jornal. Ninguém comenta; todo mundo ouve.",
+    "condicoes": { "marcas": ["pais.regime"] }
+  },
+  {
+    "idade": [4, 25],
+    "texto": "Alguém pediu um autógrafo do seu pai ou da sua mãe para você, no supermercado. De novo.",
+    "condicoes": { "algumaMarca": ["mae.famoso", "pai.famoso"] }
+  },
+  {
+    "idade": [4, 25],
+    "texto": "Na pelada do condomínio, todo mundo passa a bola para você esperando um gol de seleção.",
+    "condicoes": { "algumaMarca": ["mae.craque", "pai.craque"] }
+  },
+  {
+    "idade": [4, 25],
+    "texto": "Ano de eleição em casa: a sala virou comitê e o almoço de domingo, reunião estratégica.",
+    "condicoes": { "algumaMarca": ["mae.politico_da_familia", "pai.politico_da_familia"] }
+  },
+  {
+    "idade": [4, 25],
+    "texto": "O assunto do jantar foi o preço da soja e a chuva que não veio. De novo.",
+    "condicoes": { "algumaMarca": ["mae.fazendeiro", "pai.fazendeiro"] }
+  },
+  {
+    "idade": [4, 18],
+    "texto": "Mais uma cidade, mais uma lona, mais uma estreia. A cidade nova sempre tem uma criança que pergunta se você é palhaço.",
+    "condicoes": { "algumaMarca": ["mae.artista_de_circo", "pai.artista_de_circo"] }
+  },
+  {
+    "idade": [4, 25],
+    "texto": "Em casa, o almoço tem gosto de outro país e o dever de casa, de português. Você transita entre os dois sem pensar.",
+    "condicoes": { "algumaMarca": ["mae.imigrante", "pai.imigrante"] }
+  },
+  {
+    "idade": [4, 18],
+    "texto": "Cama arrumada às seis, sapato engraxado e \"senhor\" no fim de cada frase. A casa funciona como um quartel pequeno.",
+    "condicoes": { "algumaMarca": ["mae.militar_da_familia", "pai.militar_da_familia"] }
+  },
+  {
+    "idade": [18, 99],
+    "texto": "As lojas estão cheias e o governo comemora. Os economistas avisam que a conta vem depois.",
+    "condicoes": { "pais.impulso": { "min": 1 } }
+  },
+  {
+    "idade": [18, 99],
+    "texto": "O governo apertou o cinto, e você sentiu na fila do mercado.",
+    "condicoes": { "pais.impulso": { "max": -0.8 } }
+  },
+  {
+    "idade": [25, 99],
+    "texto": "Os concorrentes que sobraram tomam café com você e evitam o assunto preço.",
+    "condicoes": { "marcas": ["empresa.truste"] }
+  },
+  {
+    "idade": [18, 99],
+    "texto": "Alguém te reconheceu na rua e pediu foto. Você sorriu no automático.",
+    "condicoes": { "fama": { "min": 45 } }
+  },
+  {
+    "idade": [20, 99],
+    "texto": "Um vereador ligou pedindo a sua opinião. Você nem sabia que tinha uma.",
+    "condicoes": { "influencia": { "min": 30 }, "cargo": "" }
+  },
+  {
+    "idade": [18, 99],
+    "texto": "Último ano de mandato. Os aliados já perguntam se você vai disputar de novo; a eleição é este ano, na folha Carreira.",
+    "condicoes": {
+      "mandato": { "max": 0 },
+      "cargo": ["vereador", "prefeito", "deputado_estadual", "deputado_federal", "governador", "senador", "presidente"]
+    }
+  },
+  {
+    "idade": [25, 99],
+    "texto": "Você passou a ler os balanços dos concorrentes como quem lê cardápio.",
+    "condicoes": { "empresa.aquisicoes": { "min": 1 } }
   }
 ]

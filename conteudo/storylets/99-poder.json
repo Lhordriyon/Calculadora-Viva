@@ -1,0 +1,592 @@
+[
+  {
+    "id": "convite_do_partido",
+    "idade": [25, 70],
+    "condicoes": { "influencia": { "min": 18 }, "cargo": "", "semMarcas": ["politico", "filiado"] },
+    "texto": "Um partido que ninguém sabe direito o que defende convida você para se candidatar. Dizem que você tem \"nome\", \"dinheiro\" e \"o perfil que o povo quer\".",
+    "resumo": "foi convidado a entrar para a política",
+    "escolhas": [
+      {
+        "texto": "Topar e se filiar",
+        "resumo": "se filiou a um partido para se candidatar",
+        "resultado": {
+          "texto": "Você ganhou um número de urna, uma foto de terno e uma agenda de churrascos em bairros que nunca tinha ido.",
+          "efeitos": { "eu.influencia": 4, "dinheiro": -20000, "marcas": ["filiado"] }
+        }
+      },
+      {
+        "texto": "Agradecer e recusar",
+        "resumo": "recusou entrar para a política",
+        "resultado": {
+          "texto": "O partido convidou o seu vizinho, que se elegeu vereador. Agora ele te cumprimenta diferente.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "obra_ou_hospital",
+    "idade": [21, 90],
+    "condicoes": { "cargo": ["prefeito", "governador", "presidente"] },
+    "repetivel": true,
+    "intervalo": 2,
+    "trechos": {
+      "onde": [
+        { "se": { "cargo": "presidente" }, "texto": "do país" },
+        { "se": { "cargo": "governador" }, "texto": "do estado" },
+        { "texto": "da cidade" }
+      ]
+    },
+    "texto": "Sobrou dinheiro no orçamento. Dá para fazer uma obra grande e bonita, com placa, ou reformar os postos de saúde, que ninguém fotografa.",
+    "resumo": "decidiu onde gastar o orçamento",
+    "escolhas": [
+      {
+        "texto": "A obra grande",
+        "resumo": "escolheu uma obra grande e fotogênica",
+        "resultado": {
+          "texto": "Ponte, viaduto, placa com o seu nome. O desemprego {onde} caiu e a popularidade subiu.",
+          "efeitos": { "lugar.desemprego": -0.006, "pais.impulso": 0.3, "eu.popularidade": 6, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Os postos de saúde",
+        "resumo": "reformou os postos de saúde em vez de fazer obra",
+        "resultado": {
+          "texto": "Fila menor, remédio na prateleira e nenhuma inauguração. Quem usa notou; quem vota pela TV, não.",
+          "efeitos": { "eu.popularidade": 3, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Guardar para o ano que vem",
+        "resumo": "guardou o dinheiro do orçamento",
+        "resultado": {
+          "texto": "Contas em dia e cara de gestor. A oposição chamou de \"governo parado\".",
+          "efeitos": { "eu.popularidade": -2, "pais.impulso": -0.2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "enchente_na_cidade",
+    "idade": [21, 90],
+    "condicoes": { "cargo": ["prefeito", "governador"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Choveu o mês inteiro em uma noite. Bairros debaixo d'água, gente no telhado e a imprensa na porta do seu gabinete.",
+    "resumo": "enfrentou uma enchente no cargo",
+    "escolhas": [
+      {
+        "texto": "Ir pessoalmente, de bota",
+        "resumo": "foi pessoalmente às áreas alagadas",
+        "resultado": {
+          "texto": "Você passou três dias na lama, dormindo pouco. As fotos eram verdadeiras, e o povo percebeu.",
+          "efeitos": { "eu.popularidade": 10, "saude": -3 }
+        }
+      },
+      {
+        "texto": "Coordenar do gabinete",
+        "resumo": "coordenou o resgate da enchente pelo gabinete",
+        "resultado": {
+          "texto": "O resgate foi eficiente e invisível. A manchete foi \"governante sumido\".",
+          "efeitos": { "eu.popularidade": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "propina_da_empreiteira",
+    "idade": [18, 90],
+    "condicoes": {
+      "cargo": ["prefeito", "governador", "presidente", "vereador", "deputado_estadual", "deputado_federal", "senador"]
+    },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Um empresário de sorriso largo oferece uma \"contribuição\" para a sua próxima campanha. Em troca, só uma licitação com \"algumas exigências técnicas\".",
+    "resumo": "recebeu uma proposta de propina",
+    "escolhas": [
+      {
+        "texto": "Aceitar a contribuição",
+        "resumo": "aceitou propina de uma empreiteira",
+        "resultado": {
+          "texto": "A mala tinha rodinhas. A licitação teve um vencedor só.",
+          "efeitos": {
+            "dinheiro": 1500000,
+            "marcas": ["corrupto"],
+            "felicidade": -2,
+            "agendar": [{ "evento": "operacao_policial", "em": [2, 7] }]
+          }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou propina de uma empreiteira",
+        "resultado": {
+          "texto": "Ele saiu sorrindo do mesmo jeito. Na eleição seguinte, financiou o seu adversário.",
+          "efeitos": { "eu.influencia": -3, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Denunciar à polícia",
+        "resumo": "denunciou uma oferta de propina",
+        "resultado": {
+          "texto": "Gravação, prisão do empresário e entrevista coletiva. Metade do Congresso parou de te cumprimentar.",
+          "efeitos": { "eu.popularidade": 8, "eu.fama": 8, "eu.influencia": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "operacao_policial",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["corrupto"] },
+    "tensao": 3,
+    "texto": "Seis da manhã, colete preto na porta: operação da Polícia Federal. A mala de rodinhas apareceu numa planilha.",
+    "resumo": "foi alvo de uma operação da Polícia Federal",
+    "escolhas": [
+      {
+        "texto": "Fazer delação",
+        "resumo": "fez delação premiada",
+        "resultado": {
+          "texto": "Você entregou meio partido. Pena menor, tornozeleira por dois anos e nenhum amigo na política.",
+          "efeitos": {
+            "dinheiro": -1500000,
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "removerMarcas": ["corrupto", "politico"],
+            "marcas": ["condenado"],
+            "felicidade": -6,
+            "eu.influencia": -15
+          }
+        }
+      },
+      {
+        "texto": "Pagar os melhores advogados",
+        "resumo": "contratou os melhores advogados contra a operação",
+        "teste": { "atributo": "influencia", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "Nulidade processual. Você saiu do tribunal acenando, e o caso prescreveu.",
+          "efeitos": { "dinheiro": -2000000, "eu.popularidade": -10, "removerMarcas": ["corrupto"] }
+        },
+        "fracasso": {
+          "texto": "Condenado em segunda instância. Perdeu o cargo, os direitos políticos e as fotos com gente importante.",
+          "efeitos": {
+            "dinheiro": -2000000,
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "removerMarcas": ["corrupto", "politico"],
+            "marcas": ["condenado"],
+            "felicidade": -10,
+            "eu.influencia": -20
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vida_depois_da_condenacao",
+    "idade": [25, 95],
+    "condicoes": { "marcas": ["condenado"] },
+    "texto": "Anos depois da condenação, um canal de podcast convida você para \"contar tudo\". O cachê é bom, e a audiência, enorme.",
+    "resumo": "falou sobre a própria condenação",
+    "escolhas": [
+      {
+        "texto": "Contar tudo",
+        "resumo": "contou tudo sobre o esquema num podcast",
+        "resultado": {
+          "texto": "Quatro horas de entrevista, trinta milhões de views e três processos novos.",
+          "efeitos": { "dinheiro": 200000, "eu.fama": 12, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Recusar e sumir",
+        "resumo": "recusou falar sobre a condenação",
+        "resultado": {
+          "texto": "Você recusou e foi cuidar das plantas. O silêncio também é uma versão.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "votacao_polemica",
+    "idade": [18, 90],
+    "condicoes": { "cargo": ["vereador", "deputado_estadual", "deputado_federal", "senador"] },
+    "repetivel": true,
+    "intervalo": 2,
+    "texto": "Votação importante no plenário. O partido manda votar a favor; a sua base eleitoral, contra; a sua consciência ainda não decidiu.",
+    "resumo": "enfrentou uma votação polêmica",
+    "escolhas": [
+      {
+        "texto": "Votar com o partido",
+        "resumo": "votou com o partido contra a própria base",
+        "resultado": {
+          "texto": "O partido te deu uma relatoria. A base te deu um apelido.",
+          "efeitos": { "eu.influencia": 5, "eu.popularidade": -6 }
+        }
+      },
+      {
+        "texto": "Votar com a base",
+        "resumo": "votou com a base contra o partido",
+        "resultado": {
+          "texto": "O partido te tirou da comissão. A base encheu a sua caixa de mensagens de coração.",
+          "efeitos": { "eu.influencia": -4, "eu.popularidade": 7 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "presidir_cpi",
+    "idade": [25, 90],
+    "condicoes": { "cargo": ["deputado_federal", "senador"] },
+    "texto": "Abriram uma CPI sobre um escândalo bilionário e querem você na presidência. Holofote garantido; inimigos também.",
+    "resumo": "foi chamado a presidir uma CPI",
+    "escolhas": [
+      {
+        "texto": "Presidir a CPI",
+        "resumo": "presidiu uma CPI de repercussão nacional",
+        "resultado": {
+          "texto": "Seis meses de transmissão ao vivo. Você virou o rosto mais conhecido do Congresso.",
+          "efeitos": { "eu.fama": 15, "eu.influencia": 8, "eu.popularidade": 5, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Ficar nos bastidores",
+        "resumo": "preferiu os bastidores à presidência de uma CPI",
+        "resultado": {
+          "texto": "Você negociou o relatório final sem aparecer. Quem sabe, sabe.",
+          "efeitos": { "eu.influencia": 6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "decreto_da_economia",
+    "idade": [35, 99],
+    "condicoes": { "cargo": ["presidente", "rei", "ditador"] },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "A equipe econômica traz três caminhos: cortar impostos e aquecer tudo, gastar pesado em obras ou apertar o cinto para segurar a inflação.",
+    "resumo": "decidiu o rumo da economia do país",
+    "escolhas": [
+      {
+        "texto": "Cortar impostos",
+        "resumo": "cortou impostos para aquecer a economia",
+        "resultado": {
+          "texto": "Lojas cheias, bolsa subindo e uma conta que vai chegar daqui a uns anos.",
+          "efeitos": { "pais.impulso": 1.5, "pais.inflacao": 1.5, "eu.popularidade": 6 }
+        }
+      },
+      {
+        "texto": "Gastar em obras",
+        "resumo": "gastou pesado em obras pelo país",
+        "resultado": {
+          "texto": "Canteiro de obras em todo canto e desemprego caindo. O déficit também é uma obra.",
+          "efeitos": { "pais.impulso": 1, "lugar.desemprego": -0.01, "pais.inflacao": 2, "eu.popularidade": 8 }
+        }
+      },
+      {
+        "texto": "Apertar o cinto",
+        "resumo": "apertou o cinto para segurar a inflação",
+        "resultado": {
+          "texto": "Inflação controlada, crescimento morno e uma popularidade que despencou nas pesquisas.",
+          "efeitos": { "pais.impulso": -1, "pais.inflacao": -2, "eu.popularidade": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crise_internacional",
+    "idade": [35, 99],
+    "condicoes": { "cargo": ["presidente", "rei", "ditador"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Uma crise lá fora derruba as bolsas do mundo inteiro. O país espera um pronunciamento seu no horário nobre.",
+    "resumo": "enfrentou uma crise internacional no poder",
+    "escolhas": [
+      {
+        "texto": "Prometer estabilidade",
+        "resumo": "fez um pronunciamento de calma na crise",
+        "resultado": {
+          "texto": "Voz firme, gravata certa. O mercado acalmou um pouco; o povo, bastante.",
+          "efeitos": { "eu.popularidade": 6, "pais.impulso": 0.5 }
+        }
+      },
+      {
+        "texto": "Culpar os estrangeiros",
+        "resumo": "culpou os estrangeiros pela crise",
+        "resultado": {
+          "texto": "Funcionou nas pesquisas e piorou nas embaixadas. O dólar subiu mais um pouco.",
+          "efeitos": { "eu.popularidade": 4, "pais.impulso": -0.5, "pais.inflacao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "queda_do_cargo",
+    "apenasAgendado": true,
+    "condicoes": {
+      "cargo": [
+        "prefeito",
+        "governador",
+        "presidente",
+        "vereador",
+        "deputado_estadual",
+        "deputado_federal",
+        "senador",
+        "rei",
+        "ditador"
+      ]
+    },
+    "tensao": 3,
+    "trechos": {
+      "queda": [
+        { "se": { "cargo": "ditador" }, "texto": "a praça está tomada por gente que não tem mais medo" },
+        { "se": { "cargo": "rei" }, "texto": "o Parlamento marcou um plebiscito sobre a monarquia" },
+        { "se": { "cargo": ["prefeito", "governador", "presidente"] }, "texto": "o pedido de impeachment foi aceito" },
+        { "texto": "o seu mandato vai ser julgado no plenário" }
+      ]
+    },
+    "texto": "A sua aprovação despencou e {queda}. Os aliados sumiram do telefone; os adversários, da sua frente não saem.",
+    "resumo": "viu o próprio cargo balançar",
+    "escolhas": [
+      {
+        "texto": "Resistir até o fim",
+        "resumo": "resistiu até o fim para manter o cargo",
+        "teste": { "atributo": "influencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Você virou o jogo com acordos, discursos e favores cobrados. Ficou no cargo, menor e mais esperto.",
+          "efeitos": { "eu.popularidade": 15, "eu.influencia": -5 }
+        },
+        "fracasso": {
+          "texto": "Não deu. Você deixou o cargo pela porta dos fundos, com uma caixa de papelão e uma multidão do lado de fora.",
+          "efeitos": {
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "marcas": ["derrubado"],
+            "removerMarcas": ["politico", "monarca", "ditador", "pais.monarquia", "pais.regime"],
+            "eu.influencia": -20,
+            "felicidade": -10
+          }
+        }
+      },
+      {
+        "texto": "Renunciar com dignidade",
+        "resumo": "renunciou ao cargo",
+        "resultado": {
+          "texto": "Uma carta curta, lida em rede nacional. Você saiu antes de ser tirado, e a história lembra disso.",
+          "efeitos": {
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "marcas": ["renunciou"],
+            "removerMarcas": ["politico", "monarca", "ditador", "pais.monarquia", "pais.regime"],
+            "eu.influencia": -10,
+            "felicidade": -2,
+            "eu.fama": 5
+          }
+        }
+      },
+      {
+        "texto": "Apelar ao povo",
+        "resumo": "apelou diretamente ao povo e salvou o cargo",
+        "condicoes": { "algumaMarca": ["realeza_do_povo", "casou_por_amor", "herdeiro_humano", "filantropo"] },
+        "bloqueio": "o povo precisa lembrar de algo bom seu",
+        "resultado": {
+          "texto": "Você foi às ruas sem seguranças. O povo lembrou de quem você era antes do cargo. Ficou.",
+          "efeitos": { "eu.popularidade": 20, "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "depois_do_cargo",
+    "idade": [25, 99],
+    "condicoes": { "algumaMarca": ["derrubado", "renunciou", "ex_politico"], "cargo": "" },
+    "texto": "Fora do poder, você recebe convites para palestras, livros e um conselho de empresa que paga bem para você não fazer nada.",
+    "resumo": "viveu a vida depois do poder",
+    "escolhas": [
+      {
+        "texto": "Palestras pagas",
+        "resumo": "virou palestrante depois de deixar o poder",
+        "resultado": {
+          "texto": "Quarenta minutos de histórias, cachê de um ano de salário mínimo. Toda semana.",
+          "efeitos": { "dinheiro": 600000, "eu.fama": 3 }
+        }
+      },
+      {
+        "texto": "Voltar para a vida comum",
+        "resumo": "voltou para a vida comum depois do poder",
+        "resultado": {
+          "texto": "Você aprendeu de novo a pegar fila. É menos ruim do que parecia.",
+          "efeitos": { "felicidade": 3, "eu.influencia": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "regra_sob_medida",
+    "idade": [25, 90],
+    "condicoes": { "influencia": { "min": 35 }, "empresa.valor": { "min": 1000000 } },
+    "texto": "Um ministro, num jantar, oferece uma \"regulamentação moderna\" para o seu setor. Ela coincide, palavra por palavra, com o que a sua empresa precisa.",
+    "resumo": "recebeu uma oferta de lobby",
+    "escolhas": [
+      {
+        "texto": "Aceitar o favor",
+        "resumo": "aceitou uma regra feita sob medida para a própria empresa",
+        "resultado": {
+          "texto": "A regra saiu no Diário Oficial. A {empresa} cresceu, e os concorrentes contrataram jornalistas.",
+          "efeitos": {
+            "empresa.tracao": 5,
+            "eu.influencia": 3,
+            "marcas": ["lobista"],
+            "agendar": [{ "evento": "escandalo_do_lobby", "em": [2, 6] }]
+          }
+        }
+      },
+      {
+        "texto": "Competir no braço",
+        "resumo": "recusou o lobby e competiu sem favor",
+        "resultado": {
+          "texto": "A {empresa} cresceu mais devagar e sem manchete. Você dorme bem.",
+          "efeitos": { "felicidade": 2, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escandalo_do_lobby",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["lobista"], "empresa.valor": true },
+    "texto": "Um jornal publicou as mensagens do jantar com o ministro. A {empresa} está na capa, e você, na foto.",
+    "resumo": "virou escândalo por causa de lobby",
+    "escolhas": [
+      {
+        "texto": "Pagar o acordo com o governo",
+        "resumo": "pagou um acordo milionário por causa do lobby",
+        "resultado": {
+          "texto": "Multa milionária, acordo assinado e um compliance novo que ninguém lê.",
+          "efeitos": { "empresaFator": 0.85, "removerMarcas": ["lobista"], "eu.influencia": -5 }
+        }
+      },
+      {
+        "texto": "Negar e processar o jornal",
+        "resumo": "negou o lobby e processou o jornal",
+        "teste": { "atributo": "influencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "O processo assustou o jornal e o assunto morreu. O seu sobrenome ficou com um asterisco.",
+          "efeitos": { "eu.fama": 5 }
+        },
+        "fracasso": {
+          "texto": "Vieram novas mensagens, e o mercado puniu a empresa antes da Justiça.",
+          "efeitos": { "empresaFator": 0.7, "eu.influencia": -10, "removerMarcas": ["lobista"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cade_investiga",
+    "idade": [25, 95],
+    "condicoes": { "marcas": ["empresa.truste"] },
+    "texto": "O órgão de defesa da concorrência abriu investigação contra a {empresa}: depois de tantas compras, ela domina o mercado. Pode haver multa ou divisão da empresa.",
+    "resumo": "teve a empresa investigada por monopólio",
+    "escolhas": [
+      {
+        "texto": "Vender uma parte para encerrar o caso",
+        "resumo": "vendeu parte da empresa para encerrar uma investigação de monopólio",
+        "resultado": {
+          "texto": "Você vendeu uma fatia para um concorrente e o caso foi arquivado. O truste encolheu, mas ficou seu.",
+          "efeitos": { "venderEmpresa": { "fracao": 0.25, "premio": 0.9 }, "empresa.tracao": -3 }
+        }
+      },
+      {
+        "texto": "Brigar na Justiça",
+        "resumo": "brigou na Justiça para manter o monopólio",
+        "teste": { "atributo": "influencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Dez anos de recursos e o caso morreu de velhice. A {empresa} seguiu dona do mercado.",
+          "efeitos": { "dinheiro": -3000000, "empresa.tracao": 2, "eu.influencia": 3 }
+        },
+        "fracasso": {
+          "texto": "A Justiça mandou dividir a empresa em três. Você ficou com a menor.",
+          "efeitos": { "empresaFator": 0.45, "dinheiro": -3000000, "eu.influencia": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "jornal_e_o_aliado",
+    "idade": [25, 95],
+    "condicoes": { "algumaMarca": ["jornal", "emissora", "radio"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "A redação do seu veículo tem uma denúncia pronta contra um aliado político seu. O editor quer publicar amanhã.",
+    "resumo": "decidiu se publicava uma denúncia contra um aliado",
+    "escolhas": [
+      {
+        "texto": "Publicar",
+        "resumo": "publicou uma denúncia contra um aliado",
+        "resultado": {
+          "texto": "A denúncia derrubou o aliado e levantou a credibilidade do seu veículo. Você perdeu um amigo e ganhou leitores.",
+          "efeitos": { "eu.fama": 6, "eu.influencia": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Engavetar",
+        "resumo": "engavetou uma denúncia contra um aliado",
+        "resultado": {
+          "texto": "O aliado agradeceu com um favor grande. O editor pediu demissão e foi para a concorrência.",
+          "efeitos": { "eu.influencia": 6, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "familia_descobre_o_testamento",
+    "idade": [45, 99],
+    "condicoes": { "testamento": ["amigo", "causa", "pet"] },
+    "texto": "No almoço de domingo, alguém da família descobriu o seu testamento. O silêncio na mesa dava para cortar com a faca do pernil.",
+    "resumo": "enfrentou a família por causa do testamento",
+    "escolhas": [
+      {
+        "texto": "Manter o testamento",
+        "resumo": "manteve o testamento mesmo com a família contra",
+        "resultado": {
+          "texto": "Você explicou uma vez, com calma, e não explicou de novo. Dois parentes pararam de ligar; um terceiro começou.",
+          "efeitos": { "felicidade": -2, "mae.vinculo": -4, "filho.vinculo": -6, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Voltar para o que manda a lei",
+        "resumo": "refez o testamento para a família",
+        "resultado": {
+          "texto": "Você rasgou o testamento na frente de todo mundo. A sobremesa voltou a ter graça.",
+          "efeitos": { "eu.testamento": { "definir": "" }, "felicidade": 2, "filho.vinculo": 5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_bicho_herdeiro",
+    "idade": [25, 99],
+    "condicoes": { "testamento": "pet", "pet.vivo": true, "marcas": ["caramelo"] },
+    "texto": "O advogado liga, constrangido: para deixar tudo para {pet}, a lei pede um fundo, um tutor e um relatório anual sobre a ração.",
+    "resumo": "organizou a herança do bicho",
+    "escolhas": [
+      {
+        "texto": "Criar o fundo do bicho",
+        "resumo": "criou um fundo milionário para o bicho de estimação",
+        "resultado": {
+          "texto": "{pet} agora tem tutor, plano de saúde e um extrato melhor que o seu. Os jornais adoraram.",
+          "efeitos": { "dinheiro": -20000, "eu.fama": 6, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Dividir com um abrigo",
+        "resumo": "dividiu a herança do bicho com um abrigo de animais",
+        "resultado": {
+          "texto": "Metade para {pet}, metade para um abrigo que agora tem o seu nome no portão.",
+          "efeitos": { "eu.testamento": { "definir": "causa" }, "felicidade": 4, "eu.influencia": 2 }
+        }
+      }
+    ]
+  }
+]

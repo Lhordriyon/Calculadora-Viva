@@ -82,5 +82,57 @@
     "epitafio": "Deixou um quarto de tudo para quem precisava, e o nome numa placa que ninguém lê, mas todo mundo vê."
   },
   "escreveu_memorias": { "epitafio": "Escreveu a própria história antes que alguém contasse errado." },
-  "baile": { "porAno": { "saude": 0.2, "felicidade": 0.3 }, "epitafio": "Dançou todas as quintas, até a última." }
+  "baile": { "porAno": { "saude": 0.2, "felicidade": 0.3 }, "epitafio": "Dançou todas as quintas, até a última." },
+  "imovel": { "epitafio": "Deixou um imóvel quitado e uma pasta de boletos de condomínio." },
+  "cobertura": { "porAno": { "felicidade": 0.2 }, "epitafio": "Viu a cidade de cima e achou bonita, quase sempre." },
+  "mansao": { "epitafio": "Teve uma casa grande demais e amigos de menos para enchê-la." },
+  "imovel_comercial": { "epitafio": "Viveu de aluguel, e não do jeito ruim." },
+  "shopping": { "epitafio": "Tinha o nome numa placa de shopping e preferia a feira de domingo." },
+  "sitio": {
+    "porAno": { "felicidade": 0.2 },
+    "epitafio": "Deixou um sítio, um pé de manga e uma bomba d'água temperamental."
+  },
+  "casa_de_praia": {
+    "porAno": { "felicidade": 0.2 },
+    "epitafio": "Recebeu a família inteira na praia, inclusive quem não foi convidado."
+  },
+  "fazenda": { "epitafio": "Olhava a previsão do tempo como quem lê a Bíblia." },
+  "ilha": { "porAno": { "felicidade": 0.3 }, "epitafio": "Teve uma ilha só sua e, no fim, sentia falta de vizinho." },
+  "moto": { "epitafio": "Chegava antes de todo mundo, com o cabelo amassado pelo capacete." },
+  "carro_de_luxo": { "epitafio": "Teve carro que fazia barulho; a vida fez mais." },
+  "helicoptero": { "epitafio": "Desviou do trânsito por cima, como quem desvia de um problema." },
+  "iate": { "porAno": { "felicidade": 0.3 }, "epitafio": "Ancorou em todas as baías bonitas do litoral." },
+  "jatinho": { "epitafio": "Jantou em Paris numa sexta e acordou em casa no sábado." },
+  "joias": { "epitafio": "Guardou as joias no cofre e as histórias na memória." },
+  "obra_de_arte": { "epitafio": "Teve uma obra de arte na sala, ao lado da televisão." },
+  "cavalo": {
+    "porAno": { "felicidade": 0.2 },
+    "epitafio": "Amou um cavalo mais do que a maioria das pessoas, e não se arrependeu."
+  },
+  "clube_de_futebol": { "epitafio": "Foi dono de clube: amado na vitória, xingado na derrota." },
+  "radio": { "epitafio": "Teve uma rádio e a última palavra no programa da manhã." },
+  "jornal": { "epitafio": "Teve um jornal e decidiu, por anos, o que o país lia no domingo." },
+  "emissora": { "epitafio": "Teve uma emissora de TV e entrou na casa de todo mundo, todas as noites." },
+  "senhorio": { "epitafio": "Recebeu aluguel em dia, quase sempre." },
+  "ex_politico": { "epitafio": "Foi político e voltou a ser gente. Nem todo mundo consegue." },
+  "realeza_do_povo": { "epitafio": "Da realeza, mas comia pastel na feira." },
+  "casou_por_amor": { "epitafio": "Casou por amor contra o protocolo, e o protocolo perdeu." },
+  "herdeiro_humano": { "epitafio": "Nasceu no Regime e nunca deixou de perguntar por quê." },
+  "conta_na_suica": { "epitafio": "Deixou uma conta em Genebra e muitas perguntas por aqui." },
+  "abdicou": { "epitafio": "Abdicou da coroa para viver como todo mundo, e viveu." },
+  "redemocratizou": { "epitafio": "Recebeu um país sob o Regime e devolveu um país que vota." },
+  "exilado": { "epitafio": "Morreu longe, com o dinheiro do lado e o país do outro." },
+  "repressor": { "epitafio": "A história ainda está decidindo o que dizer." },
+  "ex_ditador": { "epitafio": "Perdeu a eleição que podia ter fraudado, e entregou a faixa." },
+  "nepotismo": { "epitafio": "O sobrenome abriu a porta; o resto foi com as próprias pernas, ou quase." },
+  "nomeado": { "epitafio": "Recebia sem aparecer, até a polícia aparecer." },
+  "cliente_duvidoso": { "epitafio": "Teve um cliente que pagava em dólar e explicava pouco." },
+  "corrupto": { "epitafio": "Aceitou a mala de rodinhas, e as rodinhas fizeram barulho." },
+  "condenado": { "epitafio": "Foi condenado, cumpriu e contou tudo num podcast." },
+  "derrubado": { "epitafio": "Saiu do poder pela porta dos fundos, com uma caixa de papelão." },
+  "renunciou": { "epitafio": "Renunciou antes de ser tirado, e a história anotou." },
+  "lobista": { "epitafio": "Conseguia regras sob medida, como quem encomenda terno." },
+  "filantropo": { "epitafio": "Trocou festa por hospital, e ninguém lembra da festa." },
+  "filiado": { "epitafio": "Teve número de urna, santinho e um churrasco por bairro." },
+  "politico": { "epitafio": "Fez política: prometeu muito, cumpriu um tanto e saiu com mais cabelo branco." }
 }

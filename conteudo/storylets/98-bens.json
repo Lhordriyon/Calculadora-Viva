@@ -1,0 +1,565 @@
+[
+  {
+    "id": "inquilino_sumiu",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["senhorio"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "O inquilino do seu imóvel parou de pagar há três meses e não atende o telefone. A vizinha diz que ele \"viajou\".",
+    "resumo": "enfrentou um inquilino que não pagava",
+    "escolhas": [
+      {
+        "texto": "Entrar na Justiça",
+        "resumo": "entrou na Justiça contra um inquilino caloteiro",
+        "resultado": {
+          "texto": "Oito meses de processo, despejo e um imóvel para pintar. O dinheiro não voltou; o imóvel, sim.",
+          "efeitos": { "dinheiro": -12000, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Negociar um acordo",
+        "resumo": "fez acordo com um inquilino caloteiro",
+        "resultado": {
+          "texto": "Ele pagou metade em seis parcelas e saiu agradecendo. Você perdeu dinheiro e ganhou um elogio no grupo do prédio.",
+          "efeitos": { "dinheiro": -5000, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "inquilino_dos_sonhos",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["senhorio"] },
+    "texto": "O seu inquilino paga adiantado, conserta as coisas sozinho e mandou um bolo no Natal. Agora ele quer comprar o imóvel.",
+    "resumo": "recebeu uma oferta do inquilino pelo imóvel",
+    "escolhas": [
+      {
+        "texto": "Continuar alugando",
+        "resumo": "continuou alugando para um inquilino exemplar",
+        "resultado": {
+          "texto": "Renda certa todo mês e nenhuma dor de cabeça. Raro como eclipse.",
+          "efeitos": { "felicidade": 2, "dinheiro": 3000 }
+        }
+      },
+      {
+        "texto": "Dar desconto no aluguel",
+        "resumo": "deu desconto no aluguel para um inquilino exemplar",
+        "resultado": {
+          "texto": "Ele chorou ao telefone. Você perdeu um pouco por mês e ganhou alguém que cuida do imóvel como se fosse dele.",
+          "efeitos": { "felicidade": 3, "dinheiro": -2000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reuniao_de_condominio",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["imovel"] },
+    "repetivel": true,
+    "intervalo": 7,
+    "texto": "Reunião de condomínio de três horas: a pauta é a cor do portão, a vaga do vizinho e quem deixou o cachorro fazer no elevador.",
+    "resumo": "sobreviveu a uma reunião de condomínio",
+    "escolhas": [
+      {
+        "texto": "Virar síndico",
+        "resumo": "virou síndico do prédio",
+        "resultado": {
+          "texto": "Você ganhou isenção da taxa e um grupo de mensagens que apita às duas da manhã.",
+          "efeitos": { "dinheiro": 4000, "felicidade": -3, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Votar e ir embora",
+        "resumo": "votou na cor do portão e foi embora",
+        "resultado": {
+          "texto": "O portão ficou verde-musgo. Ninguém votou em verde-musgo.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vista_da_cobertura",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["cobertura"] },
+    "texto": "Sábado de sol na cobertura. Da piscina, dá para ver a cidade inteira e o vizinho de baixo reclamando do barulho.",
+    "resumo": "aproveitou a vista da cobertura",
+    "escolhas": [
+      {
+        "texto": "Dar uma festa",
+        "resumo": "deu uma festa na cobertura",
+        "resultado": {
+          "texto": "Sessenta convidados, DJ e um síndico na porta à meia-noite. Valeu a multa.",
+          "efeitos": { "felicidade": 5, "dinheiro": -15000, "eu.fama": 2 }
+        }
+      },
+      {
+        "texto": "Ficar sozinho com a vista",
+        "resumo": "passou o sábado sozinho olhando a cidade da cobertura",
+        "resultado": {
+          "texto": "Você viu o pôr do sol inteiro pela primeira vez em anos.",
+          "efeitos": { "felicidade": 3, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mansao_vazia",
+    "idade": [25, 99],
+    "condicoes": { "marcas": ["mansao"] },
+    "texto": "Doze quartos, sete banheiros e um eco no corredor. Os funcionários da mansão te chamam pelo sobrenome; os filhos dos funcionários, de \"tio\".",
+    "resumo": "sentiu o tamanho da mansão",
+    "escolhas": [
+      {
+        "texto": "Encher de gente",
+        "resumo": "abriu a mansão para a família e os amigos",
+        "resultado": {
+          "texto": "Todo domingo virou almoço de trinta pessoas. A casa finalmente fez sentido.",
+          "efeitos": { "felicidade": 5, "dinheiro": -30000, "mae.vinculo": 3, "amigo.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Transformar num museu de si",
+        "resumo": "decorou a mansão com retratos de si mesmo",
+        "resultado": {
+          "texto": "Retratos a óleo em todas as paredes. As visitas elogiam e saem rápido.",
+          "efeitos": { "felicidade": 1, "eu.fama": 3, "amigo.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ponto_comercial",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["imovel_comercial"] },
+    "texto": "Uma rede de farmácias quer alugar o seu imóvel comercial por dez anos, pagando bem. Um café de bairro, charmoso e sem garantia, também quer.",
+    "resumo": "escolheu o inquilino do imóvel comercial",
+    "escolhas": [
+      {
+        "texto": "A rede de farmácias",
+        "resumo": "alugou o ponto para uma rede de farmácias",
+        "resultado": {
+          "texto": "Contrato de dez anos, aluguel em dia e mais uma farmácia na esquina que já tinha duas.",
+          "efeitos": { "dinheiro": 20000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "O café de bairro",
+        "resumo": "alugou o ponto para um café de bairro",
+        "resultado": {
+          "texto": "O café virou o lugar preferido da rua. Às vezes atrasa o aluguel; sempre te dá um pão de queijo.",
+          "efeitos": { "felicidade": 3, "dinheiro": -4000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "shopping_lotado",
+    "idade": [25, 99],
+    "condicoes": { "marcas": ["shopping"] },
+    "texto": "Natal no seu shopping: estacionamento lotado, fila no cinema e um lojista histórico pedindo desconto no aluguel para não fechar.",
+    "resumo": "decidiu o destino de um lojista antigo do shopping",
+    "escolhas": [
+      {
+        "texto": "Dar o desconto",
+        "resumo": "deu desconto a um lojista antigo do shopping",
+        "resultado": {
+          "texto": "A loja ficou. Os outros lojistas souberam e pediram o mesmo.",
+          "efeitos": { "dinheiro": -400000, "felicidade": 2, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Trocar por uma loja grande",
+        "resumo": "trocou um lojista antigo por uma rede grande",
+        "resultado": {
+          "texto": "Entrou uma rede de fast fashion e o aluguel dobrou. O corredor ficou igual a todos os outros do país.",
+          "efeitos": { "dinheiro": 900000, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fim_de_semana_no_sitio",
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["sitio"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Fim de semana no sítio: piscina verde, pé de manga carregado e um caseiro que avisa que \"a bomba d'água pifou de novo\".",
+    "resumo": "passou um fim de semana no sítio",
+    "escolhas": [
+      {
+        "texto": "Chamar a família inteira",
+        "resumo": "levou a família inteira para o sítio",
+        "resultado": {
+          "texto": "Churrasco, truco e uma tia que dormiu na rede o dia todo. A bomba foi consertada com fita.",
+          "efeitos": { "felicidade": 4, "mae.vinculo": 3, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Ir sozinho para descansar",
+        "resumo": "foi sozinho ao sítio para descansar",
+        "resultado": {
+          "texto": "Silêncio, rede e nenhum sinal de celular. Você dormiu onze horas.",
+          "efeitos": { "saude": 3, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "feriado_na_praia",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["casa_de_praia"] },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Feriadão chegando, e todo parente que você tem descobriu que você tem casa de praia.",
+    "resumo": "recebeu a família na casa de praia",
+    "escolhas": [
+      {
+        "texto": "Receber todo mundo",
+        "resumo": "recebeu a família inteira na casa de praia",
+        "resultado": {
+          "texto": "Dezessete pessoas, um banheiro entupido e as melhores fotos do ano.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 4, "pai.vinculo": 4, "dinheiro": -4000 }
+        }
+      },
+      {
+        "texto": "Alugar por temporada",
+        "resumo": "alugou a casa de praia no feriado",
+        "resultado": {
+          "texto": "Turistas pagaram bem e deixaram areia até no teto. A família descobriu e ficou ofendida.",
+          "efeitos": { "dinheiro": 9000, "mae.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "safra_ou_geada",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["fazenda"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Na fazenda, o agrônomo avisa: dá para plantar mais cedo e pegar o preço alto, mas tem previsão de geada.",
+    "resumo": "decidiu a safra da fazenda",
+    "escolhas": [
+      {
+        "texto": "Plantar cedo",
+        "resumo": "arriscou plantar cedo na fazenda",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A geada não veio e o preço veio. A melhor safra da história da fazenda.",
+          "efeitos": { "dinheiro": 900000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A geada veio numa madrugada de junho. Metade da lavoura perdida.",
+          "efeitos": { "dinheiro": -500000, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Esperar a época certa",
+        "resumo": "esperou a época certa para plantar",
+        "resultado": { "texto": "Safra normal, preço normal, sono normal.", "efeitos": { "dinheiro": 200000 } }
+      }
+    ]
+  },
+  {
+    "id": "ilha_particular",
+    "idade": [25, 99],
+    "condicoes": { "marcas": ["ilha"] },
+    "texto": "Na sua ilha, o único barulho é o mar. Um velejador perdido pede para atracar no seu píer durante a tempestade.",
+    "resumo": "recebeu um visitante inesperado na ilha particular",
+    "escolhas": [
+      {
+        "texto": "Abrir o píer",
+        "resumo": "abrigou um velejador perdido na ilha",
+        "resultado": {
+          "texto": "Ele ficou três dias e contou histórias de sete oceanos. Virou amizade de cartão-postal.",
+          "efeitos": { "felicidade": 4, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Mandar a segurança",
+        "resumo": "mandou um velejador embora da ilha",
+        "resultado": {
+          "texto": "A segurança resolveu em dez minutos. A ilha ficou em silêncio, e o silêncio pesou.",
+          "efeitos": { "felicidade": -2, "eu.influencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "moto_na_chuva",
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["moto"] },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Chuva forte, corredor de carros parados e você de moto, atrasado para um compromisso importante.",
+    "resumo": "decidiu como enfrentar a chuva de moto",
+    "escolhas": [
+      {
+        "texto": "Costurar entre os carros",
+        "resumo": "costurou o trânsito de moto na chuva",
+        "teste": { "chance": 0.85 },
+        "sucesso": { "texto": "Chegou na hora, molhado e vitorioso.", "efeitos": { "felicidade": 2 } },
+        "fracasso": {
+          "texto": "Um retrovisor apareceu do nada. Joelho ralado, moto arranhada e o compromisso remarcado.",
+          "efeitos": { "saude": -8, "dinheiro": -2500 }
+        }
+      },
+      {
+        "texto": "Parar num posto e esperar",
+        "resumo": "esperou a chuva passar num posto",
+        "resultado": {
+          "texto": "Café de posto e meia hora de atraso. Chegou seco e com desculpa pronta.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "multa_e_batida",
+    "idade": [18, 90],
+    "condicoes": { "marcas": ["carro"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Alguém bateu na traseira do seu carro no sinal e já desceu dizendo que a culpa é sua.",
+    "resumo": "teve o carro batido no trânsito",
+    "escolhas": [
+      {
+        "texto": "Acionar o seguro",
+        "resumo": "acionou o seguro depois de uma batida",
+        "resultado": {
+          "texto": "Franquia, três semanas de oficina e um carro reserva que cheirava a cigarro.",
+          "efeitos": { "dinheiro": -3500, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Resolver no Pix, ali mesmo",
+        "resumo": "resolveu uma batida no Pix, na hora",
+        "resultado": {
+          "texto": "Vocês dividiram o prejuízo em dez minutos e se despediram quase amigos.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carro_de_luxo_na_rua",
+    "idade": [18, 95],
+    "condicoes": { "marcas": ["carro_de_luxo"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Você estaciona o seu carro de luxo e, em dois minutos, tem gente tirando foto, um flanelinha cobrando caro e um policial olhando torto.",
+    "resumo": "chamou atenção com o carro de luxo",
+    "escolhas": [
+      {
+        "texto": "Deixar tirar foto",
+        "resumo": "deixou o povo tirar foto do carro de luxo",
+        "resultado": {
+          "texto": "Você virou figurinha em vinte perfis. Um deles marcou a sua conta; agora tem fã.",
+          "efeitos": { "eu.fama": 3, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Ir embora antes que arranhem",
+        "resumo": "saiu às pressas com o carro de luxo",
+        "resultado": {
+          "texto": "Você não desceu do carro. Comprou o café pelo aplicativo e tomou no estacionamento.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "helicoptero_no_teto",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["helicoptero"] },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Reunião em outra ponta da cidade às nove. De carro, duas horas; de helicóptero, doze minutos e um heliponto emprestado.",
+    "resumo": "usou o helicóptero para fugir do trânsito",
+    "escolhas": [
+      {
+        "texto": "Ir voando",
+        "resumo": "foi de helicóptero para uma reunião",
+        "resultado": {
+          "texto": "Você chegou antes de todo mundo e com cara de quem dormiu bem. O piloto cobrou a hora extra.",
+          "efeitos": { "felicidade": 2, "dinheiro": -8000, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Ir de carro e trabalhar no caminho",
+        "resumo": "foi de carro e trabalhou no trânsito",
+        "resultado": {
+          "texto": "Duas horas de ligações no banco de trás. Você descobriu que o motorista torce para o mesmo time.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_no_iate",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["iate"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Verão, iate ancorado na baía, e uma lista de convidados que cresce sozinha. Alguém já chamou um influenciador e um político.",
+    "resumo": "deu uma festa no iate",
+    "escolhas": [
+      {
+        "texto": "Festa grande",
+        "resumo": "deu uma festa grande no iate",
+        "resultado": {
+          "texto": "Fotos em todo lugar e um político devendo um favor. A tripulação vai precisar de um mês para esquecer.",
+          "efeitos": { "felicidade": 4, "eu.fama": 4, "eu.influencia": 3, "dinheiro": -60000 }
+        }
+      },
+      {
+        "texto": "Só a família",
+        "resumo": "levou só a família para passear de iate",
+        "resultado": {
+          "texto": "Golfinho, sanduíche e um sobrinho enjoado. O melhor dia do ano.",
+          "efeitos": { "felicidade": 5, "mae.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "jatinho_para_onde",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["jatinho"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Sexta à noite. O jatinho está abastecido e o piloto pergunta: \"para onde?\".",
+    "resumo": "decidiu para onde ir de jatinho",
+    "escolhas": [
+      {
+        "texto": "Paris, jantar e voltar",
+        "resumo": "foi jantar em Paris de jatinho e voltou no dia seguinte",
+        "resultado": {
+          "texto": "Um jantar de três horas, um vinho que custava um carro e o voo de volta dormindo.",
+          "efeitos": { "felicidade": 4, "dinheiro": -120000, "eu.fama": 2 }
+        }
+      },
+      {
+        "texto": "Levar um hospital para o interior",
+        "resumo": "emprestou o jatinho para levar médicos ao interior",
+        "resultado": {
+          "texto": "Equipe médica numa cidade sem hospital por três dias. Fizeram duzentas consultas.",
+          "efeitos": { "felicidade": 3, "eu.influencia": 3, "eu.popularidade": 4, "dinheiro": -40000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "joias_no_cofre",
+    "idade": [20, 99],
+    "condicoes": { "marcas": ["joias"] },
+    "texto": "Uma festa de gala pede joia. A sua está no cofre, e um conhecido jura que o seguro \"não cobre saídas noturnas\".",
+    "resumo": "decidiu se usava as joias numa festa",
+    "escolhas": [
+      {
+        "texto": "Usar mesmo assim",
+        "resumo": "usou as joias numa festa de gala",
+        "resultado": {
+          "texto": "Você brilhou na foto oficial. Voltou para casa conferindo o pescoço a cada cinco minutos.",
+          "efeitos": { "felicidade": 3, "aparencia": 2, "eu.fama": 2 }
+        }
+      },
+      {
+        "texto": "Usar uma réplica",
+        "resumo": "usou uma réplica das joias na festa",
+        "resultado": {
+          "texto": "Ninguém percebeu, nem a revista. A original ficou no cofre, entediada.",
+          "efeitos": { "felicidade": 1, "dinheiro": -3000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "leilao_da_obra",
+    "idade": [25, 99],
+    "condicoes": { "marcas": ["obra_de_arte"] },
+    "texto": "Uma casa de leilões estrangeira avalia a sua obra de arte pelo triplo do que você pagou. Um museu público quer a mesma obra emprestada por dois anos.",
+    "resumo": "decidiu o destino da obra de arte",
+    "escolhas": [
+      {
+        "texto": "Emprestar ao museu",
+        "resumo": "emprestou a obra de arte a um museu público",
+        "resultado": {
+          "texto": "Seu nome na plaquinha ao lado da obra. Milhares de visitantes e uma inveja educada dos colecionadores.",
+          "efeitos": { "eu.fama": 4, "eu.influencia": 3, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Manter em casa",
+        "resumo": "manteve a obra de arte na sala de casa",
+        "resultado": {
+          "texto": "A obra continua na sala, ao lado da TV. O gato já tentou subir nela duas vezes.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cavalo_campeao",
+    "idade": [18, 95],
+    "condicoes": { "marcas": ["cavalo"] },
+    "texto": "O seu cavalo de raça foi convidado para um torneio grande. O treinador diz que ele está pronto; o veterinário, que ele está cansado.",
+    "resumo": "decidiu se o cavalo corria o torneio",
+    "escolhas": [
+      {
+        "texto": "Correr o torneio",
+        "resumo": "inscreveu o cavalo num torneio grande",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Primeiro lugar e um troféu que pesa mais que o jóquei. O cavalo ganhou capa de revista.",
+          "efeitos": { "felicidade": 5, "eu.fama": 4, "dinheiro": 150000 }
+        },
+        "fracasso": {
+          "texto": "Ele parou na última curva e olhou para você. Você entendeu o recado.",
+          "efeitos": { "felicidade": -2, "dinheiro": -30000 }
+        }
+      },
+      {
+        "texto": "Deixar descansar",
+        "resumo": "deixou o cavalo descansar em vez de competir",
+        "resultado": {
+          "texto": "Ele passou o verão no pasto. O veterinário mandou foto do cavalo sorrindo, se cavalo sorri.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dono_do_clube",
+    "idade": [25, 99],
+    "condicoes": { "marcas": ["clube_de_futebol"] },
+    "repetivel": true,
+    "intervalo": 2,
+    "texto": "O seu clube está na zona de rebaixamento. A torcida quer um craque caro; o diretor financeiro quer vender o melhor jogador.",
+    "resumo": "decidiu o rumo do clube de futebol",
+    "escolhas": [
+      {
+        "texto": "Contratar o craque",
+        "resumo": "contratou um craque caro para salvar o clube",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Ele fez onze gols em dez jogos. O clube escapou e a torcida pintou o seu rosto num muro.",
+          "efeitos": { "dinheiro": -20000000, "eu.fama": 10, "eu.popularidade": 6, "felicidade": 5 }
+        },
+        "fracasso": {
+          "texto": "Ele se machucou na estreia. O clube caiu, e a torcida pintou o seu rosto num muro, de outro jeito.",
+          "efeitos": { "dinheiro": -20000000, "eu.fama": 8, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Vender o melhor jogador",
+        "resumo": "vendeu o melhor jogador do clube",
+        "resultado": {
+          "texto": "O cofre encheu. O clube caiu. Você passou a ir aos jogos de boné e óculos escuros.",
+          "efeitos": { "dinheiro": 15000000, "felicidade": -4, "eu.popularidade": -6 }
+        }
+      }
+    ]
+  }
+]

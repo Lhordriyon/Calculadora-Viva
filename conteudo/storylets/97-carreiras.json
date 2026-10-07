@@ -1,0 +1,754 @@
+[
+  {
+    "id": "plantao_que_nao_acaba",
+    "idade": [22, 70],
+    "condicoes": { "carreira": ["medico", "enfermeiro", "tecnico_enfermagem"] },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Plantão de vinte e quatro horas, corredor lotado. Chega um paciente grave bem na hora de ir embora, e quem rende você está preso no trânsito.",
+    "resumo": "encarou um plantão lotado",
+    "escolhas": [
+      {
+        "texto": "Ficar até resolver",
+        "resumo": "ficou além do plantão para salvar um paciente",
+        "resultado": {
+          "texto": "Você saiu às onze da manhã seguinte, sem almoço e com um paciente vivo. A chefia anotou seu nome.",
+          "efeitos": { "saude": -3, "felicidade": 3, "eu.nivel": 1 }
+        }
+      },
+      {
+        "texto": "Passar o caso e ir para casa",
+        "resumo": "passou o caso adiante e foi descansar",
+        "resultado": {
+          "texto": "Você dormiu oito horas. O paciente ficou bem com outra equipe; a chefia notou a sua saída.",
+          "efeitos": { "saude": 2, "felicidade": 1, "eu.influencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "paciente_famoso",
+    "idade": [22, 75],
+    "condicoes": { "carreira": ["medico", "enfermeiro", "tecnico_enfermagem", "psicologo", "dentista", "veterinario"] },
+    "texto": "Um paciente muito famoso aparece no seu plantão, de boné e óculos escuros. Um portal de fofoca oferece dinheiro por uma foto do prontuário.",
+    "resumo": "atendeu um paciente famoso",
+    "escolhas": [
+      {
+        "texto": "Guardar o sigilo",
+        "resumo": "guardou o sigilo de um paciente famoso",
+        "resultado": {
+          "texto": "Ele indicou você para metade dos amigos famosos dele. Sua agenda lotou até o fim do ano.",
+          "efeitos": { "renda": 30000, "eu.influencia": 3 }
+        }
+      },
+      {
+        "texto": "Vender a foto",
+        "resumo": "vendeu a foto do prontuário de um paciente famoso",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Ninguém descobriu de onde veio. O dinheiro veio; o sono, nem tanto.",
+          "efeitos": { "dinheiro": 60000, "felicidade": -3 }
+        },
+        "fracasso": {
+          "texto": "O conselho profissional descobriu em uma semana. Registro suspenso, nome no jornal.",
+          "efeitos": { "dinheiro": 60000, "renda": { "definir": 0 }, "eu.fama": 6, "felicidade": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cliente_duvidoso",
+    "idade": [24, 70],
+    "condicoes": { "carreira": ["advogado", "contador", "analista_investimentos"] },
+    "texto": "Um cliente de terno caro quer contratar você para \"proteger o patrimônio\" de uma empresa com sede numa ilha que você nunca ouviu falar. Paga adiantado e em dólar.",
+    "resumo": "decidiu sobre um cliente duvidoso",
+    "escolhas": [
+      {
+        "texto": "Aceitar o cliente",
+        "resumo": "aceitou um cliente de dinheiro duvidoso",
+        "resultado": {
+          "texto": "Honorários de um ano num mês. Você comprou um relógio e parou de ler o noticiário.",
+          "efeitos": {
+            "dinheiro": 400000,
+            "marcas": ["cliente_duvidoso"],
+            "agendar": [{ "evento": "cliente_preso", "em": [2, 6] }]
+          }
+        }
+      },
+      {
+        "texto": "Recusar com educação",
+        "resumo": "recusou um cliente de dinheiro duvidoso",
+        "resultado": {
+          "texto": "Você indicou um colega. Dois anos depois, o colega estava no noticiário.",
+          "efeitos": { "felicidade": 2, "eu.influencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cliente_preso",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["cliente_duvidoso"] },
+    "texto": "O seu cliente da ilha foi preso numa operação da Polícia Federal. Seu nome aparece em três planilhas e num grupo de mensagens.",
+    "resumo": "viu um cliente ser preso e o próprio nome na investigação",
+    "escolhas": [
+      {
+        "texto": "Colaborar com a investigação",
+        "resumo": "colaborou com a investigação contra o próprio cliente",
+        "resultado": {
+          "texto": "Você entregou tudo o que tinha. Perdeu clientes, ganhou um acordo e uma insônia mais leve.",
+          "efeitos": { "dinheiro": -150000, "removerMarcas": ["cliente_duvidoso"], "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Negar tudo",
+        "resumo": "negou envolvimento com o cliente preso",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A investigação mudou de foco. Seu nome sumiu das manchetes.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Chegou até você. Multa, registro suspenso e um ano explicando aos vizinhos.",
+          "efeitos": {
+            "dinheiro": -600000,
+            "renda": { "definir": 0 },
+            "felicidade": -8,
+            "removerMarcas": ["cliente_duvidoso"]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "caso_do_poderoso",
+    "idade": [26, 75],
+    "condicoes": { "carreira": ["juiz", "delegado"] },
+    "texto": "Cai na sua mesa o processo de um político poderoso. Um emissário dele aparece no estacionamento para \"conversar sobre o futuro\".",
+    "resumo": "decidiu o caso de um político poderoso",
+    "escolhas": [
+      {
+        "texto": "Seguir a lei, doa a quem doer",
+        "resumo": "condenou um político poderoso",
+        "resultado": {
+          "texto": "Manchete nacional, ameaças anônimas e um carro blindado pago pelo Estado. Você virou nome de rua em vida.",
+          "efeitos": { "eu.fama": 20, "eu.influencia": 4, "felicidade": -2, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Engavetar o processo",
+        "resumo": "engavetou o processo de um político poderoso",
+        "resultado": {
+          "texto": "O processo prescreveu. No Natal, chegou uma cesta enorme sem cartão.",
+          "efeitos": { "dinheiro": 200000, "eu.influencia": 8, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ocorrencia_perigosa",
+    "idade": [18, 60],
+    "condicoes": { "carreira": ["policial", "bombeiro", "militar"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Chamado de emergência: prédio pegando fogo, ou assalto com refém, ou enchente levando carros. Você é a pessoa mais perto.",
+    "resumo": "atendeu uma ocorrência perigosa",
+    "escolhas": [
+      {
+        "texto": "Entrar",
+        "resumo": "arriscou a vida numa ocorrência perigosa",
+        "teste": { "atributo": "saude", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Você saiu com uma criança no colo e a farda queimada. Medalha, foto no jornal e uma mãe que chora toda vez que te vê.",
+          "efeitos": { "eu.fama": 12, "eu.nivel": 1, "felicidade": 5 }
+        },
+        "fracasso": {
+          "texto": "Deu certo para a vítima e errado para você: três meses de recuperação e uma cicatriz para contar.",
+          "efeitos": { "saude": -18, "eu.fama": 6, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Esperar o reforço",
+        "resumo": "esperou o reforço numa ocorrência perigosa",
+        "resultado": {
+          "texto": "O reforço chegou em oito minutos. Deu tudo certo, sem heroísmo e sem cicatriz.",
+          "efeitos": { "felicidade": -1, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "deploy_de_sexta",
+    "idade": [20, 65],
+    "condicoes": { "carreira": ["programador", "cientista_dados"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Sexta, 17h48. O chefe pede para subir uma atualização \"rapidinha\" no sistema que todo o país usa no fim de semana.",
+    "resumo": "decidiu sobre um deploy de sexta-feira",
+    "escolhas": [
+      {
+        "texto": "Subir a atualização",
+        "resumo": "subiu uma atualização na sexta-feira à tarde",
+        "teste": { "atributo": "inteligencia", "dificuldade": 62 },
+        "sucesso": {
+          "texto": "Funcionou de primeira. Ninguém acreditou, nem você. O chefe lembrou disso na avaliação.",
+          "efeitos": { "eu.nivel": 1, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Caiu tudo às 23h. Você passou o sábado inteiro na chamada de emergência.",
+          "efeitos": { "felicidade": -5, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Dizer que fica para segunda",
+        "resumo": "empurrou o deploy de sexta para segunda",
+        "resultado": {
+          "texto": "O chefe fez cara feia e foi para casa. Na segunda, a atualização tinha um erro que ninguém tinha visto.",
+          "efeitos": { "felicidade": 3, "eu.influencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "proposta_em_dolar",
+    "idade": [22, 60],
+    "condicoes": {
+      "carreira": ["programador", "cientista_dados", "engenheiro", "arquiteto"],
+      "inteligencia": { "min": 60 }
+    },
+    "texto": "Uma empresa estrangeira quer você trabalhando de casa, em dólar. O salário é o dobro; o fuso horário é o de quem dorme às quatro.",
+    "resumo": "recebeu uma proposta para trabalhar para fora",
+    "escolhas": [
+      {
+        "texto": "Aceitar",
+        "resumo": "passou a trabalhar para uma empresa estrangeira em dólar",
+        "resultado": {
+          "texto": "Salário em dólar, reunião à meia-noite e café como grupo alimentar.",
+          "efeitos": { "renda": 120000, "saude": -2, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Ficar onde está",
+        "resumo": "recusou trabalhar para fora e ficou no emprego",
+        "resultado": {
+          "texto": "Você ficou com o fuso de casa e o salário em real. Seu chefe ofereceu um aumento para garantir.",
+          "efeitos": { "renda": 20000, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aluno_impossivel",
+    "idade": [22, 70],
+    "condicoes": { "carreira": ["professor", "professor_universitario", "pesquisador"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Um aluno impossível desafia você na frente da turma inteira. Dizem que ele é brilhante e que tem uma vida dura em casa.",
+    "resumo": "lidou com um aluno difícil",
+    "escolhas": [
+      {
+        "texto": "Investir nele",
+        "resumo": "apostou num aluno que todo mundo tinha desistido",
+        "resultado": {
+          "texto": "Um ano de conversas no intervalo. Dez anos depois, ele mandou mensagem: passou em medicina.",
+          "efeitos": { "felicidade": 5, "saude": -1, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Mandar para a direção",
+        "resumo": "mandou um aluno difícil para a direção",
+        "resultado": {
+          "texto": "A aula seguiu em paz. Você nunca soube o que aconteceu com ele.",
+          "efeitos": { "felicidade": -1, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pane_no_voo",
+    "idade": [24, 65],
+    "condicoes": { "carreira": "piloto" },
+    "texto": "Pane num motor a trinta e cinco mil pés, com duzentas pessoas a bordo. O copiloto olha para você.",
+    "resumo": "enfrentou uma pane em pleno voo",
+    "escolhas": [
+      {
+        "texto": "Pousar no rio",
+        "resumo": "pousou um avião em pane num rio",
+        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Todos vivos, molhados e aplaudindo. Você virou entrevista, filme e nome de prêmio.",
+          "efeitos": { "eu.fama": 30, "eu.nivel": 1, "felicidade": 6 }
+        },
+        "fracasso": {
+          "texto": "O pouso foi duro. Ninguém morreu, mas você foi afastado por um ano e não dorme bem até hoje.",
+          "efeitos": { "saude": -15, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Voltar ao aeroporto com um motor",
+        "resumo": "voltou ao aeroporto com um motor só",
+        "resultado": {
+          "texto": "Pouso feio e seguro. Ninguém lembra do seu nome, e era isso mesmo que você queria.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "final_da_copa",
+    "idade": [18, 37],
+    "condicoes": { "carreira": "jogador_futebol", "nivel": { "min": 2 } },
+    "texto": "Final da Copa do Mundo, pênaltis, cinco a cinco. O técnico aponta para você.",
+    "resumo": "bateu o pênalti decisivo de uma final de Copa",
+    "escolhas": [
+      {
+        "texto": "Bater no ângulo",
+        "resumo": "bateu o pênalti decisivo na final da Copa",
+        "teste": { "chance": 0.75 },
+        "sucesso": {
+          "texto": "Gol. O país parou, chorou e saiu na rua. Você virou estátua, música e feriado.",
+          "efeitos": { "eu.fama": 30, "felicidade": 12, "dinheiro": 3000000, "eu.influencia": 10 }
+        },
+        "fracasso": {
+          "texto": "Na trave. Você vai ver esse lance em câmera lenta pelo resto da vida.",
+          "efeitos": { "eu.fama": 15, "felicidade": -12 }
+        }
+      },
+      {
+        "texto": "Pedir para outro bater",
+        "resumo": "passou o pênalti decisivo para um colega",
+        "resultado": {
+          "texto": "O colega fez o gol. Você abraçou primeiro e chorou junto, mas a foto da capa é dele.",
+          "efeitos": { "felicidade": 4, "eu.fama": 5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "proposta_da_europa",
+    "idade": [18, 32],
+    "condicoes": { "carreira": ["jogador_futebol", "atleta"], "nivel": { "min": 1 } },
+    "texto": "Um clube europeu faz uma proposta milionária. A torcida do seu time faz faixa pedindo para você ficar.",
+    "resumo": "recebeu uma proposta de um clube europeu",
+    "escolhas": [
+      {
+        "texto": "Ir para a Europa",
+        "resumo": "foi jogar na Europa",
+        "resultado": {
+          "texto": "Inverno de verdade, salário em euro e uma saudade de arroz com feijão que nenhum restaurante resolve.",
+          "efeitos": { "renda": 1500000, "felicidade": -3, "eu.fama": 10, "eu.nivel": 1 }
+        }
+      },
+      {
+        "texto": "Ficar no clube",
+        "resumo": "recusou a Europa para ficar no clube",
+        "resultado": {
+          "texto": "A torcida cantou o seu nome por noventa minutos. O presidente do clube cobriu metade da proposta.",
+          "efeitos": { "renda": 300000, "felicidade": 5, "eu.fama": 6, "eu.influencia": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lesao_grave",
+    "idade": [18, 37],
+    "condicoes": { "carreira": ["jogador_futebol", "atleta"] },
+    "texto": "Uma pancada no treino, um barulho no joelho e o médico do clube faz cara de quem já viu esse filme.",
+    "resumo": "teve uma lesão grave no auge da carreira",
+    "escolhas": [
+      {
+        "texto": "Cirurgia e um ano parado",
+        "resumo": "parou um ano para operar o joelho",
+        "resultado": {
+          "texto": "Um ano de fisioterapia. Você voltou mais lento e mais esperto.",
+          "efeitos": { "saude": 4, "dinheiro": -200000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Jogar no sacrifício",
+        "resumo": "jogou no sacrifício com o joelho machucado",
+        "teste": { "atributo": "saude", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "Você jogou a temporada inteira com o joelho enfaixado. Ninguém tirou o seu lugar.",
+          "efeitos": { "eu.fama": 5, "saude": -4 }
+        },
+        "fracasso": {
+          "texto": "O joelho não aguentou. A carreira acabou mais cedo, e a dor ficou para sempre.",
+          "efeitos": { "saude": -15, "renda": { "definir": 0 }, "felicidade": -10, "marcas": ["joelho_ruim"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "hit_viral",
+    "idade": [14, 60],
+    "condicoes": { "carreira": ["cantor", "influenciador"] },
+    "texto": "Um vídeo seu explodiu: vinte milhões de visualizações em dois dias. Gravadoras, marcas e um agente de cabelo estranho querem uma reunião.",
+    "resumo": "viralizou na internet",
+    "escolhas": [
+      {
+        "texto": "Assinar com a gravadora grande",
+        "resumo": "assinou contrato com uma gravadora grande depois de viralizar",
+        "resultado": {
+          "texto": "Dinheiro adiantado, cláusulas em fonte pequena e uma agenda de shows que vai até o ano que vem.",
+          "efeitos": { "dinheiro": 400000, "eu.nivel": 1, "eu.fama": 10, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Seguir independente",
+        "resumo": "continuou independente depois de viralizar",
+        "resultado": {
+          "texto": "Você ganhou menos agora e é dono de tudo o que faz. O próximo vídeo não viralizou; o seguinte, sim.",
+          "efeitos": { "eu.fama": 6, "felicidade": 4, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "turne_nacional",
+    "idade": [18, 70],
+    "condicoes": { "carreira": "cantor", "nivel": { "min": 1 } },
+    "texto": "Turnê por trinta cidades em quarenta dias. O empresário diz que é agora ou nunca; a sua garganta diz que é nunca.",
+    "resumo": "decidiu sobre uma turnê nacional",
+    "escolhas": [
+      {
+        "texto": "Fazer a turnê inteira",
+        "resumo": "fez uma turnê por trinta cidades",
+        "resultado": {
+          "texto": "Trinta cidades, um ônibus e um corpo que pediu férias em todas elas. O público cantou tudo.",
+          "efeitos": { "dinheiro": 900000, "saude": -5, "eu.fama": 10 }
+        }
+      },
+      {
+        "texto": "Fazer só as capitais",
+        "resumo": "fez uma turnê só pelas capitais",
+        "resultado": {
+          "texto": "Dez shows grandes e descanso no meio. Menos dinheiro, mais voz.",
+          "efeitos": { "dinheiro": 300000, "saude": 1, "eu.fama": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "papel_da_vida",
+    "idade": [16, 70],
+    "condicoes": { "carreira": ["ator", "modelo"] },
+    "texto": "Um diretor importante oferece o papel principal de um filme difícil: você precisa engordar vinte quilos e raspar a cabeça. Uma marca de cosméticos oferece o triplo por uma campanha.",
+    "resumo": "escolheu entre a arte e o dinheiro",
+    "escolhas": [
+      {
+        "texto": "Fazer o filme",
+        "resumo": "aceitou um papel difícil num filme de arte",
+        "resultado": {
+          "texto": "O filme rodou festivais e você levou um prêmio internacional. O corpo levou um ano para voltar.",
+          "efeitos": { "eu.fama": 15, "eu.nivel": 1, "aparencia": -4, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Fazer a campanha",
+        "resumo": "trocou um filme de arte por uma campanha de cosméticos",
+        "resultado": {
+          "texto": "Seu rosto ficou em todo ponto de ônibus do país. A conta bancária agradeceu; a crítica, não.",
+          "efeitos": { "dinheiro": 1500000, "eu.fama": 8, "aparencia": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "livro_viralizou",
+    "idade": [18, 90],
+    "condicoes": { "carreira": "escritor" },
+    "texto": "O seu livro, publicado há três anos sem ninguém notar, virou série de streaming. A editora quer outro em seis meses.",
+    "resumo": "viu o próprio livro virar série",
+    "escolhas": [
+      {
+        "texto": "Escrever às pressas",
+        "resumo": "escreveu um livro novo às pressas",
+        "resultado": {
+          "texto": "O livro saiu em seis meses e vendeu muito. Você não gosta dele, mas ele paga a reforma.",
+          "efeitos": { "dinheiro": 500000, "eu.nivel": 1, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Levar o tempo que precisar",
+        "resumo": "levou anos para escrever o livro seguinte",
+        "resultado": {
+          "texto": "A editora reclamou por dois anos. O livro saiu e é o melhor que você escreveu.",
+          "efeitos": { "eu.fama": 8, "felicidade": 4, "inteligencia": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "critico_no_salao",
+    "idade": [20, 75],
+    "condicoes": { "carreira": ["chef", "cozinheiro"] },
+    "texto": "Um crítico gastronômico famoso está no salão, disfarçado de turista. O garçom já percebeu; o fogão, não.",
+    "resumo": "cozinhou para um crítico gastronômico",
+    "escolhas": [
+      {
+        "texto": "Arriscar o prato novo",
+        "resumo": "serviu um prato experimental a um crítico famoso",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Cinco estrelas e fila na porta por seis meses. O prato virou \"o seu prato\".",
+          "efeitos": { "eu.fama": 12, "eu.nivel": 1, "felicidade": 5 }
+        },
+        "fracasso": {
+          "texto": "Uma estrela e a frase \"corajoso, como um acidente\". Doeu por um ano.",
+          "efeitos": { "felicidade": -5, "eu.fama": 4 }
+        }
+      },
+      {
+        "texto": "Servir o clássico da casa",
+        "resumo": "serviu o clássico da casa ao crítico",
+        "resultado": {
+          "texto": "Três estrelas e um elogio morno. O restaurante seguiu cheio, como sempre.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cliente_perdeu_tudo",
+    "idade": [22, 75],
+    "condicoes": { "carreira": ["analista_investimentos", "bancario", "contador"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "O fundo que você recomendou caiu trinta por cento. Um cliente antigo, aposentado, liga chorando.",
+    "resumo": "lidou com um cliente que perdeu dinheiro",
+    "escolhas": [
+      {
+        "texto": "Assumir o erro e ajudar",
+        "resumo": "assumiu o erro com um cliente que perdeu dinheiro",
+        "resultado": {
+          "texto": "Você passou a tarde montando outro plano com ele. Perdeu comissão e ganhou um cliente para a vida.",
+          "efeitos": { "felicidade": 2, "renda": -5000, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Dizer que é o mercado",
+        "resumo": "culpou o mercado pela perda de um cliente",
+        "resultado": {
+          "texto": "Tecnicamente verdade. O cliente trocou de banco e contou para o prédio inteiro.",
+          "efeitos": { "felicidade": -1, "renda": -8000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "noite_de_corridas",
+    "idade": [16, 65],
+    "condicoes": { "carreira": ["entregador", "motorista_app"] },
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Chuva forte, tarifa dinâmica lá em cima e um pedido do outro lado da cidade, numa rua que o mapa nem mostra direito.",
+    "resumo": "decidiu sobre uma corrida arriscada",
+    "escolhas": [
+      {
+        "texto": "Aceitar a corrida",
+        "resumo": "aceitou uma corrida arriscada na chuva",
+        "teste": { "chance": 0.8 },
+        "sucesso": {
+          "texto": "Molhado até a alma e com a melhor noite do mês no aplicativo.",
+          "efeitos": { "dinheiro": 900, "saude": -1 }
+        },
+        "fracasso": {
+          "texto": "Derrapou na curva. Nada quebrado além do retrovisor e do orgulho.",
+          "efeitos": { "saude": -6, "dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Ir para casa",
+        "resumo": "recusou a corrida e foi para casa",
+        "resultado": {
+          "texto": "Sopa, banho quente e nenhuma tarifa dinâmica. Dormiu feliz e mais pobre.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "obra_atrasada",
+    "idade": [20, 70],
+    "condicoes": { "carreira": ["pedreiro", "eletricista", "engenheiro", "arquiteto"] },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "A obra está três semanas atrasada, o cliente ameaça processo e o material barato que chegou não é o que foi comprado.",
+    "resumo": "enfrentou uma obra atrasada",
+    "escolhas": [
+      {
+        "texto": "Refazer com o material certo",
+        "resumo": "refez uma obra com o material certo",
+        "resultado": {
+          "texto": "Você pagou a diferença do bolso e entregou atrasado e direito. O cliente indicou você para a família.",
+          "efeitos": { "dinheiro": -15000, "felicidade": 2, "eu.nivel": 1 }
+        }
+      },
+      {
+        "texto": "Entregar como está",
+        "resumo": "entregou uma obra com material barato",
+        "resultado": {
+          "texto": "Entregou no prazo. A rachadura apareceu no ano seguinte, e o cliente também.",
+          "efeitos": { "dinheiro": 8000, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "promocao_em_outra_cidade",
+    "idade": [25, 60],
+    "condicoes": {
+      "carreira": [
+        "analista_investimentos",
+        "bancario",
+        "contador",
+        "programador",
+        "cientista_dados",
+        "advogado",
+        "juiz",
+        "delegado",
+        "engenheiro",
+        "vendedor",
+        "bancario",
+        "jornalista"
+      ],
+      "nivel": { "min": 1 }
+    },
+    "texto": "Promoção grande para {eu.ocupacao}: salário bem maior e o cargo que você queria. Só que em outra cidade, longe de todo mundo.",
+    "resumo": "recebeu uma promoção em outra cidade",
+    "escolhas": [
+      {
+        "texto": "Aceitar e mudar",
+        "resumo": "mudou de cidade por uma promoção",
+        "resultado": {
+          "texto": "Apartamento novo, ninguém conhecido e um salário que compensa quase tudo.",
+          "efeitos": { "renda": 60000, "eu.nivel": 1, "felicidade": -3, "mae.vinculo": -5, "amigo.vinculo": -8 }
+        }
+      },
+      {
+        "texto": "Recusar e ficar",
+        "resumo": "recusou uma promoção para ficar perto de quem gosta",
+        "resultado": {
+          "texto": "O cargo foi para um colega. Você ficou com o domingo em família.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "paparazzi",
+    "idade": [16, 90],
+    "condicoes": { "fama": { "min": 35 } },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Fotógrafos na porta de casa desde as seis da manhã. Você só queria comprar pão.",
+    "resumo": "foi perseguido por fotógrafos",
+    "escolhas": [
+      {
+        "texto": "Posar e sorrir",
+        "resumo": "posou para os fotógrafos na porta de casa",
+        "resultado": {
+          "texto": "Você saiu bem na foto e no humor. O pão esfriou.",
+          "efeitos": { "eu.fama": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Sair pelos fundos",
+        "resumo": "fugiu dos fotógrafos pelos fundos",
+        "resultado": {
+          "texto": "Você pulou o muro do vizinho. A foto do pulo foi a mais vendida do mês.",
+          "efeitos": { "eu.fama": 5, "felicidade": -2, "aparencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "contrato_publicitario",
+    "idade": [16, 85],
+    "condicoes": { "fama": { "min": 40 } },
+    "texto": "Uma marca de cerveja, ou de banco, ou de sandália, quer o seu rosto na campanha do ano. O cachê tem sete dígitos.",
+    "resumo": "recebeu uma proposta de campanha publicitária",
+    "escolhas": [
+      {
+        "texto": "Aceitar",
+        "resumo": "estrelou uma campanha publicitária milionária",
+        "resultado": {
+          "texto": "Seu rosto em todo intervalo comercial do país. A conta engordou; a imagem, um pouco também.",
+          "efeitos": { "dinheiro": 2000000, "eu.fama": 4 }
+        }
+      },
+      {
+        "texto": "Recusar, não combina com você",
+        "resumo": "recusou uma campanha milionária por coerência",
+        "resultado": {
+          "texto": "Você recusou sete dígitos. Os fãs souberam e gostaram mais de você.",
+          "efeitos": { "felicidade": 3, "eu.influencia": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cancelado",
+    "idade": [16, 90],
+    "condicoes": { "fama": { "min": 30 } },
+    "texto": "Um post seu de doze anos atrás voltou do túmulo. Em uma hora, você é o assunto mais falado do país, e não do jeito bom.",
+    "resumo": "foi cancelado na internet",
+    "escolhas": [
+      {
+        "texto": "Pedir desculpas de verdade",
+        "resumo": "pediu desculpas de verdade por um post antigo",
+        "resultado": {
+          "texto": "Um texto longo, sem advogado, sem \"se alguém se ofendeu\". Passou em uma semana.",
+          "efeitos": { "eu.fama": -3, "felicidade": -2, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Dobrar a aposta",
+        "resumo": "dobrou a aposta depois de ser cancelado",
+        "resultado": {
+          "texto": "Você brigou com metade da internet. A outra metade virou fã. A fama dobrou; a paz, não.",
+          "efeitos": { "eu.fama": 10, "felicidade": -6, "eu.influencia": -3 }
+        }
+      },
+      {
+        "texto": "Sumir das redes",
+        "resumo": "sumiu das redes depois de ser cancelado",
+        "resultado": {
+          "texto": "Três meses sem celular. Você aprendeu a fazer pão e descobriu que estava cansado.",
+          "efeitos": { "eu.fama": -6, "felicidade": 3, "saude": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fa_obcecado",
+    "idade": [16, 90],
+    "condicoes": { "fama": { "min": 50 } },
+    "texto": "Um fã aparece todo dia no mesmo lugar onde você está. Hoje ele sabia o nome do seu bicho de estimação.",
+    "resumo": "lidou com um fã obcecado",
+    "escolhas": [
+      {
+        "texto": "Contratar segurança",
+        "resumo": "contratou segurança por causa de um fã obcecado",
+        "resultado": {
+          "texto": "Dois seguranças, um carro blindado e uma vida mais vigiada. O fã sumiu.",
+          "efeitos": { "dinheiro": -150000, "felicidade": -2, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Conversar com ele",
+        "resumo": "conversou com um fã obcecado",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Ele só queria ser visto. Você deu um autógrafo e uma bronca. Ele nunca mais apareceu.",
+          "efeitos": { "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Piorou. Foi preciso polícia, medida protetiva e um verão inteiro de medo.",
+          "efeitos": { "felicidade": -6, "saude": -2 }
+        }
+      }
+    ]
+  }
+]

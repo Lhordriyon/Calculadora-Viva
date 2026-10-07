@@ -1,0 +1,429 @@
+[
+  {
+    "id": "ler_gibi",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "ler gibi debaixo da coberta",
+    "idade": [5, 12],
+    "texto": "Lanterna, cobertor e uma pilha de gibis. Você leu até a lanterna pedir arrego.",
+    "resumo": "leu gibi escondido até tarde",
+    "efeitos": { "inteligencia": 2, "felicidade": 1, "saude": -1 }
+  },
+  {
+    "id": "ingles_crianca",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "aula de inglês",
+    "idade": [6, 12],
+    "condicoes": { "classe_origem": { "min": 3 } },
+    "texto": "Duas vezes por semana, uma professora que canta tudo. Você aprendeu as cores e um palavrão que ela não ensinou.",
+    "resumo": "fez aula de inglês na infância",
+    "efeitos": { "inteligencia": 3, "felicidade": -1, "marcas": ["fala_ingles"] }
+  },
+  {
+    "id": "perguntar_porque",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "perguntar o porquê de tudo",
+    "idade": [3, 6],
+    "texto": "Por que o céu é azul? Por que o vovô é careca? Por que não posso comer areia? Ninguém em casa sabia metade das respostas.",
+    "resumo": "perguntou o porquê de tudo",
+    "efeitos": { "inteligencia": 2, "mae.vinculo": 1 }
+  },
+  {
+    "id": "vender_picole",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "vender picolé na praça",
+    "idade": [8, 12],
+    "condicoes": { "classe_origem": { "max": 2 } },
+    "texto": "Caixa de isopor, sol de rachar e um grito ensaiado: \"olha o picolé!\". O lucro foi pequeno; o orgulho, enorme.",
+    "resumo": "vendeu picolé na praça ainda criança",
+    "efeitos": { "dinheiro": 150, "saude": -1, "felicidade": 1, "marcas": ["trabalhou_cedo"] }
+  },
+  {
+    "id": "ajudar_na_roca",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "ajudar na roça",
+    "idade": [7, 12],
+    "condicoes": { "lugar.interior": true },
+    "texto": "Você acordou com o galo, colheu feijão e voltou com a mão calejada e a barriga cheia.",
+    "resumo": "ajudou na roça da família",
+    "efeitos": { "saude": 1, "dinheiro": 80, "felicidade": -1 }
+  },
+  {
+    "id": "natacao_no_clube",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "natação no clube",
+    "idade": [4, 12],
+    "condicoes": { "classe_origem": { "min": 3 } },
+    "texto": "Touca apertada, cloro no nariz e uma medalha de participação que você guardou por vinte anos.",
+    "resumo": "fez natação no clube",
+    "efeitos": { "saude": 3, "felicidade": 1 }
+  },
+  {
+    "id": "pular_corda",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "pular corda no recreio",
+    "idade": [5, 11],
+    "texto": "\"Um homem bateu em minha porta...\" Você pulou até errar, e errou feio, e riu mais ainda.",
+    "resumo": "pulou corda no recreio",
+    "efeitos": { "saude": 2, "amigo.vinculo": 2 }
+  },
+  {
+    "id": "futebol_de_varzea",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "futebol de várzea",
+    "idade": [6, 12],
+    "texto": "Campo de terra, trave de chinelo e um juiz que era o dono da bola. Você jogou como se fosse final de Copa.",
+    "resumo": "jogou futebol de várzea",
+    "efeitos": { "saude": 2, "felicidade": 2, "marcas": ["boleiro"] }
+  },
+  {
+    "id": "cozinhar_com_a_avo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "cozinhar com a avó",
+    "idade": [5, 12],
+    "condicoes": { "avo.vivo": true },
+    "texto": "Bolo de fubá sem receita escrita: \"um pouco disso, um tanto daquilo\". Você lambeu a colher e decorou o cheiro.",
+    "resumo": "cozinhou com a avó",
+    "efeitos": { "avo.vinculo": 4, "felicidade": 2 }
+  },
+  {
+    "id": "trabalho_do_pai",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "dia no trabalho dos pais",
+    "idade": [8, 12],
+    "condicoes": { "pai.vivo": true, "semMarcas": ["pai.ausente"] },
+    "texto": "{pai} te levou para um dia no trabalho dele. Você entendeu pela primeira vez onde ele passava o dia, e por que chegava cansado.",
+    "resumo": "passou um dia no trabalho do pai",
+    "efeitos": { "pai.vinculo": 4, "inteligencia": 1 }
+  },
+  {
+    "id": "missa_em_familia",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "ir à missa com a família",
+    "idade": [5, 12],
+    "condicoes": { "familia": "religiosa" },
+    "texto": "Roupa de domingo, banco duro e o cheiro de vela. Depois, pastel na feira: a melhor parte da liturgia.",
+    "resumo": "foi à missa com a família",
+    "efeitos": { "mae.vinculo": 2, "felicidade": 1 }
+  },
+  {
+    "id": "soltar_pipa",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "soltar pipa na laje",
+    "idade": [6, 12],
+    "texto": "Linha, rabiola e um céu cheio de concorrentes. A sua pipa subiu mais que todas, até o fio do poste.",
+    "resumo": "soltou pipa na laje",
+    "efeitos": { "felicidade": 3, "saude": 1 }
+  },
+  {
+    "id": "videogame_do_amigo",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "videogame com a turma",
+    "idade": [7, 12],
+    "condicoes": { "amigo.vivo": true },
+    "texto": "Tarde inteira no videogame de {amigo}. A mãe de {amigo} fez pipoca e mandou vocês saírem do sofá três vezes.",
+    "resumo": "jogou videogame na casa do amigo",
+    "efeitos": { "amigo.vinculo": 3, "felicidade": 2, "saude": -1 }
+  },
+  {
+    "id": "parquinho",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "ir ao parquinho",
+    "idade": [3, 7],
+    "texto": "Escorregador quente, balanço alto e um tombo que virou história de família.",
+    "resumo": "brincou no parquinho",
+    "efeitos": { "felicidade": 2, "saude": 1 }
+  },
+  {
+    "id": "figurinha_repetida",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "vender figurinha repetida",
+    "idade": [6, 12],
+    "texto": "Você montou uma banca de figurinhas repetidas no recreio. Cobrava caro e dava desconto para quem trazia bala.",
+    "resumo": "vendeu figurinhas repetidas no recreio",
+    "efeitos": { "dinheiro": 30, "amigo.vinculo": 1, "marcas": ["vendedor_nato"] }
+  },
+  {
+    "id": "apagao_no_morro",
+    "idade": [4, 12],
+    "condicoes": { "classe_origem": { "max": 1 } },
+    "texto": "Faltou luz no bairro inteiro, de novo. Sem televisão, a vizinhança saiu para a calçada com vela e cadeira de praia.",
+    "resumo": "passou um apagão com a vizinhança",
+    "escolhas": [
+      {
+        "texto": "Ouvir as histórias dos mais velhos",
+        "resumo": "ouviu as histórias dos vizinhos no apagão",
+        "resultado": {
+          "texto": "Seu Zé contou da enchente de 1988 pela décima vez. Você descobriu que gostava de histórias.",
+          "efeitos": { "inteligencia": 2, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Brincar de pique-esconde no escuro",
+        "resumo": "brincou de pique-esconde no apagão",
+        "resultado": {
+          "texto": "Melhor pique-esconde da história do bairro. Um joelho ralado, zero arrependimentos.",
+          "efeitos": { "felicidade": 3, "saude": -1, "amigo.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aniversario_da_infancia",
+    "idade": [5, 10],
+    "trechos": {
+      "festa": [
+        {
+          "se": { "classe_origem": { "min": 5 } },
+          "texto": "uma festa num buffet com mágico, pula-pula e lembrancinha de grife"
+        },
+        {
+          "se": { "classe_origem": { "min": 3 } },
+          "texto": "uma festa no salão do prédio, com tema de desenho animado"
+        },
+        { "texto": "um bolo na laje, com brigadeiro feito na véspera e a rua inteira convidada" }
+      ]
+    },
+    "texto": "Seu aniversário está chegando, e a família quer fazer {festa}.",
+    "resumo": "ganhou uma festa de aniversário",
+    "escolhas": [
+      {
+        "texto": "Convidar a turma toda",
+        "resumo": "chamou a turma toda para o aniversário",
+        "resultado": {
+          "texto": "Teve choro, briga por bexiga e o melhor parabéns da sua vida.",
+          "efeitos": { "felicidade": 4, "amigo.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Pedir só um presente grande",
+        "resumo": "trocou a festa por um presente grande",
+        "resultado": {
+          "texto": "Sem festa, mas com a bicicleta dos sonhos. Você pedalou até o pôr do sol.",
+          "efeitos": { "felicidade": 2, "saude": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pescaria_no_rio",
+    "idade": [5, 12],
+    "condicoes": { "lugar.regiao": "norte", "pai.vivo": true, "semMarcas": ["pai.ausente"] },
+    "texto": "{pai} te chama para pescar no rio antes do sol nascer. A rede está pronta, o café também.",
+    "resumo": "foi pescar no rio com o pai",
+    "escolhas": [
+      {
+        "texto": "Ir pescar",
+        "resumo": "pescou no rio com o pai ao amanhecer",
+        "resultado": {
+          "texto": "Um tucunaré do tamanho do seu braço e uma conversa que vocês nunca tinham tido.",
+          "efeitos": { "pai.vinculo": 6, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Continuar dormindo",
+        "resumo": "preferiu dormir a pescar com o pai",
+        "resultado": {
+          "texto": "{pai} voltou com o peixe e a história. Você ouviu os dois no almoço.",
+          "efeitos": { "saude": 1, "pai.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "feira_de_ciencias",
+    "idade": [8, 12],
+    "texto": "Feira de ciências: a turma vai de vulcão de bicarbonato, como todo ano. Você tem outra ideia, mais difícil.",
+    "resumo": "apresentou um trabalho na feira de ciências",
+    "escolhas": [
+      {
+        "texto": "Arriscar a ideia própria",
+        "resumo": "arriscou uma ideia própria na feira de ciências",
+        "teste": { "atributo": "inteligencia", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "Um sistema de irrigação com garrafa PET. Ganhou o primeiro lugar e uma foto no jornal do bairro.",
+          "efeitos": { "inteligencia": 4, "felicidade": 3, "marcas": ["nerd"] }
+        },
+        "fracasso": {
+          "texto": "Não funcionou na hora. A professora deu nota pela coragem.",
+          "efeitos": { "inteligencia": 2, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer o vulcão",
+        "resumo": "fez o vulcão de bicarbonato como todo mundo",
+        "resultado": {
+          "texto": "O vulcão explodiu na hora certa e sujou a primeira fila. Sucesso garantido.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dente_de_leite",
+    "idade": [5, 8],
+    "trechos": {
+      "pagamento": [
+        { "se": { "classe_origem": { "min": 4 } }, "texto": "cinquenta reais e um bilhete em letra de mãe" },
+        { "texto": "duas moedas de um real" }
+      ]
+    },
+    "texto": "Caiu o primeiro dente de leite. Debaixo do travesseiro, a negociação com a fada do dente começa.",
+    "resumo": "perdeu o primeiro dente de leite",
+    "escolhas": [
+      {
+        "texto": "Deixar o dente",
+        "resumo": "deixou o dente para a fada",
+        "resultado": {
+          "texto": "A fada pagou {pagamento}. Você ficou rico por um dia.",
+          "efeitos": { "dinheiro": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Guardar o dente numa caixinha",
+        "resumo": "guardou o dente de leite numa caixinha",
+        "resultado": {
+          "texto": "Você guardou o dente \"para sempre\". Sumiu numa mudança, como tudo que é para sempre.",
+          "efeitos": { "felicidade": 1, "mae.vinculo": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "catapora",
+    "idade": [3, 9],
+    "texto": "Catapora. Bolinhas no corpo todo, coceira e uma semana inteira sem escola.",
+    "resumo": "teve catapora",
+    "escolhas": [
+      {
+        "texto": "Coçar escondido",
+        "resumo": "coçou a catapora escondido",
+        "resultado": {
+          "texto": "Ficou uma cicatriz na testa, em formato de bolinha. Você ainda olha para ela no espelho.",
+          "efeitos": { "aparencia": -2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Aguentar firme",
+        "resumo": "aguentou a catapora sem coçar",
+        "resultado": {
+          "texto": "Luva de meia, desenho animado e muita força de vontade. Saiu sem nenhuma marca.",
+          "efeitos": { "saude": 1, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "briga_na_cozinha",
+    "idade": [5, 12],
+    "condicoes": { "familia": "conflituosa" },
+    "texto": "Os pais brigam alto na cozinha, de novo. Seu irmão menor chora no quarto, ou é você que está com vontade.",
+    "resumo": "ouviu os pais brigarem",
+    "escolhas": [
+      {
+        "texto": "Aumentar o volume da TV",
+        "resumo": "aumentou a TV para não ouvir a briga dos pais",
+        "resultado": {
+          "texto": "O desenho ficou alto demais. Funcionou mais ou menos.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Entrar na cozinha",
+        "resumo": "entrou na cozinha no meio da briga dos pais",
+        "resultado": {
+          "texto": "Eles pararam na hora. Ninguém explicou nada, mas a noite foi calma.",
+          "efeitos": { "mae.vinculo": 2, "pai.vinculo": 2, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "balcao_da_familia",
+    "idade": [6, 12],
+    "condicoes": { "familia": "empreendedora" },
+    "texto": "No negócio da família, faltou alguém no caixa. {mae} olha para você: \"sabe contar troco?\".",
+    "resumo": "cuidou do caixa do negócio da família",
+    "escolhas": [
+      {
+        "texto": "Assumir o caixa",
+        "resumo": "cuidou do caixa da família ainda criança",
+        "resultado": {
+          "texto": "Você contou o troco certo e ainda vendeu um pacote de bala a mais. Nasceu um comerciante.",
+          "efeitos": { "inteligencia": 2, "dinheiro": 20, "mae.vinculo": 3, "marcas": ["vendedor_nato"] }
+        }
+      },
+      {
+        "texto": "Dizer que tem dever de casa",
+        "resumo": "escapou do caixa da família com a desculpa do dever de casa",
+        "resultado": {
+          "texto": "Você fez o dever de verdade, para não virar mentira. Saiu caprichado.",
+          "efeitos": { "inteligencia": 2, "mae.vinculo": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aula_de_musica",
+    "idade": [7, 12],
+    "texto": "A escola abriu aula de música no contraturno: violão, flauta e um teclado com metade das teclas funcionando.",
+    "resumo": "experimentou aula de música",
+    "escolhas": [
+      {
+        "texto": "Entrar na aula",
+        "resumo": "entrou na aula de música da escola",
+        "resultado": {
+          "texto": "Você aprendeu três acordes e tocou uma música inteira na festa de fim de ano. O auditório aplaudiu de pé.",
+          "efeitos": { "felicidade": 3, "inteligencia": 1, "marcas": ["musico"] }
+        }
+      },
+      {
+        "texto": "Ficar no futebol",
+        "resumo": "preferiu o futebol à aula de música",
+        "resultado": {
+          "texto": "Seu time perdeu, mas você fez o gol de honra.",
+          "efeitos": { "saude": 2, "marcas": ["boleiro"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mudanca_de_escola",
+    "idade": [6, 11],
+    "condicoes": { "classe_origem": { "min": 3 } },
+    "texto": "Os pais querem trocar você de escola: uma mais puxada, longe dos amigos de sempre.",
+    "resumo": "mudou ou não de escola",
+    "escolhas": [
+      {
+        "texto": "Ir para a escola puxada",
+        "resumo": "mudou para uma escola mais puxada",
+        "resultado": {
+          "texto": "Matemática mais difícil, uniforme mais caro e amigos novos que demoraram a chegar.",
+          "efeitos": { "inteligencia": 4, "felicidade": -2, "amigo.vinculo": -6 }
+        }
+      },
+      {
+        "texto": "Implorar para ficar",
+        "resumo": "implorou para ficar na escola dos amigos",
+        "resultado": {
+          "texto": "Funcionou. Você ficou com os amigos e com a sensação de ter ganhado uma guerra.",
+          "efeitos": { "felicidade": 3, "amigo.vinculo": 4 }
+        }
+      }
+    ]
+  }
+]

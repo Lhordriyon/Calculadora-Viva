@@ -1,0 +1,1047 @@
+[
+  {
+    "id": "etiqueta_real",
+    "idade": [4, 8],
+    "condicoes": { "marcas": ["principe"] },
+    "texto": "Aula de etiqueta no Palácio: garfo de peixe, reverência e como acenar sem mexer o cotovelo. Lá fora, o filho do jardineiro chuta uma bola contra o muro.",
+    "resumo": "aprendeu a ser da realeza, do jeito que deu",
+    "escolhas": [
+      {
+        "texto": "Prestar atenção na aula",
+        "resumo": "decorou a etiqueta do Palácio",
+        "resultado": {
+          "texto": "Aos sete, você sabia cumprimentar embaixador em quatro línguas. Aos oito, ainda não sabia andar de bicicleta.",
+          "efeitos": { "inteligencia": 3, "felicidade": -2, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Fugir para jogar bola",
+        "resumo": "fugiu da aula de etiqueta para jogar bola com o filho do jardineiro",
+        "resultado": {
+          "texto": "Dois seguranças, um joelho ralado e o melhor dia da sua infância. A imprensa chamou de \"travessura real\".",
+          "efeitos": { "felicidade": 4, "saude": 1, "eu.fama": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "internato_real",
+    "ator": ["mae", "pai"],
+    "idade": [11, 15],
+    "condicoes": { "marcas": ["principe", "ator.monarca"] },
+    "texto": "O Conselho da Coroa recomenda um internato na Suíça, \"como manda a tradição\". {ator.quem} acha que você deveria estudar aqui, numa escola de verdade.",
+    "resumo": "escolheu onde a realeza estudaria",
+    "escolhas": [
+      {
+        "texto": "Internato na Suíça",
+        "resumo": "foi para um internato na Suíça",
+        "resultado": {
+          "texto": "Neve, latim e colegas que eram herdeiros de outras coisas. Você voltou nas férias falando com sotaque de lugar nenhum.",
+          "efeitos": { "inteligencia": 6, "ator.vinculo": -8, "marcas": ["fala_ingles"] }
+        }
+      },
+      {
+        "texto": "Escola pública, com seguranças",
+        "resumo": "estudou em escola pública, com dois seguranças na porta",
+        "resultado": {
+          "texto": "Merenda, fila e um apelido que nenhum protocolo previa. O povo gostou de ver; você aprendeu a fazer amigos que não se curvam.",
+          "efeitos": { "felicidade": 3, "ator.vinculo": 4, "eu.fama": 4, "marcas": ["realeza_do_povo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "paparazzi_real",
+    "idade": [16, 26],
+    "condicoes": { "algumaMarca": ["principe", "herdeiro_regime"] },
+    "texto": "Uma foto sua numa festa, de madrugada, está na capa de todos os portais. O texto da manchete é pior que a foto.",
+    "resumo": "virou manchete por causa de uma festa",
+    "escolhas": [
+      {
+        "texto": "Assumir com humor",
+        "resumo": "riu da própria manchete em público",
+        "resultado": {
+          "texto": "Você postou a foto com a legenda \"pelo menos o cabelo estava bom\". Metade do país riu junto.",
+          "efeitos": { "felicidade": 2, "eu.fama": 8, "eu.popularidade": 3 }
+        }
+      },
+      {
+        "texto": "Processar os portais",
+        "resumo": "processou os portais que publicaram a foto",
+        "resultado": {
+          "texto": "Os advogados da família ganharam. A foto sumiu e voltou dez vezes mais famosa.",
+          "efeitos": { "dinheiro": -80000, "eu.influencia": 3, "eu.fama": 5 }
+        }
+      },
+      {
+        "texto": "Sumir por uns meses",
+        "resumo": "sumiu dos holofotes por uns meses",
+        "resultado": {
+          "texto": "Uma temporada no campo, sem celular. A manchete passou; a fama de quem se esconde ficou.",
+          "efeitos": { "felicidade": -2, "saude": 2, "eu.fama": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "casamento_real",
+    "idade": [22, 40],
+    "condicoes": { "algumaMarca": ["principe", "monarca"], "semMarcas": ["casado"] },
+    "texto": "Chegou o assunto que o Palácio adia há anos: casamento. Há um nobre estrangeiro de boa família e um acordo comercial esperando a assinatura. E há o seu coração, que não foi consultado.",
+    "resumo": "decidiu com quem a coroa ia se casar",
+    "escolhas": [
+      {
+        "texto": "Aceitar o casamento arranjado",
+        "resumo": "aceitou um casamento arranjado com a nobreza estrangeira",
+        "resultado": {
+          "texto": "Cerimônia na catedral, trezentos convidados e um beijo ensaiado. {amor} é educad{amor:o|a}, distante e ótim{amor:o|a} em jantar de Estado.",
+          "efeitos": {
+            "personagens": ["amor"],
+            "marcas": ["namoro", "casado"],
+            "felicidade": -3,
+            "eu.influencia": 6,
+            "pais.impulso": 0.5
+          }
+        }
+      },
+      {
+        "texto": "Casar por amor",
+        "resumo": "bateu o pé e casou por amor",
+        "condicoes": { "marcas": ["namoro"] },
+        "bloqueio": "precisa de um namoro",
+        "resultado": {
+          "texto": "A família torceu o nariz, o povo amou. O casamento foi menor, e a festa, maior.",
+          "efeitos": { "felicidade": 6, "eu.popularidade": 8, "eu.fama": 6, "marcas": ["casou_por_amor"] }
+        }
+      },
+      {
+        "texto": "Adiar mais uns anos",
+        "resumo": "adiou o casamento real mais uma vez",
+        "resultado": {
+          "texto": "O Conselho anotou o adiamento numa ata que ninguém lê. A imprensa abriu um bolão.",
+          "efeitos": { "felicidade": 1, "eu.influencia": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sucessao_coroa",
+    "ator": ["mae", "pai"],
+    "idade": [18, 99],
+    "condicoes": { "marcas": ["principe", "ator.monarca", "ator.faleceu"] },
+    "tensao": 3,
+    "texto": "{ator.quem} morreu, e o Palácio inteiro espera a sua resposta: a coroa é sua. Lá fora, a multidão; na mesa, o juramento; no peito, a vontade de sair correndo.",
+    "resumo": "decidiu o destino da coroa",
+    "escolhas": [
+      {
+        "texto": "Aceitar a coroa",
+        "resumo": "aceitou a coroa",
+        "resultado": {
+          "texto": "Coroação em rede nacional. Você tropeçou no manto e ninguém teve coragem de rir.",
+          "efeitos": {
+            "marcas": ["monarca"],
+            "removerMarcas": ["principe"],
+            "eu.cargo": { "definir": "rei" },
+            "renda": { "definir": 4000000 },
+            "eu.influencia": 20,
+            "eu.fama": 15,
+            "eu.popularidade": 60
+          }
+        }
+      },
+      {
+        "texto": "Abdicar e viver a sua vida",
+        "resumo": "abdicou do trono para viver a própria vida",
+        "resultado": {
+          "texto": "Você assinou a abdicação e foi tomar um café na padaria. Pela primeira vez, ninguém se curvou. Foi estranho e foi ótimo.",
+          "efeitos": {
+            "marcas": ["abdicou"],
+            "removerMarcas": ["principe"],
+            "felicidade": 8,
+            "eu.influencia": -10,
+            "eu.fama": 10
+          }
+        }
+      },
+      {
+        "texto": "Propor o fim da monarquia",
+        "resumo": "propôs um plebiscito para acabar com a monarquia",
+        "condicoes": { "marcas": ["pais.monarquia"] },
+        "bloqueio": "a monarquia já acabou",
+        "resultado": {
+          "texto": "O país votou pela república, e você virou a pessoa que devolveu o trono. Metade te chama de traidor, metade de herói.",
+          "efeitos": {
+            "marcas": ["abdicou"],
+            "removerMarcas": ["principe", "pais.monarquia"],
+            "felicidade": 4,
+            "eu.fama": 25,
+            "eu.influencia": 5,
+            "pais.impulso": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "assinatura_real",
+    "idade": [18, 99],
+    "condicoes": { "cargo": "rei" },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "O primeiro-ministro traz uma reforma impopular para a sua assinatura: cortar gastos agora para o país crescer depois. Pela Constituição, você pode atrasar tudo por um ano.",
+    "resumo": "decidiu o que assinar como monarca",
+    "escolhas": [
+      {
+        "texto": "Assinar",
+        "resumo": "assinou uma reforma impopular",
+        "resultado": {
+          "texto": "A reforma passou. As manifestações também. Os economistas aplaudiram em inglês.",
+          "efeitos": { "pais.impulso": 1, "eu.popularidade": -8, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Segurar por um ano",
+        "resumo": "segurou uma reforma por um ano",
+        "resultado": {
+          "texto": "Você virou herói de quem perdia com a reforma e vilão de quem ganhava. A economia esperou junto.",
+          "efeitos": { "pais.impulso": -0.5, "eu.popularidade": 6, "eu.influencia": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mordomias_reais",
+    "idade": [18, 99],
+    "condicoes": { "cargo": "rei" },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Vazou a planilha de gastos do Palácio: quarenta mil reais por mês só em flores. A oposição chama de escândalo; o florista, de contrato.",
+    "resumo": "enfrentou o escândalo das mordomias do Palácio",
+    "escolhas": [
+      {
+        "texto": "Cortar as mordomias",
+        "resumo": "cortou as mordomias do Palácio",
+        "resultado": {
+          "texto": "Menos flores, menos jantares, mais aplausos. A sua mesa ficou mais triste e o seu índice de aprovação, mais alegre.",
+          "efeitos": { "renda": -400000, "eu.popularidade": 10, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ignorar",
+        "resumo": "ignorou o escândalo das flores",
+        "resultado": {
+          "texto": "A planilha virou meme e o meme virou bloco de carnaval. Você continua com as flores.",
+          "efeitos": { "eu.popularidade": -10, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Culpar o mordomo",
+        "resumo": "pôs a culpa do escândalo no mordomo",
+        "resultado": {
+          "texto": "O mordomo deu uma entrevista de três horas. Você pediu desculpas em público.",
+          "efeitos": { "eu.popularidade": -4, "eu.fama": 6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "jubileu",
+    "idade": [30, 99],
+    "condicoes": { "marcaHa": [{ "marca": "monarca", "min": 10, "max": 30 }], "cargo": "rei" },
+    "texto": "Dez anos de reinado. O povo quer festa; o tesouro quer economia; você quer as duas coisas e um cochilo.",
+    "resumo": "comemorou os dez anos de reinado",
+    "escolhas": [
+      {
+        "texto": "Festa nacional",
+        "resumo": "deu uma festa nacional pelo jubileu",
+        "resultado": {
+          "texto": "Desfile, fogos e feriado. O país ficou de ressaca e de bom humor.",
+          "efeitos": { "dinheiro": -2000000, "eu.popularidade": 12, "eu.fama": 8, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Doar a festa a hospitais",
+        "resumo": "trocou a festa do jubileu por doações a hospitais",
+        "resultado": {
+          "texto": "Três alas novas com o seu nome. Ninguém dançou, mas muita gente foi atendida.",
+          "efeitos": { "dinheiro": -2000000, "eu.popularidade": 8, "eu.influencia": 4, "marcas": ["filantropo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "infancia_no_palacio",
+    "ator": ["mae", "pai"],
+    "idade": [4, 10],
+    "condicoes": { "marcas": ["herdeiro_regime"] },
+    "texto": "No palácio do Regime há mais guardas do que crianças. Seu aniversário vai ser feriado nacional, e a escola manda a turma inteira desenhar você.",
+    "resumo": "cresceu como herdeiro do Regime",
+    "escolhas": [
+      {
+        "texto": "Gostar da festa",
+        "resumo": "gostou de ter o aniversário como feriado nacional",
+        "resultado": {
+          "texto": "Bolo de seis andares e um desfile só seu. Você aprendeu cedo que todo mundo sorri quando você chega.",
+          "efeitos": { "felicidade": 4, "eu.fama": 5 }
+        }
+      },
+      {
+        "texto": "Perguntar por que todos têm medo",
+        "resumo": "perguntou por que todo mundo tinha medo da sua família",
+        "resultado": {
+          "texto": "{ator.quem} mudou de assunto. A babá chorou no banheiro. Você guardou a pergunta para depois.",
+          "efeitos": { "inteligencia": 3, "felicidade": -2, "marcas": ["herdeiro_humano"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "conta_na_suica",
+    "idade": [18, 35],
+    "condicoes": { "marcas": ["herdeiro_regime"] },
+    "texto": "O tesoureiro do Regime pede uma reunião a portas fechadas e mostra um extrato: uma conta em Genebra, no seu nome, \"para emergências\".",
+    "resumo": "decidiu o que fazer com a conta secreta na Suíça",
+    "escolhas": [
+      {
+        "texto": "Aceitar a conta",
+        "resumo": "aceitou a conta secreta na Suíça",
+        "resultado": {
+          "texto": "Vinte milhões guardados longe daqui. Você dorme melhor. Às vezes, pior.",
+          "efeitos": { "dinheiro": 20000000, "marcas": ["conta_na_suica"], "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou a conta secreta do Regime",
+        "resultado": {
+          "texto": "O tesoureiro guardou o extrato de volta e anotou alguma coisa. Você saiu da sala mais leve e mais vigiado.",
+          "efeitos": { "marcas": ["herdeiro_humano"], "eu.influencia": -5, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sucessao_regime",
+    "ator": ["mae", "pai"],
+    "idade": [18, 99],
+    "condicoes": { "marcas": ["herdeiro_regime", "ator.ditador", "ator.faleceu"] },
+    "tensao": 3,
+    "texto": "{ator.quem} morreu. Os generais esperam na sala ao lado, a TV estatal já preparou o discurso, e o Regime inteiro aguarda: você assume?",
+    "resumo": "decidiu o destino do Regime",
+    "escolhas": [
+      {
+        "texto": "Assumir o Regime",
+        "resumo": "assumiu o comando do Regime",
+        "resultado": {
+          "texto": "Discurso na TV, desfile de tanques e a sua foto em toda repartição do país. A cadeira é confortável e o pescoço, nem tanto.",
+          "efeitos": {
+            "marcas": ["ditador"],
+            "removerMarcas": ["herdeiro_regime"],
+            "eu.cargo": { "definir": "ditador" },
+            "renda": { "definir": 6000000 },
+            "eu.influencia": 30,
+            "eu.fama": 20,
+            "eu.popularidade": 45
+          }
+        }
+      },
+      {
+        "texto": "Convocar eleições livres",
+        "resumo": "convocou eleições livres e encerrou o Regime",
+        "condicoes": { "marcas": ["pais.regime"] },
+        "bloqueio": "o Regime já acabou",
+        "resultado": {
+          "texto": "Primeira eleição livre em décadas. Você votou como todo mundo, na fila, e chorou na urna.",
+          "efeitos": {
+            "marcas": ["redemocratizou"],
+            "removerMarcas": ["herdeiro_regime", "pais.regime"],
+            "felicidade": 6,
+            "eu.fama": 30,
+            "eu.influencia": -5,
+            "pais.impulso": 1
+          }
+        }
+      },
+      {
+        "texto": "Fugir com o dinheiro",
+        "resumo": "fugiu do país com a fortuna do Regime",
+        "condicoes": { "marcas": ["conta_na_suica"] },
+        "bloqueio": "precisa de uma conta fora do país",
+        "resultado": {
+          "texto": "Jato particular de madrugada, uma vila na Riviera e um país inteiro te xingando em rede nacional. O dinheiro veio junto; a paz, não.",
+          "efeitos": {
+            "marcas": ["exilado"],
+            "removerMarcas": ["herdeiro_regime"],
+            "dinheiro": 30000000,
+            "felicidade": -6,
+            "eu.influencia": -30,
+            "eu.fama": 15
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "protesto_na_praca",
+    "idade": [18, 99],
+    "condicoes": { "cargo": "ditador" },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "Cem mil pessoas na praça central pedindo eleições. Os generais querem ordem para dispersar; os seus assessores, um discurso.",
+    "resumo": "enfrentou um protesto na praça",
+    "escolhas": [
+      {
+        "texto": "Mandar dispersar",
+        "resumo": "mandou dispersar um protesto à força",
+        "resultado": {
+          "texto": "A praça esvaziou em uma hora. As fotos correram o mundo em duas. Embaixadas cancelaram visitas.",
+          "efeitos": { "eu.popularidade": -15, "eu.influencia": 5, "felicidade": -4, "marcas": ["repressor"] }
+        }
+      },
+      {
+        "texto": "Negociar com os líderes",
+        "resumo": "negociou com os líderes de um protesto",
+        "resultado": {
+          "texto": "Você prometeu reformas e cumpriu metade. Na praça, chamaram de vitória; nos quartéis, de fraqueza.",
+          "efeitos": { "eu.popularidade": 8, "eu.influencia": -5 }
+        }
+      },
+      {
+        "texto": "Abrir o Regime",
+        "resumo": "anunciou a abertura do Regime",
+        "resultado": {
+          "texto": "Imprensa livre, presos soltos e eleição marcada. Os generais se reuniram sem você pela primeira vez.",
+          "efeitos": { "eu.popularidade": 18, "eu.influencia": -15, "felicidade": 4, "pais.impulso": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "general_ambicioso",
+    "idade": [18, 99],
+    "condicoes": { "cargo": "ditador" },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Um general cada vez mais popular nos quartéis passou a dar entrevista sem pedir permissão. Os serviços secretos dizem que ele conversa com embaixadas.",
+    "resumo": "lidou com um general ambicioso",
+    "escolhas": [
+      {
+        "texto": "Promovê-lo para longe",
+        "resumo": "promoveu um general ambicioso para uma embaixada distante",
+        "resultado": {
+          "texto": "Ele virou embaixador num país gelado. Mandou um cartão de Natal com uma ameaça educada.",
+          "efeitos": { "eu.influencia": -4, "dinheiro": -500000 }
+        }
+      },
+      {
+        "texto": "Mandar prender",
+        "resumo": "mandou prender um general ambicioso",
+        "teste": { "chance": 0.65 },
+        "sucesso": {
+          "texto": "Prisão de madrugada, sem tiro. O Regime ficou mais calado e mais seu.",
+          "efeitos": { "eu.influencia": 10, "eu.popularidade": -6, "marcas": ["repressor"] }
+        },
+        "fracasso": {
+          "texto": "Ele soube antes. Os tanques foram para a rua, mas não para o lado que você queria.",
+          "efeitos": { "morte": "num golpe de madrugada, cercado por quem jurava lealdade" }
+        }
+      }
+    ]
+  },
+  {
+    "id": "eleicao_de_fachada",
+    "idade": [18, 99],
+    "condicoes": { "cargo": "ditador" },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Ano de \"eleição\". O comitê já imprimiu as cédulas com um nome só, e a TV estatal pergunta se pode anunciar noventa e oito por cento.",
+    "resumo": "decidiu como seria a eleição do Regime",
+    "escolhas": [
+      {
+        "texto": "Noventa e oito por cento",
+        "resumo": "venceu uma eleição de fachada com 98% dos votos",
+        "resultado": {
+          "texto": "Vitória esmagadora e ninguém acreditou, nem você. A comemoração teve mais soldados que eleitores.",
+          "efeitos": { "eu.popularidade": -6, "eu.fama": 8, "eu.influencia": 3 }
+        }
+      },
+      {
+        "texto": "Eleição de verdade",
+        "resumo": "arriscou uma eleição de verdade",
+        "teste": { "atributo": "popularidade", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Você ganhou de verdade, por pouco. O mundo inteiro mandou parabéns, e desta vez valia.",
+          "efeitos": { "eu.popularidade": 20, "felicidade": 6, "removerMarcas": ["pais.regime"] }
+        },
+        "fracasso": {
+          "texto": "Você perdeu. Entregou a faixa ao vencedor na TV. Foi o dia mais humilhante e mais digno da sua vida.",
+          "efeitos": {
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "marcas": ["ex_ditador"],
+            "removerMarcas": ["ditador", "pais.regime"],
+            "felicidade": -4,
+            "eu.influencia": -20
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "set_de_gravacao",
+    "ator": ["mae", "pai"],
+    "idade": [5, 11],
+    "condicoes": { "marcas": ["filho_de_famoso", "ator.famoso"] },
+    "texto": "{ator.quem} te leva ao set da novela. Tem maquiagem, câmera, gente famosa pedindo café e um diretor que precisa de uma criança para uma cena de dez segundos.",
+    "resumo": "foi ao set de gravação da novela",
+    "escolhas": [
+      {
+        "texto": "Fazer a cena",
+        "resumo": "fez uma ponta na novela ainda criança",
+        "resultado": {
+          "texto": "Dez segundos de tela e uma fala: \"mãe, cadê o cachorro?\". O país inteiro achou fofo.",
+          "efeitos": { "eu.fama": 8, "aparencia": 2, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Ficar no camarim desenhando",
+        "resumo": "preferiu desenhar no camarim a aparecer na novela",
+        "resultado": {
+          "texto": "Você desenhou o elenco inteiro. Um ator famoso pendurou o desenho no camarim dele.",
+          "efeitos": { "inteligencia": 2, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "teste_por_indicacao",
+    "idade": [16, 24],
+    "condicoes": { "marcas": ["filho_de_famoso"], "carreira": "" },
+    "texto": "Uma diretora de elenco liga: tem um papel na próxima novela, e o seu sobrenome ajuda muito. Os colegas de teatro que fazem teste há anos ficaram sabendo.",
+    "resumo": "decidiu se aceitava um papel por indicação",
+    "escolhas": [
+      {
+        "texto": "Aceitar o papel",
+        "resumo": "aceitou um papel na novela por indicação",
+        "resultado": {
+          "texto": "Você estreou na novela das sete. A crítica chamou de \"nepotismo com bom timing\". O público gostou.",
+          "efeitos": {
+            "eu.carreira": { "definir": "ator" },
+            "eu.nivel": { "definir": 1 },
+            "eu.setor": { "definir": "cultura" },
+            "renda": { "definir": 90000 },
+            "eu.fama": 12,
+            "marcas": ["nepotismo"]
+          }
+        }
+      },
+      {
+        "texto": "Fazer teste como todo mundo",
+        "resumo": "fez teste para a novela como todo mundo",
+        "teste": { "atributo": "aparencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Você passou no teste sem dizer o sobrenome. Quando descobriram, já era tarde para chamar de indicação.",
+          "efeitos": {
+            "eu.carreira": { "definir": "ator" },
+            "eu.nivel": { "definir": 1 },
+            "eu.setor": { "definir": "cultura" },
+            "renda": { "definir": 90000 },
+            "eu.fama": 8,
+            "felicidade": 5
+          }
+        },
+        "fracasso": { "texto": "Não passou. Doeu, mas foi seu.", "efeitos": { "felicidade": -3, "inteligencia": 2 } }
+      },
+      {
+        "texto": "Recusar a carreira artística",
+        "resumo": "recusou seguir a carreira artística da família",
+        "resultado": {
+          "texto": "Você quis ser outra coisa. A família não entendeu; a terapeuta, sim.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bola_autografada",
+    "ator": ["mae", "pai"],
+    "idade": [5, 9],
+    "condicoes": { "marcas": ["filho_de_craque", "ator.craque"] },
+    "texto": "{ator.quem} chega com uma bola autografada pela seleção inteira e um plano: escolinha de futebol todo sábado, \"porque está no sangue\".",
+    "resumo": "ganhou uma bola autografada pela seleção",
+    "escolhas": [
+      {
+        "texto": "Topar a escolinha",
+        "resumo": "entrou na escolinha de futebol por causa da família",
+        "resultado": {
+          "texto": "Você corria mais do que chutava, mas corria muito. O técnico disse que \"tem coisa aí\".",
+          "efeitos": { "saude": 3, "marcas": ["boleiro"], "ator.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Guardar a bola na estante",
+        "resumo": "deixou a bola autografada na estante",
+        "resultado": {
+          "texto": "A bola virou peça de museu no seu quarto. {ator.quem} ficou chateado e depois entendeu.",
+          "efeitos": { "inteligencia": 2, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peneira_do_sobrenome",
+    "idade": [13, 17],
+    "condicoes": { "marcas": ["filho_de_craque"] },
+    "texto": "Peneira no clube grande. O olheiro reconhece o seu sobrenome e sorri: \"a vaga é sua se você quiser\". No campo, quarenta meninos esperam a vez.",
+    "resumo": "decidiu como entrar na base do clube",
+    "escolhas": [
+      {
+        "texto": "Aceitar a vaga",
+        "resumo": "entrou na base do clube grande pelo sobrenome",
+        "resultado": {
+          "texto": "Você entrou na base. No vestiário, te chamaram pelo sobrenome do seu pai durante dois anos.",
+          "efeitos": { "marcas": ["base_clube", "nepotismo"], "eu.fama": 4, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer a peneira",
+        "resumo": "fez a peneira como os outros meninos",
+        "teste": { "atributo": "saude", "dificuldade": 72 },
+        "sucesso": {
+          "texto": "Você fez dois gols e uma assistência. A vaga veio, e veio sua.",
+          "efeitos": { "marcas": ["base_clube"], "felicidade": 6, "saude": 2 }
+        },
+        "fracasso": {
+          "texto": "Você não passou. O olheiro ainda ofereceu a vaga. Você recusou.",
+          "efeitos": { "felicidade": -4, "marcas": ["boleiro"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "foto_de_campanha",
+    "ator": ["mae", "pai"],
+    "idade": [8, 15],
+    "condicoes": { "marcas": ["filho_de_politico", "ator.politico_da_familia"] },
+    "texto": "{ator.quem} está em campanha e precisa de uma foto em família para o santinho. A assessora já escolheu a sua roupa e o seu sorriso.",
+    "resumo": "posou para a campanha da família",
+    "escolhas": [
+      {
+        "texto": "Sorrir para a foto",
+        "resumo": "sorriu no santinho de campanha da família",
+        "resultado": {
+          "texto": "Seu rosto ficou em cem mil santinhos. Na escola, colaram um na sua carteira.",
+          "efeitos": { "eu.fama": 4, "eu.influencia": 2, "ator.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Fazer careta",
+        "resumo": "fez careta no santinho de campanha",
+        "resultado": {
+          "texto": "A careta saiu na versão final. Virou o santinho mais famoso da eleição.",
+          "efeitos": { "eu.fama": 7, "felicidade": 2, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cargo_no_gabinete",
+    "idade": [18, 30],
+    "condicoes": { "marcas": ["filho_de_politico"] },
+    "texto": "Tem uma vaga de assessor no gabinete de um aliado da família. Salário bom, ponto flexível e ninguém pergunta o que você faz.",
+    "resumo": "decidiu sobre um cargo no gabinete",
+    "escolhas": [
+      {
+        "texto": "Aceitar o cargo",
+        "resumo": "aceitou um cargo de assessor no gabinete",
+        "resultado": {
+          "texto": "Você aparecia às terças. O contracheque aparecia todo mês.",
+          "efeitos": {
+            "renda": 96000,
+            "eu.setor": { "definir": "publico" },
+            "eu.influencia": 5,
+            "marcas": ["nomeado"],
+            "agendar": [{ "evento": "operacao_no_gabinete", "em": [3, 8] }]
+          }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou um cargo no gabinete",
+        "resultado": {
+          "texto": "Você disse não. Um primo disse sim no dia seguinte.",
+          "efeitos": { "felicidade": 2, "eu.influencia": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "operacao_no_gabinete",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["nomeado"] },
+    "texto": "Seis da manhã, campainha, colete da polícia: operação no gabinete onde você é assessor. Querem saber por que tanta gente recebia sem trabalhar.",
+    "resumo": "foi alvo de uma operação no gabinete",
+    "escolhas": [
+      {
+        "texto": "Colaborar com a investigação",
+        "resumo": "colaborou com a investigação do gabinete",
+        "resultado": {
+          "texto": "Você contou o que sabia. Perdeu o cargo, ganhou um inimigo por andar e dormiu tranquilo.",
+          "efeitos": { "renda": -96000, "eu.influencia": -6, "removerMarcas": ["nomeado"], "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Chamar os advogados da família",
+        "resumo": "chamou os advogados da família contra a operação",
+        "resultado": {
+          "texto": "Os advogados resolveram em três meses e trezentos mil reais. Seu nome saiu no jornal mesmo assim.",
+          "efeitos": { "dinheiro": -300000, "eu.fama": 5, "removerMarcas": ["nomeado"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "trator_aos_dez",
+    "ator": ["mae", "pai"],
+    "idade": [8, 13],
+    "condicoes": { "marcas": ["filho_do_agro", "ator.fazendeiro"] },
+    "texto": "{ator.quem} deixa você dirigir o trator na estrada da fazenda. Os peões apostam quanto tempo você leva para atolar.",
+    "resumo": "dirigiu um trator na fazenda da família",
+    "escolhas": [
+      {
+        "texto": "Acelerar",
+        "resumo": "acelerou o trator da família aos dez anos",
+        "resultado": {
+          "texto": "Você atolou em sete minutos, um recorde. Os peões pagaram as apostas em pastel.",
+          "efeitos": { "felicidade": 4, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Pedir para ver os números",
+        "resumo": "quis entender as contas da fazenda",
+        "resultado": {
+          "texto": "{ator.quem} te mostrou o caderno da safra. Você entendeu metade e perguntou sobre a outra.",
+          "efeitos": { "inteligencia": 4, "ator.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "assumir_a_fazenda",
+    "ator": ["mae", "pai"],
+    "idade": [20, 40],
+    "condicoes": { "marcas": ["filho_do_agro", "ator.fazendeiro"], "empresa.valor": false },
+    "texto": "{ator.quem} está cansado de previsão do tempo e quer passar a fazenda adiante: \"ou você assume, ou eu vendo para o vizinho\".",
+    "resumo": "decidiu se assumia a fazenda da família",
+    "escolhas": [
+      {
+        "texto": "Assumir a fazenda",
+        "resumo": "assumiu a fazenda da família",
+        "resultado": {
+          "texto": "Botina, caminhonete e reunião com cooperativa às cinco da manhã. A {empresa} agora é sua.",
+          "efeitos": {
+            "abrirEmpresa": { "setor": "agro", "de": "ator", "fracao": 0.4 },
+            "marcas": ["herdeiro_negocio"],
+            "eu.setor": { "definir": "agro" },
+            "ator.vinculo": 6
+          }
+        }
+      },
+      {
+        "texto": "Deixar vender",
+        "resumo": "deixou a família vender a fazenda",
+        "resultado": {
+          "texto": "O vizinho pagou bem. {ator.quem} foi morar na praia e nunca mais falou de chuva.",
+          "efeitos": { "felicidade": 2, "ator.dinheiro": 2000000, "ator.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "picadeiro",
+    "ator": ["mae", "pai"],
+    "idade": [5, 10],
+    "condicoes": { "marcas": ["filho_do_circo", "ator.artista_de_circo"] },
+    "texto": "Hoje é a sua estreia no picadeiro. {ator.quem} ensaiou o número com você a semana inteira: entrar, cair de propósito, levantar sorrindo.",
+    "resumo": "estreou no picadeiro do circo",
+    "escolhas": [
+      {
+        "texto": "Fazer o número",
+        "resumo": "estreou no picadeiro ainda criança",
+        "resultado": {
+          "texto": "Você caiu de verdade, levantou de verdade e a plateia riu de verdade. Foi o melhor aplauso da sua vida.",
+          "efeitos": { "felicidade": 5, "eu.fama": 3, "aparencia": 1, "ator.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Ficar na bilheteria",
+        "resumo": "preferiu cuidar da bilheteria do circo",
+        "resultado": {
+          "texto": "Você contou o troco melhor que o gerente. {ator.quem} ficou orgulhoso de um jeito diferente.",
+          "efeitos": { "inteligencia": 3, "ator.vinculo": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "circo_vai_embora",
+    "idade": [13, 17],
+    "condicoes": { "marcas": ["filho_do_circo"] },
+    "texto": "O circo vai para outro estado. Você está no meio do ano letivo, com amigos, uma paixão e uma vaga no time da escola. Uma tia da cidade oferece o quarto dos fundos.",
+    "resumo": "decidiu se seguia com o circo",
+    "escolhas": [
+      {
+        "texto": "Seguir com o circo",
+        "resumo": "seguiu com o circo para outro estado",
+        "resultado": {
+          "texto": "Mais uma cidade, mais uma escola, mais um adeus. O picadeiro é a única casa que nunca muda.",
+          "efeitos": { "felicidade": -2, "eu.fama": 2 }
+        }
+      },
+      {
+        "texto": "Ficar com a tia",
+        "resumo": "ficou na cidade com a tia e deixou o circo",
+        "resultado": {
+          "texto": "Você terminou o ano letivo. Ver o circo ir embora pela janela foi a primeira saudade grande.",
+          "efeitos": { "inteligencia": 4, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tradutor_da_familia",
+    "ator": ["mae", "pai"],
+    "idade": [6, 11],
+    "condicoes": { "marcas": ["filho_de_imigrantes", "ator.imigrante"] },
+    "texto": "No posto de saúde, a atendente fala rápido e {ator.quem} não entende. Todo mundo olha para você, que fala português melhor do que a família inteira.",
+    "resumo": "traduziu para a família no posto de saúde",
+    "escolhas": [
+      {
+        "texto": "Traduzir tudo",
+        "resumo": "virou o tradutor da família aos oito anos",
+        "resultado": {
+          "texto": "Você traduziu a consulta, a receita e a bula. Aprendeu palavras de adulto cedo demais.",
+          "efeitos": { "inteligencia": 4, "ator.vinculo": 5, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pedir para falarem devagar",
+        "resumo": "pediu à atendente que falasse devagar com a família",
+        "resultado": {
+          "texto": "A atendente sorriu, falou devagar e {ator.quem} entendeu sozinh{ator:o|a}. Foi uma vitória pequena e enorme.",
+          "efeitos": { "ator.vinculo": 3, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "naturalizacao",
+    "idade": [16, 30],
+    "condicoes": { "marcas": ["filho_de_imigrantes"] },
+    "texto": "Os papéis da naturalização dos seus pais finalmente saíram. A cerimônia é sexta-feira, com hino e bandeira, e a família quer você lá de roupa nova.",
+    "resumo": "acompanhou a naturalização da família",
+    "escolhas": [
+      {
+        "texto": "Ir à cerimônia",
+        "resumo": "foi à cerimônia de naturalização dos pais",
+        "resultado": {
+          "texto": "Seus pais cantaram o hino errado e com mais vontade do que qualquer um na sala.",
+          "efeitos": { "felicidade": 5, "mae.vinculo": 4, "pai.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Trabalhar no dia",
+        "resumo": "trabalhou no dia da naturalização dos pais",
+        "resultado": {
+          "texto": "Você mandou mensagem e uma foto da carteira de trabalho. A família guardou um lugar vazio na foto oficial.",
+          "efeitos": { "dinheiro": 400, "mae.vinculo": -4, "pai.vinculo": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mais_uma_mudanca",
+    "ator": ["mae", "pai"],
+    "idade": [6, 13],
+    "condicoes": { "marcas": ["filho_de_militar", "ator.militar_da_familia"] },
+    "texto": "Terceira transferência em seis anos. {ator.quem} chega com a notícia e as caixas: outra cidade, outra escola, outros amigos.",
+    "resumo": "mudou de cidade mais uma vez por causa da carreira militar da família",
+    "escolhas": [
+      {
+        "texto": "Encarar como aventura",
+        "resumo": "encarou mais uma mudança como aventura",
+        "resultado": {
+          "texto": "Você aprendeu a fazer amigos em uma semana e a esquecê-los em um mês.",
+          "efeitos": { "felicidade": 1, "aparencia": 1, "amigo.vinculo": -10 }
+        }
+      },
+      {
+        "texto": "Protestar",
+        "resumo": "protestou contra mais uma mudança",
+        "resultado": {
+          "texto": "Você fez greve de fome até o jantar. {ator.quem} prometeu que seria a última. Não foi.",
+          "efeitos": { "felicidade": -3, "ator.vinculo": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escola_militar",
+    "idade": [16, 18],
+    "condicoes": { "marcas": ["filho_de_militar"] },
+    "texto": "A família espera que você preste a escola militar, \"como todo mundo nesta casa\". Seu professor de física acha que você deveria fazer engenharia.",
+    "resumo": "escolheu entre a escola militar e a faculdade",
+    "escolhas": [
+      {
+        "texto": "Prestar a escola militar",
+        "resumo": "prestou a escola militar",
+        "resultado": {
+          "texto": "Cabelo raspado, farda e alvorada às cinco. Você é bom nisso, e isso assusta um pouco.",
+          "efeitos": {
+            "saude": 4,
+            "eu.influencia": 2,
+            "eu.carreira": { "definir": "militar" },
+            "eu.nivel": { "definir": 0 },
+            "eu.setor": { "definir": "publico" },
+            "renda": { "definir": 30000 },
+            "marcas": ["servidor"]
+          }
+        }
+      },
+      {
+        "texto": "Seguir para a faculdade",
+        "resumo": "escolheu a faculdade em vez da escola militar",
+        "resultado": {
+          "texto": "O almoço de domingo ficou em silêncio por um mês. Depois, voltou ao normal com menos assunto.",
+          "efeitos": { "inteligencia": 3, "felicidade": 2, "mae.vinculo": -3, "pai.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "anos_depois_do_poder",
+    "idade": [25, 99],
+    "condicoes": { "algumaMarca": ["abdicou", "redemocratizou", "exilado", "ex_ditador"] },
+    "texto": "Anos depois, um documentário sobre a sua família estreia num canal de streaming. Pedem uma entrevista: você conta a sua versão ou deixa os outros contarem?",
+    "resumo": "contou a própria versão da história da família",
+    "escolhas": [
+      {
+        "texto": "Dar a entrevista",
+        "resumo": "deu uma entrevista sobre o passado da família",
+        "resultado": {
+          "texto": "Três horas de gravação, vinte minutos no ar. O país viu uma pessoa, não um título.",
+          "efeitos": { "eu.fama": 10, "felicidade": 3, "eu.influencia": 3 }
+        }
+      },
+      {
+        "texto": "Ficar em silêncio",
+        "resumo": "ficou em silêncio sobre o passado da família",
+        "resultado": {
+          "texto": "O documentário saiu sem você. A versão dos outros ficou sendo a oficial.",
+          "efeitos": { "felicidade": -1, "eu.fama": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tribunal_internacional",
+    "idade": [25, 99],
+    "condicoes": { "algumaMarca": ["repressor", "exilado", "ditador"] },
+    "texto": "Um tribunal internacional abriu processo pelos anos do Regime: as prisões, os protestos dispersados à força, as contas lá fora. Seus advogados falam em extradição; os antigos aliados não atendem mais o telefone.",
+    "resumo": "foi processado por um tribunal internacional",
+    "escolhas": [
+      {
+        "texto": "Pagar os melhores advogados",
+        "resumo": "pagou advogados caros contra um tribunal internacional",
+        "resultado": {
+          "texto": "O processo se arrastou por anos e milhões. Você não foi preso; também não foi esquecido.",
+          "efeitos": { "dinheiro": -5000000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Pedir perdão em público",
+        "resumo": "pediu perdão em público pelos anos de repressão",
+        "resultado": {
+          "texto": "Ninguém esperava. Parte das famílias aceitou; parte, não. O processo seguiu, mais leve.",
+          "efeitos": { "felicidade": 2, "eu.fama": 8, "eu.popularidade": 6, "removerMarcas": ["repressor"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "conselho_dos_generais",
+    "idade": [18, 99],
+    "condicoes": { "marcas": ["ditador"], "cargo": "ditador" },
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "Reunião anual do Conselho dos Generais. Todos sorriem, todos aplaudem e todos querem orçamento. Um deles pede aumento de soldo \"para manter o moral\".",
+    "resumo": "negociou com os generais do Regime",
+    "escolhas": [
+      {
+        "texto": "Dar o aumento",
+        "resumo": "deu aumento aos generais",
+        "resultado": {
+          "texto": "Aplausos de pé. O tesouro chorou; os quartéis, não.",
+          "efeitos": { "pais.inflacao": 2, "eu.influencia": 5, "eu.popularidade": -4 }
+        }
+      },
+      {
+        "texto": "Negar",
+        "resumo": "negou aumento aos generais",
+        "resultado": {
+          "texto": "Silêncio na sala. A partir daquela noite, você passou a dormir em quartos diferentes.",
+          "efeitos": { "eu.influencia": -5, "eu.popularidade": 4, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "acusado_de_nepotismo",
+    "idade": [18, 60],
+    "condicoes": { "marcas": ["nepotismo"], "fama": { "min": 15 } },
+    "texto": "Uma reportagem lista todos os papéis, vagas e contratos que você conseguiu por causa do sobrenome. A hashtag está em primeiro lugar.",
+    "resumo": "foi acusado de nepotismo",
+    "escolhas": [
+      {
+        "texto": "Admitir e brincar",
+        "resumo": "admitiu o nepotismo e fez piada",
+        "resultado": {
+          "texto": "\"Culpado: nasci assim.\" O vídeo passou de dez milhões de views. Metade riu, metade bloqueou.",
+          "efeitos": { "eu.fama": 8, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Provar que trabalha",
+        "resumo": "trabalhou o dobro para provar que merecia",
+        "resultado": {
+          "texto": "Um ano sem folga e com a melhor fase da carreira. A hashtag morreu; o cansaço ficou.",
+          "efeitos": { "saude": -3, "eu.nivel": 1, "removerMarcas": ["nepotismo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vida_depois_da_coroa",
+    "idade": [25, 80],
+    "condicoes": { "marcas": ["abdicou"], "semMarcas": ["monarca"] },
+    "texto": "Sem coroa, você descobre coisas que todo mundo já sabia: fila de banco, preço de pão, sogra que opina. Um velho amigo do Palácio liga oferecendo uma volta \"por baixo dos panos\".",
+    "resumo": "viveu a vida sem a coroa",
+    "escolhas": [
+      {
+        "texto": "Recusar e seguir comum",
+        "resumo": "recusou voltar ao Palácio",
+        "resultado": { "texto": "Você desligou e foi buscar o pão. Estava quente.", "efeitos": { "felicidade": 4 } }
+      },
+      {
+        "texto": "Virar embaixador da Coroa",
+        "resumo": "aceitou ser embaixador da Coroa no exterior",
+        "resultado": {
+          "texto": "Jantares, viagens e um título novo, sem trono. É quase a mesma coisa, com menos culpa.",
+          "efeitos": { "eu.influencia": 8, "dinheiro": 400000, "felicidade": -1 }
+        }
+      }
+    ]
+  }
+]

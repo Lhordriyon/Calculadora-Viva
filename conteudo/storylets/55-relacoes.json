@@ -533,7 +533,8 @@
           "efeitos": { "ator.vinculo": -7 }
         }
       }
-    ]
+    ],
+    "peso": 4
   },
   {
     "id": "filho_primeiro_salario",
