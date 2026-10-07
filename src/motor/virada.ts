@@ -6,7 +6,7 @@
  * do mundo (o pai que perdeu o emprego, a avó que morreu).
  */
 import { patrimonioTotal } from './campos.ts';
-import { herdeiroPossivel } from './herdeiro.ts';
+import { herdeiroPossivel, type Parentesco } from './herdeiro.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
@@ -163,7 +163,7 @@ export interface ResumoVida {
   geracao: number;
   antepassados: Antepassado[];
   /** Quem pode continuar a história (filho ou filha viva; sem filho, sobrinho ou sobrinha), com a idade de agora. */
-  herdeiro: { nome: string; idade: number; genero: Genero; parentesco: 'filho' | 'sobrinho' } | null;
+  herdeiro: { nome: string; idade: number; genero: Genero; parentesco: Parentesco } | null;
 }
 
 /** "família pobre e acolhedora", "classe média, família religiosa". */

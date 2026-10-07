@@ -7,7 +7,7 @@ import { ATIVOS, CLASSES, ENTIDADES } from './constantes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
-export type Sistema = 'corpo' | 'humor' | 'mente' | 'dinheiro' | 'relacoes' | 'carreira' | 'carater' | 'origem' | 'mundo' | 'historia';
+export type Sistema = 'corpo' | 'humor' | 'mente' | 'dinheiro' | 'relacoes' | 'carreira' | 'carater' | 'origem' | 'mundo' | 'poder' | 'historia';
 
 export interface DefCampo {
   tipo: 'num' | 'texto' | 'bool';
@@ -44,6 +44,20 @@ const PESSOA: Record<string, DefCampo> = {
   renda: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   custo: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   ocupacao: { tipo: 'texto', sistema: 'carreira' },
+  /** Profissão escolhida na folha Carreira (id de mundo.json › carreiras) e o cargo nela (0 = o primeiro). */
+  carreira: { tipo: 'texto', sistema: 'carreira' },
+  nivel: { tipo: 'num', sistema: 'carreira', limites: [0, 5] },
+  /** Quanto o mundo escuta você (0 a 100): dinheiro, cargo, fama, bens e mídia. Decide eleições e portas que se abrem. */
+  influencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
+  /** Quanto gente que você não conhece sabe quem você é (0 a 100). */
+  fama: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
+  /** Aprovação de quem governa (0 a 100); abaixo de 20 o cargo balança. */
+  popularidade: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
+  /** Cargo de poder (id de mundo.json › cargos: vereador, prefeito, presidente, rei, ditador…) e anos de mandato que faltam. */
+  cargo: { tipo: 'texto', sistema: 'poder' },
+  mandato: { tipo: 'num', sistema: 'poder', limites: [0, 8] },
+  /** Para quem vai tudo quando quem joga morrer ('' = a lei: filho, senão sobrinho; amor, amigo, causa, pet). */
+  testamento: { tipo: 'texto', sistema: 'historia' },
   /** Setor da economia em que a pessoa trabalha (id de mundo.json › setores). */
   setor: { tipo: 'texto', sistema: 'carreira' },
   /** Área da faculdade (saude, tecnologia, educacao, negocios, engenharia, artes). */
@@ -86,6 +100,20 @@ const PAIS: Record<string, DefCampo> = {
   ret_fii: { tipo: 'num', sistema: 'mundo' },
   ret_dolar: { tipo: 'num', sistema: 'mundo' },
   ret_cripto: { tipo: 'num', sistema: 'mundo' },
+  /** Empurrão de quem governa na economia (−3 a 3): decretos que aquecem ou esfriam o ciclo. Some com o tempo. */
+  impulso: { tipo: 'num', sistema: 'mundo', limites: [-3, 3] },
+};
+
+/** Um bem de quem joga (bem1, bem2…): imóvel, veículo, luxo, mídia. */
+const BEM: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  /** Id em mundo.json › bens. */
+  item: { tipo: 'texto', sistema: 'dinheiro' },
+  valor: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** O que falta pagar do financiamento. */
+  financiado: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** Quanto morar aqui tirou do custo de vida (volta quando sai). */
+  economia: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
 };
 
 const EMPRESA: Record<string, DefCampo> = {
@@ -112,6 +140,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent === 'lugar') return LUGAR;
   if (ent === 'pais') return PAIS;
   if (ent === 'empresa') return EMPRESA;
+  if (ent.startsWith('bem')) return BEM;
   return PESSOA;
 }
 
@@ -165,9 +194,21 @@ export function parteNaEmpresa(e: EstadoVida): number {
   return Math.max(0, emp.n['valor'] ?? 0) * (emp.n['participacao'] ?? 1);
 }
 
-/** Patrimônio de quem joga: o de fora mais a parte na empresa. */
+/** Os bens de quem joga (imóveis, veículos, luxo), na ordem da compra. */
+export function bensDe(e: EstadoVida): Entidade[] {
+  return Object.values(e.entidades).filter((x) => x.tipo === 'bem' && x.vivo !== false);
+}
+
+/** O que os bens valem, menos o que falta pagar deles. */
+export function valorDosBens(e: EstadoVida): number {
+  let total = 0;
+  for (const b of bensDe(e)) total += (b.n['valor'] ?? 0) - (b.n['financiado'] ?? 0);
+  return total;
+}
+
+/** Patrimônio de quem joga: o de fora, a parte na empresa e os bens. */
 export function patrimonioTotal(e: EstadoVida): number {
-  return patrimonioDe(e.entidades['eu']!) + parteNaEmpresa(e);
+  return patrimonioDe(e.entidades['eu']!) + parteNaEmpresa(e) + valorDosBens(e);
 }
 
 /** Gente trabalhando numa empresa deste valor (uma pessoa a cada R$ 150 mil, pelo menos uma). */

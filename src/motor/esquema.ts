@@ -514,6 +514,107 @@ export const TracoJogador = z.strictObject({
 });
 export type TracoJogador = z.infer<typeof TracoJogador>;
 
+/** Texto com forma masculina e feminina separadas por "|" ("médico|médica"); sem "|", vale para os dois. */
+const TextoGenero = z.string().min(2);
+
+/** Um bem que se compra pela folha Dinheiro: imóvel, veículo, luxo, mídia. */
+export const DefBem = z.strictObject({
+  id,
+  nome: z.string(),
+  categoria: z.enum(['moradia', 'imovel', 'lazer', 'veiculo', 'luxo', 'midia']),
+  /** Preço em reais de hoje. */
+  preco: z.number().positive(),
+  /** Fração do valor gasta por ano (condomínio, IPTU, seguro, combustível, tripulação). */
+  manutencao: z.number().min(0).max(0.5),
+  /** Quanto o valor anda por ano, fora o mercado: carro perde, arte ganha. */
+  valorizacao: z.number().min(-0.5).max(0.5),
+  /** Sorte e azar no valor, por ano. */
+  desvio: z.number().min(0).max(1).optional(),
+  /** Fração do valor que rende por ano se alugar (ou que produz, na fazenda). */
+  aluguel: z.number().min(0).max(0.3).optional(),
+  /** Felicidade por ano para quem tem (a moradia só conta onde se mora). */
+  conforto: z.number().min(0).max(15),
+  /** Influência que dá. */
+  status: z.number().min(0).max(30),
+  /** Qualidade que quem tem ganha (o conteúdo lê). */
+  marca: id,
+  /** Idade mínima para comprar. */
+  idade: z.number().int().min(0).max(100).optional(),
+  /** Dá para financiar 80% (imóveis). */
+  financiavel: z.boolean().optional(),
+  /** Palavra feminina ("a casa", "uma fazenda"). */
+  feminino: z.boolean().optional(),
+  descricao: z.string(),
+});
+export type DefBem = z.infer<typeof DefBem>;
+
+/** Uma profissão que se tenta pela folha Carreira: requisitos, salário por cargo, chance de subir, fama. */
+export const DefCarreira = z.strictObject({
+  id,
+  nome: TextoGenero,
+  setor: id,
+  requisitos: Condicoes.optional(),
+  /** O requisito como a interface mostra ("faculdade de saúde"). */
+  exige: z.string(),
+  /** Chance base de passar na seleção. */
+  chance: z.number().min(0.01).max(1),
+  /** Atributo que mais ajuda a entrar e a subir. */
+  talento: z.enum(['inteligencia', 'aparencia', 'saude']),
+  /** Salário anual no primeiro e no último cargo (reais de hoje). */
+  salario: Intervalo,
+  cargos: z.array(TextoGenero).min(2).max(6),
+  /** Chance anual de subir de cargo (antes do talento). */
+  promocao: z.number().min(0).max(1),
+  /** Fama no último cargo (0 a 100). */
+  fama: z.number().min(0).max(100).optional(),
+  /** Concurso: estável, sem demissão. */
+  estavel: z.boolean().optional(),
+  idade: Intervalo.optional(),
+  /** Idade em que a carreira acaba sozinha (atleta, modelo). */
+  fim: z.number().int().optional(),
+});
+export type DefCarreira = z.infer<typeof DefCarreira>;
+
+/** Um cargo de poder: eletivo (municipal ou geral) ou vitalício (coroa, regime). */
+export const DefCargo = z.strictObject({
+  id,
+  nome: TextoGenero,
+  esfera: z.enum(['municipal', 'geral', 'vitalicio']),
+  idade: z.number().int().min(16),
+  /** Influência mínima para se candidatar e a que dá metade de chance de ganhar. */
+  influencia: z.number().min(0).max(100),
+  dificuldade: z.number().min(0).max(100),
+  /** Custo da campanha. */
+  campanha: z.number().min(0),
+  /** Salário anual. */
+  salario: z.number().min(0),
+  mandato: z.number().int().min(0),
+  /** Influência que o cargo dá enquanto dura. */
+  poder: z.number().min(0).max(80),
+  /** Onde: "de {cidade}", "do Brasil". */
+  onde: z.string(),
+});
+export type DefCargo = z.infer<typeof DefCargo>;
+
+/** Uma linhagem: começar a vida como herdeiro de uma coroa, de um regime, de gente famosa. */
+export const DefLinhagem = z.strictObject({
+  id,
+  nome: z.string(),
+  descricao: z.string(),
+  /** Peso no sorteio do começo em um toque (0: só quem escolhe). */
+  peso: z.number().min(0),
+  classe: z.number().int().min(0).max(7),
+  /** Qualidades de quem joga ao nascer. */
+  marcas: z.array(id).min(1),
+  /** O pai ou a mãe que faz a linhagem. */
+  papel: z.strictObject({ ocupacao: TextoGenero, setor: id, marca: id }),
+  /** Qualidades do país neste mundo (monarquia, regime). */
+  pais: z.array(id).optional(),
+  influencia: z.number().min(0).max(100).optional(),
+  fama: z.number().min(0).max(100).optional(),
+});
+export type DefLinhagem = z.infer<typeof DefLinhagem>;
+
 export const Mundo = z.strictObject({
   nomes: z.strictObject({ f: z.array(z.string()).min(10), m: z.array(z.string()).min(10) }),
   sobrenomes: z.array(z.string()).min(10),
@@ -538,6 +639,10 @@ export const Mundo = z.strictObject({
   fases: z.array(DefFase).length(FASES.length),
   ativos: z.array(DefAtivo).length(ATIVOS.length),
   perfis: z.array(DefPerfil).length(PERFIS.length),
+  bens: z.array(DefBem).min(5),
+  carreiras: z.array(DefCarreira).min(10),
+  cargos: z.array(DefCargo).min(3),
+  linhagens: z.array(DefLinhagem).min(1),
   /** Textos da primeira linha da vida (sorteado entre os que a origem permite). */
   nascimento: z.array(z.strictObject({ se: Condicoes.optional(), texto: z.string() })).min(1),
   /** Epitáfios genéricos quando nenhuma marca tem um. */

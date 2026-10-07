@@ -19,10 +19,12 @@ import { entidadeDe, investidoDe, lerCaminho, parteNaEmpresa } from './campos.ts
 import type { Conteudo } from './conteudo.ts';
 import type { AberturaEmpresa, DefFase, DefSetor } from './esquema.ts';
 import { anotarCaixa, caixaDe, movimentar, resgatarDe } from './economia.ts';
-import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
+  AQUISICOES_TRUSTE,
   CAPITAL_MINIMO_EMPRESA,
+  CUSTO_AQUISICAO,
   DESVIO_TRACAO,
   PENALIDADE_PORTE,
   PIOR_ANO_EMPRESA,
@@ -53,9 +55,9 @@ export function setoresDeEmpresa(c: Conteudo): DefSetor[] {
 }
 
 /** "Silva Tech", "Mercadinho da Ana": um nome do setor com o sobrenome da família. */
-function nomeDaEmpresa(e: EstadoVida, setor: DefSetor | undefined): string {
+function nomeDaEmpresa(e: EstadoVida, setor: DefSetor | undefined, sobrenome?: string): string {
   const eu = e.entidades['eu']!;
-  const ultimo = e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
+  const ultimo = sobrenome ?? e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
   const modelo = sortear(e.rng, setor?.empresas ?? ['{sobrenome} & Cia.', 'Grupo {sobrenome}']);
   return modelo
     .replaceAll('{sobrenome}', ultimo)
@@ -70,7 +72,7 @@ export function liquidoDe(e: EstadoVida): number {
 }
 
 /** Tira até `valor` de quem joga: da conta e depois dos investimentos (o mais fácil de vender primeiro). Devolve quanto saiu. */
-function tirarDeQuemJoga(e: EstadoVida, reg: Mudanca[], valor: number): number {
+export function tirarDeQuemJoga(e: EstadoVida, reg: Mudanca[], valor: number): number {
   const n = e.entidades['eu']!.n;
   const antes = caixaDe(n);
   const daConta = Math.min(Math.max(0, n['dinheiro'] ?? 0), Math.max(0, valor));
@@ -203,7 +205,9 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: DefFase, reg: M
   }
   const talento = ((e.entidades['eu']!.n['inteligencia'] ?? 50) - 50) * TALENTO_TRACAO;
   const porte = PENALIDADE_PORTE * Math.max(0, Math.log10(Math.max(1, n['valor'] ?? 0) / PORTE_GRANDE));
-  const alvo = (setor?.tracao ?? 4) + talento - porte;
+  // Influência abre portas (contrato, crédito, fornecedor): até +2 pontos de tração.
+  const portas = Math.min(2, (e.entidades['eu']!.n['influencia'] ?? 0) / 40);
+  const alvo = (setor?.tracao ?? 4) + talento + portas - porte;
   somar(e, reg, 'empresa', 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
   if ((n['valor'] ?? 0) < PISO_EMPRESA && c.porId.has(QUEBRA) && !e.agenda.some((a) => a.evento === QUEBRA)) {
     e.agenda.push({ evento: QUEBRA, ano: e.ano, origem: emp.q['fundada']?.causa ?? null });
@@ -220,10 +224,12 @@ export type OperacaoEmpresa =
   /** Quanto do valor sai por ano para os donos (RETIRADAS). */
   | { tipo: 'retirada'; fracao: number }
   /** Vende a parte de quem joga, pelo preço da fase do país. */
-  | { tipo: 'vender' };
+  | { tipo: 'vender' }
+  /** Compra uma concorrente (uma por ano); três compras fazem um truste. */
+  | { tipo: 'adquirir' };
 
 export function ehOperacaoDeEmpresa(op: { tipo: string }): op is OperacaoEmpresa {
-  return op.tipo === 'abrir' || op.tipo === 'aportar' || op.tipo === 'retirada' || op.tipo === 'vender';
+  return op.tipo === 'abrir' || op.tipo === 'aportar' || op.tipo === 'retirada' || op.tipo === 'vender' || op.tipo === 'adquirir';
 }
 
 /** O preço da parte de quem joga se vender agora (o valor, com o desconto ou o prêmio da fase). */
@@ -247,7 +253,29 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
     if (op.valor > liquidoDe(e) + 0.5) return 'não há tanto dinheiro';
   }
   if (op.tipo === 'retirada' && Math.abs((emp.n['retirada'] ?? 0) - op.fracao) < 1e-9) return 'já é assim';
+  if (op.tipo === 'adquirir') {
+    if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
+    if (custoDaAquisicao(e) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaAquisicao(e))}`;
+    for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano === e.ano; i--) if (e.historico[i]!.ref === 'empresa:adquirir') return 'uma compra por ano';
+  }
   return null;
+}
+
+/** Empresa que vale menos que isto ainda não compra ninguém. */
+export const MINIMO_AQUISICAO = 1_000_000;
+
+/** O preço de uma concorrente: uma fração do valor da própria empresa. */
+export function custoDaAquisicao(e: EstadoVida): number {
+  return (empresaDe(e)?.n['valor'] ?? 0) * CUSTO_AQUISICAO;
+}
+
+/** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */
+function porNaEmpresa(e: EstadoVida, reg: Mudanca[], valor: number, ganho: number): void {
+  const emp = empresaDe(e)!;
+  const antes = emp.n['valor'] ?? 0;
+  const parte = emp.n['participacao'] ?? 1;
+  somar(e, reg, 'empresa', 'valor', ganho);
+  if (parte < 1) somar(e, reg, 'empresa', 'participacao', (parte * antes + valor) / (antes + ganho) - parte);
 }
 
 const RETIRADA_TEXTO = (fracao: number): string =>
@@ -263,13 +291,23 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   }
   const emp = empresaDe(e)!;
   if (op.tipo === 'aportar') {
-    const valor = tirarDeQuemJoga(e, reg, op.valor);
-    const antes = emp.n['valor'] ?? 0;
-    const parte = emp.n['participacao'] ?? 1;
-    somar(e, reg, 'empresa', 'valor', valor);
     // Dinheiro novo de quem joga aumenta a parte dele (os outros sócios não puseram nada).
-    if (parte < 1) somar(e, reg, 'empresa', 'participacao', (parte * antes + valor) / (antes + valor) - parte);
+    const valor = tirarDeQuemJoga(e, reg, op.valor);
+    porNaEmpresa(e, reg, valor, valor);
     return { texto: `Pôs ${formatarDinheiro(valor)} na ${emp.nome}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
+  }
+  if (op.tipo === 'adquirir') {
+    // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
+    const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e));
+    // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
+    porNaEmpresa(e, reg, custo, custo * 0.95);
+    somar(e, reg, 'empresa', 'tracao', 2);
+    const rival = nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes));
+    somarQualidade(e, reg, 'empresa', 'aquisicoes', 1, origem);
+    const truste = (emp.q['aquisicoes']?.v ?? 0) >= AQUISICOES_TRUSTE && ganhar(e, reg, 'empresa', 'truste', origem);
+    if (truste) somar(e, reg, 'empresa', 'tracao', 5);
+    const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
+    return { texto: `A ${emp.nome} comprou a concorrente ${rival} por ${formatarDinheiro(custo)}.${fim}`, resumo: truste ? `montou um truste com a ${emp.nome}` : `comprou a concorrente ${rival}` };
   }
   if (op.tipo === 'retirada') {
     definirNumero(e, reg, 'empresa', 'retirada', op.fracao);

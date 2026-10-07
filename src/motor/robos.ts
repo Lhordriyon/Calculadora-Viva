@@ -10,11 +10,14 @@
  * (saúde perdida, dívida contraída, chance de morrer). Gastar dinheiro ou
  * perder felicidade com certeza é custo, não risco.
  */
-import { acoesPossiveis } from './acoes.ts';
-import { perfilDe, type Operacao } from './carteira.ts';
-import { entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
+import { acoesDoVerbo, acoesPossiveis } from './acoes.ts';
+import { defBem, defDoBem, moradiaDe } from './bens.ts';
+import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
+import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
+import { chanceDeEleicao } from './poder.ts';
+import { bensDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PADROES, PERFIS, RETIRADAS, type Verbo } from './constantes.ts';
+import { PADROES, PERFIS, RETIRADAS, VERBOS, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
 import { REVERSAO_TRACAO } from './regras.ts';
@@ -192,14 +195,28 @@ function corpoDaAcao(s: Storylet): Corpo {
 }
 
 /** O verbo que a estratégia gasta na ficha do ano (null: deixa o ano passar). */
-export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Verbo | null {
+/** A ação do robô: o verbo e, quando ele escolhe dentro do verbo, qual ação (id e ator). Null passa o ano. */
+export interface AcaoDoRobo {
+  verbo: Verbo;
+  escolha?: { id: string; ator?: string | undefined };
+}
+
+export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): AcaoDoRobo | null {
   const acoes = acoesPossiveis(e, c);
   if (acoes.length === 0) return null;
-  if (estrategia === 'primeira') return acoes[0]!.verbo;
-  if (estrategia === 'aleatoria') return sortear<Verbo | null>(rng, [...acoes.map((a) => a.verbo), null]);
-  const av = [{ esperado: 0, risco: 0 }, ...acoes.map((a) => avaliarEscolha(corpoDaAcao(a.s), e, c, a.ator))];
+  if (estrategia === 'primeira') return { verbo: acoes[0]!.verbo };
+  // Como quem joga: todas as ações de todos os verbos estão na mesa.
+  const todas = VERBOS.flatMap((v) => acoesDoVerbo(e, c, v));
+  if (estrategia === 'aleatoria') {
+    if (aleatorio(rng) < 0.15) return null;
+    const a = sortear(rng, todas);
+    return { verbo: a.verbo, escolha: { id: a.s.id, ator: a.ator } };
+  }
+  const av = [{ esperado: 0, risco: 0 }, ...todas.map((a) => avaliarEscolha(corpoDaAcao(a.s), e, c, a.ator))];
   const i = melhorPor(estrategia, av);
-  return i === 0 ? null : acoes[i - 1]!.verbo;
+  if (i === 0) return null;
+  const a = todas[i - 1]!;
+  return { verbo: a.verbo, escolha: { id: a.s.id, ator: a.ator } };
 }
 
 /**
@@ -222,6 +239,13 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   }
   const daEmpresa = decidirEmpresa(estrategia, e, c, rng);
   ops.push(...daEmpresa);
+  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng));
+  // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência).
+  if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < 0.03) {
+    const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
+    const para = temBicho && aleatorio(rng) < 0.6 ? 'pet' : sortear(rng, ['', 'amor', 'amigo', 'causa', 'sobrinho'] as const);
+    if (pode(e, c, { tipo: 'testamento', para })) ops.push({ tipo: 'testamento', para });
+  }
   // Abrir ou vender a empresa já mexeu na conta: aplicar fica para outro ano.
   if (daEmpresa.some((op) => op.tipo === 'abrir' || op.tipo === 'vender')) return ops;
   const lembra = estrategia === 'aleatoria' ? aleatorio(rng) < 0.2 : e.idade % 3 === 0;
@@ -242,6 +266,75 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
  * sorteados, sorteia a retirada e às vezes vende na velhice. A cautelosa
  * vende aos 65 a empresa que a vida lhe deu.
  */
+const pode = (e: EstadoVida, c: Conteudo, op: Operacao): boolean => motivoParaNaoOperar(e, c, op) === null;
+
+/** Vagas: a cautelosa busca estabilidade e salário, a arriscada o topo mais alto (palco, mercado), a aleatória sorteia. */
+function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (e.idade < 17 || e.idade > 58) return [];
+  const eu = e.entidades['eu']!;
+  const atual = carreiraDe(e, c);
+  const renda = eu.n['renda'] ?? 0;
+  const vagas = c.mundo.carreiras.filter((k) => pode(e, c, { tipo: 'candidatar', carreira: k.id }));
+  if (vagas.length === 0) return [];
+  let alvo: (typeof vagas)[number] | undefined;
+  if (estrategia === 'aleatoria') {
+    if (aleatorio(rng) < (atual ? 0.06 : 0.25)) alvo = sortear(rng, vagas);
+  } else if (estrategia === 'cautelosa') {
+    if (!atual || (eu.n['nivel'] ?? 0) >= atual.cargos.length - 1) {
+      const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, c, k) * salarioDoCargo(k, 1) * (k.estavel ? 1.4 : 1);
+      alvo = [...vagas].sort((a, b) => nota(b) - nota(a))[0];
+    }
+  } else if (!atual?.fama && e.idade <= 40) {
+    const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, c, k) * k.salario[1];
+    alvo = [...vagas].sort((a, b) => nota(b) - nota(a))[0];
+  }
+  if (!alvo) return [];
+  // Ninguém troca um emprego por outro que paga bem menos, a não ser pelo topo da carreira nova.
+  if (estrategia !== 'aleatoria' && renda > 0 && salarioDoCargo(alvo, 0) < renda * 0.7 && alvo.salario[1] < renda * 3) return [];
+  return [{ tipo: 'candidatar', carreira: alvo.id }];
+}
+
+/** Eleições: a arriscada disputa o cargo mais alto com chance razoável; a cautelosa, só o que é quase certo; a aleatória, às vezes. */
+function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (e.idade < 18 || estrategia === 'primeira') return [];
+  const liquido = liquidoDe(e);
+  const cargos = c.mundo.cargos.filter((k) => k.esfera !== 'vitalicio' && pode(e, c, { tipo: 'candidatarCargo', cargo: k.id }) && k.campanha <= liquido * 0.35);
+  if (cargos.length === 0) return [];
+  const minimo = estrategia === 'cautelosa' ? 0.6 : estrategia === 'arriscada' ? 0.3 : 0;
+  if (estrategia === 'aleatoria' && aleatorio(rng) >= 0.12) return [];
+  const bons = cargos.filter((k) => chanceDeEleicao(e, k) >= minimo).sort((a, b) => b.poder - a.poder);
+  const alvo = estrategia === 'aleatoria' ? (bons.length ? sortear(rng, bons) : undefined) : bons[0];
+  return alvo ? [{ tipo: 'candidatarCargo', cargo: alvo.id }] : [];
+}
+
+/** Bens: a cautelosa compra casa e carro quando sobra; a arriscada, o mais caro que cabe num quinto do que tem; a aleatória, de vez em quando. */
+function decidirBens(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (e.idade < 20 || estrategia === 'primeira') return [];
+  const liquido = liquidoDe(e);
+  const tem = new Set(bensDe(e).map((b) => defDoBem(c, b)?.marca));
+  const compra = (item: string): Operacao[] => (pode(e, c, { tipo: 'comprar', item }) ? [{ tipo: 'comprar', item }] : []);
+  if (estrategia === 'cautelosa') {
+    if (!moradiaDe(e)) {
+      const casa = c.mundo.bens.filter((b) => b.categoria === 'moradia' && b.preco * 1.3 <= liquido).sort((a, b) => b.preco - a.preco)[0];
+      if (casa) return compra(casa.id);
+    }
+    if (!tem.has('carro') && liquido >= (defBem(c, 'carro_popular')?.preco ?? 80000) * 4) return compra('carro_popular');
+    if (e.idade % 5 === 0) {
+      const renda = c.mundo.bens.filter((b) => b.categoria === 'imovel' && b.preco * 3 <= liquido).sort((a, b) => b.preco - a.preco)[0];
+      if (renda) return compra(renda.id);
+    }
+    return [];
+  }
+  if (estrategia === 'arriscada') {
+    if (e.idade % 2 !== 0) return [];
+    const item = c.mundo.bens.filter((b) => b.preco <= liquido * 0.2 && !tem.has(b.marca)).sort((a, b) => b.preco - a.preco)[0];
+    return item ? compra(item.id) : [];
+  }
+  if (aleatorio(rng) >= 0.1) return [];
+  const opcoes = c.mundo.bens.filter((b) => b.preco <= liquido * 0.3);
+  return opcoes.length ? compra(sortear(rng, opcoes).id) : [];
+}
+
 function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   const emp = empresaDe(e);
   const liquido = liquidoDe(e);
@@ -265,6 +358,7 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     if (idade >= 60 && aleatorio(rng) < 0.05) return [{ tipo: 'vender' }];
   }
   if (estrategia === 'cautelosa' && idade >= 65) return [{ tipo: 'vender' }];
+  if (estrategia === 'arriscada' && pode(e, c, { tipo: 'adquirir' }) && (emp.n['valor'] ?? 0) * 0.3 <= liquido * 0.5) return [{ tipo: 'adquirir' }];
   return [];
 }
 

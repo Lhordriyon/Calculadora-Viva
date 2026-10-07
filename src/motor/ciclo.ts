@@ -40,9 +40,14 @@ export function sortearFaseInicial(e: EstadoVida, c: Conteudo): void {
 export function cicloDoAno(e: EstadoVida, c: Conteudo): DefFase {
   const atual = faseDe(e);
   const def = defFase(c, atual);
+  // Quem governa empurra o ciclo (pais.impulso, de −3 a 3): decretos que aquecem deixam a expansão mais provável e a recessão menos.
+  const impulso = e.entidades['pais']?.n['impulso'] ?? 0;
+  const ajuste = (f: Fase, p: number): number =>
+    f === 'expansao' ? p * Math.max(0.2, 1 + 0.4 * impulso) : f === 'recessao' || f === 'crise' ? p * Math.max(0.2, 1 - 0.3 * impulso) : p;
   let r = aleatorio(e.rng);
   let proxima: Fase = atual;
-  for (const [f, p] of Object.entries(def.transicoes) as [Fase, number][]) {
+  for (const [f, bruto] of Object.entries(def.transicoes) as [Fase, number][]) {
+    const p = ajuste(f, bruto);
     if (r < p) {
       proxima = f;
       break;

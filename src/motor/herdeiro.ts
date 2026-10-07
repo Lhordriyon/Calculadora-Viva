@@ -10,10 +10,12 @@
  * fortuna da família de geração em geração.
  */
 import { ATIVOS, type Ativo } from './constantes.ts';
-import { classeDoPatrimonio, parteNaEmpresa, patrimonioTotal } from './campos.ts';
+import { bensDe, classeDoPatrimonio, parteNaEmpresa, patrimonioTotal, valorDosBens } from './campos.ts';
+import { defDoBem } from './bens.ts';
+import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
-import { ganhar, lancar, novaEntrada } from './livro.ts';
+import { definirTexto, ganhar, lancar, novaEntrada } from './livro.ts';
 import { criarPersonagem, nomeLivre, novaEntidade } from './pessoas.ts';
 import { ANOS_UNIAO } from './regras.ts';
 import { aleatorio, criarRng, inteiro, misturar, normal, sortear, sortearIndice } from './rng.ts';
@@ -28,8 +30,15 @@ export const IMPOSTO_HERANCA = 0.04;
 export const PARTE_SOLIDARIA = 0.25;
 
 /** Quem pode continuar a história. */
+/** Quem continua a história: filho ou filha, sobrinho ou sobrinha, o par (cônjuge) ou o melhor amigo. */
+export type Parentesco = 'filho' | 'sobrinho' | 'amor' | 'amigo';
+
+/** Para quem vai o testamento ('' é o padrão: filho; sem filho, sobrinho). Causa e bicho encerram a história. */
+export const DESTINOS = ['', 'filho', 'sobrinho', 'amor', 'amigo', 'causa', 'pet'] as const;
+export type Destino = (typeof DESTINOS)[number];
+
 export interface Herdeiro {
-  parentesco: 'filho' | 'sobrinho';
+  parentesco: Parentesco;
   nome: string;
   genero: Genero;
   nascimento: number;
@@ -44,11 +53,21 @@ export interface Herdeiro {
  */
 export function herdeiroPossivel(e: EstadoVida, c: Conteudo): Herdeiro | null {
   if (e.vivo) return null;
-  const f = e.entidades['filho'];
-  if (f && f.vivo !== false && f.nascimento !== undefined && e.ano - f.nascimento >= 0) {
-    return { parentesco: 'filho', nome: f.nome, genero: f.genero ?? 'm', nascimento: f.nascimento, entidade: f };
+  const eu = e.entidades['eu']!;
+  const destino = (eu.t['testamento'] ?? '') as Destino;
+  // Tudo para uma causa, ou para o bicho: a fortuna sai da família e a história termina aqui.
+  if (destino === 'causa' || destino === 'pet') return null;
+  const vivo = (id: string): Entidade | undefined => {
+    const x = e.entidades[id];
+    return x && x.vivo !== false && !x.q['ausente'] && x.nascimento !== undefined && e.ano - x.nascimento >= 0 ? x : undefined;
+  };
+  if (destino === 'amor' || destino === 'amigo') {
+    const x = vivo(destino);
+    if (x) return { parentesco: destino, nome: x.nome, genero: x.genero ?? 'm', nascimento: x.nascimento!, entidade: x };
   }
-  if ((e.entidades['eu']!.n['irmaos'] ?? 0) < 1) return null;
+  const f = destino === 'sobrinho' ? undefined : vivo('filho');
+  if (f) return { parentesco: 'filho', nome: f.nome, genero: f.genero ?? 'm', nascimento: f.nascimento!, entidade: f };
+  if ((eu.n['irmaos'] ?? 0) < 1) return null;
   const rng = criarRng(misturar(e.semente, e.ano, 7019));
   const genero: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
   const usados = new Set(Object.values(e.entidades).map((x) => x.nome));
@@ -56,6 +75,52 @@ export function herdeiroPossivel(e: EstadoVida, c: Conteudo): Herdeiro | null {
   for (let i = 0; i < 30 && usados.has(nome); i++) nome = sortear(rng, c.mundo.nomes[genero]);
   const idade = Math.max(1, e.idade - inteiro(rng, 22, 38));
   return { parentesco: 'sobrinho', nome, genero, nascimento: e.ano - idade };
+}
+
+// ---------------------------------------------------------------- o testamento, escolhido em vida
+
+export type OperacaoTestamento = { tipo: 'testamento'; para: Destino };
+
+export function ehOperacaoDeTestamento(op: { tipo: string }): op is OperacaoTestamento {
+  return op.tipo === 'testamento';
+}
+
+/** Quem pode estar no testamento agora (vivo, existindo), e por que não. */
+export function motivoParaNaoOperarTestamento(e: EstadoVida, op: OperacaoTestamento): string | null {
+  const eu = e.entidades['eu']!;
+  if (e.idade < 18) return 'só a partir dos 18 anos';
+  if ((eu.t['testamento'] ?? '') === op.para) return 'já está assim';
+  const vivo = (id: string): boolean => {
+    const x = e.entidades[id];
+    return Boolean(x && x.vivo !== false && !x.q['ausente']);
+  };
+  if (op.para === 'filho' && !vivo('filho')) return 'você não tem filho';
+  if (op.para === 'amor' && !vivo('amor')) return 'você não tem par';
+  if (op.para === 'amigo' && !vivo('amigo')) return 'seu melhor amigo não está mais aqui';
+  if (op.para === 'pet' && !vivo('pet')) return 'você não tem bicho';
+  if (op.para === 'sobrinho' && (eu.n['irmaos'] ?? 0) < 1) return 'você não tem irmãos';
+  return null;
+}
+
+export function operarTestamento(e: EstadoVida, op: OperacaoTestamento, reg: Mudanca[]): { texto: string; resumo: string } {
+  definirTexto(e, reg, 'eu', 'testamento', op.para);
+  const nome = (id: string): string => e.entidades[id]?.nome ?? '';
+  switch (op.para) {
+    case 'filho':
+      return { texto: `Fez testamento: tudo para ${nome('filho')}.`, resumo: `deixou tudo para ${nome('filho')} em testamento` };
+    case 'sobrinho':
+      return { texto: 'Fez testamento: tudo para os sobrinhos, filhos dos seus irmãos.', resumo: 'deixou tudo para os sobrinhos em testamento' };
+    case 'amor':
+      return { texto: `Fez testamento: tudo para ${nome('amor')}, que fica com a história.`, resumo: `deixou tudo para ${nome('amor')} em testamento` };
+    case 'amigo':
+      return { texto: `Fez testamento: tudo para ${nome('amigo')}, o melhor amigo da vida. A família ainda não sabe.`, resumo: `deixou tudo para ${nome('amigo')} em testamento` };
+    case 'causa':
+      return { texto: 'Fez testamento: tudo para uma causa. Hospitais, escolas e um bolsista que nunca vai saber o seu nome.', resumo: 'deixou tudo para a caridade em testamento' };
+    case 'pet':
+      return { texto: `Fez testamento: tudo para ${nome('pet')}. O cartório riu, mas registrou.`, resumo: `deixou tudo para ${nome('pet')} em testamento` };
+    default:
+      return { texto: 'Desfez o testamento: fica valendo a lei (os filhos primeiro).', resumo: 'desfez o testamento' };
+  }
 }
 
 function limitar(v: number, min: number, max: number): number {
@@ -78,6 +143,8 @@ interface Espolio {
   imposto: number;
   /** O quarto do testamento solidário. */
   doacao: number;
+  /** O que a conta e a empresa não cobriram da partilha: sai dos bens (os mais baratos são vendidos). */
+  dosBens: number;
 }
 
 /**
@@ -86,7 +153,7 @@ interface Espolio {
  * cônjuge e o imposto saem primeiro do dinheiro, e só o que faltar sai da
  * parte na empresa.
  */
-function partilhar(antiga: EstadoVida): Espolio {
+function partilhar(antiga: EstadoVida, herdeiroEhOPar = false): Espolio {
   const velho = antiga.entidades['eu']!;
   const caixa: Record<string, number> = { dinheiro: Math.max(0, velho.n['dinheiro'] ?? 0) };
   for (const a of ATIVOS) caixa[a] = velho.n[a] ?? 0;
@@ -97,22 +164,24 @@ function partilhar(antiga: EstadoVida): Espolio {
   resgatarDe(caixa, divida);
   const bruto = caixa['dinheiro']! + ATIVOS.reduce((s, a) => s + (caixa[a] ?? 0), 0);
   const naEmpresa = parteNaEmpresa(antiga);
-  const total = bruto + naEmpresa;
+  const emBens = valorDosBens(antiga);
+  const total = bruto + naEmpresa + emBens;
   const amor = antiga.entidades['amor'];
   const namoro = velho.q['namoro'];
   const casal = amor?.vivo !== false && amor !== undefined && (velho.q['casado'] !== undefined || (namoro !== undefined && antiga.idade - namoro.idade >= ANOS_UNIAO));
-  const conjuge = casal ? 0.5 : 0;
+  const conjuge = casal && !herdeiroEhOPar ? 0.5 : 0;
   const doacao = velho.q['testamento_solidario'] ? total * PARTE_SOLIDARIA : 0;
   const doConjuge = (total - doacao) * conjuge;
   const imposto = (total - doacao - doConjuge) * IMPOSTO_HERANCA;
   const sai = doacao + doConjuge + imposto;
   const doDinheiro = Math.min(bruto, sai);
-  const daEmpresa = sai - doDinheiro;
+  const daEmpresa = Math.min(naEmpresa, sai - doDinheiro);
+  const dosBens = Math.max(0, sai - doDinheiro - daEmpresa);
   const fica = bruto > 0 ? (bruto - doDinheiro) / bruto : 0;
   const heranca = { dinheiro: caixa['dinheiro']! * fica } as Record<'dinheiro' | Ativo, number>;
   for (const a of ATIVOS) heranca[a] = (caixa[a] ?? 0) * fica;
   const participacao = naEmpresa > 0 ? (antiga.entidades['empresa']!.n['participacao'] ?? 1) * (1 - daEmpresa / naEmpresa) : 0;
-  return { heranca, participacao, deixou: total - sai, doConjuge, imposto, doacao };
+  return { heranca, participacao, deixou: total - sai, doConjuge, imposto, doacao, dosBens };
 }
 
 /** Uma pessoa nova da geração do herdeiro (o amigo da vida nova). */
@@ -151,6 +220,9 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const filho = herdeiroPossivel(antiga, c);
   if (!filho) throw new Error('Não há herdeiro para continuar a história.');
   const sobrinho = filho.parentesco === 'sobrinho';
+  /** Filho, sobrinho: de sangue. O par e o amigo herdam por testamento e trazem a própria família. */
+  const deSangue = filho.parentesco === 'filho' || sobrinho;
+  const novosPais = filho.parentesco !== 'filho';
   const comoPersonagem = filho.entidade;
   const velho = antiga.entidades['eu']!;
   const semente = misturar(antiga.semente, antiga.ano, antiga.proximoId);
@@ -159,7 +231,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     versao: VERSAO_ESTADO,
     semente,
     rng: criarRng(semente),
-    sobrenome: antiga.sobrenome,
+    // O amigo herda a fortuna, não o sobrenome.
+    sobrenome: filho.parentesco === 'amigo' ? sortear(criarRng(misturar(antiga.semente, antiga.ano, 911)), c.mundo.sobrenomes) : antiga.sobrenome,
     anoNascimento: filho.nascimento,
     idade,
     ano: antiga.ano,
@@ -178,7 +251,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const abertura = novaEntrada(e, { tipo: 'nascimento', causa: 'nascimento', ref: 'herdeiro', texto: '' });
 
   // ---- quem joga agora
-  const espolio = partilhar(antiga);
+  const espolio = partilhar(antiga, filho.parentesco === 'amor');
   const eu = novaEntidade({ id: 'eu', tipo: 'pessoa', nome: filho.nome, genero: filho.genero, nascimento: filho.nascimento, vivo: true });
   const tracoNpc = c.tracos.get(comoPersonagem?.t['traco'] ?? '');
   const traco = c.tracosJogador.get(tracoNpc?.herdeiro ?? '') ?? c.mundo.tracosJogador[sortearIndice(e.rng, c.mundo.tracosJogador.map((t) => t.peso))]!;
@@ -217,7 +290,14 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
 
   // ---- a família do próprio herdeiro: aos 30 ou 40 anos, muita gente já tem par e filhos (a próxima geração)
   const doHerdeiro: Mudanca[] = [];
-  if (idade >= 22) {
+  if (filho.parentesco === 'amor') {
+    eu.q['viuvo'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    const doCasal = antiga.entidades['filho'];
+    if (doCasal && doCasal.vivo !== false) {
+      e.entidades['filho'] = recausar(structuredClone(doCasal), abertura.id);
+      eu.q['pai_mae'] = { v: 1, ano: doCasal.nascimento ?? e.ano, idade: Math.max(0, idade - (e.ano - (doCasal.nascimento ?? e.ano))), causa: abertura.id };
+    }
+  } else if (idade >= 22) {
     if (aleatorio(e.rng) < Math.min(0.75, 0.2 + (idade - 22) * 0.04)) {
       criarPersonagem(e, c, 'amor', doHerdeiro);
       const anos = inteiro(e.rng, 1, Math.max(1, Math.min(25, idade - 20)));
@@ -239,8 +319,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
 
   // ---- a família que restou
   const amor = antiga.entidades['amor'];
-  if (sobrinho) {
-    // Quem herda é filho de um irmão ou irmã de quem morreu: os pais são outros, da mesma geração de quem morreu.
+  if (novosPais) {
+    // Quem herda não é filho de quem morreu: os pais são outros (do sobrinho, irmãos de quem morreu; do par e do amigo, a família deles).
     for (const slot of ['mae', 'pai'] as const) {
       const genero: Genero = slot === 'mae' ? 'f' : 'm';
       const nascimento = velho.nascimento! + inteiro(e.rng, -8, 8);
@@ -258,7 +338,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   }
   const slotVelho = velho.genero === 'f' ? 'mae' : 'pai';
   const outroSlot = slotVelho === 'mae' ? 'pai' : 'mae';
-  if (!sobrinho) {
+  if (!novosPais) {
     const falecido = structuredClone(velho);
     falecido.id = slotVelho;
     falecido.vivo = false;
@@ -269,8 +349,18 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     falecido.t = { ocupacao: velho.t['ocupacao'] ?? '', setor: velho.t['setor'] ?? '' };
     e.entidades[slotVelho] = falecido;
   }
-  if (sobrinho) {
-    // nada: quem morreu e quem dividia a vida com ele ficam no texto e na linha da família
+  if (novosPais) {
+    // Quem morreu fica no texto e, para o par e o amigo, no lugar que ocupava na vida de quem herda.
+    if (filho.parentesco === 'amor' || filho.parentesco === 'amigo') {
+      const morto = structuredClone(velho);
+      morto.id = filho.parentesco;
+      morto.vivo = false;
+      morto.morte = antiga.ano;
+      morto.q = { faleceu: { v: 1, ano: e.ano, idade, causa: abertura.id } };
+      morto.n = { vinculo, saude: 0, dinheiro: 0 };
+      morto.t = { ocupacao: velho.t['ocupacao'] ?? '', setor: velho.t['setor'] ?? '' };
+      e.entidades[filho.parentesco] = morto;
+    }
   } else if (amor) {
     // Quem dividia a vida com quem morreu é o outro pai ou a outra mãe (com a metade do patrimônio, se eram casados).
     const outro = structuredClone(amor);
@@ -289,7 +379,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     e.entidades[outroSlot] = outro;
   }
   // Avó ou avô: quem criou quem morreu, se ainda estiver por aqui.
-  const avo = [antiga.entidades['mae'], antiga.entidades['pai']].find((p) => p && p.vivo !== false && !p.q['ausente']) ?? antiga.entidades['mae'];
+  const avo = deSangue ? ([antiga.entidades['mae'], antiga.entidades['pai']].find((p) => p && p.vivo !== false && !p.q['ausente']) ?? antiga.entidades['mae']) : undefined;
   if (avo) {
     const copia = structuredClone(avo);
     copia.id = 'avo';
@@ -297,7 +387,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     copia.n['vinculo'] = Math.round(limitar((avo.n['vinculo'] ?? 60) * 0.8 + 10, 5, 95));
     e.entidades['avo'] = recausar(copia, abertura.id);
   }
-  e.entidades['amigo'] = pessoaNova(e, c, 'amigo', filho.nascimento + inteiro(e.rng, -1, 1));
+  if (filho.parentesco !== 'amigo') e.entidades['amigo'] = pessoaNova(e, c, 'amigo', filho.nascimento + inteiro(e.rng, -1, 1));
   const pet = antiga.entidades['pet'];
   if (pet && pet.vivo !== false) e.entidades['pet'] = recausar(structuredClone(pet), abertura.id);
   for (const id of ['lugar', 'pais'] as const) e.entidades[id] = recausar(structuredClone(antiga.entidades[id]!), abertura.id);
@@ -307,6 +397,34 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     const copia = recausar(structuredClone(empresa), abertura.id);
     copia.n['participacao'] = espolio.participacao;
     e.entidades['empresa'] = copia;
+  }
+
+  // Os bens passam ao herdeiro (sem a mudança: quem herda mora onde já morava). Se a conta e a empresa
+  // não pagaram a partilha, os mais baratos são vendidos e a sobra vira dinheiro.
+  let falta = espolio.dosBens;
+  const herdados = bensDe(antiga).sort((a, b) => (a.n['valor'] ?? 0) - (a.n['financiado'] ?? 0) - ((b.n['valor'] ?? 0) - (b.n['financiado'] ?? 0)));
+  for (const b of herdados) {
+    const liquido = Math.max(0, (b.n['valor'] ?? 0) - (b.n['financiado'] ?? 0));
+    if (falta > 0.5) {
+      const usa = Math.min(falta, liquido);
+      falta -= usa;
+      eu.n['dinheiro'] = (eu.n['dinheiro'] ?? 0) + liquido - usa;
+      continue;
+    }
+    const copia = recausar(structuredClone(b), abertura.id);
+    delete copia.q['moradia'];
+    copia.n['economia'] = 0;
+    e.entidades[b.id] = copia;
+    const def = defDoBem(c, b);
+    if (def) eu.q[def.marca] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    if (copia.q['alugado']) eu.q['senhorio'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+  }
+  // A coroa e o regime passam ao filho: quem morreu reinava, e a sucessão é o primeiro capítulo (storylet da linhagem).
+  const coroa = velho.q['monarca'] ? 'monarca' : velho.q['ditador'] ? 'ditador' : null;
+  if (coroa && !sobrinho) {
+    eu.q[coroa === 'monarca' ? 'principe' : 'herdeiro_regime'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    const morto = e.entidades[slotVelho];
+    if (morto) morto.q[coroa] = { v: 1, ano: e.ano, idade, causa: abertura.id };
   }
 
   // ---- o que a história lembra
@@ -329,12 +447,19 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   };
   e.dinastia = { geracao, antepassados: [...(antiga.dinastia?.antepassados ?? []), antepassado] };
 
-  const quem = sobrinho ? (velho.genero === 'f' ? 'Sua tia' : 'Seu tio') : velho.genero === 'f' ? 'Sua mãe' : 'Seu pai';
+  const ela = velho.genero === 'f';
+  const casados = Boolean(velho.q['casado']);
+  const quem = {
+    filho: ela ? 'Sua mãe' : 'Seu pai',
+    sobrinho: ela ? 'Sua tia' : 'Seu tio',
+    amor: casados ? (ela ? 'Sua esposa' : 'Seu marido') : ela ? 'Sua companheira' : 'Seu companheiro',
+    amigo: ela ? 'Sua melhor amiga' : 'Seu melhor amigo',
+  }[filho.parentesco];
   const doacao = espolio.doacao >= 1 ? `; ${formatarDinheiro(espolio.doacao)} foram para a causa do testamento` : '';
   const metade = doacao ? 'metade do resto' : 'metade de tudo';
   const conjuge = `${doacao}${espolio.doConjuge >= 1 && amor ? `; ${metade} ficou com ${amor.nome}` : ''}`;
   // Sem filhos, quem herda é quem estava no testamento.
-  const testamento = sobrinho ? `em testamento ` : '';
+  const testamento = filho.parentesco === 'filho' ? '' : 'em testamento ';
   const herdada = e.entidades['empresa'];
   const fatia = herdada?.n['participacao'] ?? 0;
   const naEmpresa = !herdada
@@ -359,8 +484,16 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const vida = familia.length ? `, ${familia.join(' e ')}` : '';
   // A causa da morte foi escrita na vida anterior; quem era "Enzo" lá é "você" aqui.
   const causa = (antiga.morte?.causa ?? '').replace(new RegExp(`\\b${filho.nome}\\b`, 'g'), 'você');
-  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. Geração ${geracao} da família ${ultimo}.`;
+  const fecho =
+    filho.parentesco === 'amigo'
+      ? `A fortuna dos ${ultimo} agora tem outro sobrenome: o seu.`
+      : filho.parentesco === 'amor'
+        ? `A história da família ${ultimo} continua com você.`
+        : `Geração ${geracao} da família ${ultimo}.`;
+  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}`;
   abertura.resumo = espolio.deixou >= 1 ? `herdou ${formatarDinheiro(espolio.deixou)} da família` : 'começou sem herança';
   lancar(e, abertura, []);
+  // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.
+  eu.n['influencia'] = Math.round(influenciaAlvo(e, c));
   return e;
 }

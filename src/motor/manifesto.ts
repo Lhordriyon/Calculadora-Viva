@@ -70,6 +70,33 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.herdeiro_negocio',
   // o trabalho de quem joga (salário anda com o setor e o ciclo)
   'eu.renda',
+  // carreira escolhida na folha Carreira: profissão, cargo, fama
+  'eu.carreira',
+  'eu.nivel',
+  'eu.ocupacao',
+  'eu.setor',
+  'eu.servidor',
+  'eu.fama',
+  // poder: influência, eleições, mandato, popularidade; decretos empurram o país
+  'eu.influencia',
+  'eu.popularidade',
+  'eu.cargo',
+  'eu.mandato',
+  'eu.politico',
+  'eu.ex_politico',
+  'pais.impulso',
+  // bens: morar no que é seu, alugar; a coroa e o regime passam ao filho
+  'eu.casa_propria',
+  'eu.senhorio',
+  'eu.principe',
+  'eu.herdeiro_regime',
+  ...de(['mae', 'pai'], 'monarca'),
+  ...de(['mae', 'pai'], 'ditador'),
+  // o testamento que o jogador escolhe na folha Família
+  'eu.testamento',
+  // truste: compras de concorrentes
+  'empresa.aquisicoes',
+  'empresa.truste',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país)
   'pais.expansao',
   'pais.recessao',
@@ -103,7 +130,7 @@ export const ESCRITAS_DO_MOTOR: string[] = [
 const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[] => caminhos.map((caminho) => ({ caminho, regra, decide }));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -118,6 +145,19 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['empresa.fundada'], 'empresa: a fundação é a causa da quebra', false),
   ...ler(['empresa.sustenta'], 'empresa: fechar ou vender a que sustentava quem joga leva a renda junto', true),
   ...ler(['eu.testamento_solidario'], 'dinastia: um quarto do espólio vai para a causa do testamento', true),
+  ...ler(['eu.influencia'], 'poder: chance de ganhar eleição e influência mínima para concorrer', true),
+  ...ler(['eu.influencia'], 'empresa: influência abre portas (tração)', true),
+  ...ler(['eu.fama'], 'poder: a fama vira influência', true),
+  ...ler(['eu.popularidade'], 'poder: popularidade baixa derruba o cargo; reeleição', true),
+  ...ler(['eu.cargo', 'eu.mandato'], 'poder: salário, fim do mandato e reeleição', true),
+  ...ler(['eu.carreira', 'eu.nivel'], 'carreira: cargo, promoção, salário e fama', true),
+  ...ler(['pais.impulso'], 'ciclo: quem governa empurra a economia', true),
+  ...ler(['empresa.aquisicoes'], 'empresa: três compras fazem um truste', true),
+  ...ler(['eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico'], 'poder: a linhagem dá influência', false),
+  ...ler(['eu.monarca', 'eu.ditador'], 'dinastia: a coroa e o regime passam ao filho', true),
+  ...ler(['eu.testamento'], 'dinastia: quem herda e continua a história', true),
+  ...ler(['eu.politico', 'eu.monarca', 'eu.ditador'], 'poder: a posse é a causa da queda', false),
+  ...ler(['eu.ocupacao'], 'carreira: quem tem ocupação pode pedir demissão', true),
   ...ler(['eu.traco'], 'felicidade de base', false),
   ...ler(['eu.familia'], 'equilíbrio do vínculo', false),
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),

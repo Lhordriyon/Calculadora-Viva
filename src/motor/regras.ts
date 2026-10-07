@@ -19,14 +19,47 @@ export function ritmo(idade: number): number {
 }
 
 /**
- * Fichas do ano: quantas ações quem joga pode fazer antes de o ano passar.
- * Dos 18 aos 40, duas (estudar e trabalhar, tocar a empresa e ver a
- * família): é quando a vida pede mais de uma coisa por ano. Fora disso, uma.
- * Cada ficha gasta um verbo diferente.
+ * Fichas do ano: quantas coisas quem joga faz antes de o ano passar. Criança,
+ * uma; adolescente, duas; adulto, três; depois dos 65, duas. Cada ficha é uma
+ * ação escolhida (a mesma ação não se repete no mesmo ano). Mexer no
+ * dinheiro, comprar, trocar de emprego e se candidatar não gastam ficha.
  */
 export function fichasDoAno(idade: number): number {
-  return idade >= 18 && idade <= 40 ? 2 : 1;
+  if (idade <= 12) return 1;
+  if (idade <= 17 || idade >= 65) return 2;
+  return 3;
 }
+
+/** Bens: o que morar no próprio imóvel tira do custo de vida (fração do custo, no máximo esta fração do valor por ano). */
+export const ECONOMIA_DA_MORADIA = 0.3;
+export const ALUGUEL_DA_MORADIA = 0.045;
+/** Financiamento de imóvel: entrada, juros reais ao ano e parcela (fração do saldo inicial por ano). */
+export const ENTRADA_FINANCIAMENTO = 0.2;
+export const JUROS_FINANCIAMENTO = 0.07;
+export const PARCELA_FINANCIAMENTO = 0.1;
+/** Corretagem e impostos na venda de imóvel. */
+export const CUSTO_VENDA_IMOVEL = 0.06;
+/** O carro não vale menos que isto do preço (vira carro velho, não pó). */
+export const PISO_VEICULO = 0.12;
+
+/** Poder: quanto a influência anda por ano na direção do alvo, e a popularidade de quem governa. */
+export const RITMO_INFLUENCIA = 0.25;
+export const RITMO_POPULARIDADE = 0.2;
+export const POPULARIDADE_CRITICA = 30;
+/** Influência alvo: 3 + 6 × log10(patrimônio / R$ 50 mil), mais cargo, fama, bens e linhagem. */
+export function influenciaDoPatrimonio(p: number): number {
+  return Math.max(0, 3 + 6 * Math.log10(Math.max(1, p / 50000)));
+}
+/** Começo em um toque: chance de nascer numa linhagem (coroa, regime, gente famosa…). */
+export const CHANCE_LINHAGEM = 0.2;
+/** Quanto do conforto dos bens (casa, carro, iate) vira felicidade de base. */
+export const PESO_CONFORTO_BENS = 0.6;
+/** Carreira: a chance de subir de cargo cai a cada degrau (multiplica por isto a cada nível); no palco, cai mais. */
+export const PIRAMIDE = 0.8;
+export const PIRAMIDE_DA_FAMA = 0.45;
+/** Truste: quanto custa comprar uma concorrente (fração do valor da empresa) e quantas compras fazem um truste. */
+export const CUSTO_AQUISICAO = 0.3;
+export const AQUISICOES_TRUSTE = 3;
 
 /** Risco anual de morte natural: curva de Gompertz ajustada pela saúde. */
 export function riscoDeMorte(idade: number, saude: number): number {

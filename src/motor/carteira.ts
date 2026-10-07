@@ -14,7 +14,11 @@ import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { acertarCaixa, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } from './economia.ts';
+import { ehOperacaoDeBem, motivoParaNaoOperarBem, operarBem, type OperacaoBem } from './bens.ts';
+import { ehOperacaoDeCarreira, motivoParaNaoOperarCarreira, operarCarreira, type OperacaoCarreira } from './carreira.ts';
 import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
+import { ehOperacaoDePoder, motivoParaNaoOperarPoder, operarPoder, type OperacaoPoder } from './poder.ts';
+import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE } from './regras.ts';
 import { normal } from './rng.ts';
@@ -71,7 +75,11 @@ export type Operacao =
   /** Troca o perfil; rebalancear leva a carteira inteira para a divisão do perfil novo. */
   | { tipo: 'perfil'; perfil: Perfil; rebalancear: boolean }
   /** Troca o padrão de vida: quanto da sobra de cada ano vira gasto. */
-  | { tipo: 'padrao'; padrao: Padrao };
+  | { tipo: 'padrao'; padrao: Padrao }
+  | OperacaoBem
+  | OperacaoCarreira
+  | OperacaoPoder
+  | OperacaoTestamento;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
 export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
@@ -89,6 +97,10 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (!e.vivo) return 'esta vida já terminou';
   if (e.pendente) return 'responda o cartão do ano primeiro';
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
+  if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
+  if (ehOperacaoDeCarreira(op)) return motivoParaNaoOperarCarreira(e, c, op);
+  if (ehOperacaoDePoder(op)) return motivoParaNaoOperarPoder(e, c, op);
+  if (ehOperacaoDeTestamento(op)) return motivoParaNaoOperarTestamento(e, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -115,14 +127,19 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   const eu = e.entidades['eu']!;
   const n = eu.n;
   const reg: Mudanca[] = [];
-  if (ehOperacaoDeEmpresa(op)) {
-    // A entrada nasce antes: a fundação (ou a venda) aponta para ela como causa.
-    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref: `empresa:${op.tipo}`, texto: '' });
-    const { texto, resumo } = operarEmpresa(e, c, op, reg, entrada.id);
+  // A entrada nasce antes: o que a operação cria (a empresa, o imóvel, o cargo) aponta para ela como causa.
+  const lancarCom = (grupo: string, fazer: (origem: number) => { texto: string; resumo: string }): Entrada => {
+    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref: `${grupo}:${op.tipo}`, texto: '' });
+    const { texto, resumo } = fazer(entrada.id);
     entrada.texto = texto;
     entrada.resumo = resumo;
     return lancar(e, entrada, reg);
-  }
+  };
+  if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
+  if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));
+  if (ehOperacaoDeCarreira(op)) return lancarCom('carreira', (id) => operarCarreira(e, c, op, reg, id));
+  if (ehOperacaoDePoder(op)) return lancarCom('poder', (id) => operarPoder(e, c, op, reg, id));
+  if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
   let texto: string;
   let resumo: string;
   if (op.tipo === 'aplicar') {

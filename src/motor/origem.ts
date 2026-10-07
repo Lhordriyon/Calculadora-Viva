@@ -7,7 +7,9 @@
 import type { Conteudo } from './conteudo.ts';
 import { TIPOS_FAMILIA, type TipoFamilia } from './constantes.ts';
 import type { Classe, TipoFamilia as DefFamilia, Traco } from './esquema.ts';
+import { noGenero } from './carreira.ts';
 import { nomeLivre, novaEntidade } from './pessoas.ts';
+import { CHANCE_LINHAGEM } from './regras.ts';
 import { aleatorio, inteiro, normal, sortear, sortearIndice, type Rng } from './rng.ts';
 import type { Entidade, EstadoVida, Genero } from './tipos.ts';
 
@@ -15,6 +17,8 @@ export interface EscolhaOrigem {
   /** Índice da classe (0 = extrema pobreza ... 5 = muito rica, 6 = bilionária, 7 = trilionária). */
   classe?: number;
   familia?: TipoFamilia;
+  /** Linhagem (mundo.json › linhagens): coroa, regime, gente famosa. No começo em um toque, às vezes vem sorteada. */
+  linhagem?: string;
 }
 
 const REGIOES: Record<string, string> = {
@@ -52,7 +56,12 @@ function idadeDaMae(rng: Rng, classe: number): number {
 export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}): void {
   const rng = e.rng;
   const { mundo } = c;
-  const iClasse = op.classe ?? sortearIndice(rng, mundo.classes.map((k) => k.peso));
+  const sorteada =
+    op.linhagem === undefined && op.classe === undefined && op.familia === undefined && aleatorio(rng) < CHANCE_LINHAGEM
+      ? mundo.linhagens[sortearIndice(rng, mundo.linhagens.map((l) => l.peso))]
+      : undefined;
+  const linhagem = op.linhagem !== undefined ? mundo.linhagens.find((l) => l.id === op.linhagem) : sorteada;
+  const iClasse = linhagem?.classe ?? op.classe ?? sortearIndice(rng, mundo.classes.map((k) => k.peso));
   const classe: Classe = mundo.classes[iClasse]!;
   const tipo: DefFamilia =
     mundo.familias.find((f) => f.id === op.familia) ?? mundo.familias[sortearIndice(rng, mundo.familias.map((f) => f.peso))]!;
@@ -145,6 +154,22 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   const generoAmigo: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
   const amigo = pessoa('amigo', generoAmigo, e.ano + inteiro(rng, -1, 1), sortearTraco(rng, c, tipo), 50, 84);
   e.entidades['amigo'] = amigo;
+
+  // ---- a linhagem: o pai ou a mãe que carrega o nome (a coroa, o regime, a fama) e o que isso deixa em quem nasce
+  if (linhagem) {
+    const quem = aleatorio(rng) < 0.5 ? mae : pai;
+    delete quem.q['ausente'];
+    delete quem.q['desempregado'];
+    quem.n['vinculo'] = Math.max(quem.n['vinculo'] ?? 0, 35);
+    quem.t['ocupacao'] = noGenero(linhagem.papel.ocupacao, quem.genero);
+    quem.t['setor'] = linhagem.papel.setor;
+    quem.n['renda'] = Math.max(quem.n['renda'] ?? 0, rendaAdulto());
+    quem.q[linhagem.papel.marca] = { v: 1, ano: e.ano, idade: 0, causa: null };
+    for (const m of linhagem.marcas) eu.q[m] = { v: 1, ano: e.ano, idade: 0, causa: null };
+    for (const m of linhagem.pais ?? []) pais.q[m] = { v: 1, ano: e.ano, idade: 0, causa: null };
+    eu.n['influencia'] = linhagem.influencia ?? 0;
+    eu.n['fama'] = linhagem.fama ?? 0;
+  }
 
   // ---- quem joga
   const traco = mundo.tracosJogador[sortearIndice(rng, mundo.tracosJogador.map((t) => t.peso))]!;

@@ -15,6 +15,9 @@ import { escolherDoAno } from './diretor.ts';
 import { mercadoDoAno } from './carteira.ts';
 import { economiaDoAno, padraoDe } from './economia.ts';
 import { regraDaEmpresa } from './empresa.ts';
+import { confortoDosBens, regraDosBens } from './bens.ts';
+import { regraDaCarreira } from './carreira.ts';
+import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
@@ -26,6 +29,7 @@ import {
   IDADE_MAXIMA,
   PATRIMONIO_CONFORTO,
   CONFORTO_FELICIDADE,
+  PESO_CONFORTO_BENS,
   PESO_VINCULO_FELICIDADE,
   TETO_VINCULO_FELICIDADE,
   PRIVACAO_FELICIDADE,
@@ -62,6 +66,13 @@ export interface OpcoesNascimento {
 
 // ---------------------------------------------------------------- nascimento
 
+/** Os textos de nascimento que a origem permite; os de uma linhagem (que pedem a qualidade dela) passam na frente. */
+function textosDeNascimento(e: EstadoVida, c: Conteudo): Conteudo['mundo']['nascimento'] {
+  const possiveis = c.mundo.nascimento.filter((n) => atende(n.se, e));
+  const proprios = possiveis.filter((n) => (n.se?.marcas?.length ?? 0) > 0);
+  return proprios.length > 0 ? proprios : possiveis;
+}
+
 export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   const rng = criarRng(op.semente);
   const genero: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
@@ -94,7 +105,7 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
     ano: op.ano,
     tipo: 'nascimento',
     causa: 'nascimento',
-    texto: renderizar(sortear(rng, c.mundo.nascimento.filter((n) => atende(n.se, e))).texto, contexto(e)),
+    texto: renderizar(sortear(rng, textosDeNascimento(e, c)).texto, contexto(e)),
   });
   return e;
 }
@@ -109,7 +120,9 @@ export function felicidadeDeBase(e: EstadoVida, c: Conteudo): number {
   const media = vinculos.length > 0 ? vinculos.reduce((s, v) => s + v, 0) / vinculos.length : 30;
   // O padrão de vida só pesa para quem já se sustenta (antes dos 18, a família decide).
   const padrao = e.idade >= 18 ? FELICIDADE_DO_PADRAO[padraoDe(e)] : 0;
-  return FELICIDADE_BASE + (traco?.base ?? 0) + padrao + (Math.min(media, TETO_VINCULO_FELICIDADE) - 50) * PESO_VINCULO_FELICIDADE;
+  // A casa onde mora, o carro, o iate: os bens de quem joga deixam a vida mais confortável (com teto).
+  const bens = PESO_CONFORTO_BENS * confortoDosBens(e, c);
+  return FELICIDADE_BASE + (traco?.base ?? 0) + padrao + bens + (Math.min(media, TETO_VINCULO_FELICIDADE) - 50) * PESO_VINCULO_FELICIDADE;
 }
 
 function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
@@ -149,6 +162,7 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   const mercado = mercadoDoAno(e, c, fase.id, regAno);
   const ano = economiaDoAno(e, e.rng, regAno, fase, mercado);
   regraDaEmpresa(e, c, fase, regAno);
+  regraDosBens(e, c, regAno);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {
     somar(e, regAno, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');
@@ -159,6 +173,8 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   envelhecer(e, c, regAno);
   regrasDosPersonagens(e, c, regAno, fase);
   regraDoTrabalho(e, c, fase, regAno);
+  regraDaCarreira(e, c, regAno);
+  regraDoPoder(e, c, fase, regAno);
   regraDoPadrao(e, c, ano.deficit);
   e.somaFelicidade += eu.n['felicidade'] ?? 0;
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
