@@ -1,0 +1,773 @@
+[
+  {
+    "id": "empresa_quebrou",
+    "apenasAgendado": true,
+    "condicoes": { "empresa.valor": true },
+    "tensao": 3,
+    "repetivel": true,
+    "intervalo": 2,
+    "texto": "A {empresa} chegou no osso: [o caixa zerou|o banco cortou o crédito|o maior cliente sumiu sem pagar]. O contador mandou um áudio de seis minutos que, resumido, diz \"fecha\".",
+    "resumo": "viu a própria empresa chegar no osso",
+    "escolhas": [
+      {
+        "texto": "Pôr dinheiro do bolso",
+        "resumo": "pôs dinheiro do bolso para salvar a empresa",
+        "condicoes": { "dinheiro": { "min": 20000 } },
+        "bloqueio": "não tem R$ 20 mil na conta",
+        "efeitos": { "dinheiro": -20000, "empresa.valor": 20000 },
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O dinheiro segurou as pontas até o movimento voltar. Você nunca mais reclamou de segunda-feira.",
+          "resumo": "salvou a própria empresa com dinheiro do bolso",
+          "efeitos": { "empresa.tracao": 3, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O dinheiro sumiu no buraco junto com o resto. A empresa fechou meses depois, com você devendo ao fornecedor.",
+          "resumo": "perdeu o que pôs para salvar a própria empresa",
+          "efeitos": { "fecharEmpresa": { "sobra": 0 }, "divida": 10000, "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Fechar as portas",
+        "resumo": "fechou a própria empresa",
+        "resultado": {
+          "texto": "Você baixou a porta, devolveu a chave do ponto e guardou o carimbo numa gaveta. Empresa fechada não manda boleto; a saudade manda.",
+          "efeitos": { "fecharEmpresa": { "sobra": 0 }, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Pedir recuperação judicial",
+        "resumo": "pediu recuperação judicial da própria empresa",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Credores, advogados e um plano de pagamento em sessenta vezes. A empresa sobreviveu, menor e vigiada.",
+          "efeitos": { "empresa.valor": 12000, "empresa.tracao": -2, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "O juiz negou o plano. A empresa fechou, e o processo ficou.",
+          "resumo": "viu a própria empresa fechar mesmo com a recuperação judicial",
+          "efeitos": { "fecharEmpresa": { "sobra": 0 }, "divida": 5000, "felicidade": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "primeiro_funcionario",
+    "idade": [18, 75],
+    "condicoes": { "empresa.idade": { "max": 4 }, "empresa.valor": { "min": 20000 } },
+    "peso": 3,
+    "texto": "A {empresa} cresceu o suficiente para você não dar conta sozinh{o|a}. [Uma prima|Um vizinho|Uma ex-colega de escola] quer a vaga, e chegou também o currículo bom de um desconhecido.",
+    "resumo": "contratou a primeira pessoa da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Contratar o currículo bom",
+        "resumo": "contratou um desconhecido de currículo bom",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Ele sabia mais do que você em metade das coisas e admitia a outra metade. A empresa andou.",
+          "efeitos": { "empresa.tracao": 3, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "O currículo era melhor do que a pessoa. Três meses depois, a vaga estava aberta de novo.",
+          "efeitos": { "empresa.tracao": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Contratar quem é de casa",
+        "resumo": "contratou alguém da família para a empresa",
+        "resultado": {
+          "texto": "A contratação mais rápida da história do RH. E a mais difícil de demitir.",
+          "efeitos": { "empresa.tracao": 1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Seguir fazendo tudo sozinh{o|a}",
+        "resumo": "seguiu tocando a empresa sozinh{o|a}",
+        "resultado": {
+          "texto": "Você economizou o salário e gastou o sono. A empresa cresce até onde dois braços alcançam.",
+          "efeitos": { "empresa.tracao": -2, "saude": -1, "dinheiro": 6000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "investidor_anjo",
+    "idade": [18, 70],
+    "condicoes": {
+      "empresa.valor": { "min": 30000, "max": 3000000 },
+      "empresa.tracao": { "min": 12 },
+      "empresa.participacao": { "min": 0.6 }
+    },
+    "peso": 4,
+    "texto": "Um investidor-anjo [de camisa polo e sapatênis|que fala \"escalar\" a cada frase|que chegou de patinete elétrico] quer pôr dinheiro na {empresa} em troca de 20%. \"Eu não invisto em empresas, invisto em pessoas\", diz, olhando o celular.",
+    "resumo": "recebeu a proposta de um investidor-anjo",
+    "escolhas": [
+      {
+        "texto": "Aceitar o dinheiro",
+        "resumo": "aceitou um investidor-anjo na empresa",
+        "resultado": {
+          "texto": "Entraram {rodada} no caixa. Agora você tem dinheiro para crescer e alguém para dar satisfação toda segunda.",
+          "efeitos": { "rodada": { "parte": 0.2 }, "empresa.tracao": 4 }
+        }
+      },
+      {
+        "texto": "Pedir mais e ceder menos",
+        "resumo": "negociou duro com um investidor-anjo",
+        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Ele riu, pensou e topou. Entraram {rodada} por um pedaço menor da empresa.",
+          "resumo": "arrancou um bom acordo de um investidor-anjo",
+          "efeitos": { "rodada": { "parte": 0.12 }, "empresa.tracao": 3 }
+        },
+        "fracasso": {
+          "texto": "Ele levantou, agradeceu o café e foi investir no concorrente.",
+          "resumo": "perdeu um investidor-anjo por pedir demais",
+          "efeitos": { "empresa.tracao": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Recusar e crescer devagar",
+        "resumo": "recusou um investidor-anjo",
+        "resultado": {
+          "texto": "Você agradeceu e seguiu com o próprio dinheiro. Cresce mais devagar, mas a empresa é toda sua.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rodada_grande",
+    "idade": [20, 75],
+    "condicoes": { "empresa.valor": { "min": 3000000, "max": 500000000 }, "empresa.tracao": { "min": 10 } },
+    "peso": 4,
+    "texto": "Um fundo de investimento quer liderar uma rodada na {empresa}: muito dinheiro por um quarto dela, com [um assento no conselho|metas trimestrais|um diretor financeiro que nunca sorri] de brinde.",
+    "resumo": "recebeu a proposta de uma rodada de investimento",
+    "escolhas": [
+      {
+        "texto": "Recusar e manter o controle",
+        "resumo": "recusou uma rodada de investimento",
+        "resultado": {
+          "texto": "Você ficou com a empresa inteira e com o crescimento no ritmo que o caixa deixa.",
+          "efeitos": { "empresa.tracao": -1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Aceitar a rodada",
+        "resumo": "aceitou um fundo de investimento na empresa",
+        "resultado": {
+          "texto": "Entraram {rodada}. A empresa ganhou andar novo, metas novas e um quadro com a palavra \"cultura\" na parede.",
+          "efeitos": { "rodada": { "parte": 0.25 }, "empresa.tracao": 6, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Vender um pedaço da sua parte",
+        "resumo": "vendeu um pedaço da própria empresa para um fundo",
+        "resultado": {
+          "texto": "Em vez de dinheiro novo na empresa, dinheiro no seu bolso: você vendeu um pedaço da sua parte por {venda}.",
+          "efeitos": { "venderEmpresa": { "fracao": 0.2, "premio": 1.2 }, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "abrir_capital",
+    "idade": [25, 85],
+    "condicoes": { "empresa.valor": { "min": 400000000 }, "semMarcas": ["empresa.na_bolsa"] },
+    "peso": 5,
+    "texto": "Os bancos dizem que a {empresa} já pode abrir capital: [sino tocado na bolsa|foto da família no telão|um prospecto de quatrocentas páginas]. Vender ações ao público rende uma fortuna, e um mundo de olhos em cima.",
+    "resumo": "teve a chance de levar a própria empresa para a bolsa",
+    "escolhas": [
+      {
+        "texto": "Abrir capital",
+        "resumo": "levou a própria empresa para a bolsa",
+        "resultado": {
+          "texto": "No dia da estreia, a ação subiu. Você vendeu um pedaço por {venda} e passou a explicar o balanço para gente que nunca viu a empresa por dentro.",
+          "efeitos": {
+            "empresaFator": 1.3,
+            "venderEmpresa": { "fracao": 0.2 },
+            "marcas": ["empresa.na_bolsa"],
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Continuar fechada",
+        "resumo": "não quis levar a empresa para a bolsa",
+        "resultado": {
+          "texto": "A empresa segue sua, sem balanço público nem acionista reclamando no fórum da internet.",
+          "efeitos": { "felicidade": 1, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "acionistas_furiosos",
+    "idade": [25, 90],
+    "condicoes": { "marcas": ["empresa.na_bolsa"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "As ações da {empresa} caíram [trinta|quarenta|cinquenta] por cento em um mês. No fórum de investidores, seu nome virou xingamento; na assembleia, pauta.",
+    "resumo": "viu as ações da própria empresa despencarem",
+    "escolhas": [
+      {
+        "texto": "Aguentar firme",
+        "resumo": "aguentou firme quando as ações da empresa despencaram",
+        "resultado": {
+          "texto": "Você não vendeu nada e falou de longo prazo em todas as entrevistas. Uma hora o mercado esquece.",
+          "efeitos": { "felicidade": -2, "empresa.tracao": 1 }
+        }
+      },
+      {
+        "texto": "Vender tudo antes que caia mais",
+        "resumo": "vendeu a parte na empresa no meio da queda",
+        "resultado": {
+          "texto": "Você vendeu a sua parte por {venda}, abaixo do que valia no mês passado. Dorme melhor; lê menos jornal.",
+          "efeitos": { "venderEmpresa": { "fracao": 1, "premio": 0.8 }, "marcas": ["vendeu_empresa"], "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Trocar o presidente",
+        "resumo": "deixou a presidência da própria empresa",
+        "resultado": {
+          "texto": "Você virou presidente do conselho, contratou um executivo de mercado e parou de ler o fórum. Quase parou.",
+          "efeitos": { "empresa.tracao": 2, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "proposta_de_compra",
+    "idade": [25, 88],
+    "condicoes": { "empresa.valor": { "min": 500000 }, "empresa.tracao": { "min": 6 } },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "Um grupo [estrangeiro|de São Paulo|de investidores de sobrenome difícil|do agronegócio] quer comprar a {empresa} inteira, por bem mais do que ela vale no papel. A proposta tem prazo: até sexta.",
+    "resumo": "recebeu uma oferta para vender a própria empresa",
+    "escolhas": [
+      {
+        "texto": "Recusar",
+        "resumo": "recusou vender a própria empresa",
+        "resultado": {
+          "texto": "Você disse que a {empresa} não estava à venda. O grupo comprou o concorrente na semana seguinte.",
+          "efeitos": { "empresa.tracao": 1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Vender tudo",
+        "resumo": "vendeu a própria empresa por uma fortuna",
+        "resultado": {
+          "texto": "Você assinou, recebeu {venda} e saiu do prédio com uma caixa de papelão e um sorriso que não cabia nela.",
+          "efeitos": { "venderEmpresa": { "fracao": 1, "premio": 1.5 }, "marcas": ["vendeu_empresa"], "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "concorrente_gigante",
+    "idade": [20, 78],
+    "condicoes": { "empresa.valor": { "min": 50000, "max": 100000000 } },
+    "peso": 3,
+    "texto": "Uma rede gigante abriu [do outro lado da rua|um aplicativo que faz o mesmo que a {empresa}|uma filial na sua cidade] cobrando preço de custo. Os clientes começaram a perguntar se você \"cobre a oferta\".",
+    "resumo": "viu um concorrente gigante chegar",
+    "escolhas": [
+      {
+        "texto": "Apostar no que ela não faz",
+        "resumo": "apostou no que o concorrente gigante não fazia",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Atendimento pelo nome, entrega no mesmo dia, cafezinho de cortesia: a {empresa} virou o lugar onde o gigante não chega.",
+          "resumo": "venceu um concorrente gigante no detalhe",
+          "efeitos": { "empresa.tracao": 5, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A aposta não pegou. O gigante nem percebeu que você existia, e esse foi o problema.",
+          "resumo": "perdeu clientes para um concorrente gigante",
+          "efeitos": { "empresaFator": 0.7, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Baixar os preços",
+        "resumo": "baixou os preços para enfrentar o concorrente",
+        "resultado": {
+          "texto": "Você segurou os clientes e passou a trabalhar mais para ganhar menos.",
+          "efeitos": { "empresaFator": 0.85, "empresa.tracao": 2, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Vender para ela",
+        "resumo": "vendeu a empresa para o concorrente gigante",
+        "resultado": {
+          "texto": "A rede comprou a {empresa} por {venda}, trocou a placa e manteve você por três meses de transição.",
+          "efeitos": {
+            "venderEmpresa": { "fracao": 1, "premio": 0.9 },
+            "marcas": ["vendeu_empresa"],
+            "felicidade": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "processo_trabalhista",
+    "idade": [20, 85],
+    "condicoes": { "empresa.valor": { "min": 100000 } },
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "Um ex-funcionário da {empresa} entrou na Justiça do Trabalho por [horas extras que ninguém anotou|um acidente na entrega|um gerente que gritava]. O advogado diz que dá para brigar, mas que a audiência vai demorar.",
+    "resumo": "enfrentou um processo trabalhista na própria empresa",
+    "escolhas": [
+      {
+        "texto": "Brigar até o fim",
+        "resumo": "brigou na Justiça do Trabalho até o fim",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Ganhou. Levou três anos e um advogado teimoso, mas ganhou.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Perdeu, com juros, correção e honorários.",
+          "resumo": "perdeu um processo trabalhista",
+          "efeitos": { "empresa.valor": -90000, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer acordo",
+        "resumo": "fez acordo num processo trabalhista",
+        "resultado": {
+          "texto": "Acordo na primeira audiência. O cheque saiu do caixa, e a dor de cabeça também.",
+          "efeitos": { "empresa.valor": -30000 }
+        }
+      },
+      {
+        "texto": "Acordo e mudar as regras",
+        "resumo": "fez acordo e mudou o jeito de tratar a equipe",
+        "resultado": {
+          "texto": "Você fez o acordo e mudou o resto: banco de horas, equipamento novo, gerente novo. O clima melhorou, e a produtividade também.",
+          "efeitos": { "empresa.valor": -30000, "empresa.tracao": 1.5, "felicidade": 1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fiscalizacao",
+    "idade": [22, 85],
+    "condicoes": { "empresa.valor": { "min": 20000 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "Chegou fiscalização na {empresa}: [a Receita achou uma nota que não foi emitida|a vigilância sanitária achou um extintor vencido|o fiscal do trabalho pediu o ponto de três anos atrás]. A multa é salgada.",
+    "resumo": "levou uma multa da fiscalização na própria empresa",
+    "escolhas": [
+      {
+        "texto": "Recorrer",
+        "resumo": "recorreu de uma multa da fiscalização",
+        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "O recurso derrubou metade da multa. Burocracia também tem brecha.",
+          "efeitos": { "empresa.valor": -6000, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "O recurso perdeu, e a multa voltou com juros.",
+          "efeitos": { "empresa.valor": -25000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pagar e acertar tudo",
+        "resumo": "pagou a multa e acertou a empresa",
+        "resultado": {
+          "texto": "Você pagou, trocou de contador e nunca mais deixou uma nota para depois.",
+          "efeitos": { "empresa.valor": -12000, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "burnout_empresa",
+    "idade": [22, 80],
+    "condicoes": { "empresa.valor": true, "saude": { "max": 45 } },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "Você passou mal no meio de uma reunião da {empresa}. O médico olha os exames e pergunta há quanto tempo você não tira férias. Você não lembra.",
+    "resumo": "passou mal de tanto tocar a empresa",
+    "escolhas": [
+      {
+        "texto": "Tirar uma semana e voltar",
+        "resumo": "tirou uma semana de folga da empresa",
+        "resultado": {
+          "texto": "Uma semana na praia com o celular desligado. Quase desligado.",
+          "efeitos": { "saude": 2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Contratar um diretor e se afastar",
+        "resumo": "contratou um diretor para tocar a empresa",
+        "resultado": {
+          "texto": "Um diretor de terno assumiu o dia a dia. A empresa cresce um pouco menos; você dorme um pouco mais.",
+          "efeitos": { "empresa.tracao": -3, "saude": 6, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Vender e viver",
+        "resumo": "vendeu a empresa para cuidar da saúde",
+        "resultado": {
+          "texto": "Você vendeu a {empresa} por {venda} e descobriu que a vida tem sábado.",
+          "efeitos": { "venderEmpresa": { "fracao": 1 }, "marcas": ["vendeu_empresa"], "saude": 4, "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dez_anos_de_empresa",
+    "idade": [25, 95],
+    "condicoes": {
+      "marcaHa": [{ "marca": "empresa.fundada", "min": 10, "max": 12 }],
+      "empresa.valor": { "min": 300000 }
+    },
+    "peso": 4,
+    "texto": "A {empresa} fez dez anos. [Teve bolo com o logotipo.|A equipe gravou um vídeo com depoimentos.|Um cliente antigo mandou flores.] Hoje ela vale {empresa.valor} e dá emprego para {empresa.funcionarios} pessoas.",
+    "resumo": "comemorou dez anos da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Comemorar trabalhando",
+        "resumo": "comemorou dez anos de empresa com reunião de metas",
+        "resultado": {
+          "texto": "Você comemorou com uma reunião de metas. A equipe comemorou o fim da reunião.",
+          "efeitos": { "empresa.tracao": 2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Dar uma festa para a equipe",
+        "resumo": "deu uma festa de dez anos da empresa",
+        "resultado": {
+          "texto": "Teve churrasco, sorteio de brindes e um discurso seu que fez gente chorar. Inclusive você.",
+          "efeitos": { "dinheiro": -10000, "felicidade": 3, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "capa_de_revista",
+    "idade": [25, 95],
+    "condicoes": { "empresa.valor": { "min": 5000000000 } },
+    "peso": 5,
+    "texto": "Uma revista de negócios pôs você na capa: a {empresa} passou de R$ 5 bilhões. [Seu tio imprimiu a capa e emoldurou.|O grupo da família mandou figurinha de unicórnio.|Um ex-professor mandou mensagem dizendo que sempre soube.]",
+    "resumo": "virou capa de revista com a própria empresa",
+    "escolhas": [
+      {
+        "texto": "Recusar os holofotes",
+        "resumo": "recusou dar entrevista para a capa de revista",
+        "resultado": {
+          "texto": "Você mandou dizer que não comenta. A revista publicou mesmo assim, com a sua foto do crachá.",
+          "efeitos": { "felicidade": 2, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Dar a entrevista",
+        "resumo": "deu entrevista para a capa de uma revista de negócios",
+        "resultado": {
+          "texto": "Você falou de resiliência, propósito e de acordar às cinco. Acordou às sete.",
+          "efeitos": { "aparencia": 2, "felicidade": 4, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "retirada_demais",
+    "idade": [22, 85],
+    "condicoes": { "empresa.retirada": { "min": 0.05 }, "empresa.valor": { "min": 50000 } },
+    "peso": 3,
+    "texto": "O financeiro da {empresa} pede uma conversa: com o tanto que você tira todo ano, [a máquina nova não sai|não sobra para contratar|o concorrente está passando na frente].",
+    "resumo": "ouviu que tirava dinheiro demais da empresa",
+    "escolhas": [
+      {
+        "texto": "Continuar tirando",
+        "resumo": "continuou tirando dinheiro da empresa",
+        "resultado": {
+          "texto": "Você disse que empresa existe para dar lucro ao dono. O financeiro anotou e foi atualizar o currículo.",
+          "efeitos": { "felicidade": 1, "empresa.tracao": -2 }
+        }
+      },
+      {
+        "texto": "Reinvestir tudo por um tempo",
+        "resumo": "parou de tirar dinheiro da empresa",
+        "resultado": {
+          "texto": "Você cortou a própria retirada. A empresa respirou, e o seu extrato sentiu.",
+          "efeitos": { "empresa.retirada": { "definir": 0 }, "empresa.tracao": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ano_de_prejuizo",
+    "idade": [22, 85],
+    "condicoes": { "empresa.lucro": { "max": -1 }, "empresa.valor": { "min": 20000 } },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "O balanço da {empresa} fechou no vermelho: [um ano ruim|um contrato que deu errado|uma aposta que não pagou]. O contador pergunta se você quer cortar ou insistir.",
+    "resumo": "viu a própria empresa fechar o ano no prejuízo",
+    "escolhas": [
+      {
+        "texto": "Insistir no plano",
+        "resumo": "insistiu no plano depois de um ano de prejuízo",
+        "resultado": {
+          "texto": "Você dobrou a aposta. Se der certo, foi visão; se der errado, foi teimosia.",
+          "efeitos": { "empresa.tracao": 2, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Cortar custos",
+        "resumo": "cortou custos depois de um ano de prejuízo",
+        "resultado": {
+          "texto": "Você cortou o cafezinho, a sala de reunião e duas pessoas. O balanço melhorou; o clima, não.",
+          "efeitos": { "empresaFator": 1.05, "empresa.tracao": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pôr dinheiro seu",
+        "resumo": "pôs dinheiro do bolso na empresa no prejuízo",
+        "condicoes": { "dinheiro": { "min": 20000 } },
+        "bloqueio": "não tem R$ 20 mil na conta",
+        "resultado": {
+          "texto": "Você tirou da conta e pôs no caixa. Dinheiro de dono, risco de dono.",
+          "efeitos": { "dinheiro": -20000, "empresa.valor": 20000, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "funcionario_genial",
+    "idade": [22, 80],
+    "condicoes": { "empresa.valor": { "min": 200000 }, "empresa.participacao": { "min": 0.3 } },
+    "texto": "A melhor pessoa da {empresa} é [uma engenheira|um vendedor|uma programadora|um gerente de loja] que entende do negócio mais do que você. Um concorrente ofereceu o dobro do salário.",
+    "resumo": "teve que decidir como segurar a melhor pessoa da empresa",
+    "escolhas": [
+      {
+        "texto": "Deixar ir",
+        "resumo": "deixou a melhor pessoa da empresa ir para o concorrente",
+        "resultado": {
+          "texto": "Foi, levou dois clientes e mandou cartão de Natal.",
+          "efeitos": { "empresa.tracao": -2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Cobrir a oferta",
+        "resumo": "cobriu a oferta do concorrente",
+        "resultado": {
+          "texto": "Você cobriu a oferta. Ficou, mas agora sabe quanto vale.",
+          "efeitos": { "empresa.valor": -20000, "empresa.tracao": 1 }
+        }
+      },
+      {
+        "texto": "Dar sociedade",
+        "resumo": "deu sociedade para a melhor pessoa da empresa",
+        "resultado": {
+          "texto": "Você ofereceu um pedaço da empresa. Ficou, e passou a chegar antes de você.",
+          "efeitos": { "empresa.participacao": -0.05, "empresa.tracao": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "expandir_na_alta",
+    "idade": [22, 72],
+    "condicoes": {
+      "empresa.valor": { "min": 500000, "max": 2000000000 },
+      "empresa.tracao": { "min": 8 },
+      "marcas": ["pais.expansao"]
+    },
+    "peso": 3,
+    "texto": "Com o país crescendo, a {empresa} pode [abrir filial em outra capital|começar a exportar|comprar a concorrente pequena do bairro]. Precisa de dinheiro e de coragem, nessa ordem.",
+    "resumo": "teve a chance de expandir a empresa na economia aquecida",
+    "escolhas": [
+      {
+        "texto": "Crescer só com o caixa",
+        "resumo": "cresceu a empresa só com o caixa",
+        "resultado": {
+          "texto": "Devagar e sempre. A empresa cresce no ritmo do caixa, e você dorme no ritmo do relógio.",
+          "efeitos": { "empresa.tracao": 1 }
+        }
+      },
+      {
+        "texto": "Expandir com empréstimo",
+        "resumo": "expandiu a empresa com dinheiro do banco",
+        "efeitos": { "divida": 150000, "empresa.valor": 150000 },
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "A expansão pegou e a filial pagou o empréstimo antes do prazo.",
+          "resumo": "expandiu a empresa e deu certo",
+          "efeitos": { "empresa.tracao": 5, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A expansão encalhou, e o banco não esqueceu de você.",
+          "resumo": "expandiu a empresa na hora errada",
+          "efeitos": { "empresaFator": 0.75, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Expandir com dinheiro próprio",
+        "resumo": "expandiu a empresa com dinheiro próprio",
+        "condicoes": { "dinheiro": { "min": 100000 } },
+        "bloqueio": "não tem R$ 100 mil na conta",
+        "resultado": {
+          "texto": "A filial abriu com fila na porta. Você decorou o caminho do aeroporto.",
+          "efeitos": { "dinheiro": -100000, "empresa.valor": 100000, "empresa.tracao": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crise_no_setor",
+    "idade": [20, 85],
+    "condicoes": { "empresa.valor": { "min": 30000 }, "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "a crise" }, { "texto": "a recessão" }] },
+    "texto": "Com {fase}, as vendas da {empresa} caíram [pela metade|a um terço|ao nível de dez anos atrás]. Os sócios, o banco e o espelho perguntam a mesma coisa: e agora?",
+    "resumo": "viu a própria empresa afundar com {fase}",
+    "escolhas": [
+      {
+        "texto": "Segurar todo mundo",
+        "resumo": "segurou a equipe inteira na crise",
+        "resultado": {
+          "texto": "Você segurou a equipe com o caixa e com fé. Quando a economia voltar, eles vão lembrar.",
+          "efeitos": { "empresaFator": 0.75, "empresa.tracao": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Demitir e encolher",
+        "resumo": "demitiu e encolheu a empresa na crise",
+        "resultado": {
+          "texto": "Você demitiu gente boa numa sexta-feira e encolheu para caber na crise.",
+          "efeitos": { "empresaFator": 0.85, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Comprar concorrentes quebrados",
+        "resumo": "comprou concorrentes quebrados na crise",
+        "condicoes": { "dinheiro": { "min": 100000 } },
+        "bloqueio": "não tem R$ 100 mil na conta",
+        "resultado": {
+          "texto": "Você comprou dois concorrentes pela metade do preço. Crise para uns, liquidação para outros.",
+          "efeitos": { "dinheiro": -100000, "empresa.valor": 140000, "empresa.tracao": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "produto_viralizou",
+    "idade": [18, 75],
+    "condicoes": {
+      "empresa.setor": ["tecnologia", "cultura", "comercio"],
+      "empresa.valor": { "min": 20000, "max": 50000000 }
+    },
+    "peso": 3,
+    "texto": "Um influenciador mostrou o produto da {empresa} num vídeo e ele viralizou. Em dois dias, o site caiu três vezes e o número de clientes multiplicou por dez.",
+    "resumo": "viu o produto da própria empresa viralizar",
+    "escolhas": [
+      {
+        "texto": "Cobrar mais caro",
+        "resumo": "subiu o preço quando o produto viralizou",
+        "resultado": {
+          "texto": "Fila de espera, preço novo e ninguém reclamou. Por enquanto.",
+          "efeitos": { "empresaFator": 1.3, "empresa.tracao": 1 }
+        }
+      },
+      {
+        "texto": "Virar a noite para aguentar",
+        "resumo": "virou noites para aguentar o produto que viralizou",
+        "resultado": {
+          "texto": "Você e a equipe viraram três noites seguidas. O site aguentou; a sua coluna, não.",
+          "efeitos": { "empresa.tracao": 6, "saude": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "safra_da_fazenda",
+    "idade": [20, 85],
+    "condicoes": { "empresa.setor": "agro", "empresa.valor": true },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Choveu na hora certa e a {empresa} bateu recorde de safra. [O preço da saca subiu junto.|O silo encheu antes do previsto.|O vizinho veio perguntar o segredo.]",
+    "resumo": "viu a própria fazenda bater recorde de safra",
+    "escolhas": [
+      {
+        "texto": "Comprar mais terra",
+        "resumo": "comprou mais terra com a safra recorde",
+        "resultado": {
+          "texto": "Você comprou a fazenda do lado e um chapéu novo. Terra não se fabrica mais, diz o corretor.",
+          "efeitos": { "empresaFator": 1.1, "empresa.tracao": 2 }
+        }
+      },
+      {
+        "texto": "Dividir com a equipe",
+        "resumo": "dividiu o lucro da safra recorde com a equipe",
+        "resultado": {
+          "texto": "Bônus para todo mundo e churrasco no galpão. A equipe nunca trabalhou tão feliz na colheita seguinte.",
+          "efeitos": { "empresaFator": 1.05, "empresa.tracao": 1, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Guardar o lucro",
+        "resumo": "guardou o lucro da safra recorde",
+        "resultado": {
+          "texto": "O dinheiro ficou no caixa, esperando o ano em que não chove.",
+          "efeitos": { "empresaFator": 1.15 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "depois_da_venda",
+    "idade": [30, 85],
+    "condicoes": {
+      "marcaHa": [{ "marca": "vendeu_empresa", "min": 1, "max": 6 }],
+      "empresa.valor": false,
+      "patrimonio": { "min": 100000 }
+    },
+    "peso": 4,
+    "texto": "Desde que vendeu a empresa, você [reorganizou a garagem três vezes|aprendeu a fazer pão de fermentação natural|virou especialista em previsão do tempo]. O dinheiro está rendendo; você, nem tanto.",
+    "resumo": "sentiu falta de ter uma empresa",
+    "escolhas": [
+      {
+        "texto": "Aproveitar a vida",
+        "resumo": "decidiu aproveitar a vida depois de vender a empresa",
+        "resultado": {
+          "texto": "Você viajou, dormiu, leu e descobriu que o tédio passa na segunda semana.",
+          "efeitos": { "felicidade": 4, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Virar investidor-anjo",
+        "resumo": "virou investidor-anjo",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "Das dez empresas em que você pôs dinheiro, uma deu muito certo e pagou as outras nove.",
+          "resumo": "acertou uma em dez como investidor-anjo",
+          "efeitos": { "patrimonioFator": 1.3, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Das dez empresas em que você pôs dinheiro, nove fecharam e uma virou consultoria.",
+          "efeitos": { "patrimonioFator": 0.9, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Abrir outra empresa",
+        "resumo": "abriu outra empresa depois de vender a primeira",
+        "resultado": {
+          "texto": "Você abriu a {empresa} com {capital} e voltou a acordar antes do despertador, feliz da vida.",
+          "efeitos": {
+            "abrirEmpresa": { "copiarSetor": "eu.setor", "fracao": 0.25 },
+            "felicidade": 3,
+            "empresa.tracao": 2
+          }
+        }
+      }
+    ]
+  }
+]

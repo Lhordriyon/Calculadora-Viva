@@ -168,7 +168,12 @@
         "sucesso": {
           "texto": "O primo rodou, o carro se pagou e você virou \"empresário de frota\" no grupo da família. Dois carros, uma planilha.",
           "resumo": "montou uma frota de aplicativo que deu certo",
-          "efeitos": { "rendaFator": 1.4, "marcas": ["empreendedor"], "felicidade": 2 }
+          "efeitos": {
+            "rendaFator": 1.4,
+            "marcas": ["empreendedor"],
+            "felicidade": 2,
+            "abrirEmpresa": { "setor": "transporte", "valor": 40000 }
+          }
         },
         "fracasso": {
           "texto": "O primo bateu o carro no segundo mês. O seguro não cobriu, e o primo sumiu do grupo da família.",
@@ -341,7 +346,12 @@
         "sucesso": {
           "texto": "Você juntou três conhecidos, comprou uma betoneira usada e virou \"empreiteiro\". O telefone não para.",
           "resumo": "abriu a própria equipe de obra no boom",
-          "efeitos": { "rendaFator": 1.6, "marcas": ["empreendedor"], "felicidade": 3 }
+          "efeitos": {
+            "rendaFator": 1.6,
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "felicidade": 3,
+            "abrirEmpresa": { "setor": "construcao", "valor": 30000 }
+          }
         },
         "fracasso": {
           "texto": "A primeira obra atrasou, a segunda não pagou e a terceira nunca começou. A betoneira foi vendida pela metade.",

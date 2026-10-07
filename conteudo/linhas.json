@@ -604,5 +604,45 @@
     "idade": [20, 95],
     "texto": "[Repetiu, sem perceber, uma frase que era de quem veio antes. A família toda riu.|Passou pela rua da casa antiga da família e diminuiu o passo.|No almoço de domingo, alguém contou uma história do avô que ninguém conhecia.]",
     "condicoes": { "dinastia": { "min": 2 } }
+  },
+  {
+    "idade": [25, 95],
+    "texto": "A {empresa} lucrou {empresa.lucro} no ano. Você comemorou conferindo o extrato duas vezes.",
+    "condicoes": { "empresa.lucro": { "min": 100000 } }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "O contador da {empresa} disse que o ano foi \"desafiador\". Contador só diz isso quando foi ruim.",
+    "condicoes": { "empresa.lucro": { "max": -1 } }
+  },
+  {
+    "idade": [25, 95],
+    "texto": "O gerente do banco agora liga no seu aniversário. É o que acontece quando a {empresa} vale {empresa.valor}.",
+    "condicoes": { "empresa.valor": { "min": 5000000 } }
+  },
+  {
+    "idade": [20, 80],
+    "texto": "Mais um ano tirando o próprio salário da {empresa}. Patr{ão|oa} de si mesm{o|a}, funcionári{o|a} do boleto.",
+    "condicoes": { "marcas": ["empresa.sustenta"] }
+  },
+  {
+    "idade": [25, 95],
+    "texto": "As ações da {empresa} subiram, desceram e subiram de novo. Você parou de olhar a cotação no almoço. Quase.",
+    "condicoes": { "marcas": ["empresa.na_bolsa"] }
+  },
+  {
+    "idade": [30, 95],
+    "texto": "Desde que vendeu a empresa, você acorda às sete sem despertador. Às sete e cinco, já está entediad{o|a}.",
+    "condicoes": { "marcas": ["vendeu_empresa"], "empresa.valor": false }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "Na reunião de condomínio, alguém pediu emprego na {empresa}. Você anotou o telefone e mudou de assunto.",
+    "condicoes": { "empresa.valor": { "min": 300000 } }
+  },
+  {
+    "idade": [20, 85],
+    "texto": "Você sonhou com planilha de novo. A {empresa} invade até o sono.",
+    "condicoes": { "empresa.tracao": { "min": 15 } }
   }
 ]

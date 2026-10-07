@@ -95,7 +95,12 @@
         "sucesso": {
           "texto": "Com a rescisão você abriu [uma lanchonete|uma loja de bairro|um pequeno escritório]. Deu certo, e agora o chefe é você.",
           "resumo": "foi demitid{o|a} e virou patr{ão|oa} de si mesm{o|a}",
-          "efeitos": { "renda": { "definir": 55000 }, "felicidade": 6, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "renda": { "definir": 55000 },
+            "felicidade": 6,
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "abrirEmpresa": { "setor": "comercio", "valor": 25000 }
+          }
         },
         "fracasso": {
           "texto": "O negócio fechou em um ano. A rescisão foi junto, e deixou recado.",
@@ -235,8 +240,9 @@
           "efeitos": {
             "renda": { "definir": 70000 },
             "felicidade": 6,
-            "marcas": ["socio", "empreendedor"],
-            "eu.setor": { "definir": "comercio" }
+            "marcas": ["socio", "empreendedor", "empresa.sustenta"],
+            "eu.setor": { "definir": "comercio" },
+            "abrirEmpresa": { "setor": "comercio", "valor": 80000, "participacao": 0.5 }
           }
         },
         "fracasso": {
@@ -793,8 +799,9 @@
             "renda": { "definir": 45000 },
             "felicidade": 6,
             "removerMarcas": ["profissional"],
-            "marcas": ["empreendedor"],
-            "eu.setor": { "definir": "educacao" }
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "eu.setor": { "definir": "educacao" },
+            "abrirEmpresa": { "setor": "educacao", "valor": 20000 }
           }
         }
       },

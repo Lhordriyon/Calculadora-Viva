@@ -15,7 +15,12 @@
         "sucesso": {
           "texto": "A pousada lotou da primeira temporada em diante. Você aprendeu a dizer \"welcome\" com sotaque e a cobrar em dólar.",
           "resumo": "virou sóci{o|a} de uma pousada que deu certo",
-          "efeitos": { "renda": 24000, "felicidade": 4, "marcas": ["socio"] }
+          "efeitos": {
+            "renda": 24000,
+            "felicidade": 4,
+            "marcas": ["socio"],
+            "abrirEmpresa": { "setor": "servicos", "valor": 60000, "participacao": 0.5 }
+          }
         },
         "fracasso": {
           "texto": "Choveu a temporada inteira e o sócio descobriu que não gostava de acordar cedo. A pousada virou casa de veraneio de alguém.",

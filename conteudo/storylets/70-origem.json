@@ -506,11 +506,12 @@
         "resultado": {
           "texto": "Você já conhecia cada prateleira. Trocou o caderno de fiados por aplicativo e os clientes antigos reclamaram, mas voltaram.",
           "efeitos": {
-            "marcas": ["herdeiro_negocio"],
+            "marcas": ["herdeiro_negocio", "empresa.sustenta"],
             "renda": { "definir": 110000 },
             "ator.vinculo": 12,
             "inteligencia": 1,
-            "eu.setor": { "copiar": "ator.setor" }
+            "eu.setor": { "copiar": "ator.setor" },
+            "abrirEmpresa": { "copiarSetor": "ator.setor", "fracao": 0.4, "de": "ator" }
           }
         }
       },
@@ -520,11 +521,12 @@
         "resultado": {
           "texto": "Você ganhou a chave, o caderno de fiados e funcionários que te viram nascer.",
           "efeitos": {
-            "marcas": ["herdeiro_negocio"],
+            "marcas": ["herdeiro_negocio", "empresa.sustenta"],
             "renda": { "definir": 80000 },
             "ator.vinculo": 12,
             "felicidade": -1,
-            "eu.setor": { "copiar": "ator.setor" }
+            "eu.setor": { "copiar": "ator.setor" },
+            "abrirEmpresa": { "copiarSetor": "ator.setor", "fracao": 0.4, "de": "ator" }
           }
         }
       },
@@ -545,7 +547,7 @@
     "tensao": 2,
     "repetivel": true,
     "intervalo": 8,
-    "valores": { "valor_venda": 250000, "aporte": 30000 },
+    "valores": { "aporte": 30000 },
     "texto": "O negócio da família está no vermelho: [a inflação comeu a margem|um concorrente abriu do lado|o principal cliente parou de pagar]. O contador fala em \"medidas duras\".",
     "resumo": "viu o negócio da família entrar em crise",
     "escolhas": [
@@ -571,12 +573,12 @@
         "texto": "Vender o negócio",
         "resumo": "vendeu o negócio da família",
         "resultado": {
-          "texto": "Você vendeu por {valor_venda}, menos do que valia e mais do que esperava.",
+          "texto": "Você vendeu por {venda}, menos do que valia e mais do que esperava.",
           "efeitos": {
-            "dinheiro": 250000,
             "removerMarcas": ["herdeiro_negocio"],
             "renda": { "definir": 30000 },
-            "felicidade": -2
+            "felicidade": -2,
+            "venderEmpresa": { "fracao": 1, "premio": 0.7 }
           }
         }
       }
@@ -751,7 +753,13 @@
         "sucesso": {
           "texto": "[O restaurante|O posto de gasolina|A loja de material de construção] deu certo desde o primeiro mês. Os parentes passaram a te chamar de empresári{o|a}, com uma ponta de inveja.",
           "resumo": "multiplicou a herança num negócio próprio",
-          "efeitos": { "patrimonioFator": 1.6, "renda": 40000, "felicidade": 5, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "patrimonioFator": 1.6,
+            "renda": 40000,
+            "felicidade": 5,
+            "marcas": ["empreendedor"],
+            "abrirEmpresa": { "setor": "comercio", "fracao": 0.4 }
+          }
         },
         "fracasso": {
           "texto": "O negócio comeu a herança em dois anos: aluguel, funcionários, fornecedor e um sócio que entendia de tudo, menos do negócio.",
@@ -1027,9 +1035,10 @@
           "efeitos": {
             "renda": 60000,
             "patrimonioFator": 1.8,
-            "marcas": ["empreendedor"],
+            "marcas": ["empreendedor", "empresa.sustenta"],
             "felicidade": 6,
-            "eu.setor": { "definir": "comercio" }
+            "eu.setor": { "definir": "comercio" },
+            "abrirEmpresa": { "setor": "comercio", "valor": 200000, "participacao": 0.5 }
           }
         },
         "fracasso": {
@@ -1048,7 +1057,8 @@
             "renda": 15000,
             "marcas": ["empreendedor"],
             "felicidade": 3,
-            "eu.setor": { "definir": "comercio" }
+            "eu.setor": { "definir": "comercio" },
+            "abrirEmpresa": { "setor": "comercio", "valor": 40000, "participacao": 0.3 }
           }
         },
         "fracasso": {

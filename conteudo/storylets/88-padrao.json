@@ -276,7 +276,12 @@
         "sucesso": {
           "texto": "A loja encheu desde a inauguração. Você virou dono{|a} de um negócio que funciona até quando você dorme, e você quase não dorme.",
           "resumo": "abriu uma franquia que deu certo",
-          "efeitos": { "renda": 60000, "felicidade": 3, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "renda": 60000,
+            "felicidade": 3,
+            "marcas": ["empreendedor"],
+            "abrirEmpresa": { "setor": "comercio", "valor": 150000 }
+          }
         },
         "fracasso": {
           "texto": "O ponto era ruim, a franqueadora mudou as regras e a concorrência abriu do lado. A loja fechou com estoque e dívida.",

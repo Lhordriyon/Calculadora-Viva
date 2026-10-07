@@ -239,9 +239,20 @@
     "verbo": "trabalhar",
     "rotulo": "tocar a empresa até tarde",
     "idade": [22, 75],
-    "condicoes": { "algumaMarca": ["empreendedor", "socio", "herdeiro_negocio"] },
-    "texto": "Você virou noites na empresa, [refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente]. [O mês fechou no azul.|O mês fechou, e é isso que importa.]",
+    "condicoes": { "empresa.valor": true },
+    "texto": "Você virou noites na {empresa}, [refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente]. [O mês fechou no azul.|O mês fechou, e é isso que importa.]",
     "resumo": "tocou a empresa até tarde",
+    "efeitos": { "empresa.tracao": 1.5, "saude": -0.4, "felicidade": -0.5 }
+  },
+  {
+    "id": "tocar_o_negocio",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "tocar o negócio até tarde",
+    "idade": [22, 75],
+    "condicoes": { "algumaMarca": ["empreendedor", "socio", "herdeiro_negocio"], "empresa.valor": false },
+    "texto": "Você virou noites no negócio, [refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente]. [O mês fechou no azul.|O mês fechou, e é isso que importa.]",
+    "resumo": "tocou o negócio até tarde",
     "efeitos": { "dinheiro": 10000, "saude": -0.4, "felicidade": -0.5 }
   },
   {

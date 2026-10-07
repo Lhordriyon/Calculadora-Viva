@@ -68,5 +68,6 @@
   "padrao_alto": {
     "porAno": { "felicidade": 0.5 },
     "epitafio": "Viveu no padrão que achava que merecia e mandou a conta para o futuro."
-  }
+  },
+  "vendeu_empresa": { "epitafio": "Fundou, cresceu e vendeu na hora certa: o tipo de sorte que dá trabalho." }
 }

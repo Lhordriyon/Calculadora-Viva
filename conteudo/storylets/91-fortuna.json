@@ -103,7 +103,12 @@
         "sucesso": {
           "texto": "O negócio deu tão certo que o ditado ganhou uma quarta linha: neto empreendedor.",
           "resumo": "multiplicou a fortuna da família",
-          "efeitos": { "patrimonioFator": 1.6, "felicidade": 4, "marcas": ["empreendedor"] }
+          "efeitos": {
+            "patrimonioFator": 1.6,
+            "felicidade": 4,
+            "marcas": ["empreendedor"],
+            "abrirEmpresa": { "setor": "industria", "fracao": 0.5 }
+          }
         },
         "fracasso": {
           "texto": "O negócio engoliu metade da fortuna em três anos. O ditado, infelizmente, estava certo de novo.",

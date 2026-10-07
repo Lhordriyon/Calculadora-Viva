@@ -820,8 +820,13 @@
         "texto": "Vender o negócio",
         "resumo": "vendeu o negócio da família",
         "resultado": {
-          "texto": "Você assinou, apertou mãos e viu a placa com o sobrenome da família ser trocada por um logotipo. O dinheiro caiu; a ficha, só depois.",
-          "efeitos": { "dinheiro": 180000, "removerMarcas": ["herdeiro_negocio"], "felicidade": -1, "mae.vinculo": -5 }
+          "texto": "Você assinou, apertou mãos e viu a placa com o sobrenome da família ser trocada por um logotipo. Caíram {venda} na conta; a ficha, só depois.",
+          "efeitos": {
+            "removerMarcas": ["herdeiro_negocio"],
+            "felicidade": -1,
+            "mae.vinculo": -5,
+            "venderEmpresa": { "fracao": 1, "premio": 1.3 }
+          }
         }
       },
       {

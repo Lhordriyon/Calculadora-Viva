@@ -734,8 +734,9 @@
           "efeitos": {
             "renda": { "definir": 50000 },
             "felicidade": 6,
-            "marcas": ["empreendedor"],
-            "eu.setor": { "definir": "comercio" }
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "eu.setor": { "definir": "comercio" },
+            "abrirEmpresa": { "setor": "comercio", "valor": 30000 }
           }
         },
         "fracasso": {
@@ -764,8 +765,9 @@
           "efeitos": {
             "renda": { "definir": 55000 },
             "felicidade": 8,
-            "marcas": ["empreendedor"],
-            "eu.setor": { "definir": "comercio" }
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "eu.setor": { "definir": "comercio" },
+            "abrirEmpresa": { "setor": "comercio", "valor": 40000 }
           }
         },
         "fracasso": {

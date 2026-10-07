@@ -378,8 +378,9 @@
           "texto": "Uma sala alugada, um quadro branco e as mães do bairro fazendo propaganda de graça.",
           "efeitos": {
             "renda": { "definir": 40000 },
-            "marcas": ["empreendedor"],
-            "eu.setor": { "definir": "educacao" }
+            "marcas": ["empreendedor", "empresa.sustenta"],
+            "eu.setor": { "definir": "educacao" },
+            "abrirEmpresa": { "setor": "educacao", "valor": 10000 }
           }
         }
       }
@@ -670,7 +671,8 @@
           "efeitos": {
             "removerMarcas": ["empreendedor", "socio", "herdeiro_negocio"],
             "renda": { "definir": 0 },
-            "felicidade": -4
+            "felicidade": -4,
+            "fecharEmpresa": { "sobra": 0.1 }
           }
         }
       }

@@ -742,7 +742,7 @@
         "resultado": {
           "texto": "A separação foi civilizada, na medida do possível. A divisão dos bens levou {transferido} e o sofá.",
           "efeitos": {
-            "transferir": { "de": "eu", "para": "ator", "fracao": 0.35, "max": 800000 },
+            "transferir": { "de": "eu", "para": "ator", "fracao": 0.35 },
             "removerMarcas": ["namoro", "casado"],
             "marcas": ["separado"],
             "felicidade": -6

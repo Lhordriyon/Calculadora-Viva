@@ -51,7 +51,7 @@
       {
         "texto": "Processar e ir atrás",
         "resumo": "processou quem sumiu com o dinheiro da empresa",
-        "efeitos": { "patrimonioFator": 0.5, "dinheiro": -15000 },
+        "efeitos": { "patrimonioFator": 0.5, "dinheiro": -15000, "empresaFator": 0.6 },
         "teste": { "chance": 0.35 },
         "sucesso": {
           "texto": "Três anos de processo e um advogado teimoso depois, a justiça bloqueou os bens do fugitivo. Parte do dinheiro voltou.",
@@ -73,7 +73,8 @@
             "patrimonioFator": 0.5,
             "removerMarcas": ["socio", "empreendedor"],
             "renda": { "definir": 0 },
-            "felicidade": -4
+            "felicidade": -4,
+            "fecharEmpresa": { "sobra": 0 }
           }
         }
       }
@@ -134,7 +135,8 @@
             "removerMarcas": ["herdeiro_negocio"],
             "renda": { "definir": 0 },
             "divida": 80000,
-            "felicidade": -6
+            "felicidade": -6,
+            "fecharEmpresa": { "sobra": 0 }
           }
         }
       },
@@ -143,19 +145,19 @@
         "resumo": "pediu recuperação judicial do negócio da família",
         "resultado": {
           "texto": "Advogados, credores e uma assembleia num hotel de beira de estrada. O negócio sobreviveu, encolhido e sob vigilância.",
-          "efeitos": { "rendaFator": 0.5, "felicidade": -4 }
+          "efeitos": { "rendaFator": 0.5, "felicidade": -4, "empresaFator": 0.5 }
         }
       },
       {
         "texto": "Vender a preço de banana",
         "resumo": "vendeu o negócio da família na crise",
         "resultado": {
-          "texto": "Um grupo grande comprou tudo por uma fração do que valia. Você ficou com o dinheiro e com a culpa dos almoços de domingo.",
+          "texto": "Um grupo grande comprou tudo por {venda}, uma fração do que valia. Você ficou com o dinheiro e com a culpa dos almoços de domingo.",
           "efeitos": {
-            "dinheiro": 120000,
             "removerMarcas": ["herdeiro_negocio"],
             "renda": { "definir": 0 },
-            "felicidade": -2
+            "felicidade": -2,
+            "venderEmpresa": { "fracao": 1, "premio": 0.4 }
           }
         }
       }
