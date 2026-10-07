@@ -117,6 +117,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['empresa.valor', 'empresa.tracao', 'empresa.setor', 'empresa.participacao', 'empresa.retirada'], 'empresa: crescimento, retirada, patrimônio e quebra', true),
   ...ler(['empresa.fundada'], 'empresa: a fundação é a causa da quebra', false),
   ...ler(['empresa.sustenta'], 'empresa: fechar ou vender a que sustentava quem joga leva a renda junto', true),
+  ...ler(['eu.testamento_solidario'], 'dinastia: um quarto do espólio vai para a causa do testamento', true),
   ...ler(['eu.traco'], 'felicidade de base', false),
   ...ler(['eu.familia'], 'equilíbrio do vínculo', false),
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),

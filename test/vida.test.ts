@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { acoesPossiveis } from '../src/motor/acoes.ts';
+import { acoesPossiveis, jaAgiu } from '../src/motor/acoes.ts';
+import { fichasDoAno } from '../src/motor/regras.ts';
 import { ATIVOS, ATRIBUTOS } from '../src/motor/constantes.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
@@ -138,6 +139,25 @@ describe('ficha do ano', () => {
     expect(() => agir(e, real, possiveis[0]!.verbo)).toThrow();
     avancarAno(e, real);
     if (!e.pendente) expect(acoesPossiveis(e, real).length).toBeGreaterThan(0);
+  });
+
+  it('dos 18 aos 40, duas fichas por ano, cada uma num verbo diferente', () => {
+    const e = nascer(real, { semente: 33, ano: 2026 });
+    const robo = criarRng(5);
+    while (e.vivo && e.idade < 25) passo(e, real, robo, 'cautelosa');
+    while (e.pendente) escolher(e, real, 0);
+    const antes = acoesPossiveis(e, real);
+    expect(antes.length).toBeGreaterThanOrEqual(2);
+    agir(e, real, antes[0]!.verbo);
+    expect(jaAgiu(e)).toBe(false);
+    const depois = acoesPossiveis(e, real);
+    expect(depois.map((a) => a.verbo)).not.toContain(antes[0]!.verbo);
+    expect(() => agir(e, real, antes[0]!.verbo)).toThrow();
+    agir(e, real, depois[0]!.verbo);
+    expect(jaAgiu(e)).toBe(true);
+    expect(acoesPossiveis(e, real)).toEqual([]);
+    expect(fichasDoAno(17)).toBe(1);
+    expect(fichasDoAno(41)).toBe(1);
   });
 
   it('o botão mostra o que vai acontecer: o verbo escolhe sempre a mesma ação para o mesmo estado', () => {

@@ -6,6 +6,7 @@
  * do mundo (o pai que perdeu o emprego, a avó que morreu).
  */
 import { patrimonioTotal } from './campos.ts';
+import { herdeiroPossivel } from './herdeiro.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
@@ -50,7 +51,7 @@ export function descendentes(historico: Entrada[]): Map<number, Set<number>> {
   return resultado;
 }
 
-const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto', 'eu.divida']);
+const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto', 'eu.divida', 'empresa.valor']);
 
 /** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda, vínculos, morte. */
 export function impacto(h: Entrada): number {
@@ -161,8 +162,8 @@ export interface ResumoVida {
   /** Geração da família (1 = quem nasceu do zero) e quem veio antes. */
   geracao: number;
   antepassados: Antepassado[];
-  /** Quem pode continuar a história (filho ou filha viva), com a idade de agora. */
-  herdeiro: { nome: string; idade: number; genero: Genero } | null;
+  /** Quem pode continuar a história (filho ou filha viva; sem filho, sobrinho ou sobrinha), com a idade de agora. */
+  herdeiro: { nome: string; idade: number; genero: Genero; parentesco: 'filho' | 'sobrinho' } | null;
 }
 
 /** "família pobre e acolhedora", "classe média, família religiosa". */
@@ -210,8 +211,8 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     geracao: e.dinastia?.geracao ?? 1,
     antepassados: e.dinastia?.antepassados ?? [],
     herdeiro: (() => {
-      const f = e.entidades['filho'];
-      return !e.vivo && f && f.vivo !== false && f.nascimento !== undefined ? { nome: f.nome, idade: e.ano - f.nascimento, genero: f.genero ?? 'm' } : null;
+      const h = herdeiroPossivel(e, c);
+      return h ? { nome: h.nome, idade: e.ano - h.nascimento, genero: h.genero, parentesco: h.parentesco } : null;
     })(),
   };
 }

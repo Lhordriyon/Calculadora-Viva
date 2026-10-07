@@ -15,6 +15,7 @@ import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { validarConteudo } from '../src/motor/validacao.ts';
 import { avancarAno, morrer, nascer } from '../src/motor/vida.ts';
+import { pontosDeVirada } from '../src/motor/virada.ts';
 import { passo } from './apoio.ts';
 
 const c = carregarConteudo();
@@ -235,6 +236,22 @@ describe('a empresa na vida inteira', () => {
         expect(Math.abs((soma.get(`empresa.${campo}`) ?? 0) - (emp?.n[campo] ?? 0)), `${campo} (vida ${i})`).toBeLessThan(2);
       }
     }
+  });
+
+  it('o que a empresa causa descende da fundação, e abrir a empresa vira ponto de virada', () => {
+    let vidas = 0;
+    let viradas = 0;
+    for (let i = 0; i < 10; i++) {
+      const e = vidaComEmpresa(misturar(41, i));
+      const fundacao = e.historico.find((h) => h.ref === 'empresa:abrir');
+      if (!fundacao) continue;
+      vidas++;
+      expect(e.historico.some((h) => h.tipo !== 'regra' && h.causas?.includes(fundacao.id)), `vida ${i}`).toBe(true);
+      if (pontosDeVirada(e).some((p) => p.origemId === fundacao.id)) viradas++;
+    }
+    expect(vidas).toBeGreaterThanOrEqual(6);
+    // Empresa que não saiu do lugar não é virada; a que cresceu costuma ser.
+    expect(viradas).toBeGreaterThanOrEqual(2);
   });
 
   it('mesma semente e mesmas decisões dão a mesma empresa, mesmo salvando no meio', () => {

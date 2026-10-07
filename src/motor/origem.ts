@@ -24,6 +24,8 @@ const REGIOES: Record<string, string> = {
   ES: 'sudeste', MG: 'sudeste', RJ: 'sudeste', SP: 'sudeste',
   PR: 'sul', RS: 'sul', SC: 'sul',
 };
+/** As regiões que um lugar pode ter (`lugar.regiao`). */
+export const REGIOES_DO_BRASIL: readonly string[] = [...new Set(Object.values(REGIOES))];
 /** Desemprego de referência por região (taxa anual). */
 const DESEMPREGO: Record<string, number> = { norte: 0.09, nordeste: 0.11, centro_oeste: 0.065, sudeste: 0.075, sul: 0.055 };
 

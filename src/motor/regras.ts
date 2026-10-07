@@ -4,14 +4,28 @@
  */
 import type { Padrao } from './constantes.ts';
 
-/** Chance de um ano trazer evento (se houver evento elegível), por idade. */
+/**
+ * Chance de um ano trazer evento (se houver evento elegível), por idade. A
+ * vida adulta é a mais cheia: é onde se escolhe trabalho, amor, filhos,
+ * empresa e dinheiro, e um ano vazio ali é um ano que o jogador não viveu.
+ */
 export function ritmo(idade: number): number {
   if (idade <= 4) return 0.3;
-  if (idade <= 12) return 0.5;
-  if (idade <= 29) return 0.65;
-  if (idade <= 49) return 0.5;
-  if (idade <= 64) return 0.45;
-  return 0.35;
+  if (idade <= 12) return 0.55;
+  if (idade <= 29) return 0.85;
+  if (idade <= 49) return 0.78;
+  if (idade <= 64) return 0.68;
+  return 0.52;
+}
+
+/**
+ * Fichas do ano: quantas ações quem joga pode fazer antes de o ano passar.
+ * Dos 18 aos 40, duas (estudar e trabalhar, tocar a empresa e ver a
+ * família): é quando a vida pede mais de uma coisa por ano. Fora disso, uma.
+ * Cada ficha gasta um verbo diferente.
+ */
+export function fichasDoAno(idade: number): number {
+  return idade >= 18 && idade <= 40 ? 2 : 1;
 }
 
 /** Risco anual de morte natural: curva de Gompertz ajustada pela saúde. */
@@ -69,12 +83,12 @@ export const GASTO_DA_SOBRA: Record<Padrao, number> = { simples: 0.35, confortav
 export const FELICIDADE_DO_PADRAO: Record<Padrao, number> = { simples: -3, confortavel: 0, luxo: 3 };
 /**
  * Quem tem patrimônio gasta parte dele por ano, pelo padrão de vida (a casa
- * maior, as viagens, o motorista): nada para quem vive simples, 1% no
- * confortável, 3% no luxo, só sobre o que passa de R$ 500 mil (fora a
+ * maior, as viagens, o motorista): nada para quem vive simples, 2% no
+ * confortável, 4% no luxo, só sobre o que passa de R$ 500 mil (fora a
  * empresa, que não paga conta). É o que faz uma fortuna encolher na mão de
  * quem só gasta, e o que separa a dinastia que dura da que acaba.
  */
-export const GASTO_DO_PATRIMONIO: Record<Padrao, number> = { simples: 0, confortavel: 0.01, luxo: 0.03 };
+export const GASTO_DO_PATRIMONIO: Record<Padrao, number> = { simples: 0, confortavel: 0.02, luxo: 0.04 };
 export const PATRIMONIO_SEM_GASTO = 500_000;
 /** Baixar o padrão dói na hora (o carro menor, o clube que ficou para trás). */
 export const CORTE_DE_PADRAO_FELICIDADE = 3;

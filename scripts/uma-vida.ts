@@ -1,5 +1,6 @@
 /** npm run vida -- [semente] [estrategia]: imprime uma vida inteira jogada por um robô. */
 import { carregarConteudo } from './disco.ts';
+import { jaAgiu } from '../src/motor/acoes.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
 import { decidir, decidirAcao, ESTRATEGIAS, type Estrategia } from '../src/motor/robos.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -18,8 +19,7 @@ while (e.vivo) {
     escolher(e, c, decidir(estrategia, e, c, robo));
     continue;
   }
-  const verbo = decidirAcao(estrategia, e, c, robo);
-  if (verbo) agir(e, c, verbo);
+  for (let verbo = decidirAcao(estrategia, e, c, robo); verbo && e.vivo; verbo = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, verbo);
   if (e.vivo) avancarAno(e, c);
 }
 const eu = e.entidades['eu']!;

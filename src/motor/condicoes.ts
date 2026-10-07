@@ -142,7 +142,10 @@ function qualidadesExigidas(cond: Condicoes, e: EstadoVida, ator: string | undef
 export function causasDe(cond: Condicoes | undefined, e: EstadoVida, ator?: string): number[] {
   if (!cond) return [];
   const causas: number[] = [];
-  for (const m of new Set(qualidadesExigidas(cond, e, ator))) {
+  const consultadas = new Set(qualidadesExigidas(cond, e, ator));
+  // Ler a empresa é consultar a fundação: o que acontece com ela descende de quem a abriu.
+  if (Object.keys(cond).some((k) => k.startsWith('empresa.')) && tem(e, 'empresa.fundada')) consultadas.add('empresa.fundada');
+  for (const m of consultadas) {
     const causa = qualidadeDe(e, m, ator)?.causa;
     if (causa !== undefined && causa !== null) causas.push(causa);
   }

@@ -4,6 +4,8 @@
  * daquele verbo que mais combina com o estado (a mais específica; entre
  * iguais, a menos repetida). Só aparecem os verbos com alguma ação possível.
  * A escolha é determinística: o botão mostra exatamente o que vai acontecer.
+ * Dos 18 aos 40 há duas fichas por ano (regras.ts › fichasDoAno), uma por
+ * verbo diferente.
  */
 import { causasDe, clausulas } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -11,6 +13,7 @@ import { VERBOS, type Verbo } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { preferidos } from './diretor.ts';
 import type { Storylet } from './esquema.ts';
+import { fichasDoAno } from './regras.ts';
 import { criarRng } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel, instanciaDe } from './storylets.ts';
 import { renderizar } from './texto.ts';
@@ -60,19 +63,36 @@ export function melhorAcao(e: EstadoVida, c: Conteudo, verbo: Verbo): AcaoPossiv
   return melhor ? { verbo, s: melhor.s, ator: melhor.ator } : null;
 }
 
-/** A ficha do ano já foi gasta (há uma ação registrada nesta idade). */
-export function jaAgiu(e: EstadoVida): boolean {
+/** Os verbos já usados neste ano (as ações registradas nesta idade). */
+export function verbosDoAno(e: EstadoVida, c: Conteudo): Set<Verbo> {
+  const usados = new Set<Verbo>();
   for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.idade === e.idade; i--) {
-    if (e.historico[i]!.tipo === 'acao') return true;
+    const h = e.historico[i]!;
+    const verbo = h.tipo === 'acao' && h.ref ? c.porId.get(h.ref)?.verbo : undefined;
+    if (verbo) usados.add(verbo);
   }
-  return false;
+  return usados;
+}
+
+/** Quantas fichas deste ano já foram gastas. */
+export function fichasUsadas(e: EstadoVida): number {
+  let n = 0;
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.idade === e.idade; i--) if (e.historico[i]!.tipo === 'acao') n++;
+  return n;
+}
+
+/** As fichas do ano acabaram. */
+export function jaAgiu(e: EstadoVida): boolean {
+  return fichasUsadas(e) >= fichasDoAno(e.idade);
 }
 
 /** Os verbos disponíveis agora, cada um com a ação que faria (sem os textos da interface). */
 export function acoesPossiveis(e: EstadoVida, c: Conteudo): AcaoPossivel[] {
   if (!e.vivo || e.pendente || jaAgiu(e)) return [];
+  const usados = verbosDoAno(e, c);
   const saida: AcaoPossivel[] = [];
   for (const verbo of VERBOS) {
+    if (usados.has(verbo)) continue;
     const a = melhorAcao(e, c, verbo);
     if (a) saida.push(a);
   }
@@ -90,10 +110,11 @@ export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJo
   }));
 }
 
-/** Gasta a ficha do ano no verbo. Devolve a entrada da ação. */
+/** Gasta uma ficha do ano no verbo. Devolve a entrada da ação. */
 export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo): Entrada {
   if (!e.vivo || e.pendente) throw new Error('Agora não dá para agir.');
-  if (jaAgiu(e)) throw new Error('A ficha deste ano já foi usada.');
+  if (jaAgiu(e)) throw new Error('As fichas deste ano já foram usadas.');
+  if (verbosDoAno(e, c).has(verbo)) throw new Error('Esse verbo já foi usado este ano.');
   const a = melhorAcao(e, c, verbo);
   if (!a) throw new Error(`Não dá para ${verbo} agora.`);
   const repeticao = e.vistos[instanciaDe(a.s, a.ator)]?.at(-1) === e.idade - 1;

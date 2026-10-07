@@ -7,7 +7,8 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, PADROES, PAPEIS, PAPEIS_NOVOS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
+import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
@@ -171,6 +172,17 @@ function chavesDoManifesto(caminho: string): string[] {
   return [`${ent}.${campo}`];
 }
 
+/** Os valores possíveis de um campo de texto de vocabulário fechado (os outros, como ocupação e curso, são livres). */
+function valoresDe(c: Conteudo, ent: string, campo: string): Set<string> | null {
+  if (campo === 'regiao' && ent === 'lugar') return new Set(REGIOES_DO_BRASIL);
+  if (campo === 'setor') return new Set(c.mundo.setores.map((s) => s.id));
+  if (campo === 'padrao') return new Set(PADROES);
+  if (campo === 'perfil') return new Set(PERFIS);
+  if (campo === 'familia') return new Set(TIPOS_FAMILIA);
+  if (campo === 'traco') return new Set(ent === 'eu' ? c.mundo.tracosJogador.map((t) => t.id) : c.mundo.tracos.map((t) => t.id));
+  return null;
+}
+
 export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   const erro: Reporter = (onde, mensagem) => void problemas.push({ nivel: 'erro', onde, mensagem });
   const aviso: Reporter = (onde, mensagem) => void problemas.push({ nivel: 'aviso', onde, mensagem });
@@ -222,6 +234,10 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       const { ent, campo } = separar(chave);
       const def = defCampo(ent === 'ator' ? 'mae' : ent, campo);
       const tipo = typeof pedido === 'boolean' ? 'bool' : typeof pedido === 'string' || Array.isArray(pedido) ? 'texto' : 'faixa';
+      const validos = valoresDe(c, ent, campo);
+      if (validos && tipo === 'texto') {
+        for (const v of [pedido].flat() as string[]) if (!validos.has(v)) erro(onde, `"${chave}": valor desconhecido "${v}" (vale ${[...validos].join(', ')})`);
+      }
       if (def?.tipo === 'num' && tipo === 'texto') erro(onde, `"${chave}" é número; use { min, max }`);
       if (def?.tipo === 'texto' && tipo === 'faixa') erro(onde, `"${chave}" é texto; use "valor" ou ["a", "b"]`);
       if (!def && tipo === 'texto') erro(onde, `"${chave}" é qualidade; use true/false ou { min, max }`);

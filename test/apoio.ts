@@ -6,6 +6,7 @@ import { operar } from '../src/motor/carteira.ts';
 import { decidir, decidirAcao, decidirDinheiro, type Estrategia } from '../src/motor/robos.ts';
 import { criarRng, type Rng } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
+import { jaAgiu } from '../src/motor/acoes.ts';
 import { agir, avancarAno, escolher } from '../src/motor/vida.ts';
 
 export function conteudoCom(storylets: unknown[], marcas: Record<string, unknown> = {}): Conteudo {
@@ -24,9 +25,9 @@ export function passo(e: EstadoVida, c: Conteudo, robo: Rng, estrategia: Estrate
     return;
   }
   for (const op of decidirDinheiro(estrategia, e, c, robo)) operar(e, c, op);
-  const verbo = decidirAcao(estrategia, e, c, robo);
-  if (verbo) agir(e, c, verbo);
-  if (e.vivo) avancarAno(e, c);
+  // Dos 18 aos 40, duas fichas: o robô pode agir de novo antes de o ano passar.
+  for (let verbo = decidirAcao(estrategia, e, c, robo); verbo && e.vivo && !e.pendente; verbo = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, verbo);
+  if (e.vivo && !e.pendente) avancarAno(e, c);
 }
 
 export function viverAteOFim(e: EstadoVida, c: Conteudo, semente = 1, estrategia: Estrategia = 'aleatoria'): EstadoVida {
