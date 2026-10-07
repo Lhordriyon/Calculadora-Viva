@@ -1,4 +1,5 @@
 import { useEffect } from 'preact/hooks';
+import { LINK_APK, NO_APP } from './formato.ts';
 
 interface Props {
   viva: boolean;
@@ -25,6 +26,11 @@ export function Menu({ viva, aoFechar, aoNovaVida }: Props) {
           <button class="botao secundario" type="button" onClick={aoNovaVida}>
             Começar outra vida
           </button>
+          {!NO_APP && (
+            <a class="botao secundario" href={LINK_APK}>
+              Baixar o app para Android
+            </a>
+          )}
         </div>
       </div>
     </div>

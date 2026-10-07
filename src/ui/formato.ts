@@ -3,6 +3,12 @@ import type { Atributo } from '../motor/esquema.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { Entrada } from '../motor/tipos.ts';
 
+/** O APK do app Android: o CI publica um novo a cada atualização da main, sempre neste link. */
+export const LINK_APK = 'https://github.com/Lhordriyon/Calculadora-Viva/releases/download/android/Trajetoria.apk';
+
+/** Dentro do app Android o jogo roda em https://localhost (no navegador, no endereço do GitHub Pages). */
+export const NO_APP = typeof location !== 'undefined' && location.protocol === 'https:' && location.hostname === 'localhost';
+
 export const NOMES: Record<Atributo, string> = {
   saude: 'Saúde',
   felicidade: 'Felicidade',

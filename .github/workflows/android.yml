@@ -1,0 +1,48 @@
+name: App Android
+
+# A cada atualização da main, gera o APK do jogo e troca o arquivo do link fixo:
+# https://github.com/<dono>/<repositório>/releases/download/android/Trajetoria.apk
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: Gerar o APK e atualizar o link de download
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - name: Montar o jogo dentro do projeto Android
+        run: npm run build:android
+      - name: Compilar o APK (assinado, versão = número da build)
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon -PversionCode=${{ github.run_number }} -PversionName=1.${{ github.run_number }}
+      - name: Publicar no link fixo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk Trajetoria.apk
+          notas="Versão 1.${{ github.run_number }} (commit ${GITHUB_SHA::7}). No celular: toque em Trajetoria.apk, abra o arquivo e confirme a instalação. Para atualizar, baixe de novo e instale por cima: a vida salva continua."
+          if ! gh release view android > /dev/null 2>&1; then
+            gh release create android --title "Trajetória para Android" --notes "$notas" --latest
+          fi
+          gh release upload android Trajetoria.apk --clobber
+          gh release edit android --notes "$notas" --latest

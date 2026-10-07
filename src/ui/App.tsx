@@ -18,6 +18,7 @@ import { Familia } from './Familia.tsx';
 import { LinhaDoTempo } from './LinhaDoTempo.tsx';
 import { Menu } from './Menu.tsx';
 import { Palco } from './Palco.tsx';
+import { NO_APP } from './formato.ts';
 
 function sementeNova(): number {
   try {
@@ -28,6 +29,8 @@ function sementeNova(): number {
 }
 
 const endereco = (() => {
+  // No app Android o endereço é local: o cartão mostra onde jogar no navegador.
+  if (NO_APP) return 'lhordriyon.github.io/Calculadora-Viva';
   try {
     const url = new URL(import.meta.env.BASE_URL, location.href);
     return `${url.host}${url.pathname}`.replace(/\/$/, '');

@@ -107,6 +107,10 @@ button {
   transition: transform 0.08s ease, background 0.15s ease;
 }
 
+a.botao {
+  text-decoration: none;
+}
+
 .botao:active {
   transform: scale(0.98);
 }

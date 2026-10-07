@@ -3,6 +3,7 @@ import type { TipoFamilia } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EscolhaOrigem } from '../motor/origem.ts';
 import { Marca } from './Marca.tsx';
+import { LINK_APK, NO_APP } from './formato.ts';
 
 interface Props {
   conteudo: Conteudo;
@@ -69,6 +70,11 @@ export function Abertura({ conteudo, vidas, aviso, aoNascer }: Props) {
         <button class="botao secundario" type="button" onClick={() => setEscolhendo(true)}>
           Escolher a origem
         </button>
+      )}
+      {!NO_APP && (
+        <a class="botao secundario" href={LINK_APK}>
+          Baixar o app para Android
+        </a>
       )}
     </main>
   );

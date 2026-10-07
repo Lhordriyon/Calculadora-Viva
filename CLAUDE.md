@@ -107,6 +107,7 @@ src/jogo/salvar.ts     save versionado no localStorage (zod/mini)
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
 src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, CartaoVida
 scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
+android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
 ```
 
@@ -122,6 +123,7 @@ Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteud
 | `npm run tunel` | 10.000 vidas simuladas → `docs/metricas.md`; falha se uma meta quebrar |
 | `npm run vida -- 42 cautelosa` | imprime uma vida inteira (semente e estratégia) |
 | `npm run icones` | redesenha os PNGs do PWA |
+| `npm run build:android` | monta o jogo para o app Android (`dist-android`) e copia para `android/`; o APK sai no CI (`.github/workflows/android.yml`) |
 
 Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apagável (sem `enum`, sem propriedades no construtor) e imports com `.ts`.
 
@@ -135,6 +137,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Conteúdo original, nenhum jogo citado; política fictícia e genérica | dono | identidade e risco legal |
 | pt-BR leve e irônico, Brasil real (ENEM, CLT, Pix, SUS…) | dono | o público se reconhece |
 | Mobile-first, uma mão, alvos ≥ 44px, claro e escuro | dono | é onde e como se joga |
+| APK Android com link de download no topo do README, atualizado a cada push na `main` | dono | instalar no celular sem procurar |
 | Sem backend; localStorage com versão de esquema; save antigo nunca trava | dono | custo zero e save que sobrevive a mudanças |
 | Nada quebrado na `main`; CI roda tudo; nada irreversível sem perguntar | dono | a `main` é o que o jogador recebe |
 | Vite + TS estrito + Preact + Vitest + Zod + vite-plugin-pwa; Pages via Actions | dono | pilha mínima e deploy automático |
