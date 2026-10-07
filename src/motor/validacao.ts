@@ -100,6 +100,24 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     if (ef.divida || ef.dividaFator !== undefined) out.push({ caminho: 'eu.divida', sistema: 'dinheiro' });
   }
   if (ef.renda !== undefined || ef.rendaFator !== undefined) out.push({ caminho: 'eu.renda', sistema: 'dinheiro' });
+  if (ef.abrirEmpresa) {
+    const a = ef.abrirEmpresa;
+    for (const campo of ['valor', 'participacao']) out.push({ caminho: `empresa.${campo}`, sistema: 'dinheiro' });
+    for (const campo of ['setor', 'tracao']) out.push({ caminho: `empresa.${campo}`, sistema: 'carreira' });
+    out.push({ caminho: 'empresa.fundada', sistema: 'historia' });
+    if (a.capital !== undefined || (a.fracao !== undefined && (a.de ?? 'eu') === 'eu')) {
+      out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, ...ATIVOS.map((x) => ({ caminho: `eu.${x}`, sistema: 'dinheiro' as Sistema })));
+    } else if (a.fracao !== undefined) {
+      for (const c of concretos(`${a.de}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
+    }
+  }
+  if (ef.empresaFator !== undefined) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' });
+  if (ef.rodada) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
+  if (ef.venderEmpresa || ef.fecharEmpresa) {
+    // Vender tudo ou fechar tira a empresa da vida (e a renda de quem vivia dela).
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
+    out.push({ caminho: 'eu.renda', sistema: 'dinheiro' }, ...['empreendedor', 'socio', 'herdeiro_negocio'].map((q) => ({ caminho: `eu.${q}`, sistema: 'historia' as Sistema })));
+  }
   if (ef.custo !== undefined || ef.custoFator !== undefined || ef.custoDoPatrimonio !== undefined) out.push({ caminho: 'eu.custo', sistema: 'dinheiro' });
   for (const chave of Object.keys(ef)) {
     if (!chave.includes('.')) continue;
@@ -334,7 +352,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const [chave, onde] of escritores) {
     const { ent, campo } = separar(chave);
     if (defCampo(ent, campo)?.derivado) continue;
-    if (!PAPEL_PESSOA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais') continue;
+    if (!PAPEL_PESSOA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais' && ent !== 'empresa') continue;
     const lista = leitores.get(chave) ?? [];
     const sistemas = new Set(lista.map((l) => l.sistema));
     const local = onde.find((o) => o !== 'motor') ?? onde[0]!;
@@ -397,13 +415,19 @@ function textosDe(s: Storylet): string[] {
   return t;
 }
 
-/** Qualidades que a condição garante que existem (as exigidas e as de marcaHa). */
+/** Marca de mentira que diz "a condição garante que existe empresa" (para o texto poder usar {empresa}). */
+const COM_EMPRESA = '@empresa';
+
+/** Qualidades que a condição garante que existem (as exigidas e as de marcaHa), mais a empresa, se ela é exigida. */
 function qualidadesGarantidas(cond: Condicoes | undefined): string[] {
-  return [...(cond?.marcas ?? []), ...(cond?.marcaHa ?? []).map((m) => m.marca)];
+  const marcas = [...(cond?.marcas ?? []), ...(cond?.marcaHa ?? []).map((m) => m.marca)];
+  // Qualquer condição sobre a empresa (menos "false") falha sem empresa: então ela garante a empresa.
+  const exige = marcas.some((m) => m.startsWith('empresa.')) || Object.entries(cond ?? {}).some(([k, v]) => k.startsWith('empresa.') && v !== false && v !== undefined);
+  return exige ? [...marcas, COM_EMPRESA] : marcas;
 }
 
 function criadosPor(ef: Efeitos | undefined): Set<string> {
-  return new Set([...(ef?.personagens ?? []), ...(ef?.promover ? [ef.promover.para] : [])]);
+  return new Set([...(ef?.personagens ?? []), ...(ef?.promover ? [ef.promover.para] : []), ...(ef?.abrirEmpresa ? ['empresa'] : [])]);
 }
 
 function verificarTextos(
@@ -415,7 +439,13 @@ function verificarTextos(
   aviso: Reporter,
 ): void {
   const extras = new Set([...Object.keys(s.valores ?? {}), ...Object.keys(s.trechos ?? {})]);
-  if (blocosDe(s, onde).some((b) => b.efeitos.transferir)) extras.add('transferido');
+  const blocos = blocosDe(s, onde);
+  if (blocos.some((b) => b.efeitos.transferir)) extras.add('transferido');
+  // Valores calculados pelos efeitos da empresa: com quanto ela abriu, quanto a rodada pôs, por quanto vendeu, o que sobrou.
+  if (blocos.some((b) => b.efeitos.abrirEmpresa)) extras.add('capital');
+  if (blocos.some((b) => b.efeitos.rodada)) extras.add('rodada');
+  if (blocos.some((b) => b.efeitos.venderEmpresa)) extras.add('venda');
+  if (blocos.some((b) => b.efeitos.fecharEmpresa)) extras.add('sobra');
   const exigidasStorylet = new Set(qualidadesGarantidas(s.condicoes));
   const usados = new Set<string>();
   const atores = s.ator;
@@ -472,7 +502,7 @@ function verificarModelo(
 ): string[] {
   const a = analisarModelo(texto);
   for (const m of a.erros) erro(onde, m);
-  const papeis = new Set<string>(PAPEIS);
+  const papeis = new Set<string>([...PAPEIS, 'empresa']);
   const globais = new Set<string>(VARIAVEIS_GLOBAIS);
   for (const v of a.variaveis) {
     if (v === 'ator') {
@@ -492,12 +522,16 @@ function verificarModelo(
     if (p === 'ator' ? !atores : !papeis.has(p)) erro(onde, `personagem desconhecido em {${p}:...}`);
   }
 
-  // Personagem criado no meio da vida só aparece em texto que exige a qualidade que o garante.
-  const novos = new Set<string>(PAPEIS_NOVOS);
+  // Personagem criado no meio da vida (e a empresa) só aparece em texto que exige a qualidade que o garante.
+  const novos = new Set<string>([...PAPEIS_NOVOS, 'empresa']);
   const usados = new Set([...a.variaveis.map((v) => separar(v.includes('.') ? v : `${v}.nome`).ent), ...a.concordancias]);
   if (usados.has('ator')) for (const p of atores ?? []) usados.add(p);
   for (const p of usados) {
     if (!novos.has(p) || criadosAqui.has(p) || atores?.includes(p)) continue;
+    if (p === 'empresa') {
+      if (!marcasExigidas.has(COM_EMPRESA)) erro(onde, 'usa {empresa} sem exigir a empresa (uma condição como "empresa.valor": true)');
+      continue;
+    }
     const garantidoras = marcasDoPapel.get(p) ?? new Set();
     if (![...marcasExigidas].some((m) => garantidoras.has(m))) {
       erro(onde, `usa {${p}} sem exigir uma qualidade que garanta esse personagem (${[...garantidoras].join(', ') || 'nenhuma'})`);

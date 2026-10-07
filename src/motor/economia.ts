@@ -10,12 +10,14 @@ import { anotar } from './livro.ts';
 import { normal, type Rng } from './rng.ts';
 import {
   GASTO_DA_SOBRA,
+  GASTO_DO_PATRIMONIO,
   IDADE_GASTO_VELHICE,
   INFLACAO_DESVIO,
   INFLACAO_MEDIA,
   JUROS_DIVIDA,
   LIMITE_CREDITO_MINIMO,
   LIMITE_CREDITO_RENDAS,
+  PATRIMONIO_SEM_GASTO,
   PROPENSAO_GASTO_ENDIVIDADO,
   gastoDaVelhice,
   pisoCusto,
@@ -119,7 +121,8 @@ export interface FaseEconomica {
 /**
  * Um ano de economia de quem joga. Da sobra do ano (renda menos custo), uma
  * parte vira gasto, conforme o padrão de vida (menos, para quem está
- * devendo). Déficit vira dívida só até o limite de crédito; acima dele, a
+ * devendo); quem tem patrimônio também gasta uma parte dele, pelo mesmo
+ * padrão. Déficit vira dívida só até o limite de crédito; acima dele, a
  * dívida congela e o resto do déficit vira privação.
  */
 export function economiaDoAno(
@@ -161,10 +164,9 @@ export function economiaDoAno(
       privacao = coberto < -sobra;
     }
   }
-  if (e.idade >= IDADE_GASTO_VELHICE) {
-    const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
-    n['dinheiro'] = (n['dinheiro'] ?? 0) - gastoDaVelhice(patrimonio);
-  }
+  const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
+  if (e.idade >= 18) n['dinheiro'] = (n['dinheiro'] ?? 0) - Math.max(0, patrimonio - PATRIMONIO_SEM_GASTO) * GASTO_DO_PATRIMONIO[padraoDe(e)];
+  if (e.idade >= IDADE_GASTO_VELHICE) n['dinheiro'] = (n['dinheiro'] ?? 0) - gastoDaVelhice(patrimonio);
   acertarCaixa(n);
   anotarCaixa(reg, 'eu', antes, n, 'economia');
   return { comida, privacao, deficit };

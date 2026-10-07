@@ -3,7 +3,7 @@
  * ({mae.ocupacao}, {ator.quem}, {lugar.nome}), nomes de personagens ({mae},
  * {ator}), valores do storylet ({preco}) e trechos escolhidos pelo estado.
  */
-import { defCampo, entidadeDe, ler, patrimonioDe, separar } from './campos.ts';
+import { defCampo, entidadeDe, ler, patrimonioTotal, separar } from './campos.ts';
 import { atende } from './condicoes.ts';
 import type { Storylet } from './esquema.ts';
 import { formatarDinheiro, renderizar, type ContextoTexto } from './texto.ts';
@@ -52,7 +52,7 @@ export function contexto(e: EstadoVida, op: OpcoesContexto = {}): ContextoTexto 
         case 'dinheiro':
           return formatarDinheiro(eu.n['dinheiro'] ?? 0);
         case 'patrimonio':
-          return formatarDinheiro(patrimonioDe(eu));
+          return formatarDinheiro(patrimonioTotal(e));
         case 'salario':
           return formatarDinheiro((eu.n['renda'] ?? 0) / 12);
         case 'divida':

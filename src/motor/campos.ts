@@ -88,9 +88,30 @@ const PAIS: Record<string, DefCampo> = {
   ret_cripto: { tipo: 'num', sistema: 'mundo' },
 };
 
+const EMPRESA: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
+  /** Anos desde a fundação. */
+  idade: { tipo: 'num', sistema: 'carreira', derivado: true },
+  /** Setor da economia (id de mundo.json › setores): o quanto ela cresce, balança e sente o ciclo. */
+  setor: { tipo: 'texto', sistema: 'carreira' },
+  /** Quanto a empresa vale inteira (a parte de quem joga é valor × participacao). */
+  valor: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** Quanto o valor andou no último ano (negativo é prejuízo). */
+  lucro: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  /** O ritmo em que ela vem crescendo, em % ao ano: muda devagar, e tocar a empresa empurra para cima. */
+  tracao: { tipo: 'num', sistema: 'carreira', limites: [-30, 80] },
+  /** A parte de quem joga (1 = toda; sócios e investidores ficam com o resto). */
+  participacao: { tipo: 'num', sistema: 'dinheiro', limites: [0, 1] },
+  /** Quanto do valor sai por ano para os donos (0 = reinveste tudo). */
+  retirada: { tipo: 'num', sistema: 'dinheiro', limites: [0, 0.2] },
+  /** Gente trabalhando lá (pelo tamanho), para o texto. */
+  funcionarios: { tipo: 'num', sistema: 'carreira', derivado: true },
+};
+
 export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent === 'lugar') return LUGAR;
   if (ent === 'pais') return PAIS;
+  if (ent === 'empresa') return EMPRESA;
   return PESSOA;
 }
 
@@ -132,8 +153,26 @@ export function investidoDe(en: Entidade): number {
   return total;
 }
 
+/** O que a pessoa tem fora de empresa: conta, investimentos, menos a dívida. */
 export function patrimonioDe(en: Entidade): number {
   return (en.n['dinheiro'] ?? 0) + investidoDe(en) - (en.n['divida'] ?? 0);
+}
+
+/** A parte de quem joga na empresa, em reais (0 sem empresa). Conta no patrimônio, mas só vira dinheiro pela retirada ou pela venda. */
+export function parteNaEmpresa(e: EstadoVida): number {
+  const emp = e.entidades['empresa'];
+  if (!emp || emp.vivo === false) return 0;
+  return Math.max(0, emp.n['valor'] ?? 0) * (emp.n['participacao'] ?? 1);
+}
+
+/** Patrimônio de quem joga: o de fora mais a parte na empresa. */
+export function patrimonioTotal(e: EstadoVida): number {
+  return patrimonioDe(e.entidades['eu']!) + parteNaEmpresa(e);
+}
+
+/** Gente trabalhando numa empresa deste valor (uma pessoa a cada R$ 150 mil, pelo menos uma). */
+export function funcionariosDe(valor: number): number {
+  return Math.max(1, Math.round(valor / 150000));
 }
 
 /** Limites das classes por patrimônio (reais de hoje): abaixo de LIMITES[i] está a classe i. */
@@ -176,11 +215,13 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
       case 'vivo':
         return en.vivo !== false;
       case 'patrimonio':
-        return patrimonioDe(en);
+        return ent === 'eu' ? patrimonioTotal(e) : patrimonioDe(en);
       case 'investido':
         return investidoDe(en);
       case 'classe':
-        return classeDoPatrimonio(patrimonioDe(en));
+        return classeDoPatrimonio(ent === 'eu' ? patrimonioTotal(e) : patrimonioDe(en));
+      case 'funcionarios':
+        return funcionariosDe(en.n['valor'] ?? 0);
       case 'nome':
         return en.nome;
       case 'genero':

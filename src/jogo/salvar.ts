@@ -34,7 +34,7 @@ const Qualidade = z.object({ v: z.number(), ano: z.number(), idade: z.number(), 
 
 const Entidade = z.object({
   id: z.string(),
-  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao']),
+  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao', 'empresa']),
   nome: z.string(),
   genero: z.optional(Genero),
   nascimento: z.optional(z.number()),

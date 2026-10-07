@@ -23,7 +23,7 @@ export function passo(e: EstadoVida, c: Conteudo, robo: Rng, estrategia: Estrate
     escolher(e, c, decidir(estrategia, e, c, robo));
     return;
   }
-  for (const op of decidirDinheiro(estrategia, e, robo)) operar(e, c, op);
+  for (const op of decidirDinheiro(estrategia, e, c, robo)) operar(e, c, op);
   const verbo = decidirAcao(estrategia, e, c, robo);
   if (verbo) agir(e, c, verbo);
   if (e.vivo) avancarAno(e, c);

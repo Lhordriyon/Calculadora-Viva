@@ -12,10 +12,12 @@
  */
 import { acoesPossiveis } from './acoes.ts';
 import { perfilDe, type Operacao } from './carteira.ts';
-import { entidadeDe, investidoDe, patrimonioDe, separar } from './campos.ts';
+import { entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PADROES, PERFIS, type Verbo } from './constantes.ts';
+import { PADROES, PERFIS, RETIRADAS, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
+import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
+import { REVERSAO_TRACAO } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
@@ -75,6 +77,18 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   }
   if (ef.custoDoPatrimonio !== undefined) v -= (Math.max(0, patrimonioDe(eu)) * ef.custoDoPatrimonio * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   if (ef.custoFator !== undefined) v -= ((ef.custoFator - 1) * custo * HORIZONTE_RENDA) / REAIS_POR_PONTO;
+  // A empresa: o que muda na parte de quem joga (a tração vale pelos anos em que ela dura).
+  const parte = parteNaEmpresa(e);
+  const emp = empresaDe(e);
+  if (ef.abrirEmpresa) {
+    const a = ef.abrirEmpresa;
+    if (a.valor !== undefined) v += (a.valor * (a.participacao ?? 1)) / REAIS_POR_PONTO;
+    // O negócio da família passa para quem joga: vale metade, porque já era quase da família.
+    if (a.fracao !== undefined && a.de !== undefined && entidadeDe(a.de, ator) !== 'eu') v += (Math.max(0, dinheiroDe(e, entidadeDe(a.de, ator))) * a.fracao * 0.5) / REAIS_POR_PONTO;
+  }
+  if (ef.empresaFator !== undefined) v += ((ef.empresaFator - 1) * parte) / REAIS_POR_PONTO;
+  if (ef.venderEmpresa) v += (((ef.venderEmpresa.premio ?? 1) - 1) * parte * ef.venderEmpresa.fracao) / REAIS_POR_PONTO;
+  if (ef.fecharEmpresa) v -= ((1 - ef.fecharEmpresa.sobra) * parte) / REAIS_POR_PONTO;
   for (const [chave, valor] of Object.entries(ef)) {
     if (!chave.includes('.') || typeof valor !== 'number') continue;
     const { ent, campo } = separar(chave);
@@ -82,6 +96,9 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
     if (campo === 'vinculo') v += valor / VINCULO_POR_PONTO;
     else if (id === 'eu' && campo === 'dinheiro') v += valor / REAIS_POR_PONTO;
     else if (campo === 'saude' && id !== 'eu') v += valor * 0.15;
+    else if (id === 'empresa' && emp && campo === 'tracao') v += ((valor / 100) * parte) / REVERSAO_TRACAO / REAIS_POR_PONTO;
+    else if (id === 'empresa' && emp && campo === 'valor') v += (valor * (emp.n['participacao'] ?? 1)) / REAIS_POR_PONTO;
+    else if (id === 'empresa' && emp && campo === 'participacao') v += (valor * (emp.n['valor'] ?? 0)) / REAIS_POR_PONTO;
   }
   if (ef.transferir) {
     const t = ef.transferir;
@@ -117,6 +134,8 @@ function exposicao(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo): number 
     const eu = e.entidades['eu']!;
     x += ((1 - ef.patrimonioFator) * (Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu))) / REAIS_POR_PONTO;
   }
+  if (ef.empresaFator !== undefined && ef.empresaFator < 1) x += ((1 - ef.empresaFator) * parteNaEmpresa(e)) / REAIS_POR_PONTO;
+  if (ef.fecharEmpresa) x += ((1 - ef.fecharEmpresa.sobra) * parteNaEmpresa(e)) / REAIS_POR_PONTO;
   for (const m of ef.marcas ?? []) {
     const s = c.marcas[m]?.porAno?.saude ?? 0;
     if (s < 0 && !(m in e.entidades['eu']!.q)) x += -s * HORIZONTE_MARCA * 1.2;
@@ -192,7 +211,7 @@ export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
  * ano a cada cinco. A "primeira" nunca abre a folha: é quem joga sem mexer no
  * dinheiro.
  */
-export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, rng: Rng): Operacao[] {
+export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   if (!e.vivo || e.pendente || e.idade < 18 || estrategia === 'primeira') return [];
   const ops: Operacao[] = [];
   if (e.idade === 18) {
@@ -201,6 +220,10 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, rng: Rng)
     const padrao = estrategia === 'cautelosa' ? 'simples' : estrategia === 'arriscada' ? 'luxo' : sortear(rng, PADROES);
     if (padrao !== padraoDe(e)) ops.push({ tipo: 'padrao', padrao });
   }
+  const daEmpresa = decidirEmpresa(estrategia, e, c, rng);
+  ops.push(...daEmpresa);
+  // Abrir ou vender a empresa já mexeu na conta: aplicar fica para outro ano.
+  if (daEmpresa.some((op) => op.tipo === 'abrir' || op.tipo === 'vender')) return ops;
   const lembra = estrategia === 'aleatoria' ? aleatorio(rng) < 0.2 : e.idade % 3 === 0;
   if (!lembra) return ops;
   const eu = e.entidades['eu']!;
@@ -210,6 +233,39 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, rng: Rng)
   const sobra = conta - reserva;
   if (sobra >= 1000) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? sobra / 2 : sobra) });
   return ops;
+}
+
+/**
+ * A empresa dos robôs. A arriscada abre uma entre os 22 e os 45 anos, com
+ * metade do que tem, no setor em que trabalha (ou de tecnologia), e reinveste
+ * tudo; a aleatória abre de vez em quando, num setor e com um capital
+ * sorteados, sorteia a retirada e às vezes vende na velhice. A cautelosa
+ * vende aos 65 a empresa que a vida lhe deu.
+ */
+function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const emp = empresaDe(e);
+  const liquido = liquidoDe(e);
+  const idade = e.idade;
+  if (!emp) {
+    const setores = setoresDeEmpresa(c).map((s) => s.id);
+    if (estrategia === 'arriscada' && idade >= 22 && idade <= 45 && liquido >= 20000) {
+      const setor = e.entidades['eu']!.t['setor'] ?? '';
+      return [{ tipo: 'abrir', setor: setores.includes(setor) ? setor : 'tecnologia', valor: Math.floor(liquido * 0.5) }];
+    }
+    if (estrategia === 'aleatoria' && idade >= 20 && idade <= 55 && liquido >= 25000 && aleatorio(rng) < 0.04) {
+      return [{ tipo: 'abrir', setor: sortear(rng, setores), valor: Math.floor(liquido * (0.2 + 0.4 * aleatorio(rng))) }];
+    }
+    return [];
+  }
+  if (estrategia === 'aleatoria') {
+    if (e.ano - (emp.nascimento ?? e.ano) === 1) {
+      const fracao = sortear(rng, RETIRADAS);
+      return fracao !== (emp.n['retirada'] ?? 0) ? [{ tipo: 'retirada', fracao }] : [];
+    }
+    if (idade >= 60 && aleatorio(rng) < 0.05) return [{ tipo: 'vender' }];
+  }
+  if (estrategia === 'cautelosa' && idade >= 65) return [{ tipo: 'vender' }];
+  return [];
 }
 
 // ---------------------------------------------------------------- análise de dilemas
@@ -242,7 +298,9 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       v.inteligencia += p * (ef.inteligencia ?? 0);
       v.aparencia += p * (ef.aparencia ?? 0);
       const so: Record<string, unknown> = {};
-      for (const k of ['dinheiro', 'investir', 'realocar', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator'] as const) if (ef[k] !== undefined) so[k] = ef[k];
+      for (const k of ['dinheiro', 'investir', 'realocar', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator', 'abrirEmpresa', 'empresaFator', 'venderEmpresa', 'fecharEmpresa', 'rodada'] as const) {
+        if (ef[k] !== undefined) so[k] = ef[k];
+      }
       v.dinheiro += p * valorEfeitos(so as Efeitos, e, c);
       if (ef.morte) v.morte += p;
       const outros = Object.keys(ef).filter((k) => k.includes('.')).map((k) => `${k}=${String(ef[k])}`);

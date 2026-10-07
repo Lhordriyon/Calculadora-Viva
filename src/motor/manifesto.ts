@@ -56,6 +56,18 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.perfil',
   // o padrão de vida que o jogador escolhe na folha Dinheiro
   'eu.padrao',
+  // a empresa: a folha Dinheiro abre, aporta, escolhe a retirada e vende; a regra do ano faz ela crescer
+  'empresa.setor',
+  'empresa.valor',
+  'empresa.lucro',
+  'empresa.tracao',
+  'empresa.participacao',
+  'empresa.retirada',
+  'empresa.fundada',
+  'eu.vendeu_empresa',
+  'eu.empreendedor',
+  'eu.socio',
+  'eu.herdeiro_negocio',
   // o trabalho de quem joga (salário anda com o setor e o ciclo)
   'eu.renda',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país)
@@ -91,7 +103,7 @@ export const ESCRITAS_DO_MOTOR: string[] = [
 const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[] => caminhos.map((caminho) => ({ caminho, regra, decide }));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -102,6 +114,9 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.perfil'], 'carteira: para onde vai o dinheiro novo', true),
   ...ler(['eu.padrao'], 'economia: quanto da sobra do ano vira gasto', true),
   ...ler(['eu.padrao'], 'felicidade de base', false),
+  ...ler(['empresa.valor', 'empresa.tracao', 'empresa.setor', 'empresa.participacao', 'empresa.retirada'], 'empresa: crescimento, retirada, patrimônio e quebra', true),
+  ...ler(['empresa.fundada'], 'empresa: a fundação é a causa da quebra', false),
+  ...ler(['empresa.sustenta'], 'empresa: fechar ou vender a que sustentava quem joga leva a renda junto', true),
   ...ler(['eu.traco'], 'felicidade de base', false),
   ...ler(['eu.familia'], 'equilíbrio do vínculo', false),
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),

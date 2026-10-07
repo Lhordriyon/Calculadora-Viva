@@ -10,7 +10,7 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { carregarConteudo, RAIZ } from './disco.ts';
-import { classeDoPatrimonio, nomeDaClasse, patrimonioDe } from '../src/motor/campos.ts';
+import { classeDoPatrimonio, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { faseDe } from '../src/motor/ciclo.ts';
@@ -64,7 +64,7 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
       escolher(e, c, decidir(estrategia, e, c, robo));
     } else {
       // Mexer no dinheiro: abrir a folha, escolher e confirmar (três toques por operação).
-      for (const op of decidirDinheiro(estrategia, e, robo)) {
+      for (const op of decidirDinheiro(estrategia, e, c, robo)) {
         operar(e, c, op);
         operacoes++;
         toques += 3;
@@ -230,7 +230,7 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       .map(([m, r]) => [m, citacoes.get(r.causa!) ?? 0] as const)
       .filter(([, n]) => n > 0)
       .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]?.[0] ?? '-';
-  const patrimonio = patrimonioDe(eu);
+  const patrimonio = patrimonioTotal(e);
   const destino = [nomeDaClasse(classeDoPatrimonio(patrimonio)), carreira, civil, principal, e.morte?.categoria ?? '?'].join('|');
   const classeOrigem = eu.n['classe_origem'] ?? 0;
 
@@ -392,7 +392,7 @@ ESTRATEGIAS.forEach((estrategia, s) => {
       const inicioVida = e.idade;
       const herdou = g > 1 ? (e.dinastia?.antepassados.at(-1)?.deixou ?? 0) : 0;
       viver(c, e, estrategia, robo, undefined);
-      const patrimonio = patrimonioDe(e.entidades['eu']!);
+      const patrimonio = patrimonioTotal(e);
       if (anterior !== null) paresGeracao.push([anterior, patrimonio]);
       const visiveis = apresentados(e);
       geracoes.push({

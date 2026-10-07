@@ -3,7 +3,7 @@
  * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
  * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
  */
-import { entidadeDe, ler, patrimonioDe, separar } from './campos.ts';
+import { entidadeDe, ler, patrimonioTotal, separar } from './campos.ts';
 import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Qualidade } from './tipos.ts';
@@ -168,8 +168,7 @@ export function motivoBloqueio(cond: Condicoes | undefined, e: EstadoVida): stri
     return `precisa de ${formatarDinheiro(cond.dinheiro.min)}`;
   }
   if (cond.patrimonio?.min !== undefined) {
-    const p = patrimonioDe(eu);
-    if (p < cond.patrimonio.min) return `precisa de ${formatarDinheiro(cond.patrimonio.min)} guardados`;
+    if (patrimonioTotal(e) < cond.patrimonio.min) return `precisa de ${formatarDinheiro(cond.patrimonio.min)} de patrimônio`;
   }
   if (cond.divida?.max !== undefined && (eu.n['divida'] ?? 0) > cond.divida.max) return 'dívida alta demais';
   return 'fora de alcance agora';

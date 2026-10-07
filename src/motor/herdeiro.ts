@@ -8,7 +8,7 @@
  * da vida conta a fortuna da família de geração em geração.
  */
 import { ATIVOS, type Ativo } from './constantes.ts';
-import { classeDoPatrimonio, patrimonioDe } from './campos.ts';
+import { classeDoPatrimonio, parteNaEmpresa, patrimonioTotal } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
 import { ganhar, lancar, novaEntrada } from './livro.ts';
@@ -42,13 +42,20 @@ function naFaixa(e: EstadoVida, [a, b]: readonly [number, number]): number {
 interface Espolio {
   /** O que vai para o herdeiro: conta e cada classe. */
   heranca: Record<'dinheiro' | Ativo, number>;
+  /** A parte da empresa que fica com o herdeiro (fração da empresa inteira; 0 sem empresa). */
+  participacao: number;
   deixou: number;
   /** A metade de quem era casado (ou vivia junto há anos) com quem morreu. */
   doConjuge: number;
   imposto: number;
 }
 
-/** Paga as dívidas com o espólio, separa a metade do cônjuge e o imposto; o resto é do herdeiro. */
+/**
+ * Paga as dívidas com o espólio, separa a metade do cônjuge e o imposto; o
+ * resto é do herdeiro. A empresa fica inteira na família: a metade do
+ * cônjuge e o imposto saem primeiro do dinheiro, e só o que faltar sai da
+ * parte na empresa.
+ */
 function partilhar(antiga: EstadoVida): Espolio {
   const velho = antiga.entidades['eu']!;
   const caixa: Record<string, number> = { dinheiro: Math.max(0, velho.n['dinheiro'] ?? 0) };
@@ -59,14 +66,21 @@ function partilhar(antiga: EstadoVida): Espolio {
   divida -= daConta;
   resgatarDe(caixa, divida);
   const bruto = caixa['dinheiro']! + ATIVOS.reduce((s, a) => s + (caixa[a] ?? 0), 0);
+  const naEmpresa = parteNaEmpresa(antiga);
+  const total = bruto + naEmpresa;
   const amor = antiga.entidades['amor'];
   const namoro = velho.q['namoro'];
   const casal = amor?.vivo !== false && amor !== undefined && (velho.q['casado'] !== undefined || (namoro !== undefined && antiga.idade - namoro.idade >= ANOS_UNIAO));
   const conjuge = casal ? 0.5 : 0;
-  const parte = (1 - conjuge) * (1 - IMPOSTO_HERANCA);
-  const heranca = { dinheiro: caixa['dinheiro']! * parte } as Record<'dinheiro' | Ativo, number>;
-  for (const a of ATIVOS) heranca[a] = (caixa[a] ?? 0) * parte;
-  return { heranca, deixou: bruto * parte, doConjuge: bruto * conjuge, imposto: bruto * (1 - conjuge) * IMPOSTO_HERANCA };
+  const doConjuge = total * conjuge;
+  const imposto = total * (1 - conjuge) * IMPOSTO_HERANCA;
+  const doDinheiro = Math.min(bruto, doConjuge + imposto);
+  const daEmpresa = doConjuge + imposto - doDinheiro;
+  const fica = bruto > 0 ? (bruto - doDinheiro) / bruto : 0;
+  const heranca = { dinheiro: caixa['dinheiro']! * fica } as Record<'dinheiro' | Ativo, number>;
+  for (const a of ATIVOS) heranca[a] = (caixa[a] ?? 0) * fica;
+  const participacao = naEmpresa > 0 ? (antiga.entidades['empresa']!.n['participacao'] ?? 1) * (1 - daEmpresa / naEmpresa) : 0;
+  return { heranca, participacao, deixou: total - doConjuge - imposto, doConjuge, imposto };
 }
 
 /** Uma pessoa nova da geração do herdeiro (o amigo da vida nova). */
@@ -90,7 +104,7 @@ function recausar(en: Entidade, id: number): Entidade {
 /** O tipo de família em que o herdeiro cresceu, lido da vida de quem morreu. */
 function familiaDoHerdeiro(antiga: EstadoVida, vinculo: number): string {
   const q = antiga.entidades['eu']!.q;
-  if (q['empreendedor'] || q['socio'] || q['herdeiro_negocio']) return 'empreendedora';
+  if (q['empreendedor'] || q['socio'] || q['herdeiro_negocio'] || parteNaEmpresa(antiga) > 0) return 'empreendedora';
   if (q['grupo_da_igreja'] || q['dizimo']) return 'religiosa';
   if (q['separado'] || vinculo < 40) return 'conflituosa';
   return 'acolhedora';
@@ -134,7 +148,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const eu = novaEntidade({ id: 'eu', tipo: 'pessoa', nome: filho.nome, genero: filho.genero ?? 'm', nascimento: filho.nascimento!, vivo: true });
   const tracoNpc = c.tracos.get(filho.t['traco'] ?? '');
   const traco = c.tracosJogador.get(tracoNpc?.herdeiro ?? '') ?? c.mundo.tracosJogador[sortearIndice(e.rng, c.mundo.tracosJogador.map((t) => t.peso))]!;
-  const patrimonioVelho = patrimonioDe(velho);
+  const patrimonioVelho = patrimonioTotal(antiga);
   const classe = limitar(classeDoPatrimonio(Math.max(0, patrimonioVelho)), 0, c.mundo.classes.length - 1);
   const vinculo = filho.n['vinculo'] ?? 60;
   eu.t['traco'] = traco.id;
@@ -231,6 +245,13 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const pet = antiga.entidades['pet'];
   if (pet && pet.vivo !== false) e.entidades['pet'] = recausar(structuredClone(pet), abertura.id);
   for (const id of ['lugar', 'pais'] as const) e.entidades[id] = recausar(structuredClone(antiga.entidades[id]!), abertura.id);
+  // A empresa da família passa inteira para o herdeiro (menos o que pagou a partilha), com a idade, a tração e o jeito de tocar.
+  const empresa = antiga.entidades['empresa'];
+  if (empresa && empresa.vivo !== false && espolio.participacao > 0.001) {
+    const copia = recausar(structuredClone(empresa), abertura.id);
+    copia.n['participacao'] = espolio.participacao;
+    e.entidades['empresa'] = copia;
+  }
 
   // ---- o que a história lembra
   const reg: Mudanca[] = [];
@@ -238,7 +259,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   e.entidades['eu']!.q['dinastia'] = { v: geracao, ano: e.ano, idade, causa: abertura.id };
   if (idade >= 22) ganhar(e, reg, 'eu', 'independente', abertura.id);
   if (idade >= 23 && (classe >= 3 || (eu.n['inteligencia'] ?? 0) >= 60)) ganhar(e, reg, 'eu', 'formado', abertura.id);
-  if (velho.q['empreendedor'] || velho.q['socio'] || velho.q['herdeiro_negocio']) ganhar(e, reg, 'eu', 'negocio_familiar', abertura.id);
+  if (velho.q['empreendedor'] || velho.q['socio'] || velho.q['herdeiro_negocio'] || e.entidades['empresa']) ganhar(e, reg, 'eu', 'negocio_familiar', abertura.id);
 
   const antepassado: Antepassado = {
     nome: `${velho.nome} ${antiga.sobrenome}`,
@@ -254,9 +275,11 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
 
   const quem = velho.genero === 'f' ? 'Sua mãe' : 'Seu pai';
   const conjuge = espolio.doConjuge >= 1 && amor ? `; metade de tudo ficou com ${amor.nome}` : '';
+  const herdada = e.entidades['empresa'];
+  const naEmpresa = herdada ? ` (${formatarDinheiro(parteNaEmpresa(e))} disso na ${herdada.nome}, que agora é sua)` : '';
   const heranca =
     espolio.deixou >= 1
-      ? `deixou ${formatarDinheiro(espolio.deixou)} para você, depois do imposto${conjuge}`
+      ? `deixou ${formatarDinheiro(espolio.deixou)} para você${naEmpresa}, depois do imposto${conjuge}`
       : patrimonioVelho < 0
         ? `deixou dívidas, que morreram com ${velho.genero === 'f' ? 'ela' : 'ele'} no inventário, e nenhum centavo`
         : 'não deixou dinheiro, só lembranças';

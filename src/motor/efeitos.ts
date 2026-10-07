@@ -7,6 +7,7 @@ import { pesosDoPerfil, realocar } from './carteira.ts';
 import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { movimentar } from './economia.ts';
+import { abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte } from './empresa.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { criarPersonagem, morrerPersonagem, promover } from './pessoas.ts';
@@ -55,6 +56,10 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.custo !== undefined) definirNumero(e, reg, 'eu', 'custo', ajustar(eu.n['custo'] ?? 0, ef.custo));
   if (ef.custoDoPatrimonio !== undefined) somar(e, reg, 'eu', 'custo', Math.max(0, patrimonioDe(eu)) * ef.custoDoPatrimonio);
   if (ef.custoFator !== undefined) somar(e, reg, 'eu', 'custo', (eu.n['custo'] ?? 0) * (ef.custoFator - 1));
+  // A empresa nasce antes dos caminhos: "empresa.tracao" no mesmo bloco já vale para ela.
+  if (ef.abrirEmpresa) ctx.valores['capital'] = abrirPorEfeito(e, c, reg, ef.abrirEmpresa, ator, origem);
+  if (ef.empresaFator !== undefined) multiplicarEmpresa(e, reg, ef.empresaFator);
+  if (ef.rodada) ctx.valores['rodada'] = rodadaDeInvestimento(e, reg, ef.rodada.parte);
 
   // Campos por caminho ("mae.vinculo": 10, "ator.ocupacao": {"definir": "..."}).
   for (const [chave, valor] of Object.entries(ef)) {
@@ -96,6 +101,10 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
       ctx.valores['transferido'] = valor;
     }
   }
+
+  // Vender ou fechar vem depois dos caminhos: a empresa ainda existe para o que o bloco muda nela.
+  if (ef.venderEmpresa) ctx.valores['venda'] = venderParte(e, reg, ef.venderEmpresa.fracao, ef.venderEmpresa.premio ?? 1);
+  if (ef.fecharEmpresa) ctx.valores['sobra'] = fecharEmpresa(e, reg, ef.fecharEmpresa.sobra);
 
   for (const caminho of ef.removerMarcas ?? []) {
     const q = qualidade(caminho, ator);

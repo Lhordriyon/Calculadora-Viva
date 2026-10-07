@@ -14,12 +14,13 @@ export interface Qualidade {
   causa: number | null;
 }
 
-export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao';
+export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao' | 'empresa';
 
 /**
- * Um formato de estado: pessoa, bicho, lugar e país são entidades com campos
- * numéricos (`n`), de texto (`t`) e qualidades (`q`). Condições e efeitos
- * leem e escrevem caminhos como `mae.saude` e `lugar.desemprego`.
+ * Um formato de estado: pessoa, bicho, lugar, país e empresa são entidades
+ * com campos numéricos (`n`), de texto (`t`) e qualidades (`q`). Condições e
+ * efeitos leem e escrevem caminhos como `mae.saude`, `lugar.desemprego` e
+ * `empresa.valor`.
  */
 export interface Entidade {
   id: string;

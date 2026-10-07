@@ -95,6 +95,33 @@ const Agendamento = z.strictObject({
   em: z.union([z.number().int().min(1), z.tuple([z.number().int().min(1), z.number().int().min(1)])]),
 });
 
+/** Como a empresa de quem joga nasce: o setor, de onde vem o valor e quanto é de quem joga. */
+const AberturaEmpresa = z
+  .strictObject({
+    setor: id.optional(),
+    /** O setor de outro caminho ("ator.setor": o negócio da família). */
+    copiarSetor: Caminho.optional(),
+    /** A empresa nasce valendo isto: o valor que o trabalho criou, sem ninguém pagar. */
+    valor: z.number().positive().optional(),
+    /** Quem joga põe este dinheiro (até o que tiver, da conta e depois dos investimentos). */
+    capital: z.number().positive().optional(),
+    /** Esta fração do dinheiro de `de` vira a empresa (de quem joga: da conta e dos investimentos). */
+    fracao: z.number().gt(0).max(1).optional(),
+    de: Ref.optional(),
+    /** Quanto é de quem joga (o sócio fica com o resto). */
+    participacao: z.number().gt(0).max(1).optional(),
+    /** A tração com que ela começa, em % ao ano (sem isso, a do setor). */
+    tracao: z.number().min(-30).max(80).optional(),
+  })
+  .superRefine((a, ctx) => {
+    if ((a.setor === undefined) === (a.copiarSetor === undefined)) ctx.addIssue({ code: 'custom', message: 'abrirEmpresa usa setor ou copiarSetor (um dos dois)' });
+    if ([a.valor, a.capital, a.fracao].filter((x) => x !== undefined).length !== 1) {
+      ctx.addIssue({ code: 'custom', message: 'abrirEmpresa usa valor, capital ou fracao (um só)' });
+    }
+    if (a.de !== undefined && a.fracao === undefined) ctx.addIssue({ code: 'custom', message: '"de" só vale com fracao' });
+  });
+export type AberturaEmpresa = z.infer<typeof AberturaEmpresa>;
+
 const EFEITOS_FIXOS = {
   saude: z.number().optional(),
   felicidade: z.number().optional(),
@@ -142,6 +169,16 @@ const EFEITOS_FIXOS = {
     .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })
     .refine((r) => r.de !== r.para, 'realocar precisa de origem e destino diferentes')
     .optional(),
+  /** Abre a empresa de quem joga (uma por vez; se já houver uma, nada acontece). */
+  abrirEmpresa: AberturaEmpresa.optional(),
+  /** Multiplica o valor da empresa (o contrato grande, o escândalo, a crise do setor). */
+  empresaFator: z.number().min(0).max(5).optional(),
+  /** Investidores compram esta parte da empresa pelo valor de agora: o dinheiro deles entra na empresa e a parte de quem joga encolhe. */
+  rodada: z.strictObject({ parte: z.number().gt(0).lt(1) }).optional(),
+  /** Vende esta fração da parte de quem joga (1 = tudo), pelo valor de agora vezes o prêmio (1,5 = 50% acima do que vale). */
+  venderEmpresa: z.strictObject({ fracao: z.number().gt(0).max(1), premio: z.number().gt(0).max(5).optional() }).optional(),
+  /** A empresa fecha as portas: volta para quem joga esta fração da parte dele (o estoque, os móveis). */
+  fecharEmpresa: z.strictObject({ sobra: z.number().min(0).max(1) }).optional(),
   /** Um personagem morre (a causa fica no texto do storylet). */
   matar: Ref.optional(),
   /** Causa da morte de quem joga, terminando a frase "morreu aos N anos, ...". */
@@ -351,6 +388,12 @@ export const DefSetor = z.strictObject({
   crescimento: z.number().min(-0.05).max(0.05),
   /** Emprego estável: ninguém é demitido (serviço público). */
   estavel: z.boolean().optional(),
+  /** Empresa do setor: quanto uma pequena cresce por ano, em % acima da inflação (a tração para onde ela volta). */
+  tracao: z.number().min(-10).max(30).optional(),
+  /** Quanto o valor de uma empresa do setor balança (1 = a média; tecnologia balança mais, saúde menos). */
+  risco: z.number().min(0.3).max(3).optional(),
+  /** Nomes de empresa ({sobrenome}, {nome}, {o|a}). Sem nomes, não dá para abrir empresa no setor. */
+  empresas: z.array(z.string().min(3)).min(2).optional(),
 });
 export type DefSetor = z.infer<typeof DefSetor>;
 
@@ -374,6 +417,8 @@ export const DefFase = z.strictObject({
   desemprego: z.number().positive(),
   /** Variação real dos salários no ano (0,02 = +2%). */
   salario: z.number(),
+  /** Somado ao crescimento das empresas no ano, multiplicado pelo quanto o setor sente o ciclo (−0,18 = a crise tira 18 pontos). */
+  empresa: z.number(),
   /** O que a linha do tempo conta quando o país entra nesta fase. */
   textos: z.array(z.string()).min(1),
   resumo: z.string().min(3),

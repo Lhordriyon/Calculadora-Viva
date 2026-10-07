@@ -1,18 +1,20 @@
 /**
- * O ciclo da vida: nascer → (ficha do ano) → +1 ano → regras → personagens
- * agem → o diretor escolhe → escolha → efeitos. Funções puras sobre o estado
+ * O ciclo da vida: nascer → (ficha do ano) → +1 ano → regras (economia,
+ * empresa, corpo, trabalho) → personagens agem → o diretor escolhe →
+ * escolha → efeitos. Funções puras sobre o estado
  * (mutam o objeto recebido; a interface clona antes).
  */
 import { cicloDoAno, sortearFaseInicial } from './ciclo.ts';
 import { regraDoPadrao, regraDoTrabalho } from './trabalho.ts';
 import { ATRIBUTOS } from './constantes.ts';
-import { patrimonioDe } from './campos.ts';
+import { patrimonioTotal } from './campos.ts';
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { escolherDoAno } from './diretor.ts';
 import { mercadoDoAno } from './carteira.ts';
 import { economiaDoAno, padraoDe } from './economia.ts';
+import { regraDaEmpresa } from './empresa.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
@@ -128,7 +130,7 @@ function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
       somar(e, reg, 'eu', 'felicidade', -1.5, 'economia');
       somar(e, reg, 'eu', 'saude', -0.3, 'economia');
     }
-    if (patrimonioDe(eu) > PATRIMONIO_CONFORTO) somar(e, reg, 'eu', 'felicidade', CONFORTO_FELICIDADE, 'economia');
+    if (patrimonioTotal(e) > PATRIMONIO_CONFORTO) somar(e, reg, 'eu', 'felicidade', CONFORTO_FELICIDADE, 'economia');
   }
 }
 
@@ -146,6 +148,7 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
 
   const mercado = mercadoDoAno(e, c, fase.id, regAno);
   const ano = economiaDoAno(e, e.rng, regAno, fase, mercado);
+  regraDaEmpresa(e, c, fase, regAno);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {
     somar(e, regAno, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');

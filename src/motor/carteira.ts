@@ -2,7 +2,9 @@
  * A carteira de quem joga: o dinheiro investido fica em cinco classes (renda
  * fixa, ações, fundos imobiliários, dólar, cripto) e cada uma rende conforme
  * a fase do país, com sorte e azar. O perfil de investidor decide para onde
- * vai o dinheiro novo; o jogador escolhe quanto aplicar ou resgatar, e onde.
+ * vai o dinheiro novo; o jogador escolhe quanto aplicar ou resgatar, e onde,
+ * e o padrão de vida (quanto da sobra do ano vira gasto). A folha Dinheiro
+ * também abre e toca a empresa (empresa.ts).
  * O mercado do ano é o mesmo para todo o país e fica no país
  * (`pais.ret_acoes`): storylets reagem à bolsa que despencou ou ao dólar que
  * disparou. Toda operação vira uma entrada do livro (tipo "dinheiro", causa "acao"):
@@ -12,6 +14,7 @@ import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { acertarCaixa, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } from './economia.ts';
+import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE } from './regras.ts';
 import { normal } from './rng.ts';
@@ -60,6 +63,7 @@ export function realocar(e: EstadoVida, reg: Mudanca[], de: 'dinheiro' | Ativo, 
 // ---------------------------------------------------------------- operações do jogador
 
 export type Operacao =
+  | OperacaoEmpresa
   /** Da conta para os investimentos: numa classe, ou pelo perfil. */
   | { tipo: 'aplicar'; valor: number; ativo?: Ativo }
   /** Dos investimentos para a conta: de uma classe, ou na ordem de liquidez. */
@@ -81,9 +85,10 @@ const EM: Record<Ativo, string> = { renda_fixa: 'na renda fixa', acoes: 'em aç�
 const DE: Record<Ativo, string> = { renda_fixa: 'da renda fixa', acoes: 'das ações', fii: 'dos fundos imobiliários', dolar: 'do dólar', cripto: 'da cripto' };
 
 /** Por que a operação não pode acontecer agora (ou null se pode). */
-export function motivoParaNaoOperar(e: EstadoVida, op: Operacao): string | null {
+export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): string | null {
   if (!e.vivo) return 'esta vida já terminou';
   if (e.pendente) return 'responda o cartão do ano primeiro';
+  if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -105,11 +110,19 @@ export function motivoParaNaoOperar(e: EstadoVida, op: Operacao): string | null 
 
 /** Faz a operação e lança a entrada no livro (causa: ação do jogador). */
 export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
-  const motivo = motivoParaNaoOperar(e, op);
+  const motivo = motivoParaNaoOperar(e, c, op);
   if (motivo) throw new Error(`Operação impossível: ${motivo}.`);
   const eu = e.entidades['eu']!;
   const n = eu.n;
   const reg: Mudanca[] = [];
+  if (ehOperacaoDeEmpresa(op)) {
+    // A entrada nasce antes: a fundação (ou a venda) aponta para ela como causa.
+    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref: `empresa:${op.tipo}`, texto: '' });
+    const { texto, resumo } = operarEmpresa(e, c, op, reg, entrada.id);
+    entrada.texto = texto;
+    entrada.resumo = resumo;
+    return lancar(e, entrada, reg);
+  }
   let texto: string;
   let resumo: string;
   if (op.tipo === 'aplicar') {

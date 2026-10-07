@@ -10,8 +10,8 @@ export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
 
-/** Entidades que existem em toda vida: quem joga, as pessoas, o lugar e o país. */
-export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais'] as const;
+/** Entidades da vida: quem joga, as pessoas, o lugar, o país e a empresa (quando quem joga tem uma). */
+export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', 'empresa'] as const;
 export type IdEntidade = (typeof ENTIDADES)[number];
 
 /** Os verbos da ficha do ano. */
@@ -48,3 +48,5 @@ export const PERFIL_PADRAO: Perfil = 'moderado';
 export const PADROES = ['simples', 'confortavel', 'luxo'] as const;
 export type Padrao = (typeof PADROES)[number];
 export const PADRAO_PADRAO: Padrao = 'confortavel';
+/** Quanto do valor da empresa vira dinheiro na conta de quem joga, por ano (reinvestir tudo, tirar um pouco, tirar bastante). */
+export const RETIRADAS = [0, 0.03, 0.08] as const;

@@ -771,18 +771,126 @@
     }
   },
   "setores": [
-    { "id": "comercio", "nome": "comércio", "ciclo": 1.2, "crescimento": 0.004 },
-    { "id": "servicos", "nome": "serviços", "ciclo": 1.1, "crescimento": 0.003 },
-    { "id": "industria", "nome": "indústria", "ciclo": 1.5, "crescimento": 0.007 },
-    { "id": "construcao", "nome": "construção", "ciclo": 1.8, "crescimento": 0.005 },
-    { "id": "agro", "nome": "agro", "ciclo": 0.7, "crescimento": 0.009 },
-    { "id": "tecnologia", "nome": "tecnologia", "ciclo": 1.0, "crescimento": 0.02 },
-    { "id": "saude", "nome": "saúde", "ciclo": 0.4, "crescimento": 0.011 },
-    { "id": "educacao", "nome": "educação", "ciclo": 0.5, "crescimento": 0.006 },
+    {
+      "id": "comercio",
+      "nome": "comércio",
+      "ciclo": 1.2,
+      "crescimento": 0.004,
+      "tracao": 4,
+      "risco": 1.0,
+      "empresas": ["Empório {sobrenome}", "Casa {sobrenome}", "Mercadinho d{o|a} {nome}", "{sobrenome} Atacado"]
+    },
+    {
+      "id": "servicos",
+      "nome": "serviços",
+      "ciclo": 1.1,
+      "crescimento": 0.003,
+      "tracao": 5,
+      "risco": 1.0,
+      "empresas": ["{sobrenome} Serviços", "Lavanderia d{o|a} {nome}", "{sobrenome} & Associados", "Studio {nome}"]
+    },
+    {
+      "id": "industria",
+      "nome": "indústria",
+      "ciclo": 1.5,
+      "crescimento": 0.007,
+      "tracao": 4,
+      "risco": 0.9,
+      "empresas": [
+        "Metalúrgica {sobrenome}",
+        "Indústria {sobrenome}",
+        "{sobrenome} Embalagens",
+        "Fábrica de Doces {sobrenome}"
+      ]
+    },
+    {
+      "id": "construcao",
+      "nome": "construção",
+      "ciclo": 1.8,
+      "crescimento": 0.005,
+      "tracao": 5,
+      "risco": 1.2,
+      "empresas": [
+        "Construtora {sobrenome}",
+        "{sobrenome} Engenharia",
+        "Reformas d{o|a} {nome}",
+        "{sobrenome} Empreendimentos"
+      ]
+    },
+    {
+      "id": "agro",
+      "nome": "agro",
+      "ciclo": 0.7,
+      "crescimento": 0.009,
+      "tracao": 5,
+      "risco": 0.8,
+      "empresas": ["Fazenda {sobrenome}", "Agropecuária {sobrenome}", "Grãos {sobrenome}", "Sítio d{o|a} {nome}"]
+    },
+    {
+      "id": "tecnologia",
+      "nome": "tecnologia",
+      "ciclo": 1.0,
+      "crescimento": 0.02,
+      "tracao": 10,
+      "risco": 1.2,
+      "empresas": ["{sobrenome} Tech", "{nome}.app", "Nuvem {sobrenome}", "{sobrenome} Labs"]
+    },
+    {
+      "id": "saude",
+      "nome": "saúde",
+      "ciclo": 0.4,
+      "crescimento": 0.011,
+      "tracao": 6,
+      "risco": 0.7,
+      "empresas": ["Clínica {sobrenome}", "Farmácia {sobrenome}", "Instituto {sobrenome}", "Laboratório {sobrenome}"]
+    },
+    {
+      "id": "educacao",
+      "nome": "educação",
+      "ciclo": 0.5,
+      "crescimento": 0.006,
+      "tracao": 4,
+      "risco": 0.7,
+      "empresas": [
+        "Colégio {sobrenome}",
+        "Escola d{o|a} {nome}",
+        "Cursinho {sobrenome}",
+        "Instituto de Idiomas {sobrenome}"
+      ]
+    },
     { "id": "publico", "nome": "serviço público", "ciclo": 0, "crescimento": 0.008, "estavel": true },
-    { "id": "transporte", "nome": "transporte e entregas", "ciclo": 1.3, "crescimento": 0.0 },
-    { "id": "financas", "nome": "finanças", "ciclo": 1.2, "crescimento": 0.016 },
-    { "id": "cultura", "nome": "cultura e internet", "ciclo": 1.6, "crescimento": 0.01 }
+    {
+      "id": "transporte",
+      "nome": "transporte e entregas",
+      "ciclo": 1.3,
+      "crescimento": 0.0,
+      "tracao": 3,
+      "risco": 1.0,
+      "empresas": [
+        "Transportadora {sobrenome}",
+        "{sobrenome} Logística",
+        "Entregas d{o|a} {nome}",
+        "Expresso {sobrenome}"
+      ]
+    },
+    {
+      "id": "financas",
+      "nome": "finanças",
+      "ciclo": 1.2,
+      "crescimento": 0.016,
+      "tracao": 7,
+      "risco": 1.1,
+      "empresas": ["{sobrenome} Investimentos", "{sobrenome} Capital", "Banco {sobrenome}", "{sobrenome} Seguros"]
+    },
+    {
+      "id": "cultura",
+      "nome": "cultura e internet",
+      "ciclo": 1.6,
+      "crescimento": 0.01,
+      "tracao": 6,
+      "risco": 1.3,
+      "empresas": ["Produtora {sobrenome}", "{sobrenome} Filmes", "Estúdio d{o|a} {nome}", "{sobrenome} Eventos"]
+    }
   ],
   "fases": [
     {
@@ -794,6 +902,7 @@
       "retorno": 0,
       "desemprego": 1,
       "salario": 0.005,
+      "empresa": 0,
       "textos": [
         "A economia voltou ao normal, seja lá o que isso signifique. [O jornal parou de usar a palavra \"crise\".|O desemprego caiu um pouco; o preço do café, nada.|Os economistas já discordam sobre o ano que vem.]",
         "A economia esfriou. [Os anúncios de vaga ficaram mais modestos.|O shopping voltou a ter vaga no estacionamento.|Ninguém mais fala em \"oportunidade imperdível\".]",
@@ -810,6 +919,7 @@
       "retorno": 0.04,
       "desemprego": 0.65,
       "salario": 0.025,
+      "empresa": 0.06,
       "textos": [
         "O país entrou num ciclo de crescimento. [Tem placa de \"contrata-se\" em toda esquina.|O shopping abriu outra ala e a fila do restaurante dobrou.|Todo mundo que você conhece trocou de emprego, para melhor.]",
         "A economia acelerou. [Guindaste no horizonte virou paisagem.|O crédito ficou fácil e as concessionárias, cheias.|Até o tio pessimista admitiu que \"as coisas melhoraram\".]"
@@ -825,6 +935,7 @@
       "retorno": -0.05,
       "desemprego": 1.6,
       "salario": -0.01,
+      "empresa": -0.07,
       "textos": [
         "O país entrou em recessão. [As lojas do centro começaram a fechar mais cedo.|A palavra \"corte\" apareceu em todas as reuniões.|O jornal da noite agora tem um gráfico vermelho fixo.]",
         "A economia encolheu dois trimestres seguidos, e os economistas finalmente concordaram em alguma coisa: recessão. [Vaga de emprego virou notícia.|O mercado do bairro trocou a marca do arroz.|O grupo da família começou a mandar dica de economia doméstica.]"
@@ -840,6 +951,7 @@
       "retorno": -0.12,
       "desemprego": 2.4,
       "salario": -0.03,
+      "empresa": -0.18,
       "textos": [
         "A recessão virou crise: [a inflação disparou e o mercado remarca o preço duas vezes por semana.|fábricas fecharam turnos e o desemprego bateu recorde.|o dinheiro guardado parece derreter na conta.]",
         "Crise. [Fila de emprego dobrando o quarteirão, juros nas alturas e o dólar fazendo o que quer.|O governo anunciou um pacote de medidas que ninguém entendeu.|Até a feira de domingo diminuiu.]"

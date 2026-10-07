@@ -5,7 +5,7 @@
  * é a que mais mudou a vida. Causas podem ser do jogador (escolha, ação) ou
  * do mundo (o pai que perdeu o emprego, a avó que morreu).
  */
-import { patrimonioDe } from './campos.ts';
+import { patrimonioTotal } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
@@ -201,7 +201,7 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     vivo: e.vivo,
     causa: e.morte?.causa ?? null,
     saude: Math.round(eu.n['saude'] ?? 0),
-    patrimonio: patrimonioDe(eu),
+    patrimonio: patrimonioTotal(e),
     felicidadeMedia: e.idade > 0 ? e.somaFelicidade / anos : (eu.n['felicidade'] ?? 0),
     eventos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'acao').length,
     origem: descreverOrigem(classe?.nome, familia?.nome),
