@@ -3,6 +3,7 @@ import { carregarConteudo } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
 import { cicloDoAno, defFase, faseDe } from '../src/motor/ciclo.ts';
 import { patrimonioDe } from '../src/motor/campos.ts';
+import { mercadoDoAno } from '../src/motor/carteira.ts';
 import { economiaDoAno } from '../src/motor/economia.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
 import type { Efeitos } from '../src/motor/esquema.ts';
@@ -143,7 +144,7 @@ describe('efeitos de riqueza', () => {
   it('o padrão de vida sobe com o patrimônio e corta pela metade', () => {
     const e = adulto('financas', 'normal');
     const eu = e.entidades['eu']!;
-    Object.assign(eu.n, { dinheiro: 200000, investido: 800000, divida: 0, custo: 20000 });
+    Object.assign(eu.n, { dinheiro: 200000, renda_fixa: 800000, divida: 0, custo: 20000 });
     const reg = aplicar(e, { custoDoPatrimonio: 0.06 });
     expect(eu.n['custo']).toBeCloseTo(20000 + 0.06 * patrimonioDe(eu));
     expect(reg).toContainEqual({ c: 'eu.custo', d: 60000 });
@@ -161,17 +162,17 @@ describe('efeitos de riqueza', () => {
   });
 
   it('quem herda e sobe de padrão pode ver o dinheiro acabar; quem não sobe, não', () => {
-    // Herdeiro sem renda: com o padrão de 6% ao ano do que herdou, mais de 80% some em 30 anos (e em média vira dívida perto disso).
+    // Herdeiro sem renda, na renda fixa: com o padrão de 6% ao ano do que herdou, mais de 80% some em 30 anos (e em média vira dívida perto disso).
     const herdeiro = (padrao: boolean): number => {
       const e = adulto('comercio', 'normal');
       const eu = e.entidades['eu']!;
-      Object.assign(eu.n, { renda: 0, dinheiro: 0, investido: 2000000, divida: 0, custo: 10000 });
+      Object.assign(eu.n, { renda: 0, dinheiro: 0, renda_fixa: 2000000, divida: 0, custo: 10000 });
       if (padrao) aplicar(e, { custoDoPatrimonio: 0.06 });
       e.rng = criarRng(1);
       let menor = Infinity;
       for (let ano = 0; ano < 30; ano++) {
         e.idade++;
-        economiaDoAno(e, e.rng, []);
+        economiaDoAno(e, e.rng, [], undefined, mercadoDoAno(e, c, 'normal', []));
         menor = Math.min(menor, patrimonioDe(eu));
       }
       return menor;
@@ -186,10 +187,10 @@ describe('a conta do padrão de vida', () => {
     const e = adulto('comercio', 'normal');
     const eu = e.entidades['eu']!;
     ganhar(e, [], 'eu', 'padrao_alto', 7);
-    Object.assign(eu.n, { dinheiro: 0, investido: 400000, divida: 0 });
+    Object.assign(eu.n, { dinheiro: 0, renda_fixa: 400000, divida: 0 });
     regraDoPadrao(e, c, 50000);
     expect(e.agenda).toEqual([]);
-    eu.n['investido'] = 200000;
+    eu.n['renda_fixa'] = 200000;
     regraDoPadrao(e, c, 50000);
     expect(e.agenda).toEqual([{ evento: 'padrao_aperta', ano: e.ano, origem: 7 }]);
     // sem o padrão alto, déficit é só um ano ruim

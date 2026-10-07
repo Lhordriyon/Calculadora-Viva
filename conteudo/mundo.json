@@ -391,6 +391,61 @@
         "f": "dona de um grupo de supermercados",
         "setor": "comercio"
       }
+    },
+    {
+      "id": "bilionaria",
+      "nome": "família bilionária",
+      "peso": 0.3,
+      "patrimonio": [1000000000, 30000000000],
+      "renda": [5000000, 100000000],
+      "poupanca": 0.3,
+      "saude": 6,
+      "ocupacoes": [
+        { "m": "acionista de um banco", "f": "acionista de um banco", "setor": "financas" },
+        { "m": "dono de uma rede nacional de varejo", "f": "dona de uma rede nacional de varejo", "setor": "comercio" },
+        {
+          "m": "fundador de uma empresa de tecnologia",
+          "f": "fundadora de uma empresa de tecnologia",
+          "setor": "tecnologia"
+        },
+        { "m": "magnata do agronegócio", "f": "magnata do agronegócio", "setor": "agro" },
+        { "m": "controlador de uma mineradora", "f": "controladora de uma mineradora", "setor": "industria" },
+        { "m": "dono de uma construtora gigante", "f": "dona de uma construtora gigante", "setor": "construcao" },
+        {
+          "m": "herdeiro de um império de comunicação",
+          "f": "herdeira de um império de comunicação",
+          "setor": "cultura"
+        }
+      ],
+      "negocio": { "m": "dono de um conglomerado", "f": "dona de um conglomerado", "setor": "industria" }
+    },
+    {
+      "id": "trilionaria",
+      "nome": "família trilionária",
+      "peso": 0.01,
+      "patrimonio": [1000000000000, 4000000000000],
+      "renda": [1000000000, 10000000000],
+      "poupanca": 0.4,
+      "saude": 7,
+      "ocupacoes": [
+        {
+          "m": "controlador de um conglomerado global",
+          "f": "controladora de um conglomerado global",
+          "setor": "industria"
+        },
+        {
+          "m": "fundador de uma gigante mundial de tecnologia",
+          "f": "fundadora de uma gigante mundial de tecnologia",
+          "setor": "tecnologia"
+        },
+        { "m": "dono de um banco global", "f": "dona de um banco global", "setor": "financas" },
+        {
+          "m": "dono de metade dos portos do continente",
+          "f": "dona de metade dos portos do continente",
+          "setor": "transporte"
+        }
+      ],
+      "negocio": { "m": "dono de um império global", "f": "dona de um império global", "setor": "industria" }
     }
   ],
   "familias": [
@@ -433,7 +488,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0
+      "poupanca": 0,
+      "herdeiro": "otimista"
     },
     {
       "id": "generoso",
@@ -444,7 +500,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": -0.03
+      "poupanca": -0.03,
+      "herdeiro": "carismatico"
     },
     {
       "id": "mao_fechada",
@@ -455,7 +512,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0.06
+      "poupanca": 0.06,
+      "herdeiro": "teimoso"
     },
     {
       "id": "brigao",
@@ -466,7 +524,8 @@
       "saude": 0,
       "doenca": 1.1,
       "emprego": 1.3,
-      "poupanca": 0
+      "poupanca": 0,
+      "herdeiro": "teimoso"
     },
     {
       "id": "ausente",
@@ -477,7 +536,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0
+      "poupanca": 0,
+      "herdeiro": "timido"
     },
     {
       "id": "trabalhador",
@@ -488,7 +548,8 @@
       "saude": -2,
       "doenca": 1.1,
       "emprego": 0.5,
-      "poupanca": 0.04
+      "poupanca": 0.04,
+      "herdeiro": "forte"
     },
     {
       "id": "gastador",
@@ -499,7 +560,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1.1,
-      "poupanca": -0.08
+      "poupanca": -0.08,
+      "herdeiro": "carismatico"
     },
     {
       "id": "fragil",
@@ -510,7 +572,8 @@
       "saude": -14,
       "doenca": 2.2,
       "emprego": 1.2,
-      "poupanca": 0
+      "poupanca": 0,
+      "herdeiro": "ansioso"
     },
     {
       "id": "rigido",
@@ -521,7 +584,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 0.8,
-      "poupanca": 0.03
+      "poupanca": 0.03,
+      "herdeiro": "teimoso"
     },
     {
       "id": "piadista",
@@ -532,7 +596,8 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0
+      "poupanca": 0,
+      "herdeiro": "otimista"
     },
     {
       "id": "devoto",
@@ -543,7 +608,8 @@
       "saude": 1,
       "doenca": 0.9,
       "emprego": 0.9,
-      "poupanca": 0.02
+      "poupanca": 0.02,
+      "herdeiro": "otimista"
     },
     {
       "id": "ambicioso",
@@ -554,7 +620,8 @@
       "saude": -1,
       "doenca": 1.1,
       "emprego": 0.7,
-      "poupanca": 0.05
+      "poupanca": 0.05,
+      "herdeiro": "esperto"
     }
   ],
   "tracosJogador": [
@@ -838,5 +905,57 @@
     "Morreu sem saber a senha do wi-fi da casa da vó.",
     "Chegava sempre cinco minutos atrasad{o|a}. Até aqui.",
     "Deixou uma gaveta cheia de sacolinhas e um coração cheio de gente."
+  ],
+  "ativos": [
+    {
+      "id": "renda_fixa",
+      "nome": "Renda fixa",
+      "retorno": { "normal": 0.035, "expansao": 0.025, "recessao": 0.05, "crise": 0.07 },
+      "desvio": 0.01
+    },
+    {
+      "id": "acoes",
+      "nome": "Ações",
+      "retorno": { "normal": 0.08, "expansao": 0.18, "recessao": -0.1, "crise": -0.25 },
+      "desvio": 0.15
+    },
+    {
+      "id": "fii",
+      "nome": "Fundos imobiliários",
+      "retorno": { "normal": 0.06, "expansao": 0.1, "recessao": -0.04, "crise": -0.12 },
+      "desvio": 0.08
+    },
+    {
+      "id": "dolar",
+      "nome": "Dólar",
+      "retorno": { "normal": 0.0, "expansao": -0.06, "recessao": 0.07, "crise": 0.22 },
+      "desvio": 0.08
+    },
+    {
+      "id": "cripto",
+      "nome": "Cripto",
+      "retorno": { "normal": 0.15, "expansao": 0.35, "recessao": -0.2, "crise": -0.35 },
+      "desvio": 0.5
+    }
+  ],
+  "perfis": [
+    {
+      "id": "conservador",
+      "nome": "Conservador",
+      "descricao": "quase tudo na renda fixa: cresce devagar e dorme tranquilo",
+      "carteira": { "renda_fixa": 0.8, "fii": 0.1, "dolar": 0.1 }
+    },
+    {
+      "id": "moderado",
+      "nome": "Moderado",
+      "descricao": "metade na renda fixa, um terço em ações e um pouco de imóveis e dólar",
+      "carteira": { "renda_fixa": 0.5, "acoes": 0.3, "fii": 0.1, "dolar": 0.1 }
+    },
+    {
+      "id": "arrojado",
+      "nome": "Arrojado",
+      "descricao": "mais da metade em ações e um pedaço em cripto: sobe muito e cai muito",
+      "carteira": { "renda_fixa": 0.15, "acoes": 0.55, "fii": 0.1, "dolar": 0.05, "cripto": 0.15 }
+    }
   ]
 }

@@ -5,6 +5,7 @@
  * buraco, amortizar com sobra) é automático, porque não é uma decisão.
  * Toda variação vai para o livro-razão.
  */
+import { ATIVOS, LIQUIDEZ, type Ativo } from './constantes.ts';
 import { anotar } from './livro.ts';
 import { normal, type Rng } from './rng.ts';
 import {
@@ -17,8 +18,6 @@ import {
   LIMITE_CREDITO_RENDAS,
   PROPENSAO_GASTO,
   PROPENSAO_GASTO_ENDIVIDADO,
-  RETORNO_REAL_DESVIO,
-  RETORNO_REAL_MEDIO,
   pisoCusto,
   pisoRenda,
 } from './regras.ts';
@@ -32,15 +31,39 @@ export function sortearInflacao(rng: Rng, extra = 0): number {
   return Math.min(0.25, Math.max(0.005, i));
 }
 
-/** Cobre dinheiro negativo com investimento e, se não der, com dívida; sobra amortiza dívida. */
-export function acertarCaixa(n: Numeros): void {
-  const dinheiro = n['dinheiro'] ?? 0;
-  const investido = n['investido'] ?? 0;
-  if (dinheiro < 0 && investido > 0) {
-    const resgate = Math.min(investido, -dinheiro);
-    n['investido'] = investido - resgate;
-    n['dinheiro'] = dinheiro + resgate;
+/** Tira até `valor` das classes investidas, na ordem dada (a de liquidez, por padrão). Devolve quanto saiu. */
+export function resgatarDe(n: Numeros, valor: number, ordem: readonly Ativo[] = LIQUIDEZ): number {
+  let falta = valor;
+  for (const a of ordem) {
+    if (falta <= 0) break;
+    const tem = n[a] ?? 0;
+    if (tem <= 0) continue;
+    const sai = Math.min(tem, falta);
+    n[a] = tem - sai;
+    falta -= sai;
   }
+  return valor - falta;
+}
+
+/** Põe `valor` nas classes, na proporção dos pesos (sem pesos: tudo na renda fixa). */
+export function distribuir(n: Numeros, valor: number, pesos: Partial<Record<Ativo, number>> = { renda_fixa: 1 }): void {
+  const total = ATIVOS.reduce((s, a) => s + (pesos[a] ?? 0), 0);
+  if (total <= 0 || valor <= 0) return;
+  for (const a of ATIVOS) {
+    const p = pesos[a] ?? 0;
+    if (p > 0) n[a] = (n[a] ?? 0) + (valor * p) / total;
+  }
+}
+
+function somaInvestida(n: Numeros): number {
+  let t = 0;
+  for (const a of ATIVOS) t += n[a] ?? 0;
+  return t;
+}
+
+/** Cobre dinheiro negativo com investimento (o mais líquido primeiro) e, se não der, com dívida; sobra amortiza dívida. */
+export function acertarCaixa(n: Numeros): void {
+  if ((n['dinheiro'] ?? 0) < 0) n['dinheiro'] = (n['dinheiro'] ?? 0) + resgatarDe(n, -(n['dinheiro'] ?? 0));
   if ((n['dinheiro'] ?? 0) < 0) {
     n['divida'] = (n['divida'] ?? 0) - n['dinheiro']!;
     n['dinheiro'] = 0;
@@ -52,10 +75,17 @@ export function acertarCaixa(n: Numeros): void {
   }
 }
 
-const CAMPOS_CAIXA = ['dinheiro', 'investido', 'divida'] as const;
+const CAMPOS_CAIXA = ['dinheiro', ...ATIVOS, 'divida'] as const;
+
+/** O caixa de uma entidade agora (para anotar a diferença depois). */
+export function caixaDe(n: Numeros): Numeros {
+  const c: Numeros = {};
+  for (const k of CAMPOS_CAIXA) c[k] = n[k] ?? 0;
+  return c;
+}
 
 /** Anota no livro a diferença do caixa de uma entidade entre dois momentos. */
-function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Numeros, r?: string): void {
+export function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Numeros, r?: string): void {
   for (const k of CAMPOS_CAIXA) anotar(reg, `${ent}.${k}`, (n[k] ?? 0) - (antes[k] ?? 0), r);
 }
 
@@ -80,11 +110,16 @@ export interface FaseEconomica {
   retorno: number;
 }
 
-export function economiaDoAno(e: EstadoVida, rng: Rng, reg: Mudanca[], fase: FaseEconomica = { inflacao: 0, retorno: 0 }): Ano {
+export function economiaDoAno(
+  e: EstadoVida,
+  rng: Rng,
+  reg: Mudanca[],
+  fase: FaseEconomica = { inflacao: 0, retorno: 0 },
+  retornos: Partial<Record<Ativo, number>> = {},
+): Ano {
   const n = e.entidades['eu']!.n;
-  const antes = { dinheiro: n['dinheiro'] ?? 0, investido: n['investido'] ?? 0, divida: n['divida'] ?? 0 };
+  const antes = caixaDe(n);
   const inflacao = sortearInflacao(rng, fase.inflacao);
-  const retornoReal = normal(rng, RETORNO_REAL_MEDIO + fase.retorno, RETORNO_REAL_DESVIO);
   const pais = e.entidades['pais']!.n;
   anotar(reg, 'pais.inflacao', Math.round(inflacao * 1000) / 10 - (pais['inflacao'] ?? 0), 'economia');
   pais['inflacao'] = Math.round(inflacao * 1000) / 10;
@@ -92,7 +127,8 @@ export function economiaDoAno(e: EstadoVida, rng: Rng, reg: Mudanca[], fase: Fas
   const dinheiroAntes = n['dinheiro'] ?? 0;
   n['dinheiro'] = dinheiroAntes / (1 + inflacao);
   const comida = dinheiroAntes - n['dinheiro'];
-  n['investido'] = (n['investido'] ?? 0) * (1 + retornoReal);
+  // Cada classe investida rende o que o mercado do ano deu a ela (acima da inflação).
+  for (const a of ATIVOS) if (n[a]) n[a] = n[a] * (1 + (retornos[a] ?? 0));
   const renda = n['renda'] ?? 0;
   const limite = limiteDeCredito(renda);
   const comJuros = Math.min(n['divida'] ?? 0, limite);
@@ -107,14 +143,14 @@ export function economiaDoAno(e: EstadoVida, rng: Rng, reg: Mudanca[], fase: Fas
       n['dinheiro'] += sobra * (1 - ((n['divida'] ?? 0) > 0 ? PROPENSAO_GASTO_ENDIVIDADO : PROPENSAO_GASTO));
     } else {
       deficit = -sobra;
-      const folga = Math.max(0, n['dinheiro']) + (n['investido'] ?? 0) + Math.max(0, limite - (n['divida'] ?? 0));
+      const folga = Math.max(0, n['dinheiro']) + somaInvestida(n) + Math.max(0, limite - (n['divida'] ?? 0));
       const coberto = Math.min(-sobra, folga);
       n['dinheiro'] -= coberto;
       privacao = coberto < -sobra;
     }
   }
   if (e.idade >= IDADE_GASTO_VELHICE) {
-    const patrimonio = (n['dinheiro'] ?? 0) + (n['investido'] ?? 0) - (n['divida'] ?? 0);
+    const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
     if (patrimonio > 0) n['dinheiro'] = (n['dinheiro'] ?? 0) - patrimonio * GASTO_VELHICE;
   }
   acertarCaixa(n);
@@ -129,15 +165,18 @@ export function limiteDeCredito(renda: number): number {
 
 export interface Movimento {
   dinheiro?: number | undefined;
+  /** Positivo aplica da conta (pelos pesos); negativo resgata (o mais líquido primeiro). */
   investir?: number | undefined;
   divida?: number | undefined;
+  /** Para onde vai o que se aplica (o perfil de investidor); sem pesos, renda fixa. */
+  pesos?: Partial<Record<Ativo, number>> | undefined;
 }
 
 /** Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro. */
 export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 'eu', r?: string): void {
   const n = e.entidades[ent]?.n;
   if (!n) return;
-  const antes = { dinheiro: n['dinheiro'] ?? 0, investido: n['investido'] ?? 0, divida: n['divida'] ?? 0 };
+  const antes = caixaDe(n);
   if (mov.dinheiro) n['dinheiro'] = (n['dinheiro'] ?? 0) + mov.dinheiro;
   // Dívida negativa é desconto ou perdão; para pagar com dinheiro, some também um dinheiro negativo.
   if (mov.divida) n['divida'] = Math.max(0, (n['divida'] ?? 0) + mov.divida);
@@ -145,11 +184,9 @@ export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 
     if (mov.investir > 0) {
       const valor = Math.min(mov.investir, Math.max(n['dinheiro'] ?? 0, 0));
       n['dinheiro'] = (n['dinheiro'] ?? 0) - valor;
-      n['investido'] = (n['investido'] ?? 0) + valor;
+      distribuir(n, valor, mov.pesos);
     } else {
-      const valor = Math.min(-mov.investir, n['investido'] ?? 0);
-      n['investido'] = (n['investido'] ?? 0) - valor;
-      n['dinheiro'] = (n['dinheiro'] ?? 0) + valor;
+      n['dinheiro'] = (n['dinheiro'] ?? 0) + resgatarDe(n, -mov.investir);
     }
   }
   // Só quem joga tem banco (crédito, dívida); personagens ficam com o saldo como está.

@@ -22,7 +22,7 @@ export const TIPOS_STORYLET = ['evento', 'acao', 'npc'] as const;
 export type TipoStorylet = (typeof TIPOS_STORYLET)[number];
 
 /** Classes por patrimônio, da origem ao fim (as mesmas faixas nos dois lados). */
-export const CLASSES = ['extrema_pobreza', 'pobre', 'remediada', 'media', 'rica', 'muito_rica'] as const;
+export const CLASSES = ['extrema_pobreza', 'pobre', 'remediada', 'media', 'rica', 'muito_rica', 'bilionaria', 'trilionaria'] as const;
 export type Classe = (typeof CLASSES)[number];
 
 export const TIPOS_FAMILIA = ['acolhedora', 'conflituosa', 'religiosa', 'empreendedora'] as const;
@@ -34,3 +34,13 @@ export const CATEGORIAS_MORTE = ['velhice', 'coracao', 'doenca', 'acidente', 'vi
 export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
 export type Fase = (typeof FASES)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];
+
+/** Onde o dinheiro investido fica: cada classe rende conforme a fase do país. */
+export const ATIVOS = ['renda_fixa', 'acoes', 'fii', 'dolar', 'cripto'] as const;
+export type Ativo = (typeof ATIVOS)[number];
+/** Ordem de resgate quando falta dinheiro: o mais fácil de vender primeiro. */
+export const LIQUIDEZ: readonly Ativo[] = ['renda_fixa', 'dolar', 'fii', 'acoes', 'cripto'];
+/** Perfil de investidor: para onde vai o dinheiro novo. */
+export const PERFIS = ['conservador', 'moderado', 'arrojado'] as const;
+export type Perfil = (typeof PERFIS)[number];
+export const PERFIL_PADRAO: Perfil = 'moderado';

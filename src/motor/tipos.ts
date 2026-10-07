@@ -60,7 +60,7 @@ export interface Mudanca {
   r?: string;
 }
 
-export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'npc' | 'mundo' | 'linha' | 'regra' | 'morte';
+export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'dinheiro' | 'npc' | 'mundo' | 'linha' | 'regra' | 'morte';
 
 /** Entrada do livro-razão. As de tipo `regra` não aparecem na linha do tempo. */
 export interface Entrada {
@@ -135,6 +135,29 @@ export interface EstadoVida {
   /** Soma da felicidade de cada ano vivido (média = soma / anos). */
   somaFelicidade: number;
   proximoId: number;
+  /** Quem veio antes, quando a vida continua a de um pai ou mãe (sem isso, é a primeira geração). */
+  dinastia?: Dinastia;
+}
+
+export interface Antepassado {
+  nome: string;
+  genero: Genero;
+  anoNascimento: number;
+  anoMorte: number;
+  idade: number;
+  /** "de infarto, no meio de um churrasco". */
+  causa: string;
+  /** Patrimônio ao morrer (reais de hoje). */
+  patrimonio: number;
+  /** O que chegou ao herdeiro. */
+  deixou: number;
+}
+
+export interface Dinastia {
+  /** 1 é quem nasceu do zero; 2 é o primeiro herdeiro. */
+  geracao: number;
+  /** Do fundador ao pai ou mãe de quem joga agora. */
+  antepassados: Antepassado[];
 }
 
 /**

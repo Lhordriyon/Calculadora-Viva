@@ -10,7 +10,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
 import { renderizar } from './texto.ts';
-import type { Entrada, EstadoVida, Genero } from './tipos.ts';
+import type { Antepassado, Entrada, EstadoVida, Genero } from './tipos.ts';
 
 export interface PontoDeVirada {
   origemId: number;
@@ -50,7 +50,7 @@ export function descendentes(historico: Entrada[]): Map<number, Set<number>> {
   return resultado;
 }
 
-const PATRIMONIO = new Set(['eu.dinheiro', 'eu.investido', 'eu.divida']);
+const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto', 'eu.divida']);
 
 /** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda, vínculos, morte. */
 export function impacto(h: Entrada): number {
@@ -89,14 +89,14 @@ function melhorConsequencia(origem: Entrada, descendentes: Entrada[]): Entrada {
 /** Texto da causa, com sujeito. Escolhas e ações são do jogador; o resto já vem com sujeito. */
 function frase(h: Entrada): { texto: string; doJogador: boolean } | null {
   if (h.escolha) return { texto: `você ${h.escolha.resumo}`, doJogador: true };
-  if (h.tipo === 'acao' && h.resumo) return { texto: `você ${h.resumo}`, doJogador: true };
+  if ((h.tipo === 'acao' || h.tipo === 'dinheiro') && h.resumo) return { texto: `você ${h.resumo}`, doJogador: true };
   if ((h.tipo === 'npc' || h.tipo === 'mundo') && h.resumo) return { texto: h.resumo, doJogador: false };
   return null;
 }
 
 function consequenciaDe(h: Entrada): string {
   if (h.escolha) return h.escolha.resumo;
-  if (h.tipo === 'acao' && h.resumo) return `você ${h.resumo}`;
+  if ((h.tipo === 'acao' || h.tipo === 'dinheiro') && h.resumo) return `você ${h.resumo}`;
   return h.resumo ?? h.texto;
 }
 
@@ -158,6 +158,11 @@ export interface ResumoVida {
   origem: string;
   pontos: PontoDeVirada[];
   epitafio: string;
+  /** Geração da família (1 = quem nasceu do zero) e quem veio antes. */
+  geracao: number;
+  antepassados: Antepassado[];
+  /** Quem pode continuar a história (filho ou filha viva), com a idade de agora. */
+  herdeiro: { nome: string; idade: number; genero: Genero } | null;
 }
 
 /** "família pobre e acolhedora", "classe média, família religiosa". */
@@ -202,5 +207,11 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     origem: descreverOrigem(classe?.nome, familia?.nome),
     pontos,
     epitafio: renderizar(modelo, ctx),
+    geracao: e.dinastia?.geracao ?? 1,
+    antepassados: e.dinastia?.antepassados ?? [],
+    herdeiro: (() => {
+      const f = e.entidades['filho'];
+      return !e.vivo && f && f.vivo !== false && f.nascimento !== undefined ? { nome: f.nome, idade: e.ano - f.nascimento, genero: f.genero ?? 'm' } : null;
+    })(),
   };
 }

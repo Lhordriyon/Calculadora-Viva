@@ -1,5 +1,5 @@
 /**
- * Origem procedural: classe (6) × tipo de família (4) × traços. Sorteada em
+ * Origem procedural: classe (8, da extrema pobreza à família trilionária) × tipo de família (4) × traços. Sorteada em
  * um toque; quem quiser escolhe a classe e o tipo de família. A origem
  * decide quem são os pais (idade, ocupação, renda, dinheiro, saúde, traço,
  * vínculo), a avó e o amigo de infância, a cidade e o traço de quem joga.
@@ -12,7 +12,7 @@ import { aleatorio, inteiro, normal, sortear, sortearIndice, type Rng } from './
 import type { Entidade, EstadoVida, Genero } from './tipos.ts';
 
 export interface EscolhaOrigem {
-  /** Índice da classe (0 = extrema pobreza ... 5 = muito rica). */
+  /** Índice da classe (0 = extrema pobreza ... 5 = muito rica, 6 = bilionária, 7 = trilionária). */
   classe?: number;
   familia?: TipoFamilia;
 }
@@ -74,7 +74,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   // ---- dinheiro da casa
   const riqueza = Math.round(naFaixa(rng, classe.patrimonio));
   const rendaAdulto = (): number => Math.round(naFaixa(rng, classe.renda));
-  const chanceDesemprego = [0.45, 0.2, 0.1, 0.06, 0.03, 0][iClasse] ?? 0.1;
+  const chanceDesemprego = [0.45, 0.2, 0.1, 0.06, 0.03, 0, 0, 0][iClasse] ?? 0.1;
 
   const pessoa = (id: string, genero: Genero, nascimento: number, traco: Traco, vinculo: number, saude: number): Entidade => {
     const en = novaEntidade({ id, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo: true });
@@ -104,8 +104,10 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   const idadePai = Math.max(16, idadeMae + inteiro(rng, -2, 8));
   const pai = pessoa('pai', 'm', e.ano - idadePai, sortearTraco(rng, c, tipo, mae.t['traco']), tipo.vinculo, 74 + classe.saude);
   e.entidades['pai'] = pai;
-  ocupar(mae, sortear(rng, classe.ocupacoes));
-  ocupar(pai, sortear(rng, classe.ocupacoes));
+  const daMae = sortear(rng, classe.ocupacoes);
+  ocupar(mae, daMae);
+  // O pai faz outra coisa (duas pessoas donas de "metade dos portos do continente" é demais).
+  ocupar(pai, sortear(rng, classe.ocupacoes.filter((o) => o !== daMae)));
   if (tipo.id === 'empreendedora') {
     const dono = aleatorio(rng) < 0.5 ? mae : pai;
     dono.t['ocupacao'] = dono.genero === 'f' ? classe.negocio.f : classe.negocio.m;
@@ -130,7 +132,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   const avo = pessoa('avo', 'f', mae.nascimento! - inteiro(rng, 17, 30), sortearTraco(rng, c, tipo), tipo.vinculo + 4, 62 + classe.saude / 2);
   avo.n['renda'] = Math.round(classe.renda[0] * 0.8);
   avo.n['dinheiro'] = Math.round(Math.max(0, riqueza) * (0.05 + aleatorio(rng) * 0.25));
-  const moraJunto = [0.45, 0.35, 0.2, 0.1, 0.05, 0.05][iClasse] ?? 0.1;
+  const moraJunto = [0.45, 0.35, 0.2, 0.1, 0.05, 0.05, 0.03, 0.03][iClasse] ?? 0.1;
   if (aleatorio(rng) < moraJunto) {
     avo.q['mora_junto'] = { v: 1, ano: e.ano, idade: 0, causa: null };
     avo.n['vinculo'] = Math.min(96, (avo.n['vinculo'] ?? 60) + 12);
@@ -149,7 +151,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   eu.t['ocupacao'] = '';
   eu.n['classe_origem'] = iClasse;
   // Famílias mais pobres têm, em média, mais filhos.
-  eu.n['irmaos'] = Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2][iClasse] ?? 1.5, 1.1))));
+  eu.n['irmaos'] = Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2, 1.4, 1.3][iClasse] ?? 1.5, 1.1))));
   eu.n['riqueza_origem'] = riqueza;
   eu.n['saude'] = Math.round(limitar(normal(rng, 80, 7) + classe.saude + traco.saude, 40, 99));
   eu.n['felicidade'] = Math.round(limitar(normal(rng, 65, 8) + traco.felicidade, 25, 97));

@@ -7,7 +7,7 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATRIBUTOS, PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, PAPEIS, PAPEIS_NOVOS } from './constantes.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
@@ -89,11 +89,14 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
   };
   for (const at of ATRIBUTOS) if (ef[at]) out.push({ caminho: `eu.${at}`, sistema: sistemaDe(at) });
   if (ef.patrimonioFator !== undefined) {
-    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'eu.investido', sistema: 'dinheiro' });
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, ...ATIVOS.map((a) => ({ caminho: `eu.${a}`, sistema: 'dinheiro' as Sistema })));
+  }
+  if (ef.realocar) {
+    for (const lado of [ef.realocar.de, ef.realocar.para]) out.push({ caminho: `eu.${lado}`, sistema: 'dinheiro' });
   }
   if (ef.dinheiro || ef.divida || ef.dividaFator !== undefined || ef.investir) {
     if (ef.dinheiro || ef.investir) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
-    if (ef.investir) out.push({ caminho: 'eu.investido', sistema: 'dinheiro' });
+    if (ef.investir) out.push(...ATIVOS.map((a) => ({ caminho: `eu.${a}`, sistema: 'dinheiro' as Sistema })));
     if (ef.divida || ef.dividaFator !== undefined) out.push({ caminho: 'eu.divida', sistema: 'dinheiro' });
   }
   if (ef.renda !== undefined || ef.rendaFator !== undefined) out.push({ caminho: 'eu.renda', sistema: 'dinheiro' });

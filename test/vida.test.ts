@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { acoesPossiveis } from '../src/motor/acoes.ts';
-import { ATRIBUTOS } from '../src/motor/constantes.ts';
+import { ATIVOS, ATRIBUTOS } from '../src/motor/constantes.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
@@ -107,7 +107,7 @@ describe('livro-razão', () => {
       viverAteOFim(e, real, i);
       const soma = new Map<string, number>();
       for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.d !== undefined) soma.set(m.c, (soma.get(m.c) ?? 0) + m.d);
-      for (const campo of [...ATRIBUTOS, 'dinheiro', 'investido', 'divida', 'renda', 'custo']) {
+      for (const campo of [...ATRIBUTOS, 'dinheiro', ...ATIVOS, 'divida', 'renda', 'custo']) {
         const esperado = (inicio[campo] ?? 0) + (soma.get(`eu.${campo}`) ?? 0);
         expect(Math.abs(esperado - (e.entidades['eu']!.n[campo] ?? 0)), `${campo} (vida ${i})`).toBeLessThan(2);
       }

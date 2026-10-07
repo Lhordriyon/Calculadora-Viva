@@ -11,6 +11,7 @@ import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { escolherDoAno } from './diretor.ts';
+import { mercadoDoAno } from './carteira.ts';
 import { economiaDoAno } from './economia.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
@@ -140,7 +141,8 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   const regAno: Mudanca[] = [];
   const idRegras = e.proximoId++;
 
-  const ano = economiaDoAno(e, e.rng, regAno, fase);
+  const mercado = mercadoDoAno(e, c, fase.id, regAno);
+  const ano = economiaDoAno(e, e.rng, regAno, fase, mercado);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {
     somar(e, regAno, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');

@@ -3,7 +3,7 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { CLASSES, ENTIDADES } from './constantes.ts';
+import { ATIVOS, CLASSES, ENTIDADES } from './constantes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
@@ -27,7 +27,16 @@ const PESSOA: Record<string, DefCampo> = {
   /** Vínculo com quem joga. */
   vinculo: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
   dinheiro: { tipo: 'num', sistema: 'dinheiro', reais: true },
-  investido: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** O que está investido, por classe (rende conforme a fase do país). */
+  renda_fixa: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  acoes: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  fii: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  dolar: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  cripto: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** Soma das classes investidas. */
+  investido: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
+  /** Perfil de investidor (conservador, moderado, arrojado): para onde vai o dinheiro novo. */
+  perfil: { tipo: 'texto', sistema: 'dinheiro' },
   divida: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   /** Renda e custo anuais. */
   renda: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
@@ -38,8 +47,8 @@ const PESSOA: Record<string, DefCampo> = {
   /** Área da faculdade (saude, tecnologia, educacao, negocios, engenharia, artes). */
   curso: { tipo: 'texto', sistema: 'mente' },
   traco: { tipo: 'texto', sistema: 'carater' },
-  /** Origem de quem joga: classe (0 a 5), riqueza da família ao nascer e tipo de família. */
-  classe_origem: { tipo: 'num', sistema: 'origem', limites: [0, 5] },
+  /** Origem de quem joga: classe (0 a 7), riqueza da família ao nascer e tipo de família. */
+  classe_origem: { tipo: 'num', sistema: 'origem', limites: [0, 7] },
   riqueza_origem: { tipo: 'num', sistema: 'origem', reais: true },
   familia: { tipo: 'texto', sistema: 'origem' },
   /** Irmãos de quem joga: dividem a herança dos pais. */
@@ -47,7 +56,7 @@ const PESSOA: Record<string, DefCampo> = {
   idade: { tipo: 'num', sistema: 'corpo', derivado: true },
   vivo: { tipo: 'bool', sistema: 'corpo', derivado: true },
   patrimonio: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
-  /** Classe atual (0 a 5) pelo patrimônio. */
+  /** Classe atual (0 a 7) pelo patrimônio. */
   classe: { tipo: 'num', sistema: 'dinheiro', derivado: true },
   nome: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   genero: { tipo: 'texto', sistema: 'relacoes', derivado: true },
@@ -69,6 +78,12 @@ const PAIS: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
   /** Inflação do último ano, em %. */
   inflacao: { tipo: 'num', sistema: 'mundo' },
+  /** Quanto cada classe de investimento rendeu no último ano, em % acima da inflação ("pais.ret_acoes": { "max": -20 } é a bolsa despencando). */
+  ret_renda_fixa: { tipo: 'num', sistema: 'mundo' },
+  ret_acoes: { tipo: 'num', sistema: 'mundo' },
+  ret_fii: { tipo: 'num', sistema: 'mundo' },
+  ret_dolar: { tipo: 'num', sistema: 'mundo' },
+  ret_cripto: { tipo: 'num', sistema: 'mundo' },
 };
 
 export function camposDe(ent: string): Record<string, DefCampo> {
@@ -108,12 +123,19 @@ export function idadeDe(e: EstadoVida, en: Entidade): number {
   return (en.vivo === false && en.morte !== undefined ? en.morte : e.ano) - en.nascimento;
 }
 
+/** Tudo o que está investido, somando as classes. */
+export function investidoDe(en: Entidade): number {
+  let total = 0;
+  for (const a of ATIVOS) total += en.n[a] ?? 0;
+  return total;
+}
+
 export function patrimonioDe(en: Entidade): number {
-  return (en.n['dinheiro'] ?? 0) + (en.n['investido'] ?? 0) - (en.n['divida'] ?? 0);
+  return (en.n['dinheiro'] ?? 0) + investidoDe(en) - (en.n['divida'] ?? 0);
 }
 
 /** Limites das classes por patrimônio (reais de hoje): abaixo de LIMITES[i] está a classe i. */
-export const LIMITES_CLASSE = [5000, 40000, 200000, 1000000, 5000000, Infinity] as const;
+export const LIMITES_CLASSE = [5000, 40000, 200000, 1000000, 5000000, 1e9, 1e12, Infinity] as const;
 
 export function classeDoPatrimonio(p: number): number {
   return LIMITES_CLASSE.findIndex((ate) => p < ate);
@@ -123,9 +145,10 @@ export function nomeDaClasse(i: number): string {
   return CLASSES[Math.max(0, Math.min(CLASSES.length - 1, i))]!;
 }
 
+/** Pelo gênero da pessoa: numa dinastia, a família de quem herda pode ter duas mães ou dois pais. */
 const QUEM: Record<string, [string, string]> = {
-  mae: ['sua mãe', 'sua mãe'],
-  pai: ['seu pai', 'seu pai'],
+  mae: ['seu pai', 'sua mãe'],
+  pai: ['seu pai', 'sua mãe'],
   avo: ['seu avô', 'sua avó'],
   filho: ['seu filho', 'sua filha'],
 };
@@ -152,6 +175,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.vivo !== false;
       case 'patrimonio':
         return patrimonioDe(en);
+      case 'investido':
+        return investidoDe(en);
       case 'classe':
         return classeDoPatrimonio(patrimonioDe(en));
       case 'nome':

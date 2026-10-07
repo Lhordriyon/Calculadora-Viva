@@ -2,7 +2,8 @@
  * Aplica os efeitos de um storylet. Toda mudança vai para o registro da
  * entrada que a causou (o livro-razão); `ator` resolve os caminhos "ator.x".
  */
-import { ATRIBUTOS, type PapelNovo } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, type PapelNovo } from './constantes.ts';
+import { pesosDoPerfil, realocar } from './carteira.ts';
 import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { movimentar } from './economia.ts';
@@ -45,9 +46,10 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.patrimonioFator !== undefined) {
     const f = ef.patrimonioFator - 1;
     somar(e, reg, 'eu', 'dinheiro', Math.max(0, eu.n['dinheiro'] ?? 0) * f);
-    somar(e, reg, 'eu', 'investido', (eu.n['investido'] ?? 0) * f);
+    for (const a of ATIVOS) if (eu.n[a]) somar(e, reg, 'eu', a, (eu.n[a] ?? 0) * f);
   }
-  if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, ef);
+  if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, divida: ef.divida, pesos: pesosDoPerfil(e, c) });
+  if (ef.realocar) realocar(e, reg, ef.realocar.de, ef.realocar.para, ef.realocar.fracao);
   if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
   if (ef.custo !== undefined) definirNumero(e, reg, 'eu', 'custo', ajustar(eu.n['custo'] ?? 0, ef.custo));

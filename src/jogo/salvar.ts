@@ -59,7 +59,7 @@ const Entrada = z.object({
   id: z.number(),
   idade: z.number(),
   ano: z.number(),
-  tipo: z.enum(['nascimento', 'evento', 'acao', 'npc', 'mundo', 'linha', 'regra', 'morte']),
+  tipo: z.enum(['nascimento', 'evento', 'acao', 'dinheiro', 'npc', 'mundo', 'linha', 'regra', 'morte']),
   causa: Causa,
   ref: z.optional(z.string()),
   ator: z.optional(z.string()),
@@ -71,6 +71,17 @@ const Entrada = z.object({
   causas: z.optional(z.array(z.number())),
   mudancas: z.optional(z.array(Mudanca)),
   inflacao: z.optional(z.number()),
+});
+
+const Antepassado = z.object({
+  nome: z.string(),
+  genero: Genero,
+  anoNascimento: z.number(),
+  anoMorte: z.number(),
+  idade: z.number(),
+  causa: z.string(),
+  patrimonio: z.number(),
+  deixou: z.number(),
 });
 
 const Vida = z.object({
@@ -102,6 +113,7 @@ const Vida = z.object({
   morte: z.nullable(z.object({ idade: z.number(), ano: z.number(), causa: z.string(), categoria: z.string(), fonte: z.optional(z.number()) })),
   somaFelicidade: z.number(),
   proximoId: z.number(),
+  dinastia: z.optional(z.object({ geracao: z.number(), antepassados: z.array(Antepassado) })),
 });
 
 /** A memória da versão 1 não tinha `acoes`: lê as duas. */
@@ -138,6 +150,13 @@ export function lerSave(texto: string | null, conteudo: Conteudo): Save {
   const vida = Vida.safeParse(casca.data.vida);
   if (!vida.success) return { ...base, aviso: AVISO_SAVE_ANTIGO };
   const v = vida.data as EstadoVida;
+  // Antes da carteira, o investido era um número só: vira renda fixa (o jogador rebalanceia se quiser).
+  for (const en of Object.values(v.entidades)) {
+    const antigo = en.n['investido'];
+    if (antigo === undefined) continue;
+    if (antigo > 0) en.n['renda_fixa'] = (en.n['renda_fixa'] ?? 0) + antigo;
+    delete en.n['investido'];
+  }
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.
   if (v.pendente && conteudo.porId.get(v.pendente.storylet)?.escolhas?.length !== v.pendente.opcoes.length) v.pendente = null;
   return { ...base, vida: v };

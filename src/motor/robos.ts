@@ -11,11 +11,12 @@
  * perder felicidade com certeza é custo, não risco.
  */
 import { acoesPossiveis } from './acoes.ts';
-import { entidadeDe, patrimonioDe, separar } from './campos.ts';
+import { perfilDe, type Operacao } from './carteira.ts';
+import { entidadeDe, investidoDe, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import type { Verbo } from './constantes.ts';
+import { PERFIS, type Verbo } from './constantes.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
-import { sortear, type Rng } from './rng.ts';
+import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
 import type { EstadoVida } from './tipos.ts';
 
@@ -31,6 +32,14 @@ function valorAtributos(x: { saude?: number | undefined; felicidade?: number | u
   return (x.saude ?? 0) * 1.2 + (x.felicidade ?? 0) + (x.inteligencia ?? 0) * 0.6 + (x.aparencia ?? 0) * 0.5;
 }
 
+/** Rendimento real médio de onde o dinheiro está, pesado pelo tempo típico em cada fase (dinheiro parado perde a inflação). */
+function rendimentoEsperado(c: Conteudo, onde: string): number {
+  if (onde === 'dinheiro') return -0.045;
+  const a = c.mundo.ativos.find((x) => x.id === onde);
+  if (!a) return 0;
+  return 0.65 * a.retorno.normal + 0.2 * a.retorno.expansao + 0.11 * a.retorno.recessao + 0.04 * a.retorno.crise;
+}
+
 function dinheiroDe(e: EstadoVida, ent: string): number {
   return e.entidades[ent]?.n['dinheiro'] ?? 0;
 }
@@ -41,12 +50,18 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   let v = valorAtributos(ef);
   v += ((ef.dinheiro ?? 0) - (ef.divida ?? 0)) / REAIS_POR_PONTO;
   if (ef.dividaFator !== undefined) v += ((eu.n['divida'] ?? 0) * (1 - ef.dividaFator)) / REAIS_POR_PONTO;
-  if (ef.patrimonioFator !== undefined) v += ((ef.patrimonioFator - 1) * (Math.max(0, eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0))) / REAIS_POR_PONTO;
+  if (ef.patrimonioFator !== undefined) v += ((ef.patrimonioFator - 1) * (Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu))) / REAIS_POR_PONTO;
   if (ef.rendaFator !== undefined) v += ((ef.rendaFator - 1) * (eu.n['renda'] ?? 0) * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   // Investir troca dinheiro parado (que encolhe) por dinheiro que rende: ~4% reais em 10 anos de horizonte.
   if (ef.investir && ef.investir > 0) v += (Math.min(ef.investir, eu.n['dinheiro'] ?? 0) * 0.48) / REAIS_POR_PONTO;
   // Resgatar é o contrário: o dinheiro sai do que rende e volta a encolher.
-  if (ef.investir && ef.investir < 0) v -= (Math.min(-ef.investir, eu.n['investido'] ?? 0) * 0.48) / REAIS_POR_PONTO;
+  if (ef.investir && ef.investir < 0) v -= (Math.min(-ef.investir, investidoDe(eu)) * 0.48) / REAIS_POR_PONTO;
+  // Realocar troca o rendimento esperado de um lugar pelo de outro (dinheiro parado perde para a inflação).
+  if (ef.realocar) {
+    const { de, para, fracao } = ef.realocar;
+    const valor = Math.max(0, eu.n[de] ?? 0) * fracao;
+    v += ((rendimentoEsperado(c, para) - rendimentoEsperado(c, de)) * 10 * valor) / REAIS_POR_PONTO;
+  }
   const renda = eu.n['renda'] ?? 0;
   if (ef.renda !== undefined) {
     const nova = typeof ef.renda === 'number' ? renda + ef.renda : ef.renda.definir;
@@ -99,7 +114,7 @@ function exposicao(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo): number 
   let x = Math.max(0, -(ef.saude ?? 0)) * 1.2 + Math.max(0, ef.divida ?? 0) / REAIS_POR_PONTO;
   if (ef.patrimonioFator !== undefined && ef.patrimonioFator < 1) {
     const eu = e.entidades['eu']!;
-    x += ((1 - ef.patrimonioFator) * (Math.max(0, eu.n['dinheiro'] ?? 0) + (eu.n['investido'] ?? 0))) / REAIS_POR_PONTO;
+    x += ((1 - ef.patrimonioFator) * (Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu))) / REAIS_POR_PONTO;
   }
   for (const m of ef.marcas ?? []) {
     const s = c.marcas[m]?.porAno?.saude ?? 0;
@@ -167,6 +182,29 @@ export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
   return i === 0 ? null : acoes[i - 1]!.verbo;
 }
 
+/**
+ * O que a estratégia faz com o dinheiro no começo do ano (sem gastar a ficha).
+ * Aos 18, a cautelosa vira conservadora e a arriscada, arrojada; a aleatória
+ * sorteia um perfil. Todo ano, quem cuida do dinheiro aplica o que passa da
+ * reserva (um ano de gastos para a cautelosa, três meses para a arriscada).
+ * A "primeira" nunca abre a carteira: é quem joga sem mexer no dinheiro.
+ */
+export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, rng: Rng): Operacao[] {
+  if (!e.vivo || e.pendente || e.idade < 18 || estrategia === 'primeira') return [];
+  const ops: Operacao[] = [];
+  if (e.idade === 18) {
+    const alvo = estrategia === 'cautelosa' ? 'conservador' : estrategia === 'arriscada' ? 'arrojado' : sortear(rng, PERFIS);
+    if (alvo !== perfilDe(e)) ops.push({ tipo: 'perfil', perfil: alvo, rebalancear: true });
+  }
+  const eu = e.entidades['eu']!;
+  const conta = Math.max(0, eu.n['dinheiro'] ?? 0);
+  const gastos = Math.max(eu.n['custo'] ?? 0, 10000);
+  const reserva = estrategia === 'cautelosa' ? gastos : estrategia === 'arriscada' ? gastos / 4 : gastos / 2;
+  const sobra = conta - reserva;
+  if (sobra >= 1000 && (estrategia !== 'aleatoria' || aleatorio(rng) < 0.35)) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? sobra / 2 : sobra) });
+  return ops;
+}
+
 // ---------------------------------------------------------------- análise de dilemas
 
 interface Vetor {
@@ -197,7 +235,7 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       v.inteligencia += p * (ef.inteligencia ?? 0);
       v.aparencia += p * (ef.aparencia ?? 0);
       const so: Record<string, unknown> = {};
-      for (const k of ['dinheiro', 'investir', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator'] as const) if (ef[k] !== undefined) so[k] = ef[k];
+      for (const k of ['dinheiro', 'investir', 'realocar', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator'] as const) if (ef[k] !== undefined) so[k] = ef[k];
       v.dinheiro += p * valorEfeitos(so as Efeitos, e, c);
       if (ef.morte) v.morte += p;
       const outros = Object.keys(ef).filter((k) => k.includes('.')).map((k) => `${k}=${String(ef[k])}`);
@@ -253,7 +291,6 @@ export function estadoTipico(base: EstadoVida, idade: number): EstadoVida {
     renda: crianca ? 0 : 30000,
     custo: crianca ? 0 : 18000,
     dinheiro: crianca ? 0 : 10000,
-    investido: 0,
     divida: 0,
   });
   return e;

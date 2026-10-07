@@ -54,10 +54,6 @@ export function derivaAparencia(idade: number): number {
 export const INFLACAO_MEDIA = 0.045;
 export const INFLACAO_DESVIO = 0.02;
 
-/** Retorno real (acima da inflação) dos investimentos, com anos ruins. */
-export const RETORNO_REAL_MEDIO = 0.04;
-export const RETORNO_REAL_DESVIO = 0.05;
-
 /** Juros nominais anuais da dívida (cartão, cheque especial, financiamento). */
 export const JUROS_DIVIDA = 0.22;
 

@@ -136,8 +136,13 @@ export function formatarDinheiro(valor: number): string {
     return `${sinal}R$ ${txt} ${txt === '1' || mi < 2 ? 'milhão' : 'milhões'}`;
   }
   const bi = v / 1e9;
-  const txt = bi < 10 ? umaCasa(bi) : String(Math.round(bi));
-  return `${sinal}R$ ${txt} ${bi < 2 ? 'bilhão' : 'bilhões'}`;
+  if (Math.round(bi) < 1000) {
+    const txt = bi < 10 ? umaCasa(bi) : String(Math.round(bi));
+    return `${sinal}R$ ${txt} ${bi < 2 ? 'bilhão' : 'bilhões'}`;
+  }
+  const tri = v / 1e12;
+  const txt = tri < 10 ? umaCasa(tri) : String(Math.round(tri));
+  return `${sinal}R$ ${txt} ${tri < 2 ? 'trilhão' : 'trilhões'}`;
 }
 
 /** Primeira letra maiúscula (para resumos que abrem frase). */

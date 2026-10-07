@@ -6,11 +6,13 @@
  */
 import { z } from 'zod';
 import {
+  ATIVOS,
   ATRIBUTOS,
   CATEGORIAS_MORTE,
   CLASSES,
   FASES,
   PAPEIS,
+  PERFIS,
   PAPEIS_NOVOS,
   TIPOS_FAMILIA,
   TIPOS_STORYLET,
@@ -134,6 +136,11 @@ const EFEITOS_FIXOS = {
       fracao: z.number().gt(0).max(1).optional(),
       max: z.number().positive().optional(),
     })
+    .optional(),
+  /** Move uma fração de onde o dinheiro está para outro lugar ("de": "acoes", "para": "renda_fixa", "fracao": 1 vende todas as ações). */
+  realocar: z
+    .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })
+    .refine((r) => r.de !== r.para, 'realocar precisa de origem e destino diferentes')
     .optional(),
   /** Um personagem morre (a causa fica no texto do storylet). */
   matar: Ref.optional(),
@@ -372,6 +379,26 @@ export const DefFase = z.strictObject({
   resumo: z.string().min(3),
 });
 export type DefFase = z.infer<typeof DefFase>;
+
+/** Uma classe de investimento: rendimento real médio em cada fase do país e quanto varia em torno dele. */
+export const DefAtivo = z.strictObject({
+  id: z.enum(ATIVOS),
+  nome: z.string(),
+  retorno: z.strictObject({ normal: z.number(), expansao: z.number(), recessao: z.number(), crise: z.number() }),
+  desvio: z.number().min(0).max(1),
+});
+export type DefAtivo = z.infer<typeof DefAtivo>;
+
+/** Perfil de investidor: a divisão do dinheiro novo entre as classes (somando 1). */
+export const DefPerfil = z
+  .strictObject({
+    id: z.enum(PERFIS),
+    nome: z.string(),
+    descricao: z.string().min(3),
+    carteira: z.partialRecord(z.enum(ATIVOS), z.number().min(0).max(1)),
+  })
+  .refine((p) => Math.abs(Object.values(p.carteira).reduce((s, x) => s + (x ?? 0), 0) - 1) < 1e-6, 'a carteira do perfil precisa somar 1');
+export type DefPerfil = z.infer<typeof DefPerfil>;
 const NomeGenero = z.strictObject({ m: z.string(), f: z.string() });
 const Intervalo = z.tuple([z.number(), z.number()]);
 
@@ -421,6 +448,8 @@ export const Traco = z.strictObject({
   emprego: z.number().min(0),
   /** Fração extra da renda guardada por ano. */
   poupanca: z.number(),
+  /** O traço de quem joga que esta pessoa leva quando a história continua com ela (o filho que vira herdeiro). */
+  herdeiro: z.string().optional(),
 });
 export type Traco = z.infer<typeof Traco>;
 
@@ -462,6 +491,8 @@ export const Mundo = z.strictObject({
   setores: z.array(DefSetor).min(6),
   /** O ciclo econômico do país, uma fase por id. */
   fases: z.array(DefFase).length(FASES.length),
+  ativos: z.array(DefAtivo).length(ATIVOS.length),
+  perfis: z.array(DefPerfil).length(PERFIS.length),
   /** Textos da primeira linha da vida (sorteado entre os que a origem permite). */
   nascimento: z.array(z.strictObject({ se: Condicoes.optional(), texto: z.string() })).min(1),
   /** Epitáfios genéricos quando nenhuma marca tem um. */
