@@ -14,10 +14,13 @@ import { classeDoPatrimonio, nomeDaClasse, patrimonioDe } from '../src/motor/cam
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { faseDe } from '../src/motor/ciclo.ts';
-import { FASES, type Fase } from '../src/motor/constantes.ts';
+import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
+import { operar, perfilDe } from '../src/motor/carteira.ts';
+import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
+import type { EscolhaOrigem } from '../src/motor/origem.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
-import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
-import { aleatorio, criarRng, misturar } from '../src/motor/rng.ts';
+import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, decidirDinheiro, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
+import { aleatorio, criarRng, misturar, type Rng } from '../src/motor/rng.ts';
 import type { Entrada, EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
@@ -47,19 +50,25 @@ interface Jogada {
   riquezaOrigem: number;
   /** Anos vividos em cada fase do ciclo. */
   anosPorFase: Record<Fase, number>;
+  /** Operações na carteira (aplicar, resgatar, trocar o perfil). */
+  operacoes: number;
 }
 
-function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined): Jogada {
-  const t0 = performance.now();
-  const e = nascer(c, { semente, ano: ANO });
-  const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
-  const robo = criarRng(misturar(semente, 77));
-  let toques = 1; // nascer
+/** Joga uma vida já começada até o fim, como a interface: dinheiro (sem gastar a ficha), a ficha do ano e as escolhas. */
+function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, memoria: MemoriaJogador | undefined): Omit<Jogada, 'e' | 'ms' | 'riquezaOrigem'> {
+  let toques = 0;
+  let operacoes = 0;
   const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
     } else {
+      // Mexer no dinheiro: abrir a folha, escolher e confirmar (três toques por operação).
+      for (const op of decidirDinheiro(estrategia, e, robo)) {
+        operar(e, c, op);
+        operacoes++;
+        toques += 3;
+      }
       // Um toque por ano: num verbo da ficha (age e passa o ano) ou no +1 ano.
       const verbo = decidirAcao(estrategia, e, c, robo);
       if (verbo) agir(e, c, verbo);
@@ -70,7 +79,15 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
     }
     toques++;
   }
-  return { e, toques, ms: performance.now() - t0, riquezaOrigem, anosPorFase };
+  return { toques, anosPorFase, operacoes };
+}
+
+function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
+  const t0 = performance.now();
+  const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
+  const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
+  const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
+  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -106,7 +123,7 @@ function contarMudancas(h: Entrada): number {
       continue;
     }
     if (m.d === undefined) continue;
-    if (m.c === 'eu.dinheiro' || m.c === 'eu.investido') patrimonio += m.d;
+    if (m.c === 'eu.dinheiro' || ATIVOS.some((a) => m.c === `eu.${a}`)) patrimonio += m.d;
     else if (m.c === 'eu.divida') patrimonio -= m.d;
     else if (m.c === 'eu.renda') n += Math.abs(m.d) >= 600 ? 1 : 0;
     else if (Math.abs(m.d) >= 0.5) n++;
@@ -149,6 +166,10 @@ interface Vida {
   demissoesPelaFase: number;
   /** Setor do último trabalho e o jeito de trabalhar (servidor, dono, empregado). */
   carreiraSetor: string;
+  perfil: string;
+  operacoes: number;
+  /** Ao morrer, havia filho ou filha para continuar a história. */
+  herdeiro: boolean;
 }
 
 /** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
@@ -255,6 +276,9 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     demissoes: demissoes.length,
     demissoesPelaFase: demissoes.filter((h) => (h.causas ?? []).some((id) => porId.get(id)?.tipo === 'mundo')).length,
     carreiraSetor: `${eu.t['setor'] || 'sem setor'}/${'servidor' in q ? 'servidor' : 'empreendedor' in q || 'socio' in q || 'herdeiro_negocio' in q ? 'dono' : 'empregado'}`,
+    perfil: perfilDe(e),
+    operacoes: j.operacoes,
+    herdeiro: herdeiroPossivel(e) !== null,
   };
 }
 
@@ -324,6 +348,72 @@ ESTRATEGIAS.forEach((estrategia, s) => {
 // Efeito da memória: as mesmas vidas (mesmas sementes) da estratégia aleatória, sem memória entre vidas.
 const idAleatoria = ESTRATEGIAS.indexOf('aleatoria');
 for (let j = 0; j < JOGADORES_BASE; j++) rodarJogador('aleatoria', idAleatoria, j, false, false);
+
+// Quem usa "Escolher a origem": cada classe (da extrema pobreza à trilionária) com cada estratégia.
+// Não entram nas métricas das 10.000 vidas; contam para storylet morto e para a tabela por origem.
+const VIDAS_POR_ORIGEM = Math.max(2, Math.round(JOGADORES / 20));
+const escolhidas: { classe: number; vida: Vida }[] = [];
+CLASSES.forEach((_, classe) => {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_ORIGEM; k++) {
+      const j = jogar(c, estrategia, misturar(SEMENTE, 404, classe, s, k), undefined, { classe });
+      escolhidas.push({ classe, vida: medir(c, j, estrategia) });
+    }
+  });
+});
+
+// Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
+interface Geracao {
+  estrategia: Estrategia;
+  geracao: number;
+  inicio: number;
+  idade: number;
+  patrimonio: number;
+  herdou: number;
+  herdeiro: boolean;
+  instancias: string[];
+  eventos: string[];
+  acoes: string[];
+}
+const DINASTIAS = Math.max(4, Math.round(JOGADORES / 3));
+const MAX_GERACOES = 5;
+const geracoes: Geracao[] = [];
+/** Pares (patrimônio de quem morreu, patrimônio do herdeiro ao morrer). */
+const paresGeracao: [number, number][] = [];
+const tamanhos: number[] = [];
+ESTRATEGIAS.forEach((estrategia, s) => {
+  for (let d = 0; d < DINASTIAS; d++) {
+    const semente = misturar(SEMENTE, 777, s, d);
+    let e = nascer(c, { semente, ano: ANO });
+    const robo = criarRng(misturar(semente, 78));
+    let anterior: number | null = null;
+    let g = 1;
+    for (; g <= MAX_GERACOES; g++) {
+      const inicioVida = e.idade;
+      const herdou = g > 1 ? (e.dinastia?.antepassados.at(-1)?.deixou ?? 0) : 0;
+      viver(c, e, estrategia, robo, undefined);
+      const patrimonio = patrimonioDe(e.entidades['eu']!);
+      if (anterior !== null) paresGeracao.push([anterior, patrimonio]);
+      const visiveis = apresentados(e);
+      geracoes.push({
+        estrategia,
+        geracao: g,
+        inicio: inicioVida,
+        idade: e.idade,
+        patrimonio,
+        herdou,
+        herdeiro: herdeiroPossivel(e) !== null,
+        instancias: visiveis.map((h) => h.instancia!),
+        eventos: visiveis.map((h) => h.ref!),
+        acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
+      });
+      if (!herdeiroPossivel(e) || g === MAX_GERACOES) break;
+      anterior = patrimonio;
+      e = continuarComoHerdeiro(e, c);
+    }
+    tamanhos.push(Math.min(g, MAX_GERACOES));
+  }
+});
 const segundos = (performance.now() - inicio) / 1000;
 
 // ---------------------------------------------------------------- análise
@@ -334,6 +424,8 @@ for (const v of vidas) {
   for (const id of [...v.eventos, ...v.acoes]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
   for (const id of new Set([...v.eventos, ...v.acoes])) vidasCom.set(id, (vidasCom.get(id) ?? 0) + 1);
 }
+// Storylet morto é o que nenhuma vida vê: nem as sorteadas, nem as de origem escolhida, nem as dos herdeiros.
+for (const x of [...escolhidas.map((v) => v.vida), ...geracoes]) for (const id of [...x.eventos, ...x.acoes]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
 const mortos = c.storylets.filter((s) => (ocorrencias.get(s.id) ?? 0) === 0).map((s) => s.id);
 const raros = c.storylets
   .filter((s) => {
@@ -429,6 +521,31 @@ const parteFase = (f: Fase): number => vidas.reduce((s, v) => s + v.anosPorFase[
 const demissoesTotal = vidas.reduce((s, v) => s + v.demissoes, 0);
 const carreiras = assinaturasPorBloco(vidas.map((v) => v.carreiraSetor));
 
+// ---- dinheiro e dinastia
+const comHerdeiro = vidas.filter((v) => v.herdeiro).length / vidas.length;
+const chegamTerceira = tamanhos.filter((t) => t >= 3).length / Math.max(1, tamanhos.length);
+const entreGeracoes =
+  paresGeracao.length >= 10
+    ? mobilidade(
+        paresGeracao.map((p) => p[0]),
+        paresGeracao.map((p) => p[1]),
+        paresGeracao.map((_, i) => i),
+      ).spearman
+    : 0;
+const PERFIS_TUNEL = ['conservador', 'moderado', 'arrojado'] as const;
+/** O perfil na estratégia aleatória (sorteado aos 18): mesmo jeito de jogar, só o perfil muda. */
+const porPerfil = PERFIS_TUNEL.map((perfil) => {
+  const ord = ordenar(vidas.filter((v) => v.estrategia === 'aleatoria' && v.perfil === perfil).map((v) => v.patrimonio));
+  return { perfil, n: ord.length, p10: percentil(ord, 10), p50: percentil(ord, 50), p90: percentil(ord, 90) };
+});
+const conservador = porPerfil[0]!;
+const arrojado = porPerfil[2]!;
+const porOrigem = CLASSES.map((nome, classe) => {
+  const vs = escolhidas.filter((x) => x.classe === classe).map((x) => x.vida);
+  return { nome, n: vs.length, idade: media(vs.map((v) => v.idade)), patrimonio: percentil(ordenar(vs.map((v) => v.patrimonio)), 50), felicidade: media(vs.map((v) => v.felicidade)) };
+});
+const operacoesPorVida = media(vidas.map((v) => v.operacoes));
+
 // ---------------------------------------------------------------- portões
 
 /** Linha de base de 06/10/2026 (motor da fase 1) e os portões do incremento 1. */
@@ -443,6 +560,21 @@ const portoes2 = [
   ['Saturação V20 ≤ 95%', satV(sat, 20) <= 0.95, `${pct(satV(sat, 20))} (base ${pct(BASE2.v20)})`],
   ['Assinaturas sem regressão', assinaturas >= BASE2.assinaturas, `${num(assinaturas, 0)} (base ${BASE2.assinaturas})`],
   ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms (base ${num(BASE2.ms, 1)} ms)`],
+] as const;
+/** Incremento 3 (pedido do dono em 07/10/2026): dinastia, investir com escolha e origens extremas. */
+const portoes3 = [
+  ['Herdeiro possível em ≥ 40% das vidas (a dinastia é comum, não rara)', comHerdeiro >= 0.4, pct(comHerdeiro)],
+  ['Dinastias que chegam à 3ª geração ≥ 25%', chegamTerceira >= 0.25, `${pct(chegamTerceira)} (${tamanhos.length} dinastias, média de ${num(media(tamanhos), 1)} gerações)`],
+  ['A herança importa sem decidir tudo (Spearman entre gerações entre 0,3 e 0,8)', entreGeracoes >= 0.3 && entreGeracoes <= 0.8, `${num(entreGeracoes, 2)} (${paresGeracao.length} heranças)`],
+  [
+    'O perfil importa: o arrojado ganha mais no topo e varia mais que o conservador',
+    arrojado.p90 > conservador.p90 && arrojado.p90 / Math.max(1, arrojado.p50) > conservador.p90 / Math.max(1, conservador.p50),
+    `p90 ${formatarDinheiro(arrojado.p90)} × ${formatarDinheiro(conservador.p90)}; p90/p50 ${num(arrojado.p90 / Math.max(1, arrojado.p50), 1)} × ${num(conservador.p90 / Math.max(1, conservador.p50), 1)}`,
+  ],
+  ['Saturação V20 sem regressão (≤ 95%)', satV(sat, 20) <= 0.95, pct(satV(sat, 20))],
+  ['Assinaturas sem regressão (≥ 918)', assinaturas >= 918, num(assinaturas, 0)],
+  ['Toques por vida ≤ 155', toques <= 155, num(toques, 1)],
+  ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms`],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
@@ -494,6 +626,12 @@ l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
+l('## Portões do incremento 3');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes3) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
 l('## Life simulator');
 l();
 l('| Métrica | Valor |');
@@ -514,6 +652,28 @@ l(`| Tempo de CPU por vida | ${num(msPorVida, 2)} ms |`);
 l(`| Ações (fichas usadas) por vida | ${num(media(vidas.map((v) => v.acoes.length)), 1)} |`);
 l(`| Mortes na família por vida | ${num(media(vidas.map((v) => v.mortesNaFamilia)), 1)} |`);
 l(`| Pontos de virada que vêm do mundo (não do jogador) | ${pct(pontosMundo)} |`);
+l();
+l('### Dinheiro e dinastia');
+l();
+l('| Métrica | Valor |');
+l('|---|---|');
+l(`| Operações na carteira por vida (aplicar, resgatar, trocar o perfil) | ${num(operacoesPorVida, 1)} |`);
+l(`| Vidas que terminam com filho ou filha para continuar | ${pct(comHerdeiro)} |`);
+l(`| Dinastias: gerações em média / chegam à 3ª / chegam à 5ª | ${num(media(tamanhos), 1)} / ${pct(chegamTerceira)} / ${pct(tamanhos.filter((t) => t >= 5).length / Math.max(1, tamanhos.length))} |`);
+l(`| Idade de quem herda ao começar (mediana) / herança mediana | ${num(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.inicio)), 50), 0)} anos / ${formatarDinheiro(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.herdou)), 50))} |`);
+l(`| Mobilidade entre gerações (Spearman, patrimônio de quem morreu × do herdeiro) | ${num(entreGeracoes, 2)} |`);
+l();
+l('Patrimônio ao morrer por perfil de investidor (estratégia aleatória, perfil sorteado aos 18):');
+l();
+l('| Perfil | Vidas | p10 | Mediana | p90 |');
+l('|---|---|---|---|---|');
+for (const p of porPerfil) l(`| ${p.perfil} | ${p.n} | ${formatarDinheiro(p.p10)} | ${formatarDinheiro(p.p50)} | ${formatarDinheiro(p.p90)} |`);
+l();
+l(`Origem escolhida (${VIDAS_POR_ORIGEM} vidas por estratégia e classe, fora das métricas acima):`);
+l();
+l('| Origem | Vidas | Idade média | Patrimônio mediano ao morrer | Felicidade média |');
+l('|---|---|---|---|---|');
+for (const o of porOrigem) l(`| ${o.nome.replace(/_/g, ' ')} | ${o.n} | ${num(o.idade, 1)} | ${formatarDinheiro(o.patrimonio)} | ${num(o.felicidade, 1)} |`);
 l();
 l('### O mundo reage');
 l();
@@ -668,6 +828,9 @@ console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos
 for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes) console.log(`${ok ? '✓' : '·'} portão: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} portão 2: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes3) console.log(`${ok ? '✓' : '·'} portão 3: ${nome} (${detalhe})`);
+console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
+console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(
   `Saturação V5 ${pct(satV(sat, 5))} · V20 ${pct(satV(sat, 20))} · com regras ${pct(satV(satRegras, 5))} · assinaturas/1000 ${num(assinaturas, 0)} (destino ${num(destinos, 0)}) · ` +
     `mobilidade diag ${pct(mob.diagonal)} ρ ${num(mob.spearman, 2)} · p90/p10 ${Number.isFinite(razao9010) ? num(razao9010, 1) : 'p10≤0'} · desvio felicidade ${num(desvioFelicidade, 2)} · ` +
