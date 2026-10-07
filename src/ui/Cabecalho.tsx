@@ -1,5 +1,6 @@
 import { conteudo } from '../conteudo.ts';
 import { defFase, faseDe } from '../motor/ciclo.ts';
+import { investidoDe } from '../motor/campos.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -8,15 +9,16 @@ import { anos, CORES, NOMES } from './formato.ts';
 interface Props {
   vida: EstadoVida;
   aoAbrirFamilia: () => void;
+  aoAbrirDinheiro: () => void;
   aoAbrirMenu: () => void;
 }
 
-export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
+export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }: Props) {
   const eu = vida.entidades['eu']!;
   const lugar = vida.entidades['lugar'];
   const n = eu.n;
   const dinheiro = n['dinheiro'] ?? 0;
-  const investido = n['investido'] ?? 0;
+  const investido = investidoDe(eu);
   const divida = n['divida'] ?? 0;
   const renda = n['renda'] ?? 0;
   const fase = faseDe(vida);
@@ -41,6 +43,13 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
               <path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6" />
               <circle cx="17" cy="9.5" r="2.6" />
               <path d="M15.8 14.3c2.9-.4 5.2 1.7 5.2 5.2" />
+            </svg>
+          </button>
+          <button class="icone" type="button" aria-label="Dinheiro e investimentos" onClick={aoAbrirDinheiro}>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7z" />
+              <path d="M4 7l11-3v3" />
+              <circle cx="16" cy="13.5" r="1.3" />
             </svg>
           </button>
           <button class="icone" type="button" aria-label="Menu" onClick={aoAbrirMenu}>
@@ -72,7 +81,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
           );
         })}
       </div>
-      <div class="dinheiro">
+      <button class="dinheiro" type="button" onClick={aoAbrirDinheiro}>
         <span>
           Dinheiro <b>{formatarDinheiro(dinheiro)}</b>
         </span>
@@ -91,7 +100,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirMenu }: Props) {
             Renda <b>{formatarDinheiro(renda / 12)}</b>/mês{setor ? ` · ${setor}` : ''}
           </span>
         )}
-      </div>
+      </button>
     </header>
   );
 }

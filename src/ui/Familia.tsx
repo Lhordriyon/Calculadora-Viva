@@ -13,9 +13,9 @@ function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
   const f = en.genero === 'f';
   switch (id) {
     case 'mae':
-      return 'Mãe';
     case 'pai':
-      return 'Pai';
+      // Numa dinastia, a família de quem herda pode ter duas mães ou dois pais.
+      return f ? 'Mãe' : 'Pai';
     case 'avo':
       return f ? 'Avó' : 'Avô';
     case 'amigo':
@@ -94,6 +94,7 @@ export function Familia({ vida, conteudo, aoFechar }: Props) {
         <p class="meta">
           {capitalizar(descreverOrigem(classe?.nome, tipo?.nome))}
           {irmaos > 0 ? ` · ${irmaos === 1 ? '1 irmão' : `${irmaos} irmãos`}` : ' · filh' + (eu.genero === 'f' ? 'a' : 'o') + ' únic' + (eu.genero === 'f' ? 'a' : 'o')}
+          {vida.dinastia ? ` · geração ${vida.dinastia.geracao} da família` : ''}
         </p>
         <ul class="pessoas">
           {pessoas.map(([id, en]) => {

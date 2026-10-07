@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
 import { carregar, salvar, type Save } from '../jogo/salvar.ts';
 import type { Verbo } from '../motor/constantes.ts';
+import { operar, type Operacao } from '../motor/carteira.ts';
 import { lembrarVida } from '../motor/memoria.ts';
 import type { EscolhaOrigem } from '../motor/origem.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { acoesDisponiveis, agir, avancarAno, escolher, nascer } from '../motor/vida.ts';
+import { continuarComoHerdeiro } from '../motor/herdeiro.ts';
 import { resumirVida } from '../motor/virada.ts';
 import { Abertura } from './Abertura.tsx';
 import { Cabecalho } from './Cabecalho.tsx';
+import { Dinheiro } from './Dinheiro.tsx';
 import { CartaoVida } from './CartaoVida.tsx';
 import { Familia } from './Familia.tsx';
 import { LinhaDoTempo } from './LinhaDoTempo.tsx';
@@ -32,7 +35,7 @@ const endereco = (() => {
   }
 })();
 
-type Folha = 'cartao' | 'menu' | 'familia' | null;
+type Folha = 'cartao' | 'menu' | 'familia' | 'dinheiro' | null;
 
 export function App() {
   const [save, setSave] = useState<Save>(() => carregar(conteudo));
@@ -69,6 +72,21 @@ export function App() {
     window.scrollTo({ top: 0 });
   }
 
+  /** A história segue com o filho ou a filha, no mesmo mundo, com o que sobrou da herança. */
+  function continuar() {
+    if (!vida || vida.vivo) return;
+    let nova: EstadoVida;
+    try {
+      nova = continuarComoHerdeiro(vida, conteudo);
+    } catch {
+      return;
+    }
+    vistas.current = 0;
+    guardar({ ...save, vida: nova });
+    setFolha(null);
+    window.scrollTo({ top: 0 });
+  }
+
   function concluir(nova: EstadoVida) {
     if (!nova.vivo && save.vida?.vivo) {
       guardar({ ...save, vida: nova, memoria: lembrarVida(save.memoria, nova), vidas: save.vidas + 1 });
@@ -94,6 +112,18 @@ export function App() {
     concluir(nova);
   }
 
+  /** Mexer no dinheiro não gasta a ficha do ano nem passa o tempo. */
+  function operarDinheiro(op: Operacao) {
+    if (!vida?.vivo) return;
+    const nova = structuredClone(vida);
+    try {
+      operar(nova, conteudo, op);
+    } catch {
+      return;
+    }
+    guardar({ ...save, vida: nova });
+  }
+
   function responder(indice: number) {
     if (!vida?.pendente) return;
     const nova = structuredClone(vida);
@@ -105,7 +135,7 @@ export function App() {
 
   return (
     <>
-      <Cabecalho vida={vida} aoAbrirFamilia={() => setFolha('familia')} aoAbrirMenu={() => setFolha('menu')} />
+      <Cabecalho vida={vida} aoAbrirFamilia={() => setFolha('familia')} aoAbrirDinheiro={() => setFolha('dinheiro')} aoAbrirMenu={() => setFolha('menu')} />
       <main class="vida">
         <LinhaDoTempo vida={vida} novasDesde={novasDesde} />
       </main>
@@ -117,11 +147,14 @@ export function App() {
         aoEscolher={responder}
         aoVerCartao={() => setFolha('cartao')}
         aoNovaVida={() => novaVida()}
+        herdeiro={resumo?.herdeiro ?? null}
+        aoContinuar={continuar}
       />
       {folha === 'cartao' && resumo && (
-        <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={() => novaVida()} />
+        <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={() => novaVida()} aoContinuar={continuar} />
       )}
       {folha === 'familia' && <Familia vida={vida} conteudo={conteudo} aoFechar={() => setFolha(null)} />}
+      {folha === 'dinheiro' && <Dinheiro vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'menu' && <Menu viva={vida.vivo} aoFechar={() => setFolha(null)} aoNovaVida={() => novaVida()} />}
     </>
   );

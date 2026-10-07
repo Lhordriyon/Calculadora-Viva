@@ -9,9 +9,10 @@ interface Props {
   endereco: string;
   aoFechar: () => void;
   aoNovaVida: () => void;
+  aoContinuar: () => void;
 }
 
-export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
+export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar }: Props) {
   const [imagem, setImagem] = useState<{ blob: Blob; url: string } | null>(null);
   const [aviso, setAviso] = useState('');
   const titulo = useRef<HTMLHeadingElement>(null);
@@ -55,7 +56,13 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
         <p class="meta">
           {resumo.anoNascimento}–{resumo.anoFinal} · {anos(resumo.idade)} · {resumo.cidade}, {resumo.uf}
         </p>
-        {resumo.origem && <p class="meta">Nasceu numa {resumo.origem}.</p>}
+        {resumo.geracao > 1 ? (
+          <p class="meta">
+            Geração {resumo.geracao} da família {resumo.nomeCompleto.split(' ').at(-1)}.
+          </p>
+        ) : (
+          resumo.origem && <p class="meta">Nasceu numa {resumo.origem}.</p>
+        )}
         {resumo.causa && <p class="causa">Morreu {resumo.causa}.</p>}
         <div class="numeros">
           <div>
@@ -82,6 +89,15 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
           ))}
         </ol>
         <p class="epitafio">“{resumo.epitafio}”</p>
+        {resumo.antepassados.length > 0 && (
+          <ol class="dinastia" aria-label="A família, de geração em geração">
+            {[...resumo.antepassados].reverse().map((a) => (
+              <li key={`${a.nome}-${a.anoNascimento}`}>
+                <b>{a.nome}</b> ({a.anoNascimento}–{a.anoMorte}) deixou {formatarDinheiro(a.deixou)}
+              </li>
+            ))}
+          </ol>
+        )}
         {imagem && <img class="previa" src={imagem.url} alt="O cartão da vida em imagem, pronto para compartilhar" />}
         <div class="acoes">
           <button class="botao" type="button" disabled={!imagem} onClick={aoCompartilhar}>
@@ -90,6 +106,11 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida }: Props) {
           {compartilha && imagem && (
             <button class="botao secundario" type="button" onClick={() => baixar(imagem.blob, nomeDoArquivo(resumo))}>
               Baixar imagem
+            </button>
+          )}
+          {resumo.herdeiro && (
+            <button class="botao" type="button" onClick={aoContinuar}>
+              Continuar como {resumo.herdeiro.nome} ({anos(resumo.herdeiro.idade)})
             </button>
           )}
           <button class="botao secundario" type="button" onClick={aoNovaVida}>

@@ -15,9 +15,12 @@ interface Props {
   aoEscolher: (indice: number) => void;
   aoVerCartao: () => void;
   aoNovaVida: () => void;
+  /** Quem pode continuar a história depois da morte (filho ou filha viva). */
+  herdeiro: { nome: string; idade: number } | null;
+  aoContinuar: () => void;
 }
 
-export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida }: Props) {
+export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida, herdeiro, aoContinuar }: Props) {
   const p = vida.pendente;
   const apareceuEm = useRef(0);
   const chave = p ? `${vida.idade}:${p.instancia}` : '';
@@ -88,7 +91,12 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
   return (
     <div class="palco">
       <div class="acoes">
-        <button class="botao" type="button" onClick={aoVerCartao}>
+        {herdeiro && (
+          <button class="botao" type="button" onClick={aoContinuar}>
+            Continuar como {herdeiro.nome} <small>{anos(herdeiro.idade)}</small>
+          </button>
+        )}
+        <button class={`botao${herdeiro ? ' secundario' : ''}`} type="button" onClick={aoVerCartao}>
           Ver o cartão da vida
         </button>
         <button class="botao secundario" type="button" onClick={aoNovaVida}>

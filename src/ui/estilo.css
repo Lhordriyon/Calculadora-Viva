@@ -307,10 +307,26 @@ button {
 .dinheiro {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 4px 12px;
-  margin-top: 8px;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 4px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
   font-size: 14px;
+  text-align: left;
   color: var(--texto-suave);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.dinheiro:focus-visible {
+  outline: 3px solid var(--destaque);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 .dinheiro b {
@@ -406,6 +422,15 @@ button {
 .ano.acao .idade {
   background: color-mix(in srgb, var(--inteligencia) 14%, transparent);
   color: var(--inteligencia);
+}
+
+.ano.dinheiro .idade {
+  background: color-mix(in srgb, var(--dinheiro) 16%, transparent);
+  color: var(--dinheiro);
+}
+
+.ano.dinheiro .etiqueta {
+  color: var(--dinheiro);
 }
 
 .etiqueta {
@@ -751,6 +776,20 @@ button {
   font-size: 17px;
 }
 
+.dinastia {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.dinastia b {
+  color: var(--texto);
+}
+
 .epitafio {
   margin: 16px 0 0;
   text-align: center;
@@ -806,6 +845,80 @@ button {
 
 .pessoa.falecida {
   opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------- dinheiro */
+
+.dinheiro-folha .meta {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.dinheiro-folha .grupo {
+  margin: 16px 0 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.dinheiro-folha legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.dinheiro-folha .nota {
+  margin: 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.dinheiro-folha .confirmar {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+
+.dinheiro-folha .confirmar p {
+  margin: 0 0 10px;
+}
+
+.carteira {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carteira li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+
+.carteira li.vazio {
+  opacity: 0.6;
+}
+
+.carteira b {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.carteira .ret {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--dinheiro);
+}
+
+.carteira .ret.ruim {
+  color: var(--ruim);
 }
 
 .previa {

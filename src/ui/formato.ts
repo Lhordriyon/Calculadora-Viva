@@ -1,3 +1,4 @@
+import { ATIVOS } from '../motor/constantes.ts';
 import type { Atributo } from '../motor/esquema.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { Entrada } from '../motor/tipos.ts';
@@ -67,7 +68,7 @@ export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefine
     if (v !== 0) chips.push({ texto: `${sinal(v)}${Math.abs(v)} ${NOMES[a]}`, cor: CORES[a] });
   }
   const caixa = d.get('eu.dinheiro') ?? 0;
-  const investido = d.get('eu.investido') ?? 0;
+  const investido = ATIVOS.reduce((s, a) => s + (d.get(`eu.${a}`) ?? 0), 0);
   const divida = d.get('eu.divida') ?? 0;
   // Investir só troca o dinheiro de lugar: aparece como "investiu", sem o "−R$" do caixa.
   const soInvestiu = investido >= 1 && Math.abs(caixa + investido) < 1;
