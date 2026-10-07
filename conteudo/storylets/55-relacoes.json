@@ -560,6 +560,7 @@
       "ator.traco": ["mao_fechada", "ambicioso", "rigido"],
       "semMarcas": ["investidor"]
     },
+    "peso": 3,
     "texto": "{filho} mandou uma planilha \"para a sua velhice\": quanto investir, onde, e uma aba chamada \"pare de comprar coisa na TV\".",
     "resumo": "recebeu de {filho} um plano para a velhice",
     "escolhas": [

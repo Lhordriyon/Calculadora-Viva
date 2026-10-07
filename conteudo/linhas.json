@@ -644,5 +644,100 @@
     "idade": [20, 85],
     "texto": "Você sonhou com planilha de novo. A {empresa} invade até o sono.",
     "condicoes": { "empresa.tracao": { "min": 15 } }
+  },
+  {
+    "idade": [20, 70],
+    "texto": "Quinta-feira é sagrada: pelada, cerveja e discussão sobre impedimento.",
+    "condicoes": { "marcas": ["pelada"] }
+  },
+  {
+    "idade": [25, 90],
+    "texto": "Como síndic{o|a}, você recebeu dezessete reclamações sobre o portão e uma sobre o sentido da vida.",
+    "condicoes": { "marcas": ["sindico"] }
+  },
+  {
+    "idade": [25, 95],
+    "texto": "Mostrou as fotos da viagem dos sonhos para quem pediu e, principalmente, para quem não pediu.",
+    "condicoes": { "marcas": ["viajou_longe"] }
+  },
+  {
+    "idade": [20, 70],
+    "texto": "Doou sangue de novo. O lanche do hemocentro continua o melhor do mundo.",
+    "condicoes": { "marcas": ["doador"] }
+  },
+  {
+    "idade": [30, 90],
+    "texto": "Viu {amigo} postando foto de viagem e lembrou do dinheiro que emprestou e nunca voltou.",
+    "condicoes": { "marcas": ["levou_calote"] }
+  },
+  {
+    "idade": [40, 95],
+    "texto": "O médico perguntou do colesterol. Você mudou de assunto para o tempo.",
+    "condicoes": { "marcas": ["colesterol_alto"] }
+  },
+  {
+    "idade": [20, 90],
+    "texto": "Na terapia, descobriu que o problema não era o chefe. Era um pouco o chefe.",
+    "condicoes": { "marcas": ["faz_terapia"] }
+  },
+  {
+    "idade": [22, 90],
+    "texto": "No grupo do prédio, você ainda é \"a pessoa do e-mail\". Ninguém mais põe som alto depois das dez.",
+    "condicoes": { "marcas": ["reclamou_condominio"] }
+  },
+  {
+    "idade": [24, 80],
+    "texto": "Toda vez que {amigo} posta foto de churrasco, você lembra do empréstimo. E faz as contas.",
+    "condicoes": { "marcas": ["emprestou_ao_amigo"] }
+  },
+  {
+    "idade": [18, 70],
+    "texto": "O nome de {amor} continua no seu braço, firme, como vocês dois.",
+    "condicoes": { "marcas": ["tatuagem_do_amor", "namoro"] }
+  },
+  {
+    "idade": [28, 60],
+    "texto": "Mais um ano na fila da adoção. O quarto está pronto; a espera, não.",
+    "condicoes": { "marcas": ["fila_adocao"] }
+  },
+  {
+    "idade": [20, 85],
+    "texto": "Você e o seu meio-irmão almoçaram juntos de novo. Já brigam como irmãos de verdade.",
+    "condicoes": { "marcas": ["meio_irmao"] }
+  },
+  {
+    "idade": [40, 90],
+    "texto": "{filho} chegou cedo na empresa de novo. Você fingiu não ver e ficou orgulhos{o|a} o dia inteiro.",
+    "condicoes": { "marcas": ["filho_na_empresa", "pai_mae"] }
+  },
+  {
+    "idade": [58, 99],
+    "texto": "Agora que {filho} manda na empresa, você passa as tardes dando palpite que ninguém pediu. Está ótimo.",
+    "condicoes": { "marcas": ["passou_o_comando", "pai_mae"] }
+  },
+  {
+    "idade": [60, 99],
+    "texto": "Quinta-feira tem baile. Você já comprou o sapato do próximo ano.",
+    "condicoes": { "marcas": ["baile"] }
+  },
+  {
+    "idade": [55, 99],
+    "texto": "O mar continua ali, todo dia, no mesmo lugar. Você também.",
+    "condicoes": { "marcas": ["mora_na_praia"] }
+  },
+  {
+    "idade": [60, 99],
+    "texto": "Alguém da família pediu um exemplar do seu livro de memórias. Você autografou com uma dedicatória maior que um capítulo.",
+    "condicoes": { "marcas": ["escreveu_memorias"] }
+  },
+  {
+    "idade": [60, 95],
+    "texto": "Mais um ano de voluntariado. As crianças da ONG cresceram, e você também, de outro jeito.",
+    "condicoes": { "marcas": ["aposentadoria_ativa"] }
+  },
+  {
+    "idade": [60, 99],
+    "texto": "Você enxerga as placas de novo. Leu todas as do caminho, em voz alta.",
+    "condicoes": { "marcas": ["operou_catarata"] }
   }
 ]

@@ -145,5 +145,12 @@
     "idade": [25, 90],
     "condicoes": { "marcas": ["vereador"] },
     "peso": 3
+  },
+  {
+    "causa": "de infarto, no meio de um churrasco que o médico tinha proibido",
+    "categoria": "coracao",
+    "idade": [40, 120],
+    "condicoes": { "marcas": ["colesterol_alto"] },
+    "peso": 4
   }
 ]

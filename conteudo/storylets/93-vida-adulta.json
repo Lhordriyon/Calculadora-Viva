@@ -1,0 +1,1272 @@
+[
+  {
+    "id": "pelada_de_quinta",
+    "idade": [20, 50],
+    "condicoes": { "semMarcas": ["pelada"] },
+    "peso": 2,
+    "texto": "O pessoal da [firma|rua|faculdade] tem uma pelada toda quinta e precisa de mais um. {amigo} jura que o nível é baixo, o que, no futebol amador, sempre é mentira.",
+    "resumo": "foi chamad{o|a} para a pelada de quinta",
+    "escolhas": [
+      {
+        "texto": "Ficar em casa",
+        "resumo": "não quis entrar na pelada de quinta",
+        "resultado": {
+          "texto": "Você agradeceu e ficou no sofá. Às quintas, o grupo manda foto do placar; você manda joinha.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Entrar no time",
+        "resumo": "entrou na pelada de quinta",
+        "resultado": {
+          "texto": "Você chegou de chuteira nova e saiu com o apelido de \"[Fominha|Muralha|Professor|Canela]\". Toda quinta virou sagrada.",
+          "efeitos": { "marcas": ["pelada"], "saude": 1, "felicidade": 2, "amigo.vinculo": 5 }
+        }
+      },
+      {
+        "texto": "Ir só para o churrasco depois",
+        "resumo": "virou sóci{o|a} só do churrasco da pelada",
+        "resultado": {
+          "texto": "Você não toca na bola, mas a carne é com você. O time te considera o melhor reforço do ano.",
+          "efeitos": { "felicidade": 2, "amigo.vinculo": 3, "saude": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "joelho_da_pelada",
+    "idade": [28, 65],
+    "condicoes": { "marcaHa": [{ "marca": "pelada", "min": 3 }] },
+    "peso": 3,
+    "texto": "Numa dividida boba na pelada, o joelho fez um barulho que ninguém quer ouvir. O ortopedista olha a ressonância e pergunta, sem levantar os olhos: \"quantos anos você tem mesmo?\"",
+    "resumo": "machucou o joelho na pelada",
+    "escolhas": [
+      {
+        "texto": "Pendurar as chuteiras",
+        "resumo": "pendurou as chuteiras da pelada",
+        "resultado": {
+          "texto": "Você virou o técnico do time, que é o goleiro aposentado com prancheta. O joelho agradece; o ego, nem tanto.",
+          "efeitos": { "removerMarcas": ["pelada"], "saude": 1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer fisioterapia e voltar",
+        "resumo": "fez fisioterapia para voltar à pelada",
+        "resultado": {
+          "texto": "Seis meses de fisioterapia, elástico e gelo. Você voltou mais lento e mais cuidadoso, e ainda reclama de toda falta.",
+          "efeitos": { "dinheiro": -3000, "saude": 0.5, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Jogar no sacrifício",
+        "resumo": "jogou a pelada com o joelho machucado",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O joelho aguentou. Você virou lenda do grupo: o que joga machucado.",
+          "efeitos": { "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "O joelho não aguentou. Cirurgia, muleta e uma cadeira de escritório nova.",
+          "resumo": "estourou o joelho jogando pelada no sacrifício",
+          "efeitos": { "saude": -3, "dinheiro": -8000, "marcas": ["joelho_ruim"], "removerMarcas": ["pelada"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vizinho_barulhento",
+    "idade": [22, 85],
+    "condicoes": { "lugar.capital": true },
+    "peso": 2,
+    "texto": "O vizinho de cima descobriu a caixa de som [e o sertanejo|e o funk|e o pagode|e o karaokê] numa terça às duas da manhã. O grupo do prédio já tem quarenta mensagens e nenhuma solução.",
+    "resumo": "teve um vizinho barulhento",
+    "escolhas": [
+      {
+        "texto": "Reclamar com o síndico",
+        "resumo": "reclamou do vizinho com o síndico",
+        "resultado": {
+          "texto": "Você mandou e-mail com print, horário e trecho do regimento. O síndico respondeu com um áudio de oito minutos. O barulho diminuiu; você virou \"aquele do e-mail\".",
+          "efeitos": { "marcas": ["reclamou_condominio"], "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Subir e conversar",
+        "resumo": "subiu para conversar com o vizinho barulhento",
+        "teste": { "atributo": "aparencia", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "Ele pediu desculpas, baixou o som e no fim de semana mandou um pedaço de bolo. Vizinhança é isso.",
+          "efeitos": { "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Ele disse que pagou o condomínio e faz o que quiser. Você desceu e comprou um protetor de ouvido.",
+          "efeitos": { "felicidade": -2, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Entrar na festa",
+        "resumo": "entrou na festa do vizinho barulhento",
+        "resultado": {
+          "texto": "Se não pode vencê-los, junte-se a eles. Você dormiu às cinco, cantou mal e ganhou um amigo.",
+          "efeitos": { "felicidade": 3, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "assembleia_do_predio",
+    "idade": [25, 85],
+    "condicoes": { "marcas": ["reclamou_condominio"], "semMarcas": ["sindico"] },
+    "peso": 3,
+    "texto": "Na assembleia do condomínio, ninguém quis ser síndico. Alguém lembrou que você \"entende de regimento\" desde o e-mail do vizinho. Todos os olhos viraram para você.",
+    "resumo": "foi indicad{o|a} para síndic{o|a} do prédio",
+    "escolhas": [
+      {
+        "texto": "Recusar com firmeza",
+        "resumo": "recusou ser síndic{o|a} do prédio",
+        "resultado": {
+          "texto": "Você disse que não, três vezes. O síndico novo é o vizinho da caixa de som.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Aceitar o cargo",
+        "resumo": "virou síndic{o|a} do prédio",
+        "resultado": {
+          "texto": "Isenção do condomínio, um molho de chaves e um grupo de mensagens que nunca dorme. Você agora tem poder, e reclamações.",
+          "efeitos": { "marcas": ["sindico"], "dinheiro": 4000, "felicidade": -1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "obra_do_predio",
+    "idade": [25, 90],
+    "condicoes": { "marcas": ["sindico"] },
+    "peso": 3,
+    "texto": "Como síndic{o|a}, você precisa decidir a obra da [fachada|garagem|caixa d'água|piscina que ninguém usa]. O orçamento mais barato é de um primo do porteiro; o mais caro tem logotipo e capacete branco.",
+    "resumo": "teve que decidir a obra do prédio como síndic{o|a}",
+    "escolhas": [
+      {
+        "texto": "Ficar com o orçamento caro",
+        "resumo": "contratou a obra cara para o prédio",
+        "resultado": {
+          "texto": "A obra ficou impecável e a taxa extra também. Na assembleia seguinte, ninguém lembrava da fachada; todos lembravam do boleto.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Arriscar no primo do porteiro",
+        "resumo": "contratou o primo do porteiro para a obra",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Ficou bom e barato. O primo virou fornecedor oficial do prédio e você, o síndico mais amado da rua.",
+          "efeitos": { "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Infiltração, atraso e um processo de um condômino advogado. Você entregou o cargo na assembleia seguinte.",
+          "resumo": "largou o cargo de síndic{o|a} depois de uma obra desastrosa",
+          "efeitos": { "felicidade": -3, "removerMarcas": ["sindico"] }
+        }
+      },
+      {
+        "texto": "Passar o cargo adiante",
+        "resumo": "passou o cargo de síndic{o|a} adiante",
+        "resultado": {
+          "texto": "Você convocou uma assembleia, fez um discurso de despedida e entregou as chaves. Dormiu doze horas.",
+          "efeitos": { "removerMarcas": ["sindico"], "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amigo_pede_dinheiro",
+    "idade": [24, 75],
+    "condicoes": { "dinheiro": { "min": 15000 }, "amigo.vivo": true },
+    "peso": 2,
+    "texto": "{amigo} liga com voz de quem ensaiou: precisa de dinheiro [para fechar o aluguel|para pagar uma cirurgia do pai|para um negócio que \"não tem como dar errado\"]. Promete devolver em dois anos.",
+    "resumo": "recebeu um pedido de dinheiro de {amigo}",
+    "escolhas": [
+      {
+        "texto": "Dizer que não pode",
+        "resumo": "não emprestou dinheiro para {amigo}",
+        "resultado": {
+          "texto": "Você inventou um aperto. {amigo} disse que entende, num tom de quem não entende.",
+          "efeitos": { "amigo.vinculo": -6 }
+        }
+      },
+      {
+        "texto": "Emprestar",
+        "resumo": "emprestou dinheiro para {amigo}",
+        "condicoes": { "semMarcas": ["levou_calote"] },
+        "bloqueio": "você jurou nunca mais emprestar dinheiro",
+        "resultado": {
+          "texto": "Você mandou {transferido} por Pix e um emoji de força. A promessa ficou no ar, como todas.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "amigo", "fracao": 0.25, "max": 30000 },
+            "amigo.vinculo": 6,
+            "marcas": ["emprestou_ao_amigo"],
+            "agendar": [{ "evento": "emprestimo_de_volta", "em": [2, 4] }]
+          }
+        }
+      },
+      {
+        "texto": "Dar sem cobrar",
+        "resumo": "deu dinheiro para {amigo} sem cobrar",
+        "resultado": {
+          "texto": "Você mandou {transferido} e escreveu \"não precisa devolver\". {amigo} chorou no áudio. Você também, mas não mandou.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "amigo", "fracao": 0.15, "max": 20000 },
+            "amigo.vinculo": 14,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "emprestimo_de_volta",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["emprestou_ao_amigo"] },
+    "texto": "Faz tempo que você emprestou dinheiro para {amigo}. Hoje chegou uma mensagem dele{|a}... ",
+    "resumo": "viu se {amigo} devolvia o dinheiro emprestado",
+    "teste": { "chance": 0.55 },
+    "sucesso": {
+      "texto": "{amigo} devolveu tudo, com juros e uma garrafa de vinho. A amizade saiu mais forte que o empréstimo.",
+      "resumo": "recebeu de volta o dinheiro emprestado a {amigo}",
+      "efeitos": { "dinheiro": 12000, "amigo.vinculo": 8, "felicidade": 2, "removerMarcas": ["emprestou_ao_amigo"] }
+    },
+    "fracasso": {
+      "texto": "{amigo} pediu mais seis meses. Depois mais seis. Depois parou de responder. O dinheiro sumiu, e a amizade foi atrás.",
+      "resumo": "levou um calote de {amigo}",
+      "efeitos": {
+        "amigo.vinculo": -25,
+        "felicidade": -3,
+        "removerMarcas": ["emprestou_ao_amigo"],
+        "marcas": ["levou_calote"]
+      }
+    }
+  },
+  {
+    "id": "viagem_dos_sonhos",
+    "idade": [24, 70],
+    "condicoes": { "patrimonio": { "min": 25000 }, "semMarcas": ["viajou_longe"] },
+    "peso": 2,
+    "texto": "Você vive dizendo que um dia vai [conhecer a Europa|ver a neve em Bariloche|fazer o Caminho de Santiago|conhecer o Japão|ver as cataratas]. O \"um dia\" está ficando velho.",
+    "resumo": "pensou na viagem dos sonhos",
+    "escolhas": [
+      {
+        "texto": "Juntar e ir daqui a dois anos",
+        "resumo": "começou a juntar para a viagem dos sonhos",
+        "resultado": {
+          "texto": "Você abriu uma caixinha no banco com o nome da viagem e um emoji de avião. Dois anos.",
+          "efeitos": { "agendar": [{ "evento": "viagem_realizada", "em": 2 }], "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ir agora, no cartão",
+        "resumo": "foi na viagem dos sonhos parcelando no cartão",
+        "resultado": {
+          "texto": "Doze vezes sem juros, trinta dias de felicidade. As fotos são lindas; a fatura, também, de outro jeito.",
+          "efeitos": { "dinheiro": -18000, "felicidade": 6, "marcas": ["viajou_longe"] }
+        }
+      },
+      {
+        "texto": "Deixar para depois",
+        "resumo": "deixou a viagem dos sonhos para depois",
+        "resultado": {
+          "texto": "O \"um dia\" continua lá, na lista, entre arrumar o armário e aprender a nadar.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "viagem_realizada",
+    "apenasAgendado": true,
+    "texto": "A caixinha da viagem bateu a meta. Você embarcou com mala nova, roteiro impresso e a sensação esquisita de estar realizando uma coisa que prometeu a si mesm{o|a}.",
+    "resumo": "realizou a viagem dos sonhos",
+    "efeitos": { "dinheiro": -12000, "felicidade": 7, "inteligencia": 1, "marcas": ["viajou_longe"] }
+  },
+  {
+    "id": "colesterol_alto",
+    "idade": [35, 80],
+    "condicoes": { "semMarcas": ["colesterol_alto", "cuida_da_saude"] },
+    "peso": 2,
+    "texto": "O check-up voltou com colesterol nas alturas e um bilhete do médico: \"precisamos conversar\". Você sabe que a conversa vai ser sobre picanha.",
+    "resumo": "descobriu que estava com o colesterol alto",
+    "escolhas": [
+      {
+        "texto": "Mudar a alimentação",
+        "resumo": "mudou a alimentação por causa do colesterol",
+        "resultado": {
+          "texto": "Aveia, peixe e uma caminhada que você odeia. Seis meses depois, o exame melhorou e o humor piorou só um pouco.",
+          "efeitos": { "saude": 3, "felicidade": -2, "marcas": ["cuida_da_saude"] }
+        }
+      },
+      {
+        "texto": "Tomar o remédio e seguir",
+        "resumo": "tomou remédio para o colesterol e seguiu a vida",
+        "resultado": {
+          "texto": "Um comprimido por dia e a picanha de domingo preservada. O médico chamou de \"meio-termo\"; você, de sabedoria.",
+          "efeitos": { "saude": 1, "custo": 1200 }
+        }
+      },
+      {
+        "texto": "Ignorar",
+        "resumo": "ignorou o colesterol alto",
+        "resultado": {
+          "texto": "Você guardou o exame numa gaveta e foi comemorar com um torresmo. A gaveta não esquece.",
+          "efeitos": { "felicidade": 1, "marcas": ["colesterol_alto"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "doar_sangue",
+    "idade": [18, 65],
+    "condicoes": { "saude": { "min": 50 }, "semMarcas": ["doador"] },
+    "peso": 1.5,
+    "texto": "Uma campanha de doação de sangue passou [no trabalho|na igreja|na faculdade|no posto do bairro]. Tem suco, bolacha e um adesivo escrito \"eu doei\".",
+    "resumo": "viu uma campanha de doação de sangue",
+    "escolhas": [
+      {
+        "texto": "Doar",
+        "resumo": "virou doador{|a} de sangue",
+        "resultado": {
+          "texto": "Doeu menos que a vacina e rendeu um suco de laranja e a melhor sensação da semana. Você se cadastrou para voltar.",
+          "efeitos": { "saude": -0.5, "felicidade": 3, "marcas": ["doador"] }
+        }
+      },
+      {
+        "texto": "Ficar para a próxima",
+        "resumo": "deixou para doar sangue numa próxima vez",
+        "resultado": {
+          "texto": "Você pegou o adesivo de lembrança e prometeu voltar. A promessa está na mesma gaveta das outras.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "compativel_para_medula",
+    "idade": [20, 60],
+    "condicoes": { "marcaHa": [{ "marca": "doador", "min": 2 }] },
+    "peso": 2,
+    "texto": "O hemocentro ligou: você é compatível para doar medula para alguém que não conhece, em outro estado. A chance de isso acontecer era de uma em cem mil.",
+    "resumo": "descobriu que era compatível para doar medula a um desconhecido",
+    "escolhas": [
+      {
+        "texto": "Doar",
+        "resumo": "doou medula para um desconhecido",
+        "resultado": {
+          "texto": "Dois dias de hospital e uma dor nas costas que passou. Meses depois, chegou uma carta sem nome: \"obrigado por mais um Natal\".",
+          "efeitos": { "saude": -2, "felicidade": 9, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Não ter coragem",
+        "resumo": "não teve coragem de doar medula",
+        "resultado": {
+          "texto": "Você disse que não podia. O hemocentro agradeceu do mesmo jeito. Você pensa nisso às vezes, de madrugada.",
+          "efeitos": { "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "comecar_terapia",
+    "idade": [20, 70],
+    "condicoes": { "felicidade": { "max": 55 }, "semMarcas": ["faz_terapia"] },
+    "peso": 2,
+    "texto": "Você percebeu que [está chorando no carro|acorda às quatro da manhã|briga com todo mundo] sem motivo claro. Alguém sugere terapia; seu tio diz que terapia é \"coisa de rico\".",
+    "resumo": "pensou em começar terapia",
+    "escolhas": [
+      {
+        "texto": "Começar a terapia",
+        "resumo": "começou terapia",
+        "resultado": {
+          "texto": "Toda quarta, cinquenta minutos falando de você para alguém que só pergunta \"e como você se sente?\". Funciona, devagar.",
+          "efeitos": { "custo": 4800, "felicidade": 4, "marcas": ["faz_terapia"] }
+        }
+      },
+      {
+        "texto": "Procurar o atendimento do SUS",
+        "resumo": "procurou atendimento psicológico pelo SUS",
+        "resultado": {
+          "texto": "Fila, triagem e um grupo de apoio às terças no posto. Não é o consultório dos filmes, mas tem gente boa ali.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Resolver sozinh{o|a}",
+        "resumo": "decidiu resolver as coisas sozinh{o|a}",
+        "resultado": {
+          "texto": "Você comprou um livro de autoajuda e leu metade. A outra metade está no criado-mudo, de olho em você.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "largar_tudo",
+    "idade": [28, 52],
+    "condicoes": { "renda": { "min": 30000 }, "semMarcas": ["aposentado", "mudou_de_vida"] },
+    "peso": 2,
+    "texto": "Num domingo à noite, a ideia volta: largar o emprego e virar [cozinheir{o|a}|marceneir{o|a}|professor{|a} de yoga|fotógraf{o|a} de casamento|guia de turismo]. O salário de hoje paga as contas; a vontade paga o resto.",
+    "resumo": "pensou em largar tudo para mudar de profissão",
+    "escolhas": [
+      {
+        "texto": "Virar hobby de fim de semana",
+        "resumo": "transformou o sonho em hobby de fim de semana",
+        "resultado": {
+          "texto": "Aos sábados você é outra pessoa; às segundas, a mesma de sempre. Meio sonho é melhor que nenhum.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Largar tudo",
+        "resumo": "largou o emprego para mudar de profissão",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "O primeiro ano foi duro, o segundo foi bom e o terceiro foi o melhor da sua vida. Você ganha menos e reclama muito menos.",
+          "resumo": "largou tudo, mudou de profissão e deu certo",
+          "efeitos": {
+            "renda": { "definir": 45000 },
+            "felicidade": 8,
+            "marcas": ["mudou_de_vida"],
+            "eu.setor": { "definir": "servicos" }
+          }
+        },
+        "fracasso": {
+          "texto": "O sonho não pagou o aluguel. Você voltou para a área antiga ganhando menos e com uma história para contar.",
+          "resumo": "largou tudo para mudar de profissão e teve que voltar",
+          "efeitos": { "renda": { "definir": 22000 }, "felicidade": -4, "marcas": ["mudou_de_vida"] }
+        }
+      },
+      {
+        "texto": "Esquecer o assunto",
+        "resumo": "esqueceu a ideia de mudar de profissão",
+        "resultado": {
+          "texto": "Você fechou o site do curso e abriu a planilha do trabalho. Segunda-feira chegou de novo.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chefe_novo",
+    "idade": [22, 64],
+    "condicoes": { "marcas": ["clt"], "semMarcas": ["aposentado"] },
+    "peso": 2,
+    "texto": "Chegou chefe novo [de outra empresa|vindo da matriz|que tem metade da sua idade]. Primeira reunião: \"aqui a gente vai trabalhar com metas\". Na segunda, ele já sabe o seu nome errado.",
+    "resumo": "ganhou um chefe novo",
+    "escolhas": [
+      {
+        "texto": "Ser a pessoa das metas",
+        "resumo": "virou braço direito do chefe novo",
+        "resultado": {
+          "texto": "Você entregou tudo antes do prazo e virou referência. Ganhou aumento e perdeu o almoço de sexta com a turma.",
+          "efeitos": { "rendaFator": 1.12, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer o seu e nada mais",
+        "resumo": "fez o próprio trabalho e nada mais com o chefe novo",
+        "resultado": {
+          "texto": "Você cumpriu o horário, respondeu os e-mails e não fez hora extra. O chefe novo nem percebeu. Perfeito.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Procurar outro emprego",
+        "resumo": "procurou outro emprego por causa do chefe novo",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Três entrevistas depois, você saiu para um lugar melhor, ganhando mais. O chefe novo soube pelo crachá devolvido.",
+          "efeitos": { "rendaFator": 1.2, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Nenhuma proposta veio. Você continuou lá, agora com o currículo atualizado e sem paciência.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "convite_para_palestrar",
+    "idade": [30, 70],
+    "condicoes": { "marcas": ["formado"], "renda": { "min": 60000 } },
+    "peso": 1.5,
+    "texto": "Uma faculdade convidou você para falar sobre [carreira|o que faz no trabalho|como chegou até aqui] para uma turma de calouros. Vinte minutos, microfone e cem pessoas olhando o celular.",
+    "resumo": "foi convidad{o|a} para palestrar numa faculdade",
+    "escolhas": [
+      {
+        "texto": "Recusar",
+        "resumo": "recusou palestrar para calouros",
+        "resultado": {
+          "texto": "Você disse que estava sem agenda. Estava, de verdade, sem coragem.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Aceitar e preparar",
+        "resumo": "deu uma palestra para calouros",
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "No fim, uma fila de calouros quis tirar foto e pedir estágio. Você saiu se sentindo velh{o|a} do melhor jeito.",
+          "efeitos": { "felicidade": 4, "inteligencia": 1 }
+        },
+        "fracasso": {
+          "texto": "O projetor travou, o microfone chiou e você esqueceu o meio. Um aluno aplaudiu por pena; você agradeceu de verdade.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bolao_do_trabalho",
+    "idade": [18, 90],
+    "peso": 1,
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "O bolão da loteria da virada passou pela mesa: cinquenta reais a cota. Todo ano alguém diz \"esse ano vai\", e todo ano o ano não vai.",
+    "resumo": "foi chamad{o|a} para o bolão da loteria da virada",
+    "escolhas": [
+      {
+        "texto": "Entrar no bolão",
+        "resumo": "entrou no bolão da loteria da virada",
+        "efeitos": { "dinheiro": -50 },
+        "teste": { "chance": 0.02 },
+        "sucesso": {
+          "texto": "ACERTARAM. A cota rendeu uma fortuna e o escritório inteiro pediu demissão por mensagem no dia primeiro.",
+          "resumo": "ganhou na loteria num bolão do trabalho",
+          "efeitos": { "dinheiro": 1500000, "felicidade": 10 }
+        },
+        "fracasso": {
+          "texto": "Não acertaram nem a quadra. Você guardou o volante \"de lembrança\" e já sabe que entra no do ano que vem.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Não entrar",
+        "resumo": "não entrou no bolão da loteria da virada",
+        "teste": { "chance": 0.02 },
+        "sucesso": {
+          "texto": "O bolão ganhou. Sem você. Os colegas foram embora de carro novo, e você ficou para apagar a luz do escritório.",
+          "resumo": "ficou de fora do bolão que ganhou na loteria",
+          "efeitos": { "felicidade": -8 }
+        },
+        "fracasso": {
+          "texto": "Não deu nada, como sempre. Você economizou cinquenta reais e uma esperança.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "heranca_do_tio",
+    "idade": [25, 85],
+    "peso": 1,
+    "texto": "Um tio-avô que você viu duas vezes na vida morreu e deixou para você [um terreno no interior|uma casa velha na praia|um sítio que ninguém visitava], com o que vier junto. O advogado avisa: \"às vezes vem dívida\".",
+    "resumo": "herdou um imóvel de um tio distante",
+    "escolhas": [
+      {
+        "texto": "Aceitar a herança",
+        "resumo": "aceitou a herança de um tio distante",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Não veio dívida nenhuma. Você vendeu o imóvel e ganhou um dinheiro que não esperava, e uma foto do tio para pendurar.",
+          "resumo": "recebeu uma herança inesperada de um tio distante",
+          "efeitos": { "dinheiro": 60000, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Vieram IPTU atrasado, um inquilino que não sai e um processo. O imóvel virou um problema com escritura.",
+          "resumo": "herdou as dívidas de um tio distante",
+          "efeitos": { "divida": 25000, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Recusar a herança",
+        "resumo": "recusou a herança de um tio distante",
+        "resultado": {
+          "texto": "Você assinou a renúncia no cartório. Nunca vai saber se era um tesouro ou uma bomba, e dorme bem assim.",
+          "efeitos": { "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "compra_por_impulso",
+    "idade": [22, 75],
+    "condicoes": { "padrao": ["confortavel", "luxo"], "dinheiro": { "min": 10000 } },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Você está há uma semana olhando [um relógio caro|uma bicicleta de corrida|uma televisão do tamanho da parede|um sofá que reclina sozinho]. O algoritmo também.",
+    "resumo": "ficou tentad{o|a} por uma compra cara",
+    "escolhas": [
+      {
+        "texto": "Comprar à vista",
+        "resumo": "comprou à vista uma coisa que queria muito",
+        "resultado": {
+          "texto": "Chegou numa caixa linda. A felicidade durou três semanas; o objeto, bem mais.",
+          "efeitos": { "dinheiro": -8000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Parcelar em doze vezes",
+        "resumo": "parcelou em doze vezes uma compra cara",
+        "resultado": {
+          "texto": "Doze parcelas suaves que somadas não são nada suaves. Pelo menos chegou rápido.",
+          "efeitos": { "divida": 9000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Fechar a aba",
+        "resumo": "desistiu de uma compra por impulso",
+        "resultado": {
+          "texto": "Você fechou a aba, depois o aplicativo, depois o celular. Na semana seguinte, nem lembrava. Quase.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reforma_da_casa",
+    "idade": [28, 75],
+    "condicoes": { "marcas": ["casa_propria"] },
+    "peso": 2,
+    "texto": "A casa está pedindo reforma: [o banheiro é de 1990|a cozinha não fecha a porta do armário|o piso range em três lugares|a infiltração tem nome e personalidade].",
+    "resumo": "teve que decidir uma reforma em casa",
+    "escolhas": [
+      {
+        "texto": "Deixar como está",
+        "resumo": "deixou a casa como estava",
+        "resultado": {
+          "texto": "Você comprou um tapete para cobrir o piso que range. Problema resolvido, dizem os tapetes.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Reformar tudo de uma vez",
+        "resumo": "reformou a casa inteira de uma vez",
+        "resultado": {
+          "texto": "Três meses de poeira, um mestre de obras que sumia às sextas e, no fim, a casa que você sempre quis.",
+          "efeitos": { "dinheiro": -45000, "felicidade": 5, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Reformar aos poucos",
+        "resumo": "começou uma reforma aos poucos",
+        "resultado": {
+          "texto": "Começou pelo banheiro. A casa agora tem um cômodo do futuro e cinco do passado.",
+          "efeitos": {
+            "dinheiro": -12000,
+            "felicidade": 1,
+            "agendar": [{ "evento": "reforma_sem_fim", "em": [2, 3] }]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "reforma_sem_fim",
+    "apenasAgendado": true,
+    "texto": "A reforma \"aos poucos\" está na quarta etapa e no terceiro pedreiro. Sobrou um saco de cimento na varanda que já virou móvel.",
+    "resumo": "viu a reforma aos poucos virar reforma sem fim",
+    "escolhas": [
+      {
+        "texto": "Terminar tudo agora",
+        "resumo": "terminou de vez a reforma da casa",
+        "resultado": {
+          "texto": "Você juntou as etapas que faltavam, contratou de uma vez e terminou. A festa de inauguração teve até o saco de cimento como convidado.",
+          "efeitos": { "dinheiro": -25000, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Parar onde está",
+        "resumo": "parou a reforma no meio",
+        "resultado": {
+          "texto": "Você declarou a reforma encerrada. A casa ficou meio a meio, como a vida.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_quer_carro",
+    "ator": ["filho"],
+    "idade": [42, 80],
+    "condicoes": { "ator.idade": { "min": 18, "max": 26 }, "dinheiro": { "min": 20000 } },
+    "peso": 2,
+    "texto": "{ator} passou na autoescola e agora fala de carro no café, no almoço e na janta. Diz que é para trabalhar; você sabe que é para a balada.",
+    "resumo": "teve que decidir se dava um carro para {ator}",
+    "escolhas": [
+      {
+        "texto": "Emprestar o seu carro",
+        "resumo": "emprestou o próprio carro para {ator}",
+        "resultado": {
+          "texto": "Você empresta o carro aos sábados e passa a noite olhando o aplicativo de localização. Volta com o tanque vazio, sempre.",
+          "efeitos": { "ator.vinculo": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Dar um carro usado",
+        "resumo": "deu um carro usado para {ator}",
+        "resultado": {
+          "texto": "Um popular de dez anos, com nome de batismo e um adesivo que você não autorizou. {ator} chorou na garagem.",
+          "efeitos": { "dinheiro": -25000, "ator.vinculo": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Dizer que é para juntar",
+        "resumo": "disse para {ator} juntar dinheiro para o carro",
+        "resultado": {
+          "texto": "Você falou de responsabilidade e de ônibus. {ator} revirou os olhos e arrumou um bico. Dois anos depois, comprou o próprio carro e não te deu carona.",
+          "efeitos": { "ator.vinculo": -4, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "casamento_do_filho",
+    "ator": ["filho"],
+    "idade": [45, 85],
+    "condicoes": { "ator.idade": { "min": 23, "max": 42 } },
+    "peso": 2,
+    "texto": "{ator} vai casar e quer saber se você ajuda com a festa. [Já tem até salão visitado.|O casal fez uma planilha com três abas.|O DJ já foi contratado, \"de leve\".]",
+    "resumo": "ajudou a decidir o casamento de {ator}",
+    "escolhas": [
+      {
+        "texto": "Bancar a festa toda",
+        "resumo": "bancou a festa de casamento de {ator}",
+        "resultado": {
+          "texto": "Teve buffet, banda e lembrancinha com o nome do casal. Você dançou a valsa e pagou o cheque, nessa ordem.",
+          "efeitos": { "dinheiro": -60000, "ator.vinculo": 12, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Ajudar com uma parte",
+        "resumo": "ajudou com parte da festa de casamento de {ator}",
+        "resultado": {
+          "texto": "Você pagou o bolo e a bebida. O resto o casal parcelou. Ficou uma festa bonita e uma dívida educativa.",
+          "efeitos": { "dinheiro": -15000, "ator.vinculo": 5, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Sugerir só o cartório",
+        "resumo": "sugeriu que {ator} casasse só no cartório",
+        "resultado": {
+          "texto": "Você falou do preço do buffet com convicção. {ator} casou no cartório, com almoço em casa, e até hoje lembra do seu discurso sobre buffet.",
+          "efeitos": { "ator.vinculo": -6, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bodas_de_prata",
+    "idade": [43, 85],
+    "condicoes": { "marcas": ["namoro"], "marcaHa": [{ "marca": "casado", "min": 25, "max": 27 }] },
+    "peso": 4,
+    "texto": "Vinte e cinco anos de casad{o|a} com {amor}. [O grupo da família quer festa.|Os filhos prepararam um vídeo com fotos antigas.|Vocês dois nem lembravam da data, e riram disso.]",
+    "resumo": "fez vinte e cinco anos de casamento com {amor}",
+    "escolhas": [
+      {
+        "texto": "Jantar só os dois",
+        "resumo": "comemorou as bodas de prata num jantar a dois",
+        "resultado": {
+          "texto": "Um restaurante pequeno, a mesa do canto e uma conversa como as primeiras. Vinte e cinco anos cabem num jantar, quando é com quem é.",
+          "efeitos": { "amor.vinculo": 8, "felicidade": 3, "dinheiro": -600 }
+        }
+      },
+      {
+        "texto": "Festa para a família toda",
+        "resumo": "deu uma festa de bodas de prata",
+        "resultado": {
+          "texto": "Teve renovação de votos, primo bêbado e foto oficial na escada. {amor} chorou no discurso; você chorou no seu.",
+          "efeitos": { "amor.vinculo": 6, "felicidade": 4, "dinheiro": -15000 }
+        }
+      },
+      {
+        "texto": "Uma viagem de segunda lua de mel",
+        "resumo": "fez uma segunda lua de mel nas bodas de prata",
+        "resultado": {
+          "texto": "Vocês voltaram ao lugar da lua de mel, que mudou tanto quanto vocês. Continua bonito, como vocês.",
+          "efeitos": { "amor.vinculo": 10, "felicidade": 5, "dinheiro": -12000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tatuagem",
+    "idade": [18, 50],
+    "condicoes": { "semMarcas": ["tatuagem_do_amor"] },
+    "peso": 1.5,
+    "texto": "Você está decidid{o|a} a fazer uma tatuagem. Já escolheu o estúdio; falta escolher o que vai ficar na sua pele para sempre.",
+    "resumo": "decidiu fazer uma tatuagem",
+    "escolhas": [
+      {
+        "texto": "Uma frase em latim",
+        "resumo": "tatuou uma frase em latim",
+        "resultado": {
+          "texto": "Uma frase linda que você jura saber traduzir. O tatuador ficou com dó de corrigir.",
+          "efeitos": { "felicidade": 2, "aparencia": 1 }
+        }
+      },
+      {
+        "texto": "O nome de quem você ama",
+        "resumo": "tatuou o nome de {amor}",
+        "condicoes": { "marcas": ["namoro"] },
+        "bloqueio": "falta ter alguém",
+        "resultado": {
+          "texto": "O nome de {amor} em letra cursiva, no braço. {amor} amou. Sua mãe, menos.",
+          "efeitos": { "felicidade": 3, "amor.vinculo": 6, "marcas": ["tatuagem_do_amor"] }
+        }
+      },
+      {
+        "texto": "Desistir na porta",
+        "resumo": "desistiu da tatuagem na porta do estúdio",
+        "resultado": {
+          "texto": "Você viu a agulha e lembrou de um compromisso urgente. O estúdio ficou com o sinal.",
+          "efeitos": { "dinheiro": -200 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cobrir_a_tatuagem",
+    "idade": [20, 70],
+    "condicoes": { "marcas": ["tatuagem_do_amor", "separado"] },
+    "peso": 4,
+    "texto": "O nome de quem já não está na sua vida continua no seu braço, em letra cursiva. Toda vez que você pega o ônibus de manga curta, alguém pergunta.",
+    "resumo": "teve que decidir o que fazer com a tatuagem do ex",
+    "escolhas": [
+      {
+        "texto": "Cobrir com um desenho",
+        "resumo": "cobriu a tatuagem do ex com um desenho",
+        "resultado": {
+          "texto": "Virou [uma rosa|um tigre|uma âncora|um passarinho] por cima. Quem sabe, sabe; quem não sabe, elogia.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 2, "removerMarcas": ["tatuagem_do_amor"] }
+        }
+      },
+      {
+        "texto": "Deixar como lembrança",
+        "resumo": "deixou a tatuagem do ex como lembrança",
+        "resultado": {
+          "texto": "Você decidiu que é parte da sua história. Quando perguntam, você conta, e já não dói.",
+          "efeitos": { "felicidade": 1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festa_de_sao_joao",
+    "idade": [16, 85],
+    "condicoes": { "lugar.regiao": "nordeste" },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Chegou o São João: [quadrilha na praça|forró até o sol nascer|fogueira na rua de casa]. A cidade inteira cheira a milho e a fogos.",
+    "resumo": "aproveitou o São João",
+    "escolhas": [
+      {
+        "texto": "Dançar quadrilha",
+        "resumo": "dançou quadrilha no São João",
+        "resultado": {
+          "texto": "Você foi noiv{o|a} da quadrilha, errou o passo do túnel e foi o melhor momento do ano.",
+          "efeitos": { "felicidade": 4, "saude": 0.5 }
+        }
+      },
+      {
+        "texto": "Vender comida na festa",
+        "resumo": "vendeu comida na festa de São João",
+        "resultado": {
+          "texto": "Canjica, pamonha e bolo de milho. Voltou para casa com o bolso cheio e os braços doendo de mexer panela.",
+          "efeitos": { "dinheiro": 3000, "felicidade": 1, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Ver de longe",
+        "resumo": "viu o São João de longe",
+        "resultado": {
+          "texto": "Você viu os fogos da janela e comeu um milho cozido. Tem ano que é assim.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bloco_de_carnaval",
+    "idade": [18, 70],
+    "condicoes": { "lugar.capital": true },
+    "peso": 1.5,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "É carnaval e o bloco da sua rua sai às oito da manhã com fantasia obrigatória. O grupo de amigos já decidiu o tema; você ainda não decidiu se vai.",
+    "resumo": "decidiu o que fazer no carnaval",
+    "escolhas": [
+      {
+        "texto": "Sair no bloco fantasiad{o|a}",
+        "resumo": "saiu fantasiad{o|a} no bloco de carnaval",
+        "resultado": {
+          "texto": "Quatro dias de bloco, purpurina até no ouvido e uma rouquidão que durou até a Páscoa.",
+          "efeitos": { "felicidade": 4, "saude": -1, "amigo.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Trabalhar no carnaval",
+        "resumo": "trabalhou no carnaval",
+        "resultado": {
+          "texto": "Você vendeu água e gelo no bloco e voltou com o bolso pesado e a fantasia de vendedor.",
+          "efeitos": { "dinheiro": 2500, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Fugir para o interior",
+        "resumo": "fugiu do carnaval para o interior",
+        "resultado": {
+          "texto": "Rede, silêncio e um rádio tocando marchinha bem longe. Paz custa uma rodoviária.",
+          "efeitos": { "felicidade": 2, "dinheiro": -1000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "geada_no_sul",
+    "idade": [20, 90],
+    "condicoes": { "lugar.regiao": "sul" },
+    "peso": 1.5,
+    "repetivel": true,
+    "intervalo": 7,
+    "texto": "A geada pintou o quintal de branco e o termômetro marcou zero. Na cidade, todo mundo virou especialista em fogão a lenha e chimarrão.",
+    "resumo": "passou o inverno mais frio em anos",
+    "escolhas": [
+      {
+        "texto": "Ir ver a neve na serra",
+        "resumo": "subiu a serra para ver a neve",
+        "resultado": {
+          "texto": "Caíram três flocos e você fotografou todos. A estrada lotou, o chocolate quente acabou e valeu cada minuto.",
+          "efeitos": { "felicidade": 3, "dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Comprar cobertores para o abrigo",
+        "resumo": "comprou cobertores para um abrigo no inverno",
+        "resultado": {
+          "texto": "Você encheu o carro de cobertores e levou ao abrigo do bairro. Uma família inteira passou o inverno mais quente.",
+          "efeitos": { "felicidade": 2, "dinheiro": -400 }
+        }
+      },
+      {
+        "texto": "Ficar debaixo das cobertas",
+        "resumo": "passou o inverno debaixo das cobertas",
+        "resultado": {
+          "texto": "Pinhão, novela e três cobertores. O inverno passou, e você descansou como não descansava havia anos.",
+          "efeitos": { "felicidade": 1.5, "saude": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "festival_do_boi",
+    "idade": [16, 85],
+    "condicoes": { "lugar.regiao": "norte" },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Época de festival de boi-bumbá: a cidade se divide em duas cores, e a sua família tem lado desde antes de você nascer.",
+    "resumo": "viveu a disputa do festival de boi-bumbá",
+    "escolhas": [
+      {
+        "texto": "Desfilar no boi da família",
+        "resumo": "desfilou no boi-bumbá da família",
+        "resultado": {
+          "texto": "Você dançou na arena até a perna tremer. O seu boi ganhou, ou perdeu por um ponto injusto, depende de quem conta.",
+          "efeitos": { "felicidade": 4, "saude": 0.5, "mae.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Trabalhar no barracão",
+        "resumo": "trabalhou no barracão do boi-bumbá",
+        "resultado": {
+          "texto": "Três meses colando pena em alegoria gigante. Na noite do festival, você chorou vendo a sua parte passar.",
+          "efeitos": { "felicidade": 3, "dinheiro": 2000 }
+        }
+      },
+      {
+        "texto": "Ver pela televisão",
+        "resumo": "viu o festival de boi-bumbá pela televisão",
+        "resultado": {
+          "texto": "Você torceu do sofá e discutiu com o cunhado do outro boi. Tradição é tradição.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pescaria_no_pantanal",
+    "idade": [18, 85],
+    "condicoes": { "lugar.regiao": "centro_oeste" },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Um amigo te chama para uma pescaria de três dias [no Pantanal|no rio Araguaia|numa represa do interior]: barco, rede, mosquito e conversa que não acaba.",
+    "resumo": "foi chamad{o|a} para uma pescaria de três dias",
+    "escolhas": [
+      {
+        "texto": "Ir pescar",
+        "resumo": "foi numa pescaria de três dias",
+        "resultado": {
+          "texto": "Você pescou um peixe enorme e uma foto que ninguém acredita. O mosquito também fez a festa.",
+          "efeitos": { "felicidade": 4, "amigo.vinculo": 5, "dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Ficar trabalhando",
+        "resumo": "ficou trabalhando em vez de ir pescar",
+        "resultado": {
+          "texto": "O grupo mandou foto de peixe a cada hora. Você respondeu e-mail a cada hora. Empate técnico.",
+          "efeitos": { "felicidade": -1, "dinheiro": 1000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ressaca_do_mar",
+    "idade": [20, 90],
+    "condicoes": { "lugar.litoral": true },
+    "peso": 1.5,
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "A ressaca do mar levou [metade da calçada da orla|o quiosque do seu Zé|a areia da praia inteira]. A prefeitura promete obra; o mar não promete nada.",
+    "resumo": "viu a ressaca do mar levar a orla",
+    "escolhas": [
+      {
+        "texto": "Ajudar no mutirão",
+        "resumo": "ajudou no mutirão depois da ressaca do mar",
+        "resultado": {
+          "texto": "Você passou o sábado tirando areia da rua com vizinhos que nunca tinha visto. A orla voltou; os vizinhos ficaram.",
+          "efeitos": { "felicidade": 3, "saude": -0.5 }
+        }
+      },
+      {
+        "texto": "Cobrar a prefeitura",
+        "resumo": "cobrou a prefeitura depois da ressaca do mar",
+        "resultado": {
+          "texto": "Você mandou reclamação, foi na audiência pública e saiu na rádio local. A obra começou, devagar, como toda obra.",
+          "efeitos": { "inteligencia": 1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ficar longe da praia",
+        "resumo": "ficou longe da praia depois da ressaca",
+        "resultado": {
+          "texto": "Você trocou a caminhada na orla pela do shopping. Tem ar-condicionado, mas não tem mar.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "noite_de_stand_up",
+    "idade": [20, 50],
+    "condicoes": { "traco": ["carismatico", "otimista"] },
+    "peso": 2,
+    "texto": "Um bar abriu microfone aberto às quartas e os amigos juram que você é a pessoa mais engraçada da turma. Cinco minutos no palco, sem cachê e sem piedade.",
+    "resumo": "pensou em fazer stand-up num bar",
+    "escolhas": [
+      {
+        "texto": "Subir no palco",
+        "resumo": "fez stand-up num bar",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "O bar riu na primeira piada e não parou. Um produtor pediu seu contato; você deu o da sua mãe, de nervoso.",
+          "resumo": "arrasou numa noite de stand-up",
+          "efeitos": { "felicidade": 5, "aparencia": 1, "marcas": ["comediante"] }
+        },
+        "fracasso": {
+          "texto": "Silêncio. Um silêncio que você ouve até hoje, quando lembra. Mas você subiu, e isso ninguém tira.",
+          "efeitos": { "felicidade": -2, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Ficar na plateia",
+        "resumo": "ficou na plateia do stand-up",
+        "resultado": {
+          "texto": "Você riu de todo mundo, comentou as piadas no carro e não subiu. Ainda.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "convite_para_o_palco_grande",
+    "idade": [22, 60],
+    "condicoes": { "marcaHa": [{ "marca": "comediante", "min": 1 }] },
+    "peso": 3,
+    "texto": "Aquele produtor do bar ligou: tem um festival de humor e sobrou uma vaga. É num teatro de verdade, com ingresso e tudo.",
+    "resumo": "foi chamad{o|a} para um festival de humor",
+    "escolhas": [
+      {
+        "texto": "Ir e dar tudo",
+        "resumo": "se apresentou num festival de humor",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O vídeo da sua apresentação rodou o país. Agora você tem agenda, cachê e um medo novo: o de não ter graça.",
+          "resumo": "fez sucesso num festival de humor",
+          "efeitos": { "felicidade": 6, "renda": 20000, "aparencia": 1 }
+        },
+        "fracasso": {
+          "texto": "Foi bem, mas não foi aquilo. Você voltou para o bar das quartas, que te recebeu como herói.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Agradecer e ficar no bar",
+        "resumo": "preferiu continuar no microfone aberto do bar",
+        "resultado": {
+          "texto": "Teatro dá medo; o bar dá cerveja. Você continua às quartas, feliz e sem pressão.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "retiro_da_igreja",
+    "idade": [18, 80],
+    "condicoes": { "familia": "religiosa" },
+    "peso": 1.5,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "O grupo da igreja vai fazer um retiro de fim de semana [num sítio|numa casa de praia|num convento antigo]: oração, violão e comida de tia.",
+    "resumo": "foi chamad{o|a} para um retiro da igreja",
+    "escolhas": [
+      {
+        "texto": "Ir ao retiro",
+        "resumo": "foi num retiro da igreja",
+        "resultado": {
+          "texto": "Três dias de silêncio, violão e uma conversa à noite que você não esperava ter. Voltou mais leve.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Inventar uma desculpa",
+        "resumo": "inventou uma desculpa para não ir ao retiro",
+        "resultado": {
+          "texto": "Você disse que tinha plantão. Sua mãe rezou por você no retiro, e contou isso para todo mundo.",
+          "efeitos": { "mae.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "gravidez_surpresa",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [18, 44],
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["pai_mae", "sem_filhos"] },
+    "tensao": 1.5,
+    "texto": "Dois risquinhos no teste de farmácia, numa terça-feira qualquer. {ator} olha para você; você olha para o teste; o teste não muda de ideia.",
+    "resumo": "descobriu que ia ter um filho com {ator}",
+    "escolhas": [
+      {
+        "texto": "Contar para a família no domingo",
+        "resumo": "contou da gravidez no almoço de domingo",
+        "resultado": {
+          "texto": "Você anunciou entre a lasanha e a sobremesa. Teve choro, grito e uma tia que já sabia. Meses depois, nasceu {filho}.",
+          "efeitos": {
+            "personagens": ["filho"],
+            "marcas": ["pai_mae"],
+            "felicidade": 5,
+            "mae.vinculo": 5,
+            "custo": 12000,
+            "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+          }
+        }
+      },
+      {
+        "texto": "Já sair montando o quarto",
+        "resumo": "montou o quarto do bebê no primeiro mês",
+        "resultado": {
+          "texto": "Berço, móbile e uma parede pintada três vezes até acertar o tom. Quando {filho} nasceu, o quarto estava pronto; vocês, nem tanto.",
+          "efeitos": {
+            "personagens": ["filho"],
+            "marcas": ["pai_mae"],
+            "felicidade": 6,
+            "dinheiro": -6000,
+            "custo": 12000,
+            "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+          }
+        }
+      },
+      {
+        "texto": "Entrar em pânico primeiro",
+        "resumo": "entrou em pânico com a gravidez e depois se acostumou",
+        "resultado": {
+          "texto": "Três noites sem dormir, uma planilha de gastos e, no fim, um sorriso bobo que não saiu mais da cara. Nasceu {filho}.",
+          "efeitos": {
+            "personagens": ["filho"],
+            "marcas": ["pai_mae"],
+            "felicidade": 3,
+            "saude": -1,
+            "custo": 12000,
+            "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pensar_em_adotar",
+    "idade": [28, 55],
+    "condicoes": { "semMarcas": ["pai_mae", "fila_adocao"], "patrimonio": { "min": 20000 } },
+    "peso": 1.5,
+    "texto": "Você pensa cada vez mais em adotar uma criança. [Uma reportagem sobre abrigos não sai da sua cabeça.|Uma amiga adotou e não fala de outra coisa.|Você tem amor sobrando e quarto vazio.]",
+    "resumo": "pensou em adotar uma criança",
+    "escolhas": [
+      {
+        "texto": "Entrar na fila da adoção",
+        "resumo": "entrou na fila da adoção",
+        "resultado": {
+          "texto": "Curso de preparação, entrevistas, visita da assistente social e uma espera que ninguém sabe dizer quanto dura.",
+          "efeitos": {
+            "marcas": ["fila_adocao"],
+            "felicidade": 2,
+            "agendar": [{ "evento": "adocao_chegou", "em": [2, 4] }]
+          }
+        }
+      },
+      {
+        "texto": "Apadrinhar uma criança do abrigo",
+        "resumo": "apadrinhou uma criança de um abrigo",
+        "resultado": {
+          "texto": "Fim de semana sim, fim de semana não, você leva uma criança para tomar sorvete e voltar com histórias. Ela te chama de dind{o|a}.",
+          "efeitos": { "felicidade": 4, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Não agora",
+        "resumo": "deixou a ideia de adotar para depois",
+        "resultado": {
+          "texto": "Você guardou a ideia num lugar bonito, para quando a vida deixar.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "adocao_chegou",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["fila_adocao"] },
+    "texto": "O telefone tocou numa quarta à tarde: a Vara da Infância tem um bebê para você conhecer. Uma semana depois, {filho} chegou em casa com um macacão emprestado e um choro que só parava no seu colo.",
+    "resumo": "adotou {filho}",
+    "efeitos": {
+      "personagens": ["filho"],
+      "marcas": ["pai_mae"],
+      "removerMarcas": ["fila_adocao"],
+      "felicidade": 8,
+      "custo": 12000,
+      "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+    }
+  }
+]

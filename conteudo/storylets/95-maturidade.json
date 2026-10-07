@@ -1,0 +1,348 @@
+[
+  {
+    "id": "reencontro_da_turma",
+    "idade": [45, 80],
+    "peso": 2,
+    "texto": "Alguém criou o grupo \"Turma de [formatura|escola|faculdade] — 30 anos\" e marcou um reencontro num restaurante com nome em inglês. Metade da turma ficou careca; a outra metade, coach.",
+    "resumo": "foi chamad{o|a} para o reencontro de trinta anos da turma",
+    "escolhas": [
+      {
+        "texto": "Ir e reencontrar todo mundo",
+        "resumo": "foi no reencontro de trinta anos da turma",
+        "resultado": {
+          "texto": "Você reconheceu metade, fingiu reconhecer a outra metade e riu como não ria havia anos. Voltou com três telefones e uma nostalgia boa.",
+          "efeitos": { "felicidade": 4, "amigo.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Ir só para ver quem ficou rico",
+        "resumo": "foi no reencontro da turma comparar a vida dos outros",
+        "resultado": {
+          "texto": "Você passou a noite fazendo as contas da vida alheia. Saiu achando que foi bem, ou mal, dependendo da taça.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Ver as fotos no grupo",
+        "resumo": "viu o reencontro da turma pelas fotos",
+        "resultado": {
+          "texto": "Você curtiu as fotos e comentou \"que saudade\" em todas. Era verdade, mas não o bastante para ir.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "namorar_depois_dos_60",
+    "idade": [56, 88],
+    "condicoes": { "semMarcas": ["namoro"], "algumaMarca": ["viuvo", "separado"] },
+    "peso": 3,
+    "texto": "Os filhos dos amigos instalaram um aplicativo de namoro no seu celular \"só para ver\". A foto de perfil é de um casamento de 2009, e já tem três mensagens esperando.",
+    "resumo": "pensou em namorar de novo depois dos sessenta",
+    "escolhas": [
+      {
+        "texto": "Responder as mensagens",
+        "resumo": "voltou a namorar depois dos sessenta",
+        "resultado": {
+          "texto": "Um café virou um cinema, que virou um almoço de domingo com a família toda olhando. Você ficou vermelh{o|a} como aos dezesseis.",
+          "efeitos": { "felicidade": 4, "agendar": [{ "evento": "namoro", "em": 1 }] }
+        }
+      },
+      {
+        "texto": "Apagar o aplicativo",
+        "resumo": "apagou o aplicativo de namoro",
+        "resultado": {
+          "texto": "Você apagou, disse que não tem mais idade para isso e ficou pensando no assunto a semana inteira.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aposentadoria_ativa",
+    "idade": [60, 85],
+    "condicoes": { "marcas": ["aposentado"], "semMarcas": ["aposentadoria_ativa"] },
+    "peso": 3,
+    "texto": "Aposentad{o|a} há pouco, você descobriu que a semana tem sete dias e todos são segunda-feira. O sofá está ficando com o seu formato.",
+    "resumo": "teve que decidir o que fazer da aposentadoria",
+    "escolhas": [
+      {
+        "texto": "Ser voluntári{o|a}",
+        "resumo": "virou voluntári{o|a} na aposentadoria",
+        "resultado": {
+          "texto": "Toda terça você dá aula de reforço numa ONG. As crianças te chamam de \"tio{|a}\" e corrigem o seu jeito de mexer no celular.",
+          "efeitos": { "felicidade": 4, "saude": 1, "marcas": ["aposentadoria_ativa"] }
+        }
+      },
+      {
+        "texto": "Abrir um negocinho",
+        "resumo": "abriu um negócio pequeno depois de aposentad{o|a}",
+        "resultado": {
+          "texto": "Um quiosque de [bolo|café|consertos] na praça. Não dá lucro, dá assunto, e isso, na sua idade, vale mais.",
+          "efeitos": { "felicidade": 3, "dinheiro": -15000, "renda": 12000, "marcas": ["aposentadoria_ativa"] }
+        }
+      },
+      {
+        "texto": "Descansar, finalmente",
+        "resumo": "decidiu descansar de verdade na aposentadoria",
+        "resultado": {
+          "texto": "Você dormiu até tarde por um ano inteiro, sem culpa. Depois começou a sentir falta de ter culpa.",
+          "efeitos": { "felicidade": 1, "saude": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "netos_nas_ferias",
+    "idade": [52, 90],
+    "condicoes": { "marcas": ["pai_mae"], "filho.idade": { "min": 26 } },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Férias escolares: {filho} quer deixar as crianças com você \"só por duas semanas\". Já mandou a lista de alergias, o horário da tela e um aviso: \"não pode refrigerante\".",
+    "resumo": "recebeu os netos nas férias",
+    "escolhas": [
+      {
+        "texto": "Receber as crianças",
+        "resumo": "recebeu os netos nas férias",
+        "resultado": {
+          "texto": "Duas semanas de bolo, praça, novela proibida e refrigerante escondido. Você nunca dormiu tão cedo, nem tão feliz.",
+          "efeitos": { "felicidade": 4, "saude": -0.5, "filho.vinculo": 5 }
+        }
+      },
+      {
+        "texto": "Pagar uma colônia de férias",
+        "resumo": "pagou a colônia de férias dos netos",
+        "resultado": {
+          "texto": "As crianças foram para a colônia e voltaram para jantar com você. Equilíbrio.",
+          "efeitos": { "dinheiro": -3000, "filho.vinculo": 2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Dizer que não dá este ano",
+        "resumo": "não pôde ficar com os netos nas férias",
+        "resultado": {
+          "texto": "Você tinha uma viagem marcada. {filho} entendeu e não entendeu, as duas coisas ao mesmo tempo.",
+          "efeitos": { "filho.vinculo": -4, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mudar_para_a_praia",
+    "idade": [55, 85],
+    "condicoes": { "patrimonio": { "min": 300000 }, "semMarcas": ["mora_na_praia"], "lugar.litoral": false },
+    "peso": 2,
+    "texto": "Você vive dizendo que um dia vai morar na praia. O apartamento da cidade valorizou; uma casa pé na areia [em Ubatuba|em Maragogi|em Garopaba|em Porto Seguro] está à venda, e o \"um dia\" bateu na porta.",
+    "resumo": "pensou em se mudar para a praia",
+    "escolhas": [
+      {
+        "texto": "Ficar onde está",
+        "resumo": "decidiu ficar na cidade em vez de ir para a praia",
+        "resultado": {
+          "texto": "Você ficou perto dos filhos, do médico e da padaria de sempre. A praia vira férias, e as férias ficam melhores.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Ir de vez",
+        "resumo": "se mudou para a praia",
+        "resultado": {
+          "texto": "Você troca o despertador pelo barulho do mar e o trânsito pelo cachorro do vizinho. A família visita no verão e reclama da estrada.",
+          "efeitos": {
+            "felicidade": 5,
+            "saude": 1,
+            "dinheiro": -60000,
+            "marcas": ["mora_na_praia"],
+            "mae.vinculo": -3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cirurgia_de_catarata",
+    "idade": [60, 95],
+    "condicoes": { "semMarcas": ["operou_catarata"] },
+    "peso": 2,
+    "texto": "A vista ficou embaçada: catarata nos dois olhos. O SUS opera, com fila; o particular opera na semana que vem, com boleto.",
+    "resumo": "precisou operar a catarata",
+    "escolhas": [
+      {
+        "texto": "Esperar a fila do SUS",
+        "resumo": "operou a catarata pelo SUS",
+        "resultado": {
+          "texto": "Um ano e meio de fila e uma cirurgia de vinte minutos. O médico do SUS foi o melhor que você já teve, e você contou para todo mundo.",
+          "efeitos": { "saude": 1, "felicidade": 1, "marcas": ["operou_catarata"] }
+        }
+      },
+      {
+        "texto": "Operar no particular",
+        "resumo": "operou a catarata no particular",
+        "resultado": {
+          "texto": "Lente importada, enfermeira que serve café e uma visão que você não tinha nem aos quarenta.",
+          "efeitos": { "dinheiro": -9000, "saude": 2, "felicidade": 2, "marcas": ["operou_catarata"] }
+        }
+      },
+      {
+        "texto": "Ir levando",
+        "resumo": "adiou a cirurgia de catarata",
+        "resultado": {
+          "texto": "Você aumentou a letra do celular e diminuiu a direção à noite. Por enquanto dá.",
+          "efeitos": { "saude": -1, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "golpe_do_falso_neto",
+    "idade": [62, 98],
+    "condicoes": { "semMarcas": ["caiu_golpe"] },
+    "peso": 2,
+    "texto": "O telefone toca: \"vó{|ô}, sou eu, seu neto, bati o carro e preciso de um Pix urgente, não conta pros meus pais\". A voz parece; o número, não.",
+    "resumo": "recebeu uma ligação do golpe do falso neto",
+    "escolhas": [
+      {
+        "texto": "Desligar e ligar para a família",
+        "resumo": "desconfiou do golpe do falso neto e ligou para a família",
+        "resultado": {
+          "texto": "Você desligou e ligou para o neto de verdade, que estava em casa jogando videogame. Contou a história no almoço e virou lenda.",
+          "efeitos": { "inteligencia": 1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer o Pix",
+        "resumo": "caiu no golpe do falso neto",
+        "resultado": {
+          "texto": "Você mandou o Pix antes de pensar. Quando pensou, o número já não existia. A família não brigou; a vergonha brigou por ela.",
+          "efeitos": { "dinheiro": -6000, "felicidade": -4, "marcas": ["caiu_golpe"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "baile_da_terceira_idade",
+    "idade": [60, 95],
+    "condicoes": { "semMarcas": ["baile"] },
+    "peso": 2,
+    "texto": "O centro comunitário tem baile às quintas: [forró|samba de gafieira|bolero] com banda ao vivo, salgadinho e gente que dança melhor que você jamais dançou.",
+    "resumo": "foi chamad{o|a} para o baile da terceira idade",
+    "escolhas": [
+      {
+        "texto": "Ir dançar",
+        "resumo": "virou frequentador{|a} do baile da terceira idade",
+        "resultado": {
+          "texto": "Você foi tímid{o|a} na primeira quinta e não perdeu mais nenhuma. Tem par fixo, sapato próprio e um passo com o seu nome.",
+          "efeitos": { "felicidade": 4, "saude": 1, "marcas": ["baile"] }
+        }
+      },
+      {
+        "texto": "Ficar em casa",
+        "resumo": "não quis ir ao baile da terceira idade",
+        "resultado": {
+          "texto": "Você disse que não sabe dançar. Ninguém lá sabia quando começou.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escrever_memorias",
+    "idade": [60, 98],
+    "condicoes": { "semMarcas": ["escreveu_memorias"] },
+    "peso": 1.5,
+    "trechos": { "trecho_quem": [{ "se": { "marcas": ["pai_mae"] }, "texto": "{filho}" }, { "texto": "Um amigo" }] },
+    "texto": "Você tem histórias demais para caber em almoço de domingo. {trecho_quem} sugeriu escrever um livro de memórias \"para a família não esquecer\".",
+    "resumo": "pensou em escrever um livro de memórias",
+    "escolhas": [
+      {
+        "texto": "Escrever e imprimir",
+        "resumo": "escreveu um livro de memórias",
+        "resultado": {
+          "texto": "Duzentas páginas, cinquenta exemplares numa gráfica do bairro e uma noite de autógrafos na sala de casa. A família leu; alguns descobriram coisas.",
+          "efeitos": { "felicidade": 5, "inteligencia": 1, "dinheiro": -3000, "marcas": ["escreveu_memorias"] }
+        }
+      },
+      {
+        "texto": "Gravar áudios em vez de escrever",
+        "resumo": "gravou as próprias histórias em áudio",
+        "resultado": {
+          "texto": "Você gravou trinta áudios no grupo da família, cada um com uma história. Viraram os áudios mais ouvidos da casa.",
+          "efeitos": { "felicidade": 3, "marcas": ["escreveu_memorias"] }
+        }
+      },
+      {
+        "texto": "Deixar as histórias para os almoços",
+        "resumo": "preferiu contar as histórias só nos almoços",
+        "resultado": {
+          "texto": "As histórias seguem vivas, com um detalhe novo a cada domingo. Ninguém confere, e ninguém quer conferir.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "doar_em_vida",
+    "idade": [62, 98],
+    "condicoes": { "patrimonio": { "min": 3000000 }, "marcas": ["pai_mae"] },
+    "peso": 3,
+    "texto": "Com {patrimonio} no nome e a vida bem resolvida, você pensa no que fazer com tanto. {filho} acha que é cedo para falar disso; o contador acha que é tarde.",
+    "resumo": "pensou em doar parte da fortuna em vida",
+    "escolhas": [
+      {
+        "texto": "Doar uma parte para os filhos agora",
+        "resumo": "adiantou parte da herança para {filho}",
+        "resultado": {
+          "texto": "Você transferiu {transferido} para {filho} \"com mão quente\", como dizia sua avó. Viu o dinheiro virar casa, netos e uma empresa nova.",
+          "efeitos": {
+            "transferir": { "de": "eu", "para": "filho", "fracao": 0.2 },
+            "filho.vinculo": 10,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Criar uma fundação",
+        "resumo": "criou uma fundação com parte da fortuna",
+        "resultado": {
+          "texto": "Uma fundação com o seu sobrenome, bolsas de estudo e uma sede com quadro seu na parede. Você vai às formaturas e chora em todas.",
+          "efeitos": { "patrimonioFator": 0.85, "felicidade": 6, "marcas": ["testamento_solidario"] }
+        }
+      },
+      {
+        "texto": "Guardar tudo",
+        "resumo": "decidiu guardar a fortuna até o fim",
+        "resultado": {
+          "texto": "Você disse que dinheiro na mão de jovem estraga. A fortuna segue crescendo; a conversa, não.",
+          "efeitos": { "filho.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "conselho_quer_ceo",
+    "idade": [55, 95],
+    "condicoes": { "empresa.valor": { "min": 50000000 }, "semMarcas": ["passou_o_comando"] },
+    "peso": 3,
+    "texto": "O conselho da {empresa} sugere, com toda a delicadeza de um conselho, que talvez seja hora de um presidente de mercado. Você nunca ouviu a palavra \"talvez\" tão alta.",
+    "resumo": "ouviu do conselho que era hora de passar a presidência",
+    "escolhas": [
+      {
+        "texto": "Ficar até o fim",
+        "resumo": "se recusou a deixar a presidência da empresa",
+        "resultado": {
+          "texto": "Você bateu na mesa e ficou. A empresa seguiu do seu jeito, para o bem e para o mal.",
+          "efeitos": { "empresa.tracao": -1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Contratar um executivo de mercado",
+        "resumo": "contratou um executivo para presidir a empresa",
+        "resultado": {
+          "texto": "Chegou um presidente de terno escuro que fala em \"eficiência\". A empresa cresceu; você foi para o conselho e para o golfe.",
+          "efeitos": { "empresa.tracao": 3, "felicidade": 2, "saude": 1, "marcas": ["passou_o_comando"] }
+        }
+      }
+    ]
+  }
+]

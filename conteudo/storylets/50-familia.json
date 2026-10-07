@@ -845,6 +845,7 @@
     "ator": ["filho"],
     "idade": [50, 110],
     "condicoes": { "marcas": ["pai_mae"], "filho.vinculo": { "max": 45 } },
+    "peso": 3,
     "texto": "{filho} quase não liga. As visitas viraram mensagens; as mensagens viraram figurinhas de bom-dia.",
     "resumo": "ficou longe de {filho}",
     "escolhas": [

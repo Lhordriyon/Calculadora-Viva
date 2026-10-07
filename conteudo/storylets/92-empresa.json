@@ -172,7 +172,7 @@
   {
     "id": "abrir_capital",
     "idade": [25, 85],
-    "condicoes": { "empresa.valor": { "min": 400000000 }, "semMarcas": ["empresa.na_bolsa"] },
+    "condicoes": { "empresa.valor": { "min": 200000000 }, "semMarcas": ["empresa.na_bolsa"] },
     "peso": 5,
     "texto": "Os bancos dizem que a {empresa} já pode abrir capital: [sino tocado na bolsa|foto da família no telão|um prospecto de quatrocentas páginas]. Vender ações ao público rende uma fortuna, e um mundo de olhos em cima.",
     "resumo": "teve a chance de levar a própria empresa para a bolsa",
@@ -203,11 +203,11 @@
   {
     "id": "acionistas_furiosos",
     "idade": [25, 90],
-    "condicoes": { "marcas": ["empresa.na_bolsa"], "algumaMarca": ["pais.recessao", "pais.crise"] },
+    "condicoes": { "marcas": ["empresa.na_bolsa"], "empresa.lucro": { "max": -1 } },
     "tensao": 2,
     "repetivel": true,
     "intervalo": 8,
-    "texto": "As ações da {empresa} caíram [trinta|quarenta|cinquenta] por cento em um mês. No fórum de investidores, seu nome virou xingamento; na assembleia, pauta.",
+    "texto": "O balanço veio no vermelho e as ações da {empresa} caíram [trinta|quarenta|cinquenta] por cento em um mês. No fórum de investidores, seu nome virou xingamento; na assembleia, pauta.",
     "resumo": "viu as ações da própria empresa despencarem",
     "escolhas": [
       {

@@ -237,11 +237,11 @@
         }
       },
       {
-        "texto": "Doar uma parte para um abrigo de animais",
-        "resumo": "doou parte do patrimônio para um abrigo de animais",
+        "texto": "Deixar um quarto para uma causa",
+        "resumo": "deixou em testamento um quarto do que tinha para uma causa",
         "resultado": {
-          "texto": "O abrigo batizou um canil com o seu nome. Os cachorros não sabem ler, mas abanam o rabo.",
-          "efeitos": { "dinheiro": -25000, "felicidade": 6 }
+          "texto": "Você escolheu [um abrigo de animais|uma escola do bairro onde cresceu|um hospital do SUS|uma ONG que ensina música]. Vai receber um quarto de tudo quando chegar a hora; você vai receber o nome numa placa.",
+          "efeitos": { "marcas": ["testamento_solidario"], "felicidade": 6 }
         }
       },
       {
@@ -249,7 +249,7 @@
         "resumo": "decidiu gastar o patrimônio em vida",
         "resultado": {
           "texto": "Você chamou de \"planejamento sucessório reverso\". Os herdeiros chamaram de outra coisa.",
-          "efeitos": { "dinheiro": -40000, "felicidade": 8 }
+          "efeitos": { "dinheiro": -40000, "felicidade": 8, "eu.padrao": { "definir": "luxo" } }
         }
       }
     ]
