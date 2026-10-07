@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { fichasUsadas, NOMES_VERBO, type AcaoDisponivel } from '../motor/acoes.ts';
+import type { Parentesco } from '../motor/herdeiro.ts';
+import { fichasDoAno } from '../motor/regras.ts';
 import type { Verbo } from '../motor/constantes.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { anos, parentesco } from './formato.ts';
@@ -11,12 +13,13 @@ interface Props {
   vida: EstadoVida;
   acoes: AcaoDisponivel[];
   aoAvancar: () => void;
-  aoAgir: (verbo: Verbo) => void;
+  /** Gasta uma ficha: no verbo, numa ação escolhida (id e ator) ou, sem escolha, na do botão. */
+  aoAgir: (verbo: Verbo, escolha?: { id: string; ator?: string | undefined }) => void;
   aoEscolher: (indice: number) => void;
   aoVerCartao: () => void;
   aoNovaVida: () => void;
   /** Quem pode continuar a história depois da morte (filho ou filha viva; sem filho, sobrinho ou sobrinha). */
-  herdeiro: { nome: string; idade: number; genero: 'f' | 'm'; parentesco: 'filho' | 'sobrinho' } | null;
+  herdeiro: { nome: string; idade: number; genero: 'f' | 'm'; parentesco: Parentesco } | null;
   aoContinuar: () => void;
 }
 
@@ -27,6 +30,10 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
   useEffect(() => {
     apareceuEm.current = performance.now();
   }, [chave]);
+  // O verbo aberto (a lista das ações dele); fecha quando o ano ou a ficha mudam.
+  const [aberto, setAberto] = useState<Verbo | null>(null);
+  const momento = `${vida.idade}:${vida.historico.length}`;
+  useEffect(() => setAberto(null), [momento]);
 
   if (p) {
     return (
@@ -60,22 +67,64 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
     );
   }
 
+  const lista = aberto ? acoes.find((a) => a.verbo === aberto) : undefined;
+  const restantes = fichasDoAno(vida.idade) - fichasUsadas(vida);
+  if (vida.vivo && lista) {
+    return (
+      <div class="palco">
+        <section class="ficha" aria-labelledby="titulo-ficha">
+          <p class="quando" id="titulo-ficha">
+            {NOMES_VERBO[lista.verbo]}: o que, exatamente?
+          </p>
+          <div class="opcoes-acao">
+            {lista.opcoes.map((o) => (
+              <button
+                class="verbo"
+                type="button"
+                key={`${o.s.id}#${o.ator ?? ''}`}
+                onClick={() => {
+                  setAberto(null);
+                  aoAgir(lista.verbo, { id: o.s.id, ator: o.ator });
+                }}
+              >
+                <b>
+                  {o.rotulo}
+                  {o.novo && <span class="novo">novo</span>}
+                </b>
+              </button>
+            ))}
+          </div>
+        </section>
+        <button class="botao secundario" type="button" onClick={() => setAberto(null)}>
+          Voltar
+        </button>
+      </div>
+    );
+  }
+
   if (vida.vivo) {
     return (
       <div class="palco">
         {acoes.length > 0 && (
           <section class="ficha" aria-labelledby="titulo-ficha">
             <p class="quando" id="titulo-ficha">
-              {fichasUsadas(vida) > 0 ? 'Ainda dá tempo de mais uma coisa este ano.' : `Aos ${vida.idade}, o que você faz com este ano?`}
+              {fichasUsadas(vida) > 0
+                ? `Ainda dá tempo de ${restantes === 1 ? 'mais uma coisa' : `mais ${restantes} coisas`} este ano.`
+                : `Aos ${vida.idade}, o que você faz com este ano?${restantes > 1 ? ` (${restantes} coisas)` : ''}`}
             </p>
             <div class="verbos">
               {acoes.map((a) => (
-                <button class="verbo" type="button" key={a.verbo} onClick={() => aoAgir(a.verbo)}>
+                <button
+                  class="verbo"
+                  type="button"
+                  key={a.verbo}
+                  onClick={() => (a.opcoes.length > 1 ? setAberto(a.verbo) : aoAgir(a.verbo, { id: a.s.id, ator: a.ator }))}
+                >
                   <b>
                     {NOMES_VERBO[a.verbo]}
-                    {a.novo && <span class="novo">novo</span>}
+                    {a.opcoes.some((o) => o.novo) && <span class="novo">novo</span>}
                   </b>
-                  <small>{a.rotulo}</small>
+                  <small>{a.opcoes.length > 1 ? `${a.rotulo} e mais ${a.opcoes.length - 1}` : a.rotulo}</small>
                 </button>
               ))}
             </div>

@@ -12,6 +12,13 @@ function verboDe(h: Entrada, c: Conteudo): string | undefined {
   return s?.verbo ? NOMES_VERBO[s.verbo] : undefined;
 }
 
+/** Operações da folha (e regras que contam algo) pelo grupo do ref: "empresa:abrir" → Empresa. */
+const GRUPOS: Record<string, string> = { empresa: 'Empresa', bens: 'Compra', carreira: 'Carreira', poder: 'Política', carteira: 'Dinheiro', testamento: 'Testamento' };
+function etiquetaDoGrupo(ref: string | undefined): string | undefined {
+  const grupo = ref?.split(':')[0] ?? '';
+  return GRUPOS[grupo];
+}
+
 interface PropsItem {
   h: Entrada;
   nova: boolean;
@@ -24,7 +31,7 @@ interface PropsItem {
 function Item({ h, nova, inflacao, nomeDe, balanco }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
   if (balanco) chips.push(balanco);
-  const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' ? (h.ref?.startsWith('empresa:') ? 'Empresa' : 'Dinheiro') : verboDe(h, conteudo);
+  const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   return (
     <li class={`ano ${h.tipo}`}>
       <span class="idade" aria-label={`${h.idade} anos`}>

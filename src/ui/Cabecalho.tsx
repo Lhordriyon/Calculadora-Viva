@@ -1,6 +1,8 @@
 import { conteudo } from '../conteudo.ts';
 import { defFase, faseDe } from '../motor/ciclo.ts';
-import { investidoDe, parteNaEmpresa } from '../motor/campos.ts';
+import { investidoDe, parteNaEmpresa, valorDosBens } from '../motor/campos.ts';
+import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
+import { cargoDe } from '../motor/poder.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -9,11 +11,12 @@ import { anos, CORES, NOMES } from './formato.ts';
 interface Props {
   vida: EstadoVida;
   aoAbrirFamilia: () => void;
+  aoAbrirCarreira: () => void;
   aoAbrirDinheiro: () => void;
   aoAbrirMenu: () => void;
 }
 
-export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }: Props) {
+export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirMenu }: Props) {
   const eu = vida.entidades['eu']!;
   const lugar = vida.entidades['lugar'];
   const n = eu.n;
@@ -24,7 +27,20 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }
   const renda = n['renda'] ?? 0;
   const fase = faseDe(vida);
   const nomeFase = fase === 'normal' ? '' : defFase(conteudo, fase).nome;
-  const setor = renda >= 1 ? conteudo.setores.get(eu.t['setor'] ?? '')?.nome : undefined;
+  const carreira = carreiraDe(vida, conteudo);
+  const cargo = cargoDe(vida, conteudo);
+  const setor =
+    renda < 1
+      ? undefined
+      : cargo
+        ? noGenero(cargo.nome, eu.genero)
+        : carreira
+          ? nomeDoCargo(carreira, n['nivel'] ?? 0, eu.genero)
+          : conteudo.setores.get(eu.t['setor'] ?? '')?.nome;
+  const bens = valorDosBens(vida);
+  const influencia = Math.round(n['influencia'] ?? 0);
+  const fama = Math.round(n['fama'] ?? 0);
+  const titulo = cargo?.esfera === 'vitalicio' ? noGenero(cargo.nome, eu.genero) : eu.q['principe'] ? (eu.genero === 'f' ? 'princesa' : 'príncipe') : eu.q['herdeiro_regime'] ? 'herdeiro do Regime' : '';
   return (
     <header class="cabecalho">
       <div class="topo">
@@ -33,6 +49,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }
             {eu.nome} {vida.sobrenome}
           </h1>
           <p class="sub">
+            {titulo && <b class="titulo-nobre">{titulo} · </b>}
             {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
             {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
           </p>
@@ -44,6 +61,13 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }
               <path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6" />
               <circle cx="17" cy="9.5" r="2.6" />
               <path d="M15.8 14.3c2.9-.4 5.2 1.7 5.2 5.2" />
+            </svg>
+          </button>
+          <button class="icone" type="button" aria-label="Carreira e poder" onClick={aoAbrirCarreira}>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="7.5" width="18" height="12" rx="2" />
+              <path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2" />
+              <path d="M3 12.5h18" />
             </svg>
           </button>
           <button class="icone" type="button" aria-label="Dinheiro e investimentos" onClick={aoAbrirDinheiro}>
@@ -89,6 +113,22 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirDinheiro, aoAbrirMenu }
         {investido >= 1 && (
           <span>
             Investido <b>{formatarDinheiro(investido)}</b>
+          </span>
+        )}
+        {bens >= 1 && (
+          <span>
+            Bens <b>{formatarDinheiro(bens)}</b>
+          </span>
+        )}
+        {(influencia >= 5 || fama >= 5) && (
+          <span>
+            Influência <b>{influencia}</b>
+            {fama >= 5 ? (
+              <>
+                {' '}
+                · Fama <b>{fama}</b>
+              </>
+            ) : null}
           </span>
         )}
         {empresa >= 1 && (

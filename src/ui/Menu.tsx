@@ -18,7 +18,7 @@ export function Menu({ viva, aoFechar, aoNovaVida }: Props) {
     <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-menu" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
       <div class="folha">
         <h2 id="titulo-menu">{viva ? 'Começar outra vida?' : 'Menu'}</h2>
-        {viva && <p class="meta">Esta vida termina aqui, sem cartão. Não dá para voltar.</p>}
+        {viva && <p class="meta">Na próxima tela você escolhe como vai ser a nova vida. Esta só acaba quando a outra nascer.</p>}
         <div class="acoes">
           <button class="botao" type="button" onClick={aoFechar} autoFocus>
             {viva ? 'Continuar esta vida' : 'Voltar'}

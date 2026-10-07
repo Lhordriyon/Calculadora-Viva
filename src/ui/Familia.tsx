@@ -1,10 +1,54 @@
 import { useEffect } from 'preact/hooks';
+import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
+import type { Destino } from '../motor/herdeiro.ts';
 import { idadeDe, patrimonioDe } from '../motor/campos.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { descreverOrigem } from '../motor/virada.ts';
 import { anos } from './formato.ts';
+
+/** Para quem vai tudo: a escolha do testamento (sem ficha, a qualquer hora). */
+function Testamento({ vida, conteudo, aoOperar }: { vida: EstadoVida; conteudo: Conteudo; aoOperar: (op: Operacao) => void }) {
+  const eu = vida.entidades['eu']!;
+  const atual = (eu.t['testamento'] ?? '') as Destino;
+  const nome = (id: string): string => vida.entidades[id]?.nome ?? '';
+  const opcoes: { para: Destino; rotulo: string }[] = [
+    { para: '', rotulo: 'A lei (filho, senão sobrinho)' },
+    { para: 'filho', rotulo: nome('filho') ? `${nome('filho')} (filho)` : 'Filho' },
+    { para: 'amor', rotulo: nome('amor') ? `${nome('amor')} (par)` : 'Par' },
+    { para: 'amigo', rotulo: nome('amigo') ? `${nome('amigo')} (amizade)` : 'Melhor amigo' },
+    { para: 'sobrinho', rotulo: 'Os sobrinhos' },
+    { para: 'causa', rotulo: 'Uma causa' },
+    { para: 'pet', rotulo: nome('pet') ? `${nome('pet')} (o bicho)` : 'O bicho' },
+  ];
+  const explica: Record<Destino, string> = {
+    '': 'Sem testamento, vale a lei: o filho herda; sem filho, um sobrinho. A história continua com quem herda.',
+    filho: 'Tudo para o filho, que continua a história.',
+    amor: 'Tudo para o par, sem dividir: a história continua com quem dividiu a vida com você.',
+    amigo: 'Tudo para o melhor amigo. A família vai estranhar; a história continua com ele.',
+    sobrinho: 'Tudo para os sobrinhos: um deles continua a história.',
+    causa: 'Tudo para hospitais e escolas. A fortuna sai da família e a história termina com você.',
+    pet: 'Tudo para o bicho, com tutor e fundo. A história termina com você, e ele vive como rei.',
+  };
+  return (
+    <fieldset class="grupo testamento">
+      <legend>Testamento</legend>
+      <div class="escolhas-origem" role="group" aria-label="Para quem vai tudo">
+        {opcoes.map((o) => {
+          const op: Operacao = { tipo: 'testamento', para: o.para };
+          const motivo = o.para === atual ? null : motivoParaNaoOperar(vida, conteudo, op);
+          return (
+            <button type="button" class="chip-origem" key={o.para || 'lei'} aria-pressed={o.para === atual} disabled={motivo !== null} onClick={() => o.para !== atual && aoOperar(op)}>
+              {o.rotulo}
+            </button>
+          );
+        })}
+      </div>
+      <p class="nota">{explica[atual]}</p>
+    </fieldset>
+  );
+}
 
 /** Ordem do painel: quem veio antes, quem chegou depois. */
 const ORDEM = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet'] as const;
@@ -68,10 +112,11 @@ function Barra({ rotulo, valor, cor }: { rotulo: string; valor: number; cor: str
 interface Props {
   vida: EstadoVida;
   conteudo: Conteudo;
+  aoOperar: (op: Operacao) => void;
   aoFechar: () => void;
 }
 
-export function Familia({ vida, conteudo, aoFechar }: Props) {
+export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
   useEffect(() => {
     const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
     window.addEventListener('keydown', fechar);
@@ -122,6 +167,7 @@ export function Familia({ vida, conteudo, aoFechar }: Props) {
             );
           })}
         </ul>
+        {vida.vivo && vida.idade >= 18 && <Testamento vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <div class="acoes">
           <button class="botao" type="button" onClick={aoFechar} autoFocus>
             Voltar

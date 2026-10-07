@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'preact/hooks';
-import { funcionariosDe, investidoDe, parteNaEmpresa, patrimonioTotal } from '../motor/campos.ts';
+import { bensDe, funcionariosDe, investidoDe, parteNaEmpresa, patrimonioTotal } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { padraoDe } from '../motor/economia.ts';
-import { empresaDe, liquidoDe, precoDaParte, setoresDeEmpresa } from '../motor/empresa.ts';
+import { custoDaAquisicao, empresaDe, liquidoDe, precoDaParte, setoresDeEmpresa } from '../motor/empresa.ts';
+import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
 import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -104,6 +105,7 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const motivoAporte = motivoParaNaoOperar(vida, conteudo, aporte);
   const preco = precoDaParte(vida, conteudo);
   const pessoas = funcionariosDe(n['valor'] ?? 0);
+  const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir' });
   return (
     <fieldset class="grupo">
       <legend>Empresa</legend>
@@ -152,6 +154,14 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         Pôr {formatarDinheiro(valor)} na empresa
       </button>
       {motivoAporte && <p class="nota">Agora não: {motivoAporte}.</p>}
+      <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir' })}>
+        Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida))})
+      </button>
+      <p class="nota">
+        {motivoCompra
+          ? `Comprar concorrentes: ${motivoCompra}.`
+          : `${emp.q['truste'] ? 'Já é um truste: mais compras, mais mercado (e mais olhos do governo).' : `Três compras fazem um truste (${emp.q['aquisicoes']?.v ?? 0} até agora).`}`}
+      </p>
       {vendendo ? (
         <div class="confirmar">
           <p>
@@ -323,6 +333,129 @@ function PadraoDeVida({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 }
 
 /** Dinheiro: o patrimônio, a empresa, os investimentos e o padrão de vida. Nada aqui gasta a ficha do ano. */
+const CATEGORIAS = [
+  { id: 'moradia', nome: 'Morar' },
+  { id: 'imovel', nome: 'Renda' },
+  { id: 'lazer', nome: 'Lazer' },
+  { id: 'veiculo', nome: 'Veículos' },
+  { id: 'luxo', nome: 'Luxo' },
+  { id: 'midia', nome: 'Mídia' },
+] as const;
+
+/** Imóveis e bens: o que você tem (morar, alugar, vender) e a loja (à vista ou financiado). */
+function Bens({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [categoria, setCategoria] = useState<(typeof CATEGORIAS)[number]['id']>('moradia');
+  const [item, setItem] = useState<string | null>(null);
+  const [vendendo, setVendendo] = useState<string | null>(null);
+  const meus = bensDe(vida);
+  const loja = conteudo.mundo.bens.filter((b) => b.categoria === categoria);
+  const def = conteudo.mundo.bens.find((b) => b.id === item);
+  const aVista: Operacao | null = def ? { tipo: 'comprar', item: def.id } : null;
+  const financiado: Operacao | null = def?.financiavel ? { tipo: 'comprar', item: def.id, financiar: true } : null;
+  const motivoVista = aVista ? motivoParaNaoOperar(vida, conteudo, aVista) : null;
+  const motivoFin = financiado ? motivoParaNaoOperar(vida, conteudo, financiado) : null;
+
+  return (
+    <fieldset class="grupo">
+      <legend>Imóveis e bens</legend>
+      {meus.length === 0 && <p class="nota">Nada no seu nome ainda. Casa própria corta o aluguel; imóvel alugado paga todo mês; iate, jatinho e jornal dão influência.</p>}
+      {meus.map((b) => {
+        const d = defDoBem(conteudo, b);
+        if (!d) return null;
+        const valor = b.n['valor'] ?? 0;
+        const deve = b.n['financiado'] ?? 0;
+        const mora = Boolean(b.q['moradia']);
+        const alugado = Boolean(b.q['alugado']);
+        return (
+          <div class="bem-meu" key={b.id}>
+            <p>
+              <b>{d.nome}</b> · {formatarDinheiro(valor)}
+              {deve >= 1 ? ` (faltam ${formatarDinheiro(deve)})` : ''}
+              {mora ? ' · você mora aqui' : alugado ? ` · alugado, ${formatarDinheiro((valor * taxaDeAluguel(d)) / 12)}/mês` : ''}
+            </p>
+            {vendendo === b.id ? (
+              <div class="escolhas-origem">
+                <button type="button" class="botao" onClick={() => aoOperar({ tipo: 'venderBem', id: b.id })}>
+                  Vender por {formatarDinheiro(valor * (ehImovel(d) ? 0.94 : 1))}
+                </button>
+                <button type="button" class="botao secundario" onClick={() => setVendendo(null)}>
+                  Ficar
+                </button>
+              </div>
+            ) : (
+              <div class="escolhas-origem">
+                {d.categoria === 'moradia' && !mora && (
+                  <button type="button" class="chip-origem" onClick={() => aoOperar({ tipo: 'morar', id: b.id })}>
+                    Morar aqui
+                  </button>
+                )}
+                {taxaDeAluguel(d) > 0 && !mora && (
+                  <button type="button" class="chip-origem" aria-pressed={alugado} onClick={() => aoOperar({ tipo: 'alugar', id: b.id, alugar: !alugado })}>
+                    {alugado ? 'Parar de alugar' : 'Alugar'}
+                  </button>
+                )}
+                <button type="button" class="chip-origem" onClick={() => setVendendo(b.id)}>
+                  Vender
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      <div class="escolhas-origem" role="group" aria-label="Loja">
+        {CATEGORIAS.map((k) => (
+          <button
+            type="button"
+            class="chip-origem"
+            key={k.id}
+            aria-pressed={categoria === k.id}
+            onClick={() => {
+              setCategoria(k.id);
+              setItem(null);
+            }}
+          >
+            {k.nome}
+          </button>
+        ))}
+      </div>
+      {def && (
+        <div class="confirmar">
+          <p>
+            <b>{capitalizar(comArtigo(def))}</b> por {formatarDinheiro(def.preco)}. {def.descricao}
+            {def.manutencao > 0 ? ` Manutenção: ${formatarDinheiro((def.preco * def.manutencao) / 12)}/mês.` : ''}
+          </p>
+          <div class="escolhas-origem">
+            <button type="button" class="botao" disabled={motivoVista !== null} onClick={() => aVista && aoOperar(aVista)}>
+              Comprar à vista
+            </button>
+            {financiado && (
+              <button type="button" class="botao secundario" disabled={motivoFin !== null} onClick={() => aoOperar(financiado)}>
+                Financiar ({formatarDinheiro(custoDaCompra(def, true))} de entrada, {formatarDinheiro(parcelaDe(def) / 12)}/mês)
+              </button>
+            )}
+          </div>
+          {(motivoVista || motivoFin) && <p class="nota">Agora não: {[motivoVista, financiado ? motivoFin : null].filter(Boolean).join('; ')}.</p>}
+        </div>
+      )}
+      <ul class="vagas" aria-label="Loja">
+        {loja.map((b) => (
+          <li key={b.id}>
+            <button type="button" class="vaga" aria-pressed={item === b.id} onClick={() => setItem(b.id)}>
+              <b>{capitalizar(b.nome)}</b>
+              <small>
+                {formatarDinheiro(b.preco)}
+                {b.conforto > 0 ? ` · +${b.conforto} conforto` : ''}
+                {b.status > 0 ? ` · +${b.status} influência` : ''}
+                {b.aluguel ? ` · rende ${Math.round(b.aluguel * 100)}% ao ano` : ''}
+              </small>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </fieldset>
+  );
+}
+
 export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
   useEffect(() => {
     const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
@@ -343,6 +476,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
         </p>
         {vida.idade >= 18 && <Empresa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
+        {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <Investimentos vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         <PadraoDeVida vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         <div class="acoes">

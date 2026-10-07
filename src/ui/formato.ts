@@ -1,4 +1,5 @@
 import { ATIVOS } from '../motor/constantes.ts';
+import type { Parentesco } from '../motor/herdeiro.ts';
 import type { Atributo } from '../motor/esquema.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { Entrada } from '../motor/tipos.ts';
@@ -116,9 +117,12 @@ export function chipDoBalanco(regra: Entrada | undefined, participacao: number):
 }
 
 /** "seu filho", "sua sobrinha": quem continua a história, do ponto de vista de quem morreu. */
-export function parentesco(h: { genero: 'f' | 'm'; parentesco: 'filho' | 'sobrinho' }): string {
-  if (h.parentesco === 'sobrinho') return h.genero === 'f' ? 'sua sobrinha' : 'seu sobrinho';
-  return h.genero === 'f' ? 'sua filha' : 'seu filho';
+export function parentesco(h: { genero: 'f' | 'm'; parentesco: Parentesco }): string {
+  const f = h.genero === 'f';
+  if (h.parentesco === 'sobrinho') return f ? 'sua sobrinha' : 'seu sobrinho';
+  if (h.parentesco === 'amor') return f ? 'sua companheira' : 'seu companheiro';
+  if (h.parentesco === 'amigo') return f ? 'sua melhor amiga' : 'seu melhor amigo';
+  return f ? 'sua filha' : 'seu filho';
 }
 
 export function anos(n: number): string {

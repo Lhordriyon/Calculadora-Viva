@@ -12,6 +12,7 @@ import { continuarComoHerdeiro } from '../motor/herdeiro.ts';
 import { resumirVida } from '../motor/virada.ts';
 import { Abertura } from './Abertura.tsx';
 import { Cabecalho } from './Cabecalho.tsx';
+import { Carreira } from './Carreira.tsx';
 import { Dinheiro } from './Dinheiro.tsx';
 import { CartaoVida } from './CartaoVida.tsx';
 import { Familia } from './Familia.tsx';
@@ -39,11 +40,13 @@ const endereco = (() => {
   }
 })();
 
-type Folha = 'cartao' | 'menu' | 'familia' | 'dinheiro' | null;
+type Folha = 'cartao' | 'menu' | 'familia' | 'dinheiro' | 'carreira' | null;
 
 export function App() {
   const [save, setSave] = useState<Save>(() => carregar(conteudo));
   const [folha, setFolha] = useState<Folha>(null);
+  /** "Nova vida" (no menu, no palco, no cartão) abre a escolha da origem em vez de sortear. */
+  const [escolhendoVida, setEscolhendoVida] = useState(false);
   const vistas = useRef(save.vida?.historico.length ?? 0);
   const novasDesde = vistas.current;
   const vida = save.vida;
@@ -69,6 +72,7 @@ export function App() {
   }
 
   function novaVida(origem?: EscolhaOrigem) {
+    setEscolhendoVida(false);
     const nova = nascer(conteudo, { semente: sementeNova(), ano: new Date().getFullYear(), ...(origem ? { origem } : {}) });
     vistas.current = 0;
     guardar({ versao: save.versao, vida: nova, memoria: save.memoria, vidas: save.vidas });
@@ -76,7 +80,13 @@ export function App() {
     window.scrollTo({ top: 0 });
   }
 
-  /** A história segue com o filho ou a filha, no mesmo mundo, com o que sobrou da herança. */
+  function pedirNovaVida() {
+    setFolha(null);
+    setEscolhendoVida(true);
+    window.scrollTo({ top: 0 });
+  }
+
+  /** A história segue com quem herda, no mesmo mundo, com o que sobrou da herança. */
   function continuar() {
     if (!vida || vida.vivo) return;
     let nova: EstadoVida;
@@ -107,16 +117,16 @@ export function App() {
     concluir(nova);
   }
 
-  /** Um toque: gasta uma ficha do ano no verbo; quando as fichas acabam, o ano passa. */
-  function agirNoAno(verbo: Verbo) {
+  /** Gasta uma ficha do ano na ação escolhida; quando as fichas acabam, o ano passa. */
+  function agirNoAno(verbo: Verbo, escolha?: { id: string; ator?: string | undefined }) {
     if (!vida?.vivo || vida.pendente) return;
     const nova = structuredClone(vida);
-    agir(nova, conteudo, verbo);
+    agir(nova, conteudo, verbo, escolha);
     if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
     concluir(nova);
   }
 
-  /** Mexer no dinheiro não gasta a ficha do ano nem passa o tempo. */
+  /** Mexer no dinheiro, comprar, tentar vaga e se candidatar não gastam a ficha do ano nem passam o tempo. */
   function operarDinheiro(op: Operacao) {
     if (!vida?.vivo) return;
     const nova = structuredClone(vida);
@@ -135,11 +145,28 @@ export function App() {
     concluir(nova);
   }
 
-  if (!vida) return <Abertura conteudo={conteudo} vidas={save.vidas} aviso={save.aviso} aoNascer={novaVida} />;
+  if (!vida || escolhendoVida) {
+    return (
+      <Abertura
+        conteudo={conteudo}
+        vidas={save.vidas}
+        aviso={save.aviso}
+        aoNascer={novaVida}
+        escolherDeInicio={escolhendoVida}
+        {...(vida && escolhendoVida ? { aoVoltar: () => setEscolhendoVida(false) } : {})}
+      />
+    );
+  }
 
   return (
     <>
-      <Cabecalho vida={vida} aoAbrirFamilia={() => setFolha('familia')} aoAbrirDinheiro={() => setFolha('dinheiro')} aoAbrirMenu={() => setFolha('menu')} />
+      <Cabecalho
+        vida={vida}
+        aoAbrirFamilia={() => setFolha('familia')}
+        aoAbrirCarreira={() => setFolha('carreira')}
+        aoAbrirDinheiro={() => setFolha('dinheiro')}
+        aoAbrirMenu={() => setFolha('menu')}
+      />
       <main class="vida">
         <LinhaDoTempo vida={vida} novasDesde={novasDesde} />
       </main>
@@ -150,16 +177,17 @@ export function App() {
         aoAgir={agirNoAno}
         aoEscolher={responder}
         aoVerCartao={() => setFolha('cartao')}
-        aoNovaVida={() => novaVida()}
+        aoNovaVida={pedirNovaVida}
         herdeiro={resumo?.herdeiro ?? null}
         aoContinuar={continuar}
       />
       {folha === 'cartao' && resumo && (
-        <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={() => novaVida()} aoContinuar={continuar} />
+        <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoContinuar={continuar} />
       )}
-      {folha === 'familia' && <Familia vida={vida} conteudo={conteudo} aoFechar={() => setFolha(null)} />}
+      {folha === 'familia' && <Familia vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'dinheiro' && <Dinheiro vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
-      {folha === 'menu' && <Menu viva={vida.vivo} aoFechar={() => setFolha(null)} aoNovaVida={() => novaVida()} />}
+      {folha === 'carreira' && <Carreira vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
+      {folha === 'menu' && <Menu viva={vida.vivo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} />}
     </>
   );
 }
