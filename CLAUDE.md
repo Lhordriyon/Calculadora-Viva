@@ -24,7 +24,7 @@ O erro mais caro é otimizar algo que nem deveria existir. Decisão sem número 
 
 ## Três invariantes
 
-1. **Um formato de estado.** Pessoa, bicho, lugar e país (depois empresa) são entidades com id, tipo, campos e qualidades. Condições e efeitos leem e escrevem caminhos: `mae.saude`, `lugar.desemprego`, `ator.vinculo`.
+1. **Um formato de estado.** Pessoa, bicho, lugar, país e empresa são entidades com id, tipo, campos e qualidades. Condições e efeitos leem e escrevem caminhos: `mae.saude`, `lugar.desemprego`, `ator.vinculo`, `empresa.valor`.
 2. **Um formato de conteúdo.** Evento (o diretor escolhe), ação (o jogador escolhe) e iniciativa de personagem (a regra do personagem escolhe) são o mesmo storylet: condições, saliência, texto com modelo, opções e efeitos. Um validador, um túnel e um grafo para os três.
 3. **Uma causa por mutação.** Toda mudança de estado vai para o livro-razão com quem a causou: escolha, ação, diretor, personagem ou regra. Pontos de virada e a crônica saem dele (há teste: nascimento + soma das variações = estado final).
 
@@ -73,7 +73,7 @@ conteudo/              dados, nunca código
   marcas.json          efeitos passivos e epitáfios de qualidades
   mundo.json           nomes, cidades, classes, tipos de família, traços, setores, fases, acontecimentos
 src/motor/             motor puro, sem UI: roda em Node e no navegador
-  vida.ts              nascer → (ficha do ano) → +1 ano → regras → personagens → diretor → escolha
+  vida.ts              nascer → (fichas do ano) → +1 ano → regras → personagens → diretor → escolha
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
   campos.ts            campos de cada entidade e leitura de caminhos ("mae.saude")
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança)
@@ -88,7 +88,10 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   efeitos.ts           efeitos de storylets (caminhos, transferências, personagens)
   condicoes.ts         condições compiladas e causas (qualidades consultadas)
   contexto.ts          variáveis de texto lidas do estado ({mae.ocupacao}, {ator.quem}, trechos)
-  economia.ts          dinheiro em reais de hoje, inflação, juros, crédito, gasto da velhice
+  economia.ts          dinheiro em reais de hoje, inflação, juros, crédito, padrão de vida, gasto da velhice
+  carteira.ts          investimentos por classe, mercado do ano, perfil, operações da folha Dinheiro
+  empresa.ts           a empresa de quem joga: abrir, crescer, retirar, aportar, vender, quebrar
+  herdeiro.ts          dinastia: partilha, quem herda (filho ou sobrinho) e a vida nova
   morte.ts             morte de quem joga
   virada.ts            pontos de virada e resumo da vida a partir do livro-razão
   memoria.ts           memória do jogador entre vidas (reduz repetição)
@@ -102,7 +105,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini)
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, CartaoVida
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, CartaoVida
 scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
 test/                  Vitest
 ```
@@ -149,4 +152,5 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Opções somem? Não: aparecem desabilitadas com o motivo | agente | a pobreza também é história |
 | Toques ignorados por 450 ms quando um evento aparece | agente | toque duplo no +1 ano não pode escolher por você |
 | O verbo mostra a ação que vai fazer (escolha determinística) | agente | agir sem surpresa: o botão é a promessa |
-| Uma ficha por ano, garantida no motor | agente | a agência tem custo de oportunidade |
+| Uma ficha por ano (duas dos 18 aos 40, em verbos diferentes), garantida no motor | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
+| Mexer no dinheiro e na empresa não gasta ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |

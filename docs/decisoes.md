@@ -202,6 +202,22 @@ Portões definidos pela linha de base medida no fim do incremento 1:
 - **Ativos separados (imóvel, ações, renda fixa como contas).** Os riscos proporcionais e o padrão de vida deram as duas mobilidades sem estado novo; volta se o negócio próprio pedir.
 - **Negócio próprio como entidade e continuar como herdeiro.** Pontuaram alto; são o próximo incremento.
 
+## Incremento 3: dinastia, dinheiro com escolha e empresa
+
+| Métrica | Incremento 2 | Incremento 3 |
+|---|---|---|
+| Herdeiro possível | — | 87,9% |
+| Quem nasce sem fortuna e passa de R$ 100 milhões | ~0% (teto de milhões) | 1,07% (maior: R$ 19 bilhões) |
+| Anos adultos sem acontecimento | 30% | 19,7% |
+| Toques por vida | 155 | 174 |
+| Rico → pobre | 5,3% | 4,0% |
+
+- **O teto de milhões vinha de três regras:** o motor gastava 75% da sobra sozinho, a velhice comia 4% do patrimônio ao ano e não havia motor de riqueza que escalasse. Agora o padrão de vida é escolhido (simples gasta 35% da sobra, luxo 95%), a velhice gasta 4% só até R$ 2 milhões e 1% acima, e a empresa cresce pela tração do setor, sem teto.
+- **Empresa:** valor, tração (que volta para a do setor menos o porte), lucro, participação e retirada. Volatilidade cai com o tamanho. Abrir é decisão do jogador e causa tudo o que a empresa causa (ler `empresa.*` numa condição cita a fundação).
+- **Rico → pobre ficou abaixo do alvo antigo (4,5%)** porque a riqueza agora persiste quando o jogador cuida dela, que é o que o dono pediu. O portão passou a ser "não piorar a linha de base" (3,0%).
+- **Sobrinho herda quando não há filho**, gerado sem gastar o sorteio da vida (a interface pergunta várias vezes).
+- **Monarca ficou para o incremento 4**, como origem num Brasil fictício.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

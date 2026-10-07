@@ -50,9 +50,19 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] Portões: mundo nos pontos de virada 10,7% (≥ 5,8%); pobre → rico 6,3% e rico → pobre 5,3% (≥ 4,5%); Spearman 0,45; V20 94,4% (≤ 95%); assinaturas 918 (≥ 893); CPU 16,9 ms (≤ 30 ms); nenhuma estratégia dominante; zero falsos dilemas
 - [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
 
-## Próximo incremento (proposta)
+## Incremento 3: dinastia, dinheiro com escolha e empresa
 
-**Negócio próprio e herdeiro (níveis 4 e 5):** o negócio como entidade (caixa, funcionários, setor, com três alavancas: investir, cortar, vender) e continuar a vida como filho ou filha quando a pessoa morre, herdando o que sobrou do mundo que ela deixou. Portões a definir pela linha de base deste incremento: assinaturas 918, V20 94,4%, pobre → rico 6,3%, rico → pobre 5,3%, setor do último trabalho concentrado em serviços, saúde, comércio e transporte (indústria, construção, finanças e agro somam 3%).
+- [x] Continuar como herdeiro (filho; sem filho, sobrinho por testamento), com partilha: dívidas, imposto de 4%, metade do cônjuge, testamento solidário
+- [x] Classes bilionária e trilionária na origem
+- [x] Carteira em 5 classes que rendem pela fase, 3 perfis, aplicar e resgatar pela folha Dinheiro
+- [x] Padrão de vida escolhido (simples, confortável, luxo); velhice que não derrete fortuna
+- [x] Empresa como entidade: abrir (setor e capital), retirada, aporte, venda, rodada, bolsa, quebra; passa ao herdeiro
+- [x] Duas fichas por ano dos 18 aos 40; anos mais cheios; saldo do ano na linha do tempo
+- [x] Portões: herdeiro possível 87,9%; 3ª geração 57,7%; ≥ R$ 100 milhões 1,07% de quem nasce sem fortuna; bilionário feito 0,11%; quebra 35%; anos adultos vazios 19,7%; V20 94,0%; assinaturas 938
+
+## Incremento 4 (pedido do dono em 07/10): liberdade de verdade
+
+Escolher a ação (não só o verbo), profissões de verdade, imóveis e bens com uso, poder (influência, política, mídia), origens de realeza e de regime, truste, começos de vida diferentes.
 
 ## Como uma sessão continua
 

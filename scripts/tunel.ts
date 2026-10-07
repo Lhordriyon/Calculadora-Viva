@@ -13,11 +13,12 @@ import { carregarConteudo, RAIZ } from './disco.ts';
 import { classeDoPatrimonio, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
-import { faseDe } from '../src/motor/ciclo.ts';
+import { cicloDoAno, faseDe } from '../src/motor/ciclo.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
-import { operar, perfilDe } from '../src/motor/carteira.ts';
+import { mercadoDoAno, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import type { EscolhaOrigem } from '../src/motor/origem.ts';
+import { jaAgiu } from '../src/motor/acoes.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
 import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, decidirDinheiro, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
 import { aleatorio, criarRng, misturar, type Rng } from '../src/motor/rng.ts';
@@ -69,9 +70,14 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
         operacoes++;
         toques += 3;
       }
-      // Um toque por ano: num verbo da ficha (age e passa o ano) ou no +1 ano.
-      const verbo = decidirAcao(estrategia, e, c, robo);
+      // Um toque por verbo da ficha; o último (ou o +1 ano) passa o ano. Dos 18 aos 40 são duas fichas.
+      let verbo = decidirAcao(estrategia, e, c, robo);
       if (verbo) agir(e, c, verbo);
+      if (verbo && e.vivo && !e.pendente && !jaAgiu(e)) {
+        toques++;
+        verbo = decidirAcao(estrategia, e, c, robo);
+        if (verbo) agir(e, c, verbo);
+      }
       if (e.vivo) {
         avancarAno(e, c, memoria);
         anosPorFase[faseDe(e)]++;
@@ -111,6 +117,9 @@ const CARREIRAS: [string, string][] = [
   ['clt', 'carteira assinada'],
   ['entregador', 'aplicativo'],
 ];
+
+/** Storylets em que a empresa fecha por quebra (e não por venda). */
+const QUEBRAS = new Set(['empresa_quebrou', 'negocio_no_aperto', 'socio_sumiu', 'negocio_da_familia_quebra']);
 
 /** Mudanças de estado de quem joga numa entrada (mesma régua da linha de base). */
 function contarMudancas(h: Entrada): number {
@@ -170,6 +179,12 @@ interface Vida {
   operacoes: number;
   /** Ao morrer, havia filho ou filha para continuar a história. */
   herdeiro: boolean;
+  /** Anos adultos (18+) sem nenhum evento ou iniciativa de personagem: só a linha curta. */
+  anosVazios: number;
+  /** A empresa na vida: abriu alguma (por qualquer caminho), alguma quebrou, vendeu alguma. */
+  fundou: boolean;
+  quebrou: boolean;
+  vendeu: boolean;
 }
 
 /** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
@@ -278,7 +293,16 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     carreiraSetor: `${eu.t['setor'] || 'sem setor'}/${'servidor' in q ? 'servidor' : 'empreendedor' in q || 'socio' in q || 'herdeiro_negocio' in q ? 'dono' : 'empregado'}`,
     perfil: perfilDe(e),
     operacoes: j.operacoes,
-    herdeiro: herdeiroPossivel(e) !== null,
+    herdeiro: herdeiroPossivel(e, c) !== null,
+    anosVazios: (() => {
+      const comEvento = new Set(visiveis.map((h) => h.idade));
+      let vazios = 0;
+      for (let a = 18; a < e.idade; a++) if (!comEvento.has(a)) vazios++;
+      return e.idade > 18 ? vazios / (e.idade - 18) : 0;
+    })(),
+    fundou: e.historico.some((h) => h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === 1)),
+    quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
+    vendeu: 'vendeu_empresa' in q,
   };
 }
 
@@ -402,12 +426,12 @@ ESTRATEGIAS.forEach((estrategia, s) => {
         idade: e.idade,
         patrimonio,
         herdou,
-        herdeiro: herdeiroPossivel(e) !== null,
+        herdeiro: herdeiroPossivel(e, c) !== null,
         instancias: visiveis.map((h) => h.instancia!),
         eventos: visiveis.map((h) => h.ref!),
         acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
       });
-      if (!herdeiroPossivel(e) || g === MAX_GERACOES) break;
+      if (!herdeiroPossivel(e, c) || g === MAX_GERACOES) break;
       anterior = patrimonio;
       e = continuarComoHerdeiro(e, c);
     }
@@ -538,13 +562,55 @@ const porPerfil = PERFIS_TUNEL.map((perfil) => {
   const ord = ordenar(vidas.filter((v) => v.estrategia === 'aleatoria' && v.perfil === perfil).map((v) => v.patrimonio));
   return { perfil, n: ord.length, p10: percentil(ord, 10), p50: percentil(ord, 50), p90: percentil(ord, 90) };
 });
-const conservador = porPerfil[0]!;
-const arrojado = porPerfil[2]!;
+/**
+ * Laboratório de perfis: R$ 100 mil por 30 anos em cada perfil, rebalanceados todo ano, nos mesmos anos do país
+ * (as mesmas sementes para os três: só o perfil muda). Mede a troca entre risco e retorno sem o ruído da vida.
+ */
+const LAB = Math.max(200, JOGADORES * 6);
+const laboratorio = PERFIS_TUNEL.map((perfil) => {
+  const pesos = c.mundo.perfis.find((p) => p.id === perfil)!.carteira;
+  const finais: number[] = [];
+  for (let i = 0; i < LAB; i++) {
+    const e = nascer(c, { semente: misturar(SEMENTE, 606, i), ano: ANO });
+    let total = 100000;
+    for (let ano = 0; ano < 30; ano++) {
+      e.idade++;
+      e.ano++;
+      const fase = cicloDoAno(e, c);
+      const r = mercadoDoAno(e, c, fase.id, []);
+      total = ATIVOS.reduce((soma, a) => soma + total * (pesos[a] ?? 0) * (1 + (r[a] ?? 0)), 0);
+    }
+    finais.push(total);
+  }
+  const ord = ordenar(finais);
+  return { perfil, p10: percentil(ord, 10), p50: percentil(ord, 50), p90: percentil(ord, 90) };
+});
+const [labConservador, labModerado, labArrojado] = laboratorio as [(typeof laboratorio)[number], (typeof laboratorio)[number], (typeof laboratorio)[number]];
 const porOrigem = CLASSES.map((nome, classe) => {
   const vs = escolhidas.filter((x) => x.classe === classe).map((x) => x.vida);
   return { nome, n: vs.length, idade: media(vs.map((v) => v.idade)), patrimonio: percentil(ordenar(vs.map((v) => v.patrimonio)), 50), felicidade: media(vs.map((v) => v.felicidade)) };
 });
 const operacoesPorVida = media(vidas.map((v) => v.operacoes));
+/** Quem nasce sem fortuna (da extrema pobreza à classe média): até onde dá para chegar. */
+const semFortuna = (() => {
+  const ord = ordenar(vidas.filter((v) => v.classeOrigem <= 3).map((v) => v.patrimonio));
+  const n = Math.max(1, ord.length);
+  return {
+    n: ord.length,
+    p50: percentil(ord, 50),
+    p90: percentil(ord, 90),
+    p99: percentil(ord, 99),
+    max: ord.at(-1) ?? 0,
+    dez: ord.filter((x) => x >= 1e7).length / n,
+    cem: ord.filter((x) => x >= 1e8).length / n,
+    bilhao: ord.filter((x) => x >= 1e9).length / n,
+  };
+})();
+const fundaram = vidas.filter((v) => v.fundou).length / vidas.length;
+const quebraFundadores = vidas.filter((v) => v.fundou && v.quebrou).length / Math.max(1, vidas.filter((v) => v.fundou).length);
+const vendaFundadores = vidas.filter((v) => v.fundou && v.vendeu).length / Math.max(1, vidas.filter((v) => v.fundou).length);
+const anosVazios = media(vidas.map((v) => v.anosVazios));
+const TETO_TOQUES = 200;
 
 // ---------------------------------------------------------------- portões
 
@@ -555,32 +621,37 @@ const BASE2 = { pontosMundo: 0.029, pobreParaRico: 0.03, ricoParaPobre: 0.03, v2
 const portoes2 = [
   ['O mundo nos pontos de virada ≥ 2× (o mundo reage)', pontosMundo >= 2 * BASE2.pontosMundo, `${pct(pontosMundo)} (base ${pct(BASE2.pontosMundo)}, alvo ${pct(2 * BASE2.pontosMundo)})`],
   ['Do quintil mais pobre ao mais rico ≥ 1,5×', mob.baixoParaAlto >= 1.5 * BASE2.pobreParaRico, `${pct(mob.baixoParaAlto)} (base ${pct(BASE2.pobreParaRico)}, alvo ${pct(1.5 * BASE2.pobreParaRico)})`],
-  ['Do quintil mais rico ao mais pobre ≥ 1,5×', mob.altoParaBaixo >= 1.5 * BASE2.ricoParaPobre, `${pct(mob.altoParaBaixo)} (base ${pct(BASE2.ricoParaPobre)}, alvo ${pct(1.5 * BASE2.ricoParaPobre)})`],
+  // No incremento 3 o alvo voltou para a linha de base: a herança passa inteira e o dinheiro investido dura, como o dono pediu (docs/decisoes.md).
+  ['Do quintil mais rico ao mais pobre ≥ a linha de base (era 1,5× até o incremento 2)', mob.altoParaBaixo >= BASE2.ricoParaPobre, `${pct(mob.altoParaBaixo)} (base ${pct(BASE2.ricoParaPobre)})`],
   ['Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7)', mob.spearman >= 0.3 && mob.spearman <= 0.7, num(mob.spearman, 2)],
   ['Saturação V20 ≤ 95%', satV(sat, 20) <= 0.95, `${pct(satV(sat, 20))} (base ${pct(BASE2.v20)})`],
   ['Assinaturas sem regressão', assinaturas >= BASE2.assinaturas, `${num(assinaturas, 0)} (base ${BASE2.assinaturas})`],
   ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms (base ${num(BASE2.ms, 1)} ms)`],
 ] as const;
-/** Incremento 3 (pedido do dono em 07/10/2026): dinastia, investir com escolha e origens extremas. */
+/** Incremento 3 (pedidos do dono em 07/10/2026): dinastia, investir e empreender com escolha, origens extremas, sem teto de milhões e anos mais cheios. */
 const portoes3 = [
   ['Herdeiro possível em ≥ 40% das vidas (a dinastia é comum, não rara)', comHerdeiro >= 0.4, pct(comHerdeiro)],
   ['Dinastias que chegam à 3ª geração ≥ 25%', chegamTerceira >= 0.25, `${pct(chegamTerceira)} (${tamanhos.length} dinastias, média de ${num(media(tamanhos), 1)} gerações)`],
   ['A herança importa sem decidir tudo (Spearman entre gerações entre 0,3 e 0,8)', entreGeracoes >= 0.3 && entreGeracoes <= 0.8, `${num(entreGeracoes, 2)} (${paresGeracao.length} heranças)`],
   [
-    'O perfil importa: o arrojado ganha mais no topo e varia mais que o conservador',
-    arrojado.p90 > conservador.p90 && arrojado.p90 / Math.max(1, arrojado.p50) > conservador.p90 / Math.max(1, conservador.p50),
-    `p90 ${formatarDinheiro(arrojado.p90)} × ${formatarDinheiro(conservador.p90)}; p90/p50 ${num(arrojado.p90 / Math.max(1, arrojado.p50), 1)} × ${num(conservador.p90 / Math.max(1, conservador.p50), 1)}`,
+    'O perfil importa: em 30 anos, o arrojado rende mais na mediana e perde mais no pior caso (laboratório de R$ 100 mil)',
+    labArrojado.p50 > labModerado.p50 && labModerado.p50 > labConservador.p50 && labArrojado.p10 < labConservador.p10,
+    `mediana ${formatarDinheiro(labConservador.p50)} / ${formatarDinheiro(labModerado.p50)} / ${formatarDinheiro(labArrojado.p50)}; p10 ${formatarDinheiro(labConservador.p10)} / ${formatarDinheiro(labModerado.p10)} / ${formatarDinheiro(labArrojado.p10)}`,
   ],
+  ['Sem teto de milhões: ≥ 0,5% de quem nasce sem fortuna passa de R$ 100 milhões', semFortuna.cem >= 0.005, `${pct(semFortuna.cem, 2)} (p99 ${formatarDinheiro(semFortuna.p99)}, maior ${formatarDinheiro(semFortuna.max)})`],
+  ['Bilionário feito existe e é raro: entre 0,02% e 1% de quem nasce sem fortuna', semFortuna.bilhao >= 0.0002 && semFortuna.bilhao <= 0.01, pct(semFortuna.bilhao, 2)],
+  ['Empresa tem risco de verdade: quebram entre 15% e 55% de quem abre', quebraFundadores >= 0.15 && quebraFundadores <= 0.55, `${pct(quebraFundadores)} de ${pct(fundaram)} das vidas que abriram empresa`],
+  ['Anos adultos sem acontecimento ≤ 20% (era 30%)', anosVazios <= 0.2, pct(anosVazios)],
   ['Saturação V20 sem regressão (≤ 95%)', satV(sat, 20) <= 0.95, pct(satV(sat, 20))],
   ['Assinaturas sem regressão (≥ 918)', assinaturas >= 918, num(assinaturas, 0)],
-  ['Toques por vida ≤ 155', toques <= 155, num(toques, 1)],
+  ['Toques por vida ≤ 200 (duas fichas dos 18 aos 40)', toques <= TETO_TOQUES, num(toques, 1)],
   ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms`],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
   ['Desvio da felicidade ≥ 1,3× a linha de base', desvioFelicidade >= 1.3 * BASE.desvioFelicidade, `${num(desvioFelicidade, 2)} (base ${num(BASE.desvioFelicidade, 2)}, alvo ${num(1.3 * BASE.desvioFelicidade, 2)})`],
-  ['Toques por vida ≤ 1,4× hoje', toques <= 1.4 * BASE.toques, `${num(toques)} (base ${num(BASE.toques)}, teto ${num(1.4 * BASE.toques)})`],
+  ['Toques por vida ≤ 200 (o teto era 1,4× a base; subiu no incremento 3 com a segunda ficha)', toques <= TETO_TOQUES, `${num(toques)} (base ${num(BASE.toques)}, teto ${TETO_TOQUES})`],
 ] as const;
 
 const metas = [
@@ -662,6 +733,28 @@ l(`| Vidas que terminam com filho ou filha para continuar | ${pct(comHerdeiro)} 
 l(`| Dinastias: gerações em média / chegam à 3ª / chegam à 5ª | ${num(media(tamanhos), 1)} / ${pct(chegamTerceira)} / ${pct(tamanhos.filter((t) => t >= 5).length / Math.max(1, tamanhos.length))} |`);
 l(`| Idade de quem herda ao começar (mediana) / herança mediana | ${num(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.inicio)), 50), 0)} anos / ${formatarDinheiro(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.herdou)), 50))} |`);
 l(`| Mobilidade entre gerações (Spearman, patrimônio de quem morreu × do herdeiro) | ${num(entreGeracoes, 2)} |`);
+l();
+l('### Empresa e riqueza');
+l();
+l('| Métrica | Valor |');
+l('|---|---|');
+l(`| Vidas que abriram empresa (pela folha ou por um storylet) | ${pct(fundaram)} |`);
+l(`| Entre quem abriu: quebrou / vendeu | ${pct(quebraFundadores)} / ${pct(vendaFundadores)} |`);
+l(`| Quem nasce sem fortuna (classes 0 a 3, ${semFortuna.n} vidas): mediana / p90 / p99 / maior | ${formatarDinheiro(semFortuna.p50)} / ${formatarDinheiro(semFortuna.p90)} / ${formatarDinheiro(semFortuna.p99)} / ${formatarDinheiro(semFortuna.max)} |`);
+l(`| Quem nasce sem fortuna e passa de R$ 10 milhões / R$ 100 milhões / R$ 1 bilhão | ${pct(semFortuna.dez, 2)} / ${pct(semFortuna.cem, 2)} / ${pct(semFortuna.bilhao, 2)} |`);
+l();
+l('### Anos com vida');
+l();
+l('| Métrica | Valor |');
+l('|---|---|');
+l(`| Anos adultos (18+) sem nenhum acontecimento, só a linha curta | ${pct(anosVazios)} |`);
+l(`| Storylets apresentados por vida / ações (fichas usadas) por vida | ${num(media(vidas.map((v) => v.instancias.length)), 1)} / ${num(media(vidas.map((v) => v.acoes.length)), 1)} |`);
+l();
+l(`Laboratório de perfis: R$ 100 mil por 30 anos, rebalanceados todo ano, nos mesmos ${LAB} sorteios do país para os três perfis:`);
+l();
+l('| Perfil | p10 | Mediana | p90 |');
+l('|---|---|---|---|');
+for (const p of laboratorio) l(`| ${p.perfil} | ${formatarDinheiro(p.p10)} | ${formatarDinheiro(p.p50)} | ${formatarDinheiro(p.p90)} |`);
 l();
 l('Patrimônio ao morrer por perfil de investidor (estratégia aleatória, perfil sorteado aos 18):');
 l();
@@ -818,7 +911,7 @@ l('- **Saturação Vk:** das instâncias de storylet distintas apresentadas na k
 l('- **Assinatura da vida:** origem (classe e tipo de família), classe final (6 faixas de patrimônio), carreira, estado civil, marca principal (a que mais causou eventos depois) e categoria da causa da morte. Contamos as distintas em blocos intercalados de 1.000 vidas; entre parênteses, a mesma conta sem a origem.');
 l('- **Mobilidade:** quintis da riqueza da família ao nascer × quintis do patrimônio ao morrer. Nem determinista (tudo na diagonal) nem aleatória (correlação perto de zero).');
 l('- **Mudança de estado:** atributo de quem joga que andou 0,5 ponto ou mais, patrimônio R$ 500 ou mais, renda R$ 600 por ano ou mais, qualidade ganha ou perdida, contada por entrada do livro-razão. É do jogador quando a entrada é uma escolha ou uma ação dele.');
-l('- **Toques:** nascer + um por ano (no verbo da ficha ou no +1 ano) + um por escolha.');
+l('- **Toques:** nascer + um por verbo da ficha (dos 18 aos 40, até dois por ano) ou pelo +1 ano + um por escolha + três por operação na folha Dinheiro (abrir, escolher, confirmar).');
 l();
 
 const relatorio = linhas.join('\n');

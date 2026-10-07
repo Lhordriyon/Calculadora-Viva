@@ -1,6 +1,6 @@
 # Conteúdo: formato e guia de escrita
 
-Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
+Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida, `90-investimentos` e `91-fortuna` para a carteira, as fortunas e a dinastia, `92-empresa` para a empresa de quem joga, `93-vida-adulta` e `94-gente` para o que enche os anos entre os 20 e os 70). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
 
 ## Storylet
 
@@ -81,7 +81,11 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
 {
   "saude": { "min": 40 }, "felicidade": { "max": 30 },       // campos numéricos: faixa
   "dinheiro": { "min": 5000 }, "patrimonio": { "min": 25000 }, // patrimônio = conta + investido − dívida
-  "classe": { "max": 1 }, "classe_origem": { "min": 4 },       // classe atual (pelo patrimônio) e de origem, 0 a 5
+  "classe": { "max": 1 }, "classe_origem": { "min": 4 },       // classe atual (pelo patrimônio, com a empresa) e de origem, 0 a 7 (6 bilionária, 7 trilionária)
+  "padrao": "luxo", "perfil": ["arrojado", "moderado"],        // padrão de vida e perfil de investidor que o jogador escolheu
+  "empresa.valor": true, "empresa.tracao": { "min": 12 },      // a empresa de quem joga (qualquer condição sobre ela, menos false, exige que ela exista)
+  "empresa.setor": "tecnologia", "marcas": ["empresa.na_bolsa"], "empresa.valor": false, // sem empresa
+  "pais.ret_acoes": { "max": -20 },                            // quanto cada classe de investimento rendeu no ano, em %
   "familia": "religiosa", "traco": ["ansioso", "timido"],      // texto: igual a um, ou a um dentre vários
   "mae.vivo": true, "ator.traco": "gastador", "ator.idade": { "min": 13, "max": 17 },
   "lugar.regiao": "nordeste", "lugar.capital": true, "lugar.desemprego": { "min": 0.095 },
@@ -95,6 +99,8 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
 ```
 
 Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condições; os outros exigem o ator vivo.
+
+O validador confere os campos de texto de vocabulário fechado: `lugar.regiao` (norte, nordeste, centro_oeste, sudeste, sul), `setor` (os 12 de `mundo.json`), `padrao`, `perfil`, `familia` e `traco` (de quem joga ou de personagem).
 
 A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, `pais.crise`; no normal, nenhuma). Storylet que a consulta tem a entrada que anunciou a fase como causa: o cartão da vida pode contar "o país entrou em crise → você perdeu o emprego".
 
@@ -120,11 +126,20 @@ A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, 
 | `agendar` | `[{ "evento": "nome_sujo", "em": [2, 3] }]` | daqui a N anos; o agendado herda o ator |
 | `matar` | `"ator"` | um personagem morre (luto, herança, viuvez) |
 | `morte` | `"num acidente de moto"` | quem joga morre; completa "morreu aos N anos, …" |
+| `realocar` | `{ "de": "acoes", "para": "renda_fixa", "fracao": 1 }` | move dinheiro entre a conta e as classes investidas |
+| `abrirEmpresa` | `{ "setor": "comercio", "valor": 30000 }` | abre a empresa de quem joga (uma por vez): `setor` ou `copiarSetor` (`"ator.setor"`); `valor` (o trabalho criou, ninguém paga), `capital` (quem joga põe) ou `fracao` do dinheiro de `de` (o negócio da família: `"de": "ator"`); `participacao` e `tracao` opcionais; `{capital}` no texto |
+| `empresaFator` | `0.7` | multiplica o valor da empresa (o contrato grande, a crise do setor) |
+| `rodada` | `{ "parte": 0.2 }` | investidores compram 20% pelo valor de agora: o dinheiro entra na empresa e a parte de quem joga encolhe; `{rodada}` no texto |
+| `venderEmpresa` | `{ "fracao": 1, "premio": 1.5 }` | vende a fração da parte de quem joga pelo valor × prêmio; vendeu tudo, a empresa sai da vida; `{venda}` no texto |
+| `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
+| caminho na empresa | `"empresa.tracao": 2`, `"empresa.valor": -30000`, `"empresa.retirada": { "definir": 0 }` | sem empresa, não faz nada |
+
+A qualidade `empresa.sustenta` (gravada junto com `abrirEmpresa`) diz que a renda de quem joga vem dela: quando ela é vendida ou fecha, a renda vai a zero e as qualidades de dono (`empreendedor`, `socio`, `herdeiro_negocio`) somem.
 
 ## Texto
 
 - Globais: `{nome}`, `{sobrenome}`, `{nomeCompleto}`, `{cidade}`, `{uf}`, `{idade}`, `{ano}`, `{dinheiro}`, `{patrimonio}`, `{salario}`, `{divida}`.
-- Personagens pelo papel (`{mae}`, `{avo}`, `{amor}`, `{pet}`) e pelo ator (`{ator}`). Caminhos: `{mae.ocupacao}`, `{lugar.nome}`, `{ator.quem}` ("sua mãe", "seu avô", "sua amiga Ana"). Campos em reais saem formatados (R$ 4,5 mil).
+- Personagens pelo papel (`{mae}`, `{avo}`, `{amor}`, `{pet}`) e pelo ator (`{ator}`); a empresa pelo nome (`{empresa}`, `{empresa.valor}`, `{empresa.funcionarios}`), só em texto cujo storylet exige a empresa ou que a abre. Caminhos: `{mae.ocupacao}`, `{lugar.nome}`, `{ator.quem}` ("sua mãe", "seu avô", "sua amiga Ana"). Campos em reais saem formatados (R$ 4,5 mil).
 - `{o|a}` concorda com quem joga; `{ator:o|a}` e `{amigo:o amigo|a amiga}` concordam com um personagem.
 - `[uma|outra|mais uma]` sorteia uma alternativa (pode conter variáveis): variedade barata entre vidas.
 - **Trechos** escolhem um pedaço de texto pelo estado: o primeiro cuja condição vale; o último não tem condição (é o padrão).
