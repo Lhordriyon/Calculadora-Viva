@@ -89,6 +89,32 @@ export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefine
   return chips;
 }
 
+/** O balanço de um ano (a entrada invisível das regras): salário guardado, rendimentos, inflação, empresa. */
+export function balancoDoAno(regra: Entrada, participacao: number): number {
+  let total = 0;
+  for (const m of regra.mudancas ?? []) {
+    if (m.d === undefined) continue;
+    if (m.c === 'eu.dinheiro' || ATIVOS.some((a) => m.c === `eu.${a}`)) total += m.d;
+    else if (m.c === 'eu.divida') total -= m.d;
+    else if (m.c === 'empresa.valor') total += m.d * participacao;
+  }
+  return total;
+}
+
+/** O chip do balanço do ano, na primeira entrada visível do ano (só para adultos, só quando mexe). */
+export function chipDoBalanco(regra: Entrada | undefined, participacao: number): Chip | null {
+  if (!regra || regra.idade < 18) return null;
+  const v = balancoDoAno(regra, participacao);
+  if (Math.abs(v) < 1000) return null;
+  return { texto: `no ano, ${sinal(v)}${dinheiro(v)} de patrimônio`, cor: 'var(--dinheiro)', ruim: v < 0 };
+}
+
+/** "seu filho", "sua sobrinha": quem continua a história, do ponto de vista de quem morreu. */
+export function parentesco(h: { genero: 'f' | 'm'; parentesco: 'filho' | 'sobrinho' }): string {
+  if (h.parentesco === 'sobrinho') return h.genero === 'f' ? 'sua sobrinha' : 'seu sobrinho';
+  return h.genero === 'f' ? 'sua filha' : 'seu filho';
+}
+
 export function anos(n: number): string {
   return n === 1 ? '1 ano' : `${n} anos`;
 }

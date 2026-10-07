@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { ResumoVida } from '../motor/virada.ts';
 import { baixar, compartilhar, desenharCartao, nomeDoArquivo, podeCompartilharArquivo } from './cartaoImagem.ts';
-import { anos } from './formato.ts';
+import { anos, parentesco } from './formato.ts';
 
 interface Props {
   resumo: ResumoVida;
@@ -110,7 +110,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
           )}
           {resumo.herdeiro && (
             <button class="botao" type="button" onClick={aoContinuar}>
-              Continuar como {resumo.herdeiro.nome} ({anos(resumo.herdeiro.idade)})
+              Continuar como {resumo.herdeiro.nome}, {parentesco(resumo.herdeiro)} ({anos(resumo.herdeiro.idade)})
             </button>
           )}
           <button class="botao secundario" type="button" onClick={aoNovaVida}>

@@ -293,7 +293,7 @@ function Investimentos({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 const DESCRICAO_PADRAO = (p: Padrao): string => {
   const guarda = Math.round((1 - GASTO_DA_SOBRA[p]) * 100);
   const humor = FELICIDADE_DO_PADRAO[p];
-  const fortuna = GASTO_DO_PATRIMONIO[p] > 0 ? ` Quem tem mais de ${formatarDinheiro(PATRIMONIO_SEM_GASTO)} gasta também ${Math.round(GASTO_DO_PATRIMONIO[p] * 100)}% do que passa disso por ano.` : '';
+  const fortuna = GASTO_DO_PATRIMONIO[p] > 0 ? ` Quem tem mais de ${formatarDinheiro(PATRIMONIO_SEM_GASTO)} gasta também ${String(Math.round(GASTO_DO_PATRIMONIO[p] * 1000) / 10).replace('.', ',')}% do que passa disso por ano.` : '';
   return `Guarda ${guarda}% do que sobra no fim do ano${humor < 0 ? '; a felicidade sente' : humor > 0 ? ' e aproveita o resto: a felicidade agradece' : ''}.${fortuna}`;
 };
 

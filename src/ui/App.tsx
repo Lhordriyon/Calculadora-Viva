@@ -6,6 +6,7 @@ import { operar, type Operacao } from '../motor/carteira.ts';
 import { lembrarVida } from '../motor/memoria.ts';
 import type { EscolhaOrigem } from '../motor/origem.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
+import { jaAgiu } from '../motor/acoes.ts';
 import { acoesDisponiveis, agir, avancarAno, escolher, nascer } from '../motor/vida.ts';
 import { continuarComoHerdeiro } from '../motor/herdeiro.ts';
 import { resumirVida } from '../motor/virada.ts';
@@ -103,12 +104,12 @@ export function App() {
     concluir(nova);
   }
 
-  /** Um toque: gasta a ficha do ano no verbo e o ano passa. */
+  /** Um toque: gasta uma ficha do ano no verbo; quando as fichas acabam, o ano passa. */
   function agirNoAno(verbo: Verbo) {
     if (!vida?.vivo || vida.pendente) return;
     const nova = structuredClone(vida);
     agir(nova, conteudo, verbo);
-    if (nova.vivo && !nova.pendente) avancarAno(nova, conteudo, save.memoria);
+    if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
     concluir(nova);
   }
 

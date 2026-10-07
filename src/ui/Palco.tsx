@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'preact/hooks';
-import { NOMES_VERBO, type AcaoDisponivel } from '../motor/acoes.ts';
+import { fichasUsadas, NOMES_VERBO, type AcaoDisponivel } from '../motor/acoes.ts';
 import type { Verbo } from '../motor/constantes.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
-import { anos } from './formato.ts';
+import { anos, parentesco } from './formato.ts';
 
 /** Tempo em que as opções ignoram toques logo depois de aparecer (evita escolher sem querer num toque duplo). */
 const CARENCIA_MS = 450;
@@ -15,8 +15,8 @@ interface Props {
   aoEscolher: (indice: number) => void;
   aoVerCartao: () => void;
   aoNovaVida: () => void;
-  /** Quem pode continuar a história depois da morte (filho ou filha viva). */
-  herdeiro: { nome: string; idade: number } | null;
+  /** Quem pode continuar a história depois da morte (filho ou filha viva; sem filho, sobrinho ou sobrinha). */
+  herdeiro: { nome: string; idade: number; genero: 'f' | 'm'; parentesco: 'filho' | 'sobrinho' } | null;
   aoContinuar: () => void;
 }
 
@@ -66,7 +66,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
         {acoes.length > 0 && (
           <section class="ficha" aria-labelledby="titulo-ficha">
             <p class="quando" id="titulo-ficha">
-              Aos {vida.idade}, o que você faz com este ano?
+              {fichasUsadas(vida) > 0 ? 'Ainda dá tempo de mais uma coisa este ano.' : `Aos ${vida.idade}, o que você faz com este ano?`}
             </p>
             <div class="verbos">
               {acoes.map((a) => (
@@ -93,7 +93,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
       <div class="acoes">
         {herdeiro && (
           <button class="botao" type="button" onClick={aoContinuar}>
-            Continuar como {herdeiro.nome} <small>{anos(herdeiro.idade)}</small>
+            Continuar como {herdeiro.nome}, {parentesco(herdeiro)} <small>{anos(herdeiro.idade)}</small>
           </button>
         )}
         <button class={`botao${herdeiro ? ' secundario' : ''}`} type="button" onClick={aoVerCartao}>
