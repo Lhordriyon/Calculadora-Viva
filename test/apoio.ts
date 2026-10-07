@@ -2,7 +2,7 @@
 import { lerFontes } from '../scripts/disco.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import { montarConteudo } from '../src/motor/leitura.ts';
-import { operar } from '../src/motor/carteira.ts';
+import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { decidir, decidirAcao, decidirDinheiro, type Estrategia } from '../src/motor/robos.ts';
 import { criarRng, type Rng } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
@@ -24,9 +24,9 @@ export function passo(e: EstadoVida, c: Conteudo, robo: Rng, estrategia: Estrate
     escolher(e, c, decidir(estrategia, e, c, robo));
     return;
   }
-  for (const op of decidirDinheiro(estrategia, e, c, robo)) operar(e, c, op);
-  // Dos 18 aos 40, duas fichas: o robô pode agir de novo antes de o ano passar.
-  for (let verbo = decidirAcao(estrategia, e, c, robo); verbo && e.vivo && !e.pendente; verbo = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, verbo);
+  for (const op of decidirDinheiro(estrategia, e, c, robo)) if (motivoParaNaoOperar(e, c, op) === null) operar(e, c, op);
+  // Até três fichas por ano: o robô age de novo enquanto houver ficha e ele quiser.
+  for (let a = decidirAcao(estrategia, e, c, robo); a && e.vivo && !e.pendente; a = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, a.verbo, a.escolha);
   if (e.vivo && !e.pendente) avancarAno(e, c);
 }
 

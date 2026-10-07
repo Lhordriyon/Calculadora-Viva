@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { acoesPossiveis, jaAgiu } from '../src/motor/acoes.ts';
+import { acoesDoVerbo, acoesPossiveis, jaAgiu } from '../src/motor/acoes.ts';
 import { fichasDoAno } from '../src/motor/regras.ts';
-import { ATIVOS, ATRIBUTOS } from '../src/motor/constantes.ts';
+import { ATIVOS, ATRIBUTOS, VERBOS } from '../src/motor/constantes.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
@@ -125,7 +125,7 @@ describe('livro-razão', () => {
 });
 
 describe('ficha do ano', () => {
-  it('não há verbos para bebês; uma ação por ano; a ação vira entrada do jogador', () => {
+  it('não há verbos para bebês; adolescente tem duas ações; a mesma ação não se repete no ano; a ação vira entrada do jogador', () => {
     const e = nascer(real, { semente: 12, ano: 2026 });
     expect(acoesPossiveis(e, real)).toEqual([]);
     const robo = criarRng(1);
@@ -133,31 +133,35 @@ describe('ficha do ano', () => {
     while (e.pendente) escolher(e, real, 0);
     const possiveis = acoesPossiveis(e, real);
     expect(possiveis.length).toBeGreaterThanOrEqual(3);
-    const entrada = agir(e, real, possiveis[0]!.verbo);
-    expect(entrada).toMatchObject({ tipo: 'acao', causa: 'acao', idade: 16 });
+    const primeira = possiveis[0]!;
+    const entrada = agir(e, real, primeira.verbo);
+    expect(entrada).toMatchObject({ tipo: 'acao', causa: 'acao', idade: 16, ref: primeira.s.id });
+    expect(jaAgiu(e)).toBe(false);
+    // A mesma ação não volta no mesmo ano.
+    expect(acoesDoVerbo(e, real, primeira.verbo).some((a) => a.s.id === primeira.s.id && a.ator === primeira.ator)).toBe(false);
+    expect(() => agir(e, real, primeira.verbo, { id: primeira.s.id, ator: primeira.ator })).toThrow();
+    agir(e, real, acoesPossiveis(e, real)[0]!.verbo);
+    expect(jaAgiu(e)).toBe(true);
     expect(acoesPossiveis(e, real)).toEqual([]);
-    expect(() => agir(e, real, possiveis[0]!.verbo)).toThrow();
     avancarAno(e, real);
     if (!e.pendente) expect(acoesPossiveis(e, real).length).toBeGreaterThan(0);
   });
 
-  it('dos 18 aos 40, duas fichas por ano, cada uma num verbo diferente', () => {
+  it('adulto tem três fichas e escolhe a ação dentro do verbo', () => {
     const e = nascer(real, { semente: 33, ano: 2026 });
     const robo = criarRng(5);
     while (e.vivo && e.idade < 25) passo(e, real, robo, 'cautelosa');
     while (e.pendente) escolher(e, real, 0);
-    const antes = acoesPossiveis(e, real);
-    expect(antes.length).toBeGreaterThanOrEqual(2);
-    agir(e, real, antes[0]!.verbo);
+    const verbo = VERBOS.find((v) => acoesDoVerbo(e, real, v).length >= 2)!;
+    expect(verbo).toBeDefined();
+    const segunda = acoesDoVerbo(e, real, verbo)[1]!;
+    const entrada = agir(e, real, verbo, { id: segunda.s.id, ator: segunda.ator });
+    expect(entrada.ref).toBe(segunda.s.id);
+    agir(e, real, acoesPossiveis(e, real)[0]!.verbo);
     expect(jaAgiu(e)).toBe(false);
-    const depois = acoesPossiveis(e, real);
-    expect(depois.map((a) => a.verbo)).not.toContain(antes[0]!.verbo);
-    expect(() => agir(e, real, antes[0]!.verbo)).toThrow();
-    agir(e, real, depois[0]!.verbo);
+    agir(e, real, acoesPossiveis(e, real)[0]!.verbo);
     expect(jaAgiu(e)).toBe(true);
-    expect(acoesPossiveis(e, real)).toEqual([]);
-    expect(fichasDoAno(17)).toBe(1);
-    expect(fichasDoAno(41)).toBe(1);
+    expect([fichasDoAno(10), fichasDoAno(16), fichasDoAno(40), fichasDoAno(70)]).toEqual([1, 2, 3, 2]);
   });
 
   it('o botão mostra o que vai acontecer: o verbo escolhe sempre a mesma ação para o mesmo estado', () => {

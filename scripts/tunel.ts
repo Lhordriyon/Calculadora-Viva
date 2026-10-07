@@ -15,7 +15,7 @@ import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { cicloDoAno, faseDe } from '../src/motor/ciclo.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
-import { mercadoDoAno, operar, perfilDe } from '../src/motor/carteira.ts';
+import { mercadoDoAno, motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import type { EscolhaOrigem } from '../src/motor/origem.ts';
 import { jaAgiu } from '../src/motor/acoes.ts';
@@ -63,27 +63,26 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
-    } else {
-      // Mexer no dinheiro: abrir a folha, escolher e confirmar (três toques por operação).
-      for (const op of decidirDinheiro(estrategia, e, c, robo)) {
-        operar(e, c, op);
-        operacoes++;
-        toques += 3;
-      }
-      // Um toque por verbo da ficha; o último (ou o +1 ano) passa o ano. Dos 18 aos 40 são duas fichas.
-      let verbo = decidirAcao(estrategia, e, c, robo);
-      if (verbo) agir(e, c, verbo);
-      if (verbo && e.vivo && !e.pendente && !jaAgiu(e)) {
-        toques++;
-        verbo = decidirAcao(estrategia, e, c, robo);
-        if (verbo) agir(e, c, verbo);
-      }
-      if (e.vivo) {
-        avancarAno(e, c, memoria);
-        anosPorFase[faseDe(e)]++;
-      }
+      toques++;
+      continue;
     }
-    toques++;
+    // Mexer no dinheiro, comprar, tentar vaga, se candidatar: abrir a folha, escolher e confirmar (três toques por operação).
+    for (const op of decidirDinheiro(estrategia, e, c, robo)) {
+      if (motivoParaNaoOperar(e, c, op) !== null) continue;
+      operar(e, c, op);
+      operacoes++;
+      toques += 3;
+    }
+    // Cada ação são dois toques (o verbo e a ação na lista); se sobra ficha, o +1 ano é mais um.
+    for (let a = decidirAcao(estrategia, e, c, robo); a && e.vivo && !e.pendente; a = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) {
+      agir(e, c, a.verbo, a.escolha);
+      toques += 2;
+    }
+    if (e.vivo && !e.pendente) {
+      if (!jaAgiu(e)) toques++;
+      avancarAno(e, c, memoria);
+      anosPorFase[faseDe(e)]++;
+    }
   }
   return { toques, anosPorFase, operacoes };
 }
@@ -386,6 +385,18 @@ CLASSES.forEach((_, classe) => {
   });
 });
 
+// Quem escolhe uma linhagem (coroa, regime, gente famosa...): cada linhagem com cada estratégia.
+// Também só contam para storylet morto (e para a tabela de origens, com a classe da linhagem).
+const VIDAS_POR_LINHAGEM = Math.max(3, Math.round(JOGADORES / 12));
+c.mundo.linhagens.forEach((l) => {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_LINHAGEM; k++) {
+      const j = jogar(c, estrategia, misturar(SEMENTE, 505, l.classe, s, k, l.id.length), undefined, { linhagem: l.id });
+      escolhidas.push({ classe: l.classe, vida: medir(c, j, estrategia) });
+    }
+  });
+});
+
 // Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
 interface Geracao {
   estrategia: Estrategia;
@@ -610,7 +621,7 @@ const fundaram = vidas.filter((v) => v.fundou).length / vidas.length;
 const quebraFundadores = vidas.filter((v) => v.fundou && v.quebrou).length / Math.max(1, vidas.filter((v) => v.fundou).length);
 const vendaFundadores = vidas.filter((v) => v.fundou && v.vendeu).length / Math.max(1, vidas.filter((v) => v.fundou).length);
 const anosVazios = media(vidas.map((v) => v.anosVazios));
-const TETO_TOQUES = 200;
+const TETO_TOQUES = 480;
 
 // ---------------------------------------------------------------- portões
 
@@ -644,14 +655,14 @@ const portoes3 = [
   ['Anos adultos sem acontecimento ≤ 20% (era 30%)', anosVazios <= 0.2, pct(anosVazios)],
   ['Saturação V20 sem regressão (≤ 95%)', satV(sat, 20) <= 0.95, pct(satV(sat, 20))],
   ['Assinaturas sem regressão (≥ 918)', assinaturas >= 918, num(assinaturas, 0)],
-  ['Toques por vida ≤ 200 (duas fichas dos 18 aos 40)', toques <= TETO_TOQUES, num(toques, 1)],
+  ['Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques)', toques <= TETO_TOQUES, num(toques, 1)],
   ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms`],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
   ['Desvio da felicidade ≥ 1,3× a linha de base', desvioFelicidade >= 1.3 * BASE.desvioFelicidade, `${num(desvioFelicidade, 2)} (base ${num(BASE.desvioFelicidade, 2)}, alvo ${num(1.3 * BASE.desvioFelicidade, 2)})`],
-  ['Toques por vida ≤ 200 (o teto era 1,4× a base; subiu no incremento 3 com a segunda ficha)', toques <= TETO_TOQUES, `${num(toques)} (base ${num(BASE.toques)}, teto ${TETO_TOQUES})`],
+  ['Toques por vida ≤ 480 (subiu no incremento 4: três ações escolhidas por ano)', toques <= TETO_TOQUES, `${num(toques)} (base ${num(BASE.toques)}, teto ${TETO_TOQUES})`],
 ] as const;
 
 const metas = [

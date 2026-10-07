@@ -2,7 +2,8 @@
 import { carregarConteudo } from './disco.ts';
 import { jaAgiu } from '../src/motor/acoes.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
-import { decidir, decidirAcao, ESTRATEGIAS, type Estrategia } from '../src/motor/robos.ts';
+import { decidir, decidirAcao, decidirDinheiro, ESTRATEGIAS, type Estrategia } from '../src/motor/robos.ts';
+import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { resumirVida } from '../src/motor/virada.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
@@ -19,8 +20,9 @@ while (e.vivo) {
     escolher(e, c, decidir(estrategia, e, c, robo));
     continue;
   }
-  for (let verbo = decidirAcao(estrategia, e, c, robo); verbo && e.vivo; verbo = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, verbo);
-  if (e.vivo) avancarAno(e, c);
+  for (const op of decidirDinheiro(estrategia, e, c, robo)) if (motivoParaNaoOperar(e, c, op) === null) operar(e, c, op);
+  for (let a = decidirAcao(estrategia, e, c, robo); a && e.vivo && !e.pendente; a = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) agir(e, c, a.verbo, a.escolha);
+  if (e.vivo && !e.pendente) avancarAno(e, c);
 }
 const eu = e.entidades['eu']!;
 console.log(`Origem: classe ${eu.n['classe_origem']}, família ${eu.t['familia']}, traço ${eu.t['traco']}`);

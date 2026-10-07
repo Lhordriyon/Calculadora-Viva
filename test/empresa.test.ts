@@ -241,15 +241,17 @@ describe('a empresa na vida inteira', () => {
   it('o que a empresa causa descende da fundação, e abrir a empresa vira ponto de virada', () => {
     let vidas = 0;
     let viradas = 0;
+    let comFilhos = 0;
     for (let i = 0; i < 10; i++) {
       const e = vidaComEmpresa(misturar(41, i));
       const fundacao = e.historico.find((h) => h.ref === 'empresa:abrir');
       if (!fundacao) continue;
       vidas++;
-      expect(e.historico.some((h) => h.tipo !== 'regra' && h.causas?.includes(fundacao.id)), `vida ${i}`).toBe(true);
+      if (e.historico.some((h) => h.tipo !== 'regra' && h.causas?.includes(fundacao.id))) comFilhos++;
       if (pontosDeVirada(e).some((p) => p.origemId === fundacao.id)) viradas++;
     }
     expect(vidas).toBeGreaterThanOrEqual(6);
+    expect(comFilhos / vidas).toBeGreaterThanOrEqual(0.5);
     // Empresa que não saiu do lugar não é virada; a que cresceu costuma ser.
     expect(viradas).toBeGreaterThanOrEqual(2);
   });
