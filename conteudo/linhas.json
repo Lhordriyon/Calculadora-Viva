@@ -321,7 +321,7 @@
   {
     "idade": [22, 70],
     "texto": "Explicou criptomoeda num churrasco. Ninguém tinha perguntado.",
-    "condicoes": { "marcas": ["cripto"] }
+    "condicoes": { "marcas": ["apostou_em_cripto"] }
   },
   {
     "idade": [30, 100],
@@ -579,5 +579,30 @@
     "idade": [25, 70],
     "texto": "Passou na frente da obra do seu apartamento: [o quinto andar ganhou janelas|a placa da construtora trocou de cor|a grua estava parada, de novo|alguém pendurou uma faixa de \"vende-se\" na maquete].",
     "condicoes": { "marcas": ["apartamento_na_planta"] }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "[Abriu o aplicativo da corretora, viu tudo vermelho e fechou.|A bolsa caiu e você descobriu o seu verdadeiro perfil de investidor: o que dorme mal.]",
+    "condicoes": { "acoes": { "min": 1000 }, "pais.ret_acoes": { "max": -10 } }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "[O dólar subiu e você, que guardava um pouco, se sentiu um gênio da economia por uma semana.|O dólar disparou. O cofrinho em dólar, por uma vez, ficou mais animado que você.]",
+    "condicoes": { "dolar": { "min": 1000 }, "pais.ret_dolar": { "min": 10 } }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "Renda fixa de novo: nenhuma emoção, que é exatamente a emoção que você procurava.",
+    "condicoes": { "perfil": "conservador", "renda_fixa": { "min": 10000 } }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "[Explicou o que é cripto num churrasco. Ninguém entendeu, inclusive você.|Checou o preço da cripto antes de escovar os dentes.]",
+    "condicoes": { "cripto": { "min": 1000 } }
+  },
+  {
+    "idade": [20, 95],
+    "texto": "[Repetiu, sem perceber, uma frase que era de quem veio antes. A família toda riu.|Passou pela rua da casa antiga da família e diminuiu o passo.|No almoço de domingo, alguém contou uma história do avô que ninguém conhecia.]",
+    "condicoes": { "dinastia": { "min": 2 } }
   }
 ]

@@ -785,22 +785,22 @@
   {
     "id": "bolsa_derreteu",
     "idade": [22, 95],
-    "condicoes": { "marcas": ["pais.crise"], "investido": { "min": 20000 } },
+    "condicoes": { "acoes": { "min": 20000 }, "pais.ret_acoes": { "max": -15 } },
     "peso": 4,
-    "texto": "A bolsa caiu 30% num mês e o seu investimento foi junto. O aplicativo do banco agora abre com uma mensagem sobre \"visão de longo prazo\".",
-    "resumo": "viu os investimentos derreterem na crise",
+    "texto": "A bolsa fechou o ano em {pais.ret_acoes}% e as suas ações foram junto: agora valem {eu.acoes}. O aplicativo da corretora abre com uma mensagem sobre \"visão de longo prazo\".",
+    "resumo": "viu as ações derreterem na queda da bolsa",
     "escolhas": [
       {
         "texto": "Vender tudo antes que piore",
-        "resumo": "vendeu os investimentos no meio da crise",
+        "resumo": "vendeu as ações no meio da queda",
         "resultado": {
           "texto": "Você vendeu, dormiu melhor e assistiu de fora quando tudo voltou a subir dois anos depois.",
-          "efeitos": { "investir": -100000000, "felicidade": 1 }
+          "efeitos": { "realocar": { "de": "acoes", "para": "renda_fixa", "fracao": 1 }, "felicidade": 1 }
         }
       },
       {
         "texto": "Segurar e não olhar",
-        "resumo": "segurou os investimentos na crise",
+        "resumo": "segurou as ações na queda",
         "resultado": {
           "texto": "Você apagou o aplicativo do celular e foi cuidar da horta. Funcionou melhor que muito conselho de especialista.",
           "efeitos": { "felicidade": 0.5 }
@@ -808,12 +808,12 @@
       },
       {
         "texto": "Comprar mais na baixa",
-        "resumo": "comprou mais investimentos na baixa",
+        "resumo": "comprou mais ações na baixa",
         "condicoes": { "dinheiro": { "min": 20000 } },
         "bloqueio": "não há R$ 20 mil parados para investir",
         "resultado": {
           "texto": "Você comprou com o coração na mão e o dinheiro do fundo da gaveta. Se der certo, vai contar essa história por anos.",
-          "efeitos": { "investir": 20000, "felicidade": -1 }
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "acoes", "fracao": 0.5 }, "felicidade": -1 }
         }
       }
     ]
@@ -821,9 +821,9 @@
   {
     "id": "dolar_disparou",
     "idade": [20, 80],
-    "condicoes": { "marcas": ["pais.crise"], "patrimonio": { "min": 30000 } },
+    "condicoes": { "pais.ret_dolar": { "min": 12 }, "patrimonio": { "min": 30000 } },
     "peso": 2,
-    "texto": "O dólar disparou e a viagem dos sonhos, comprada em parcelas, ficou com cara de pesadelo cambial.",
+    "texto": "O dólar subiu {pais.ret_dolar}% no ano e a viagem dos sonhos, comprada em parcelas, ficou com cara de pesadelo cambial. {quem}",
     "resumo": "viu o dólar disparar antes da viagem dos sonhos",
     "escolhas": [
       {
@@ -849,8 +849,24 @@
           "texto": "O dinheiro foi para a poupança e a viagem, para a lista de \"um dia\".",
           "efeitos": { "felicidade": -1, "investir": 3000 }
         }
+      },
+      {
+        "texto": "Comprar dólar antes que suba mais",
+        "resumo": "comprou dólar com o dólar já nas alturas",
+        "condicoes": { "dinheiro": { "min": 5000 } },
+        "bloqueio": "não há dinheiro parado na conta",
+        "resultado": {
+          "texto": "Você comprou dólar no pico, por precaução. O dólar, como sempre, fez o que quis no ano seguinte.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "dolar", "fracao": 0.3 }, "felicidade": -0.5 }
+        }
       }
-    ]
+    ],
+    "trechos": {
+      "quem": [
+        { "se": { "dolar": { "min": 5000 } }, "texto": "Pelo menos o que você guardava em dólar subiu junto." },
+        { "texto": "Você, claro, não tem um centavo em dólar." }
+      ]
+    }
   },
   {
     "id": "bico_na_expansao",

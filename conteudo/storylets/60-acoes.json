@@ -647,7 +647,7 @@
     "verbo": "poupar",
     "rotulo": "comprar mais cripto",
     "idade": [18, 80],
-    "condicoes": { "marcas": ["cripto"], "dinheiro": { "min": 2000 } },
+    "condicoes": { "marcas": ["apostou_em_cripto"], "dinheiro": { "min": 2000 } },
     "texto": "Você comprou mais da moeda digital que o grupo do primo recomendou.",
     "resumo": "apostou em moeda digital",
     "efeitos": { "dinheiro": -2000, "felicidade": 0.25 },

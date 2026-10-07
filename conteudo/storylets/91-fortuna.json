@@ -1,0 +1,404 @@
+[
+  {
+    "id": "fundo_da_familia",
+    "tipo": "npc",
+    "ator": ["mae", "pai"],
+    "preferir": "+ator.dinheiro",
+    "idade": [18, 20],
+    "condicoes": { "classe_origem": { "min": 5 }, "ator.dinheiro": { "min": 2000000 } },
+    "tensao": 3,
+    "texto": "Aos 18, {ator.quem} chamou você para uma reunião com o advogado da família: existe um fundo no seu nome desde que você nasceu. [O advogado fala em \"responsabilidade\" quatro vezes.|O contrato tem mais páginas que o seu livro favorito.|Tem café, água com gás e um silêncio de velório.]",
+    "resumo": "recebeu o fundo da família aos 18",
+    "escolhas": [
+      {
+        "texto": "Assumir o fundo",
+        "resumo": "assumiu o fundo da família aos 18",
+        "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.04 } },
+        "resultado": {
+          "texto": "O dinheiro caiu na sua conta: {transferido}. Ninguém te ensinou o que fazer com ele, e agora a decisão é sua.",
+          "efeitos": { "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Deixar o family office cuidar",
+        "resumo": "deixou o family office cuidar do fundo",
+        "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.04 } },
+        "resultado": {
+          "texto": "Os {transferido} foram para a renda fixa, com um relatório mensal que você promete ler. O perfil, claro, ficou conservador.",
+          "efeitos": {
+            "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.9 },
+            "eu.perfil": { "definir": "conservador" },
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Recusar e fazer o próprio caminho",
+        "resumo": "recusou o fundo da família para fazer o próprio caminho",
+        "resultado": {
+          "texto": "Você disse que queria provar que consegue sozinh{o|a}. {ator.quem} achou bonito e um pouco ofensivo, nessa ordem.",
+          "efeitos": { "felicidade": 3, "inteligencia": 1, "ator.vinculo": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peso_do_sobrenome",
+    "idade": [22, 75],
+    "condicoes": { "dinastia": { "min": 2 } },
+    "peso": 3,
+    "texto": "No banco, no cartório e no clube, o sobrenome {sobrenome} abre portas e cria expectativas. O gerente lembra de quem veio antes de você; o porteiro também, por outros motivos.",
+    "resumo": "sentiu o peso do sobrenome da família",
+    "escolhas": [
+      {
+        "texto": "Usar o nome a seu favor",
+        "resumo": "usou o sobrenome da família para abrir portas",
+        "resultado": {
+          "texto": "Bastou dizer o sobrenome e a reunião, o empréstimo e a mesa no restaurante apareceram. Ninguém pergunta o que você fez; perguntam de quem você é.",
+          "efeitos": { "rendaFator": 1.1, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer o próprio nome",
+        "resumo": "decidiu fazer o próprio nome longe do sobrenome",
+        "resultado": {
+          "texto": "Você passou a se apresentar só pelo primeiro nome. Demora mais, e o que vier será seu.",
+          "efeitos": { "inteligencia": 1, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pai_rico_filho_nobre_neto_pobre",
+    "idade": [25, 80],
+    "condicoes": { "dinastia": { "min": 3 }, "patrimonio": { "min": 1000000 } },
+    "peso": 4,
+    "texto": "Terceira geração. O avô dizia que \"pai rico, filho nobre, neto pobre\" e todo mundo ria. Agora a fortuna da família, {patrimonio}, está na sua mão e o ditado parece menos engraçado.",
+    "resumo": "encarou o ditado do pai rico, filho nobre, neto pobre",
+    "escolhas": [
+      {
+        "texto": "Proteger o que veio",
+        "resumo": "decidiu proteger a fortuna da família",
+        "resultado": {
+          "texto": "Você contratou gente séria, cortou o supérfluo e pôs quase tudo para render com calma. O ditado vai ter que esperar mais uma geração.",
+          "efeitos": {
+            "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.8 },
+            "custoFator": 0.8,
+            "inteligencia": 1
+          }
+        }
+      },
+      {
+        "texto": "Viver como nobre",
+        "resumo": "resolveu viver como nobre a fortuna da família",
+        "resultado": {
+          "texto": "Viagens, festas e um carro para cada humor. Você é o filho nobre do ditado, com dois andares a mais.",
+          "efeitos": { "custoDoPatrimonio": 0.05, "felicidade": 5, "aparencia": 1, "marcas": ["padrao_alto"] }
+        }
+      },
+      {
+        "texto": "Multiplicar com um negócio",
+        "resumo": "apostou a fortuna da família num negócio grande",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O negócio deu tão certo que o ditado ganhou uma quarta linha: neto empreendedor.",
+          "resumo": "multiplicou a fortuna da família",
+          "efeitos": { "patrimonioFator": 1.6, "felicidade": 4, "marcas": ["empreendedor"] }
+        },
+        "fracasso": {
+          "texto": "O negócio engoliu metade da fortuna em três anos. O ditado, infelizmente, estava certo de novo.",
+          "resumo": "perdeu metade da fortuna da família num negócio",
+          "efeitos": { "patrimonioFator": 0.5, "felicidade": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carta_na_gaveta",
+    "idade": [20, 90],
+    "condicoes": { "dinastia": { "min": 2 } },
+    "peso": 2,
+    "texto": "Arrumando as coisas da casa, você achou uma carta antiga, com a letra de quem veio antes de você: [\"cuida bem do que é nosso\"|\"não deixa ninguém te dizer quem você é\"|\"a família é o que fica\"]. Não tinha data, só uma mancha de café.",
+    "resumo": "achou uma carta antiga da família",
+    "escolhas": [
+      {
+        "texto": "Guardar a carta na carteira",
+        "resumo": "guardou a carta da família na carteira",
+        "resultado": {
+          "texto": "A carta foi para a carteira, atrás do documento. Você relê nos dias ruins.",
+          "efeitos": { "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Mostrar para a família",
+        "resumo": "mostrou a carta antiga para a família",
+        "resultado": {
+          "texto": "A carta rodou a mesa do almoço de domingo e virou três histórias que ninguém lembrava.",
+          "efeitos": { "felicidade": 2, "amigo.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "seguranca_particular",
+    "idade": [8, 80],
+    "condicoes": { "classe_origem": { "min": 6 } },
+    "peso": 3,
+    "texto": "Depois de uma tentativa de sequestro no bairro, a família quer contratar seguranças para você: carro blindado, rota que muda todo dia e um homem de terno que não ri de piada nenhuma.",
+    "resumo": "viu a família querer seguranças por causa do risco de sequestro",
+    "escolhas": [
+      {
+        "texto": "Aceitar a escolta",
+        "resumo": "aceitou andar com seguranças",
+        "resultado": {
+          "texto": "Você nunca mais foi a pé à padaria. Está seguro; está sozinho.",
+          "efeitos": { "custoDoPatrimonio": 0.002, "felicidade": -2, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Recusar e viver normal",
+        "resumo": "recusou os seguranças para viver como todo mundo",
+        "teste": { "chance": 0.85 },
+        "sucesso": {
+          "texto": "Você seguiu de ônibus e boné. Ninguém te reconheceu, que era a ideia.",
+          "resumo": "recusou os seguranças e viveu normal",
+          "efeitos": { "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Três dias num cativeiro, um resgate milionário e uma noite que você nunca vai contar inteira.",
+          "resumo": "foi sequestrad{o|a} e a família pagou o resgate",
+          "efeitos": { "patrimonioFator": 0.92, "felicidade": -12, "saude": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "lista_dos_mais_ricos",
+    "idade": [25, 95],
+    "condicoes": { "patrimonio": { "min": 1000000000 } },
+    "peso": 3,
+    "texto": "Uma revista de negócios pôs você na lista dos mais ricos do país, com uma foto sua de oito anos atrás e um patrimônio estimado de {patrimonio}.",
+    "resumo": "entrou na lista dos mais ricos do país",
+    "escolhas": [
+      {
+        "texto": "Dar a entrevista",
+        "resumo": "deu entrevista para a lista dos mais ricos",
+        "teste": { "chance": 0.7 },
+        "sucesso": {
+          "texto": "A capa ficou ótima e o seu telefone não parou: investidores, ex-colegas e um primo que você nunca viu.",
+          "resumo": "virou capa de revista de negócios",
+          "efeitos": { "aparencia": 2, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "A entrevista virou reportagem investigativa. Um advogado caro e muitas noites mal dormidas depois, ficou tudo bem. Quase.",
+          "resumo": "viu a entrevista virar reportagem investigativa",
+          "efeitos": { "felicidade": -4, "patrimonioFator": 0.98 }
+        }
+      },
+      {
+        "texto": "Pedir para sair da lista",
+        "resumo": "pediu para sair da lista dos mais ricos",
+        "resultado": {
+          "texto": "Seu advogado ligou para a revista. No ano seguinte, você apareceu como \"herdeiro discreto\", que é quase pior.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "family_office",
+    "idade": [25, 90],
+    "condicoes": { "patrimonio": { "min": 50000000 } },
+    "peso": 3,
+    "texto": "Um family office oferece cuidar de tudo: investimentos, impostos, seguros e até o presente de aniversário da sua tia. A taxa é pequena, dizem; o patrimônio é que é grande.",
+    "resumo": "recebeu a oferta de um family office",
+    "escolhas": [
+      {
+        "texto": "Contratar o family office",
+        "resumo": "contratou um family office",
+        "resultado": {
+          "texto": "Relatório mensal, reunião trimestral e uma planilha que você não entende, mas que rende.",
+          "efeitos": {
+            "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.8 },
+            "patrimonioFator": 0.99,
+            "eu.perfil": { "definir": "conservador" },
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Cuidar de tudo sozinh{o|a}",
+        "resumo": "decidiu cuidar sozinh{o|a} da fortuna",
+        "resultado": {
+          "texto": "Você aprendeu mais sobre imposto do que gostaria. Mas cada decisão agora é sua, para o bem e para o mal.",
+          "efeitos": { "inteligencia": 2, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fundacao_com_seu_nome",
+    "idade": [35, 95],
+    "condicoes": { "patrimonio": { "min": 100000000 } },
+    "peso": 3,
+    "texto": "Uma organização propõe criar uma fundação com o seu nome: bolsas de estudo, um hospital no interior, uma placa de bronze na entrada.",
+    "resumo": "pensou em criar uma fundação com o próprio nome",
+    "escolhas": [
+      {
+        "texto": "Doar um décimo da fortuna",
+        "resumo": "doou um décimo da fortuna para uma fundação",
+        "resultado": {
+          "texto": "Mil bolsas de estudo no primeiro ano. Uma menina do interior mandou uma carta que você guarda na gaveta da mesa.",
+          "efeitos": { "patrimonioFator": 0.9, "felicidade": 7, "aparencia": 2 }
+        }
+      },
+      {
+        "texto": "Doar em silêncio",
+        "resumo": "doou parte da fortuna sem pôr o nome em nada",
+        "resultado": {
+          "texto": "Ninguém soube que foi você. O hospital abriu do mesmo jeito.",
+          "efeitos": { "patrimonioFator": 0.95, "felicidade": 5 }
+        }
+      },
+      {
+        "texto": "Deixar para depois",
+        "resumo": "deixou a fundação para depois",
+        "resultado": {
+          "texto": "Depois é uma palavra comprida. A placa de bronze continua sem nome.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "time_a_venda",
+    "idade": [35, 85],
+    "condicoes": { "patrimonio": { "min": 300000000 } },
+    "peso": 3,
+    "texto": "O time de futebol da sua cidade virou SAF e está à venda. A torcida já pichou o seu nome no muro do estádio, com carinho, por enquanto.",
+    "resumo": "pensou em comprar o time de futebol da cidade",
+    "escolhas": [
+      {
+        "texto": "Comprar o time",
+        "resumo": "comprou o time de futebol da cidade",
+        "efeitos": { "patrimonioFator": 0.85 },
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "O time subiu de divisão no segundo ano e a cidade parou. Seu rosto virou bandeira na arquibancada.",
+          "resumo": "comprou o time da cidade e subiu de divisão",
+          "efeitos": { "felicidade": 8, "aparencia": 3 }
+        },
+        "fracasso": {
+          "texto": "Rebaixado, vaiado e com a folha salarial atrasada. A torcida apagou seu nome do muro e escreveu outra coisa.",
+          "resumo": "comprou o time da cidade e foi rebaixado",
+          "efeitos": { "felicidade": -6, "patrimonioFator": 0.85 }
+        }
+      },
+      {
+        "texto": "Patrocinar a camisa",
+        "resumo": "patrocinou a camisa do time da cidade",
+        "resultado": {
+          "texto": "O nome da sua empresa no peito do centroavante. Quando ele faz gol, você sente que fez também.",
+          "efeitos": { "patrimonioFator": 0.99, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Torcer da arquibancada",
+        "resumo": "preferiu torcer da arquibancada",
+        "resultado": {
+          "texto": "Você comprou o ingresso mais barato e gritou com o juiz como qualquer um. Melhor investimento do ano.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "holding_da_familia",
+    "idade": [30, 80],
+    "condicoes": { "classe_origem": { "min": 6 }, "irmaos": { "min": 1 } },
+    "peso": 3,
+    "texto": "Os irmãos querem vender a parte da família na holding para um fundo estrangeiro. O preço é ótimo; o voto que desempata é o seu.",
+    "resumo": "teve o voto decisivo sobre vender a holding da família",
+    "escolhas": [
+      {
+        "texto": "Vender e dividir",
+        "resumo": "votou por vender a holding da família",
+        "resultado": {
+          "texto": "O cheque foi enorme e o almoço de domingo ficou mais curto. Cada um foi cuidar da sua parte.",
+          "efeitos": { "patrimonioFator": 1.25, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Manter na família",
+        "resumo": "votou por manter a holding na família",
+        "resultado": {
+          "texto": "Os irmãos ficaram contrariados, o avô ficaria orgulhoso. A holding segue com o sobrenome na porta.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Comprar a parte dos irmãos",
+        "resumo": "comprou a parte dos irmãos na holding",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você virou dono de tudo. Dois anos depois, a holding valia o dobro e os irmãos fingiam não lembrar.",
+          "resumo": "comprou a parte dos irmãos e dobrou a holding",
+          "efeitos": { "patrimonioFator": 1.5, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Você se endividou para comprar e o mercado virou. A holding encolheu e os irmãos, com o dinheiro na mão, mandaram flores.",
+          "resumo": "comprou a parte dos irmãos e viu a holding encolher",
+          "efeitos": { "patrimonioFator": 0.7, "felicidade": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imposto_sobre_fortunas",
+    "idade": [25, 95],
+    "condicoes": { "patrimonio": { "min": 100000000 } },
+    "peso": 3,
+    "texto": "O congresso aprovou um imposto anual sobre grandes fortunas. O seu contador já ligou três vezes e mandou um áudio de nove minutos.",
+    "resumo": "viu o imposto sobre grandes fortunas ser aprovado",
+    "escolhas": [
+      {
+        "texto": "Pagar e seguir a vida",
+        "resumo": "pagou o imposto sobre grandes fortunas",
+        "resultado": {
+          "texto": "Você pagou. Doeu menos do que o contador dizia e mais do que você queria admitir.",
+          "efeitos": { "patrimonioFator": 0.97, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Mudar a residência fiscal para fora",
+        "resumo": "mudou a residência fiscal para fora do país",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Um apartamento em Lisboa, um certificado e muitas viagens contadas no calendário. O imposto ficou para quem ficou.",
+          "resumo": "mudou a residência fiscal e escapou do imposto",
+          "efeitos": { "custo": 60000, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A Receita discordou da sua mudança. Multa, juros e uma carta com o seu nome em negrito.",
+          "resumo": "tentou escapar do imposto e foi multad{o|a}",
+          "efeitos": { "patrimonioFator": 0.92, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Planejamento tributário agressivo",
+        "resumo": "fez um planejamento tributário agressivo",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Holdings, fundos e uma estrutura que nem o seu contador sabe desenhar. Funcionou, por enquanto.",
+          "resumo": "driblou o imposto sobre fortunas",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A estrutura caiu na primeira fiscalização. A multa veio com o tamanho da criatividade.",
+          "resumo": "foi multad{o|a} por driblar o imposto sobre fortunas",
+          "efeitos": { "patrimonioFator": 0.95, "felicidade": -4 }
+        }
+      }
+    ]
+  }
+]

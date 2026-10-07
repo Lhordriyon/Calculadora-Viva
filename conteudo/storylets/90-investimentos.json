@@ -1,0 +1,298 @@
+[
+  {
+    "id": "cripto_disparou",
+    "idade": [16, 90],
+    "condicoes": { "cripto": { "min": 3000 }, "pais.ret_cripto": { "min": 50 } },
+    "peso": 4,
+    "texto": "A cripto subiu {pais.ret_cripto}% no ano e os seus {eu.cripto} nela viraram assunto em todo almoço de família. O tio que chamava de golpe agora pede dica.",
+    "resumo": "viu a cripto disparar com dinheiro seu dentro",
+    "escolhas": [
+      {
+        "texto": "Realizar o lucro",
+        "resumo": "realizou o lucro da cripto na alta",
+        "resultado": {
+          "texto": "Você vendeu a maior parte e pôs na renda fixa. Se subir mais, paciência; se cair, você vai fingir que sempre soube.",
+          "efeitos": {
+            "realocar": { "de": "cripto", "para": "renda_fixa", "fracao": 0.7 },
+            "felicidade": 2,
+            "inteligencia": 1
+          }
+        }
+      },
+      {
+        "texto": "Dobrar a aposta",
+        "resumo": "dobrou a aposta na cripto em plena alta",
+        "condicoes": { "dinheiro": { "min": 5000 } },
+        "bloqueio": "não há dinheiro parado para dobrar",
+        "resultado": {
+          "texto": "Você pôs mais. O coração bate no ritmo do gráfico, e o gráfico não dorme.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "cripto", "fracao": 0.6 }, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Segurar até a lua",
+        "resumo": "segurou a cripto esperando subir mais",
+        "resultado": {
+          "texto": "Você não vendeu nada. O grupo de mensagens comemorou com foguetes; a lua continua longe.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cripto_fomo",
+    "idade": [18, 80],
+    "condicoes": { "cripto": { "max": 500 }, "pais.ret_cripto": { "min": 60 }, "patrimonio": { "min": 20000 } },
+    "peso": 3,
+    "texto": "A cripto subiu {pais.ret_cripto}% este ano. O cunhado trocou de carro, o vizinho largou o emprego e você ganhou o de sempre. Dá uma coceira no dedo.",
+    "resumo": "sentiu a coceira de entrar na cripto na alta",
+    "escolhas": [
+      {
+        "texto": "Entrar com o que está na conta",
+        "resumo": "entrou na cripto com o dinheiro da conta",
+        "condicoes": { "dinheiro": { "min": 5000 } },
+        "bloqueio": "não há dinheiro parado na conta",
+        "resultado": {
+          "texto": "Você comprou no topo, como manda a tradição. Agora é rezar.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "cripto", "fracao": 0.5 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Tirar da renda fixa para entrar",
+        "resumo": "tirou da renda fixa para comprar cripto",
+        "condicoes": { "renda_fixa": { "min": 10000 } },
+        "bloqueio": "não há renda fixa para tirar",
+        "resultado": {
+          "texto": "Você trocou o rendimento sem graça pela emoção. Emoção não falta.",
+          "efeitos": { "realocar": { "de": "renda_fixa", "para": "cripto", "fracao": 0.3 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ficar de fora",
+        "resumo": "ficou de fora da febre da cripto",
+        "resultado": {
+          "texto": "Você não entrou. Daqui a um ano vai se achar um gênio ou um bobo, e só o gráfico sabe qual.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cripto_derreteu",
+    "idade": [16, 95],
+    "condicoes": { "cripto": { "min": 3000 }, "pais.ret_cripto": { "max": -40 } },
+    "peso": 4,
+    "texto": "A cripto fechou o ano em {pais.ret_cripto}%. O que você tem nela vale {eu.cripto}, e o grupo de mensagens que só falava disso ficou estranhamente quieto.",
+    "resumo": "viu a cripto derreter com dinheiro seu dentro",
+    "escolhas": [
+      {
+        "texto": "Vender o que sobrou",
+        "resumo": "vendeu a cripto depois do tombo",
+        "resultado": {
+          "texto": "Você vendeu tudo e jurou nunca mais. O juramento durou até a próxima alta.",
+          "efeitos": { "realocar": { "de": "cripto", "para": "dinheiro", "fracao": 1 }, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Comprar mais barato",
+        "resumo": "comprou mais cripto depois do tombo",
+        "condicoes": { "dinheiro": { "min": 3000 } },
+        "bloqueio": "não há dinheiro parado para comprar",
+        "resultado": {
+          "texto": "Você comprou na queda, com a mão tremendo. Se voltar a subir, vai dizer que era óbvio.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "cripto", "fracao": 0.3 }, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Esquecer que existe",
+        "resumo": "fingiu que a cripto não existia",
+        "resultado": {
+          "texto": "Você apagou o aplicativo e esqueceu a senha de propósito. Funciona melhor que terapia.",
+          "efeitos": { "felicidade": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "juros_altos",
+    "idade": [18, 95],
+    "condicoes": {
+      "algumaMarca": ["pais.recessao", "pais.crise"],
+      "pais.ret_renda_fixa": { "min": 5 },
+      "patrimonio": { "min": 20000 }
+    },
+    "peso": 3,
+    "texto": "Com os juros nas alturas, a renda fixa pagou {pais.ret_renda_fixa}% acima da inflação. No Brasil, às vezes o mais seguro é também o que paga mais.",
+    "resumo": "viu a renda fixa pagar bem com os juros altos",
+    "escolhas": [
+      {
+        "texto": "Pôr mais na renda fixa",
+        "resumo": "pôs mais dinheiro na renda fixa com os juros altos",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "não há dinheiro parado na conta",
+        "resultado": {
+          "texto": "Você aplicou e ficou olhando o rendimento pingar todo mês, como quem vê goteira boa.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.7 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Aproveitar a bolsa barata",
+        "resumo": "pôs o dinheiro parado em ações enquanto todo mundo fugia da bolsa",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "não há dinheiro parado na conta",
+        "resultado": {
+          "texto": "Com todo mundo correndo da bolsa, você foi na contramão. Coragem ou teimosia: o tempo dirá.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "acoes", "fracao": 0.7 }, "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Deixar como está",
+        "resumo": "deixou os investimentos como estavam",
+        "resultado": {
+          "texto": "Você não mexeu em nada. Às vezes a melhor estratégia é não ter estratégia nenhuma.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "alugueis_dos_fundos",
+    "idade": [20, 95],
+    "condicoes": { "fii": { "min": 50000 }, "pais.ret_fii": { "min": 4 } },
+    "peso": 2,
+    "texto": "Os fundos imobiliários pagaram aluguel todo mês, sem inquilino ligando de madrugada por causa de cano estourado. Você tem {eu.fii} neles.",
+    "resumo": "recebeu os aluguéis dos fundos imobiliários",
+    "escolhas": [
+      {
+        "texto": "Reinvestir os aluguéis",
+        "resumo": "reinvestiu os aluguéis dos fundos imobiliários",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "não há dinheiro parado na conta",
+        "resultado": {
+          "texto": "Você comprou mais cotas com os aluguéis. Os juros compostos agradecem, e o porteiro nem sabe que você é dono de um pedaço de shopping.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "fii", "fracao": 0.3 }, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Gastar numa viagem",
+        "resumo": "gastou os aluguéis dos fundos numa viagem",
+        "resultado": {
+          "texto": "Os aluguéis viraram uma semana na praia. Imóvel bom é imóvel que leva você para passear.",
+          "efeitos": { "dinheiro": -4000, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "arrojado_na_queda",
+    "idade": [20, 95],
+    "condicoes": { "perfil": "arrojado", "pais.ret_acoes": { "max": -15 }, "investido": { "min": 20000 } },
+    "peso": 4,
+    "texto": "Arrojado é bonito no papel. Na prática, a bolsa fechou o ano em {pais.ret_acoes}% e você checa o aplicativo de cinco em cinco minutos, inclusive no banho.",
+    "resumo": "viu a carteira arrojada despencar",
+    "escolhas": [
+      {
+        "texto": "Virar conservador e vender",
+        "resumo": "virou conservador e vendeu as ações no meio da queda",
+        "resultado": {
+          "texto": "Você vendeu tudo e foi para a renda fixa. Dormiu bem; a bolsa voltou a subir sem você.",
+          "efeitos": {
+            "eu.perfil": { "definir": "conservador" },
+            "realocar": { "de": "acoes", "para": "renda_fixa", "fracao": 1 },
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Segurar firme",
+        "resumo": "segurou a carteira arrojada na queda",
+        "resultado": {
+          "texto": "Você não vendeu nada. O estômago reclamou o ano inteiro, mas o estômago não investe.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Comprar mais na queda",
+        "resumo": "comprou mais ações na queda",
+        "condicoes": { "dinheiro": { "min": 10000 } },
+        "bloqueio": "não há dinheiro parado para comprar",
+        "resultado": {
+          "texto": "Você comprou mais, barato, enquanto todo mundo vendia. Se der certo, vai virar palestra.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "acoes", "fracao": 0.5 }, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bolsa_subiu_sem_voce",
+    "idade": [20, 90],
+    "condicoes": { "perfil": "conservador", "pais.ret_acoes": { "min": 20 }, "patrimonio": { "min": 50000 } },
+    "peso": 3,
+    "texto": "A bolsa subiu {pais.ret_acoes}% no ano. Você, firme na renda fixa, ganhou o de sempre e ouviu o colega contar o lucro dele três vezes no mesmo almoço.",
+    "resumo": "viu a bolsa subir enquanto investia como conservador",
+    "escolhas": [
+      {
+        "texto": "Virar moderado",
+        "resumo": "passou a investir como moderado depois de ver a bolsa subir",
+        "resultado": {
+          "texto": "Você pôs um terço em ações. Agora também tem um gráfico para olhar no almoço.",
+          "efeitos": {
+            "eu.perfil": { "definir": "moderado" },
+            "realocar": { "de": "renda_fixa", "para": "acoes", "fracao": 0.3 },
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Continuar conservador",
+        "resumo": "continuou conservador mesmo com a bolsa subindo",
+        "resultado": {
+          "texto": "Você ficou onde estava. A bolsa sobe de escada e desce de elevador, e você não tem pressa.",
+          "efeitos": { "inteligencia": 1, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "gerente_do_banco",
+    "idade": [22, 85],
+    "condicoes": { "dinheiro": { "min": 30000 }, "investido": { "max": 5000 } },
+    "peso": 3,
+    "texto": "O gerente do banco ligou: viu {dinheiro} parados na sua conta e tem \"a solução ideal\", um título de capitalização e um fundo com taxa de 2% ao ano.",
+    "resumo": "recebeu a ligação do gerente do banco com a solução ideal",
+    "escolhas": [
+      {
+        "texto": "Aceitar o pacote do gerente",
+        "resumo": "aceitou o pacote do gerente do banco",
+        "resultado": {
+          "texto": "O dinheiro saiu da conta e foi render, um pouco menos do que renderia sem as taxas. O gerente bateu a meta do mês.",
+          "efeitos": {
+            "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.8 },
+            "patrimonioFator": 0.98,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Estudar e investir por conta própria",
+        "resumo": "estudou e investiu o dinheiro por conta própria",
+        "resultado": {
+          "texto": "Três fins de semana de vídeo e planilha depois, você investiu sozinh{o|a}, sem taxa e com um orgulho novo.",
+          "efeitos": {
+            "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.8 },
+            "inteligencia": 2,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Deixar parado mesmo",
+        "resumo": "deixou o dinheiro parado na conta",
+        "resultado": {
+          "texto": "Você agradeceu e desligou. A inflação, que não liga para ninguém, seguiu comendo um pouco por mês.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  }
+]

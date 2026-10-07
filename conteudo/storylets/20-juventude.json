@@ -619,12 +619,12 @@
         "sucesso": {
           "texto": "Multiplicou por vinte! Você vendeu no topo por pura sorte e agora dá palestra em churrasco.",
           "resumo": "multiplicou por vinte o dinheiro na moeda do cachorrinho",
-          "efeitos": { "dinheiro": 57000, "felicidade": 6, "marcas": ["cripto"] }
+          "efeitos": { "dinheiro": 57000, "felicidade": 6, "marcas": ["apostou_em_cripto"] }
         },
         "fracasso": {
           "texto": "A moeda virou pó numa semana. O primo saiu do grupo da família.",
           "resumo": "perdeu dinheiro na moeda do cachorrinho",
-          "efeitos": { "dinheiro": -3000, "felicidade": -3, "marcas": ["cripto"] }
+          "efeitos": { "dinheiro": -3000, "felicidade": -3, "marcas": ["apostou_em_cripto"] }
         }
       },
       {
