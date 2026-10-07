@@ -8,11 +8,12 @@
  * disparou. Toda operação vira uma entrada do livro (tipo "dinheiro", causa "acao"):
  * é decisão do jogador, mas não gasta a ficha do ano.
  */
-import { ATIVOS, LIQUIDEZ, PERFIL_PADRAO, PERFIS, type Ativo, type Fase, type Perfil } from './constantes.ts';
+import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase, type Padrao, type Perfil } from './constantes.ts';
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { acertarCaixa, anotarCaixa, caixaDe, distribuir, resgatarDe } from './economia.ts';
-import { anotar, definirTexto, lancar, novaEntrada } from './livro.ts';
+import { acertarCaixa, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } from './economia.ts';
+import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
+import { CORTE_DE_PADRAO_FELICIDADE } from './regras.ts';
 import { normal } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entrada, EstadoVida, Mudanca } from './tipos.ts';
@@ -64,7 +65,12 @@ export type Operacao =
   /** Dos investimentos para a conta: de uma classe, ou na ordem de liquidez. */
   | { tipo: 'resgatar'; valor: number; ativo?: Ativo }
   /** Troca o perfil; rebalancear leva a carteira inteira para a divisão do perfil novo. */
-  | { tipo: 'perfil'; perfil: Perfil; rebalancear: boolean };
+  | { tipo: 'perfil'; perfil: Perfil; rebalancear: boolean }
+  /** Troca o padrão de vida: quanto da sobra de cada ano vira gasto. */
+  | { tipo: 'padrao'; padrao: Padrao };
+
+/** Como cada padrão aparece no texto ("viver com um padrão simples"). */
+export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
 
 export function nomeDoAtivo(c: Conteudo, a: Ativo): string {
   return c.mundo.ativos.find((x) => x.id === a)?.nome ?? a;
@@ -90,6 +96,10 @@ export function motivoParaNaoOperar(e: EstadoVida, op: Operacao): string | null 
     if (op.valor > tem + 0.5) return 'não há tanto investido aí';
   }
   if (op.tipo === 'perfil' && op.perfil === perfilDe(e) && !op.rebalancear) return 'esse já é o seu perfil';
+  if (op.tipo === 'padrao') {
+    if (e.idade < 18) return 'só a partir dos 18 anos';
+    if (op.padrao === padraoDe(e)) return 'esse já é o seu padrão';
+  }
   return null;
 }
 
@@ -120,6 +130,13 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
     const de = op.ativo ? DE[op.ativo] : 'dos investimentos';
     texto = `Resgatou ${formatarDinheiro(saiu)} ${de}.`;
     resumo = `resgatou ${formatarDinheiro(saiu)} ${de}`;
+  } else if (op.tipo === 'padrao') {
+    const antes = PADROES.indexOf(padraoDe(e));
+    definirTexto(e, reg, 'eu', 'padrao', op.padrao);
+    // Baixar o padrão dói na hora; subir, a felicidade de base já conta.
+    if (PADROES.indexOf(op.padrao) < antes) somar(e, reg, 'eu', 'felicidade', -CORTE_DE_PADRAO_FELICIDADE);
+    texto = `Passou a viver com um padrão ${NOMES_PADRAO[op.padrao]}.`;
+    resumo = `passou a viver com um padrão ${NOMES_PADRAO[op.padrao]}`;
   } else {
     definirTexto(e, reg, 'eu', 'perfil', op.perfil);
     if (op.rebalancear) {

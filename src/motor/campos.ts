@@ -37,6 +37,8 @@ const PESSOA: Record<string, DefCampo> = {
   investido: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
   /** Perfil de investidor (conservador, moderado, arrojado): para onde vai o dinheiro novo. */
   perfil: { tipo: 'texto', sistema: 'dinheiro' },
+  /** Padrão de vida (simples, confortavel, luxo): quanto da sobra do ano vira gasto. */
+  padrao: { tipo: 'texto', sistema: 'dinheiro' },
   divida: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
   /** Renda e custo anuais. */
   renda: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },

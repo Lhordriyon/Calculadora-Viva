@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { mercadoDoAno } from '../src/motor/carteira.ts';
 import { acertarCaixa, economiaDoAno, movimentar } from '../src/motor/economia.ts';
-import { GASTO_VELHICE, PROPENSAO_GASTO } from '../src/motor/regras.ts';
+import { GASTO_DA_SOBRA, GASTO_VELHICE, gastoDaVelhice } from '../src/motor/regras.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { nascer } from '../src/motor/vida.ts';
@@ -40,9 +40,35 @@ describe('economia', () => {
     const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
     const reg: Mudanca[] = [];
     economiaDoAno(e, criarRng(1), reg);
-    expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
-    expect(reg.find((m) => m.c === 'eu.dinheiro')?.d).toBeCloseTo(20000 * (1 - PROPENSAO_GASTO), 0);
+    expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
+    expect(reg.find((m) => m.c === 'eu.dinheiro')?.d).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
     expect(reg.every((m) => m.r === 'economia')).toBe(true);
+  });
+
+  it('o padrão de vida escolhido decide quanto da sobra fica', () => {
+    const guardado = (padrao: string): number => {
+      const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
+      e.entidades['eu']!.t['padrao'] = padrao;
+      economiaDoAno(e, criarRng(1), []);
+      return e.entidades['eu']!.n['dinheiro']!;
+    };
+    expect(guardado('simples')).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.simples), 0);
+    expect(guardado('luxo')).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.luxo), 0);
+    expect(guardado('simples')).toBeGreaterThan(guardado('confortavel'));
+    expect(guardado('confortavel')).toBeGreaterThan(guardado('luxo'));
+    // quem deve aperta o cinto, mesmo no luxo
+    const devendo = pessoa(1, 30, { renda: 40000, custo: 20000, divida: 100000 });
+    devendo.entidades['eu']!.t['padrao'] = 'luxo';
+    const antes = devendo.entidades['eu']!.n['divida']!;
+    economiaDoAno(devendo, criarRng(1), []);
+    expect(devendo.entidades['eu']!.n['divida']!).toBeLessThan(antes);
+  });
+
+  it('a velhice gasta 4% até R$ 2 milhões e 1% do que passa disso', () => {
+    expect(gastoDaVelhice(1_000_000)).toBeCloseTo(40000);
+    expect(gastoDaVelhice(2_000_000)).toBeCloseTo(80000);
+    expect(gastoDaVelhice(102_000_000)).toBeCloseTo(80000 + 1_000_000);
+    expect(gastoDaVelhice(-5000)).toBe(0);
   });
 
   it('depois dos 65, a velhice consome parte do patrimônio', () => {

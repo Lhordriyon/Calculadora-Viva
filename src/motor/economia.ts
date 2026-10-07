@@ -5,25 +5,37 @@
  * buraco, amortizar com sobra) é automático, porque não é uma decisão.
  * Toda variação vai para o livro-razão.
  */
-import { ATIVOS, LIQUIDEZ, type Ativo } from './constantes.ts';
+import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { anotar } from './livro.ts';
 import { normal, type Rng } from './rng.ts';
 import {
-  GASTO_VELHICE,
+  GASTO_DA_SOBRA,
   IDADE_GASTO_VELHICE,
   INFLACAO_DESVIO,
   INFLACAO_MEDIA,
   JUROS_DIVIDA,
   LIMITE_CREDITO_MINIMO,
   LIMITE_CREDITO_RENDAS,
-  PROPENSAO_GASTO,
   PROPENSAO_GASTO_ENDIVIDADO,
+  gastoDaVelhice,
   pisoCusto,
   pisoRenda,
 } from './regras.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
 type Numeros = Record<string, number>;
+
+/** O padrão de vida de quem joga (o confortável, se nunca escolheu). */
+export function padraoDe(e: EstadoVida): Padrao {
+  const p = e.entidades['eu']?.t['padrao'];
+  return (PADROES as readonly string[]).includes(p ?? '') ? (p as Padrao) : PADRAO_PADRAO;
+}
+
+/** Quanto da sobra do ano vira gasto: o padrão escolhido, com o cinto apertado de quem deve. */
+export function gastoDaSobra(e: EstadoVida): number {
+  const gasto = GASTO_DA_SOBRA[padraoDe(e)];
+  return (e.entidades['eu']?.n['divida'] ?? 0) > 0 ? Math.min(gasto, PROPENSAO_GASTO_ENDIVIDADO) : gasto;
+}
 
 /** Inflação do ano: média de 4,5% mais o que a fase do ciclo soma (a crise empurra para cima). */
 export function sortearInflacao(rng: Rng, extra = 0): number {
@@ -98,18 +110,18 @@ export interface Ano {
   deficit: number;
 }
 
-/**
- * Um ano de economia de quem joga. Da sobra do ano (renda menos custo), uma
- * parte vira padrão de vida (menos, para quem está devendo). Déficit vira
- * dívida só até o limite de crédito; acima dele, a dívida congela e o resto
- * do déficit vira privação.
- */
 /** O que a fase do ciclo muda na economia do ano (somado às médias). */
 export interface FaseEconomica {
   inflacao: number;
   retorno: number;
 }
 
+/**
+ * Um ano de economia de quem joga. Da sobra do ano (renda menos custo), uma
+ * parte vira gasto, conforme o padrão de vida (menos, para quem está
+ * devendo). Déficit vira dívida só até o limite de crédito; acima dele, a
+ * dívida congela e o resto do déficit vira privação.
+ */
 export function economiaDoAno(
   e: EstadoVida,
   rng: Rng,
@@ -140,7 +152,7 @@ export function economiaDoAno(
     const custoVida = e.entidades['lugar']?.n['custo_vida'] ?? 1;
     const sobra = Math.max(renda, pisoRenda(e.idade)) - Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
     if (sobra >= 0) {
-      n['dinheiro'] += sobra * (1 - ((n['divida'] ?? 0) > 0 ? PROPENSAO_GASTO_ENDIVIDADO : PROPENSAO_GASTO));
+      n['dinheiro'] += sobra * (1 - gastoDaSobra(e));
     } else {
       deficit = -sobra;
       const folga = Math.max(0, n['dinheiro']) + somaInvestida(n) + Math.max(0, limite - (n['divida'] ?? 0));
@@ -151,7 +163,7 @@ export function economiaDoAno(
   }
   if (e.idade >= IDADE_GASTO_VELHICE) {
     const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
-    if (patrimonio > 0) n['dinheiro'] = (n['dinheiro'] ?? 0) - patrimonio * GASTO_VELHICE;
+    n['dinheiro'] = (n['dinheiro'] ?? 0) - gastoDaVelhice(patrimonio);
   }
   acertarCaixa(n);
   anotarCaixa(reg, 'eu', antes, n, 'economia');

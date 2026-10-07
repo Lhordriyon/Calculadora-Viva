@@ -54,6 +54,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'pais.ret_dolar',
   'pais.ret_cripto',
   'eu.perfil',
+  // o padrão de vida que o jogador escolhe na folha Dinheiro
+  'eu.padrao',
   // o trabalho de quem joga (salário anda com o setor e o ciclo)
   'eu.renda',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país)
@@ -98,6 +100,8 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto'], 'carteira: cada classe rende o mercado do ano', true),
   ...ler(['pais.ret_renda_fixa', 'pais.ret_acoes', 'pais.ret_fii', 'pais.ret_dolar', 'pais.ret_cripto'], 'carteira: o que cada classe rendeu no ano', true),
   ...ler(['eu.perfil'], 'carteira: para onde vai o dinheiro novo', true),
+  ...ler(['eu.padrao'], 'economia: quanto da sobra do ano vira gasto', true),
+  ...ler(['eu.padrao'], 'felicidade de base', false),
   ...ler(['eu.traco'], 'felicidade de base', false),
   ...ler(['eu.familia'], 'equilíbrio do vínculo', false),
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),

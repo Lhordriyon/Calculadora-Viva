@@ -2,6 +2,7 @@
  * Números de equilíbrio do motor. Mudou algo aqui, rode `npm run tunel`
  * e registre o antes/depois em docs/decisoes.md.
  */
+import type { Padrao } from './constantes.ts';
 
 /** Chance de um ano trazer evento (se houver evento elegível), por idade. */
 export function ritmo(idade: number): number {
@@ -57,9 +58,18 @@ export const INFLACAO_DESVIO = 0.02;
 /** Juros nominais anuais da dívida (cartão, cheque especial, financiamento). */
 export const JUROS_DIVIDA = 0.22;
 
-/** Da sobra de cada ano (renda menos custo-base), quanto vira padrão de vida. */
-export const PROPENSAO_GASTO = 0.75;
-/** Quem está devendo aperta o cinto: gasta menos da sobra e paga a dívida. */
+/**
+ * Da sobra de cada ano (renda menos custo-base), quanto vira gasto, pelo
+ * padrão de vida que o jogador escolhe. Quem vive simples guarda quase dois
+ * terços; quem vive no luxo gasta quase tudo, e é mais feliz por isso
+ * (FELICIDADE_DO_PADRAO).
+ */
+export const GASTO_DA_SOBRA: Record<Padrao, number> = { simples: 0.35, confortavel: 0.75, luxo: 0.95 };
+/** Quanto o padrão de vida muda o ponto para onde a felicidade volta todo ano. */
+export const FELICIDADE_DO_PADRAO: Record<Padrao, number> = { simples: -3, confortavel: 0, luxo: 3 };
+/** Baixar o padrão dói na hora (o carro menor, o clube que ficou para trás). */
+export const CORTE_DE_PADRAO_FELICIDADE = 3;
+/** Quem está devendo aperta o cinto: gasta no máximo isto da sobra e paga a dívida. */
 export const PROPENSAO_GASTO_ENDIVIDADO = 0.4;
 
 /** Limite de crédito: o banco empresta (e cobra juros) até tantas rendas anuais, com um mínimo. */
@@ -79,10 +89,19 @@ export function pisoRenda(idade: number): number {
 /**
  * Depois da aposentadoria, a velhice consome uma parte do patrimônio por ano
  * (remédio, plano de saúde, ajuda aos filhos): quem vive mais não acumula
- * para sempre.
+ * para sempre. A parte é de 4% até R$ 2 milhões e de 1% do que passa disso:
+ * remédio não custa proporcionalmente mais para quem tem uma fortuna, e uma
+ * fortuna não pode derreter só porque o dono envelheceu.
  */
 export const GASTO_VELHICE = 0.04;
+export const GASTO_VELHICE_ACIMA = 0.01;
+export const TETO_GASTO_VELHICE = 2_000_000;
 export const IDADE_GASTO_VELHICE = 65;
+
+export function gastoDaVelhice(patrimonio: number): number {
+  if (patrimonio <= 0) return 0;
+  return GASTO_VELHICE * Math.min(patrimonio, TETO_GASTO_VELHICE) + GASTO_VELHICE_ACIMA * Math.max(0, patrimonio - TETO_GASTO_VELHICE);
+}
 
 /** Custo mínimo de vida de um adulto (reais de hoje por ano). */
 export function pisoCusto(idade: number): number {

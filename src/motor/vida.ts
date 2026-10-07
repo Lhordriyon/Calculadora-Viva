@@ -12,7 +12,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { escolherDoAno } from './diretor.ts';
 import { mercadoDoAno } from './carteira.ts';
-import { economiaDoAno } from './economia.ts';
+import { economiaDoAno, padraoDe } from './economia.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
@@ -20,6 +20,7 @@ import { gerarOrigem, type EscolhaOrigem } from './origem.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   FELICIDADE_BASE,
+  FELICIDADE_DO_PADRAO,
   IDADE_MAXIMA,
   PATRIMONIO_CONFORTO,
   CONFORTO_FELICIDADE,
@@ -98,13 +99,15 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
 
 // ---------------------------------------------------------------- +1 ano
 
-/** Felicidade de base: o ponto para onde ela volta, pelo traço e pelo vínculo com quem está perto. */
+/** Felicidade de base: o ponto para onde ela volta, pelo traço, pelo padrão de vida e pelo vínculo com quem está perto. */
 export function felicidadeDeBase(e: EstadoVida, c: Conteudo): number {
   const eu = e.entidades['eu']!;
   const traco = c.tracosJogador.get(eu.t['traco'] ?? '');
   const vinculos = PERTO.map((p) => e.entidades[p]).filter((x) => x && x.vivo !== false && !x.q['ausente']).map((x) => x!.n['vinculo'] ?? 50);
   const media = vinculos.length > 0 ? vinculos.reduce((s, v) => s + v, 0) / vinculos.length : 30;
-  return FELICIDADE_BASE + (traco?.base ?? 0) + (Math.min(media, TETO_VINCULO_FELICIDADE) - 50) * PESO_VINCULO_FELICIDADE;
+  // O padrão de vida só pesa para quem já se sustenta (antes dos 18, a família decide).
+  const padrao = e.idade >= 18 ? FELICIDADE_DO_PADRAO[padraoDe(e)] : 0;
+  return FELICIDADE_BASE + (traco?.base ?? 0) + padrao + (Math.min(media, TETO_VINCULO_FELICIDADE) - 50) * PESO_VINCULO_FELICIDADE;
 }
 
 function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {

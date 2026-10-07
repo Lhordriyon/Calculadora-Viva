@@ -44,3 +44,7 @@ export const LIQUIDEZ: readonly Ativo[] = ['renda_fixa', 'dolar', 'fii', 'acoes'
 export const PERFIS = ['conservador', 'moderado', 'arrojado'] as const;
 export type Perfil = (typeof PERFIS)[number];
 export const PERFIL_PADRAO: Perfil = 'moderado';
+/** Padrão de vida: quanto da sobra do ano vira gasto (o resto fica na conta). */
+export const PADROES = ['simples', 'confortavel', 'luxo'] as const;
+export type Padrao = (typeof PADROES)[number];
+export const PADRAO_PADRAO: Padrao = 'confortavel';

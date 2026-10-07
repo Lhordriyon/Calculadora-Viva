@@ -14,7 +14,8 @@ import { acoesPossiveis } from './acoes.ts';
 import { perfilDe, type Operacao } from './carteira.ts';
 import { entidadeDe, investidoDe, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PERFIS, type Verbo } from './constantes.ts';
+import { PADROES, PERFIS, type Verbo } from './constantes.ts';
+import { padraoDe } from './economia.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
@@ -184,24 +185,30 @@ export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
 
 /**
  * O que a estratégia faz com o dinheiro no começo do ano (sem gastar a ficha).
- * Aos 18, a cautelosa vira conservadora e a arriscada, arrojada; a aleatória
- * sorteia um perfil. Todo ano, quem cuida do dinheiro aplica o que passa da
- * reserva (um ano de gastos para a cautelosa, três meses para a arriscada).
- * A "primeira" nunca abre a carteira: é quem joga sem mexer no dinheiro.
+ * Aos 18, a cautelosa vira conservadora e vive simples; a arriscada vira
+ * arrojada e vive no luxo; a aleatória sorteia os dois. De três em três anos,
+ * quem cuida do dinheiro aplica o que passa da reserva (um ano de gastos para
+ * a cautelosa, três meses para a arriscada); a aleatória lembra disso em um
+ * ano a cada cinco. A "primeira" nunca abre a folha: é quem joga sem mexer no
+ * dinheiro.
  */
 export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, rng: Rng): Operacao[] {
   if (!e.vivo || e.pendente || e.idade < 18 || estrategia === 'primeira') return [];
   const ops: Operacao[] = [];
   if (e.idade === 18) {
-    const alvo = estrategia === 'cautelosa' ? 'conservador' : estrategia === 'arriscada' ? 'arrojado' : sortear(rng, PERFIS);
-    if (alvo !== perfilDe(e)) ops.push({ tipo: 'perfil', perfil: alvo, rebalancear: true });
+    const perfil = estrategia === 'cautelosa' ? 'conservador' : estrategia === 'arriscada' ? 'arrojado' : sortear(rng, PERFIS);
+    if (perfil !== perfilDe(e)) ops.push({ tipo: 'perfil', perfil, rebalancear: true });
+    const padrao = estrategia === 'cautelosa' ? 'simples' : estrategia === 'arriscada' ? 'luxo' : sortear(rng, PADROES);
+    if (padrao !== padraoDe(e)) ops.push({ tipo: 'padrao', padrao });
   }
+  const lembra = estrategia === 'aleatoria' ? aleatorio(rng) < 0.2 : e.idade % 3 === 0;
+  if (!lembra) return ops;
   const eu = e.entidades['eu']!;
   const conta = Math.max(0, eu.n['dinheiro'] ?? 0);
   const gastos = Math.max(eu.n['custo'] ?? 0, 10000);
   const reserva = estrategia === 'cautelosa' ? gastos : estrategia === 'arriscada' ? gastos / 4 : gastos / 2;
   const sobra = conta - reserva;
-  if (sobra >= 1000 && (estrategia !== 'aleatoria' || aleatorio(rng) < 0.35)) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? sobra / 2 : sobra) });
+  if (sobra >= 1000) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? sobra / 2 : sobra) });
   return ops;
 }
 

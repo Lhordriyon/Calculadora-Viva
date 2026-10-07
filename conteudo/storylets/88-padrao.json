@@ -12,7 +12,13 @@
         "resumo": "subiu de padrão junto com o salário",
         "resultado": {
           "texto": "Carro do ano, apartamento com varanda gourmet e um clube onde ninguém nada. A vida ficou mais bonita nas fotos e mais cara no extrato.",
-          "efeitos": { "custo": 45000, "felicidade": 4, "aparencia": 1, "marcas": ["padrao_alto"] }
+          "efeitos": {
+            "custo": 45000,
+            "felicidade": 4,
+            "aparencia": 1,
+            "marcas": ["padrao_alto"],
+            "eu.padrao": { "definir": "luxo" }
+          }
         }
       },
       {
@@ -28,7 +34,12 @@
         "resumo": "investiu o aumento em vez de gastar",
         "resultado": {
           "texto": "Você ficou no mesmo apartamento e pôs o aumento para render. No churrasco, virou a pessoa chata que fala de juros compostos.",
-          "efeitos": { "investir": 40000, "felicidade": -1, "marcas": ["investidor"] }
+          "efeitos": {
+            "investir": 40000,
+            "felicidade": -1,
+            "marcas": ["investidor"],
+            "eu.padrao": { "definir": "simples" }
+          }
         }
       }
     ]
@@ -53,7 +64,12 @@
         "resumo": "cortou o padrão de vida pela metade",
         "resultado": {
           "texto": "Você trocou o carro por um menor, o clube por uma praça e o restaurante por churrasco no quintal. Os amigos do clube sumiram; os de verdade apareceram no churrasco.",
-          "efeitos": { "custoFator": 0.5, "felicidade": -5, "removerMarcas": ["padrao_alto"] }
+          "efeitos": {
+            "custoFator": 0.5,
+            "felicidade": -5,
+            "removerMarcas": ["padrao_alto"],
+            "eu.padrao": { "definir": "confortavel" }
+          }
         }
       },
       {
@@ -65,7 +81,8 @@
             "custo": { "definir": 18000 },
             "divida": -15000,
             "felicidade": -8,
-            "removerMarcas": ["padrao_alto"]
+            "removerMarcas": ["padrao_alto"],
+            "eu.padrao": { "definir": "simples" }
           }
         }
       },
@@ -319,6 +336,83 @@
         "resultado": {
           "texto": "Você não entrou. A moeda [subiu, caiu e sumiu|nunca mais foi notícia|virou piada no grupo do trabalho].",
           "efeitos": { "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "convite_do_luxo",
+    "idade": [24, 70],
+    "condicoes": { "padrao": "luxo", "semMarcas": ["aposentado"] },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "valores": { "preco": 25000 },
+    "texto": "Os amigos do padrão novo chamam para [uma semana em Trancoso|um cruzeiro pelo litoral|esquiar em Bariloche|o camarote do carnaval]. [O grupo já tem nome e figurinha própria.|Alguém já reservou a lancha.|A conversa é sobre vinho, e você finge entender.]",
+    "resumo": "foi chamad{o|a} para uma viagem cara com os amigos do luxo",
+    "escolhas": [
+      {
+        "texto": "Ir, claro",
+        "resumo": "foi na viagem cara com os amigos",
+        "resultado": {
+          "texto": "Foram {preco} em sete dias, fotos para um ano inteiro e uma ressaca que só passou no avião.",
+          "efeitos": { "dinheiro": -25000, "felicidade": 4, "aparencia": 1 }
+        }
+      },
+      {
+        "texto": "Inventar um compromisso",
+        "resumo": "inventou um compromisso para fugir da viagem cara",
+        "resultado": {
+          "texto": "Você disse que tinha um casamento. O grupo postou tudo, e você viu cada story de casa, de pijama.",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Baixar o padrão de vez",
+        "resumo": "desistiu do padrão de luxo",
+        "resultado": {
+          "texto": "Você saiu do grupo, vendeu a cota do clube e descobriu que o churrasco da laje tem a mesma picanha, mais barata.",
+          "efeitos": { "eu.padrao": { "definir": "confortavel" }, "felicidade": -1, "inteligencia": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sovina_ou_sabio",
+    "idade": [26, 60],
+    "condicoes": { "padrao": "simples", "renda": { "min": 60000 } },
+    "peso": 3,
+    "trechos": {
+      "trecho_quem": [
+        { "se": { "marcas": ["casado"] }, "texto": "Na janta, a família" },
+        { "texto": "No trabalho, um colega" }
+      ]
+    },
+    "texto": "{trecho_quem} pergunta por que você ainda [anda de ônibus|usa o mesmo celular de cinco anos atrás|leva marmita|corta o próprio cabelo] ganhando o que ganha. Você sabe a resposta de cabeça: está no extrato da corretora.",
+    "resumo": "ouviu que vivia como estudante ganhando bem",
+    "escolhas": [
+      {
+        "texto": "Continuar simples",
+        "resumo": "continuou vivendo simples por escolha",
+        "resultado": {
+          "texto": "Você explicou juros compostos com um guardanapo. Ninguém entendeu, e o guardanapo voltou para o bolso.",
+          "efeitos": { "felicidade": -1, "inteligencia": 0.5 }
+        }
+      },
+      {
+        "texto": "Se dar um presente",
+        "resumo": "se deu um presente depois de anos vivendo simples",
+        "resultado": {
+          "texto": "Você comprou [um sofá decente|um celular novo|uma viagem curta] à vista e não sentiu culpa nenhuma. Quase nenhuma.",
+          "efeitos": { "dinheiro": -8000, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Afrouxar o cinto",
+        "resumo": "passou a viver com mais conforto",
+        "resultado": {
+          "texto": "Você trocou a marmita por almoço de restaurante às sextas e o ônibus por aplicativo quando chove. A vida ficou mais macia.",
+          "efeitos": { "eu.padrao": { "definir": "confortavel" }, "felicidade": 2 }
         }
       }
     ]
