@@ -884,6 +884,40 @@ button {
   margin: 0 0 10px;
 }
 
+.empresa-cartao {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+
+.empresa-cartao h3 {
+  margin: 0 0 2px;
+  font-size: 19px;
+}
+
+.empresa-cartao dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 10px 0 0;
+}
+
+.empresa-cartao dt {
+  color: var(--texto-suave);
+}
+
+.empresa-cartao dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.empresa-cartao dd.ruim {
+  color: var(--ruim);
+}
+
 .carteira {
   display: grid;
   gap: 6px;
