@@ -44,17 +44,28 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 Elegível = idade na faixa, ator possível (vivo, salvo storylets sobre quem morreu), condições atendidas e, se não for repetível, nunca visto nesta vida (repetível: respeita o intervalo).
 
-## A ficha do ano (`acoes.ts`)
+## As fichas do ano (`acoes.ts`)
 
-Uma ação por ano, e duas dos 18 aos 40, cada uma num verbo diferente (o motor garante; `regras.ts › fichasDoAno`). Seis verbos: estudar, trabalhar extra, cuidar da saúde, ver a família, sair, poupar. Cada verbo faz **a ação mais específica que o estado permite** (mais cláusulas, mais peso, menos repetida); a escolha é determinística, então o botão mostra exatamente o que vai acontecer ("estudar para o ENEM", "tocar a empresa até tarde"). A interface dá um toque por verbo; quando as fichas acabam, o ano passa. A mesma ação em anos seguidos vira uma linha curta ("Estudou para as provas, mais um ano.").
+Criança faz uma coisa por ano; adolescente, duas; adulto, três; depois dos 65, duas (`regras.ts › fichasDoAno`). Seis verbos (estudar, trabalhar extra, cuidar da saúde, ver a família, sair, poupar); tocar num verbo abre **todas as ações possíveis dele agora**, da que mais combina com o estado (mais cláusulas, mais peso, menos repetida) para a que menos combina, e o jogador escolhe. Com uma ação só, o toque já age. A mesma ação não se repete no mesmo ano. Quando as fichas acabam, o ano passa.
 
-## A folha Dinheiro (`carteira.ts`, `empresa.ts`)
+## Folhas sem ficha (`carteira.ts`, `empresa.ts`, `bens.ts`, `carreira.ts`, `poder.ts`, `herdeiro.ts`)
 
-Operações que são decisão do jogador mas não gastam a ficha do ano (entrada de tipo `dinheiro`, causa `acao`): aplicar e resgatar (numa classe, ou pelo perfil e na ordem de liquidez), trocar o perfil de investidor (conservador, moderado, arrojado, com ou sem rebalancear), trocar o padrão de vida (baixar dói na hora), e a empresa: abrir (ramo e capital, da conta e depois dos investimentos), aportar, escolher a retirada e vender (pelo valor vezes o prêmio ou o desconto da fase: 64% na crise, 112% na expansão). Vender ou fechar a empresa que **sustentava** quem joga (qualidade `empresa.sustenta`, gravada pelos storylets do negócio próprio) leva a renda e as qualidades de dono junto.
+Decisões do jogador que não gastam ficha (entrada de tipo `dinheiro`, causa `acao`, com o grupo no `ref`):
+
+- **Dinheiro:** aplicar e resgatar, perfil de investidor, padrão de vida.
+- **Empresa:** abrir, aportar, retirada, vender e comprar uma concorrente por ano (30% do valor da empresa; o preço justo não cria valor, a tração sobe 2 pontos; três compras fazem um truste, +5 de tração e investigação do órgão de concorrência).
+- **Bens** (`mundo.json › bens`, entidades `bem<id>`): comprar à vista ou financiar imóvel (20% de entrada, parcela fixa de 8% do preço ao ano, juros de 7%), morar (tira até 30% do custo de vida), alugar e vender (6% de custo no imóvel). Todo ano: o imóvel acompanha o mercado de imóveis acima do que um aluguel normal rende, carro perde valor, manutenção e parcela saem, aluguel entra. Conforto vira felicidade de base (com teto); status vira influência.
+- **Carreira** (`mundo.json › carreiras`): tentar uma vaga por ano, com requisitos (as condições dos storylets) e chance pelo talento e pela fase do país; cargos com salário entre o primeiro e o último; a chance de subir cai a cada degrau (×0,8, e ×0,45 nas profissões de palco); fama nas profissões de palco; atleta e modelo têm idade para parar. Um storylet que muda o emprego encerra a carreira.
+- **Poder** (`mundo.json › cargos`): influência anda 25% por ano para um alvo de patrimônio, bens, fama, cargo, empresa grande e linhagem; eleição municipal nos anos múltiplos de 4 e geral dois anos depois, com campanha paga e chance pela influência, aparência e, na reeleição, popularidade; o mandato acaba sozinho (o último ano é ano de eleição). Quem governa tem popularidade (anda com a fase); abaixo de 30, o cargo balança (`queda_do_cargo`). Coroa e Regime são cargos vitalícios dados pelo conteúdo. Decretos são storylets que escrevem `pais.impulso`, que muda as chances do ciclo.
+- **Testamento:** para quem vai tudo (a lei: filho, senão sobrinho; ou o par, o melhor amigo, os sobrinhos, uma causa, o bicho).
 
 ## Dinastia (`herdeiro.ts`)
 
-Quando a vida acaba, a história pode continuar com o filho ou a filha viva; sem filho, com um sobrinho ou uma sobrinha, se havia irmãos (gerado de uma semente da própria vida, sem gastar o sorteio). A partilha paga as dívidas com o espólio (o que passa morre com ele), separa a metade de quem era casado e 4% de imposto, e o resto vai para o herdeiro; a empresa passa inteira, e só o que o dinheiro não cobre sai da parte nela. A vida nova começa no ano da morte, no mesmo lugar e no mesmo país, com a família que restou (para o filho, quem morreu é o pai ou a mãe falecida; para o sobrinho, os pais são outros), o traço que o herdeiro tinha como personagem, emprego, par e filhos conforme a idade. A primeira entrada conta a herança e é a causa do estado inicial; o registro `dinastia` guarda as gerações anteriores para o cartão.
+Quando a vida acaba, a história continua com quem herda: pelo testamento, o par (que herda tudo, sem metade separada, e começa viúvo, com o filho do casal) ou o melhor amigo (com o próprio sobrenome e a própria família); pela lei, o filho ou a filha viva, ou um sobrinho (gerado de uma semente da própria vida, sem gastar o sorteio). Testamento para uma causa ou para o bicho encerra a história. A partilha paga as dívidas com o espólio, separa a metade de quem era casado (quando o par não é o herdeiro), 4% de imposto e o quarto do testamento solidário; a empresa e os bens passam ao herdeiro, e só o que a conta não cobre sai da parte na empresa e, depois, dos bens mais baratos. A coroa e o Regime passam ao filho: a sucessão é o primeiro capítulo. A primeira entrada conta a herança e é a causa do estado inicial.
+
+## Linhagens (`origem.ts`)
+
+No começo em um toque, 20% das vidas nascem numa linhagem (`mundo.json › linhagens`): família real (neste mundo, o plebiscito de 1993 deu monarquia), família do Regime, família famosa, do futebol, de políticos, do agro, de circo, imigrante, militar. A linhagem fixa a classe, dá qualidades a quem nasce e ao pai ou à mãe que a carrega, ao país (monarquia, regime), influência e fama iniciais e um texto de nascimento próprio. Quem escolhe a origem escolhe a linhagem (ou nenhuma).
 
 ## Escolha (`escolher`)
 

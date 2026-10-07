@@ -77,7 +77,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
   campos.ts            campos de cada entidade e leitura de caminhos ("mae.saude")
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança)
-  origem.ts            origem procedural: classe × tipo de família × traços, cidade e família
+  origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
   ciclo.ts             ciclo da economia do país (normal, expansão, recessão, crise)
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -90,8 +90,11 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   contexto.ts          variáveis de texto lidas do estado ({mae.ocupacao}, {ator.quem}, trechos)
   economia.ts          dinheiro em reais de hoje, inflação, juros, crédito, padrão de vida, gasto da velhice
   carteira.ts          investimentos por classe, mercado do ano, perfil, operações da folha Dinheiro
-  empresa.ts           a empresa de quem joga: abrir, crescer, retirar, aportar, vender, quebrar
-  herdeiro.ts          dinastia: partilha, quem herda (filho ou sobrinho) e a vida nova
+  empresa.ts           a empresa de quem joga: abrir, crescer, retirar, aportar, vender, comprar concorrente, quebrar
+  bens.ts              imóveis, veículos, luxo e mídia: comprar, financiar, morar, alugar, vender; o ano dos bens
+  carreira.ts          profissões (mundo.json › carreiras): vaga, cargo, promoção em pirâmide, fama
+  poder.ts             influência, eleições, mandato, popularidade, queda do cargo
+  herdeiro.ts          dinastia e testamento: partilha, quem herda (filho, sobrinho, par, amigo) e a vida nova
   morte.ts             morte de quem joga
   virada.ts            pontos de virada e resumo da vida a partir do livro-razão
   memoria.ts           memória do jogador entre vidas (reduz repetição)
@@ -105,7 +108,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini)
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, CartaoVida
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, CartaoVida
 scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
@@ -146,6 +149,9 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Toda variável lida por ≥ 2 sistemas e altera ≥ 1 decisão | dono | estado que nada decide é peso morto |
 | Túnel com metas e portões (saturação, assinaturas, mobilidade, dispersão, agência, toques) | dono | qualidade se mede |
 | Caminho padrão em um toque; origem opcional | dono | começar rápido, e quem quiser escolhe |
+| "Nova vida" (no menu, no palco, no cartão) abre a escolha da origem | dono | escolher como será a próxima vida, no começo, durante e depois |
+| Testamento escolhido em vida (filho, par, amigo, sobrinhos, causa, bicho) | dono | decidir quem herda e com quem a história continua |
+| Origens de realeza e de regime num Brasil fictício; profissões, imóveis, bens, eleições, truste | dono | liberdade de verdade e dinheiro que vira poder |
 | Expansão por incremento: portões + 3 vidas do dono | dono | provar cada nível antes do próximo |
 | Toda escolha e toda ação têm `resumo` | agente | o cartão da vida conta "aos 17, você…" |
 | Dinheiro mostrado em reais de hoje | agente | valores nominais de 2080 confundem; a inflação aparece como dinheiro parado que encolhe |
@@ -154,6 +160,6 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Pelo menos uma escolha sem condição por storylet | agente | a vida nunca trava |
 | Opções somem? Não: aparecem desabilitadas com o motivo | agente | a pobreza também é história |
 | Toques ignorados por 450 ms quando um evento aparece | agente | toque duplo no +1 ano não pode escolher por você |
-| O verbo mostra a ação que vai fazer (escolha determinística) | agente | agir sem surpresa: o botão é a promessa |
-| Uma ficha por ano (duas dos 18 aos 40, em verbos diferentes), garantida no motor | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
-| Mexer no dinheiro e na empresa não gasta ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |
+| O verbo mostra a ação sugerida; tocar abre todas as ações possíveis dele | agente | liberdade de verdade, sem 500 botões na tela |
+| Fichas por ano: 1 criança, 2 adolescente, 3 adulto, 2 depois dos 65; a mesma ação não repete no ano | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
+| Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |

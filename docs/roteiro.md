@@ -62,7 +62,20 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 
 ## Incremento 4 (pedido do dono em 07/10): liberdade de verdade
 
-Escolher a ação (não só o verbo), profissões de verdade, imóveis e bens com uso, poder (influência, política, mídia), origens de realeza e de regime, truste, começos de vida diferentes.
+- [x] Escolher a ação dentro do verbo; três fichas para adultos
+- [x] 49 profissões com requisitos, cargos, pirâmide de promoção e fama (folha Carreira)
+- [x] 30 bens: moradia (morar, alugar, financiar), imóveis de renda, lazer, veículos, luxo e mídia
+- [x] Poder: influência, eleições municipais e gerais, mandato, popularidade, queda do cargo, decretos que mexem no ciclo
+- [x] Linhagens: família real, Regime, famosa, do futebol, de políticos, do agro, de circo, imigrante, militar
+- [x] Truste: comprar concorrentes; três compras fazem um truste (e uma investigação)
+- [x] Infância variada: ações e acontecimentos por classe, região e família
+- [x] "Nova vida" abre a escolha da origem; testamento escolhido em vida (par, amigo, sobrinhos, causa, bicho)
+- [x] App Android (APK) com link no topo do README, gerado a cada push na `main`
+- [x] Portões: zero storylets mortos; nenhuma estratégia domina; bilionário feito 0,92%; V20 92,6%; toques 451 (teto 480)
+
+## Próximo incremento (proposta)
+
+Outros países (emigrar, morar fora, cidadania), crime com consequência (golpes, prisão, fuga), relacionamentos com mais gente (vários filhos, ex, amantes), e a velhice com mais escolhas (cuidador, asilo, herança em vida).
 
 ## Como uma sessão continua
 

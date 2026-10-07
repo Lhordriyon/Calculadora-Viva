@@ -86,6 +86,12 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "empresa.valor": true, "empresa.tracao": { "min": 12 },      // a empresa de quem joga (qualquer condição sobre ela, menos false, exige que ela exista)
   "empresa.setor": "tecnologia", "marcas": ["empresa.na_bolsa"], "empresa.valor": false, // sem empresa
   "pais.ret_acoes": { "max": -20 },                            // quanto cada classe de investimento rendeu no ano, em %
+  "carreira": ["medico", "enfermeiro"], "nivel": { "min": 2 },   // profissão escolhida (mundo.json › carreiras) e o cargo nela
+  "influencia": { "min": 30 }, "fama": { "min": 40 },            // poder: 0 a 100
+  "cargo": ["prefeito", "governador", "presidente", "rei", "ditador"], "popularidade": { "max": 30 }, "mandato": { "max": 0 },
+  "testamento": ["amigo", "causa"],                             // para quem vai tudo ('' é a lei)
+  "pais.impulso": { "min": 1 },                                 // decretos que aquecem (+) ou esfriam (−) a economia
+  "marcas": ["iate"], "marcas": ["senhorio"],                   // bens: a qualidade de cada item (mundo.json › bens › marca); senhorio = tem imóvel alugado
   "familia": "religiosa", "traco": ["ansioso", "timido"],      // texto: igual a um, ou a um dentre vários
   "mae.vivo": true, "ator.traco": "gastador", "ator.idade": { "min": 13, "max": 17 },
   "lugar.regiao": "nordeste", "lugar.capital": true, "lugar.desemprego": { "min": 0.095 },
@@ -132,6 +138,9 @@ A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, 
 | `rodada` | `{ "parte": 0.2 }` | investidores compram 20% pelo valor de agora: o dinheiro entra na empresa e a parte de quem joga encolhe; `{rodada}` no texto |
 | `venderEmpresa` | `{ "fracao": 1, "premio": 1.5 }` | vende a fração da parte de quem joga pelo valor × prêmio; vendeu tudo, a empresa sai da vida; `{venda}` no texto |
 | `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
+| caminhos de poder | `"eu.influencia": 5`, `"eu.popularidade": -8`, `"eu.fama": 10`, `"eu.cargo": { "definir": "rei" }` | a coroa e o Regime entram assim; eleição é pela folha Carreira |
+| caminhos de carreira | `"eu.carreira": { "definir": "ator" }`, `"eu.nivel": 1` | dá uma profissão (com `renda` e `eu.setor`); trocar `eu.setor` ou zerar a renda sem `eu.carreira` encerra a carreira |
+| `pais.impulso` | `1.5` | decreto que aquece a economia (mais expansão, menos recessão); some pela metade a cada ano |
 | caminho na empresa | `"empresa.tracao": 2`, `"empresa.valor": -30000`, `"empresa.retirada": { "definir": 0 }` | sem empresa, não faz nada |
 
 A qualidade `empresa.sustenta` (gravada junto com `abrirEmpresa`) diz que a renda de quem joga vem dela: quando ela é vendida ou fecha, a renda vai a zero e as qualidades de dono (`empreendedor`, `socio`, `herdeiro_negocio`) somem.
@@ -162,6 +171,17 @@ Uma escolha grava uma qualidade; anos depois, um storylet a exige ou ela é agen
 - Toda qualidade consultada precisa ser criada por algum efeito ou regra.
 - Efeito passivo (`porAno`) e epitáfio ficam em `conteudo/marcas.json`.
 - Prefira cadeias longas (3+ anos) e desfechos diferentes conforme a escolha.
+
+## Catálogos (incremento 4)
+
+`mundo.json` tem quatro catálogos que o jogador usa pelas folhas, e que o conteúdo lê pelas qualidades e campos que eles gravam:
+
+- `bens`: preço, manutenção, valorização, aluguel, conforto, status, a qualidade (`marca`) que quem tem ganha, idade mínima, se é financiável.
+- `carreiras`: nome (`"médico|médica"`), setor, requisitos (condições), o que a interface mostra como requisito, chance, talento, salário do primeiro e do último cargo, cargos, chance de promoção, fama no topo, estável (concurso), idade para tentar e para parar.
+- `cargos`: eletivos (municipal, geral) e vitalícios (rei, ditador): idade, influência mínima, dificuldade, campanha, salário, mandato, influência que dá.
+- `linhagens`: classe, qualidades de quem nasce, o papel do pai ou da mãe (ocupação, setor, qualidade), qualidades do país, influência e fama iniciais. Cada linhagem tem um texto em `nascimento` que pede a qualidade dela.
+
+Os arquivos de storylet do incremento 4: `96-linhagens`, `97-carreiras` (profissões e fama), `98-bens`, `99-poder` (política, decretos, queda do cargo, lobby, truste, testamento).
 
 ## Linhas, mortes, mundo
 
