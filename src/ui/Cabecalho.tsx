@@ -44,16 +44,9 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
   return (
     <header class="cabecalho">
       <div class="topo">
-        <div>
-          <h1>
-            {eu.nome} {vida.sobrenome}
-          </h1>
-          <p class="sub">
-            {titulo && <b class="titulo-nobre">{titulo} · </b>}
-            {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
-            {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
-          </p>
-        </div>
+        <h1>
+          {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>
+        </h1>
         <div class="botoes-topo">
           <button class="icone" type="button" aria-label="Família" onClick={aoAbrirFamilia}>
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -82,6 +75,11 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
           </button>
         </div>
       </div>
+      <p class="sub">
+        {titulo && <b class="titulo-nobre">{titulo} · </b>}
+        {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
+        {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
+      </p>
       <div class="atributos">
         {ATRIBUTOS.map((a) => {
           const valor = Math.round(n[a] ?? 0);
@@ -110,6 +108,11 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         <span>
           Dinheiro <b>{formatarDinheiro(dinheiro)}</b>
         </span>
+        {divida >= 1 && (
+          <span class="divida">
+            Dívida <b>{formatarDinheiro(divida)}</b>
+          </span>
+        )}
         {investido >= 1 && (
           <span>
             Investido <b>{formatarDinheiro(investido)}</b>
@@ -134,11 +137,6 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         {empresa >= 1 && (
           <span>
             Empresa <b>{formatarDinheiro(empresa)}</b>
-          </span>
-        )}
-        {divida >= 1 && (
-          <span class="divida">
-            Dívida <b>{formatarDinheiro(divida)}</b>
           </span>
         )}
         {renda >= 1 && (

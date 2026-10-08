@@ -37,8 +37,8 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
 
   if (p) {
     return (
-      <div class="palco">
-        <section class="cartao-evento" aria-live="polite" aria-labelledby="texto-evento">
+      <div class="palco com-evento">
+        <section class="cartao-evento" key={chave} aria-live="polite" aria-labelledby="texto-evento">
           <p class="quando">
             {anos(vida.idade)} · {vida.ano}
           </p>

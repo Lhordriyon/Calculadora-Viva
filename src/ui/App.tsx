@@ -55,13 +55,23 @@ export function App() {
     vistas.current = vida?.historico.length ?? 0;
   });
 
-  // Rola até o fim quando a linha do tempo cresce: a ação está sempre embaixo, no polegar.
+  // A linha do tempo rola por dentro, entre o cabeçalho e o palco. Ela desce até o fim quando
+  // cresce e quando o palco muda de altura (evento, lista de ações): o ano novo fica à vista.
+  const [linha, setLinha] = useState<HTMLElement | null>(null);
   const tamanho = vida?.historico.length ?? 0;
   useEffect(() => {
-    if (tamanho === 0) return;
+    if (!linha || tamanho === 0) return;
     const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: reduzido ? 'auto' : 'smooth' });
-  }, [tamanho, vida?.pendente?.instancia]);
+    linha.scrollTo({ top: linha.scrollHeight, behavior: reduzido ? 'auto' : 'smooth' });
+  }, [linha, tamanho, vida?.pendente?.instancia]);
+  useEffect(() => {
+    if (!linha || typeof ResizeObserver === 'undefined') return;
+    const observador = new ResizeObserver(() => {
+      linha.scrollTop = linha.scrollHeight;
+    });
+    observador.observe(linha);
+    return () => observador.disconnect();
+  }, [linha]);
 
   const resumo = useMemo(() => (vida && !vida.vivo ? resumirVida(vida, conteudo) : null), [vida]);
   const acoes = useMemo(() => (vida?.vivo && !vida.pendente ? acoesDisponiveis(vida, conteudo, save.memoria) : []), [vida, save.memoria]);
@@ -77,13 +87,11 @@ export function App() {
     vistas.current = 0;
     guardar({ versao: save.versao, vida: nova, memoria: save.memoria, vidas: save.vidas });
     setFolha(null);
-    window.scrollTo({ top: 0 });
   }
 
   function pedirNovaVida() {
     setFolha(null);
     setEscolhendoVida(true);
-    window.scrollTo({ top: 0 });
   }
 
   /** A história segue com quem herda, no mesmo mundo, com o que sobrou da herança. */
@@ -98,7 +106,6 @@ export function App() {
     vistas.current = 0;
     guardar({ ...save, vida: nova });
     setFolha(null);
-    window.scrollTo({ top: 0 });
   }
 
   function concluir(nova: EstadoVida) {
@@ -167,7 +174,7 @@ export function App() {
         aoAbrirDinheiro={() => setFolha('dinheiro')}
         aoAbrirMenu={() => setFolha('menu')}
       />
-      <main class="vida">
+      <main class="vida" ref={setLinha}>
         <LinhaDoTempo vida={vida} novasDesde={novasDesde} />
       </main>
       <Palco
