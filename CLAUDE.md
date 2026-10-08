@@ -160,6 +160,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Pelo menos uma escolha sem condição por storylet | agente | a vida nunca trava |
 | Opções somem? Não: aparecem desabilitadas com o motivo | agente | a pobreza também é história |
 | Toques ignorados por 450 ms quando um evento aparece | agente | toque duplo no +1 ano não pode escolher por você |
+| Tela em três faixas (cabeçalho, linha do tempo, palco) que rolam por dentro; nada `sticky` | agente | com a letra do sistema grande, cabeçalho e palco grudados se cruzavam no APK |
 | O verbo mostra a ação sugerida; tocar abre todas as ações possíveis dele | agente | liberdade de verdade, sem 500 botões na tela |
 | Fichas por ano: 1 criança, 2 adolescente, 3 adulto, 2 depois dos 65; a mesma ação não repete no ano | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
 | Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |

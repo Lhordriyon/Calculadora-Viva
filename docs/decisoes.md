@@ -242,6 +242,15 @@ O dono jogou e foi direto: início sempre igual, poucas profissões, liberdade d
 - **"Nova vida" abre a escolha da origem** (no menu, no palco e no cartão), com "voltar para a vida atual". **Testamento** na folha Família: a lei, o filho, o par (herda tudo e a história continua com ele, viúvo), o melhor amigo (com outro sobrenome), os sobrinhos, uma causa ou o bicho (estes dois encerram a história).
 - **Portões que ficaram de fora, com motivo:** toques por vida subiram para 451 (teto 480): o robô usa as três fichas todo ano, e quem joga pode passar o ano em um toque. Assinaturas 899 (< 918) e Spearman entre gerações 0,80 ficaram no limite; CPU 35 ms (teto 30) com o triplo de ações por ano. A estratégia cautelosa vive em média 93 anos (cuida da saúde três vezes por ano); nenhuma domina, porque a arriscada é mais feliz.
 
+## Interface: tela em três faixas (08/10)
+
+O dono jogou o APK com a letra do sistema grande (cerca de 145%, numa tela de 360 px) e o cabeçalho e o palco, os dois grudados na tela (`sticky`), se cruzavam: o nome ocupava 3 linhas, o subtítulo 5, o dinheiro 5, e o texto do evento ficava por baixo. A soma dos dois passava da altura da tela.
+
+- **Decisão:** a tela tem altura fixa e três faixas em coluna (cabeçalho, linha do tempo, palco). Nenhuma é `sticky`, então não há como se cruzarem; cada uma rola por dentro. O palco cresce até onde precisa e, se não couber, rola o texto ou a lista, com o botão de baixo sempre no polegar. A linha do tempo encolhe primeiro e desce até o fim quando cresce ou quando o palco muda de altura.
+- **Cabeçalho compacto:** nome numa linha (sobrenome menor, reticências), subtítulo na largura toda, dinheiro numa linha que rola de lado (a dívida logo depois do dinheiro), verbos que quebram linha.
+- **Medida** (Playwright, letra a 145%, 360×820 com as barras do Android): o cabeçalho caiu de 493 px para 289 px. Antes, o palco subia até 177 px e cobria 316 px do cabeçalho, e o robô do teste nem conseguia tocar nas opções cobertas; depois, nenhuma faixa cruzada em nenhum passo, nenhum botão vazando de lado e nada passando da borda nas folhas. A 100%, o cabeçalho tem 252 px.
+- **Não limitei a letra do sistema no APK** (dava para fixar o `textZoom`): quem aumentou a letra quer ler grande, e a tela agora aguenta.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
