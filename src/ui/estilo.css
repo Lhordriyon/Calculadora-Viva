@@ -268,6 +268,15 @@ a.botao {
   border-bottom: 1px solid var(--borda);
 }
 
+.cabecalho.compacto .atributos,
+.cabecalho.compacto .dinheiro {
+  display: none;
+}
+
+.cabecalho.compacto {
+  padding-bottom: 6px;
+}
+
 .cabecalho .topo {
   display: flex;
   align-items: center;
@@ -296,7 +305,7 @@ a.botao {
 .cabecalho .sub {
   margin: 0;
   color: var(--texto-suave);
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.35;
 }
 
@@ -304,11 +313,11 @@ a.botao {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px 16px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .atributo {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .atributo .rotulo {
@@ -323,8 +332,8 @@ a.botao {
 }
 
 .barra {
-  height: 6px;
-  margin-top: 3px;
+  height: 5px;
+  margin-top: 2px;
   border-radius: 99px;
   background: var(--superficie-2);
   overflow: hidden;
@@ -392,17 +401,25 @@ a.botao {
 
 /* ---------------------------------------------------------------- linha do tempo */
 
+/* A história nunca vira uma fresta: guarda um mínimo da tela (menos quando há evento, que é a vez
+   do cartão) e esmaece nas bordas, para o corte de cima e de baixo não parecer coisa por baixo. */
 .vida {
   flex: 1 1 0;
-  min-height: 0;
+  min-height: min(20dvh, 180px);
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+}
+
+.vida.com-evento {
+  min-height: 0;
 }
 
 .linha-do-tempo {
   flex: 1;
   margin: 0;
-  padding: 14px 16px 8px;
+  padding: 16px 16px 14px;
   list-style: none;
 }
 
@@ -632,6 +649,29 @@ a.botao {
   grid-template-columns: 1fr 1fr;
 }
 
+.verbos .verbo {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.verbos .verbo b {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ponto-novo {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--destaque);
+}
+
 .verbo {
   display: flex;
   flex-direction: column;
@@ -658,16 +698,6 @@ a.botao {
   max-width: 100%;
   font-size: 15px;
   line-height: 1.25;
-}
-
-.verbo small {
-  max-width: 100%;
-  overflow: hidden;
-  color: var(--texto-suave);
-  font-size: 13px;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .verbo:active {
@@ -722,8 +752,8 @@ a.botao {
 .opcao {
   display: block;
   width: 100%;
-  min-height: 52px;
-  padding: 12px 14px;
+  min-height: 50px;
+  padding: 10px 14px;
   border: 2px solid var(--borda);
   border-radius: 14px;
   background: var(--fundo);

@@ -109,22 +109,21 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
           <section class="ficha" aria-labelledby="titulo-ficha">
             <p class="quando" id="titulo-ficha">
               {fichasUsadas(vida) > 0
-                ? `Ainda dá tempo de ${restantes === 1 ? 'mais uma coisa' : `mais ${restantes} coisas`} este ano.`
-                : `Aos ${vida.idade}, o que você faz com este ano?${restantes > 1 ? ` (${restantes} coisas)` : ''}`}
+                ? `Ainda dá para ${restantes === 1 ? 'mais uma' : `mais ${restantes}`}:`
+                : restantes === 1
+                  ? `Aos ${vida.idade}, o que fazer este ano?`
+                  : `Aos ${vida.idade}, ${restantes} coisas este ano:`}
             </p>
+            {/* O verbo é um botão curto; tocar abre a lista das ações dele (o ponto marca o que é novo). */}
             <div class="verbos">
               {acoes.map((a) => (
-                <button
-                  class="verbo"
-                  type="button"
-                  key={a.verbo}
-                  onClick={() => (a.opcoes.length > 1 ? setAberto(a.verbo) : aoAgir(a.verbo, { id: a.s.id, ator: a.ator }))}
-                >
-                  <b>
-                    {NOMES_VERBO[a.verbo]}
-                    {a.opcoes.some((o) => o.novo) && <span class="novo">novo</span>}
-                  </b>
-                  <small>{a.opcoes.length > 1 ? `${a.rotulo} e mais ${a.opcoes.length - 1}` : a.rotulo}</small>
+                <button class="verbo" type="button" key={a.verbo} onClick={() => setAberto(a.verbo)}>
+                  <b>{NOMES_VERBO[a.verbo]}</b>
+                  {a.opcoes.some((o) => o.novo) && (
+                    <span class="ponto-novo">
+                      <span class="so-leitor">, tem novidade</span>
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

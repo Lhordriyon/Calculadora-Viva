@@ -36,9 +36,9 @@ export interface AcaoDisponivel extends OpcaoDeAcao {
 /** Nome curto de cada verbo, para o botão. */
 export const NOMES_VERBO: Record<Verbo, string> = {
   estudar: 'Estudar',
-  trabalhar: 'Trabalhar extra',
-  saude: 'Cuidar da saúde',
-  familia: 'Ver a família',
+  trabalhar: 'Trabalhar',
+  saude: 'Cuidar-se',
+  familia: 'Em família',
   sair: 'Sair',
   poupar: 'Poupar',
 };

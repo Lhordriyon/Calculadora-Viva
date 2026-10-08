@@ -14,9 +14,11 @@ interface Props {
   aoAbrirCarreira: () => void;
   aoAbrirDinheiro: () => void;
   aoAbrirMenu: () => void;
+  /** Durante um evento que não cabe na tela: só nome e idade, para o cartão inteiro aparecer. */
+  compacto?: boolean;
 }
 
-export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirMenu }: Props) {
+export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirMenu, compacto = false }: Props) {
   const eu = vida.entidades['eu']!;
   const lugar = vida.entidades['lugar'];
   const n = eu.n;
@@ -42,7 +44,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
   const fama = Math.round(n['fama'] ?? 0);
   const titulo = cargo?.esfera === 'vitalicio' ? noGenero(cargo.nome, eu.genero) : eu.q['principe'] ? (eu.genero === 'f' ? 'princesa' : 'príncipe') : eu.q['herdeiro_regime'] ? 'herdeiro do Regime' : '';
   return (
-    <header class="cabecalho">
+    <header class={`cabecalho${compacto ? ' compacto' : ''}`}>
       <div class="topo">
         <h1>
           {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>

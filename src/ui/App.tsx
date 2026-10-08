@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
 import { carregar, salvar, type Save } from '../jogo/salvar.ts';
 import type { Verbo } from '../motor/constantes.ts';
@@ -72,6 +72,19 @@ export function App() {
     observador.observe(linha);
     return () => observador.disconnect();
   }, [linha]);
+
+  // Com letra grande, o cartão do evento pode não caber: aí o cabeçalho esconde atributos e dinheiro
+  // até o evento (ou a sequência de eventos) acabar. Medido antes de pintar, sem piscar.
+  const [apertado, setApertado] = useState(false);
+  const evento = vida?.pendente ? `${vida.idade}:${vida.pendente.instancia}` : '';
+  useLayoutEffect(() => {
+    if (!evento) {
+      setApertado(false);
+      return;
+    }
+    const cartao = document.querySelector('.cartao-evento');
+    if (cartao && cartao.scrollHeight > cartao.clientHeight + 1) setApertado(true);
+  }, [evento]);
 
   const resumo = useMemo(() => (vida && !vida.vivo ? resumirVida(vida, conteudo) : null), [vida]);
   const acoes = useMemo(() => (vida?.vivo && !vida.pendente ? acoesDisponiveis(vida, conteudo, save.memoria) : []), [vida, save.memoria]);
@@ -173,8 +186,9 @@ export function App() {
         aoAbrirCarreira={() => setFolha('carreira')}
         aoAbrirDinheiro={() => setFolha('dinheiro')}
         aoAbrirMenu={() => setFolha('menu')}
+        compacto={apertado}
       />
-      <main class="vida" ref={setLinha}>
+      <main class={`vida${vida.pendente ? ' com-evento' : ''}`} ref={setLinha}>
         <LinhaDoTempo vida={vida} novasDesde={novasDesde} />
       </main>
       <Palco
