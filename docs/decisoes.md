@@ -250,6 +250,13 @@ O dono jogou o APK com a letra do sistema grande (cerca de 145%, numa tela de 36
 - **Cabeçalho compacto:** nome numa linha (sobrenome menor, reticências), subtítulo na largura toda, dinheiro numa linha que rola de lado (a dívida logo depois do dinheiro), verbos que quebram linha.
 - **Medida** (Playwright, letra a 145%, 360×820 com as barras do Android): o cabeçalho caiu de 493 px para 289 px. Antes, o palco subia até 177 px e cobria 316 px do cabeçalho, e o robô do teste nem conseguia tocar nas opções cobertas; depois, nenhuma faixa cruzada em nenhum passo, nenhum botão vazando de lado e nada passando da borda nas folhas. A 100%, o cabeçalho tem 252 px.
 - **Não limitei a letra do sistema no APK** (dava para fixar o `textZoom`): quem aumentou a letra quer ler grande, e a tela agora aguenta.
+- **Segunda rodada (o dono: "De novo?"):** sem sobreposição, a história virou uma fresta de ~30 px entre o cabeçalho e o palco, porque cada verbo tinha nome, selo "NOVO" e subtítulo, e com letra grande cada um ocupava até três linhas. O que mudou:
+  - o verbo virou um botão curto, de uma linha, com nomes curtos (Trabalhar, Cuidar-se, Em família); o "novo" virou um ponto; tocar sempre abre a lista das ações. O túnel já contava dois toques por ação;
+  - a história guarda no mínimo 20% da tela (até 180 px), menos durante um evento, e esmaece nas bordas;
+  - quando o cartão do evento não cabe, o cabeçalho esconde atributos e dinheiro até o evento acabar. Com letra normal, isso não acontece;
+  - o subtítulo e os atributos ficaram menores.
+
+  Medida a 145% (360×820): a história nas ações foi de ~30 px para 227 px; o cabeçalho, de 289 px para 271 px (122 px no modo compacto); um cartão de evento ganha até 698 px. Só um evento muito longo (9 linhas e 3 opções) ainda rola dentro do cartão.
 
 ## Próximos passos (núcleo)
 
