@@ -13,7 +13,7 @@ import { carregarConteudo, RAIZ } from './disco.ts';
 import { classeDoPatrimonio, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
-import { anoDoPais, faseDe } from '../src/motor/pais.ts';
+import { anoDoPais, ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
 import { mercadoDoAno, motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
@@ -54,6 +54,37 @@ interface Jogada {
   anosPorFase: Record<Fase, number>;
   /** Operações na carteira (aplicar, resgatar, trocar o perfil). */
   operacoes: number;
+  /** O país ano a ano (só o que os portões do incremento 8 contam). */
+  pais: PaisDaVida;
+}
+
+/** O país visto por uma vida: as estatísticas por governo, o trabalho pelo desemprego e o governo de quem joga. */
+interface PaisDaVida {
+  /** Por governo (bloco, 'regime' ou 'voce'): anos e a soma de cada estatística, para a média. */
+  porGoverno: Record<string, { anos: number; soma: Record<Estatistica, number> }>;
+  /** Anos de trabalho com carteira (18 a 64, com renda, sem estabilidade), pelo desemprego do país no ano. */
+  anosDeTrabalho: { ano: number; desemprego: number }[];
+  /** Quem joga governou: a dívida ao assumir e ao sair, e os anos. */
+  governo: { anos: number; dividaInicio: number; dividaFim: number; aprovacao: number } | null;
+}
+
+const ESTAVEIS = ['servidor', 'empreendedor', 'socio', 'herdeiro_negocio', 'aposentado'];
+
+/** Anota o ano do país na vida (depois do +1 ano). */
+function anotarPais(e: EstadoVida, p: PaisDaVida): void {
+  const pais = e.entidades['pais']!;
+  const gov = governoAtual(e);
+  const g = (p.porGoverno[gov] ??= { anos: 0, soma: Object.fromEntries(ESTATISTICAS.map((k) => [k, 0])) as Record<Estatistica, number> });
+  g.anos++;
+  for (const k of ESTATISTICAS) g.soma[k] += pais.n[k] ?? 0;
+  const eu = e.entidades['eu']!;
+  if (e.idade >= 18 && e.idade <= 64 && (eu.n['renda'] ?? 0) > 0 && !ESTAVEIS.some((m) => eu.q[m])) p.anosDeTrabalho.push({ ano: e.ano, desemprego: pais.n['desemprego'] ?? 8.5 });
+  if (gov === 'voce') {
+    p.governo ??= { anos: 0, dividaInicio: pais.n['divida'] ?? 0, dividaFim: 0, aprovacao: 0 };
+    p.governo.anos++;
+    p.governo.dividaFim = pais.n['divida'] ?? 0;
+    p.governo.aprovacao += pais.n['aprovacao'] ?? 0;
+  }
 }
 
 /** Joga uma vida já começada até o fim, como a interface: dinheiro (sem gastar a ficha), a ficha do ano e as escolhas. */
@@ -61,6 +92,7 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
   let toques = 0;
   let operacoes = 0;
   const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
+  const pais: PaisDaVida = { porGoverno: {}, anosDeTrabalho: [], governo: null };
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
@@ -83,9 +115,10 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
       if (!jaAgiu(e)) toques++;
       avancarAno(e, c, memoria);
       anosPorFase[faseDe(e)]++;
+      anotarPais(e, pais);
     }
   }
-  return { toques, anosPorFase, operacoes };
+  return { toques, anosPorFase, operacoes, pais };
 }
 
 function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
@@ -93,7 +126,7 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
   const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
   const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
   const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
-  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes };
+  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -197,6 +230,14 @@ interface Vida {
   decidiuQuemManda: boolean;
   /** Quanto durou cada crise do país que começou durante a vida (anos até a próxima mudança de fase). */
   crises: number[];
+  /** O país vivo: estatísticas por governo, anos de trabalho (com e sem demissão) pelo desemprego, votos, posses e o governo de quem joga. */
+  porGoverno: PaisDaVida['porGoverno'];
+  trabalho: { alto: number; demitidoAlto: number; baixo: number; demitidoBaixo: number };
+  votos: number;
+  votosQueElegeram: number;
+  viradas: number;
+  trocasDeGoverno: number;
+  governo: (NonNullable<PaisDaVida['governo']> & { reformas: number; caiu: boolean }) | null;
   /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
   comeco: string;
   decisoesAntesDos5: number;
@@ -336,6 +377,33 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       .map((h) => `${h.ref}:${h.escolha?.indice ?? ''}`)
       .join('>'),
     decisoesAntesDos5: e.historico.filter((h) => h.idade < 5 && (h.escolha !== undefined || h.tipo === 'acao')).length,
+    porGoverno: j.pais.porGoverno,
+    trabalho: (() => {
+      const demitido = new Set(e.historico.filter((h) => h.ref === 'demissao').map((h) => h.ano));
+      const t = { alto: 0, demitidoAlto: 0, baixo: 0, demitidoBaixo: 0 };
+      for (const a of j.pais.anosDeTrabalho) {
+        if (a.desemprego >= 10.5) {
+          t.alto++;
+          if (demitido.has(a.ano)) t.demitidoAlto++;
+        } else if (a.desemprego <= 6.5) {
+          t.baixo++;
+          if (demitido.has(a.ano)) t.demitidoBaixo++;
+        }
+      }
+      return t;
+    })(),
+    votos: e.historico.filter((h) => h.ref === 'primeiro_voto' || h.ref === 'eleicao_geral').length,
+    votosQueElegeram: (() => {
+      const votos = new Set(e.historico.filter((h) => h.ref === 'primeiro_voto' || h.ref === 'eleicao_geral').map((h) => h.id));
+      return e.historico.filter((h) => h.ref?.startsWith('governo:') && (h.causas ?? []).some((id) => votos.has(id))).length;
+    })(),
+    viradas: e.historico.filter((h) => h.ref?.startsWith('ciclo:')).length,
+    trocasDeGoverno: e.historico.filter((h, i, todas) => h.ref?.startsWith('governo:') && todas.slice(0, i).findLast((x) => x.ref?.startsWith('governo:'))?.ref !== h.ref).length,
+    governo: j.pais.governo && {
+      ...j.pais.governo,
+      reformas: e.historico.filter((h) => h.ref === 'pais:politica').length,
+      caiu: Boolean(q['derrubado'] || q['renunciou']),
+    },
     infanciaVoltou: e.historico.some((h) => h.idade >= 5 && h.idade <= 12 && (h.causas ?? []).some((id) => (porId.get(id)?.idade ?? 99) <= 4 && porId.get(id)?.tipo !== 'nascimento')),
     acontecimentos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'morte').length,
     comPorque: e.historico.filter((h) => porqueDe(h, porId) !== null).length,
@@ -715,6 +783,46 @@ const comecosDistintos = (1000 * new Set(vidas.map((v) => v.comeco)).size) / Mat
 const decidemCedo = vidas.filter((v) => v.decisoesAntesDos5 >= 2).length / Math.max(1, vidas.length);
 const infanciaVolta = vidas.filter((v) => v.infanciaVoltou).length / Math.max(1, vidas.length);
 const porquesPorVida = media(vidas.map((v) => v.comPorque));
+/** Incremento 8: o país vivo (todas as vidas jogadas: os governos de quem joga são raros nas sorteadas). */
+const noGoverno = new Map<string, { anos: number; soma: Record<Estatistica, number> }>();
+for (const v of todasAsVidas) {
+  for (const [g, x] of Object.entries(v.porGoverno)) {
+    const t = noGoverno.get(g) ?? { anos: 0, soma: Object.fromEntries(ESTATISTICAS.map((k) => [k, 0])) as Record<Estatistica, number> };
+    t.anos += x.anos;
+    for (const k of ESTATISTICAS) t.soma[k] += x.soma[k];
+    noGoverno.set(g, t);
+  }
+}
+const mediaNoGoverno = (g: string, k: Estatistica): number => (noGoverno.get(g)?.soma[k] ?? 0) / Math.max(1, noGoverno.get(g)?.anos ?? 0);
+const blocosEleitos = c.mundo.governos.filter((g) => g.eleito);
+const anosDeBlocos = blocosEleitos.reduce((s, g) => s + (noGoverno.get(g.id)?.anos ?? 0), 0);
+const parteDoBloco = (g: string): number => (noGoverno.get(g)?.anos ?? 0) / Math.max(1, anosDeBlocos);
+const direcoes = [
+  ['pobreza menor com a frente popular que com o bloco liberal', mediaNoGoverno('frente_popular', 'pobreza') < mediaNoGoverno('bloco_liberal', 'pobreza'), `${num(mediaNoGoverno('frente_popular', 'pobreza'), 1)}% × ${num(mediaNoGoverno('bloco_liberal', 'pobreza'), 1)}%`],
+  ['violência menor com a aliança da ordem que com o bloco liberal', mediaNoGoverno('alianca_da_ordem', 'violencia') < mediaNoGoverno('bloco_liberal', 'violencia'), `${num(mediaNoGoverno('alianca_da_ordem', 'violencia'), 1)} × ${num(mediaNoGoverno('bloco_liberal', 'violencia'), 1)}`],
+  ['crescimento maior com o bloco liberal que com a frente popular', mediaNoGoverno('bloco_liberal', 'crescimento') > mediaNoGoverno('frente_popular', 'crescimento'), `${num(mediaNoGoverno('bloco_liberal', 'crescimento'), 2)}% × ${num(mediaNoGoverno('frente_popular', 'crescimento'), 2)}%`],
+  ['dívida menor com a aliança da ordem que com o centrão', mediaNoGoverno('alianca_da_ordem', 'divida') < mediaNoGoverno('centrao', 'divida'), `${num(mediaNoGoverno('alianca_da_ordem', 'divida'), 0)}% × ${num(mediaNoGoverno('centrao', 'divida'), 0)}% do PIB`],
+] as const;
+const anosVividos = vidas.reduce((s, v) => s + v.idade, 0);
+const viradasPor70 = (70 * vidas.reduce((s, v) => s + v.viradas, 0)) / Math.max(1, anosVividos);
+const trocasPorVida = media(vidas.map((v) => v.trocasDeGoverno));
+const trabalhoNoPais = vidas.reduce(
+  (t, v) => ({ alto: t.alto + v.trabalho.alto, demitidoAlto: t.demitidoAlto + v.trabalho.demitidoAlto, baixo: t.baixo + v.trabalho.baixo, demitidoBaixo: t.demitidoBaixo + v.trabalho.demitidoBaixo }),
+  { alto: 0, demitidoAlto: 0, baixo: 0, demitidoBaixo: 0 },
+);
+const demissaoAlto = trabalhoNoPais.demitidoAlto / Math.max(1, trabalhoNoPais.alto);
+const demissaoBaixo = trabalhoNoPais.demitidoBaixo / Math.max(1, trabalhoNoPais.baixo);
+const votosPorVida = media(vidas.map((v) => v.votos));
+const votosQueElegeram = vidas.reduce((s, v) => s + v.votosQueElegeram, 0) / Math.max(1, vidas.reduce((s, v) => s + v.votos, 0));
+const governosDe = (estrategia: Estrategia): NonNullable<Vida['governo']>[] => todasAsVidas.filter((v) => v.estrategia === estrategia && v.governo).map((v) => v.governo!);
+/** Quanto a dívida andou por ano de governo de quem joga, pela estratégia (pontos do PIB). */
+const dividaPorAno = (estrategia: Estrategia): number => {
+  const gs = governosDe(estrategia);
+  return gs.reduce((s, g) => s + (g.dividaFim - g.dividaInicio), 0) / Math.max(1, gs.reduce((s, g) => s + g.anos, 0));
+};
+const governaram = todasAsVidas.filter((v) => v.governo);
+const reformaram = governaram.filter((v) => v.estrategia !== 'primeira' && v.governo!.reformas > 0).length / Math.max(1, governaram.filter((v) => v.estrategia !== 'primeira').length);
+const mortesViolentas = vidas.filter((v) => v.destino.endsWith('|violencia')).length / Math.max(1, vidas.length);
 
 // ---------------------------------------------------------------- portões
 
@@ -773,6 +881,33 @@ const portoes7 = [
   ['Cada vida começa diferente: ≥ 800 começos distintos por 1.000 vidas (histórias até os 6 anos, com a escolha)', comecosDistintos >= 800, num(comecosDistintos, 0)],
   ['Decidir desde cedo: ≥ 80% das vidas têm 2 decisões ou mais antes dos 5 anos', decidemCedo >= 0.8, pct(decidemCedo)],
   ['A infância volta: ≥ 30% das vidas têm algo dos 5 aos 12 causado pelos anos até os 4', infanciaVolta >= 0.3, pct(infanciaVolta)],
+] as const;
+/** Incremento 8 (pedido do dono em 11/10/2026): o país vivo, com política e estatísticas que respondem a quem governa. */
+const portoes8 = [
+  [
+    'As fases têm o tamanho de antes: normal 55–72%, expansão 15–30%, recessão 7–18%, crise 1–6% dos anos',
+    parteFase('normal') >= 0.55 && parteFase('normal') <= 0.72 && parteFase('expansao') >= 0.15 && parteFase('expansao') <= 0.3 && parteFase('recessao') >= 0.07 && parteFase('recessao') <= 0.18 && parteFase('crise') >= 0.01 && parteFase('crise') <= 0.06,
+    `${pct(parteFase('normal'))} / ${pct(parteFase('expansao'))} / ${pct(parteFase('recessao'))} / ${pct(parteFase('crise'))}`,
+  ],
+  ['O país não pisca: até 18 viradas de fase a cada 70 anos', viradasPor70 <= 18, num(viradasPor70, 1)],
+  [
+    'Os governos se alternam: cada bloco governa de 12% a 40% dos anos, com 2 trocas ou mais por vida',
+    blocosEleitos.every((g) => parteDoBloco(g.id) >= 0.12 && parteDoBloco(g.id) <= 0.4) && trocasPorVida >= 2,
+    `${blocosEleitos.map((g) => `${g.nome} ${pct(parteDoBloco(g.id))}`).join(', ')}; ${num(trocasPorVida, 1)} trocas por vida`,
+  ],
+  ['A política muda o país: as 4 direções certas', direcoes.every(([, ok]) => ok), direcoes.map(([nome, ok, valor]) => `${ok ? '✓' : '✗'} ${nome} (${valor})`).join('; ')],
+  [
+    'O país pesa no trabalho: com desemprego de 10,5% ou mais, a demissão é ≥ 2× mais provável do que com 6,5% ou menos',
+    demissaoAlto >= 2 * demissaoBaixo,
+    `${pct(demissaoAlto, 2)} contra ${pct(demissaoBaixo, 2)} por ano (${trabalhoNoPais.alto} e ${trabalhoNoPais.baixo} anos de trabalho)`,
+  ],
+  ['O voto aparece e conta: ≥ 1,5 voto por vida, e ≥ 25% dos votos ajudam a eleger quem ganha', votosPorVida >= 1.5 && votosQueElegeram >= 0.25, `${num(votosPorVida, 2)} votos por vida, ${pct(votosQueElegeram)} elegeram`],
+  [
+    'Quem governa decide: no poder, a dívida sobe mais com a populista (arriscada) do que com a responsável (cautelosa), e ≥ 80% de quem governa reforma',
+    dividaPorAno('arriscada') > dividaPorAno('cautelosa') && reformaram >= 0.8 && governosDe('arriscada').length >= 10 && governosDe('cautelosa').length >= 10,
+    `${num(dividaPorAno('arriscada'), 2)} × ${num(dividaPorAno('cautelosa'), 2)} pontos do PIB por ano (${governosDe('arriscada').length} e ${governosDe('cautelosa').length} governos); ${pct(reformaram)} reformaram`,
+  ],
+  ['A violência do país mata, e pouco: entre 0,5% e 6% das vidas', mortesViolentas >= 0.005 && mortesViolentas <= 0.06, pct(mortesViolentas, 1)],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
@@ -865,6 +1000,20 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes7) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Portões do incremento 8 (o país vivo)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes8) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('| Governo | Anos | Crescimento | Desemprego | Inflação | Dívida | Pobreza | Violência | Saúde | Educação | Aprovação |');
+l('|---|---|---|---|---|---|---|---|---|---|---|');
+for (const [g, x] of [...noGoverno].sort((a, b) => b[1].anos - a[1].anos)) {
+  const m = (k: Estatistica): number => x.soma[k] / Math.max(1, x.anos);
+  const nome = g === 'voce' ? 'quem joga' : (c.mundo.governos.find((d) => d.id === g)?.nome ?? g);
+  l(`| ${nome} | ${x.anos.toLocaleString('pt-BR')} | ${num(m('crescimento'), 1)}% | ${num(m('desemprego'), 1)}% | ${num(m('inflacao'), 1)}% | ${num(m('divida'), 0)}% | ${num(m('pobreza'), 1)}% | ${num(m('violencia'), 1)} | ${num(m('saude'), 0)} | ${num(m('educacao'), 0)} | ${num(m('aprovacao'), 0)}% |`);
+}
 l();
 l('## Life simulator');
 l();
@@ -1088,6 +1237,7 @@ for (const [nome, ok, detalhe] of portoes3) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes5) console.log(`${ok ? '✓' : '·'} portão 5: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes6) console.log(`${ok ? '✓' : '·'} portão 6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes7) console.log(`${ok ? '✓' : '·'} portão 7: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes8) console.log(`${ok ? '✓' : '·'} portão 8: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(
