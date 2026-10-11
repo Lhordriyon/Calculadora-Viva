@@ -539,6 +539,14 @@ a.botao {
   margin-top: 4px;
 }
 
+/* O porquê: a causa de um ano anterior, discreta, abaixo do que aconteceu. */
+.entrada .porque {
+  margin-top: 4px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;

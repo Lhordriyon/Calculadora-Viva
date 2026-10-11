@@ -6,10 +6,15 @@
  * preço; escolher uma opção aplica a escolha na hora, sem gastar a ficha do
  * ano, e a causa é do jogador. O mundo responde com o que a jogada agenda e
  * com eventos que leem a marca que ela deixa.
+ *
+ * As jogadas na empresa (a condição exige a empresa: um conselho, um mural de
+ * problemas, sair de cena) aparecem na seção Empresa; o custo delas pode sair
+ * da própria empresa (`empresaFator`), não da conta.
  */
 import type { Conteudo } from './conteudo.ts';
 import { tipoDe } from './conteudo.ts';
 import { contexto } from './contexto.ts';
+import { empresaDe } from './empresa.ts';
 import type { Storylet } from './esquema.ts';
 import { aplicarEscolha, custoDaEscolha, elegivel, marcarVisto, opcoesDe } from './storylets.ts';
 import { capitalizar, renderizar } from './texto.ts';
@@ -29,6 +34,13 @@ export interface JogadaDisponivel {
   opcoes: OpcaoPendente[];
   /** O preço de cada opção (0 = de graça). */
   custos: number[];
+  /** O que cada opção tira do valor da empresa (0 = nada). */
+  daEmpresa: number[];
+}
+
+/** Jogada na empresa: a condição exige a empresa, e ela aparece na seção Empresa, não em Brincar de deus. */
+export function ehDaEmpresa(s: Storylet): boolean {
+  return Object.keys(s.condicoes ?? {}).some((k) => k.startsWith('empresa.'));
 }
 
 export function precoDe(s: Storylet): number {
@@ -43,7 +55,9 @@ export function jogadasDe(e: EstadoVida, c: Conteudo): JogadaDisponivel[] {
     .filter((s) => elegivel(s, e, undefined))
     .map((s) => {
       const ctx = contexto(e, { ator: undefined, valores: s.valores, trechos: s.trechos });
-      return { s, texto: capitalizar(renderizar(s.texto, ctx)), preco: precoDe(s), opcoes: opcoesDe(e, s, undefined, ctx), custos: (s.escolhas ?? []).map(custoDaEscolha) };
+      const valor = empresaDe(e)?.n['valor'] ?? 0;
+      const daEmpresa = (s.escolhas ?? []).map((x) => Math.max(0, 1 - (x.efeitos?.empresaFator ?? 1)) * valor);
+      return { s, texto: capitalizar(renderizar(s.texto, ctx)), preco: precoDe(s), opcoes: opcoesDe(e, s, undefined, ctx), custos: (s.escolhas ?? []).map(custoDaEscolha), daEmpresa };
     })
     .sort((a, b) => a.preco - b.preco);
 }

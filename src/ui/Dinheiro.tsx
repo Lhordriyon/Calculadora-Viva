@@ -4,9 +4,9 @@ import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../m
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { padraoDe } from '../motor/economia.ts';
-import { custoDaAquisicao, empresaDe, liquidoDe, precoDaParte, setoresDeEmpresa } from '../motor/empresa.ts';
+import { custoDaAquisicao, empresaDe, liquidoDe, setoresDeEmpresa, vendaDaParte } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
-import { jogadasDe } from '../motor/fortuna.ts';
+import { ehDaEmpresa, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
 import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -104,7 +104,10 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const lucro = n['lucro'] ?? 0;
   const aporte: Operacao = { tipo: 'aportar', valor };
   const motivoAporte = motivoParaNaoOperar(vida, conteudo, aporte);
-  const preco = precoDaParte(vida, conteudo);
+  const venda = vendaDaParte(vida, conteudo);
+  const preco = venda.preco;
+  const dependencia = n['dependencia'] ?? 0;
+  const naEmpresa = jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s));
   const pessoas = funcionariosDe(n['valor'] ?? 0);
   const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir' });
   return (
@@ -130,8 +133,21 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           )}
           <dt>Ritmo</dt>
           <dd class={(n['tracao'] ?? 0) < 0 ? 'ruim' : ''}>{porcento(n['tracao'] ?? 0)} ao ano</dd>
+          <dt>Depende de você</dt>
+          <dd>
+            {Math.round(dependencia)}% · {nivelDeDependencia(dependencia)}
+          </dd>
         </dl>
+        <p class="nota">Quanto mais ela depende de você, mais o seu talento pesa no ritmo, mais ela trava ao crescer e mais perde se você faltar. Quem compra também desconta.</p>
       </div>
+      {naEmpresa.length > 0 && (
+        <>
+          <p class="nota">
+            <b>Quem manda.</b> O que muda o quanto ela depende de você. Não gasta a ficha do ano, e a empresa vai reagir.
+          </p>
+          <ListaDeJogadas lista={naEmpresa} aoOperar={aoOperar} rotulo="Quem manda na empresa" />
+        </>
+      )}
       <div class="escolhas-origem" role="group" aria-label="Retirada">
         {RETIRADAS.map((r, i) => (
           <button
@@ -167,7 +183,7 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         <div class="confirmar">
           <p>
             Vender a sua parte por {formatarDinheiro(preco)}
-            {preco < parteNaEmpresa(vida) - 1 ? ', abaixo do que ela vale (o país está mal)' : preco > parteNaEmpresa(vida) + 1 ? ', acima do que ela vale (o país está aquecido)' : ''}?
+            {porQueOPreco(venda, preco, parteNaEmpresa(vida))}?
           </p>
           <div class="escolhas-origem">
             <button
@@ -458,40 +474,71 @@ function Bens({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 }
 
 /** O que só dá para fazer com muito dinheiro: aparece quando a fortuna permite, da jogada mais barata à mais cara. */
-function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+/** "Tudo passa por você", "bastante", "pouco", "anda sozinha". */
+function nivelDeDependencia(d: number): string {
+  return d >= 70 ? 'tudo passa por você' : d >= 40 ? 'bastante' : d >= 15 ? 'pouco' : 'anda sozinha';
+}
+
+/** Por que o preço da venda não é o valor: a fase do país e o desconto da dependência. */
+function porQueOPreco(venda: { fase: number; desconto: number }, preco: number, vale: number): string {
+  if (Math.abs(preco - vale) < 1) return '';
+  const razoes = [
+    venda.fase < 0.999 ? 'o país está mal' : venda.fase > 1.001 ? 'o país está aquecido' : '',
+    venda.desconto >= 0.01 ? `quem compra desconta ${Math.round(venda.desconto * 100)}% porque ela depende de você` : '',
+  ].filter(Boolean);
+  return ` (ela vale ${formatarDinheiro(vale)}: ${razoes.join('; ')})`;
+}
+
+/** O custo de uma opção de jogada: da conta, da empresa ou nenhum. */
+function custoDaOpcao(j: JogadaDisponivel, i: number): string {
+  const custo = j.custos[i] ?? 0;
+  const daEmpresa = j.daEmpresa[i] ?? 0;
+  if (custo > 0) return formatarDinheiro(custo);
+  if (daEmpresa > 0) return `${formatarDinheiro(daEmpresa)} da empresa`;
+  return 'sem custo em dinheiro';
+}
+
+/** Jogadas abertas uma a uma: o texto e as opções com o custo e o motivo do bloqueio. */
+function ListaDeJogadas({ lista, aoOperar, rotulo }: { lista: JogadaDisponivel[]; aoOperar: Props['aoOperar']; rotulo: string }) {
   const [aberta, setAberta] = useState<string | null>(null);
-  const lista = jogadasDe(vida, conteudo);
+  return (
+    <ul class="vagas" aria-label={rotulo}>
+      {lista.map((j) => (
+          <li key={j.s.id}>
+          <button type="button" class="vaga" aria-expanded={aberta === j.s.id} onClick={() => setAberta(aberta === j.s.id ? null : j.s.id)}>
+            <b>{j.s.rotulo}</b>
+            <small>{j.preco > 0 ? `a partir de ${formatarDinheiro(j.preco)}` : j.daEmpresa.some((x) => x > 0) ? 'pago pela empresa' : 'sem custo em dinheiro'}</small>
+          </button>
+          {aberta === j.s.id && (
+            <div class="confirmar">
+              <p>{j.texto}</p>
+              <div class="opcoes">
+                {j.opcoes.map((o, i) => (
+                  <button class="opcao" type="button" key={i} disabled={!o.disponivel} onClick={() => aoOperar({ tipo: 'jogada', id: j.s.id, escolha: i })}>
+                    {o.texto}
+                    <small>
+                      {custoDaOpcao(j, i)}
+                      {o.motivo ? ` · ${o.motivo}` : ''}
+                    </small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s));
   if (lista.length === 0) return null;
   return (
     <fieldset class="grupo">
       <legend>Brincar de deus</legend>
       <p class="nota">O que só dá para fazer com muito dinheiro. Não gasta a ficha do ano, e o mundo vai reagir.</p>
-      <ul class="vagas" aria-label="Jogadas">
-        {lista.map((j) => (
-          <li key={j.s.id}>
-            <button type="button" class="vaga" aria-expanded={aberta === j.s.id} onClick={() => setAberta(aberta === j.s.id ? null : j.s.id)}>
-              <b>{j.s.rotulo}</b>
-              <small>{j.preco > 0 ? `a partir de ${formatarDinheiro(j.preco)}` : 'sem custo'}</small>
-            </button>
-            {aberta === j.s.id && (
-              <div class="confirmar">
-                <p>{j.texto}</p>
-                <div class="opcoes">
-                  {j.opcoes.map((o, i) => (
-                    <button class="opcao" type="button" key={i} disabled={!o.disponivel} onClick={() => aoOperar({ tipo: 'jogada', id: j.s.id, escolha: i })}>
-                      {o.texto}
-                      <small>
-                        {j.custos[i]! > 0 ? formatarDinheiro(j.custos[i]!) : 'sem custo'}
-                        {o.motivo ? ` · ${o.motivo}` : ''}
-                      </small>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+      <ListaDeJogadas lista={lista} aoOperar={aoOperar} rotulo="Jogadas" />
     </fieldset>
   );
 }

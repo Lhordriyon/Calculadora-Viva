@@ -2,6 +2,7 @@ import { useMemo } from 'preact/hooks';
 import { NOMES_VERBO } from '../motor/acoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Entrada, EstadoVida } from '../motor/tipos.ts';
+import { porqueDe } from '../motor/virada.ts';
 import { conteudo } from '../conteudo.ts';
 import { avisosDeInflacao, chipDoBalanco, chipsDe, visivel, type Chip } from './formato.ts';
 
@@ -26,9 +27,11 @@ interface PropsItem {
   nomeDe: (papel: string) => string | undefined;
   /** O balanço do ano, na primeira entrada visível dele. */
   balanco: Chip | null;
+  /** A causa de um ano anterior, no que aconteceu com quem joga (eventos, iniciativas dos outros, a morte). */
+  porque: { idade: number; texto: string } | null;
 }
 
-function Item({ h, nova, inflacao, nomeDe, balanco }: PropsItem) {
+function Item({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
   if (balanco) chips.push(balanco);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
@@ -42,6 +45,11 @@ function Item({ h, nova, inflacao, nomeDe, balanco }: PropsItem) {
         <p>{h.texto}</p>
         {h.escolha && <p class="escolhida">→ {h.escolha.texto}</p>}
         {h.resultado && <p class="resultado">{h.resultado}</p>}
+        {porque && (
+          <p class="porque">
+            Porque aos {porque.idade}, {porque.texto}.
+          </p>
+        )}
         {chips.length > 0 && (
           <ul class="chips">
             {chips.map((c) => (
@@ -65,6 +73,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
   const inflacao = useMemo(() => avisosDeInflacao(historico), [historico]);
   const nomeDe = (papel: string) => vida.entidades[papel]?.nome;
   const participacao = vida.entidades['empresa']?.n['participacao'] ?? 1;
+  const porId = useMemo(() => new Map(historico.map((h) => [h.id, h])), [historico]);
   // Cada ano tem uma entrada invisível com as regras (salário, rendimentos, inflação, empresa): o balanço dela vai na primeira entrada visível do ano.
   const balancos = useMemo(() => {
     const m = new Map<number, Chip>();
@@ -83,7 +92,15 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
     <ol class="linha-do-tempo" aria-label="Linha do tempo da vida">
       {historico.map((h, i) =>
         !visivel(h) ? null : (
-          <Item h={h} nova={i >= novasDesde} inflacao={inflacao.has(h.id)} nomeDe={nomeDe} balanco={balancos.get(h.id) ?? null} key={h.id} />
+          <Item
+            h={h}
+            nova={i >= novasDesde}
+            inflacao={inflacao.has(h.id)}
+            nomeDe={nomeDe}
+            balanco={balancos.get(h.id) ?? null}
+            porque={porqueDe(h, porId)}
+            key={h.id}
+          />
         ),
       )}
     </ol>
