@@ -95,6 +95,30 @@ function frase(h: Entrada): { texto: string; doJogador: boolean } | null {
   return null;
 }
 
+/** O que acontece com quem joga mostra o porquê; o que ele mesmo fez (ações, folhas), não. */
+const COM_PORQUE = new Set<Entrada['tipo']>(['evento', 'npc', 'morte']);
+
+/**
+ * Por que esta entrada aconteceu: a causa direta mais recente, de um ano
+ * anterior, que se conta numa frase (a do jogador antes da do mundo). A linha
+ * do tempo mostra "Porque aos 34, você bancou a campanha…": a consequência
+ * aponta para a decisão no momento em que acontece, não só no cartão final.
+ * Só no que acontece com quem joga (eventos, iniciativas dos outros, a morte).
+ */
+export function porqueDe(h: Entrada, porId: ReadonlyMap<number, Entrada>): { idade: number; texto: string } | null {
+  if (!COM_PORQUE.has(h.tipo)) return null;
+  let melhor: { idade: number; texto: string; doJogador: boolean } | null = null;
+  for (const id of h.causas ?? []) {
+    const causa = porId.get(id);
+    if (!causa || causa.idade >= h.idade) continue;
+    const f = frase(causa);
+    if (!f) continue;
+    const melhorQue = !melhor || (f.doJogador && !melhor.doJogador) || (f.doJogador === melhor.doJogador && causa.idade > melhor.idade);
+    if (melhorQue) melhor = { idade: causa.idade, texto: f.texto, doJogador: f.doJogador };
+  }
+  return melhor && { idade: melhor.idade, texto: melhor.texto };
+}
+
 function consequenciaDe(h: Entrada): string {
   if (h.escolha) return h.escolha.resumo;
   if ((h.tipo === 'acao' || h.tipo === 'dinheiro') && h.resumo) return `você ${h.resumo}`;
