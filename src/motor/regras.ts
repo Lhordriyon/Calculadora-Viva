@@ -10,7 +10,8 @@ import type { Padrao } from './constantes.ts';
  * empresa e dinheiro, e um ano vazio ali é um ano que o jogador não viveu.
  */
 export function ritmo(idade: number): number {
-  if (idade <= 4) return 0.3;
+  // A primeira infância decide muito (quem cuida, o que se come, a vacina, as histórias): ano vazio ali é decisão perdida.
+  if (idade <= 4) return 0.75;
   if (idade <= 12) return 0.55;
   if (idade <= 29) return 0.85;
   if (idade <= 49) return 0.78;

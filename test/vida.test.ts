@@ -51,12 +51,14 @@ describe('ciclo da vida', () => {
     avancarAno(e, real);
     expect(e.idade).toBe(1);
     expect(e.ano).toBe(2027);
-    // a primeira palavra é um marco aos 1 ano
-    expect(e.pendente?.storylet).toBe('primeira_palavra');
+    // A primeira infância é cheia: em poucos anos aparece uma escolha, e o ano trava até ela ser respondida.
+    while (!e.pendente && e.idade < 5) avancarAno(e, real);
+    expect(e.pendente).not.toBeNull();
     expect(() => avancarAno(e, real)).toThrow();
-    escolher(e, real, 0);
+    const livre = e.pendente!.opcoes.findIndex((o) => o.disponivel);
+    escolher(e, real, livre);
     expect(e.pendente).toBeNull();
-    expect(e.historico.at(-1)?.escolha?.indice).toBe(0);
+    expect(e.historico.at(-1)?.escolha?.indice).toBe(livre);
   });
 
   it('toda vida termina e nunca repete storylet não-repetível', () => {

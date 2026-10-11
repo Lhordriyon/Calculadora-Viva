@@ -860,5 +860,77 @@
       "texto": "Uma intoxicação alimentar, uma mala perdida e um pronto-socorro de fronteira. Mesmo assim, valeu a história.",
       "efeitos": { "saude": -4, "felicidade": 0.5 }
     }
+  },
+  {
+    "id": "ouvir_historia",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "ouvir uma história",
+    "idade": [1, 5],
+    "texto": "{mae} leu [o livro do sapo|a história da girafa|o mesmo livro pela vigésima vez] antes de dormir. Você corrigiu quando ela pulou uma página.",
+    "resumo": "ouviu histórias antes de dormir",
+    "efeitos": { "inteligencia": 1.5, "mae.vinculo": 1 }
+  },
+  {
+    "id": "rabiscar_parede",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "rabiscar a parede",
+    "idade": [2, 5],
+    "texto": "Você desenhou a família inteira na parede da sala, em escala real. {mae} tirou foto antes de pintar por cima.",
+    "resumo": "rabiscou a parede da sala",
+    "efeitos": { "inteligencia": 1, "felicidade": 1, "mae.vinculo": -0.5 }
+  },
+  {
+    "id": "correr_no_quintal",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "correr pelo quintal",
+    "idade": [1, 5],
+    "texto": "Você correu atrás [do gato|da galinha do vizinho|da própria sombra] até cair no sono de roupa e tudo.",
+    "resumo": "passou o ano correndo pelo quintal",
+    "efeitos": { "saude": 1, "felicidade": 1 }
+  },
+  {
+    "id": "comer_tudo",
+    "tipo": "acao",
+    "verbo": "saude",
+    "rotulo": "comer tudo do prato",
+    "idade": [1, 4],
+    "texto": "Você comeu a papinha inteira, inclusive a parte verde. {mae} comemorou como gol de final.",
+    "resumo": "comeu de tudo, inclusive verdura",
+    "efeitos": { "saude": 1.5, "felicidade": -0.5 }
+  },
+  {
+    "id": "colo_da_avo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "ficar no colo da vó",
+    "idade": [1, 4],
+    "condicoes": { "avo.vivo": true },
+    "texto": "Tarde inteira no colo da vó {avo}, ouvindo histórias da família que ninguém mais conta.",
+    "resumo": "passou tardes no colo da avó",
+    "efeitos": { "avo.vinculo": 3, "felicidade": 1 }
+  },
+  {
+    "id": "brincar_com_o_pai",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "brincar com o pai",
+    "idade": [1, 6],
+    "condicoes": { "pai.ausente": false, "pai.vivo": true },
+    "texto": "{pai} virou cavalinho, avião e monstro debaixo da cama, nessa ordem. A coluna dele reclamou depois.",
+    "resumo": "brincou com o pai até ele cansar",
+    "efeitos": { "pai.vinculo": 3, "felicidade": 1 }
+  },
+  {
+    "id": "passear_de_carrinho",
+    "tipo": "acao",
+    "verbo": "sair",
+    "rotulo": "passear de carrinho",
+    "idade": [1, 3],
+    "texto": "Passeio de carrinho pela praça. Você apontou para cada cachorro e deu nome a todos.",
+    "resumo": "passeou de carrinho pela praça",
+    "efeitos": { "felicidade": 1.5, "saude": 0.5 }
   }
 ]

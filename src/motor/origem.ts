@@ -242,6 +242,14 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   eu.n['felicidade'] = Math.round(limitar(base('felicidade', 65, 8) + traco.felicidade, 25, 97));
   eu.n['inteligencia'] = Math.round(limitar(base('inteligencia', 30, 10) + traco.inteligencia, 5, 80));
   eu.n['aparencia'] = Math.round(limitar(base('aparencia', 50, 14) + traco.aparencia, 8, 97));
+
+  // O parto: prematuro em 1 de cada 10 nascimentos, mais nas famílias pobres e nas mães muito novas ou mais velhas.
+  // Nasce com menos saúde, e o conteúdo lê a marca (o peito que chia, o pediatra que acompanha).
+  const chancePrematuro = ([0.13, 0.11, 0.1, 0.09, 0.08, 0.07, 0.07, 0.07][iClasse] ?? 0.1) + (idadeMae < 18 || idadeMae > 37 ? 0.04 : 0);
+  if (aleatorio(rng) < chancePrematuro) {
+    eu.q['prematuro'] = { v: 1, ano: e.ano, idade: 0, causa: null };
+    eu.n['saude'] = Math.max(30, (eu.n['saude'] ?? 80) - 8);
+  }
 }
 
 export function tipoDeFamiliaValido(x: string): x is TipoFamilia {

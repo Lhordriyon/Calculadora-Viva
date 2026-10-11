@@ -111,6 +111,7 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.familia',
   'eu.traco',
   'eu.negocio_familiar',
+  'eu.prematuro',
   ...de(PESSOAS, 'traco'),
   ...de(['mae', 'pai'], 'ocupacao'),
   ...de(['mae', 'pai'], 'setor'),

@@ -2373,6 +2373,14 @@
   ],
   "nascimento": [
     {
+      "se": { "marcas": ["prematuro"], "semMarcas": ["filho_de_craque", "filho_de_famoso", "filho_de_imigrantes", "filho_de_militar", "filho_de_politico", "filho_do_agro", "filho_do_circo", "herdeiro_regime", "principe"] },
+      "texto": "Você nasceu em {cidade}, {uf}, [sete semanas|um mês e meio|dois meses] antes da hora, com menos de dois quilos. Passou as primeiras semanas numa incubadora, e {mae} passou essas semanas ao lado dela."
+    },
+    {
+      "se": { "marcas": ["prematuro"], "pai.ausente": false, "semMarcas": ["filho_de_craque", "filho_de_famoso", "filho_de_imigrantes", "filho_de_militar", "filho_de_politico", "filho_do_agro", "filho_do_circo", "herdeiro_regime", "principe"] },
+      "texto": "Nasceu {nome}, em {cidade} ({uf}), antes de todo mundo estar pronto: {prematuro|prematura} de [32|33|34] semanas. {pai} aprendeu a palavra \"incubadora\", e {mae}, a palavra \"paciência\"."
+    },
+    {
       "se": { "pai.ausente": false },
       "texto": "Você nasceu em {cidade}, {uf}, numa [madrugada de calor|tarde de chuva|segunda-feira qualquer|noite de jogo do Brasil]. {mae}, {mae.ocupacao}, e {pai}, {pai.ocupacao}, choraram mais que você."
     },

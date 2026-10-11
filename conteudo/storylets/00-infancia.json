@@ -2,8 +2,14 @@
   {
     "id": "primeira_palavra",
     "idade": [1, 1],
-    "marco": true,
-    "texto": "[{mae} aposta|{mae} jura de pé junto|{mae} tem certeza] que sua primeira palavra vai ser \"mamãe\". {pai} aposta em \"papai\". A vó {avo} aposta em \"vó\", porque [é esperta|conhece {o neto|a neta}|já viu isso acontecer três vezes].",
+    "peso": 4,
+    "trechos": {
+      "apostas": [
+        { "se": { "pai.ausente": true }, "texto": "{mae} aposta em \"mamãe\" e a vó {avo}, em \"vó\"" },
+        { "texto": "{mae} aposta em \"mamãe\", {pai} em \"papai\" e a vó {avo}, em \"vó\"" }
+      ]
+    },
+    "texto": "Você está a um passo da primeira palavra, e em casa já tem bolão: {apostas}. [Ninguém apostou no que vem.|O vizinho apostou em \"gol\".|A aposta vale um pudim.]",
     "resumo": "disse a primeira palavra",
     "escolhas": [
       {
@@ -11,66 +17,88 @@
         "resumo": "disse \"mamãe\" antes de qualquer outra palavra",
         "resultado": {
           "texto": "{mae} [chorou, gravou e mandou o vídeo para a família inteira. Duas vezes.|transformou o áudio em toque de celular.|contou para a vizinha, a manicure e o porteiro, nessa ordem.]",
-          "efeitos": { "felicidade": 3 }
+          "efeitos": { "mae.vinculo": 6, "felicidade": 2 }
         }
       },
       {
         "texto": "\"Papai\"",
         "resumo": "disse \"papai\" primeiro e deixou {mae} com ciúme",
+        "condicoes": { "pai.ausente": false, "pai.vivo": true },
+        "bloqueio": "quem não está em casa não ouve",
         "resultado": {
           "texto": "{pai} [contou para todo mundo no trabalho, inclusive para quem não perguntou.|ficou mais orgulhoso que no dia do próprio casamento.|gravou o momento e assiste até hoje.]",
-          "efeitos": { "felicidade": 3 }
+          "efeitos": { "pai.vinculo": 6, "felicidade": 2 }
         }
       },
       {
-        "texto": "\"Pix\"",
-        "resumo": "disse \"Pix\" como primeira palavra",
+        "texto": "\"Vó\"",
+        "resumo": "disse \"vó\" antes de \"mamãe\" e ganhou a avó para sempre",
+        "condicoes": { "avo.vivo": true, "algumaMarca": ["avo.mora_junto", "criado_pela_vo"] },
+        "bloqueio": "a vó não mora perto",
         "resultado": {
-          "texto": "Ninguém sabe onde você ouviu isso. O gerente do banco ficaria orgulhoso.",
-          "efeitos": { "inteligencia": 2, "marcas": ["tino_financeiro"] }
+          "texto": "A vó {avo} ganhou o bolão e não deixou ninguém esquecer. O pudim foi dela, e {o neto|a neta}, também.",
+          "efeitos": { "avo.vinculo": 8, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "\"Não!\"",
+        "resumo": "disse \"não\" como primeira palavra, com convicção",
+        "resultado": {
+          "texto": "Ninguém ganhou o bolão. Você disse \"não\" para o mingau, para o banho e para a câmera, e gostou do efeito.",
+          "efeitos": { "felicidade": 1, "marcas": ["voluntarioso"] }
         }
       }
     ]
   },
   {
     "id": "creche_ou_vo",
-    "idade": [2, 3],
+    "idade": [1, 2],
     "peso": 6,
     "trechos": {
       "quem_trabalha": [
-        { "se": { "pai.ausente": true }, "texto": "{mae} precisa trabalhar" },
+        { "se": { "pai.ausente": true }, "texto": "{mae} precisa voltar a trabalhar" },
         { "texto": "{mae} e {pai} precisam trabalhar" }
       ]
     },
-    "texto": "{quem_trabalha}. A creche pública abriu vaga, e a vó {avo} se ofereceu para cuidar de você \"só até crescer um pouquinho\".",
-    "resumo": "foi para a creche ou para a casa da vó",
+    "texto": "A licença acabou, {quem_trabalha} e alguém tem que ficar com você. A família se reúne na cozinha, como em toda decisão importante.",
+    "resumo": "teve a família decidindo quem cuidaria {dele|dela}",
     "escolhas": [
       {
-        "texto": "Creche",
-        "resumo": "foi para a creche e voltou com vocabulário novo",
+        "texto": "A creche pública do bairro",
+        "resumo": "foi para a creche pública ainda bebê",
         "resultado": {
-          "texto": "Você voltou de lá com três amigos, duas viroses e um vocabulário que {mae} prefere não comentar.",
-          "efeitos": { "inteligencia": 5, "saude": -1, "felicidade": 1 }
+          "texto": "Na creche, você pegou todas as gripes do bairro e aprendeu a dividir o brinquedo, nessa ordem.",
+          "efeitos": { "inteligencia": 3, "saude": -2, "felicidade": 1, "marcas": ["creche"] }
         }
       },
       {
-        "texto": "Ficar com a vó {avo}",
-        "resumo": "foi criad{o|a} pela vó {avo}",
-        "resultado": {
-          "texto": "A vó {avo} te ensinou a rezar, a fazer bolinho de chuva e a desconfiar de vendedor de porta.",
-          "efeitos": { "felicidade": 4, "marcas": ["criado_pela_vo"], "avo.vinculo": 10 }
-        },
+        "texto": "A vó {avo}",
+        "resumo": "foi {criado|criada} pela avó enquanto os pais trabalhavam",
         "condicoes": { "avo.vivo": true },
-        "bloqueio": "a vó já não está aqui"
+        "bloqueio": "a vó não pode",
+        "resultado": {
+          "texto": "A vó {avo} assumiu: novela à tarde, bolo de fubá e a certeza de que você é a criança mais esperta do mundo.",
+          "efeitos": { "felicidade": 3, "avo.vinculo": 10, "marcas": ["criado_pela_vo"] }
+        }
       },
       {
-        "texto": "Berçário bilíngue",
-        "resumo": "foi para um berçário bilíngue",
+        "texto": "Uma babá em tempo integral",
+        "resumo": "foi {criado|criada} por uma babá",
         "condicoes": { "classe_origem": { "min": 4 } },
-        "bloqueio": "o berçário custa um salário por mês",
+        "bloqueio": "babá é coisa de quem pode",
         "resultado": {
-          "texto": "Você aprendeu a pedir água em dois idiomas antes de aprender a pedir desculpas em um.",
-          "efeitos": { "inteligencia": 6, "felicidade": 1, "mae.dinheiro": -15000 }
+          "texto": "Chega a [Cida|Rose|Dona Lurdes], que sabe de cor o que você come e quando você dorme. {mae} sabe pelo relatório.",
+          "efeitos": { "felicidade": 2, "mae.vinculo": -4, "mae.dinheiro": -30000, "marcas": ["criado_pela_baba"] }
+        }
+      },
+      {
+        "texto": "{mae} larga o emprego para ficar com você",
+        "resumo": "teve a mãe largando o emprego para cuidar {dele|dela}",
+        "condicoes": { "mae.renda": { "min": 1 } },
+        "bloqueio": "{mae} não tem emprego para largar",
+        "resultado": {
+          "texto": "{mae} pediu as contas. Em casa, sobra colo e falta dinheiro: o mês aperta, mas você tem plateia para cada palavra nova.",
+          "efeitos": { "inteligencia": 2, "mae.vinculo": 8, "mae.renda": { "definir": 0 }, "marcas": ["mae_em_casa"] }
         }
       }
     ]

@@ -644,7 +644,7 @@
         "resumo": "abriu a primeira conta no banco com o cofrinho",
         "resultado": {
           "texto": "{mae} te levou ao banco. O gerente contou as moedas com cara de quem merecia aumento.",
-          "efeitos": { "dinheiro": 600, "marcas": ["poupador"], "inteligencia": 1 }
+          "efeitos": { "dinheiro": 600, "marcas": ["poupador", "tino_financeiro"], "inteligencia": 1 }
         }
       },
       {

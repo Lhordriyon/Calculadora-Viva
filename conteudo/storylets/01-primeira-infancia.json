@@ -1,0 +1,507 @@
+[
+  {
+    "id": "vacina_no_posto",
+    "idade": [1, 2],
+    "peso": 4,
+    "texto": "Campanha de vacinação no posto de saúde. A fila dá a volta no quarteirão, e o boneco da campanha acena para todo mundo, inclusive para quem chora.",
+    "resumo": "foi {levado|levada} à campanha de vacinação",
+    "escolhas": [
+      {
+        "texto": "Vacinar, com direito a pirulito",
+        "resumo": "tomou as vacinas da campanha",
+        "resultado": {
+          "texto": "Duas picadas, um berro e um pirulito de uva. A caderneta fica em dia.",
+          "efeitos": { "saude": 3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "{mae} leu num grupo que vacina faz mal",
+        "resumo": "ficou sem vacina porque a família leu um boato",
+        "resultado": {
+          "texto": "O áudio no grupo da família tinha seis minutos e nenhuma fonte. A caderneta fica em branco.",
+          "efeitos": { "mae.vinculo": 1, "felicidade": 1, "marcas": ["sem_vacina"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fome_no_fim_do_mes",
+    "idade": [1, 3],
+    "peso": 5,
+    "condicoes": { "classe_origem": { "max": 1 } },
+    "texto": "O leite acabou antes do fim do mês. Na despensa, um pacote de fubá e muita criatividade.",
+    "resumo": "passou fome no fim do mês ainda bebê",
+    "escolhas": [
+      {
+        "texto": "Mingau de fubá até o salário",
+        "resumo": "passou meses à base de mingau de fubá",
+        "resultado": {
+          "texto": "Mingau no café, no almoço e na janta. Você não reclama, ainda não sabe que existe outra coisa.",
+          "efeitos": { "saude": -3, "inteligencia": -2, "marcas": ["desnutricao"] }
+        }
+      },
+      {
+        "texto": "A vizinha divide o que tem",
+        "resumo": "comeu da panela da vizinha nos meses difíceis",
+        "resultado": {
+          "texto": "A vizinha da frente manda um prato todo dia, \"porque sobrou\". Nunca sobrou.",
+          "efeitos": { "saude": -1, "felicidade": 1, "mae.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Inscrever a família no programa social",
+        "resumo": "teve a família inscrita no programa social do governo",
+        "resultado": {
+          "texto": "Duas manhãs na fila do cadastro, uma assistente social paciente e, no mês seguinte, leite e feijão na despensa.",
+          "efeitos": { "saude": 1, "mae.dinheiro": 1500, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "historias_ou_telas",
+    "idade": [2, 3],
+    "peso": 5,
+    "texto": "Hora de dormir, e você não quer. Em casa, cada um tem a sua técnica.",
+    "resumo": "ganhou um jeito de dormir que ficou",
+    "escolhas": [
+      {
+        "texto": "Uma história lida em voz alta",
+        "resumo": "dormia ouvindo histórias lidas em voz alta",
+        "resultado": {
+          "texto": "Toda noite, uma história. Você decora os livros e corrige quem pula uma página.",
+          "efeitos": { "inteligencia": 4, "mae.vinculo": 3, "marcas": ["leitura_na_infancia"] }
+        }
+      },
+      {
+        "texto": "Desenho no celular até apagar",
+        "resumo": "dormia com desenho no celular",
+        "resultado": {
+          "texto": "O celular resolve em dez minutos. Você sabe todas as músicas do desenho e nenhuma das palavras da história.",
+          "efeitos": { "felicidade": 2, "inteligencia": -2, "marcas": ["telas_cedo"] }
+        }
+      },
+      {
+        "texto": "Cantiga de ninar da vó {avo}",
+        "resumo": "dormia com as cantigas da avó",
+        "condicoes": { "avo.vivo": true },
+        "bloqueio": "a vó não está",
+        "resultado": {
+          "texto": "A vó {avo} canta as mesmas três cantigas, sempre afinada. Você pega o ritmo antes de pegar no sono.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1, "avo.vinculo": 4, "marcas": ["musica_cedo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "birra_no_mercado",
+    "idade": [2, 4],
+    "peso": 5,
+    "condicoes": { "marcas": ["voluntarioso"] },
+    "texto": "Você se jogou no chão do supermercado por causa de um chocolate. A fila do caixa assiste em silêncio.",
+    "resumo": "deu um show no supermercado por um chocolate",
+    "escolhas": [
+      {
+        "texto": "{mae} cede, pelo bem de todos",
+        "resumo": "ganhou o chocolate na base do grito",
+        "resultado": {
+          "texto": "Chocolate na mão, plateia dispersa. Você aprendeu uma lição, e não foi a que {mae} queria.",
+          "efeitos": { "felicidade": 2, "mae.vinculo": -1 }
+        }
+      },
+      {
+        "texto": "{mae} espera a birra passar, firme",
+        "resumo": "perdeu a birra do chocolate e aprendeu a esperar",
+        "resultado": {
+          "texto": "Dez minutos de choro, zero chocolate. No carro, você já esqueceu; {mae}, não.",
+          "efeitos": { "felicidade": -1, "inteligencia": 1, "mae.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "brigas_de_madrugada",
+    "idade": [2, 4],
+    "peso": 5,
+    "condicoes": { "familia": "conflituosa" },
+    "texto": "As brigas em casa acordam você de madrugada. As paredes são finas e as vozes, altas.",
+    "resumo": "acordava de madrugada com as brigas em casa",
+    "escolhas": [
+      {
+        "texto": "Chorar até alguém vir",
+        "resumo": "chorava até alguém vir quando havia briga em casa",
+        "resultado": {
+          "texto": "{mae} vem, e a briga para. Você aprende que o choro funciona, e que a paz dura pouco.",
+          "efeitos": { "felicidade": -2, "mae.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Esconder debaixo do cobertor",
+        "resumo": "se escondia debaixo do cobertor quando havia briga em casa",
+        "resultado": {
+          "texto": "Debaixo do cobertor, o mundo é menor e mais quieto. Você passa muito tempo lá.",
+          "efeitos": { "felicidade": -3, "saude": -1, "marcas": ["ansiedade_cedo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pre_escola",
+    "idade": [3, 4],
+    "peso": 6,
+    "texto": "Hora da pré-escola. Ou não: a família discute se você ainda é pequeno demais para isso.",
+    "resumo": "teve decidido como seria a pré-escola",
+    "escolhas": [
+      {
+        "texto": "A pública do bairro",
+        "resumo": "foi para a pré-escola pública do bairro",
+        "condicoes": { "classe_origem": { "max": 4 } },
+        "bloqueio": "a família quer outra",
+        "resultado": {
+          "texto": "Merenda, massinha e uma professora que sabe o nome de trinta crianças. {amigo} senta do seu lado desde o primeiro dia.",
+          "efeitos": { "inteligencia": 3, "felicidade": 1, "amigo.vinculo": 5, "marcas": ["pre_escola"] }
+        }
+      },
+      {
+        "texto": "A particular bilíngue",
+        "resumo": "foi para uma pré-escola particular bilíngue",
+        "condicoes": { "classe_origem": { "min": 3 } },
+        "bloqueio": "a mensalidade não cabe",
+        "resultado": {
+          "texto": "Uniforme, horta orgânica e \"circle time\". Você aprende a dizer \"please\" antes de aprender a amarrar o sapato.",
+          "efeitos": { "inteligencia": 5, "mae.dinheiro": -25000, "marcas": ["pre_escola", "fala_ingles"] }
+        }
+      },
+      {
+        "texto": "Mais um ano em casa",
+        "resumo": "ficou mais um ano em casa antes da escola",
+        "resultado": {
+          "texto": "Mais um ano de quintal, desenho na TV e colo. A escola espera.",
+          "efeitos": { "felicidade": 2, "inteligencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "peito_chiando",
+    "idade": [1, 4],
+    "peso": 5,
+    "condicoes": { "algumaMarca": ["prematuro", "desnutricao"] },
+    "texto": "Toda noite fria, um chiado no peito. A casa é úmida e o pulmão, pequeno.",
+    "resumo": "teve o peito chiando nas noites frias",
+    "escolhas": [
+      {
+        "texto": "Acompanhamento no posto, com bombinha",
+        "resumo": "tratou a bronquite no posto de saúde",
+        "resultado": {
+          "texto": "A pediatra do posto explica a bombinha com desenho. Você aprende a respirar fundo antes de aprender a ler.",
+          "efeitos": { "saude": 2, "felicidade": -1, "marcas": ["asma"] }
+        }
+      },
+      {
+        "texto": "Chá da vó e reza",
+        "resumo": "tratou a bronquite com chá da avó",
+        "resultado": {
+          "texto": "Chá de guaco, vapor de eucalipto e uma oração forte. O chiado diminui, mas não vai embora.",
+          "efeitos": { "saude": -3, "avo.vinculo": 2, "marcas": ["asma"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "acidente_em_casa",
+    "idade": [1, 4],
+    "peso": 3,
+    "texto": "Você puxou a toalha da mesa, e a toalha veio com tudo que estava em cima. Inclusive a garrafa de café.",
+    "resumo": "se queimou puxando a toalha da mesa",
+    "escolhas": [
+      {
+        "texto": "Pronto-socorro do SUS",
+        "resumo": "passou a noite no pronto-socorro depois de uma queimadura",
+        "resultado": {
+          "texto": "Seis horas de espera, um enfermeiro gentil e uma pomada. Fica uma marquinha no braço.",
+          "efeitos": { "saude": -3, "aparencia": -1, "mae.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "O pediatra do plano, na hora",
+        "resumo": "foi {atendido|atendida} pelo plano depois de uma queimadura",
+        "condicoes": { "classe_origem": { "min": 3 } },
+        "bloqueio": "a família não tem plano",
+        "resultado": {
+          "texto": "Atendimento em vinte minutos e uma pomada importada. Nem marca fica.",
+          "efeitos": { "saude": -1, "mae.dinheiro": -2500 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "balde_da_pracinha",
+    "idade": [2, 4],
+    "peso": 4,
+    "condicoes": { "amigo.vivo": true },
+    "texto": "Na pracinha, {amigo} pegou o seu balde de areia. Sem pedir.",
+    "resumo": "teve o balde tomado na pracinha por {amigo}",
+    "escolhas": [
+      {
+        "texto": "Dividir o balde",
+        "resumo": "dividiu o balde com {amigo} e ganhou um amigo para a vida",
+        "resultado": {
+          "texto": "Vocês constroem juntos um castelo que dura até a primeira chuva. A amizade dura mais.",
+          "efeitos": { "amigo.vinculo": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Puxar de volta",
+        "resumo": "brigou por um balde na pracinha",
+        "resultado": {
+          "texto": "Puxa daqui, puxa de lá, alça arrebentada. Os dois choram, e as mães trocam um olhar de guerra fria.",
+          "efeitos": { "amigo.vinculo": -6, "felicidade": -1, "marcas": ["voluntarioso"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "leu_antes_dos_colegas",
+    "idade": [6, 7],
+    "peso": 6,
+    "condicoes": { "algumaMarca": ["leitura_na_infancia", "pre_escola", "creche"] },
+    "texto": "Na volta da escola, você lê a placa da padaria, o outdoor e a bula do remédio da vó. {mae} olha para {pai_ou_vo} sem acreditar.",
+    "trechos": { "pai_ou_vo": [{ "se": { "pai.ausente": true }, "texto": "a vizinha" }, { "texto": "{pai}" }] },
+    "resumo": "aprendeu a ler antes dos colegas",
+    "escolhas": [
+      {
+        "texto": "Pedir mais livros",
+        "resumo": "virou {leitor|leitora} de biblioteca antes dos sete anos",
+        "resultado": {
+          "texto": "A biblioteca da escola vira o seu lugar favorito. A bibliotecária guarda os lançamentos para você.",
+          "efeitos": { "inteligencia": 4, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ler os gibis do primo",
+        "resumo": "aprendeu a ler e foi direto para os gibis",
+        "resultado": {
+          "texto": "Os gibis do primo duram uma semana. Você aprende o que é uma onomatopeia antes de saber o que é uma vírgula.",
+          "efeitos": { "inteligencia": 2, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "nao_para_quieto",
+    "idade": [6, 8],
+    "peso": 6,
+    "condicoes": { "marcas": ["telas_cedo"], "semMarcas": ["leitura_na_infancia"] },
+    "texto": "A professora mandou um bilhete: você não para quieto e não acompanha a turma na leitura. {mae} lê o bilhete duas vezes.",
+    "resumo": "teve a professora reclamando que não parava {quieto|quieta}",
+    "escolhas": [
+      {
+        "texto": "Reforço com a professora depois da aula",
+        "resumo": "fez reforço de leitura e alcançou a turma",
+        "resultado": {
+          "texto": "Três tardes por semana, sílaba por sílaba. No fim do ano, você lê a lista de chamada para a professora.",
+          "efeitos": { "inteligencia": 3, "felicidade": -1, "mae.dinheiro": -1500 }
+        }
+      },
+      {
+        "texto": "Deixar como está: cada um no seu tempo",
+        "resumo": "ficou para trás na leitura",
+        "resultado": {
+          "texto": "O tempo passa, a turma lê e você decora. A distância só aumenta.",
+          "efeitos": { "inteligencia": -3, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "surto_no_bairro",
+    "idade": [2, 9],
+    "peso": 6,
+    "condicoes": { "marcas": ["sem_vacina"] },
+    "texto": "Surto de sarampo no bairro. A escola fecha, o posto lota, e a caderneta de vacinação continua em branco na gaveta.",
+    "resumo": "viveu um surto de sarampo no bairro sem estar {vacinado|vacinada}",
+    "escolhas": [
+      {
+        "texto": "Vacinar correndo, mesmo atrasado",
+        "resumo": "tomou a vacina atrasada durante o surto",
+        "resultado": {
+          "texto": "Fila de três horas, picada, pirulito. {mae} apaga o grupo de mensagens do celular.",
+          "efeitos": { "saude": -1, "mae.vinculo": 1, "removerMarcas": ["sem_vacina"] }
+        }
+      },
+      {
+        "texto": "Ficar em casa e torcer",
+        "resumo": "apostou na sorte durante o surto de sarampo",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O surto passou pela rua e não entrou em casa. Sorte, não ciência.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Febre alta, manchas e duas semanas no hospital. Você volta para casa {mais magro|mais magra}, e a caderneta, ainda em branco.",
+          "resumo": "pegou sarampo e passou duas semanas {internado|internada}",
+          "efeitos": { "saude": -12, "felicidade": -3, "mae.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crescer_devagar",
+    "idade": [5, 9],
+    "peso": 6,
+    "condicoes": { "marcas": ["desnutricao"] },
+    "texto": "No posto, a pediatra marca o seu peso no gráfico e franze a testa: você está abaixo da curva. Os meses de mingau deixaram conta.",
+    "resumo": "descobriu no posto que estava abaixo da curva de crescimento",
+    "escolhas": [
+      {
+        "texto": "Merenda reforçada e acompanhamento",
+        "resumo": "recuperou o peso com merenda reforçada e acompanhamento",
+        "resultado": {
+          "texto": "Merenda reforçada na escola e retorno no posto a cada três meses. A curva sobe devagar.",
+          "efeitos": { "saude": 4, "felicidade": 1, "removerMarcas": ["desnutricao"] }
+        }
+      },
+      {
+        "texto": "Não dá para fazer muito agora",
+        "resumo": "cresceu menos do que podia",
+        "resultado": {
+          "texto": "O dinheiro não estica. Você cresce, mas menos do que podia, e cansa antes dos outros na educação física.",
+          "efeitos": { "saude": -2, "aparencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crianca_ansiosa",
+    "idade": [6, 10],
+    "peso": 6,
+    "condicoes": { "marcas": ["ansiedade_cedo"] },
+    "texto": "Dor de barriga todo domingo à noite, antes da escola. O pediatra não acha nada no exame.",
+    "resumo": "tinha dor de barriga todo domingo à noite",
+    "escolhas": [
+      {
+        "texto": "A psicóloga do posto",
+        "resumo": "aprendeu com a psicóloga do posto a nomear o medo",
+        "resultado": {
+          "texto": "Uma vez por semana, desenhos e conversas. Você descobre que o medo tem nome, e que dá para conversar com ele.",
+          "efeitos": { "felicidade": 4, "saude": 1, "removerMarcas": ["ansiedade_cedo"] }
+        }
+      },
+      {
+        "texto": "Engolir o choro",
+        "resumo": "engoliu o choro da infância",
+        "resultado": {
+          "texto": "\"Isso é frescura\", diz alguém. Você aprende a sentir dor de barriga em silêncio.",
+          "efeitos": { "felicidade": -3, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ouvido_para_musica",
+    "idade": [7, 12],
+    "peso": 5,
+    "condicoes": { "marcas": ["musica_cedo"] },
+    "texto": "O professor de música da escola parou a aula no meio: você afina. Nenhum outro da turma afina.",
+    "resumo": "descobriu na escola que tinha ouvido para música",
+    "escolhas": [
+      {
+        "texto": "Entrar para o coral",
+        "resumo": "entrou para o coral da escola",
+        "resultado": {
+          "texto": "Ensaios às quartas, apresentação no fim do ano e a família inteira na primeira fila, chorando.",
+          "efeitos": { "felicidade": 3, "inteligencia": 1, "marcas": ["musico"] }
+        }
+      },
+      {
+        "texto": "Preferir o futebol do recreio",
+        "resumo": "trocou o coral pelo futebol do recreio",
+        "resultado": {
+          "texto": "O professor insiste uma vez, depois desiste. Você canta só no chuveiro, e muito bem.",
+          "efeitos": { "saude": 1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "asma_na_educacao_fisica",
+    "idade": [7, 12],
+    "peso": 5,
+    "condicoes": { "marcas": ["asma"] },
+    "texto": "Na educação física, o chiado volta no meio da corrida. Você termina a aula no banco, com a bombinha.",
+    "resumo": "passou aulas de educação física no banco por causa da asma",
+    "escolhas": [
+      {
+        "texto": "Natação, que é boa para o pulmão",
+        "resumo": "fez natação para fortalecer o pulmão",
+        "condicoes": { "classe_origem": { "min": 2 } },
+        "bloqueio": "a natação custa caro",
+        "resultado": {
+          "texto": "Duas vezes por semana na piscina do clube. Um ano depois, o chiado é raro e o fôlego, de atleta.",
+          "efeitos": { "saude": 5, "felicidade": 1, "mae.dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Bombinha e banco de reserva",
+        "resumo": "conviveu com a asma no banco de reserva",
+        "resultado": {
+          "texto": "Você vira o melhor torcedor da turma. O fôlego fica para depois.",
+          "efeitos": { "saude": -1, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_baba_foi_embora",
+    "idade": [4, 9],
+    "peso": 5,
+    "condicoes": { "marcas": ["criado_pela_baba"] },
+    "texto": "A babá que te criou desde bebê arrumou outro emprego. Ela chora na porta; você chora mais.",
+    "resumo": "perdeu a babá que {o|a} criou desde bebê",
+    "escolhas": [
+      {
+        "texto": "Pedir para {mae} ficar mais em casa",
+        "resumo": "pediu à mãe para ficar mais em casa depois que a babá foi embora",
+        "resultado": {
+          "texto": "{mae} reorganiza a agenda e passa a buscar você na escola às sextas. É pouco, mas é dela.",
+          "efeitos": { "felicidade": -1, "mae.vinculo": 8 }
+        }
+      },
+      {
+        "texto": "Acostumar com a babá nova",
+        "resumo": "se acostumou com uma babá nova",
+        "resultado": {
+          "texto": "A nova é eficiente e não canta. Você aprende cedo que as pessoas vão embora.",
+          "efeitos": { "felicidade": -3, "mae.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mae_quer_voltar_a_trabalhar",
+    "idade": [5, 10],
+    "peso": 5,
+    "condicoes": { "marcas": ["mae_em_casa"], "mae.vivo": true },
+    "texto": "{mae} passou anos em casa com você. Agora que você vai à escola, ela quer voltar a trabalhar, e pergunta o que você acha.",
+    "resumo": "viu a mãe voltar a pensar no trabalho",
+    "escolhas": [
+      {
+        "texto": "\"Vai, mãe!\"",
+        "resumo": "incentivou a mãe a voltar a trabalhar",
+        "resultado": {
+          "texto": "Ela volta, cansada e feliz. O mês respira, e você ganha uma mãe que conta histórias do trabalho no jantar.",
+          "efeitos": { "mae.vinculo": 4, "felicidade": 1, "mae.renda": 18000, "removerMarcas": ["mae_em_casa"] }
+        }
+      },
+      {
+        "texto": "\"Fica comigo\"",
+        "resumo": "pediu à mãe para continuar em casa",
+        "resultado": {
+          "texto": "Ela fica mais um ano. Você não sabe ainda o que isso custou, e ela nunca vai dizer.",
+          "efeitos": { "mae.vinculo": 2, "felicidade": 2 }
+        }
+      }
+    ]
+  }
+]

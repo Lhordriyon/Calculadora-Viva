@@ -832,5 +832,50 @@
     "idade": [25, 99],
     "texto": "Você passou a ler os balanços dos concorrentes como quem lê cardápio.",
     "condicoes": { "empresa.aquisicoes": { "min": 1 } }
+  },
+  {
+    "idade": [3, 6],
+    "condicoes": { "marcas": ["creche"] },
+    "texto": "Pegou todas as viroses da creche e voltou com um vocabulário que ninguém em casa ensinou."
+  },
+  {
+    "idade": [3, 7],
+    "condicoes": { "marcas": ["telas_cedo"] },
+    "texto": "Sabe desbloquear o celular de todo mundo da família. Inclusive o da vó."
+  },
+  {
+    "idade": [3, 8],
+    "condicoes": { "marcas": ["musica_cedo"] },
+    "texto": "Canta o ano inteiro, afinado, as três cantigas da vó."
+  },
+  {
+    "idade": [3, 9],
+    "condicoes": { "marcas": ["desnutricao"] },
+    "texto": "É o menor da turma na fila do recreio. A merenda é a melhor refeição do dia."
+  },
+  {
+    "idade": [3, 9],
+    "condicoes": { "marcas": ["ansiedade_cedo"] },
+    "texto": "Dorme com a luz do corredor acesa. Diz que é por causa do escuro."
+  },
+  {
+    "idade": [4, 9],
+    "condicoes": { "marcas": ["pre_escola"] },
+    "texto": "Chegou ao primeiro ano sabendo escrever o próprio nome, e o de três colegas."
+  },
+  {
+    "idade": [2, 6],
+    "condicoes": { "marcas": ["criado_pela_baba"] },
+    "texto": "Chama a babá pelo apelido carinhoso que antes era da mãe."
+  },
+  {
+    "idade": [3, 9],
+    "condicoes": { "marcas": ["mae_em_casa"] },
+    "texto": "Tem a mãe em casa todo dia, e um mês que nunca fecha."
+  },
+  {
+    "idade": [3, 9],
+    "condicoes": { "marcas": ["asma"] },
+    "texto": "Sabe a diferença entre uma tosse e uma crise, e onde fica a bombinha de cada casa da família."
   }
 ]
