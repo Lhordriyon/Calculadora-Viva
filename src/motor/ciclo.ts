@@ -36,18 +36,34 @@ export function sortearFaseInicial(e: EstadoVida, c: Conteudo): void {
   if (f.id !== 'normal') ganhar(e, [], 'pais', f.id, null);
 }
 
+/** Da pior para a melhor: sair da crise para a recessão é melhorar. */
+const ORDEM_DAS_FASES: Record<Fase, number> = { crise: 0, recessao: 1, normal: 2, expansao: 3 };
+
+/**
+ * As chances de mudar de fase neste ano, com o empurrão de quem governa
+ * (pais.impulso, de −3 a 3): aquecer deixa toda melhora mais provável e toda
+ * piora menos; esfriar faz o contrário. A melhora é pela ordem das fases, não
+ * pelo nome: da crise para a recessão já é melhorar.
+ */
+export function chancesDeMudar(e: EstadoVida, c: Conteudo, atual: Fase = faseDe(e)): [Fase, number][] {
+  const impulso = e.entidades['pais']?.n['impulso'] ?? 0;
+  const chances = (Object.entries(defFase(c, atual).transicoes) as [Fase, number][]).map(([f, p]): [Fase, number] => {
+    const melhora = ORDEM_DAS_FASES[f] > ORDEM_DAS_FASES[atual];
+    // Esfriar pode no máximo cortar pela metade a chance de melhorar: o país se ajusta sozinho, cedo ou tarde.
+    return [f, p * (melhora ? Math.max(0.5, 1 + 0.4 * impulso) : Math.max(0.2, 1 - 0.3 * impulso))];
+  });
+  // As chances somam no máximo 1 (o resto é ficar onde está).
+  const soma = chances.reduce((s, [, p]) => s + p, 0);
+  return soma > 1 ? chances.map(([f, p]) => [f, p / soma]) : chances;
+}
+
 /** Um ano do ciclo: talvez mude de fase (com entrada visível). Devolve a fase em vigor no ano. */
 export function cicloDoAno(e: EstadoVida, c: Conteudo): DefFase {
   const atual = faseDe(e);
   const def = defFase(c, atual);
-  // Quem governa empurra o ciclo (pais.impulso, de −3 a 3): decretos que aquecem deixam a expansão mais provável e a recessão menos.
-  const impulso = e.entidades['pais']?.n['impulso'] ?? 0;
-  const ajuste = (f: Fase, p: number): number =>
-    f === 'expansao' ? p * Math.max(0.2, 1 + 0.4 * impulso) : f === 'recessao' || f === 'crise' ? p * Math.max(0.2, 1 - 0.3 * impulso) : p;
   let r = aleatorio(e.rng);
   let proxima: Fase = atual;
-  for (const [f, bruto] of Object.entries(def.transicoes) as [Fase, number][]) {
-    const p = ajuste(f, bruto);
+  for (const [f, p] of chancesDeMudar(e, c, atual)) {
     if (r < p) {
       proxima = f;
       break;

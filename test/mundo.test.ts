@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
-import { cicloDoAno, defFase, faseDe } from '../src/motor/ciclo.ts';
+import { chancesDeMudar, cicloDoAno, defFase, faseDe } from '../src/motor/ciclo.ts';
 import { patrimonioDe } from '../src/motor/campos.ts';
 import { mercadoDoAno } from '../src/motor/carteira.ts';
 import { economiaDoAno } from '../src/motor/economia.ts';
@@ -64,6 +64,31 @@ describe('o ciclo da economia', () => {
       if (faseDe(e) === 'recessao') saiu++;
     }
     expect(Math.abs(saiu / n - p)).toBeLessThan(0.04);
+  });
+});
+
+describe('quem governa empurra o ciclo na direção certa', () => {
+  const sair = (fase: 'crise' | 'expansao', impulso: number): number => {
+    const e = adulto('comercio', fase === 'crise' ? 'crise' : 'normal');
+    if (fase === 'expansao') ganhar(e, [], 'pais', 'expansao', null);
+    e.entidades['pais']!.n['impulso'] = impulso;
+    return chancesDeMudar(e, c).reduce((s, [, p]) => s + p, 0);
+  };
+
+  it('aquecer tira o país da crise mais depressa e esfriar o prende mais (antes, aquecer prendia na crise)', () => {
+    expect(sair('crise', 3)).toBeGreaterThan(sair('crise', 0));
+    expect(sair('crise', -3)).toBeLessThan(sair('crise', 0));
+    // Esfriar corta no máximo pela metade a chance de melhorar: nenhuma crise é para sempre.
+    expect(sair('crise', -3)).toBeCloseTo(sair('crise', 0) * 0.5);
+  });
+
+  it('aquecer segura a expansão e esfriar a encerra mais cedo', () => {
+    expect(sair('expansao', 3)).toBeLessThan(sair('expansao', 0));
+    expect(sair('expansao', -3)).toBeGreaterThan(sair('expansao', 0));
+  });
+
+  it('as chances de mudar nunca somam mais que 1', () => {
+    for (const impulso of [-3, -1, 0, 1, 3]) for (const fase of ['crise', 'expansao'] as const) expect(sair(fase, impulso)).toBeLessThanOrEqual(1 + 1e-9);
   });
 });
 
