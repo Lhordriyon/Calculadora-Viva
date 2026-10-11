@@ -184,6 +184,17 @@ interface Vida {
   fundou: boolean;
   quebrou: boolean;
   vendeu: boolean;
+  /** Jogadas feitas (brincar de deus) e quantas delas causaram algum acontecimento depois. */
+  jogadas: string[];
+  jogadasComReacao: number;
+}
+
+/** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
+function jogadasDaVida(e: EstadoVida): { jogadas: string[]; comReacao: number } {
+  const feitas = e.historico.filter((h) => h.ref?.startsWith('jogada:'));
+  const citadas = new Set<number>();
+  for (const h of e.historico) if (h.tipo === 'evento' || h.tipo === 'npc') for (const id of h.causas ?? []) citadas.add(id);
+  return { jogadas: feitas.map((h) => h.ref!.slice('jogada:'.length)), comReacao: feitas.filter((h) => citadas.has(h.id)).length };
 }
 
 /** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
@@ -257,7 +268,10 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
   }
   const pontos = pontosDeVirada(e);
   const demissoes = e.historico.filter((h) => h.ref === 'demissao');
+  const daFortuna = jogadasDaVida(e);
   return {
+    jogadas: daFortuna.jogadas,
+    jogadasComReacao: daFortuna.comReacao,
     estrategia,
     idade: e.idade,
     patrimonio,
@@ -397,6 +411,20 @@ c.mundo.linhagens.forEach((l) => {
   });
 });
 
+// Brincar de deus: quem nasce bilionário ou trilionário e mexe no mundo com o dinheiro.
+// Também só contam para storylet morto (e para a tabela de origens), e medem as jogadas.
+const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 5));
+const fortunas: Vida[] = [];
+for (const classe of [6, 7]) {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_FORTUNA; k++) {
+      const vida = medir(c, jogar(c, estrategia, misturar(SEMENTE, 606, classe, s, k), undefined, { classe }), estrategia);
+      fortunas.push(vida);
+      escolhidas.push({ classe, vida });
+    }
+  });
+}
+
 // Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
 interface Geracao {
   estrategia: Estrategia;
@@ -409,6 +437,7 @@ interface Geracao {
   instancias: string[];
   eventos: string[];
   acoes: string[];
+  jogadas: string[];
 }
 const DINASTIAS = Math.max(4, Math.round(JOGADORES / 3));
 const MAX_GERACOES = 5;
@@ -441,6 +470,7 @@ ESTRATEGIAS.forEach((estrategia, s) => {
         instancias: visiveis.map((h) => h.instancia!),
         eventos: visiveis.map((h) => h.ref!),
         acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
+        jogadas: jogadasDaVida(e).jogadas,
       });
       if (!herdeiroPossivel(e, c) || g === MAX_GERACOES) break;
       anterior = patrimonio;
@@ -456,11 +486,11 @@ const segundos = (performance.now() - inicio) / 1000;
 const ocorrencias = new Map<string, number>(c.storylets.map((s) => [s.id, 0]));
 const vidasCom = new Map<string, number>(c.storylets.map((s) => [s.id, 0]));
 for (const v of vidas) {
-  for (const id of [...v.eventos, ...v.acoes]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
-  for (const id of new Set([...v.eventos, ...v.acoes])) vidasCom.set(id, (vidasCom.get(id) ?? 0) + 1);
+  for (const id of [...v.eventos, ...v.acoes, ...v.jogadas]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
+  for (const id of new Set([...v.eventos, ...v.acoes, ...v.jogadas])) vidasCom.set(id, (vidasCom.get(id) ?? 0) + 1);
 }
 // Storylet morto é o que nenhuma vida vê: nem as sorteadas, nem as de origem escolhida, nem as dos herdeiros.
-for (const x of [...escolhidas.map((v) => v.vida), ...geracoes]) for (const id of [...x.eventos, ...x.acoes]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
+for (const x of [...escolhidas.map((v) => v.vida), ...geracoes]) for (const id of [...x.eventos, ...x.acoes, ...x.jogadas]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
 const mortos = c.storylets.filter((s) => (ocorrencias.get(s.id) ?? 0) === 0).map((s) => s.id);
 const raros = c.storylets
   .filter((s) => {
@@ -622,6 +652,14 @@ const quebraFundadores = vidas.filter((v) => v.fundou && v.quebrou).length / Mat
 const vendaFundadores = vidas.filter((v) => v.fundou && v.vendeu).length / Math.max(1, vidas.filter((v) => v.fundou).length);
 const anosVazios = media(vidas.map((v) => v.anosVazios));
 const TETO_TOQUES = 480;
+/** Brincar de deus, nas vidas de fortuna dos robôs que mexem no dinheiro (a "primeira" nunca abre a folha). */
+const jogadores = fortunas.filter((v) => v.estrategia !== 'primeira');
+const totalDeJogadas = jogadores.reduce((s, v) => s + v.jogadas.length, 0);
+const fortunaJoga = jogadores.filter((v) => v.jogadas.length > 0).length / Math.max(1, jogadores.length);
+const jogadasPorVida = totalDeJogadas / Math.max(1, jogadores.length);
+const jogadasComReacao = jogadores.reduce((s, v) => s + v.jogadasComReacao, 0) / Math.max(1, totalDeJogadas);
+const jogadasVistas = new Set([...fortunas, ...vidas, ...escolhidas.map((x) => x.vida)].flatMap((v) => v.jogadas));
+const mortesEmJogada = fortunas.filter((v) => /Lua|Marte|foguete/.test(v.causaMorte)).length;
 
 // ---------------------------------------------------------------- portões
 
@@ -657,6 +695,12 @@ const portoes3 = [
   ['Assinaturas sem regressão (≥ 918)', assinaturas >= 918, num(assinaturas, 0)],
   ['Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques)', toques <= TETO_TOQUES, num(toques, 1)],
   ['CPU por vida ≤ 30 ms', msPorVida <= 30, `${num(msPorVida, 2)} ms`],
+] as const;
+/** Incremento 5 (pedido do dono em 08/10/2026): brincar de deus com bilhões e trilhões. */
+const portoes5 = [
+  ['Toda jogada acontece em alguma vida', jogadasVistas.size === c.jogadas.length, `${jogadasVistas.size} de ${c.jogadas.length}`],
+  ['Quem nasce com fortuna brinca de deus: ≥ 60% das vidas fazem uma jogada', fortunaJoga >= 0.6, `${pct(fortunaJoga)} (${num(jogadasPorVida, 1)} jogadas por vida, ${jogadores.length} vidas)`],
+  ['O mundo responde: ≥ 50% das jogadas causam um acontecimento depois', jogadasComReacao >= 0.5, `${pct(jogadasComReacao)} de ${totalDeJogadas} jogadas`],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
@@ -713,6 +757,22 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes3) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Portões do incremento 5 (brincar de deus)');
+l();
+l(`${fortunas.length} vidas que nascem bilionárias ou trilionárias (${VIDAS_POR_FORTUNA} por classe e estratégia), além das sorteadas e das dinastias.`);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes5) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+{
+  const contagem = new Map<string, number>();
+  for (const v of jogadores) for (const id of v.jogadas) contagem.set(id, (contagem.get(id) ?? 0) + 1);
+  const nomes = [...contagem].sort((a, b) => b[1] - a[1]).map(([id, n]) => `${c.porId.get(id)?.rotulo ?? id} (${n})`);
+  l(`- **Jogadas mais feitas pelos robôs:** ${nomes.join(', ') || 'nenhuma'}.`);
+  l(`- **Mortes numa jogada (a caminho da Lua ou de Marte):** ${mortesEmJogada} de ${fortunas.length} vidas.`);
+}
 l();
 l('## Life simulator');
 l();
@@ -933,6 +993,7 @@ for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${no
 for (const [nome, ok, detalhe] of portoes) console.log(`${ok ? '✓' : '·'} portão: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} portão 2: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes3) console.log(`${ok ? '✓' : '·'} portão 3: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes5) console.log(`${ok ? '✓' : '·'} portão 5: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

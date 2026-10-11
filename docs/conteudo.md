@@ -11,6 +11,7 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 | `evento` (padrão) | o diretor, por saliência | cartão com opções, ou acontecimento sem escolha |
 | `npc` | a regra do personagem do `ator` (chance pela tensão × afinidade do traço) | sem escolha, acontece na hora; com escolha, disputa o ano com os eventos |
 | `acao` | o jogador, pela ficha do ano (`verbo` + `rotulo`) | entrada da linha do tempo com a etiqueta do verbo |
+| `jogada` | o jogador, na seção "Brincar de deus" da folha Dinheiro (`rotulo`), sem gastar ficha | entrada "Fortuna" com a escolha e o desfecho |
 
 ```json
 {
@@ -29,7 +30,7 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 | Campo | Para quê |
 |---|---|
 | `id` | único, `minusculas_com_sublinhado` |
-| `tipo` | `evento`, `npc` ou `acao` |
+| `tipo` | `evento`, `npc`, `acao` ou `jogada` |
 | `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`); cada papel é uma instância diferente |
 | `preferir` | entre vários atores possíveis, o de menor (`-ator.vinculo`) ou maior (`+ator.dinheiro`) valor |
 | `idade` | faixa `[min, max]` de quem joga (obrigatória, exceto em `apenasAgendado`) |
@@ -206,3 +207,12 @@ Os arquivos de storylet do incremento 4: `96-linhagens`, `97-carreiras` (profiss
 2. O que ele grava é lido por algo que decide; o que ele consulta é criado por algo.
 3. `npm run vida -- <semente> aleatoria` até vê-lo numa vida e ler o texto renderizado.
 4. `npm run tunel`: nenhum storylet morto, nenhuma estratégia dominante; veja a frequência dele.
+
+## Jogadas (brincar de deus)
+
+O que só dá para fazer com muito dinheiro. Uma jogada é um storylet `"tipo": "jogada"` com `rotulo` (o nome na lista, até 28 caracteres), `idade`, `condicoes` (em geral `"patrimonio": { "min": … }` e `semMarcas` com a marca que ela deixa) e `escolhas`. Não usa `verbo`, `ator`, `marco`, `apenasAgendado` nem `repetivel`: repete com `intervalo`, e as condições dizem quando.
+
+- **Preço:** o `dinheiro` negativo dos efeitos certos da escolha (mais o `capital` de `abrirEmpresa`). Sem esse valor na mão (conta e investimentos), a opção aparece bloqueada com "precisa de R$ X na mão": jogada não se faz no fiado. A lista mostra "a partir de" a opção mais barata.
+- **Não precisa de escolha sem condição:** a jogada não trava a vida, porque a folha tem "Voltar". Em compensação, cada escolha precisa mexer em 2 sistemas ou mais.
+- **O mundo responde:** a jogada deixa uma marca e agenda a reação (`agendar`), que é um evento comum, de preferência `apenasAgendado` e repetível quando a jogada pode se repetir. A entrada da jogada vira causa da reação. O túnel mede quantas jogadas causam algum acontecimento depois (portão: 50% ou mais).
+

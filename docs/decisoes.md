@@ -242,6 +242,18 @@ O dono jogou e foi direto: início sempre igual, poucas profissões, liberdade d
 - **"Nova vida" abre a escolha da origem** (no menu, no palco e no cartão), com "voltar para a vida atual". **Testamento** na folha Família: a lei, o filho, o par (herda tudo e a história continua com ele, viúvo), o melhor amigo (com outro sobrenome), os sobrinhos, uma causa ou o bicho (estes dois encerram a história).
 - **Portões que ficaram de fora, com motivo:** toques por vida subiram para 451 (teto 480): o robô usa as três fichas todo ano, e quem joga pode passar o ano em um toque. Assinaturas 899 (< 918) e Spearman entre gerações 0,80 ficaram no limite; CPU 35 ms (teto 30) com o triplo de ações por ano. A estratégia cautelosa vive em média 93 anos (cuida da saúde três vezes por ano); nenhuma domina, porque a arriscada é mais feliz.
 
+## Incremento 5: brincar de deus (pedido do dono em 08/10)
+
+"Quero fazer coisas divertidas com o dinheiro na escala dos bilhões ou trilhões." Já havia brinquedos de rico (clube, ilha, iate, jatinho, emissora); faltava o dinheiro mudar o mundo e o mundo responder.
+
+- **Decisão: a jogada é um storylet, não um sistema novo.** O formato de conteúdo já tinha escolhas com condição e bloqueio, teste com sucesso e fracasso, agendamento e marcas; faltavam só o tipo `jogada`, o preço que bloqueia a opção sem dinheiro na mão (`custoDaEscolha`) e a operação da folha (`fortuna.ts`). Evento respondido e jogada passam pela mesma `aplicarEscolha`.
+- **Por que na folha Dinheiro e sem ficha:** é decidir o que fazer com a fortuna, como comprar e investir; a ficha do ano continua sendo o que se vive no ano. A seção só aparece quando a fortuna permite (a partir de R$ 50 milhões).
+- **Preços pela riqueza medida:** quem nasce bilionário tem uns R$ 2,6 bi aos 45 anos (mediana); quem nasce trilionário, R$ 600 bi aos 45 e R$ 1 tri aos 60. Por isso as jogadas vão de R$ 6 milhões (estátua) a R$ 500 bilhões (Marte).
+- **O mundo responde de forma agendada:** na primeira versão as reações dependiam de sorteio e 9 histórias nunca apareciam; só 27% das jogadas causavam algo depois. Com a jogada agendando a sua reação, 0 mortas e 79% com consequência.
+- **Consequência que mexe em regra:** a "lei da herança" que o presidente amigo aprova baixa o imposto da herança de 4% para 1% (`herdeiro.ts`, declarado no manifesto).
+- **Conserto junto:** a classe `.dinheiro` da linha de saldo do cabeçalho pegava também as entradas de dinheiro da linha do tempo (compras, aplicações, jogadas), que ficavam cortadas numa linha só desde a versão 1.3. A linha de saldo virou `.saldo`.
+- **Custo:** o túnel ganhou um lote de 200 vidas de fortuna; a CPU por vida subiu (52 ms, teto de 30 ms que já falhava) e o túnel leva cerca de 10 minutos. Fica para a auditoria.
+
 ## Interface: tela em três faixas (08/10)
 
 O dono jogou o APK com a letra do sistema grande (cerca de 145%, numa tela de 360 px) e o cabeçalho e o palco, os dois grudados na tela (`sticky`), se cruzavam: o nome ocupava 3 linhas, o subtítulo 5, o dinheiro 5, e o texto do evento ficava por baixo. A soma dos dois passava da altura da tela.

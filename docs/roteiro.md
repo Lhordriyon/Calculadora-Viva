@@ -73,6 +73,13 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] App Android (APK) com link no topo do README, gerado a cada push na `main`
 - [x] Portões: zero storylets mortos; nenhuma estratégia domina; bilionário feito 0,92%; V20 92,6%; toques 451 (teto 480)
 
+## Incremento 5 (pedido do dono em 08/10): brincar de deus
+
+- [x] Tipo de storylet `jogada`: a folha Dinheiro mostra o que a fortuna permite, com o preço; a escolha é do jogador e não gasta ficha
+- [x] 14 jogadas, de R$ 6 milhões a R$ 500 bilhões: festa do século, estátua, Carnaval, Pix para a cidade, fundação (4 causas), bancar um presidente, Copa do Mundo, cura de doença, programa espacial (com ida à Lua), cidade nova, estatal de energia, salvar o país da crise, fundar um país, colônia em Marte
+- [x] O mundo responde: 46 eventos agendados e sorteados que leem as marcas (lei da herança que baixa o imposto para 1%, apagão, calote do governo, patente da cura, greve na ilha, asteroide com o seu nome…)
+- [x] Portões: as 14 jogadas acontecem; 98% das vidas de fortuna fazem jogadas (8,2 por vida); 79% das jogadas causam algum acontecimento depois
+
 ## Próximo incremento (proposta)
 
 Outros países (emigrar, morar fora, cidadania), crime com consequência (golpes, prisão, fuga), relacionamentos com mais gente (vários filhos, ex, amantes), e a velhice com mais escolhas (cuidador, asilo, herança em vida).

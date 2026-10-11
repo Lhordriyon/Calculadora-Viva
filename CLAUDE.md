@@ -95,6 +95,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   carreira.ts          profissões (mundo.json › carreiras): vaga, cargo, promoção em pirâmide, fama
   poder.ts             influência, eleições, mandato, popularidade, queda do cargo
   herdeiro.ts          dinastia e testamento: partilha, quem herda (filho, sobrinho, par, amigo) e a vida nova
+  fortuna.ts           brincar de deus: as jogadas de quem tem muito dinheiro (storylets "jogada") e a operação da folha
   morte.ts             morte de quem joga
   virada.ts            pontos de virada e resumo da vida a partir do livro-razão
   memoria.ts           memória do jogador entre vidas (reduz repetição)
@@ -151,6 +152,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Caminho padrão em um toque; origem opcional | dono | começar rápido, e quem quiser escolhe |
 | "Nova vida" (no menu, no palco, no cartão) abre a escolha da origem | dono | escolher como será a próxima vida, no começo, durante e depois |
 | Testamento escolhido em vida (filho, par, amigo, sobrinhos, causa, bicho) | dono | decidir quem herda e com quem a história continua |
+| Brincar de deus: jogadas de bilhões e trilhões (fundação, cura, foguete, cidade, presidente, salvar o país, fundar um país, Marte) e o mundo reagindo a elas | dono | riqueza extrema vira possibilidade, não só número; a causa de cada consequência fica no livro |
 | Origens de realeza e de regime num Brasil fictício; profissões, imóveis, bens, eleições, truste | dono | liberdade de verdade e dinheiro que vira poder |
 | Expansão por incremento: portões + 3 vidas do dono | dono | provar cada nível antes do próximo |
 | Toda escolha e toda ação têm `resumo` | agente | o cartão da vida conta "aos 17, você…" |
