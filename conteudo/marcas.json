@@ -165,5 +165,7 @@
   "micronacao": { "epitafio": "Fundou um país numa ilha do Pacífico, com Constituição escrita num guardanapo." },
   "pais_reconhecido": { "epitafio": "Fundou um país e convenceu a ONU com um porta-aviões de presente." },
   "marte_brasileiro": { "epitafio": "Fundou a primeira cidade brasileira fora da Terra." },
-  "tragedia_em_marte": { "epitafio": "Mandou gente para Marte. Marte não devolveu." }
+  "tragedia_em_marte": { "epitafio": "Mandou gente para Marte. Marte não devolveu." },
+  "dispensavel": { "epitafio": "Construiu uma empresa que não precisava de quem a construiu, e chamou isso de sucesso." },
+  "demitiu_em_massa": { "epitafio": "Cortou um terço dos crachás e chamou de eficiência." }
 }

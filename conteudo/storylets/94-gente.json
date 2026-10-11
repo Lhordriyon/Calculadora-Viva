@@ -590,7 +590,8 @@
             "felicidade": 3,
             "saude": 1,
             "filho.vinculo": 10,
-            "empresa.tracao": 1
+            "empresa.tracao": 1,
+            "empresa.dependencia": -25
           }
         }
       },

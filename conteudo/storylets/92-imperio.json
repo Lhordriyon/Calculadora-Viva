@@ -1,0 +1,495 @@
+[
+  {
+    "id": "conselho_que_diz_nao",
+    "tipo": "jogada",
+    "rotulo": "Um conselho que diz não",
+    "idade": [22, 95],
+    "condicoes": { "empresa.valor": { "min": 15000000 }, "semMarcas": ["empresa.conselho"] },
+    "texto": "Na {empresa}, {empresa.funcionarios} pessoas trabalham e uma opinião decide: a sua. Um conselho de gente de fora, com poder de veto, deixaria a empresa menos sua e mais difícil de afundar.",
+    "resumo": "montou um conselho na própria empresa",
+    "escolhas": [
+      {
+        "texto": "Gente de fora, com poder de veto",
+        "resumo": "deu a um conselho de fora o poder de vetar as próprias ideias",
+        "efeitos": {
+          "empresa.dependencia": -25,
+          "empresa.tracao": -1,
+          "marcas": ["empresa.conselho"],
+          "agendar": [{ "evento": "o_conselho_vetou", "em": [2, 4] }]
+        },
+        "resultado": {
+          "texto": "Cinco cadeiras, cinco currículos que não te devem nada. Na primeira reunião, alguém pergunta \"por quê?\" e ninguém ri."
+        }
+      },
+      {
+        "texto": "Amigos de confiança, para a foto",
+        "resumo": "montou um conselho de amigos na própria empresa",
+        "efeitos": {
+          "empresa.dependencia": -3,
+          "felicidade": 2,
+          "marcas": ["empresa.conselho"],
+          "agendar": [{ "evento": "conselho_de_fachada", "em": [2, 5] }]
+        },
+        "resultado": {
+          "texto": "Um primo, o seu personal e o seu dentista. Aprovam tudo por unanimidade, inclusive o cardápio do almoço."
+        }
+      }
+    ]
+  },
+  {
+    "id": "mural_de_problemas",
+    "tipo": "jogada",
+    "rotulo": "Um mural de problemas",
+    "idade": [22, 95],
+    "condicoes": { "empresa.valor": { "min": 30000000 }, "semMarcas": ["empresa.mural"] },
+    "texto": "Toda área da {empresa} tem um problema que ninguém resolve. A ideia: pôr todos num mural, com prêmio, e deixar qualquer uma das {empresa.funcionarios} pessoas tentar. Os diretores adoram, desde que o problema não seja o deles.",
+    "resumo": "abriu os problemas da empresa para qualquer um resolver",
+    "escolhas": [
+      {
+        "texto": "Prêmio em dinheiro de verdade",
+        "resumo": "pôs os problemas da empresa num mural com prêmio em dinheiro",
+        "efeitos": {
+          "empresaFator": 0.995,
+          "empresa.dependencia": -15,
+          "marcas": ["empresa.mural"],
+          "agendar": [{ "evento": "solucao_inesperada", "em": [1, 3] }]
+        },
+        "resultado": { "texto": "No primeiro dia, o mural tem 3 mil problemas. Um deles é o próprio mural." }
+      },
+      {
+        "texto": "Prêmio em reconhecimento (e um bóton)",
+        "resumo": "pôs os problemas da empresa num mural com prêmio em bóton",
+        "efeitos": {
+          "empresa.dependencia": -5,
+          "empresa.tracao": -0.5,
+          "marcas": ["empresa.mural"],
+          "agendar": [{ "evento": "o_mural_do_boton", "em": [1, 2] }]
+        },
+        "resultado": { "texto": "Os bótons chegam antes das soluções. São bonitos, pelo menos." }
+      }
+    ]
+  },
+  {
+    "id": "tornar_se_dispensavel",
+    "tipo": "jogada",
+    "rotulo": "Tornar-se dispensável",
+    "idade": [25, 95],
+    "condicoes": {
+      "empresa.valor": { "min": 15000000 },
+      "empresa.dependencia": { "max": 50 },
+      "semMarcas": ["passou_o_comando"]
+    },
+    "texto": "Escrever tudo o que só você sabe, passar a caneta e ver se a {empresa} anda sem você. Se andar, você fica dispensável: o maior elogio para quem manda, e o mais difícil de ouvir.",
+    "resumo": "tentou se tornar dispensável na própria empresa",
+    "escolhas": [
+      {
+        "texto": "Passar o comando de verdade",
+        "resumo": "passou o comando da própria empresa e saiu de cena",
+        "efeitos": {
+          "empresa.dependencia": { "definir": 5 },
+          "saude": 3,
+          "felicidade": 2,
+          "eu.influencia": -4,
+          "marcas": ["dispensavel", "passou_o_comando"],
+          "agendar": [{ "evento": "a_empresa_sem_voce", "em": [2, 3] }]
+        },
+        "resultado": {
+          "texto": "Você assina o último papel. No dia seguinte, ninguém te liga. No outro também. Dói um pouco."
+        }
+      },
+      {
+        "texto": "Passar o comando, mas ligar todo dia",
+        "resumo": "passou o comando da empresa, mas não o telefone",
+        "efeitos": {
+          "empresa.dependencia": -10,
+          "felicidade": -1,
+          "marcas": ["passou_o_comando"],
+          "agendar": [{ "evento": "presidente_pediu_as_contas", "em": [1, 2] }]
+        },
+        "resultado": { "texto": "A nova presidente tem a caneta. Você tem o celular dela, e usa." }
+      }
+    ]
+  },
+  {
+    "id": "equipe_para_desmontar",
+    "tipo": "jogada",
+    "rotulo": "Uma equipe para desmontar",
+    "idade": [22, 95],
+    "intervalo": 12,
+    "condicoes": { "empresa.valor": { "min": 50000000 } },
+    "texto": "Uma equipe paga para provar que metade do que a {empresa} faz não serve para nada: relatórios que ninguém lê, reuniões sobre reuniões, um departamento que ninguém sabe o que faz, nem o próprio departamento.",
+    "resumo": "mandou desmontar o que não servia na própria empresa",
+    "escolhas": [
+      {
+        "texto": "Cortar tudo o que acharem, gente inclusive",
+        "resumo": "mandou cortar a própria empresa até o osso, demissões inclusive",
+        "efeitos": {
+          "empresa.tracao": 3,
+          "eu.popularidade": -8,
+          "marcas": ["demitiu_em_massa"],
+          "agendar": [{ "evento": "acampamento_na_porta", "em": [1, 1] }]
+        },
+        "resultado": {
+          "texto": "Somem 214 formulários, dois andares e um terço dos crachás. A planilha nunca esteve tão bonita."
+        }
+      },
+      {
+        "texto": "Cortar papel, não gente",
+        "resumo": "cortou a burocracia da empresa sem demitir ninguém",
+        "efeitos": { "empresa.tracao": 1.5, "empresa.dependencia": -5, "felicidade": 1 },
+        "resultado": {
+          "texto": "Somem 214 formulários e uma reunião de segunda que existia desde a fundação. Ninguém sente falta, nem quem marcava."
+        }
+      }
+    ]
+  },
+  {
+    "id": "bancar_quem_sai",
+    "tipo": "jogada",
+    "rotulo": "Bancar quem quer sair",
+    "idade": [22, 95],
+    "condicoes": { "empresa.valor": { "min": 30000000 }, "semMarcas": ["empresa.incubadora"] },
+    "texto": "Tem gente boa na {empresa} com ideias que não cabem nela. Dá para segurar essa gente com bônus ou bancar a saída: dinheiro para começar, em troca de uma fatia do que vier.",
+    "resumo": "decidiu o que fazer com quem queria sair da empresa",
+    "escolhas": [
+      {
+        "texto": "Bancar a saída e ficar com uma fatia",
+        "resumo": "bancou funcionários que saíram para abrir o próprio negócio",
+        "efeitos": {
+          "dinheiro": -3000000,
+          "empresa.dependencia": -8,
+          "marcas": ["empresa.incubadora"],
+          "agendar": [{ "evento": "startup_dos_ex_funcionarios", "em": [3, 5] }]
+        },
+        "resultado": {
+          "texto": "Seis pessoas saem com um cheque e um abraço. Na despedida, prometem não roubar clientes. Prometem mesmo."
+        }
+      },
+      {
+        "texto": "Segurar com bônus e contrato",
+        "resumo": "segurou os talentos da empresa com bônus",
+        "efeitos": {
+          "empresaFator": 0.997,
+          "empresa.tracao": 0.5,
+          "empresa.dependencia": 3,
+          "marcas": ["empresa.incubadora"]
+        },
+        "resultado": {
+          "texto": "Ficam todos, com bônus e cláusula de não concorrência. As ideias também ficam, na gaveta."
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_conselho_vetou",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["empresa.conselho"], "empresa.valor": true },
+    "texto": "O conselho da {empresa} vetou o seu plano de [comprar a maior rival|entrar no ramo de cassino on-line|mudar a sede para um navio]. Cinco a zero. Você nunca tinha ouvido um não tão bem fundamentado.",
+    "resumo": "teve um plano vetado pelo conselho da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Aceitar o veto",
+        "resumo": "aceitou o veto do conselho da própria empresa",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Dois anos depois, quem fez aquilo quebrou. O conselho tinha razão e teve a elegância de não dizer.",
+          "resumo": "aceitou um veto que salvou a própria empresa",
+          "efeitos": { "empresa.tracao": 2, "empresa.dependencia": -5 }
+        },
+        "fracasso": {
+          "texto": "Uma rival fez exatamente o seu plano e virou a maior do setor. O conselho pede desculpas por e-mail, com cópia para o jurídico.",
+          "resumo": "aceitou um veto que custou a liderança do setor",
+          "efeitos": { "empresa.tracao": -2, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Passar por cima do conselho",
+        "resumo": "passou por cima do conselho da própria empresa",
+        "efeitos": { "empresa.dependencia": 20, "removerMarcas": ["empresa.conselho"] },
+        "teste": { "atributo": "inteligencia", "dificuldade": 65 },
+        "sucesso": {
+          "texto": "Deu certo. O conselho renunciou em bloco e a imprensa te chamou de visionário. Dos cinco, três pediram emprego.",
+          "resumo": "atropelou o conselho da empresa e acertou",
+          "efeitos": { "empresa.tracao": 3, "eu.fama": 3 }
+        },
+        "fracasso": {
+          "texto": "Deu errado, e agora sem ninguém para dividir a culpa. A {empresa} perde um quinto do valor em uma semana.",
+          "resumo": "atropelou o conselho da empresa e errou sem ninguém para dividir a culpa",
+          "efeitos": { "empresaFator": 0.8, "eu.popularidade": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "conselho_de_fachada",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["empresa.conselho"], "empresa.valor": true },
+    "texto": "Um jornal descobriu quem está no conselho da {empresa}: um primo, o seu personal e o seu dentista. A manchete: \"Governança em família\". O dentista pede para sair da foto.",
+    "resumo": "viu o conselho de amigos da empresa estampado no jornal",
+    "escolhas": [
+      {
+        "texto": "Trocar por gente de fora",
+        "resumo": "trocou o conselho de amigos da empresa por gente de fora",
+        "efeitos": { "empresa.dependencia": -15, "empresa.tracao": -1 },
+        "resultado": {
+          "texto": "Saem o primo, o personal e o dentista. Entram três desconhecidos que leem os relatórios até o fim. Você sente saudade do dentista."
+        }
+      },
+      {
+        "texto": "Defender os amigos na imprensa",
+        "resumo": "defendeu na imprensa o conselho de amigos da empresa",
+        "efeitos": { "eu.popularidade": -6, "empresaFator": 0.95 },
+        "resultado": { "texto": "Os investidores entenderam o recado: a empresa é você. O valor dela também entendeu." }
+      }
+    ]
+  },
+  {
+    "id": "solucao_inesperada",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["empresa.mural"], "empresa.valor": true },
+    "texto": "O mural de problemas da {empresa} fez um ano. Tem quem jure que é a melhor coisa que já aconteceu ali, e quem jure o contrário.",
+    "resumo": "viu o mural de problemas da empresa fazer um ano",
+    "teste": { "chance": 0.65 },
+    "sucesso": {
+      "texto": "Uma estagiária do design resolveu o gargalo da logística que três diretores não resolviam havia uma década. Ganhou o prêmio, uma sala e o respeito dos três.",
+      "resumo": "viu uma estagiária resolver o que três diretores não resolviam",
+      "efeitos": { "empresa.tracao": 3, "empresaFator": 1.03, "felicidade": 2 }
+    },
+    "fracasso": {
+      "texto": "Viraram 40 mil soluções para o mesmo problema e uma briga na Justiça pelo prêmio. O problema continua lá, agora famoso.",
+      "resumo": "viu o mural de problemas da empresa virar briga por prêmio",
+      "efeitos": { "empresa.tracao": -1, "eu.popularidade": -2 }
+    }
+  },
+  {
+    "id": "o_mural_do_boton",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["empresa.mural"], "empresa.valor": true },
+    "texto": "O mural de problemas da {empresa}, com prêmio em bóton, fez um ano.",
+    "resumo": "viu o mural de problemas com prêmio em bóton fazer um ano",
+    "teste": { "chance": 0.3 },
+    "sucesso": {
+      "texto": "Um técnico da manutenção resolveu um problema de vinte anos só pela glória. O bóton dele está emoldurado na recepção, e ele passa por lá de propósito.",
+      "resumo": "viu um técnico resolver por um bóton um problema de vinte anos",
+      "efeitos": { "empresa.tracao": 2, "empresa.dependencia": -3 }
+    },
+    "fracasso": {
+      "texto": "Ninguém resolveu nada. Os bótons viraram moeda na cantina: três valem um pão de queijo.",
+      "resumo": "viu os bótons do mural de problemas virarem moeda na cantina",
+      "efeitos": { "empresa.tracao": -0.5, "felicidade": -1 }
+    }
+  },
+  {
+    "id": "a_empresa_sem_voce",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["dispensavel", "passou_o_comando"], "empresa.valor": true },
+    "texto": "Faz dois anos que você não manda na {empresa}. Às vezes você passa na frente da sede, de carro, devagar.",
+    "resumo": "viu a própria empresa andar dois anos sem você",
+    "teste": { "atributo": "empresa.tracao", "dificuldade": 0 },
+    "sucesso": {
+      "texto": "A {empresa} bateu recorde no ano em que você só apareceu na festa de fim de ano. Ninguém sentiu a sua falta, e era exatamente esse o plano.",
+      "resumo": "viu a própria empresa bater recorde sem precisar de você",
+      "efeitos": { "felicidade": 6, "empresaFator": 1.05 }
+    },
+    "fracasso": {
+      "texto": "A {empresa} perdeu o rumo sem você. Os diretores mandam um e-mail com o assunto \"Volta?\", sem ponto de exclamação, o que é pior.",
+      "resumo": "viu a própria empresa se perder sem você",
+      "efeitos": {
+        "empresa.dependencia": 25,
+        "empresaFator": 0.92,
+        "felicidade": -3,
+        "removerMarcas": ["dispensavel", "passou_o_comando"]
+      }
+    }
+  },
+  {
+    "id": "presidente_pediu_as_contas",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["passou_o_comando"], "empresa.valor": true },
+    "texto": "A presidente que você pôs na {empresa} pediu demissão. Na carta, uma frase sublinhada duas vezes: \"Ou eu mando, ou você manda.\"",
+    "resumo": "perdeu a presidente da empresa por ligar demais",
+    "escolhas": [
+      {
+        "texto": "Pedir que fique, e parar de ligar",
+        "resumo": "prometeu parar de ligar para a presidente da própria empresa",
+        "efeitos": { "empresa.dependencia": -15, "felicidade": -1, "removerMarcas": ["passou_o_comando"] },
+        "resultado": { "texto": "Ela fica. Você apaga o número dela, depois recupera, depois apaga de novo." }
+      },
+      {
+        "texto": "Voltar a mandar",
+        "resumo": "voltou a mandar na própria empresa",
+        "efeitos": {
+          "empresa.dependencia": 20,
+          "saude": -2,
+          "empresa.tracao": 1,
+          "removerMarcas": ["passou_o_comando"]
+        },
+        "resultado": { "texto": "Você volta para a sala de sempre. A cadeira ainda tem o seu formato." }
+      }
+    ]
+  },
+  {
+    "id": "acampamento_na_porta",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["demitiu_em_massa"], "empresa.valor": true },
+    "texto": "Os demitidos da {empresa} acamparam na porta da sede, com faixa, carro de som e uma marchinha com o seu nome que, convenhamos, é boa.",
+    "resumo": "teve os demitidos da empresa acampados na porta",
+    "escolhas": [
+      {
+        "texto": "Negociar uma indenização maior",
+        "resumo": "negociou com os demitidos acampados na porta da empresa",
+        "efeitos": { "empresaFator": 0.99, "eu.popularidade": 5 },
+        "resultado": {
+          "texto": "Acordo assinado no capô de um carro. A marchinha sai do repertório, mas continua tocando na sua cabeça."
+        }
+      },
+      {
+        "texto": "Chamar a polícia",
+        "resumo": "chamou a polícia para os demitidos da própria empresa",
+        "efeitos": { "eu.popularidade": -8, "eu.fama": 5 },
+        "resultado": {
+          "texto": "A foto do camburão na porta da {empresa} roda o país. A marchinha ganha uma segunda estrofe."
+        }
+      }
+    ]
+  },
+  {
+    "id": "startup_dos_ex_funcionarios",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["empresa.incubadora"], "empresa.valor": true },
+    "texto": "Os ex-funcionários que você bancou abriram uma empresa de [entrega por drone|software para padaria|ração gourmet]. Hoje ela tem nome em inglês e um escritório com escorregador.",
+    "resumo": "viu no que deram os ex-funcionários que bancou",
+    "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+    "sucesso": {
+      "texto": "Virou fornecedora da {empresa}, e das boas. A sua fatia já vale dez vezes o cheque.",
+      "resumo": "viu a startup de ex-funcionários que bancou virar fornecedora",
+      "efeitos": { "dinheiro": 30000000, "empresa.tracao": 1.5 }
+    },
+    "fracasso": {
+      "texto": "Virou concorrente. Levou vinte pessoas da {empresa} e o seu melhor cliente. Pelo menos mandou convite para a inauguração.",
+      "resumo": "bancou ex-funcionários que viraram concorrentes",
+      "efeitos": { "empresa.tracao": -2, "empresaFator": 0.97 }
+    }
+  },
+  {
+    "id": "ferias_do_dono",
+    "idade": [25, 85],
+    "condicoes": { "empresa.dependencia": { "min": 70 }, "empresa.valor": { "min": 300000 } },
+    "texto": "Primeira semana de férias em [quatro|seis|nove] anos. No terceiro dia, a {empresa} parou: ninguém sabia se podia assinar nada sem você.",
+    "resumo": "viu a própria empresa parar nas suas férias",
+    "escolhas": [
+      {
+        "texto": "Voltar correndo",
+        "resumo": "voltou das férias no terceiro dia porque a empresa parou",
+        "efeitos": { "saude": -2, "felicidade": -3, "empresa.dependencia": 5 },
+        "resultado": {
+          "texto": "Você volta de chinelo e assina 47 papéis antes do almoço. A mala fica fechada até o Natal."
+        }
+      },
+      {
+        "texto": "Deixar parar e ver o que acontece",
+        "resumo": "deixou a empresa se virar nas suas férias",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Na segunda semana, alguém assinou. Depois outro. Quando você volta, a {empresa} aprendeu a andar um pouco sozinha, e você aprendeu a nadar.",
+          "resumo": "deixou a empresa se virar nas férias, e ela aprendeu",
+          "efeitos": { "empresa.dependencia": -12, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Um contrato grande venceu na sua caixa de entrada. A {empresa} perdeu o cliente; você ganhou um bronzeado.",
+          "resumo": "perdeu um cliente grande da empresa por tirar férias",
+          "efeitos": { "empresaFator": 0.96, "empresa.dependencia": -6, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "carta_branca",
+    "idade": [25, 85],
+    "condicoes": { "empresa.dependencia": { "min": 45 }, "empresa.valor": { "min": 20000000 } },
+    "texto": "Quem dirige a maior área da {empresa} pediu carta branca: orçamento próprio, equipe própria e você longe das reuniões dela.",
+    "resumo": "recebeu um pedido de carta branca dentro da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Dar carta branca",
+        "resumo": "deu carta branca a uma diretora da empresa",
+        "efeitos": { "empresa.dependencia": -12 },
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "A área dobrou de tamanho em dois anos. Você soube pelo relatório, como todo mundo.",
+          "resumo": "deu carta branca a uma diretora e viu a área dela dobrar",
+          "efeitos": { "empresa.tracao": 2 }
+        },
+        "fracasso": {
+          "texto": "A área virou um feudo, com crachá próprio, festa própria e resultado nenhum.",
+          "resumo": "deu carta branca e criou um feudo dentro da empresa",
+          "efeitos": { "empresa.tracao": -2, "empresaFator": 0.97 }
+        }
+      },
+      {
+        "texto": "Negar: aqui quem decide é você",
+        "resumo": "negou carta branca e manteve tudo nas próprias mãos",
+        "efeitos": { "empresa.dependencia": 5, "empresa.tracao": -1 },
+        "resultado": {
+          "texto": "Ela saiu para a concorrência e levou meia equipe. Na despedida, desejou sorte. Pareceu sincera, o que foi pior."
+        }
+      }
+    ]
+  },
+  {
+    "id": "tudo_pela_sua_mesa",
+    "idade": [35, 90],
+    "condicoes": { "empresa.dependencia": { "min": 85 }, "empresa.valor": { "min": 5000000 } },
+    "texto": "Na {empresa}, tudo passa pela sua mesa: a compra de clipes, a cor do logotipo, o nome do cachorro da recepção. O médico pediu um exame, e a sua agenda não tem espaço até março.",
+    "resumo": "percebeu que tudo na própria empresa passava pela sua mesa",
+    "escolhas": [
+      {
+        "texto": "Contratar alguém para dividir o peso",
+        "resumo": "contratou alguém para dividir o comando da empresa",
+        "efeitos": { "empresa.dependencia": -15, "saude": 3, "empresaFator": 0.995 },
+        "resultado": {
+          "texto": "Chega uma diretora de operações com uma agenda que tem espaço. Você faz o exame. Está tudo bem, por enquanto."
+        }
+      },
+      {
+        "texto": "Aguentar, como sempre",
+        "resumo": "aguentou o peso da própria empresa sem dividir com ninguém",
+        "efeitos": { "saude": -4, "felicidade": -3, "empresa.tracao": 1 },
+        "resultado": {
+          "texto": "O exame fica para março, depois para abril. O cachorro da recepção ganha o nome que você escolheu: Março."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quem_manda_se_voce_faltar",
+    "idade": [55, 95],
+    "condicoes": { "empresa.dependencia": { "min": 60 }, "empresa.valor": { "min": 50000000 } },
+    "texto": "Um investidor faz a pergunta que ninguém faz: \"Se você morrer amanhã, quem manda na {empresa}?\" O silêncio na sala responde por todo mundo.",
+    "resumo": "ouviu de um investidor que ninguém mandaria na empresa sem você",
+    "escolhas": [
+      {
+        "texto": "Preparar quem vai mandar, de verdade",
+        "resumo": "preparou quem vai mandar na empresa quando faltar",
+        "efeitos": { "empresa.dependencia": -20, "eu.influencia": -2 },
+        "resultado": {
+          "texto": "Você passa as reuniões, depois as decisões, depois as broncas. As broncas foram as mais difíceis de soltar."
+        }
+      },
+      {
+        "texto": "\"Eu não vou morrer amanhã.\"",
+        "resumo": "garantiu a um investidor que não ia morrer tão cedo",
+        "efeitos": { "empresa.dependencia": 5, "felicidade": 1 },
+        "resultado": { "texto": "O investidor anota alguma coisa. Você prefere não saber o quê." }
+      }
+    ]
+  },
+  {
+    "id": "a_empresa_anda_sozinha",
+    "idade": [25, 99],
+    "condicoes": { "empresa.dependencia": { "max": 25 }, "empresa.valor": { "min": 5000000 } },
+    "texto": "A {empresa} atravessou uma crise inteira, com recall, CPI e tudo, sem te ligar nenhuma vez. Você soube pelo jornal, e sorriu.",
+    "resumo": "viu a própria empresa atravessar uma crise sem precisar de você",
+    "efeitos": { "felicidade": 4, "empresa.tracao": 1 }
+  }
+]

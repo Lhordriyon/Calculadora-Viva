@@ -405,7 +405,7 @@
         "resumo": "contratou um diretor para tocar a empresa",
         "resultado": {
           "texto": "Um diretor de terno assumiu o dia a dia. A empresa cresce um pouco menos; você dorme um pouco mais.",
-          "efeitos": { "empresa.tracao": -3, "saude": 6, "felicidade": 3 }
+          "efeitos": { "empresa.tracao": -3, "empresa.dependencia": -20, "saude": 6, "felicidade": 3 }
         }
       },
       {
@@ -565,7 +565,7 @@
         "resumo": "deu sociedade para a melhor pessoa da empresa",
         "resultado": {
           "texto": "Você ofereceu um pedaço da empresa. Ficou, e passou a chegar antes de você.",
-          "efeitos": { "empresa.participacao": -0.05, "empresa.tracao": 4 }
+          "efeitos": { "empresa.participacao": -0.05, "empresa.tracao": 4, "empresa.dependencia": -8 }
         }
       }
     ]

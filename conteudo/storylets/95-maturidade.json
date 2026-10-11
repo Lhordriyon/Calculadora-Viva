@@ -340,7 +340,7 @@
         "resumo": "contratou um executivo para presidir a empresa",
         "resultado": {
           "texto": "Chegou um presidente de terno escuro que fala em \"eficiência\". A empresa cresceu; você foi para o conselho e para o golfe.",
-          "efeitos": { "empresa.tracao": 3, "felicidade": 2, "saude": 1, "marcas": ["passou_o_comando"] }
+          "efeitos": { "empresa.tracao": 3, "empresa.dependencia": -30, "felicidade": 2, "saude": 1, "marcas": ["passou_o_comando"] }
         }
       }
     ]
