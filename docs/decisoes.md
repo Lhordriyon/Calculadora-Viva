@@ -270,6 +270,30 @@ O dono jogou o APK com a letra do sistema grande (cerca de 145%, numa tela de 36
 
   Medida a 145% (360×820): a história nas ações foi de ~30 px para 227 px; o cabeçalho, de 289 px para 271 px (122 px no modo compacto); um cartão de evento ganha até 698 px. Só um evento muito longo (9 linhas e 3 opções) ainda rola dentro do cartão.
 
+## Auditoria por primeiros princípios (11/10)
+
+O relatório completo, com os três mapas (princípios, complexidade e oportunidades), está em `docs/auditoria.md`. Entraram só as mudanças pequenas, com evidência e teste; as de risco maior ficaram como propostas.
+
+- **O mundo tem tamanho.** O dono mostrou uma empresa de R$ 144 tri com 956.903.676 funcionários e uma herdeira com R$ 357 tri, quase tudo em títulos. Por quê: o valor da empresa crescia em proporção a ele mesmo sem limite, o investimento rendia sobre qualquer valor, e funcionários eram o valor dividido por R$ 150 mil. Agora:
+  - o ganho da empresa encolhe perto de R$ 20 tri e some acima disso;
+  - o investimento rende até R$ 5 tri, e o excedente fica parado;
+  - os funcionários saturam em 3 milhões.
+
+  Medida em 16 dinastias trilionárias de 3 gerações (mesmas sementes):
+
+  | | Antes | Depois |
+  |---|---|---|
+  | Maior empresa | R$ 25,5 tri, 170.285.731 funcionários | R$ 11,7 tri, 3.000.000 |
+  | Maior patrimônio | R$ 13,6 tri | R$ 16,7 tri |
+  | Mediana no fim da dinastia | R$ 1,5 tri | R$ 633 bi |
+
+  Os números escolhidos: R$ 20 tri é a ordem de grandeza das maiores empresas do mundo somadas a uma economia como a brasileira; R$ 5 tri, o que o mercado de um país desse tamanho absorve sem virar o próprio mercado; 3 milhões, as maiores empregadoras do mundo. Bilhões e trilhões continuam possíveis; o infinito, não.
+- **Imagem pública com consequência.** 103 efeitos do conteúdo mexiam na popularidade de quem não tinha cargo, e ela só pesava na reeleição. Agora pesa em toda eleição (cada 3 pontos de imagem acima ou abaixo de 50 valem 1 ponto de influência), e o mandato começa com a imagem de quem ganhou mais 5 (entre 45 e 90), em vez de 55 para todos. Não pus esquecimento (a imagem voltar sozinha para 50): fica para medir no túnel.
+- **Livro-razão fechado para toda entidade.** Par, filho, paixão e bicho nasciam com números fora do livro, e quem chegava sobrescrevia quem saía sem registro (67 violações em 96 vidas; o teste só olhava quem joga). Agora quem sai deixa os números no livro (`r: 'saida'`, fora dos chips) e quem chega entra com os seus. O teste cobre toda entidade, em vidas sorteadas, de fortuna e de linhagem.
+- **Manifesto conferido pelo comportamento.** Um teste joga vidas e exige que toda escrita das regras esteja no manifesto. Ele achou três escritas não declaradas: `bem.valor`, `bem.financiado` e o dinheiro de qualquer pessoa que morre.
+- **O porquê visível.** A linha do tempo escondia toda entrada de regra; promoções, fins de mandato e fins de carreira não apareciam. Agora só o resumo do ano fica escondido.
+- **Um número de regra na interface:** o aviso da popularidade usa o mesmo limiar que derruba o cargo (30), em vez de 25.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
