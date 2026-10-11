@@ -106,7 +106,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
           );
         })}
       </div>
-      <button class="dinheiro" type="button" onClick={aoAbrirDinheiro}>
+      <button class="saldo" type="button" onClick={aoAbrirDinheiro}>
         <span>
           Dinheiro <b>{formatarDinheiro(dinheiro)}</b>
         </span>

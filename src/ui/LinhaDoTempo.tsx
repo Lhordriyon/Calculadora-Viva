@@ -13,7 +13,7 @@ function verboDe(h: Entrada, c: Conteudo): string | undefined {
 }
 
 /** Operações da folha (e regras que contam algo) pelo grupo do ref: "empresa:abrir" → Empresa. */
-const GRUPOS: Record<string, string> = { empresa: 'Empresa', bens: 'Compra', carreira: 'Carreira', poder: 'Política', carteira: 'Dinheiro', testamento: 'Testamento' };
+const GRUPOS: Record<string, string> = { empresa: 'Empresa', bens: 'Compra', carreira: 'Carreira', poder: 'Política', carteira: 'Dinheiro', testamento: 'Testamento', jogada: 'Fortuna' };
 function etiquetaDoGrupo(ref: string | undefined): string | undefined {
   const grupo = ref?.split(':')[0] ?? '';
   return GRUPOS[grupo];

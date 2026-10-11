@@ -155,7 +155,9 @@ export function App() {
     } catch {
       return;
     }
-    guardar({ ...save, vida: nova });
+    // A jogada conta uma história: a folha fecha para ela aparecer na linha do tempo (e uma ida à Lua pode acabar a vida).
+    if (op.tipo === 'jogada') setFolha(null);
+    concluir(nova);
   }
 
   function responder(indice: number) {

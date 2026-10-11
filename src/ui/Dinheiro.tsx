@@ -6,6 +6,7 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { custoDaAquisicao, empresaDe, liquidoDe, precoDaParte, setoresDeEmpresa } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
+import { jogadasDe } from '../motor/fortuna.ts';
 import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -456,6 +457,45 @@ function Bens({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/** O que só dá para fazer com muito dinheiro: aparece quando a fortuna permite, da jogada mais barata à mais cara. */
+function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [aberta, setAberta] = useState<string | null>(null);
+  const lista = jogadasDe(vida, conteudo);
+  if (lista.length === 0) return null;
+  return (
+    <fieldset class="grupo">
+      <legend>Brincar de deus</legend>
+      <p class="nota">O que só dá para fazer com muito dinheiro. Não gasta a ficha do ano, e o mundo vai reagir.</p>
+      <ul class="vagas" aria-label="Jogadas">
+        {lista.map((j) => (
+          <li key={j.s.id}>
+            <button type="button" class="vaga" aria-expanded={aberta === j.s.id} onClick={() => setAberta(aberta === j.s.id ? null : j.s.id)}>
+              <b>{j.s.rotulo}</b>
+              <small>{j.preco > 0 ? `a partir de ${formatarDinheiro(j.preco)}` : 'sem custo'}</small>
+            </button>
+            {aberta === j.s.id && (
+              <div class="confirmar">
+                <p>{j.texto}</p>
+                <div class="opcoes">
+                  {j.opcoes.map((o, i) => (
+                    <button class="opcao" type="button" key={i} disabled={!o.disponivel} onClick={() => aoOperar({ tipo: 'jogada', id: j.s.id, escolha: i })}>
+                      {o.texto}
+                      <small>
+                        {j.custos[i]! > 0 ? formatarDinheiro(j.custos[i]!) : 'sem custo'}
+                        {o.motivo ? ` · ${o.motivo}` : ''}
+                      </small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </fieldset>
+  );
+}
+
 export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
   useEffect(() => {
     const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
@@ -475,6 +515,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
           Patrimônio <b>{formatarDinheiro(patrimonioTotal(vida))}</b> · na conta {formatarDinheiro(conta)}
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
         </p>
+        {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Empresa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <Investimentos vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
