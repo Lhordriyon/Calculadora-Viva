@@ -1,0 +1,3229 @@
+[
+  {
+    "id": "festa_do_seculo",
+    "tipo": "jogada",
+    "rotulo": "A festa do século",
+    "idade": [
+      20,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 50000000.0
+      }
+    },
+    "intervalo": 8,
+    "texto": "Uma festa que a cidade vai comentar por anos. A dúvida é que tipo de comentário.",
+    "resumo": "deu a festa do século",
+    "escolhas": [
+      {
+        "texto": "Show particular de um astro da música",
+        "resumo": "deu uma festa com show particular de um astro",
+        "efeitos": {
+          "dinheiro": -25000000.0,
+          "felicidade": 8,
+          "eu.fama": 10,
+          "marcas": [
+            "festeiro"
+          ],
+          "agendar": [
+            {
+              "evento": "festa_vazou",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "O astro cantou o seu nome no meio do refrão. Você fingiu que não chorou; a internet tem o vídeo."
+        }
+      },
+      {
+        "texto": "Abrir a festa para a cidade inteira",
+        "resumo": "abriu uma festa para a cidade inteira",
+        "efeitos": {
+          "dinheiro": -12000000.0,
+          "felicidade": 6,
+          "eu.fama": 8,
+          "eu.popularidade": 8,
+          "marcas": [
+            "festeiro"
+          ],
+          "agendar": [
+            {
+              "evento": "festa_vazou",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Trinta mil pessoas, dois trios elétricos e nenhum banheiro químico sobrando. {cidade} te ama por uma semana."
+        }
+      },
+      {
+        "texto": "Três dias na sua ilha",
+        "resumo": "deu uma festa de três dias na própria ilha",
+        "condicoes": {
+          "marcas": [
+            "ilha"
+          ]
+        },
+        "bloqueio": "precisa ter uma ilha",
+        "efeitos": {
+          "dinheiro": -40000000.0,
+          "marcas": [
+            "festeiro"
+          ],
+          "agendar": [
+            {
+              "evento": "festa_vazou",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "teste": {
+          "chance": 0.75
+        },
+        "sucesso": {
+          "texto": "Cinco DJs, um ministro que jura nunca ter ido e um nascer do sol que ninguém lembra direito.",
+          "efeitos": {
+            "felicidade": 10,
+            "eu.fama": 12
+          }
+        },
+        "fracasso": {
+          "texto": "Uma tempestade virou a festa num naufrágio de canapés. Os vídeos rodaram o mundo.",
+          "resumo": "viu a festa na ilha virar naufrágio de canapés",
+          "efeitos": {
+            "felicidade": -4,
+            "eu.fama": 15
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "estatua",
+    "tipo": "jogada",
+    "rotulo": "Uma estátua sua",
+    "idade": [
+      30,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 50000000.0
+      },
+      "semMarcas": [
+        "estatua"
+      ]
+    },
+    "texto": "A prefeitura aceita uma estátua sua na praça principal, desde que você pague. Você paga.",
+    "resumo": "ganhou uma estátua na praça",
+    "escolhas": [
+      {
+        "texto": "Bronze, em tamanho real",
+        "resumo": "ganhou uma estátua de bronze na praça",
+        "efeitos": {
+          "dinheiro": -6000000.0,
+          "eu.fama": 4,
+          "felicidade": 3,
+          "marcas": [
+            "estatua"
+          ],
+          "agendar": [
+            {
+              "evento": "estatua_pichada",
+              "em": [
+                2,
+                5
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Ficou parecida. Os pombos aprovaram primeiro."
+        }
+      },
+      {
+        "texto": "Quinze metros, apontando para o horizonte",
+        "resumo": "ergueu uma estátua de quinze metros de si",
+        "efeitos": {
+          "dinheiro": -30000000.0,
+          "eu.fama": 10,
+          "eu.popularidade": -5,
+          "marcas": [
+            "estatua",
+            "estatua_gigante"
+          ],
+          "agendar": [
+            {
+              "evento": "estatua_derrubada",
+              "em": [
+                3,
+                8
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Dá para ver da rodovia. A cidade ganhou um ponto turístico e você, um apelido que não é elogio."
+        }
+      }
+    ]
+  },
+  {
+    "id": "escola_de_samba",
+    "tipo": "jogada",
+    "rotulo": "Patrocinar o Carnaval",
+    "idade": [
+      22,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 50000000.0
+      }
+    },
+    "intervalo": 4,
+    "texto": "Uma escola de samba do grupo especial está sem patrocínio a seis meses do desfile. O presidente da escola já te chama de \"meu patrono\" na primeira frase.",
+    "resumo": "patrocinou uma escola de samba",
+    "escolhas": [
+      {
+        "texto": "Um enredo sobre a sua vida",
+        "resumo": "virou enredo de escola de samba",
+        "efeitos": {
+          "dinheiro": -35000000.0,
+          "eu.fama": 8,
+          "marcas": [
+            "enredo"
+          ],
+          "agendar": [
+            {
+              "evento": "apuracao_do_carnaval",
+              "em": 1
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "O samba rima o seu sobrenome com \"nação\". Você decorou o refrão no primeiro ensaio."
+        }
+      },
+      {
+        "texto": "Bancar sem aparecer",
+        "resumo": "bancou o Carnaval de uma escola sem aparecer",
+        "efeitos": {
+          "dinheiro": -15000000.0,
+          "felicidade": 5,
+          "eu.popularidade": 6
+        },
+        "resultado": {
+          "texto": "Você assistiu do camarote, sem crachá. A comunidade sabe quem pagou o barracão, e isso basta."
+        }
+      }
+    ]
+  },
+  {
+    "id": "pix_para_a_cidade",
+    "tipo": "jogada",
+    "rotulo": "Pix para a cidade inteira",
+    "idade": [
+      25,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      }
+    },
+    "intervalo": 6,
+    "texto": "Você poderia simplesmente mandar dinheiro para todo mundo de {cidade}. Os economistas dizem que é má ideia; os moradores discordam.",
+    "resumo": "mandou dinheiro para a cidade inteira",
+    "escolhas": [
+      {
+        "texto": "R$ 500 para cada morador",
+        "resumo": "mandou um Pix para cada morador da cidade",
+        "efeitos": {
+          "dinheiro": -300000000.0,
+          "felicidade": 5,
+          "eu.popularidade": 8,
+          "eu.fama": 8,
+          "lugar.custo_vida": 0.02,
+          "marcas": [
+            "pix_geral"
+          ],
+          "agendar": [
+            {
+              "evento": "preco_do_pao",
+              "em": 1
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "O banco travou por duas horas. Depois, a cidade inteira foi ao mercado ao mesmo tempo."
+        }
+      },
+      {
+        "texto": "R$ 10 mil para cada morador",
+        "resumo": "deu R$ 10 mil a cada morador da cidade",
+        "efeitos": {
+          "dinheiro": -6000000000.0,
+          "felicidade": 8,
+          "eu.popularidade": 15,
+          "eu.fama": 18,
+          "lugar.custo_vida": 0.08,
+          "lugar.desemprego": -0.01,
+          "pais.inflacao": 0.4,
+          "marcas": [
+            "pix_geral"
+          ],
+          "agendar": [
+            {
+              "evento": "preco_do_pao",
+              "em": 1
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Por um mês, ninguém foi trabalhar e o preço do pão dobrou. Você virou santo de parede de padaria."
+        }
+      }
+    ]
+  },
+  {
+    "id": "fundacao",
+    "tipo": "jogada",
+    "rotulo": "Uma fundação com seu nome",
+    "idade": [
+      25,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      },
+      "semMarcas": [
+        "fundacao"
+      ]
+    },
+    "texto": "Advogados, uma sede de vidro e \"Fundação {sobrenome}\" na porta. Falta decidir o que ela vai fazer pelo mundo.",
+    "resumo": "criou a Fundação {sobrenome}",
+    "escolhas": [
+      {
+        "texto": "Hospitais no interior",
+        "resumo": "criou uma fundação que abriu hospitais no interior",
+        "efeitos": {
+          "dinheiro": -3000000000.0,
+          "felicidade": 6,
+          "eu.popularidade": 10,
+          "eu.fama": 10,
+          "mae.saude": 4,
+          "pai.saude": 4,
+          "marcas": [
+            "fundacao",
+            "fundacao_saude"
+          ],
+          "agendar": [
+            {
+              "evento": "hospital_da_fundacao",
+              "em": [
+                2,
+                4
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Sete hospitais onde o médico mais perto ficava a quatro horas. Na inauguração, uma senhora segurou a sua mão e não soltou."
+        }
+      },
+      {
+        "texto": "Escolas em tempo integral",
+        "resumo": "criou uma fundação de escolas em tempo integral",
+        "efeitos": {
+          "dinheiro": -2000000000.0,
+          "inteligencia": 2,
+          "eu.popularidade": 8,
+          "eu.fama": 8,
+          "lugar.desemprego": -0.01,
+          "marcas": [
+            "fundacao",
+            "fundacao_educacao"
+          ],
+          "agendar": [
+            {
+              "evento": "ex_aluna_da_fundacao",
+              "em": [
+                6,
+                12
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Cem escolas com piscina, robótica e merenda de restaurante. Daqui a vinte anos, você vai encontrar ex-alunos em todo canto."
+        }
+      },
+      {
+        "texto": "Comprar floresta para ninguém derrubar",
+        "resumo": "comprou floresta para ninguém derrubar",
+        "efeitos": {
+          "dinheiro": -5000000000.0,
+          "felicidade": 6,
+          "eu.fama": 14,
+          "eu.popularidade": 6,
+          "marcas": [
+            "fundacao",
+            "fundacao_floresta"
+          ],
+          "agendar": [
+            {
+              "evento": "floresta_invadida",
+              "em": [
+                2,
+                5
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Um pedaço da Amazônia do tamanho de um estado pequeno, agora sem motosserra. Os vizinhos de cerca não gostaram."
+        }
+      },
+      {
+        "texto": "Acabar com a fome numa cidade",
+        "resumo": "acabou com a fome numa cidade inteira",
+        "efeitos": {
+          "dinheiro": -1000000000.0,
+          "felicidade": 8,
+          "eu.popularidade": 14,
+          "eu.fama": 6,
+          "marcas": [
+            "fundacao",
+            "fundacao_fome"
+          ],
+          "agendar": [
+            {
+              "evento": "cozinha_da_fundacao",
+              "em": 1
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Cozinhas comunitárias em todos os bairros. Ninguém em {cidade} foi dormir com fome este ano, e isso nunca tinha acontecido."
+        }
+      }
+    ]
+  },
+  {
+    "id": "bancar_presidente",
+    "tipo": "jogada",
+    "rotulo": "Bancar um presidente",
+    "idade": [
+      30,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      },
+      "semMarcas": [
+        "bancou_campanha"
+      ]
+    },
+    "texto": "Faltam dois anos para a eleição presidencial. Três assessores, dois marqueteiros e um ex-ministro querem saber em quem você vai apostar.",
+    "resumo": "bancou uma campanha presidencial",
+    "escolhas": [
+      {
+        "texto": "A governadora do seu estado, que te deve favores",
+        "resumo": "bancou a campanha da governadora à Presidência",
+        "efeitos": {
+          "dinheiro": -1500000000.0,
+          "eu.influencia": 5,
+          "marcas": [
+            "bancou_campanha"
+          ],
+          "agendar": [
+            {
+              "evento": "noite_da_apuracao",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Comícios em 27 capitais, todos com o seu jatinho de apoio. Ela agradece em público só uma vez, por precaução."
+        }
+      },
+      {
+        "texto": "Um outsider que fala o que você quer ouvir",
+        "resumo": "bancou um candidato outsider à Presidência",
+        "efeitos": {
+          "dinheiro": -800000000.0,
+          "eu.fama": 4,
+          "marcas": [
+            "bancou_campanha"
+          ],
+          "agendar": [
+            {
+              "evento": "noite_da_apuracao",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Ele não sabe o preço do feijão, mas sabe o seu nome. As pesquisas não sabem o que fazer com ele."
+        }
+      },
+      {
+        "texto": "Os dois lados, por garantia",
+        "resumo": "bancou os dois lados da eleição presidencial",
+        "efeitos": {
+          "dinheiro": -3000000000.0,
+          "eu.influencia": 5,
+          "marcas": [
+            "bancou_campanha"
+          ],
+          "agendar": [
+            {
+              "evento": "os_dois_lados",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Você financia a cara e a coroa da moeda. Um jornalista começa a desconfiar."
+        }
+      }
+    ]
+  },
+  {
+    "id": "trazer_a_copa",
+    "tipo": "jogada",
+    "rotulo": "Trazer a Copa do Mundo",
+    "idade": [
+      30,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 20000000000.0
+      },
+      "semMarcas": [
+        "copa_no_brasil"
+      ]
+    },
+    "texto": "A federação internacional de futebol procura um país-sede. O Brasil tem estádio velho, paixão nova e você.",
+    "resumo": "tentou trazer a Copa do Mundo para o Brasil",
+    "escolhas": [
+      {
+        "texto": "Bancar estádios novos e o lobby",
+        "resumo": "trouxe a Copa do Mundo para o Brasil",
+        "efeitos": {
+          "dinheiro": -18000000000.0,
+          "eu.fama": 10,
+          "marcas": [
+            "copa_no_brasil"
+          ],
+          "agendar": [
+            {
+              "evento": "a_copa_chegou",
+              "em": [
+                3,
+                4
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Doze estádios, um trem-bala que fica pela metade e uma comissão que adorou o churrasco na sua casa."
+        }
+      },
+      {
+        "texto": "Só o lobby, que é mais barato",
+        "resumo": "fez lobby para trazer a Copa",
+        "efeitos": {
+          "dinheiro": -4000000000.0
+        },
+        "teste": {
+          "chance": 0.45
+        },
+        "sucesso": {
+          "texto": "Ganhou a votação por dois votos. Ninguém pergunta como.",
+          "resumo": "trouxe a Copa do Mundo para o Brasil",
+          "efeitos": {
+            "eu.fama": 8,
+            "marcas": [
+              "copa_no_brasil"
+            ],
+            "agendar": [
+              {
+                "evento": "a_copa_chegou",
+                "em": [
+                  3,
+                  4
+                ]
+              }
+            ]
+          }
+        },
+        "fracasso": {
+          "texto": "Outro país levou. O churrasco do lobby deles era melhor.",
+          "resumo": "perdeu a Copa para o lobby de outro país",
+          "efeitos": {
+            "felicidade": -4,
+            "eu.fama": 3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cura_de_doenca",
+    "tipo": "jogada",
+    "rotulo": "Pagar a cura de uma doença",
+    "idade": [
+      28,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 20000000000.0
+      },
+      "semMarcas": [
+        "pesquisa_cura",
+        "curou_doenca"
+      ]
+    },
+    "texto": "Cientistas brasileiros dizem que, com dinheiro de verdade, curam uma doença em poucos anos. Ninguém nunca deu dinheiro de verdade.",
+    "resumo": "pagou a pesquisa da cura de uma doença",
+    "escolhas": [
+      {
+        "texto": "Uma vacina definitiva contra a dengue",
+        "resumo": "pagou a pesquisa de uma vacina definitiva contra a dengue",
+        "efeitos": {
+          "dinheiro": -8000000000.0,
+          "eu.fama": 6,
+          "marcas": [
+            "pesquisa_cura"
+          ],
+          "agendar": [
+            {
+              "evento": "resultado_da_pesquisa",
+              "em": [
+                3,
+                6
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Três laboratórios, mil cientistas e um mosquito que agora tem inimigo pessoal."
+        }
+      },
+      {
+        "texto": "Um remédio para o câncer mais comum",
+        "resumo": "pagou a maior pesquisa contra o câncer da América Latina",
+        "efeitos": {
+          "dinheiro": -25000000000.0,
+          "eu.fama": 10,
+          "marcas": [
+            "pesquisa_cura"
+          ],
+          "agendar": [
+            {
+              "evento": "resultado_da_pesquisa",
+              "em": [
+                5,
+                8
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Um centro de pesquisa com o seu sobrenome na fachada e nenhum nos artigos científicos."
+        }
+      },
+      {
+        "texto": "As doenças que ninguém estuda",
+        "resumo": "pagou a pesquisa de doenças raras que ninguém estudava",
+        "efeitos": {
+          "dinheiro": -12000000000.0,
+          "felicidade": 4,
+          "eu.popularidade": 6,
+          "marcas": [
+            "pesquisa_cura"
+          ],
+          "agendar": [
+            {
+              "evento": "resultado_da_pesquisa",
+              "em": [
+                4,
+                7
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Doenças raras demais para dar lucro. Agora dão manchete, e algumas famílias dão um suspiro."
+        }
+      }
+    ]
+  },
+  {
+    "id": "programa_espacial",
+    "tipo": "jogada",
+    "rotulo": "Um programa espacial",
+    "idade": [
+      25,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 20000000000.0
+      },
+      "semMarcas": [
+        "programa_espacial"
+      ]
+    },
+    "texto": "Engenheiros de São José dos Campos juram que o Brasil chega ao espaço se alguém pagar a conta de luz. A conta de luz é bilionária.",
+    "resumo": "montou um programa espacial brasileiro",
+    "escolhas": [
+      {
+        "texto": "Foguetes para pôr satélites em órbita",
+        "resumo": "montou um programa espacial brasileiro",
+        "efeitos": {
+          "dinheiro": -15000000000.0,
+          "eu.fama": 8,
+          "marcas": [
+            "programa_espacial"
+          ],
+          "agendar": [
+            {
+              "evento": "lancamento",
+              "em": [
+                3,
+                5
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Uma base em Alcântara, um foguete verde e amarelo e uma contagem regressiva em português."
+        }
+      },
+      {
+        "texto": "Mandar gente à Lua",
+        "resumo": "pagou uma missão brasileira à Lua",
+        "efeitos": {
+          "dinheiro": -120000000000.0,
+          "eu.fama": 15,
+          "marcas": [
+            "programa_espacial"
+          ],
+          "agendar": [
+            {
+              "evento": "rumo_a_lua",
+              "em": [
+                4,
+                6
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Uma nave, três astronautas em treinamento e um lugar sobrando na cápsula, caso você queira."
+        }
+      }
+    ]
+  },
+  {
+    "id": "fundar_uma_cidade",
+    "tipo": "jogada",
+    "rotulo": "Fundar uma cidade",
+    "idade": [
+      30,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 200000000000.0
+      },
+      "semMarcas": [
+        "cidade_em_obras",
+        "fundou_cidade"
+      ]
+    },
+    "texto": "Uma cidade do zero: ruas, escolas, hospital, metrô e um nome. Os urbanistas querem saber onde; os políticos, quanto; e a sua mãe, se vai ter praça.",
+    "resumo": "começou a construir uma cidade do zero",
+    "escolhas": [
+      {
+        "texto": "No cerrado, com o seu sobrenome",
+        "resumo": "começou a construir uma cidade com o próprio sobrenome",
+        "efeitos": {
+          "dinheiro": -80000000000.0,
+          "eu.fama": 12,
+          "marcas": [
+            "cidade_em_obras"
+          ],
+          "agendar": [
+            {
+              "evento": "inauguracao_da_cidade",
+              "em": [
+                4,
+                7
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Terraplanagem do tamanho de três municípios. O nome provisório da obra é {sobrenome}, e ninguém teve coragem de sugerir outro."
+        }
+      },
+      {
+        "texto": "No litoral, uma cidade inteligente",
+        "resumo": "começou a construir uma cidade inteligente no litoral",
+        "efeitos": {
+          "dinheiro": -150000000000.0,
+          "eu.fama": 15,
+          "marcas": [
+            "cidade_em_obras"
+          ],
+          "agendar": [
+            {
+              "evento": "inauguracao_da_cidade",
+              "em": [
+                4,
+                7
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Sensores em cada poste, carros sem motorista e um aplicativo que sabe quando o lixo encheu. Faltou combinar com o mar."
+        }
+      }
+    ]
+  },
+  {
+    "id": "comprar_a_estatal",
+    "tipo": "jogada",
+    "rotulo": "Comprar a estatal",
+    "idade": [
+      30,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 200000000000.0
+      },
+      "semMarcas": [
+        "dono_da_luz"
+      ]
+    },
+    "texto": "O governo vai privatizar a estatal de energia. O leilão é na sexta, e o único lance que importa é o seu.",
+    "resumo": "comprou a estatal de energia",
+    "escolhas": [
+      {
+        "texto": "Comprar e virar dono da luz do país",
+        "resumo": "comprou a estatal de energia do país",
+        "condicoes": {
+          "empresa.valor": false
+        },
+        "bloqueio": "você já tem uma empresa",
+        "efeitos": {
+          "abrirEmpresa": {
+            "setor": "industria",
+            "capital": 90000000000.0
+          },
+          "eu.influencia": 10,
+          "eu.popularidade": -8,
+          "marcas": [
+            "dono_da_luz"
+          ],
+          "agendar": [
+            {
+              "evento": "apagao",
+              "em": [
+                2,
+                5
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "A conta de luz de cinquenta milhões de casas agora tem o seu logotipo. A sua mãe pede desconto."
+        }
+      },
+      {
+        "texto": "Juntar com a sua empresa",
+        "resumo": "juntou a estatal de energia à própria empresa",
+        "condicoes": {
+          "empresa.valor": true
+        },
+        "bloqueio": "você não tem empresa para juntar",
+        "efeitos": {
+          "dinheiro": -90000000000.0,
+          "empresa.valor": 90000000000.0,
+          "eu.influencia": 10,
+          "eu.popularidade": -8,
+          "marcas": [
+            "dono_da_luz"
+          ],
+          "agendar": [
+            {
+              "evento": "apagao",
+              "em": [
+                2,
+                5
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "A sua empresa engoliu a estatal num só fim de semana. O logotipo novo tem um raio, por sugestão do estagiário."
+        }
+      }
+    ]
+  },
+  {
+    "id": "salvar_o_pais",
+    "tipo": "jogada",
+    "rotulo": "Salvar o país da crise",
+    "idade": [
+      30,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 200000000000.0
+      },
+      "algumaMarca": [
+        "pais.recessao",
+        "pais.crise"
+      ]
+    },
+    "intervalo": 10,
+    "texto": "O país está em [crise|recessão] e o ministro da Fazenda pediu uma reunião. Com você, não com o banco central.",
+    "resumo": "decidiu o que fazer com o país em crise",
+    "escolhas": [
+      {
+        "texto": "Comprar títulos e segurar o câmbio",
+        "resumo": "comprou títulos para tirar o país da crise",
+        "efeitos": {
+          "dinheiro": -200000000000.0,
+          "pais.impulso": 3,
+          "eu.fama": 25,
+          "eu.popularidade": 12,
+          "marcas": [
+            "salvou_o_pais"
+          ],
+          "agendar": [
+            {
+              "evento": "dono_do_brasil",
+              "em": [
+                1,
+                2
+              ]
+            },
+            {
+              "evento": "o_pais_te_paga",
+              "em": [
+                3,
+                6
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "O dólar caiu no mesmo dia. O ministro te chamou de \"parceiro estratégico\"; os jornais, de \"dono do Brasil\"."
+        }
+      },
+      {
+        "texto": "Emprestar aos bancos quebrados, com juros",
+        "resumo": "emprestou aos bancos quebrados no meio da crise",
+        "efeitos": {
+          "dinheiro": -100000000000.0,
+          "pais.impulso": 2,
+          "eu.fama": 12,
+          "eu.influencia": 8,
+          "marcas": [
+            "salvou_o_pais"
+          ],
+          "agendar": [
+            {
+              "evento": "os_bancos_pagam",
+              "em": [
+                2,
+                4
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Os bancos não quebraram. O seu juro, que não é baixo, ficou no contrato."
+        }
+      },
+      {
+        "texto": "Apostar contra o país",
+        "resumo": "apostou contra o país no meio da crise",
+        "efeitos": {
+          "realocar": {
+            "de": "acoes",
+            "para": "dolar",
+            "fracao": 1
+          },
+          "pais.impulso": -1,
+          "eu.popularidade": -20,
+          "eu.fama": 10,
+          "marcas": [
+            "apostou_contra"
+          ],
+          "agendar": [
+            {
+              "evento": "boicote_ao_traidor",
+              "em": [
+                1,
+                2
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Você ganhou com a queda. O país descobriu, e o seu nome virou xingamento em três línguas."
+        }
+      }
+    ]
+  },
+  {
+    "id": "fundar_um_pais",
+    "tipo": "jogada",
+    "rotulo": "Fundar um país",
+    "idade": [
+      35,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 600000000000.0
+      },
+      "semMarcas": [
+        "micronacao",
+        "monarca",
+        "ditador"
+      ]
+    },
+    "texto": "Uma ilha vulcânica no Pacífico, sem dono reconhecido, está à venda. Com ela vêm um porto, duas praias e a chance de escrever uma Constituição.",
+    "resumo": "comprou uma ilha para fundar um país",
+    "escolhas": [
+      {
+        "texto": "Comprar e se declarar soberano",
+        "resumo": "fundou um país numa ilha do Pacífico e se declarou soberano",
+        "efeitos": {
+          "dinheiro": -300000000000.0,
+          "eu.cargo": {
+            "definir": "soberano"
+          },
+          "eu.fama": 30,
+          "felicidade": 12,
+          "marcas": [
+            "micronacao"
+          ],
+          "agendar": [
+            {
+              "evento": "onu_nao_reconhece",
+              "em": [
+                1,
+                3
+              ]
+            },
+            {
+              "evento": "greve_na_ilha",
+              "em": [
+                3,
+                6
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Você escreveu a Constituição num guardanapo e a bandeira num tablet. Duas nações reconheceram o país; uma delas é você."
+        }
+      },
+      {
+        "texto": "Comprar e fazer uma república de verdade",
+        "resumo": "fundou uma república numa ilha do Pacífico",
+        "efeitos": {
+          "dinheiro": -300000000000.0,
+          "eu.fama": 25,
+          "eu.popularidade": 10,
+          "felicidade": 8,
+          "marcas": [
+            "micronacao"
+          ],
+          "agendar": [
+            {
+              "evento": "onu_nao_reconhece",
+              "em": [
+                1,
+                3
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Eleição livre no primeiro ano. Você perdeu para o pescador mais simpático da ilha e achou ótimo."
+        }
+      }
+    ]
+  },
+  {
+    "id": "colonia_em_marte",
+    "tipo": "jogada",
+    "rotulo": "Uma colônia em Marte",
+    "idade": [
+      30,
+      90
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 600000000000.0
+      },
+      "semMarcas": [
+        "colonia_em_marte"
+      ]
+    },
+    "texto": "Marte: sessenta graus negativos, nenhum ar e nenhum vizinho. Os engenheiros dizem que dá, desde que você não pergunte quanto.",
+    "resumo": "mandou uma colônia brasileira para Marte",
+    "escolhas": [
+      {
+        "texto": "Mandar a primeira colônia",
+        "resumo": "mandou uma colônia brasileira para Marte",
+        "efeitos": {
+          "dinheiro": -500000000000.0,
+          "eu.fama": 30,
+          "marcas": [
+            "colonia_em_marte"
+          ],
+          "agendar": [
+            {
+              "evento": "chegada_em_marte",
+              "em": [
+                5,
+                8
+              ]
+            }
+          ]
+        },
+        "resultado": {
+          "texto": "Doze naves, cento e vinte colonos, feijão para cinco anos e uma bandeira do Brasil dobrada no bolso do comandante."
+        }
+      }
+    ]
+  },
+  {
+    "id": "apuracao_do_carnaval",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "enredo"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Quarta-feira de Cinzas, apuração. A escola que cantou a sua vida precisa de nota dez em quase tudo.",
+    "resumo": "viu a escola cantar a sua vida na avenida",
+    "teste": {
+      "chance": 0.35
+    },
+    "sucesso": {
+      "texto": "Campeã! Você chorou de pé no carro alegórico, fantasiado de você mesmo.",
+      "resumo": "viu a escola que cantou a sua vida ser campeã do Carnaval",
+      "efeitos": {
+        "felicidade": 12,
+        "eu.fama": 12,
+        "marcas": [
+          "campea_do_carnaval"
+        ],
+        "agendar": [
+          {
+            "evento": "desfile_das_campeas",
+            "em": 1
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "Décimo lugar e um jurado que deu 9,7 para a sua fantasia. O samba virou meme, o que também é uma forma de vitória.",
+      "efeitos": {
+        "felicidade": -5,
+        "eu.fama": 6
+      }
+    }
+  },
+  {
+    "id": "noite_da_apuracao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "bancou_campanha"
+      ]
+    },
+    "texto": "Noite de apuração. Você assiste num telão, numa sala com champanhe gelando para os dois resultados.",
+    "resumo": "assistiu à apuração da eleição que bancou",
+    "teste": {
+      "atributo": "eu.influencia",
+      "dificuldade": 45
+    },
+    "sucesso": {
+      "texto": "Ganhou. No discurso da vitória, o presidente eleito olha para a câmera, e você entende que o olhar é para você.",
+      "resumo": "elegeu um presidente com o próprio dinheiro",
+      "efeitos": {
+        "felicidade": 6,
+        "eu.influencia": 15,
+        "pais.impulso": 1,
+        "marcas": [
+          "presidente_amigo"
+        ],
+        "agendar": [
+          {
+            "evento": "favor_do_presidente",
+            "em": [
+              1,
+              2
+            ]
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "Perdeu. O vencedor fez um discurso sobre \"o dinheiro que tentou comprar a eleição\". Ele estava falando de você.",
+      "resumo": "apostou no candidato que perdeu a eleição",
+      "efeitos": {
+        "felicidade": -6,
+        "eu.fama": 6,
+        "eu.influencia": -5,
+        "marcas": [
+          "inimigo_do_governo"
+        ],
+        "agendar": [
+          {
+            "evento": "receita_no_seu_pe",
+            "em": [
+              1,
+              3
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "os_dois_lados",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "bancou_campanha"
+      ]
+    },
+    "texto": "Saiu o resultado da eleição. Quem ganhou te deve a vitória. Quem perdeu também te deve, mas está mais bravo.",
+    "resumo": "elegeu um presidente bancando os dois lados",
+    "efeitos": {
+      "eu.influencia": 10,
+      "eu.fama": 4,
+      "marcas": [
+        "presidente_amigo"
+      ],
+      "agendar": [
+        {
+          "evento": "favor_do_presidente",
+          "em": [
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "a_copa_chegou",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "copa_no_brasil"
+      ]
+    },
+    "texto": "Abertura da Copa no Brasil. O país inteiro parou, e você está no camarote ao lado de três chefes de Estado e de um cantor que ninguém convidou.",
+    "resumo": "viu a Copa que trouxe acontecer no Brasil",
+    "teste": {
+      "chance": 0.3
+    },
+    "sucesso": {
+      "texto": "O Brasil foi campeão em casa. Você ganhou uma camisa autografada e um lugar na história de cada boteco.",
+      "resumo": "viu o Brasil ser campeão na Copa que trouxe",
+      "efeitos": {
+        "felicidade": 15,
+        "eu.fama": 15,
+        "pais.impulso": 1.5,
+        "lugar.desemprego": -0.02,
+        "agendar": [
+          {
+            "evento": "elefante_branco",
+            "em": [
+              4,
+              8
+            ]
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "O Brasil caiu nas quartas. O país chorou, mas os hotéis lotaram e as obras deram emprego.",
+      "efeitos": {
+        "felicidade": -3,
+        "eu.fama": 6,
+        "pais.impulso": 1,
+        "lugar.desemprego": -0.015,
+        "agendar": [
+          {
+            "evento": "elefante_branco",
+            "em": [
+              4,
+              8
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "resultado_da_pesquisa",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "pesquisa_cura"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "O telefone toca às seis da manhã. É a cientista-chefe da sua pesquisa, e ela está chorando, mas ainda não dá para saber de quê.",
+    "resumo": "recebeu o resultado da pesquisa que pagou",
+    "teste": {
+      "chance": 0.5
+    },
+    "sucesso": {
+      "texto": "Funcionou. A doença tem cura, e a cura tem o seu nome numa placa. Você vai cruzar na rua com gente viva que não estaria.",
+      "resumo": "pagou a cura de uma doença",
+      "efeitos": {
+        "felicidade": 12,
+        "saude": 3,
+        "eu.fama": 30,
+        "eu.popularidade": 15,
+        "mae.saude": 5,
+        "pai.saude": 5,
+        "removerMarcas": [
+          "pesquisa_cura"
+        ],
+        "marcas": [
+          "curou_doenca"
+        ],
+        "agendar": [
+          {
+            "evento": "patente_da_cura",
+            "em": [
+              1,
+              3
+            ]
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "Não funcionou. Bilhões depois, a ciência descobriu um jeito muito caro de não curar. A cientista pede mais cinco anos.",
+      "resumo": "viu a pesquisa que pagou não dar certo",
+      "efeitos": {
+        "felicidade": -6,
+        "inteligencia": 2,
+        "removerMarcas": [
+          "pesquisa_cura"
+        ],
+        "marcas": [
+          "pesquisa_frustrada"
+        ],
+        "agendar": [
+          {
+            "evento": "nova_tentativa_da_pesquisa",
+            "em": [
+              1,
+              2
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "lancamento",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "programa_espacial"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Alcântara, 5h03. Contagem regressiva para o primeiro foguete do seu programa. Quatro milhões de pessoas assistem à transmissão.",
+    "resumo": "viu o primeiro foguete do seu programa espacial subir",
+    "teste": {
+      "chance": 0.65
+    },
+    "sucesso": {
+      "texto": "Subiu. Os satélites estão em órbita, e a foto do Brasil visto de cima virou papel de parede de um país inteiro.",
+      "resumo": "pôs satélites brasileiros em órbita",
+      "efeitos": {
+        "felicidade": 10,
+        "eu.fama": 18,
+        "marcas": [
+          "foguete_em_orbita"
+        ],
+        "agendar": [
+          {
+            "evento": "asteroide_com_seu_nome",
+            "em": [
+              2,
+              6
+            ]
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "Explodiu aos 41 segundos. Ninguém se feriu, e o vídeo da explosão teve mais visualizações que o Carnaval inteiro.",
+      "resumo": "viu o próprio foguete explodir ao vivo",
+      "efeitos": {
+        "felicidade": -8,
+        "eu.fama": 10,
+        "marcas": [
+          "foguete_explodiu"
+        ],
+        "agendar": [
+          {
+            "evento": "segundo_foguete",
+            "em": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "rumo_a_lua",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "programa_espacial"
+      ]
+    },
+    "texto": "A nave está pronta. Três astronautas brasileiros esperam na rampa, e há um quarto traje com o seu nome bordado.",
+    "resumo": "decidiu se ia à Lua",
+    "escolhas": [
+      {
+        "texto": "Ir junto",
+        "resumo": "foi à Lua no próprio foguete",
+        "teste": {
+          "chance": 0.85
+        },
+        "sucesso": {
+          "texto": "Você pisou na Lua. Ensaiou uma frase por um ano e esqueceu na hora; a que saiu ficou melhor.",
+          "resumo": "pisou na Lua",
+          "efeitos": {
+            "felicidade": 20,
+            "eu.fama": 40,
+            "marcas": [
+              "pisou_na_lua"
+            ],
+            "agendar": [
+              {
+                "evento": "asteroide_com_seu_nome",
+                "em": [
+                  2,
+                  6
+                ]
+              }
+            ]
+          }
+        },
+        "fracasso": {
+          "texto": "A nave perdeu contato no terceiro dia.",
+          "resumo": "morreu a caminho da Lua",
+          "efeitos": {
+            "morte": "a caminho da Lua, num foguete que custou mais que três estados"
+          }
+        }
+      },
+      {
+        "texto": "Assistir daqui, com o país",
+        "resumo": "assistiu da Terra à missão brasileira à Lua",
+        "teste": {
+          "chance": 0.9
+        },
+        "sucesso": {
+          "texto": "Uma astronauta do interior de Goiás pisou na Lua com uma bandeira do Brasil e um adesivo do seu programa no capacete.",
+          "resumo": "levou o Brasil à Lua",
+          "efeitos": {
+            "felicidade": 12,
+            "eu.fama": 25,
+            "eu.popularidade": 10,
+            "marcas": [
+              "brasil_na_lua"
+            ],
+            "agendar": [
+              {
+                "evento": "asteroide_com_seu_nome",
+                "em": [
+                  2,
+                  6
+                ]
+              }
+            ]
+          }
+        },
+        "fracasso": {
+          "texto": "A nave não voltou. O país ficou de luto, e você também, por muito tempo.",
+          "resumo": "perdeu a tripulação da missão que pagou",
+          "efeitos": {
+            "felicidade": -20,
+            "eu.popularidade": -15,
+            "eu.fama": 10,
+            "marcas": [
+              "tragedia_espacial"
+            ],
+            "agendar": [
+              {
+                "evento": "memorial_da_missao",
+                "em": 1
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "inauguracao_da_cidade",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "cidade_em_obras"
+      ]
+    },
+    "texto": "A cidade ficou pronta. Hoje é a inauguração: presidente, banda marcial e trezentas mil pessoas esperando a chave de casa.",
+    "resumo": "inaugurou a cidade que construiu",
+    "escolhas": [
+      {
+        "texto": "Vender os lotes a preço de mercado",
+        "resumo": "inaugurou a cidade que construiu e vendeu os lotes",
+        "resultado": {
+          "texto": "Os lotes acabaram em uma semana. A cidade lotou de gente que pode pagar, e o seu dinheiro voltou com sobra.",
+          "efeitos": {
+            "dinheiro": 140000000000.0,
+            "eu.fama": 15,
+            "eu.popularidade": -5,
+            "removerMarcas": [
+              "cidade_em_obras"
+            ],
+            "marcas": [
+              "fundou_cidade"
+            ],
+            "agendar": [
+              {
+                "evento": "cidade_alagou",
+                "em": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "evento": "prefeito_da_cidade_nova",
+                "em": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Dar metade das casas para quem precisa",
+        "resumo": "deu metade das casas da cidade que fundou",
+        "resultado": {
+          "texto": "Cento e cinquenta mil famílias pegaram a chave. Na praça central, já tem uma estátua sua que você não pagou.",
+          "efeitos": {
+            "dinheiro": 70000000000.0,
+            "felicidade": 10,
+            "eu.fama": 20,
+            "eu.popularidade": 20,
+            "removerMarcas": [
+              "cidade_em_obras"
+            ],
+            "marcas": [
+              "fundou_cidade",
+              "cidade_do_povo"
+            ],
+            "agendar": [
+              {
+                "evento": "cidade_alagou",
+                "em": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "evento": "prefeito_da_cidade_nova",
+                "em": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Mudar-se para lá e mandar em tudo",
+        "resumo": "mudou-se para a cidade que fundou",
+        "resultado": {
+          "texto": "Você mora na casa mais alta, sabe o nome do padeiro e decide até a cor dos ônibus.",
+          "efeitos": {
+            "dinheiro": 100000000000.0,
+            "felicidade": 8,
+            "eu.influencia": 10,
+            "removerMarcas": [
+              "cidade_em_obras"
+            ],
+            "marcas": [
+              "fundou_cidade"
+            ],
+            "agendar": [
+              {
+                "evento": "cidade_alagou",
+                "em": [
+                  1,
+                  3
+                ]
+              },
+              {
+                "evento": "prefeito_da_cidade_nova",
+                "em": [
+                  2,
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_pais_te_paga",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "salvou_o_pais"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "O Tesouro manda o extrato: chegou a hora de devolver o que você pôs no país quando ninguém mais punha.",
+    "resumo": "cobrou do país o dinheiro do resgate",
+    "teste": {
+      "chance": 0.75
+    },
+    "sucesso": {
+      "texto": "Pagaram tudo, com juros. Você salvou o país e ainda lucrou, o que irrita todo mundo.",
+      "resumo": "recebeu de volta, com juros, o dinheiro com que salvou o país",
+      "efeitos": {
+        "dinheiro": 260000000000.0,
+        "eu.fama": 4
+      }
+    },
+    "fracasso": {
+      "texto": "O governo novo deu um calote parcial. Você recebeu um terço, um pedido de desculpas e uma medalha.",
+      "resumo": "levou um calote do governo que salvou",
+      "efeitos": {
+        "dinheiro": 70000000000.0,
+        "felicidade": -6,
+        "marcas": [
+          "inimigo_do_governo"
+        ],
+        "agendar": [
+          {
+            "evento": "receita_no_seu_pe",
+            "em": [
+              1,
+              3
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "os_bancos_pagam",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "salvou_o_pais"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Os bancos que você salvou mandam o último boleto do empréstimo.",
+    "resumo": "recebeu o empréstimo que fez aos bancos",
+    "teste": {
+      "chance": 0.8
+    },
+    "sucesso": {
+      "texto": "Pagaram com o juro combinado. Na festa de fim de ano dos banqueiros, o seu lugar é à cabeceira.",
+      "resumo": "recebeu, com juros, o que emprestou aos bancos",
+      "efeitos": {
+        "dinheiro": 130000000000.0,
+        "eu.influencia": 5
+      }
+    },
+    "fracasso": {
+      "texto": "Um dos bancos quebrou mesmo assim e levou parte do seu dinheiro junto.",
+      "resumo": "perdeu parte do que emprestou aos bancos",
+      "efeitos": {
+        "dinheiro": 45000000000.0,
+        "felicidade": -6
+      }
+    }
+  },
+  {
+    "id": "chegada_em_marte",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "colonia_em_marte"
+      ]
+    },
+    "texto": "Mensagem de Marte, com catorze minutos de atraso: a colônia chegou ao destino.",
+    "resumo": "esperou notícias da colônia em Marte",
+    "teste": {
+      "chance": 0.55
+    },
+    "sucesso": {
+      "texto": "A primeira cidade fora da Terra fala português e já tem um churrasco proibido por falta de oxigênio.",
+      "resumo": "fundou a primeira cidade brasileira em Marte",
+      "efeitos": {
+        "felicidade": 18,
+        "eu.fama": 40,
+        "marcas": [
+          "marte_brasileiro"
+        ],
+        "agendar": [
+          {
+            "evento": "mensagem_de_marte",
+            "em": [
+              1,
+              3
+            ]
+          }
+        ]
+      }
+    },
+    "fracasso": {
+      "texto": "A colônia não resistiu ao primeiro inverno marciano. O mundo inteiro ouviu o silêncio do rádio.",
+      "resumo": "perdeu a colônia que mandou para Marte",
+      "efeitos": {
+        "felicidade": -20,
+        "eu.fama": 20,
+        "eu.popularidade": -15,
+        "marcas": [
+          "tragedia_em_marte"
+        ],
+        "agendar": [
+          {
+            "evento": "memorial_da_missao",
+            "em": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "festa_vazou",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "festeiro"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "peso": 0.8,
+    "texto": "Vazaram vídeos da sua festa: um convidado famoso dançando em cima do bolo de sete andares.",
+    "resumo": "lidou com os vídeos vazados da própria festa",
+    "escolhas": [
+      {
+        "texto": "Postar rindo junto",
+        "resumo": "riu junto dos vídeos vazados da festa",
+        "resultado": {
+          "texto": "Virou o assunto do dia, e dessa vez a favor.",
+          "efeitos": {
+            "eu.fama": 6,
+            "eu.popularidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Processar quem vazou",
+        "resumo": "processou quem vazou os vídeos da festa",
+        "resultado": {
+          "texto": "O processo vai durar anos e virou notícia antes do vídeo.",
+          "efeitos": {
+            "dinheiro": -2000000.0,
+            "eu.fama": 4,
+            "eu.popularidade": -4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "estatua_pichada",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "estatua"
+      ]
+    },
+    "texto": "Picharam a sua estátua na praça com uma frase que a sua mãe não pode ler.",
+    "resumo": "viu a própria estátua pichada",
+    "escolhas": [
+      {
+        "texto": "Mandar limpar e pôr câmera",
+        "resumo": "mandou limpar e vigiar a própria estátua",
+        "resultado": {
+          "texto": "Limpa e filmada 24 horas. Os pombos continuam livres.",
+          "efeitos": {
+            "dinheiro": -200000,
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Deixar como está: agora é arte",
+        "resumo": "deixou a pichação na própria estátua",
+        "resultado": {
+          "texto": "Um crítico de arte escreveu sobre a pichação. Você ganhou fama de quem tem senso de humor.",
+          "efeitos": {
+            "eu.fama": 3,
+            "eu.popularidade": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "estatua_derrubada",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "estatua_gigante"
+      ]
+    },
+    "peso": 0.6,
+    "texto": "Num protesto, amarraram cordas na sua estátua de quinze metros e puxaram. O vídeo deu a volta ao mundo.",
+    "resumo": "viu a própria estátua gigante ser derrubada",
+    "efeitos": {
+      "felicidade": -8,
+      "eu.fama": 12,
+      "removerMarcas": [
+        "estatua_gigante"
+      ]
+    }
+  },
+  {
+    "id": "preco_do_pao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "pix_geral"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Desde o seu Pix, tudo em {cidade} custa mais. Na fila da padaria, alguém te reconhece e não sabe se agradece ou reclama.",
+    "resumo": "encarou a fila da padaria depois do Pix",
+    "escolhas": [
+      {
+        "texto": "Pagar o pão da fila inteira",
+        "resumo": "pagou o pão da fila inteira da padaria",
+        "resultado": {
+          "texto": "Aplausos na padaria. O padeiro aumentou o pão no dia seguinte.",
+          "efeitos": {
+            "dinheiro": -3000,
+            "eu.popularidade": 2,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Explicar inflação para a fila",
+        "resumo": "explicou inflação para a fila da padaria",
+        "resultado": {
+          "texto": "Ninguém entendeu, todos ficaram com raiva e você saiu sem o pão.",
+          "efeitos": {
+            "inteligencia": 1,
+            "eu.popularidade": -3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fundacao_premio",
+    "idade": [
+      30,
+      99
+    ],
+    "condicoes": {
+      "marcas": [
+        "fundacao"
+      ]
+    },
+    "peso": 2,
+    "texto": "A Fundação {sobrenome} ganhou um prêmio internacional. A cerimônia é em Oslo, e o discurso tem três minutos.",
+    "resumo": "recebeu um prêmio internacional pela fundação",
+    "escolhas": [
+      {
+        "texto": "Falar de quem trabalha lá",
+        "resumo": "dedicou o prêmio da fundação a quem trabalha nela",
+        "resultado": {
+          "texto": "Você leu os nomes de quarenta funcionários. Estourou o tempo e ninguém se importou.",
+          "efeitos": {
+            "felicidade": 4,
+            "eu.popularidade": 6,
+            "eu.fama": 8
+          }
+        }
+      },
+      {
+        "texto": "Falar de você",
+        "resumo": "fez um discurso sobre si ao receber o prêmio da fundação",
+        "resultado": {
+          "texto": "Três minutos sobre você, com slides. A plateia aplaudiu educadamente e a internet, não.",
+          "efeitos": {
+            "eu.fama": 12,
+            "eu.popularidade": -4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "desvio_na_fundacao",
+    "idade": [
+      30,
+      99
+    ],
+    "condicoes": {
+      "marcas": [
+        "fundacao"
+      ]
+    },
+    "peso": 2,
+    "texto": "Uma auditoria achou um diretor da fundação comprando lancha com o dinheiro das doações.",
+    "resumo": "enfrentou um desvio na própria fundação",
+    "escolhas": [
+      {
+        "texto": "Demitir e abrir tudo para a imprensa",
+        "resumo": "abriu à imprensa o desvio na própria fundação",
+        "resultado": {
+          "texto": "Uma semana de manchetes ruins e um ano de confiança de volta.",
+          "efeitos": {
+            "dinheiro": -50000000.0,
+            "eu.popularidade": 4,
+            "eu.fama": 4
+          }
+        }
+      },
+      {
+        "texto": "Abafar o caso",
+        "resumo": "tentou abafar um desvio na fundação",
+        "teste": {
+          "chance": 0.6
+        },
+        "sucesso": {
+          "texto": "Ninguém soube. O diretor ficou com a lancha e você, com um segredo.",
+          "efeitos": {
+            "felicidade": -2
+          }
+        },
+        "fracasso": {
+          "texto": "Vazou, com áudio. A manchete é \"Fundação {sobrenome}: caridade com lancha\".",
+          "resumo": "foi pego abafando um desvio na fundação",
+          "efeitos": {
+            "eu.popularidade": -15,
+            "eu.fama": 10
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_aluna_da_fundacao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundacao_educacao"
+      ]
+    },
+    "texto": "Uma médica te para no aeroporto: estudou numa escola da sua fundação e foi a primeira da família a ter diploma. Ela quer só uma foto.",
+    "resumo": "encontrou uma ex-aluna das escolas da fundação",
+    "efeitos": {
+      "felicidade": 8,
+      "eu.popularidade": 2
+    }
+  },
+  {
+    "id": "hospital_da_fundacao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundacao_saude"
+      ]
+    },
+    "texto": "Numa visita surpresa a um hospital da fundação, a enfermeira-chefe te leva à ala infantil: todos os leitos ocupados por crianças que antes viajavam quatro horas para ver um médico.",
+    "resumo": "visitou um hospital da própria fundação",
+    "efeitos": {
+      "felicidade": 6,
+      "eu.popularidade": 4
+    }
+  },
+  {
+    "id": "floresta_invadida",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundacao_floresta"
+      ]
+    },
+    "texto": "Grileiros cercaram uma parte da sua floresta e puseram fogo no capim de madrugada.",
+    "resumo": "defendeu a floresta da fundação de uma invasão",
+    "escolhas": [
+      {
+        "texto": "Pagar fiscais e drones para vigiar tudo",
+        "resumo": "pôs fiscais e drones para vigiar a floresta",
+        "resultado": {
+          "texto": "Câmera em cada clareira. A floresta segue de pé, e o vizinho da cerca, de olho.",
+          "efeitos": {
+            "dinheiro": -200000000.0,
+            "eu.fama": 4,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Denunciar ao mundo",
+        "resumo": "denunciou ao mundo a invasão da sua floresta",
+        "resultado": {
+          "texto": "Capa de jornal em três continentes. Os grileiros saíram e voltaram em outra parte.",
+          "efeitos": {
+            "eu.fama": 10,
+            "eu.popularidade": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cozinha_da_fundacao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundacao_fome"
+      ]
+    },
+    "texto": "Uma das cozinhas comunitárias da fundação faz um ano. Te convidam para servir o almoço, de touca e avental.",
+    "resumo": "serviu almoço numa cozinha da própria fundação",
+    "escolhas": [
+      {
+        "texto": "Ir servir",
+        "resumo": "serviu almoço numa cozinha comunitária da fundação",
+        "resultado": {
+          "texto": "Quatrocentos pratos, uma bolha no dedo e o melhor dia do seu ano.",
+          "efeitos": {
+            "felicidade": 8,
+            "eu.popularidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Mandar um vídeo",
+        "resumo": "mandou um vídeo para a cozinha da fundação",
+        "resultado": {
+          "texto": "O vídeo passou no telão durante o almoço. Ninguém parou de comer para ver.",
+          "efeitos": {
+            "felicidade": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "favor_do_presidente",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "presidente_amigo"
+      ]
+    },
+    "texto": "O presidente que você elegeu liga às duas da manhã. Quer saber como pode retribuir, desde que ninguém fique sabendo.",
+    "resumo": "decidiu o favor que o presidente lhe devia",
+    "escolhas": [
+      {
+        "texto": "Uma lei que baixa o imposto da herança",
+        "resumo": "conseguiu uma lei que baixa o imposto sobre heranças",
+        "resultado": {
+          "texto": "A lei passou numa madrugada de quinta-feira. Seus herdeiros agradecem; o resto do país só vai entender daqui a uns anos.",
+          "efeitos": {
+            "eu.popularidade": -6,
+            "marcas": [
+              "lei_da_heranca"
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Uma obra gigante na sua cidade",
+        "resumo": "levou uma obra gigante para a própria cidade",
+        "resultado": {
+          "texto": "Um viaduto, um hospital e uma placa com o seu nome em discretas letras de dois metros.",
+          "efeitos": {
+            "lugar.desemprego": -0.02,
+            "eu.popularidade": 8,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Nada. Só lembrar que ele te deve",
+        "resumo": "deixou o presidente lhe devendo",
+        "resultado": {
+          "texto": "Você desliga. Ter um presidente em dívida vale mais que qualquer lei.",
+          "efeitos": {
+            "eu.influencia": 10
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cpi_da_campanha",
+    "idade": [
+      30,
+      99
+    ],
+    "condicoes": {
+      "marcas": [
+        "bancou_campanha"
+      ]
+    },
+    "peso": 2,
+    "texto": "Uma CPI quer saber de onde saiu o dinheiro da última eleição presidencial. O seu nome está no primeiro slide.",
+    "resumo": "foi chamado a uma CPI sobre a campanha que bancou",
+    "escolhas": [
+      {
+        "texto": "Depor e mostrar tudo",
+        "resumo": "depôs numa CPI sobre a campanha que bancou",
+        "teste": {
+          "atributo": "inteligencia",
+          "dificuldade": 55
+        },
+        "sucesso": {
+          "texto": "Você respondeu tudo com planilha e calma. Virou herói de um lado e vilão do outro, como todo mundo.",
+          "efeitos": {
+            "eu.fama": 6,
+            "eu.popularidade": 4
+          }
+        },
+        "fracasso": {
+          "texto": "Uma resposta errada virou meme, e o meme virou multa.",
+          "resumo": "saiu de uma CPI com multa e meme",
+          "efeitos": {
+            "patrimonioFator": 0.97,
+            "eu.fama": 10,
+            "eu.popularidade": -6
+          }
+        }
+      },
+      {
+        "texto": "Mandar os advogados",
+        "resumo": "mandou advogados à CPI no seu lugar",
+        "resultado": {
+          "texto": "Os advogados disseram \"não me recordo\" quarenta vezes. Custou caro e não esclareceu nada.",
+          "efeitos": {
+            "dinheiro": -100000000.0,
+            "eu.popularidade": -4,
+            "eu.fama": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "elefante_branco",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "copa_no_brasil"
+      ]
+    },
+    "texto": "Um dos estádios da sua Copa virou estacionamento de ônibus. Um programa de TV quer gravar lá e falar de você.",
+    "resumo": "lidou com o estádio abandonado da própria Copa",
+    "escolhas": [
+      {
+        "texto": "Comprar o estádio e fazer um parque",
+        "resumo": "transformou um estádio abandonado num parque",
+        "resultado": {
+          "texto": "Árvore no gramado, pista de skate na arquibancada. Domingo, o parque lota.",
+          "efeitos": {
+            "dinheiro": -800000000.0,
+            "eu.popularidade": 8,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Culpar o governo na entrevista",
+        "resumo": "culpou o governo pelo estádio abandonado",
+        "resultado": {
+          "texto": "A entrevista rendeu, o estádio continua estacionamento.",
+          "efeitos": {
+            "eu.fama": 4,
+            "eu.popularidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "patente_da_cura",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "curou_doenca"
+      ]
+    },
+    "texto": "Uma farmacêutica quer comprar a patente da sua cura por uma fortuna. O remédio ficaria caro.",
+    "resumo": "decidiu o destino da patente da cura",
+    "escolhas": [
+      {
+        "texto": "Vender a patente",
+        "resumo": "vendeu a patente da cura que pagou",
+        "resultado": {
+          "texto": "O dinheiro voltou com lucro. Os cartazes de protesto têm a sua cara.",
+          "efeitos": {
+            "dinheiro": 15000000000.0,
+            "eu.popularidade": -12,
+            "eu.fama": 4
+          }
+        }
+      },
+      {
+        "texto": "Liberar a fórmula de graça",
+        "resumo": "liberou de graça a fórmula da cura",
+        "resultado": {
+          "texto": "Qualquer laboratório do mundo pode fabricar. Você ganhou um país inteiro de afilhados.",
+          "efeitos": {
+            "felicidade": 6,
+            "eu.popularidade": 15,
+            "eu.fama": 12
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "nova_tentativa_da_pesquisa",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "pesquisa_frustrada"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "A cientista que chorou ao telefone volta com um plano novo e uma frase: \"agora a gente sabe onde errou\".",
+    "resumo": "ouviu o plano novo da pesquisa que não deu certo",
+    "escolhas": [
+      {
+        "texto": "Acreditar e pagar de novo",
+        "resumo": "pagou de novo a pesquisa que tinha dado errado",
+        "resultado": {
+          "texto": "Mais cinco anos. Você pediu para ser o primeiro a saber, de dia.",
+          "efeitos": {
+            "dinheiro": -5000000000.0,
+            "removerMarcas": [
+              "pesquisa_frustrada"
+            ],
+            "marcas": [
+              "pesquisa_cura"
+            ],
+            "agendar": [
+              {
+                "evento": "resultado_da_pesquisa",
+                "em": [
+                  3,
+                  5
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Agradecer e encerrar",
+        "resumo": "encerrou a pesquisa que não deu certo",
+        "resultado": {
+          "texto": "Você pagou o jantar de despedida do laboratório. Alguns cientistas foram para fora; outros, para a sua empresa.",
+          "efeitos": {
+            "felicidade": -2,
+            "removerMarcas": [
+              "pesquisa_frustrada"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "asteroide_com_seu_nome",
+    "apenasAgendado": true,
+    "condicoes": {
+      "algumaMarca": [
+        "foguete_em_orbita",
+        "pisou_na_lua",
+        "brasil_na_lua"
+      ]
+    },
+    "peso": 0.7,
+    "texto": "Uma astrônoma descobriu um asteroide e quer batizá-lo com o seu nome. Ele passa perto da Terra em 2189.",
+    "resumo": "deu nome a um asteroide",
+    "efeitos": {
+      "felicidade": 5,
+      "eu.fama": 3
+    }
+  },
+  {
+    "id": "cidade_alagou",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundou_cidade"
+      ]
+    },
+    "texto": "Uma chuva de verão alagou metade da cidade que você fundou. O aplicativo avisou, mas ninguém leu.",
+    "resumo": "enfrentou a enchente na cidade que fundou",
+    "escolhas": [
+      {
+        "texto": "Refazer a drenagem inteira",
+        "resumo": "refez a drenagem da cidade que fundou",
+        "resultado": {
+          "texto": "Dois anos de obra e nenhuma enchente desde então. Ninguém agradece cano, mas ninguém xinga.",
+          "efeitos": {
+            "dinheiro": -5000000000.0,
+            "eu.popularidade": 6
+          }
+        }
+      },
+      {
+        "texto": "Culpar o clima",
+        "resumo": "culpou o clima pela enchente na cidade que fundou",
+        "resultado": {
+          "texto": "O clima não respondeu. Os moradores, sim.",
+          "efeitos": {
+            "eu.popularidade": -6,
+            "eu.fama": 3
+          }
+        }
+      },
+      {
+        "texto": "Decretar emergência, como prefeito",
+        "resumo": "decretou emergência na cidade que fundou e comanda",
+        "condicoes": {
+          "marcas": [
+            "prefeito_fundador"
+          ]
+        },
+        "bloqueio": "só se você for o prefeito",
+        "resultado": {
+          "texto": "Você passou a noite de galocha no centro de comando. A foto rendeu mais que a obra.",
+          "efeitos": {
+            "dinheiro": -1000000000.0,
+            "eu.popularidade": 10,
+            "eu.fama": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "prefeito_da_cidade_nova",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "fundou_cidade"
+      ]
+    },
+    "texto": "Os moradores da cidade que você fundou vão eleger o primeiro prefeito. Metade quer você; a outra metade quer qualquer um menos você.",
+    "resumo": "decidiu se disputava a prefeitura da cidade que fundou",
+    "escolhas": [
+      {
+        "texto": "Concorrer",
+        "resumo": "disputou a prefeitura da cidade que fundou",
+        "teste": {
+          "atributo": "eu.influencia",
+          "dificuldade": 50
+        },
+        "sucesso": {
+          "texto": "Ganhou por pouco. A primeira lei foi proibir estátua sua na praça. Você vetou.",
+          "resumo": "virou prefeito da cidade que fundou",
+          "efeitos": {
+            "felicidade": 6,
+            "eu.popularidade": 8,
+            "eu.fama": 6,
+            "marcas": [
+              "prefeito_fundador"
+            ]
+          }
+        },
+        "fracasso": {
+          "texto": "Perdeu para uma professora da cidade. Ela começou o mandato mudando a cor dos ônibus.",
+          "resumo": "perdeu a eleição na cidade que fundou",
+          "efeitos": {
+            "felicidade": -6
+          }
+        }
+      },
+      {
+        "texto": "Apoiar uma professora da cidade",
+        "resumo": "apoiou uma professora para prefeita da cidade que fundou",
+        "resultado": {
+          "texto": "Ela ganhou e te convida para tudo, menos para as reuniões.",
+          "efeitos": {
+            "felicidade": 3,
+            "eu.popularidade": 6
+          }
+        }
+      },
+      {
+        "texto": "Deixar o povo decidir em assembleia",
+        "resumo": "deixou a cidade que fundou escolher o prefeito em assembleia",
+        "condicoes": {
+          "marcas": [
+            "cidade_do_povo"
+          ]
+        },
+        "bloqueio": "só numa cidade que você deu ao povo",
+        "resultado": {
+          "texto": "Assembleia na praça, voto de braço levantado e um prefeito que ninguém previu. Você aplaudiu de pé.",
+          "efeitos": {
+            "felicidade": 6,
+            "eu.popularidade": 10
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "apagao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "dono_da_luz"
+      ]
+    },
+    "texto": "Apagão em seis estados. A internet decidiu que a culpa é sua, e dessa vez a internet tem razão.",
+    "resumo": "enfrentou um apagão na empresa de energia",
+    "escolhas": [
+      {
+        "texto": "Investir pesado na rede",
+        "resumo": "investiu pesado para acabar com os apagões",
+        "resultado": {
+          "texto": "Três anos sem apagão. Ninguém agradece infraestrutura, mas ninguém xinga.",
+          "efeitos": {
+            "dinheiro": -8000000000.0,
+            "eu.popularidade": 8
+          }
+        }
+      },
+      {
+        "texto": "Subir a tarifa para pagar o conserto",
+        "resumo": "subiu a conta de luz para pagar o conserto",
+        "resultado": {
+          "texto": "Conta mais cara em cinquenta milhões de casas. O seu nome virou palavrão na hora do boleto.",
+          "efeitos": {
+            "empresa.valor": 5000000000.0,
+            "eu.popularidade": -15,
+            "eu.fama": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dono_do_brasil",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "salvou_o_pais"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Uma revista te pôs na capa com a manchete \"O dono do Brasil?\". O ponto de interrogação é a parte educada.",
+    "resumo": "virou capa de revista como \"dono do Brasil\"",
+    "escolhas": [
+      {
+        "texto": "Dar uma entrevista humilde",
+        "resumo": "deu uma entrevista humilde sobre o resgate do país",
+        "resultado": {
+          "texto": "Você falou em \"esforço de todos\". Pegou bem, e ninguém acreditou.",
+          "efeitos": {
+            "eu.popularidade": 6,
+            "eu.fama": 4
+          }
+        }
+      },
+      {
+        "texto": "Comprar a revista",
+        "resumo": "comprou a revista que o chamou de dono do Brasil",
+        "resultado": {
+          "texto": "A edição seguinte tinha você na capa de novo, sem ponto de interrogação.",
+          "efeitos": {
+            "dinheiro": -3000000000.0,
+            "eu.fama": 8,
+            "eu.popularidade": -6,
+            "eu.influencia": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "boicote_ao_traidor",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "apostou_contra"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Desde que você apostou contra o país, há um boicote: restaurantes não te atendem e o garçom cospe na sobremesa, dizem.",
+    "resumo": "enfrentou o boicote por ter apostado contra o país",
+    "escolhas": [
+      {
+        "texto": "Doar uma fortuna para pedir desculpas",
+        "resumo": "doou uma fortuna para se redimir com o país",
+        "resultado": {
+          "texto": "Hospitais, escolas e um pedido de desculpas em horário nobre. Metade do país perdoou.",
+          "efeitos": {
+            "dinheiro": -20000000000.0,
+            "eu.popularidade": 15,
+            "removerMarcas": [
+              "apostou_contra"
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Morar no exterior por uns anos",
+        "resumo": "foi morar fora até o boicote passar",
+        "resultado": {
+          "texto": "Você descobriu que, lá fora, ninguém sabe quem você é. Foi ótimo e insuportável.",
+          "efeitos": {
+            "felicidade": -4,
+            "eu.fama": -5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "onu_nao_reconhece",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "micronacao"
+      ],
+      "semMarcas": [
+        "pais_reconhecido"
+      ]
+    },
+    "texto": "A ONU se recusa a reconhecer o seu país. Um diplomata explica, em quatro idiomas, que dinheiro não compra soberania.",
+    "resumo": "brigou pelo reconhecimento do país que fundou",
+    "escolhas": [
+      {
+        "texto": "Dar um porta-aviões de presente a um país do Conselho",
+        "resumo": "deu um porta-aviões de presente para ter o país reconhecido",
+        "efeitos": {
+          "dinheiro": -50000000000.0
+        },
+        "teste": {
+          "chance": 0.45
+        },
+        "sucesso": {
+          "texto": "Reconhecido! A sua ilha tem cadeira na assembleia, entre dois países que não sabem onde ela fica.",
+          "resumo": "fez a ONU reconhecer o país que fundou",
+          "efeitos": {
+            "felicidade": 10,
+            "eu.fama": 20,
+            "eu.influencia": 10,
+            "marcas": [
+              "pais_reconhecido"
+            ]
+          }
+        },
+        "fracasso": {
+          "texto": "Aceitaram o porta-aviões e não reconheceram nada.",
+          "resumo": "deu um porta-aviões e não teve o país reconhecido",
+          "efeitos": {
+            "felicidade": -6,
+            "eu.fama": 8
+          }
+        }
+      },
+      {
+        "texto": "Virar paraíso turístico e esquecer a ONU",
+        "resumo": "transformou o país que fundou em paraíso turístico",
+        "resultado": {
+          "texto": "Carimbo no passaporte, praia sem fila e uma lojinha de suvenires com a sua cara.",
+          "efeitos": {
+            "dinheiro": 3000000000.0,
+            "felicidade": 6,
+            "eu.popularidade": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "greve_na_ilha",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "micronacao"
+      ],
+      "eu.cargo": "soberano"
+    },
+    "texto": "Os 2.300 habitantes do seu país entraram em greve geral: querem eleições, e o pescador mais simpático já é candidato.",
+    "resumo": "enfrentou uma greve geral no país que fundou",
+    "escolhas": [
+      {
+        "texto": "Convocar eleições e descer do trono",
+        "resumo": "convocou eleições no país que fundou",
+        "resultado": {
+          "texto": "O pescador ganhou. Você virou cidadão comum de um país que é seu, o que é confuso e bom.",
+          "efeitos": {
+            "eu.cargo": {
+              "definir": ""
+            },
+            "felicidade": 4,
+            "eu.popularidade": 15
+          }
+        }
+      },
+      {
+        "texto": "Mandar um navio de mantimentos e esperar",
+        "resumo": "mandou mantimentos para acabar com a greve na ilha",
+        "efeitos": {
+          "dinheiro": -2000000000.0
+        },
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "A greve acabou no churrasco que você mandou junto. Por enquanto.",
+          "efeitos": {
+            "felicidade": 2
+          }
+        },
+        "fracasso": {
+          "texto": "Comeram os mantimentos e continuaram a greve. Você foi deposto por aclamação.",
+          "resumo": "foi deposto pelo povo do país que fundou",
+          "efeitos": {
+            "eu.cargo": {
+              "definir": ""
+            },
+            "felicidade": -8,
+            "eu.fama": 8
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "desfile_das_campeas",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "campea_do_carnaval"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Sábado das Campeãs. A escola quer você de novo no alto do carro abre-alas, fantasiado de você mesmo.",
+    "resumo": "voltou à avenida no desfile das campeãs",
+    "escolhas": [
+      {
+        "texto": "Subir no carro",
+        "resumo": "desfilou no alto do carro abre-alas",
+        "resultado": {
+          "texto": "Lá de cima, a avenida inteira cantando o seu nome. Você vai sonhar com isso até o fim.",
+          "efeitos": {
+            "felicidade": 6,
+            "eu.fama": 4
+          }
+        }
+      },
+      {
+        "texto": "Ceder o lugar para a velha guarda",
+        "resumo": "cedeu o lugar no carro para a velha guarda",
+        "resultado": {
+          "texto": "A senhora mais antiga da escola subiu no seu lugar e chorou o desfile inteiro. Você também, cá embaixo.",
+          "efeitos": {
+            "felicidade": 4,
+            "eu.popularidade": 6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "receita_no_seu_pe",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "inimigo_do_governo"
+      ]
+    },
+    "texto": "Desde que você ficou do lado errado do governo, a Receita Federal resolveu olhar as suas contas com uma lupa nova.",
+    "resumo": "teve as contas viradas do avesso pela Receita",
+    "escolhas": [
+      {
+        "texto": "Abrir tudo e esperar",
+        "resumo": "abriu as contas para a Receita",
+        "teste": {
+          "chance": 0.7
+        },
+        "sucesso": {
+          "texto": "Não acharam nada. Você mandou emoldurar a certidão negativa.",
+          "efeitos": {
+            "felicidade": 3
+          }
+        },
+        "fracasso": {
+          "texto": "Acharam uma empresa de fachada que nem você lembrava de ter. Multa e manchete.",
+          "resumo": "levou uma multa da Receita",
+          "efeitos": {
+            "patrimonioFator": 0.96,
+            "eu.fama": 6
+          }
+        }
+      },
+      {
+        "texto": "Contratar os melhores tributaristas",
+        "resumo": "pôs os melhores tributaristas contra a Receita",
+        "resultado": {
+          "texto": "Três anos de recursos e uma conta de advogado que daria para comprar um time.",
+          "efeitos": {
+            "dinheiro": -200000000.0,
+            "eu.popularidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "segundo_foguete",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "foguete_explodiu",
+        "programa_espacial"
+      ]
+    },
+    "repetivel": true,
+    "intervalo": 1,
+    "texto": "Depois da explosão, os engenheiros pedem mais um foguete. Dizem que agora sabem exatamente o que deu errado.",
+    "resumo": "decidiu se pagava um segundo foguete",
+    "escolhas": [
+      {
+        "texto": "Pagar outro foguete",
+        "resumo": "pagou um segundo foguete depois da explosão",
+        "resultado": {
+          "texto": "Contagem regressiva marcada. Desta vez, a transmissão tem um aviso: \"pode conter explosão\".",
+          "efeitos": {
+            "dinheiro": -8000000000.0,
+            "removerMarcas": [
+              "foguete_explodiu"
+            ],
+            "agendar": [
+              {
+                "evento": "lancamento",
+                "em": [
+                  2,
+                  3
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Encerrar o programa",
+        "resumo": "encerrou o programa espacial depois da explosão",
+        "resultado": {
+          "texto": "O galpão de Alcântara virou museu. A peça mais visitada é um pedaço do foguete.",
+          "efeitos": {
+            "felicidade": -3,
+            "removerMarcas": [
+              "foguete_explodiu",
+              "programa_espacial"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "memorial_da_missao",
+    "apenasAgendado": true,
+    "condicoes": {
+      "algumaMarca": [
+        "tragedia_espacial",
+        "tragedia_em_marte"
+      ]
+    },
+    "texto": "Um ano depois da tragédia, as famílias de quem não voltou pedem um memorial. E querem você lá, sem discurso.",
+    "resumo": "decidiu sobre o memorial de quem morreu na missão que pagou",
+    "escolhas": [
+      {
+        "texto": "Construir e ir à cerimônia",
+        "resumo": "construiu um memorial para quem morreu na missão",
+        "resultado": {
+          "texto": "Nenhum discurso. Você abraçou cada família, uma por uma.",
+          "efeitos": {
+            "dinheiro": -500000000.0,
+            "felicidade": 4,
+            "eu.popularidade": 6
+          }
+        }
+      },
+      {
+        "texto": "Mandar um representante",
+        "resumo": "mandou um representante ao memorial da missão",
+        "resultado": {
+          "texto": "As famílias notaram a cadeira vazia. A imprensa também.",
+          "efeitos": {
+            "eu.popularidade": -6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mensagem_de_marte",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "marte_brasileiro"
+      ]
+    },
+    "texto": "A colônia em Marte manda um vídeo: cento e vinte pessoas cantando parabéns para você, em gravidade baixa, sem bolo.",
+    "resumo": "recebeu um parabéns de Marte",
+    "efeitos": {
+      "felicidade": 10,
+      "eu.fama": 3
+    }
+  },
+  {
+    "id": "taxar_grandes_fortunas",
+    "idade": [
+      25,
+      99
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 10000000000.0
+      }
+    },
+    "repetivel": true,
+    "intervalo": 12,
+    "texto": "O Congresso vota a taxação das grandes fortunas, e o relator usa o seu patrimônio como exemplo no slide.",
+    "resumo": "reagiu à taxação das grandes fortunas",
+    "escolhas": [
+      {
+        "texto": "Pagar lobby contra",
+        "resumo": "pagou lobby contra a taxação das grandes fortunas",
+        "efeitos": {
+          "dinheiro": -2000000000.0
+        },
+        "teste": {
+          "chance": 0.6
+        },
+        "sucesso": {
+          "texto": "Arquivada. Ninguém sabe quem mudou de ideia, exceto quem mudou."
+        },
+        "fracasso": {
+          "texto": "Aprovada mesmo assim, e agora com o seu lobby no noticiário.",
+          "resumo": "pagou lobby e mesmo assim viu as grandes fortunas taxadas",
+          "efeitos": {
+            "patrimonioFator": 0.97,
+            "eu.popularidade": -8
+          }
+        }
+      },
+      {
+        "texto": "Defender a taxa em público",
+        "resumo": "defendeu em público a taxação da própria fortuna",
+        "resultado": {
+          "texto": "Você pagou mais imposto e ganhou um país de fãs desconfiados.",
+          "efeitos": {
+            "patrimonioFator": 0.97,
+            "eu.popularidade": 12,
+            "eu.fama": 8
+          }
+        }
+      },
+      {
+        "texto": "Levar o dinheiro para fora",
+        "resumo": "levou a fortuna para fora do país",
+        "resultado": {
+          "texto": "Metade da fortuna agora mora em outro fuso. O seu nome, no Brasil, mora no noticiário.",
+          "efeitos": {
+            "realocar": {
+              "de": "renda_fixa",
+              "para": "dolar",
+              "fracao": 0.8
+            },
+            "eu.popularidade": -10,
+            "eu.fama": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sequestro_frustrado",
+    "idade": [
+      16,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      }
+    },
+    "peso": 0.6,
+    "texto": "A polícia desmontou um plano para te sequestrar. Tinha a planta da sua casa e o horário da sua academia.",
+    "resumo": "escapou de um plano de sequestro",
+    "escolhas": [
+      {
+        "texto": "Segurança de chefe de Estado",
+        "resumo": "contratou segurança de chefe de Estado",
+        "resultado": {
+          "texto": "Carro blindado, três seguranças e nenhuma ida à padaria sozinho, nunca mais.",
+          "efeitos": {
+            "dinheiro": -50000000.0,
+            "felicidade": -3
+          }
+        }
+      },
+      {
+        "texto": "Seguir a vida normal",
+        "resumo": "seguiu a vida normal depois de um plano de sequestro",
+        "teste": {
+          "chance": 0.85
+        },
+        "sucesso": {
+          "texto": "Nada aconteceu. Você decidiu que coragem também é um investimento.",
+          "efeitos": {
+            "felicidade": 2
+          }
+        },
+        "fracasso": {
+          "texto": "Doze horas num cativeiro até a polícia chegar. Você voltou outra pessoa.",
+          "resumo": "foi sequestrado e libertado pela polícia",
+          "efeitos": {
+            "felicidade": -15,
+            "saude": -5,
+            "dinheiro": -20000000.0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "documentario",
+    "idade": [
+      30,
+      99
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      },
+      "eu.fama": {
+        "min": 40
+      }
+    },
+    "texto": "Uma plataforma de streaming quer fazer um documentário sobre a sua vida, em seis episódios e com trilha dramática.",
+    "resumo": "decidiu sobre o documentário da própria vida",
+    "escolhas": [
+      {
+        "texto": "Autorizar e participar",
+        "resumo": "participou de um documentário sobre a própria vida",
+        "resultado": {
+          "texto": "Seis episódios, um deles inteiro sobre a sua infância. A sua mãe assistiu quatro vezes.",
+          "efeitos": {
+            "eu.fama": 12,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Proibir",
+        "resumo": "tentou proibir um documentário sobre a própria vida",
+        "efeitos": {
+          "dinheiro": -20000000.0
+        },
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "O documentário morreu na gaveta. Os advogados comemoraram mais que você."
+        },
+        "fracasso": {
+          "texto": "Fizeram mesmo assim, não autorizado, narrado por um ex-amigo seu.",
+          "resumo": "virou documentário não autorizado",
+          "efeitos": {
+            "eu.fama": 15,
+            "felicidade": -6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival_bilionario",
+    "idade": [
+      25,
+      95
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 5000000000.0
+      }
+    },
+    "texto": "Outro bilionário te provoca nas redes: diz que o seu dinheiro é de herança e o dele, de mérito.",
+    "resumo": "respondeu à provocação de outro bilionário",
+    "escolhas": [
+      {
+        "texto": "Desafiar para uma regata",
+        "resumo": "desafiou outro bilionário para uma regata",
+        "condicoes": {
+          "marcas": [
+            "iate"
+          ]
+        },
+        "bloqueio": "precisa ter um iate",
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "Você ganhou por meio barco. Ele apagou os posts; você imprimiu.",
+          "efeitos": {
+            "felicidade": 6,
+            "eu.fama": 10
+          }
+        },
+        "fracasso": {
+          "texto": "Ele ganhou e fez uma live na chegada. Você assistiu do convés.",
+          "resumo": "perdeu uma regata para outro bilionário",
+          "efeitos": {
+            "felicidade": -4,
+            "eu.fama": 6
+          }
+        }
+      },
+      {
+        "texto": "Comprar a empresa favorita dele",
+        "resumo": "comprou a empresa favorita de um rival por birra",
+        "resultado": {
+          "texto": "Comprou e trocou o logotipo por um de que ele não gosta. Dinheiro mal gasto, dizem; dinheiro bem gasto, diz você.",
+          "efeitos": {
+            "dinheiro": -3000000000.0,
+            "felicidade": 5,
+            "eu.fama": 8
+          }
+        }
+      },
+      {
+        "texto": "Ignorar",
+        "resumo": "ignorou a provocação de outro bilionário",
+        "resultado": {
+          "texto": "Ele postou mais doze vezes. Você foi dormir.",
+          "efeitos": {
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "convite_para_ministro",
+    "idade": [
+      35,
+      85
+    ],
+    "condicoes": {
+      "eu.influencia": {
+        "min": 60
+      },
+      "semMarcas": [
+        "politico",
+        "monarca",
+        "ditador",
+        "ex_ministro"
+      ]
+    },
+    "texto": "O presidente te convida para ministro da Economia: salário de servidor, poder de verdade e uma CPI garantida.",
+    "resumo": "recebeu um convite para ministro da Economia",
+    "escolhas": [
+      {
+        "texto": "Aceitar",
+        "resumo": "foi ministro da Economia",
+        "resultado": {
+          "texto": "Dois anos, três planos econômicos e uma foto sua de olheiras que virou meme. A economia melhorou; você envelheceu.",
+          "efeitos": {
+            "saude": -4,
+            "pais.impulso": 1.5,
+            "eu.fama": 10,
+            "eu.influencia": 5,
+            "marcas": [
+              "ex_ministro"
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Recusar e indicar um amigo",
+        "resumo": "recusou ser ministro e indicou um amigo",
+        "resultado": {
+          "texto": "O mesmo poder, sem o expediente.",
+          "efeitos": {
+            "eu.influencia": 5,
+            "felicidade": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "herdeiros_de_olho",
+    "idade": [
+      55,
+      99
+    ],
+    "condicoes": {
+      "patrimonio": {
+        "min": 1000000000.0
+      },
+      "marcas": [
+        "pai_mae"
+      ]
+    },
+    "texto": "Na ceia de Natal, entre a farofa e o pernil, {filho} pergunta quanto vai ficar para cada um quando você morrer.",
+    "resumo": "ouviu na ceia a pergunta sobre a herança",
+    "escolhas": [
+      {
+        "texto": "Dar uma parte agora",
+        "resumo": "deu em vida uma parte da herança",
+        "resultado": {
+          "texto": "Você fez um Pix na mesa. A ceia ficou mais leve e a sobremesa, mais curta.",
+          "efeitos": {
+            "transferir": {
+              "de": "eu",
+              "para": "filho",
+              "fracao": 0.05
+            },
+            "filho.vinculo": 10
+          }
+        }
+      },
+      {
+        "texto": "Dizer que vai tudo para a caridade",
+        "resumo": "disse na ceia que deixaria tudo para a caridade",
+        "resultado": {
+          "texto": "Silêncio na mesa. Ninguém repetiu o pernil.",
+          "efeitos": {
+            "filho.vinculo": -8,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Mudar de assunto",
+        "resumo": "mudou de assunto quando falaram de herança",
+        "resultado": {
+          "texto": "Você falou do tempo por vinte minutos. Todo mundo entendeu.",
+          "efeitos": {
+            "filho.vinculo": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rua_com_seu_nome",
+    "idade": [
+      40,
+      99
+    ],
+    "condicoes": {
+      "eu.fama": {
+        "min": 50
+      }
+    },
+    "peso": 0.6,
+    "texto": "A Câmara aprovou dar o seu nome a uma rua. É a rua do cemitério, mas é uma rua.",
+    "resumo": "virou nome de rua",
+    "efeitos": {
+      "felicidade": 3,
+      "eu.fama": 2
+    }
+  }
+]

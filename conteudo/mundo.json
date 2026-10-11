@@ -2258,6 +2258,19 @@
       "mandato": 0,
       "poder": 60,
       "onde": "do Brasil"
+    },
+    {
+      "id": "soberano",
+      "nome": "soberano|soberana",
+      "esfera": "vitalicio",
+      "idade": 16,
+      "influencia": 0,
+      "dificuldade": 0,
+      "campanha": 0,
+      "salario": 0,
+      "mandato": 0,
+      "poder": 35,
+      "onde": "de uma ilha no Pacífico"
     }
   ],
   "linhagens": [
