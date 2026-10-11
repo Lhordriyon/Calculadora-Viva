@@ -88,9 +88,20 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] Portões: quem manda é decisão em 39,5% das vidas com empresa de R$ 1 milhão; entre as de R$ 15 milhões, 20,8% delegaram e 57,2% centralizaram; o porquê aparece em 21,8% dos acontecimentos (16,5 por vida); zero storylets mortos
 - [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
 
-## Próximo incremento (proposta)
+## Incremento 7 (pedidos do dono em 11/10): as crises acabam, a vida começa sua
 
-Outros países (emigrar, morar fora, cidadania), crime com consequência (golpes, prisão, fuga), relacionamentos com mais gente (vários filhos, ex, amantes), e a velhice com mais escolhas (cuidador, asilo, herança em vida).
+- [x] A crise interminável: o empurrão de quem governa vale pela direção da mudança (aquecer ajuda a sair da crise; antes, prendia)
+- [x] Aluguéis e valorização à vista: o aluguel do ano em chip próprio, o balanço do ano conta os bens, cada imóvel mostra por quanto foi comprado e quanto mudou; o mercado de imóveis não perde valor no longo prazo
+- [x] Criar o personagem: nome, sobrenome, gênero, cidade, classe, família, linhagem, irmãos, jeito e talentos (pontos), tudo opcional
+- [x] Primeira infância com causa e efeito: o parto (prematuro), quem cuida, vacina, fome, histórias ou telas, brigas em casa, pré-escola, o peito que chia, o balde da pracinha; o que volta dos 5 aos 12; ações dos 1 aos 4 anos; a primeira palavra pela família
+- [x] Portões: crises com mediana de 1 ano e 99% em até 7; 975 começos distintos por 1.000 vidas; 100% das vidas decidem antes dos 5; em 45%, algo dos 5 aos 12 tem causa nos primeiros anos; zero storylets mortos. Caiu: o rico que termina pobre (2,5%, portão de 3,0%)
+- [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
+
+## Próximos incrementos (pedidos do dono em 11/10)
+
+1. **O país vivo.** O país ganha estatísticas que se causam umas às outras (crescimento, desemprego, inflação, juros, dívida pública, pobreza, desigualdade, violência, saúde e educação públicas, aprovação), com atraso como na vida real (educação hoje, produtividade em dez anos). Quem governa escolhe políticas, poucas e com troca (impostos, gasto social, saúde, educação, segurança, juros, salário mínimo, abertura comercial), e os grupos da população reagem. Quem não governa sente o governo eleito: os partidos fictícios têm programas, e a eleição muda o país. O ciclo da economia passa a nascer das estatísticas. Diplomacia com países fictícios: comércio, câmbio, sanções.
+2. **Grupo de empresas.** Mais de uma empresa, holdings e subsidiárias, comprar concorrentes como subsidiárias, fundir, vender ou abrir o capital de cada uma; a seção Empresa vira a árvore do grupo.
+3. Depois: outros países para morar, crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
 
 ## Como uma sessão continua
 

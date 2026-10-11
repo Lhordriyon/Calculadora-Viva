@@ -341,6 +341,46 @@ O dono mandou "O livro dos 250 experimentos de um império" e pediu que eu decid
 
 **Sem regressão:** zero storylets mortos; nenhuma estratégia domina; bilionário feito em 0,71% das vidas (era 0,79%); quem nasce com fortuna faz jogadas em 98,4% das vidas; 76,4% das jogadas causam algo depois. O rico que fica pobre voltou a 3,1% (estava em 2,9%, um décimo abaixo do portão).
 
+## Incremento 7: as crises acabam, a vida começa sua (pedidos do dono em 11/10)
+
+O dono relatou: uma crise interminável, aluguéis que não rendiam nem valorizavam, todas as vidas começando iguais (só dava para dizer as mesmas palavras, sem efeito) e pouca liberdade para criar o personagem.
+
+**O que causava cada problema:**
+- **Crise interminável:** um defeito de causalidade no ciclo. O empurrão de quem governa reduzia toda transição *para* recessão, e da crise para a recessão é melhorar.
+  - Com estímulo renovado todo ano (+3), a crise durava 3 anos em mediana, 20 em 1% dos casos, e chegou a 29.
+  - Com arrocho (−3), durava no máximo 5.
+  - Agora a melhora e a piora vêm da ordem das fases. Com estímulo, a crise acaba em 1 ano. Com arrocho, dura 3 anos em mediana e 17 no pior 1%: o arrocho pode cortar a chance de melhorar pela metade, não mais que isso.
+- **Aluguéis:** o aluguel entrava, mas somado à manutenção e à parcela na entrada invisível do ano. O balanço do ano ignorava os bens, como a auditoria já tinha apontado.
+  - O mercado de imóveis era medido contra 6% ao ano, mas na média das fases rende 4,8%. Na conta esperada, o imóvel perdia uns 0,45% reais por ano.
+  - Agora:
+    - o aluguel é anotado à parte e vira um chip no ano;
+    - o balanço conta os bens;
+    - cada imóvel mostra por quanto foi comprado e quanto mudou;
+    - o ciclo tem média zero, e sobra a valorização de cada imóvel.
+- **Começos iguais:** a primeira palavra era marco obrigatório, com três escolhas quase iguais. O ritmo até os 4 anos era de 30%, com só 1 a 3 histórias possíveis por idade e nenhuma ação antes dos 3.
+
+**Decisões:**
+- **A primeira infância segue a ordem causal da vida real:** o parto, depois quem cuida, depois nutrição, vacina e estímulo, depois o estresse em casa, depois a pré-escola. As marcas desses anos voltam dos 5 aos 12: ler antes dos colegas, não parar quieto, o surto no bairro, crescer devagar, a dor de barriga de domingo, o ouvido para música, a asma na educação física, a babá que foi embora, a mãe que quer voltar a trabalhar. O porquê da linha do tempo mostra a ligação.
+- **Quem decide antes da fala:** nas decisões de quem cuida, vacina e pré-escola, quem joga escolhe pela família. As ações dos 1 aos 4 anos são o jeito do ano da criança: ouvir histórias, correr no quintal, colo da vó.
+- **Ritmo de 75% até os 4 anos:** um ano vazio ali é uma decisão perdida. Os toques por vida subiram de 450 para 454, abaixo do teto de 480.
+- **Prematuro no parto:** 1 em cada 10, mais nos pobres e nas mães muito novas ou mais velhas, com menos saúde. A linhagem continua contando o próprio nascimento.
+- **Criar o personagem, tudo opcional:**
+  - Escolhe-se nome, sobrenome, gênero, cidade, classe, família, linhagem, irmãos, jeito e talentos.
+  - Os talentos são pontos (pouco, médio, muito, somando 4): ser muito inteligente custa ser pouco em outra coisa.
+  - O nome digitado vira só letras, para não virar modelo de texto.
+- **A primeira palavra deixou de ser obrigatória e passou a depender da família:** "papai" só com pai em casa, "vó" só com a avó perto. "Não!" deixa a marca da teimosia. O "Pix" saiu (o limite é de 4 opções), e o tino financeiro passou a nascer de abrir a primeira conta com o cofrinho.
+- **Conserto em teste:** a amostra "de linhagem" do teste de fundamentos usava a linhagem `real`, que não existe, e nunca testou uma família real. Agora usa `realeza`.
+
+**Portões (10.000 vidas):**
+- crises com mediana de 1 ano, 99% em até 7 anos e a maior com 13 (11.830 crises);
+- 975 começos distintos por 1.000 vidas;
+- 100% das vidas decidem algo antes dos 5;
+- em 45% das vidas, algo dos 5 aos 12 tem causa nos primeiros anos.
+
+**O que piorou:** o rico que termina pobre caiu de 3,1% para 2,5%, abaixo do portão de 3,0%. A causa provável é o conserto dos imóveis: eles pararam de perder 0,45% reais por ano, então quem é rico cai menos. O bilionário feito subiu de 0,71% para 0,89% (portão: até 1%). A mobilidade geral segue no meio (Spearman 0,33). Não mexi nisso agora: a riqueza vai passar a depender das estatísticas do país no próximo incremento, e esse portão será medido de novo lá.
+
+Aos 18, quem dormia ouvindo histórias ganhou em média 57 pontos de inteligência; quem dormia com o celular, 31. Parte da diferença vem do resto da vida e da estratégia dos robôs, mas a direção é a da vida real.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

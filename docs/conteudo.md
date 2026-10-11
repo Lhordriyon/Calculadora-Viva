@@ -208,6 +208,15 @@ Os arquivos de storylet do incremento 4: `96-linhagens`, `97-carreiras` (profiss
 3. `npm run vida -- <semente> aleatoria` até vê-lo numa vida e ler o texto renderizado.
 4. `npm run tunel`: nenhum storylet morto, nenhuma estratégia dominante; veja a frequência dele.
 
+## Primeira infância
+
+Os anos até os 4 decidem muito, e a ordem é a da vida real: o parto (`prematuro`, pelo motor), quem cuida (`creche`, `criado_pela_vo`, `criado_pela_baba`, `mae_em_casa`), nutrição e vacina (`desnutricao`, `sem_vacina`), estímulo (`leitura_na_infancia`, `telas_cedo`, `musica_cedo`), estresse em casa (`ansiedade_cedo`) e pré-escola (`pre_escola`, `fala_ingles`).
+
+- **Cada marca volta depois** num evento dos 5 aos 12 que a consulta (a linha do tempo mostra "Porque aos 2, …"). Precisa também de um segundo leitor: um epitáfio em `marcas.json` ou uma linha curta em `linhas.json`.
+- **Decisões de bebê:** quando a decisão é da família (quem cuida, vacina, pré-escola), o texto diz quem decide, e quem joga escolhe por ela.
+- **Opções pela família:** a opção depende de quem está perto (`pai.ausente`, `avo.vivo`, `avo.mora_junto`) e da classe (babá, plano de saúde, escola bilíngue).
+- **Ações dos 1 aos 4 anos:** o jeito do ano de uma criança pequena (ouvir histórias, correr no quintal, colo da vó). Como toda ação, mexem em 2 sistemas.
+
 ## Jogadas (brincar de deus)
 
 O que só dá para fazer com muito dinheiro. Uma jogada é um storylet `"tipo": "jogada"` com `rotulo` (o nome na lista, até 28 caracteres), `idade`, `condicoes` (em geral `"patrimonio": { "min": … }` e `semMarcas` com a marca que ela deixa) e `escolhas`. Não usa `verbo`, `ator`, `marco`, `apenasAgendado` nem `repetivel`: repete com `intervalo`, e as condições dizem quando.
