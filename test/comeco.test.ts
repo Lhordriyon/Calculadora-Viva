@@ -148,7 +148,8 @@ describe('aluguéis à vista', () => {
     const n = e.historico.length;
     avancarAno(e, c);
     const ano = e.historico.slice(n).find((h) => !visivel(h))!;
-    expect(alugueisDoAno(ano)).toBeGreaterThan(20_000);
+    // A sala rende 6,5% do valor por ano (com dívida, parte do aluguel vai direto para ela e conta igual).
+    expect(alugueisDoAno(ano)).toBeCloseTo((bensDe(e)[0]!.n['valor'] ?? 0) * 0.065, -1);
     // O imóvel que mudou de valor entra no balanço do patrimônio do ano.
     const bem = bensDe(e)[0]!;
     const mudou = ano.mudancas?.find((m) => m.c === `${bem.id}.valor`)?.d ?? 0;

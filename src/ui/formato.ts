@@ -122,7 +122,8 @@ export function balancoDoAno(regra: Entrada, participacao: number): number {
 
 /** O que os imóveis alugados pagaram no ano (anotado à parte pela regra dos bens). */
 export function alugueisDoAno(regra: Entrada): number {
-  return (regra.mudancas ?? []).reduce((s, m) => s + (m.c === 'eu.dinheiro' && m.r === 'aluguel' ? (m.d ?? 0) : 0), 0);
+  // O aluguel entra na conta; com dívida, parte dele já vai para ela (e conta do mesmo jeito).
+  return (regra.mudancas ?? []).reduce((s, m) => s + (m.r !== 'aluguel' ? 0 : m.c === 'eu.dinheiro' ? (m.d ?? 0) : m.c === 'eu.divida' ? -(m.d ?? 0) : 0), 0);
 }
 
 /** O chip do balanço do ano, na primeira entrada visível do ano (só para adultos, só quando mexe). */
