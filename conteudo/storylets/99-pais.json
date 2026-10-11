@@ -1,0 +1,1257 @@
+[
+  {
+    "id": "primeiro_voto",
+    "idade": [18, 21],
+    "marco": true,
+    "condicoes": {
+      "pais.eleicao": true,
+      "pais.governo": ["frente_popular", "bloco_liberal", "alianca_da_ordem", "centrao"]
+    },
+    "trechos": {
+      "governo": [
+        { "se": { "pais.governo": "frente_popular" }, "texto": "a frente popular" },
+        { "se": { "pais.governo": "bloco_liberal" }, "texto": "o bloco liberal" },
+        { "se": { "pais.governo": "alianca_da_ordem" }, "texto": "a aliança da ordem" },
+        { "se": { "pais.governo": "centrao" }, "texto": "o centrão" },
+        { "texto": "o governo" }
+      ],
+      "pauta": [
+        { "se": { "pais.violencia": { "min": 25 } }, "texto": "a violência" },
+        { "se": { "pais.desemprego": { "min": 10.5 } }, "texto": "o desemprego" },
+        { "se": { "pais.inflacao": { "min": 7 } }, "texto": "a inflação" },
+        { "se": { "pais.pobreza": { "min": 30 } }, "texto": "a fome" },
+        { "se": { "pais.saude": { "max": 40 } }, "texto": "a fila do posto" },
+        { "se": { "pais.divida": { "min": 95 } }, "texto": "a dívida do governo" },
+        { "texto": "a economia" }
+      ],
+      "clima": [
+        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega favorito, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega desgastado, com {pais.aprovacao}% de aprovação" },
+        { "texto": "chega dividindo o país, com {pais.aprovacao}% de aprovação" }
+      ]
+    },
+    "texto": "Primeiro voto para presidente: obrigatório, como a convicção não é. Na TV, só se fala de {pauta}; {governo} {clima}. [O santinho voou pela janela do ônibus.|O grupo da turma virou campo de batalha.|O carro de som passou três vezes na sua rua antes das oito.]",
+    "resumo": "votou para presidente pela primeira vez",
+    "escolhas": [
+      {
+        "texto": "A frente popular: comida e posto",
+        "resumo": "votou na frente popular",
+        "resultado": {
+          "texto": "Você votou na frente popular, pela comida no prato e pelo posto de saúde. O tio do churrasco já sabe e já reclamou.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_frente_popular"]
+          }
+        }
+      },
+      {
+        "texto": "O bloco liberal: menos imposto",
+        "resumo": "votou no bloco liberal",
+        "resultado": {
+          "texto": "Você votou no bloco liberal, pelo imposto menor e por um Estado do tamanho de uma quitinete. A prima mandou um áudio de dez minutos no grupo da família.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_bloco_liberal"]
+          }
+        }
+      },
+      {
+        "texto": "A aliança da ordem: polícia na rua",
+        "resumo": "votou na aliança da ordem",
+        "resultado": {
+          "texto": "Você votou na aliança da ordem, pela polícia na rua e pelas contas em dia. Saiu da seção eleitoral olhando para os lados, por via das dúvidas.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_alianca_da_ordem"]
+          }
+        }
+      },
+      {
+        "texto": "O centrão: um pouco de tudo",
+        "resumo": "votou no centrão",
+        "resultado": {
+          "texto": "Você votou no centrão, que promete um pouco de tudo para todo mundo. Eles sempre ganham alguma coisa; agora você também, talvez.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_centrao"]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "eleicao_geral",
+    "idade": [20, 90],
+    "condicoes": {
+      "pais.eleicao": true,
+      "pais.governo": ["frente_popular", "bloco_liberal", "alianca_da_ordem", "centrao"]
+    },
+    "repetivel": true,
+    "intervalo": 4,
+    "peso": 16,
+    "tensao": 2,
+    "trechos": {
+      "governo": [
+        { "se": { "pais.governo": "frente_popular" }, "texto": "a frente popular" },
+        { "se": { "pais.governo": "bloco_liberal" }, "texto": "o bloco liberal" },
+        { "se": { "pais.governo": "alianca_da_ordem" }, "texto": "a aliança da ordem" },
+        { "se": { "pais.governo": "centrao" }, "texto": "o centrão" },
+        { "texto": "o governo" }
+      ],
+      "pauta": [
+        { "se": { "pais.violencia": { "min": 25 } }, "texto": "a violência" },
+        { "se": { "pais.desemprego": { "min": 10.5 } }, "texto": "o desemprego" },
+        { "se": { "pais.inflacao": { "min": 7 } }, "texto": "a inflação" },
+        { "se": { "pais.pobreza": { "min": 30 } }, "texto": "a fome" },
+        { "se": { "pais.saude": { "max": 40 } }, "texto": "a fila do posto" },
+        { "se": { "pais.divida": { "min": 95 } }, "texto": "a dívida do governo" },
+        { "texto": "a economia" }
+      ],
+      "clima": [
+        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega favorito, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega desgastado, com {pais.aprovacao}% de aprovação" },
+        { "texto": "chega dividindo o país, com {pais.aprovacao}% de aprovação" }
+      ]
+    },
+    "texto": "Eleição para presidente. O assunto é {pauta}; {governo} {clima}. [O debate da TV terminou com dois candidatos falando ao mesmo tempo.|O cunhado já avisou em quem você deveria votar.|A urna está no mesmo colégio de sempre, com a mesma fila de sempre.]",
+    "resumo": "votou para presidente",
+    "escolhas": [
+      {
+        "texto": "A frente popular: comida e posto",
+        "resumo": "votou na frente popular",
+        "resultado": {
+          "texto": "Você votou na frente popular, pela comida no prato e pelo posto de saúde. O tio do churrasco já sabe e já reclamou.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_frente_popular"]
+          }
+        }
+      },
+      {
+        "texto": "O bloco liberal: menos imposto",
+        "resumo": "votou no bloco liberal",
+        "resultado": {
+          "texto": "Você votou no bloco liberal, pelo imposto menor e por um Estado do tamanho de uma quitinete. A prima mandou um áudio de dez minutos no grupo da família.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_bloco_liberal"]
+          }
+        }
+      },
+      {
+        "texto": "A aliança da ordem: polícia na rua",
+        "resumo": "votou na aliança da ordem",
+        "resultado": {
+          "texto": "Você votou na aliança da ordem, pela polícia na rua e pelas contas em dia. Saiu da seção eleitoral olhando para os lados, por via das dúvidas.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_alianca_da_ordem"]
+          }
+        }
+      },
+      {
+        "texto": "O centrão: um pouco de tudo",
+        "resumo": "votou no centrão",
+        "resultado": {
+          "texto": "Você votou no centrão, que promete um pouco de tudo para todo mundo. Eles sempre ganham alguma coisa; agora você também, talvez.",
+          "efeitos": {
+            "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
+            "marcas": ["voto_centrao"]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "governo_que_voce_elegeu_frente_popular",
+    "idade": [18, 95],
+    "condicoes": {
+      "pais.governo": "frente_popular",
+      "marcaHa": [{ "marca": "voto_frente_popular", "min": 2, "max": 4 }]
+    },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 6,
+    "texto": "A frente popular está no governo em que você votou. A pobreza está em {pais.pobreza}%, o posto ganhou médico, e o imposto de quem ganha mais ganhou um dígito. Eles fazem o que prometeram, inclusive a parte que dói.",
+    "resumo": "viu de perto o governo em que votou",
+    "escolhas": [
+      {
+        "texto": "Defender o governo no almoço de domingo",
+        "resumo": "defendeu o governo em que votou no almoço de domingo",
+        "resultado": {
+          "texto": "Você ganhou a discussão e perdeu a sobremesa. Ninguém mudou de voto, mas todo mundo comeu.",
+          "efeitos": { "felicidade": 2, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Reclamar do imposto mesmo assim",
+        "resumo": "reclamou do imposto do governo em que votou",
+        "resultado": {
+          "texto": "Votar num governo não obriga a gostar do boleto. Você reclamou com convicção e pagou do mesmo jeito.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Virar voluntári{o|a} no programa do bairro",
+        "resumo": "virou voluntári{o|a} num programa social do bairro",
+        "resultado": {
+          "texto": "Duas tardes por semana ajudando a cadastrar famílias. O bairro passou a te cumprimentar pelo nome.",
+          "efeitos": { "felicidade": 3, "eu.popularidade": 3, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "governo_que_voce_elegeu_bloco_liberal",
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "bloco_liberal", "marcaHa": [{ "marca": "voto_bloco_liberal", "min": 2, "max": 4 }] },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 6,
+    "texto": "O bloco liberal, em que você votou, cortou impostos e programas sociais. A economia cresceu {pais.crescimento}% no ano; a fila do posto e o pedinte no sinal também.",
+    "resumo": "viu de perto o governo em que votou",
+    "escolhas": [
+      {
+        "texto": "Comemorar o imposto menor",
+        "resumo": "comemorou o imposto menor do governo em que votou",
+        "resultado": {
+          "texto": "Sobrou um dinheirinho no fim do mês e você sabe exatamente de quem é o mérito. (É seu.)",
+          "efeitos": { "felicidade": 2, "dinheiro": 1500 }
+        }
+      },
+      {
+        "texto": "Doar para quem ficou sem auxílio",
+        "resumo": "ajudou quem perdeu o auxílio",
+        "resultado": {
+          "texto": "Uma cesta por mês para a família do porteiro. O liberalismo também pode ter coração, nem que seja o seu.",
+          "efeitos": { "dinheiro": -1800, "felicidade": 3, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Pedir aumento enquanto a economia cresce",
+        "resumo": "pediu aumento aproveitando a economia aquecida",
+        "condicoes": {
+          "renda": { "min": 1 },
+          "semMarcas": ["servidor", "aposentado", "empreendedor", "socio", "herdeiro_negocio"]
+        },
+        "bloqueio": "precisa de um emprego de carteira",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "O chefe disse que \"o mercado está aquecido\" e, para sua surpresa, isso valia para você também.",
+          "resumo": "conseguiu um aumento na economia aquecida",
+          "efeitos": { "rendaFator": 1.1, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O chefe concordou que a economia vai bem. A da empresa, segundo ele, nem tanto.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "governo_que_voce_elegeu_alianca_da_ordem",
+    "idade": [18, 95],
+    "condicoes": {
+      "pais.governo": "alianca_da_ordem",
+      "marcaHa": [{ "marca": "voto_alianca_da_ordem", "min": 2, "max": 4 }]
+    },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 6,
+    "texto": "A aliança da ordem, em que você votou, encheu as ruas de viatura: a violência está em {pais.violencia} homicídios por 100 mil. A escola do bairro, em compensação, ficou sem professor de matemática.",
+    "resumo": "viu de perto o governo em que votou",
+    "escolhas": [
+      {
+        "texto": "Andar à noite sem medo",
+        "resumo": "voltou a andar à noite sem medo",
+        "resultado": {
+          "texto": "Você foi a pé da padaria até em casa às dez da noite. Ninguém comentou, mas você reparou.",
+          "efeitos": { "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Reclamar da escola",
+        "resumo": "cobrou o governo em que votou pela escola do bairro",
+        "resultado": {
+          "texto": "Você escreveu para a ouvidoria. Responderam com uma foto da viatura nova.",
+          "efeitos": { "felicidade": -1, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Entrar no conselho de segurança do bairro",
+        "resumo": "entrou no conselho de segurança do bairro",
+        "resultado": {
+          "texto": "Reunião toda terça, café requentado e um grupo de mensagens que nunca dorme. Você virou referência na rua.",
+          "efeitos": { "eu.influencia": 2, "eu.popularidade": 2, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "governo_que_voce_elegeu_centrao",
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "centrao", "marcaHa": [{ "marca": "voto_centrao", "min": 2, "max": 4 }] },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 6,
+    "texto": "O centrão, em que você votou, fez o que sempre faz: um pouco de tudo para todo mundo e uma ponte na cidade do relator do orçamento. A dívida do governo chegou a {pais.divida}% do PIB.",
+    "resumo": "viu de perto o governo em que votou",
+    "escolhas": [
+      {
+        "texto": "Achar que podia ser pior",
+        "resumo": "achou que o governo em que votou podia ser pior",
+        "resultado": {
+          "texto": "E podia mesmo. Você dormiu tranquil{o|a}, o que hoje em dia já é uma posição política.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Pedir uma emenda para o seu bairro",
+        "resumo": "pediu uma emenda para o próprio bairro",
+        "teste": { "atributo": "influencia", "dificuldade": 25 },
+        "sucesso": {
+          "texto": "A praça do bairro ganhou academia ao ar livre e uma placa com o nome de um deputado que ninguém conhece. Você conhece.",
+          "resumo": "conseguiu uma emenda para o próprio bairro",
+          "efeitos": { "felicidade": 3, "eu.popularidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A emenda foi para o bairro do primo do assessor. Fica para a próxima legislatura.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Jurar nunca mais votar neles",
+        "resumo": "jurou nunca mais votar no centrão",
+        "resultado": {
+          "texto": "Você jurou. Eles nem notaram; o centrão nunca precisou do seu voto para ganhar.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "desemprego_em_alta",
+    "idade": [18, 64],
+    "condicoes": {
+      "renda": { "min": 1 },
+      "semMarcas": ["servidor", "aposentado", "empreendedor", "socio", "herdeiro_negocio"],
+      "pais.desemprego": { "min": 11 }
+    },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 3,
+    "texto": "O desemprego passou de {pais.desemprego}%. Na empresa, a palavra \"reestruturação\" apareceu num e-mail com cópia para todo mundo.",
+    "resumo": "trabalhou com medo de ser demitid{o|a} no desemprego alto",
+    "escolhas": [
+      {
+        "texto": "Fazer hora extra para não ser a próxima",
+        "resumo": "fez hora extra para não ser demitid{o|a}",
+        "resultado": {
+          "texto": "Você virou a primeira a chegar e a última a sair. A lista de cortes passou por cima do seu nome; a sua coluna, não.",
+          "efeitos": { "saude": -3, "felicidade": -2, "rendaFator": 1.03 }
+        }
+      },
+      {
+        "texto": "Atualizar o currículo e fazer um curso",
+        "resumo": "fez um curso enquanto o desemprego subia",
+        "resultado": {
+          "texto": "Curso à noite, apostila no ônibus. Se a demissão vier, vai te encontrar mais preparad{o|a}.",
+          "efeitos": { "inteligencia": 3, "dinheiro": -1200, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Abrir um bico por fora",
+        "resumo": "abriu um bico por fora",
+        "resultado": {
+          "texto": "Bolo de pote no fim de semana. Não é um plano de carreira, mas é um plano.",
+          "efeitos": { "dinheiro": 2500, "felicidade": -1, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vaga_sobrando",
+    "idade": [18, 64],
+    "condicoes": {
+      "renda": { "min": 1 },
+      "semMarcas": ["servidor", "aposentado", "empreendedor", "socio", "herdeiro_negocio"],
+      "pais.desemprego": { "max": 6.5 }
+    },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 3,
+    "texto": "Com o desemprego em {pais.desemprego}%, as empresas brigam por gente. Um recrutador te mandou mensagem às onze da noite, com emoji de foguete.",
+    "resumo": "recebeu proposta de emprego com o desemprego baixo",
+    "escolhas": [
+      {
+        "texto": "Usar a proposta para pedir aumento",
+        "resumo": "usou uma proposta para pedir aumento",
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "O seu chefe cobriu a proposta na hora, com um sorriso amarelo e um aumento de verdade.",
+          "resumo": "conseguiu aumento com uma proposta na mão",
+          "efeitos": { "rendaFator": 1.12, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O chefe desejou boa sorte na empresa nova. Você não tinha planejado essa parte.",
+          "efeitos": { "felicidade": -3, "rendaFator": 0.95 }
+        }
+      },
+      {
+        "texto": "Trocar de emprego",
+        "resumo": "trocou de emprego por um salário maior",
+        "resultado": {
+          "texto": "Crachá novo, salário maior e um chefe que manda mensagem no domingo. Tudo tem preço.",
+          "efeitos": { "rendaFator": 1.15, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ficar onde está",
+        "resumo": "preferiu ficar no emprego de sempre",
+        "resultado": {
+          "texto": "Você gosta do cafezinho, da cadeira e da janela. Isso também é salário.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "inflacao_no_mercado",
+    "idade": [18, 95],
+    "condicoes": { "pais.inflacao": { "min": 8 }, "classe": { "max": 4 } },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 3,
+    "texto": "A inflação passou de {pais.inflacao}% e o carrinho de compras que custava trezentos agora custa trezentos e quarenta, com menos coisa dentro.",
+    "resumo": "enfrentou a inflação no mercado",
+    "escolhas": [
+      {
+        "texto": "Estocar o que der antes do próximo aumento",
+        "resumo": "estocou comida antes do próximo aumento",
+        "resultado": {
+          "texto": "Doze pacotes de arroz no armário do quarto. A casa ficou menor; o mês, mais previsível.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Trocar todas as marcas",
+        "resumo": "trocou todas as marcas do mercado",
+        "resultado": {
+          "texto": "O café ficou mais fraco, o sabão espuma menos e o biscoito é de uma marca com nome de outra marca.",
+          "efeitos": { "felicidade": -2, "dinheiro": 900 }
+        }
+      },
+      {
+        "texto": "Pesquisar preço em três mercados",
+        "resumo": "virou especialista em preço de mercado",
+        "resultado": {
+          "texto": "Planilha no celular, três mercados e um sacolão. Você economizou e ganhou um assunto para toda conversa.",
+          "efeitos": { "inteligencia": 1, "dinheiro": 600, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "juros_altos_na_fatura",
+    "idade": [18, 90],
+    "condicoes": { "pais.juros": { "min": 13 }, "divida": { "min": 3000 } },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 4,
+    "texto": "A Selic foi a {pais.juros}% e a fatura do cartão virou um bicho com vida própria: a dívida já está em {divida} e cresce sozinha.",
+    "resumo": "viu a dívida crescer com os juros altos",
+    "escolhas": [
+      {
+        "texto": "Renegociar a dívida com o banco",
+        "resumo": "renegociou a dívida no auge dos juros",
+        "resultado": {
+          "texto": "Duas horas de espera, três atendentes e um acordo com parcela que cabe. O banco ainda sai ganhando, mas menos.",
+          "efeitos": { "dividaFator": 0.85, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Cortar tudo até quitar",
+        "resumo": "cortou tudo para fugir dos juros",
+        "resultado": {
+          "texto": "Sem delivery, sem cinema, sem presente. O cartão emagreceu; o humor, também.",
+          "efeitos": { "felicidade": -4, "dividaFator": 0.75, "dinheiro": -2000 }
+        }
+      },
+      {
+        "texto": "Empurrar com a barriga",
+        "resumo": "empurrou a dívida com a barriga",
+        "resultado": {
+          "texto": "Você pagou o mínimo e torceu para o juro baixar. A barriga, como se sabe, tem limite.",
+          "efeitos": { "divida": 2500, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "juros_altos_rendendo",
+    "idade": [20, 95],
+    "condicoes": { "pais.juros": { "min": 13 }, "dinheiro": { "min": 15000 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "texto": "Com a Selic em {pais.juros}%, até a tia aposentada virou especialista em renda fixa. O seu dinheiro parado na conta, enquanto isso, só encolhe.",
+    "resumo": "decidiu o que fazer com o dinheiro parado nos juros altos",
+    "escolhas": [
+      {
+        "texto": "Pôr na renda fixa",
+        "resumo": "aproveitou os juros altos na renda fixa",
+        "resultado": {
+          "texto": "Tesouro, CDB, a tia tinha razão. É o dinheiro mais sem graça do mundo, e o mais tranquilo.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.7 }, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Deixar na conta, para o que der e vier",
+        "resumo": "deixou o dinheiro parado na conta",
+        "resultado": { "texto": "Liquidez, você diz. A inflação agradece a gentileza.", "efeitos": { "felicidade": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "juros_baixos_euforia",
+    "idade": [20, 90],
+    "condicoes": { "pais.juros": { "max": 6.5 }, "renda_fixa": { "min": 20000 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "texto": "A Selic caiu para {pais.juros}% e todo mundo virou investidor de bolsa. O motorista do aplicativo te deu uma dica de ação no semáforo.",
+    "resumo": "viu a euforia da bolsa com os juros baixos",
+    "escolhas": [
+      {
+        "texto": "Pôr uma parte em ações",
+        "resumo": "trocou renda fixa por ações com os juros baixos",
+        "resultado": {
+          "texto": "Você comprou ações de três empresas cujo ramo não sabe explicar direito. O gráfico, por enquanto, sobe.",
+          "efeitos": { "realocar": { "de": "renda_fixa", "para": "acoes", "fracao": 0.4 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Desconfiar da euforia",
+        "resumo": "desconfiou da euforia da bolsa",
+        "resultado": {
+          "texto": "Quando o motorista do aplicativo dá dica de ação, você aprendeu, é hora de ficar quiet{o|a}.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "assalto_no_onibus",
+    "idade": [14, 70],
+    "condicoes": { "pais.violencia": { "min": 23 }, "classe": { "max": 4 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 3,
+    "texto": "O ônibus foi assaltado na volta para casa. São {pais.violencia} homicídios por 100 mil no país, e o rapaz da arma parece decidido a melhorar a estatística.",
+    "resumo": "passou por um assalto no ônibus",
+    "escolhas": [
+      {
+        "texto": "Entregar o celular sem discutir",
+        "resumo": "entregou o celular num assalto",
+        "resultado": {
+          "texto": "Você entregou o celular, a carteira e a dignidade daquela noite. Chegou em casa inteir{o|a}, que é o que importa.",
+          "efeitos": { "dinheiro": -1500, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Esconder o celular na meia",
+        "resumo": "escondeu o celular na meia durante um assalto",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "Ele levou a carteira e não viu a meia. Você contou a história por meses, cada vez com mais detalhes.",
+          "resumo": "salvou o celular num assalto",
+          "efeitos": { "felicidade": 1, "dinheiro": -300 }
+        },
+        "fracasso": {
+          "texto": "Ele viu. Levou o celular, a carteira e ainda te deu um empurrão para a próxima vez aprender.",
+          "efeitos": { "saude": -6, "dinheiro": -1500, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Reagir",
+        "resumo": "reagiu a um assalto",
+        "teste": { "atributo": "saude", "dificuldade": 80 },
+        "sucesso": {
+          "texto": "Você e mais dois passageiros desarmaram o sujeito. O vídeo rodou o país; a sua mãe não gostou nada.",
+          "resumo": "desarmou um assaltante no ônibus",
+          "efeitos": { "felicidade": 2, "eu.fama": 6, "eu.popularidade": 3 }
+        },
+        "fracasso": {
+          "texto": "Não deu. Uma noite no pronto-socorro e uma cicatriz que agora conta a história sozinha.",
+          "efeitos": { "saude": -22, "felicidade": -8, "dinheiro": -1500 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "grade_na_janela",
+    "idade": [25, 90],
+    "condicoes": { "pais.violencia": { "min": 24 }, "marcas": ["casa_propria"], "classe": { "max": 5 } },
+    "repetivel": true,
+    "intervalo": 12,
+    "peso": 3,
+    "texto": "Três casas da rua foram arrombadas este mês. O grupo de mensagens dos vizinhos virou central de monitoramento, com áudio e foto de suspeito que era o carteiro.",
+    "resumo": "teve que proteger a casa da onda de arrombamentos",
+    "escolhas": [
+      {
+        "texto": "Grade, câmera e cerca elétrica",
+        "resumo": "cercou a casa de grade e câmera",
+        "resultado": {
+          "texto": "A casa virou um pequeno presídio, com você do lado de dentro. Mas dorme melhor.",
+          "efeitos": { "dinheiro": -8000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Pagar o vigia da rua",
+        "resumo": "rachou o vigia da rua com os vizinhos",
+        "resultado": {
+          "texto": "Um senhor de guarda-chuva e apito, das dez às seis. Ninguém sabe o que ele faria num assalto, mas ninguém testou.",
+          "efeitos": { "dinheiro": -2400, "felicidade": 2, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Confiar na sorte",
+        "resumo": "confiou na sorte contra os arrombamentos",
+        "teste": { "chance": 0.7 },
+        "sucesso": {
+          "texto": "A onda passou e a sua casa ficou de fora. Sorte é um sistema de segurança como outro qualquer.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Levaram a TV, o notebook e a fé na humanidade. A grade, agora, vai custar o dobro.",
+          "resumo": "teve a casa arrombada",
+          "efeitos": { "dinheiro": -9000, "felicidade": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "rua_tranquila",
+    "idade": [12, 95],
+    "condicoes": { "pais.violencia": { "max": 17 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 2,
+    "texto": "Com a violência em {pais.violencia} homicídios por 100 mil, das mais baixas em anos, o bairro voltou a pôr cadeira na calçada. Tem até criança jogando bola na rua, como nas fotos antigas.",
+    "resumo": "viu o bairro voltar para a calçada",
+    "escolhas": [
+      {
+        "texto": "Puxar uma cadeira também",
+        "resumo": "voltou a conversar na calçada",
+        "resultado": {
+          "texto": "Você conheceu três vizinhos de vinte anos de rua. Um deles empresta furadeira.",
+          "efeitos": { "felicidade": 3, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Continuar desconfiad{o|a}",
+        "resumo": "continuou desconfiad{o|a} mesmo com a rua tranquila",
+        "resultado": {
+          "texto": "Melhor prevenir. Você ficou na janela, de onde a calçada parece ainda melhor.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fila_do_posto",
+    "idade": [20, 95],
+    "condicoes": { "pais.saude": { "max": 38 }, "classe": { "max": 4 }, "saude": { "max": 75 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "texto": "Seis horas na fila do posto para uma consulta de cinco minutos e um \"volte daqui a três meses\". A saúde pública do país anda à míngua, e você sente nas costas.",
+    "resumo": "enfrentou a fila do posto de saúde",
+    "escolhas": [
+      {
+        "texto": "Pagar uma consulta particular",
+        "resumo": "pagou consulta particular para fugir da fila",
+        "resultado": {
+          "texto": "Quarenta minutos de espera, ar-condicionado e um médico que olhou nos seus olhos. Custou o que custou.",
+          "efeitos": { "dinheiro": -450, "saude": 4 }
+        }
+      },
+      {
+        "texto": "Esperar a vez",
+        "resumo": "esperou a vez na fila do posto",
+        "resultado": {
+          "texto": "Três meses depois, a consulta veio. A dor tinha ido e voltado duas vezes.",
+          "efeitos": { "felicidade": -3, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Tomar o chá da avó",
+        "resumo": "resolveu com o chá da avó",
+        "resultado": {
+          "texto": "Boldo, gengibre e fé. Funciona em metade dos casos; na outra, a avó culpa a falta de fé.",
+          "efeitos": { "saude": -1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "posto_que_funciona",
+    "idade": [25, 95],
+    "condicoes": { "pais.saude": { "min": 62 }, "classe": { "max": 4 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 2,
+    "texto": "O posto do bairro ligou para lembrar do seu exame de rotina. Ligou. Para você. A saúde pública do país anda caprichada, e ninguém acredita até acontecer.",
+    "resumo": "foi chamad{o|a} pelo posto para um exame de rotina",
+    "escolhas": [
+      {
+        "texto": "Ir ao exame",
+        "resumo": "fez o exame de rotina no posto",
+        "resultado": {
+          "texto": "Pressão boa, colesterol nem tanto e uma enfermeira que mandou você caminhar. Saiu com receita e com vergonha.",
+          "efeitos": { "saude": 5 }
+        }
+      },
+      {
+        "texto": "Deixar para depois",
+        "resumo": "deixou o exame de rotina para depois",
+        "resultado": {
+          "texto": "Você está ótim{o|a}, você acha. O posto vai ligar de novo, provavelmente.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mutirao_de_cirurgias",
+    "idade": [40, 95],
+    "condicoes": { "pais.pol_saude": { "min": 2 }, "saude": { "max": 60 }, "classe": { "max": 4 } },
+    "repetivel": true,
+    "intervalo": 12,
+    "peso": 3,
+    "texto": "O governo fez um mutirão de cirurgias e a sua, que estava na fila havia dois anos, saiu numa terça-feira qualquer.",
+    "resumo": "foi chamad{o|a} no mutirão de cirurgias",
+    "escolhas": [
+      {
+        "texto": "Operar",
+        "resumo": "operou no mutirão de cirurgias",
+        "resultado": {
+          "texto": "Três dias de hospital, comida sem sal e uma melhora que você não lembrava que era possível.",
+          "efeitos": { "saude": 9, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Ter medo e desistir",
+        "resumo": "desistiu da cirurgia por medo",
+        "resultado": {
+          "texto": "Você remarcou. Depois remarcou de novo. A fila, agora, começa do zero.",
+          "efeitos": { "felicidade": -1, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escola_publica_boa",
+    "idade": [8, 16],
+    "condicoes": { "pais.educacao": { "min": 58 }, "classe_origem": { "max": 3 } },
+    "peso": 3,
+    "texto": "A escola pública do bairro ganhou laboratório, biblioteca nova e um professor de física que explica tudo com foguete de garrafa PET.",
+    "resumo": "estudou numa escola pública que melhorou",
+    "escolhas": [
+      {
+        "texto": "Entrar no clube de ciências",
+        "resumo": "entrou no clube de ciências da escola",
+        "resultado": {
+          "texto": "Você lançou um foguete que subiu quarenta metros e caiu no telhado da diretoria. Foi o melhor dia do ano.",
+          "efeitos": { "inteligencia": 5, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Fazer o mínimo",
+        "resumo": "fez o mínimo numa escola que melhorou",
+        "resultado": {
+          "texto": "A escola melhorou; você, continuou na sua. A biblioteca nova fica para quem quiser.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "greve_dos_professores",
+    "idade": [7, 17],
+    "condicoes": { "pais.educacao": { "max": 40 }, "classe_origem": { "max": 3 } },
+    "peso": 3,
+    "texto": "Terceiro mês de greve dos professores. A escola virou uma quadra com cadeado, e o ano letivo, um conceito.",
+    "resumo": "ficou sem aula na greve dos professores",
+    "escolhas": [
+      {
+        "texto": "Estudar sozinh{o|a} pelo celular",
+        "resumo": "estudou sozinh{o|a} durante a greve",
+        "resultado": {
+          "texto": "Vídeo de professor de cursinho, apostila emprestada e a mesa da cozinha. Você aprendeu mais do que imaginava.",
+          "efeitos": { "inteligencia": 3, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Aproveitar as férias forçadas",
+        "resumo": "aproveitou a greve como férias",
+        "resultado": {
+          "texto": "Três meses de bola, videogame e tarde livre. Na volta, a matéria estava três capítulos na frente.",
+          "efeitos": { "felicidade": 4, "inteligencia": -2 }
+        }
+      },
+      {
+        "texto": "Ajudar em casa",
+        "resumo": "ajudou em casa durante a greve",
+        "resultado": {
+          "texto": "Você aprendeu a cozinhar arroz, consertar chuveiro e negociar com o irmão menor. Matemática, nem tanto.",
+          "efeitos": { "felicidade": 1, "inteligencia": -1, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escola_integral",
+    "tipo": "evento",
+    "ator": ["filho"],
+    "idade": [25, 60],
+    "condicoes": { "pais.pol_educacao": { "min": 2 }, "ator.idade": { "min": 6, "max": 14 }, "classe": { "max": 4 } },
+    "peso": 3,
+    "texto": "A escola de {ator} virou integral: aula de manhã, oficina de tarde e janta antes de voltar para casa.",
+    "resumo": "viu {ator} ganhar escola em tempo integral",
+    "escolhas": [
+      {
+        "texto": "Ótimo: mais tempo para trabalhar",
+        "resumo": "aproveitou a escola integral para trabalhar mais",
+        "resultado": {
+          "texto": "Hora extra liberada, salário maior e um filho que agora sabe tocar flauta. Você nunca ouviu.",
+          "efeitos": { "dinheiro": 3000, "ator.vinculo": -2 }
+        }
+      },
+      {
+        "texto": "Buscar mais cedo mesmo assim",
+        "resumo": "buscava {ator} mais cedo mesmo com a escola integral",
+        "resultado": {
+          "texto": "Você chega às quatro, a professora faz cara feia e {ator} faz a melhor cara do dia.",
+          "efeitos": { "ator.vinculo": 5, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "auxilio_na_conta",
+    "idade": [18, 95],
+    "condicoes": { "pais.pol_social": { "min": 2 }, "renda": { "max": 24000 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 3,
+    "texto": "O auxílio do governo caiu na conta: quatrocentos reais por mês que não mudam a vida, mas mudam o mês.",
+    "resumo": "passou a receber o auxílio do governo",
+    "escolhas": [
+      {
+        "texto": "Encher a geladeira",
+        "resumo": "encheu a geladeira com o auxílio",
+        "resultado": {
+          "texto": "Carne no domingo, fruta na fruteira e iogurte que não é só para visita.",
+          "efeitos": { "felicidade": 3, "saude": 2 }
+        }
+      },
+      {
+        "texto": "Pagar a conta atrasada",
+        "resumo": "pagou a conta atrasada com o auxílio",
+        "resultado": {
+          "texto": "A luz que ia ser cortada não foi. A paz, nesse caso, custou uma parcela.",
+          "efeitos": { "divida": -2000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Guardar para um curso",
+        "resumo": "juntou o auxílio para pagar um curso",
+        "resultado": {
+          "texto": "Seis meses guardando e um curso de técnico no fim. O auxílio virou outra coisa.",
+          "efeitos": { "inteligencia": 4, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imposto_alto_no_contracheque",
+    "idade": [22, 90],
+    "condicoes": { "pais.pol_impostos": { "min": 2 }, "renda": { "min": 70000 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 3,
+    "texto": "O imposto subiu de novo e o contracheque emagreceu. O contador sugeriu \"otimizar\", num tom que pedia para você não perguntar demais.",
+    "resumo": "viu o imposto alto comer o salário",
+    "escolhas": [
+      {
+        "texto": "Pagar e reclamar no grupo da família",
+        "resumo": "pagou o imposto alto e reclamou",
+        "resultado": {
+          "texto": "Você mandou um textão. A tia respondeu com uma figurinha de bom dia.",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Contratar um contador criativo",
+        "resumo": "contratou um contador criativo",
+        "teste": { "chance": 0.7 },
+        "sucesso": {
+          "texto": "O contador achou deduções que nem a Receita sabia que existiam. Sobrou um dinheiro.",
+          "resumo": "pagou menos imposto com um contador criativo",
+          "efeitos": { "dinheiro": 5000 }
+        },
+        "fracasso": {
+          "texto": "A Receita achou o contador antes de você achar outro. Veio a multa, com juros e com sermão.",
+          "resumo": "levou multa da Receita",
+          "efeitos": { "dinheiro": -14000, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imposto_baixo_sobrou",
+    "idade": [22, 90],
+    "condicoes": { "pais.pol_impostos": { "max": 0 }, "renda": { "min": 70000 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 3,
+    "texto": "Com o imposto mais baixo, sobrou no fim do ano um dinheiro que você nem sabia que existia.",
+    "resumo": "viu sobrar dinheiro com o imposto mais baixo",
+    "escolhas": [
+      {
+        "texto": "Investir a diferença",
+        "resumo": "investiu o que o imposto menor deixou sobrar",
+        "resultado": {
+          "texto": "O dinheiro foi direto para a corretora, antes que você inventasse outra ideia.",
+          "efeitos": { "dinheiro": 4000, "investir": 4000, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Viajar",
+        "resumo": "viajou com o que o imposto menor deixou sobrar",
+        "resultado": {
+          "texto": "Uma semana de praia, protetor solar e uma foto que virou fundo de tela.",
+          "efeitos": { "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "divida_publica_assusta",
+    "idade": [25, 95],
+    "condicoes": { "pais.divida": { "min": 100 }, "patrimonio": { "min": 20000 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 3,
+    "texto": "A dívida do governo passou de {pais.divida}% do PIB e o noticiário só fala em \"credibilidade\". O dólar subiu junto, por solidariedade.",
+    "resumo": "viu a dívida do governo assustar o mercado",
+    "escolhas": [
+      {
+        "texto": "Comprar dólar",
+        "resumo": "comprou dólar com medo da dívida do governo",
+        "resultado": {
+          "texto": "Você comprou dólar no meio do pânico, como todo mundo. Pelo menos não se sentiu só.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "dolar", "fracao": 0.3 } }
+        }
+      },
+      {
+        "texto": "Não entender nada e seguir a vida",
+        "resumo": "seguiu a vida sem entender a dívida do governo",
+        "resultado": {
+          "texto": "PIB, dívida bruta, resultado primário: você mudou de canal e foi feliz.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "protesto_na_avenida",
+    "idade": [16, 75],
+    "condicoes": {
+      "pais.aprovacao": { "max": 34 },
+      "pais.governo": ["frente_popular", "bloco_liberal", "alianca_da_ordem", "centrao", "regime"]
+    },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 3,
+    "trechos": {
+      "governo": [
+        { "se": { "pais.governo": "frente_popular" }, "texto": "a frente popular" },
+        { "se": { "pais.governo": "bloco_liberal" }, "texto": "o bloco liberal" },
+        { "se": { "pais.governo": "alianca_da_ordem" }, "texto": "a aliança da ordem" },
+        { "se": { "pais.governo": "centrao" }, "texto": "o centrão" },
+        { "texto": "o governo" }
+      ]
+    },
+    "texto": "A aprovação do governo caiu para {pais.aprovacao}% e a avenida encheu de gente com cartaz, apito e cachorro-quente. {governo} diz que a culpa é do governo anterior.",
+    "resumo": "viu a avenida tomada por um protesto contra o governo",
+    "escolhas": [
+      {
+        "texto": "Ir ao protesto",
+        "resumo": "foi a um protesto contra o governo",
+        "resultado": {
+          "texto": "Você gritou, cantou e voltou rouc{o|a}. A foto da multidão rodou o país, e você está nela, de costas.",
+          "efeitos": { "felicidade": 2, "eu.influencia": 1, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Ir à manifestação a favor do governo",
+        "resumo": "foi a uma manifestação a favor do governo",
+        "resultado": {
+          "texto": "Do outro lado da avenida, menos gente e mais bandeira. Você saiu com a certeza de que o resto do país não entende nada.",
+          "efeitos": { "felicidade": 1, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Ver tudo pela TV",
+        "resumo": "viu o protesto pela TV",
+        "resultado": {
+          "texto": "Do sofá, você comentou cada cartaz como se fosse narrador de futebol.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pobreza_na_porta",
+    "idade": [25, 95],
+    "condicoes": { "pais.pobreza": { "min": 31 }, "classe": { "min": 3 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "texto": "Com {pais.pobreza}% do país na pobreza, tem mais gente pedindo comida no sinal. O vizinho perdeu o emprego e, depois, a vergonha de pedir ajuda.",
+    "resumo": "viu a pobreza bater na porta do vizinho",
+    "escolhas": [
+      {
+        "texto": "Ajudar o vizinho",
+        "resumo": "ajudou o vizinho que perdeu o emprego",
+        "resultado": {
+          "texto": "Uma compra de mercado e uma indicação de emprego. Ele não esquece; você também não.",
+          "efeitos": { "dinheiro": -1200, "felicidade": 3, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Doar para a campanha da igreja",
+        "resumo": "doou para uma campanha contra a fome",
+        "resultado": {
+          "texto": "Duas cestas básicas e a sensação de ter feito alguma coisa, que já é alguma coisa.",
+          "efeitos": { "dinheiro": -400, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fechar o vidro do carro",
+        "resumo": "fechou o vidro do carro para a pobreza",
+        "resultado": { "texto": "O sinal abriu e você foi embora. A imagem, não.", "efeitos": { "felicidade": -2 } }
+      }
+    ]
+  },
+  {
+    "id": "blitz_toda_noite",
+    "idade": [18, 45],
+    "condicoes": { "pais.pol_seguranca": { "min": 2 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "peso": 2,
+    "texto": "Com a segurança em linha dura, tem blitz na saída de toda festa: cone, lanterna na cara e um policial que pergunta \"de onde vem e para onde vai\" como se fosse filosofia.",
+    "resumo": "deu de cara com a blitz da segurança linha dura",
+    "escolhas": [
+      {
+        "texto": "Ir e voltar de aplicativo",
+        "resumo": "passou a ir de aplicativo para fugir da blitz",
+        "resultado": {
+          "texto": "Você gastou mais e dormiu melhor. O motorista contou a vida inteira dele no caminho.",
+          "efeitos": { "dinheiro": -600, "saude": 1 }
+        }
+      },
+      {
+        "texto": "Arriscar com o carro",
+        "resumo": "arriscou passar de carro pela blitz",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Documento em dia, bafômetro zerado e um \"boa noite, cidadã{o|}\" de brinde.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "O documento estava vencido havia dois meses. Carro guinchado, multa e uma noite de pátio.",
+          "resumo": "teve o carro guinchado numa blitz",
+          "efeitos": { "dinheiro": -3500, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oposicao_na_tv",
+    "idade": [30, 99],
+    "condicoes": { "pais.governo": "voce", "popularidade": { "max": 45 } },
+    "repetivel": true,
+    "intervalo": 3,
+    "peso": 4,
+    "texto": "A oposição foi à TV dizer que o país está um caos, e os números ajudam: desemprego de {pais.desemprego}%, inflação de {pais.inflacao}%. A sua aprovação está em {eu.popularidade}%.",
+    "resumo": "respondeu à oposição com a aprovação em queda",
+    "escolhas": [
+      {
+        "texto": "Anunciar um pacote de bondades",
+        "resumo": "anunciou um pacote de bondades para recuperar a aprovação",
+        "resultado": {
+          "texto": "Crédito barato, obra nova e um anúncio em cadeia nacional. A aprovação subiu; a conta chega depois.",
+          "efeitos": { "pais.impulso": 1, "eu.popularidade": 6, "pais.divida": 2 }
+        }
+      },
+      {
+        "texto": "Trocar o ministro da economia",
+        "resumo": "trocou o ministro da economia",
+        "resultado": {
+          "texto": "Ministro novo, discurso novo e o mercado de bom humor por uma semana.",
+          "efeitos": { "eu.popularidade": 3, "eu.influencia": -2 }
+        }
+      },
+      {
+        "texto": "Culpar o governo anterior",
+        "resumo": "culpou o governo anterior pela crise",
+        "resultado": { "texto": "Funciona sempre. Funciona menos a cada vez.", "efeitos": { "eu.popularidade": 2 } }
+      }
+    ]
+  },
+  {
+    "id": "ministro_pede_ajuste",
+    "idade": [30, 99],
+    "condicoes": { "pais.governo": "voce", "pais.divida": { "min": 85 } },
+    "repetivel": true,
+    "intervalo": 4,
+    "peso": 4,
+    "texto": "O ministro da Fazenda entra com uma planilha vermelha: a dívida passou de {pais.divida}% do PIB. \"Ou a gente corta, ou o mercado corta pela gente.\"",
+    "resumo": "decidiu o que fazer com a dívida do governo",
+    "escolhas": [
+      {
+        "texto": "Cortar programas sociais",
+        "resumo": "cortou programas sociais para segurar a dívida",
+        "resultado": {
+          "texto": "O orçamento respirou e as periferias perderam o fôlego. As pesquisas notaram antes do mercado.",
+          "efeitos": { "pais.pol_social": -1, "eu.popularidade": -6, "pais.divida": -2 }
+        }
+      },
+      {
+        "texto": "Subir impostos",
+        "resumo": "subiu impostos para segurar a dívida",
+        "resultado": {
+          "texto": "A arrecadação sobe, o empresário reclama e a sua foto aparece com chifre na capa da revista.",
+          "efeitos": { "pais.pol_impostos": 1, "eu.popularidade": -5 }
+        }
+      },
+      {
+        "texto": "Ignorar o ministro",
+        "resumo": "ignorou o alerta do ministro sobre a dívida",
+        "resultado": {
+          "texto": "O ministro pediu demissão por carta. O dólar subiu antes de você terminar de ler.",
+          "efeitos": { "eu.popularidade": 2, "pais.impulso": 0.5, "pais.inflacao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "violencia_vira_manchete",
+    "idade": [30, 99],
+    "condicoes": { "pais.governo": "voce", "pais.violencia": { "min": 21 } },
+    "repetivel": true,
+    "intervalo": 4,
+    "peso": 4,
+    "texto": "Uma chacina virou manchete no mundo inteiro: o país tem {pais.violencia} homicídios por 100 mil, e todo mundo quer saber o que você vai fazer.",
+    "resumo": "teve que responder à violência que virou manchete",
+    "escolhas": [
+      {
+        "texto": "Mandar o Exército para as ruas",
+        "resumo": "mandou o Exército para as ruas",
+        "resultado": {
+          "texto": "Tanque na avenida e aprovação em alta. Os especialistas lembram que tanque não mora no bairro.",
+          "efeitos": { "pais.pol_seguranca": 1, "eu.popularidade": 5, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Programa social nas periferias",
+        "resumo": "lançou um programa social nas periferias",
+        "resultado": {
+          "texto": "Escola aberta no fim de semana, emprego para jovem, praça iluminada. Resultado em anos, não em dias.",
+          "efeitos": { "pais.pol_social": 1, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Dizer que vai estudar o caso",
+        "resumo": "disse que ia estudar o caso da chacina",
+        "resultado": { "texto": "A frase virou meme antes do fim da coletiva.", "efeitos": { "eu.popularidade": -6 } }
+      }
+    ]
+  },
+  {
+    "id": "greve_geral",
+    "idade": [30, 99],
+    "condicoes": { "pais.governo": "voce", "pais.desemprego": { "min": 9.5 } },
+    "repetivel": true,
+    "intervalo": 4,
+    "peso": 4,
+    "texto": "As centrais convocaram greve geral contra o desemprego de {pais.desemprego}%. O país parou; o seu telefone, não.",
+    "resumo": "enfrentou uma greve geral no governo",
+    "escolhas": [
+      {
+        "texto": "Negociar com os sindicatos",
+        "resumo": "negociou com os sindicatos na greve geral",
+        "resultado": {
+          "texto": "Mesa grande, café ruim e um acordo às três da manhã. Todo mundo saiu dizendo que ganhou.",
+          "efeitos": { "pais.pol_social": 1, "eu.popularidade": 3 }
+        }
+      },
+      {
+        "texto": "Endurecer",
+        "resumo": "endureceu contra a greve geral",
+        "resultado": {
+          "texto": "Corte de ponto, liminar e polícia na porta da fábrica. A greve acabou; a raiva, não.",
+          "efeitos": { "eu.popularidade": -4, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Aumentar o salário mínimo",
+        "resumo": "aumentou o salário mínimo para acabar com a greve",
+        "resultado": {
+          "texto": "A greve acabou na hora. A inflação ouviu a notícia e ficou animada também.",
+          "efeitos": { "pais.impulso": 0.5, "eu.popularidade": 6, "pais.inflacao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bonanca_no_governo",
+    "idade": [30, 99],
+    "condicoes": { "pais.governo": "voce", "pais.crescimento": { "min": 3 } },
+    "repetivel": true,
+    "intervalo": 4,
+    "peso": 4,
+    "texto": "O PIB cresceu {pais.crescimento}% e a sua foto está em todo outdoor. Os aliados já sabem onde gastar a bonança.",
+    "resumo": "decidiu o que fazer com a bonança no governo",
+    "escolhas": [
+      {
+        "texto": "Obras com placa",
+        "resumo": "gastou a bonança em obras com placa",
+        "resultado": {
+          "texto": "Viaduto, estádio e uma placa com o seu nome em letra dourada. Daqui a vinte anos, alguém vai pagar a manutenção.",
+          "efeitos": { "pais.impulso": 1, "eu.popularidade": 4, "pais.divida": 2 }
+        }
+      },
+      {
+        "texto": "Guardar para os anos ruins",
+        "resumo": "guardou a bonança para os anos ruins",
+        "resultado": {
+          "texto": "Ninguém faz festa para dívida que caiu. Os economistas fizeram, discretamente.",
+          "efeitos": { "pais.divida": -5, "eu.popularidade": -1, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Cortar impostos",
+        "resumo": "cortou impostos na bonança",
+        "resultado": {
+          "texto": "Dinheiro no bolso de todo mundo e o seu nome em todas as conversas de bar, bem.",
+          "efeitos": { "pais.pol_impostos": -1, "eu.popularidade": 3 }
+        }
+      }
+    ]
+  }
+]

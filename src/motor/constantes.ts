@@ -33,6 +33,10 @@ export const CATEGORIAS_MORTE = ['velhice', 'coracao', 'doenca', 'acidente', 'vi
 /** Fases do ciclo da economia do país. Fora do normal, a fase é uma qualidade do país (`pais.recessao`). */
 export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
 export type Fase = (typeof FASES)[number];
+
+/** As políticas do governo (pais.pol_impostos…), cada uma em três níveis: 0 baixo, 1 médio, 2 alto. */
+export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca'] as const;
+export type Politica = (typeof POLITICAS)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];
 
 /** Onde o dinheiro investido fica: cada classe rende conforme a fase do país. */

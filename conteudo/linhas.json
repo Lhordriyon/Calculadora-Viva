@@ -877,5 +877,83 @@
     "idade": [3, 9],
     "condicoes": { "marcas": ["asma"] },
     "texto": "Sabe a diferença entre uma tosse e uma crise, e onde fica a bombinha de cada casa da família."
+  },
+  {
+    "idade": [18, 64],
+    "condicoes": { "pais.desemprego": { "min": 11 } },
+    "texto": "Desemprego de {pais.desemprego}%: na fila do RH, você reconheceu três colegas de escola."
+  },
+  {
+    "idade": [18, 64],
+    "condicoes": { "pais.desemprego": { "max": 6.5 } },
+    "texto": "Placa de \"contrata-se\" na padaria, no mercado e na oficina. O desemprego está em {pais.desemprego}%."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "pais.inflacao": { "min": 8 } },
+    "texto": "O preço do café subiu de novo. A inflação passou de {pais.inflacao}%, e o pãozinho encolheu de vergonha."
+  },
+  {
+    "idade": [20, 95],
+    "condicoes": { "pais.juros": { "min": 13 } },
+    "texto": "Selic de {pais.juros}%: o gerente do banco ligou oferecendo CDB, e não empréstimo, pela primeira vez."
+  },
+  {
+    "idade": [14, 95],
+    "condicoes": { "pais.violencia": { "min": 25 } },
+    "texto": "Mais uma grade na janela da rua. O país está com {pais.violencia} homicídios por 100 mil, e a cidade sabe de cor."
+  },
+  {
+    "idade": [20, 95],
+    "condicoes": { "pais.saude": { "min": 62 } },
+    "texto": "A vacina chegou no posto antes da fila. A saúde pública anda caprichada, e ninguém comenta, porque ninguém comenta o que funciona."
+  },
+  {
+    "idade": [6, 17],
+    "condicoes": { "pais.educacao": { "max": 40 }, "classe_origem": { "max": 3 } },
+    "texto": "Faltou professor de novo. A aula de matemática virou aula vaga, que virou futebol."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "frente_popular" },
+    "texto": "Ano de frente popular no governo: auxílio na conta de quem precisa e imposto na conta de quem pode."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "bloco_liberal" },
+    "texto": "Ano de bloco liberal no governo: o imposto baixou e o posto de saúde também, de tamanho."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "alianca_da_ordem" },
+    "texto": "Ano de aliança da ordem no governo: viatura em toda esquina e professor em nenhuma."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.governo": "centrao" },
+    "texto": "Ano de centrão no governo: um pouco de tudo para todo mundo e uma ponte nova na cidade do relator."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": {
+      "pais.aprovacao": { "max": 30 },
+      "pais.governo": ["frente_popular", "bloco_liberal", "alianca_da_ordem", "centrao"]
+    },
+    "texto": "O governo está com {pais.aprovacao}% de aprovação. No bar, ninguém conhece quem votou neles."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "pais.divida": { "min": 100 } },
+    "texto": "A dívida do governo passou de {pais.divida}% do PIB. O jornal explicou com um gráfico; você entendeu pela cara do apresentador."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.pobreza": { "max": 18 } },
+    "texto": "A pobreza caiu para {pais.pobreza}%. O sinal da esquina, que tinha seis pedintes, agora tem um malabarista."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "pais.pol_seguranca": { "max": 0 } },
+    "texto": "Faz meses que você não vê uma viatura no bairro. O crime percebeu antes de você."
   }
 ]

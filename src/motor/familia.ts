@@ -11,7 +11,8 @@ import { causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
-import type { DefFase, Gatilho } from './esquema.ts';
+import type { Gatilho } from './esquema.ts';
+import type { Momento } from './pais.ts';
 import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { morrerPersonagem } from './pessoas.ts';
 import {
@@ -87,7 +88,7 @@ export function regrasDosPersonagens(
   e: EstadoVida,
   c: Conteudo,
   regAno: Mudanca[],
-  fase: Pick<DefFase, 'desemprego' | 'retorno'> = { desemprego: 1, retorno: 0 },
+  fase: Pick<Momento, 'desemprego' | 'retorno'> = { desemprego: 1, retorno: 0 },
 ): void {
   const eu = e.entidades['eu']!;
   const lugar = e.entidades['lugar'];

@@ -19,10 +19,10 @@
  * compra desconta. Delegar (conselho, carta branca, sair de cena) é decisão
  * do jogador, com o que ela custa e o que ela causa.
  */
-import { faseDe, defFase } from './ciclo.ts';
+import { momentoDoPais, type Momento } from './pais.ts';
 import { entidadeDe, investidoDe, lerCaminho, parteNaEmpresa } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import type { AberturaEmpresa, DefFase, DefSetor } from './esquema.ts';
+import type { AberturaEmpresa, DefSetor } from './esquema.ts';
 import { anotarCaixa, caixaDe, movimentar, resgatarDe } from './economia.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar, somarQualidade } from './livro.ts';
 import { novaEntidade } from './pessoas.ts';
@@ -211,7 +211,7 @@ export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number): num
  * paga a retirada; a tração volta devagar para a do setor; e, abaixo do
  * piso, a quebra fica agendada.
  */
-export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: DefFase, reg: Mudanca[]): void {
+export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const emp = empresaDe(e);
   if (!emp) return;
   const n = emp.n;
@@ -263,14 +263,10 @@ export function ehOperacaoDeEmpresa(op: { tipo: string }): op is OperacaoEmpresa
 }
 
 /** O preço da parte de quem joga se vender agora, e por quê: o prêmio (ou o desconto) da fase do país e o desconto da dependência. */
-export function vendaDaParte(e: EstadoVida, c: Conteudo): { preco: number; fase: number; desconto: number } {
-  const fase = precoDeVenda(defFase(c, faseDe(e)).empresa);
+export function vendaDaParte(e: EstadoVida): { preco: number; fase: number; desconto: number } {
+  const fase = precoDeVenda(momentoDoPais(e).empresa);
   const desconto = descontoDaDependencia(e);
   return { preco: parteNaEmpresa(e) * fase * (1 - desconto), fase, desconto };
-}
-
-export function precoDaParte(e: EstadoVida, c: Conteudo): number {
-  return vendaDaParte(e, c).preco;
 }
 
 /**
@@ -366,7 +362,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     return { texto: `Decidiu ${RETIRADA_TEXTO(op.fracao)} da ${emp.nome}.`, resumo: `decidiu ${RETIRADA_TEXTO(op.fracao)} da empresa` };
   }
   const nome = emp.nome;
-  const preco = venderParte(e, reg, 1, precoDeVenda(defFase(c, faseDe(e)).empresa));
+  const preco = venderParte(e, reg, 1, precoDeVenda(momentoDoPais(e).empresa));
   ganhar(e, reg, 'eu', 'vendeu_empresa', origem);
   return { texto: `Vendeu a ${nome} por ${formatarDinheiro(preco)}.`, resumo: `vendeu a ${nome} por ${formatarDinheiro(preco)}` };
 }

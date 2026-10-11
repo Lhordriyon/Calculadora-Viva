@@ -7,6 +7,7 @@
 import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EstadoVida, MemoriaJogador } from '../motor/tipos.ts';
+import { migrarPais } from '../motor/pais.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
 
@@ -157,6 +158,8 @@ export function lerSave(texto: string | null, conteudo: Conteudo): Save {
     if (antigo > 0) en.n['renda_fixa'] = (en.n['renda_fixa'] ?? 0) + antigo;
     delete en.n['investido'];
   }
+  // Antes do país vivo, o país só tinha a fase: ganha as estatísticas típicas dela e um governo.
+  migrarPais(v, conteudo);
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.
   if (v.pendente && conteudo.porId.get(v.pendente.storylet)?.escolhas?.length !== v.pendente.opcoes.length) v.pendente = null;
   return { ...base, vida: v };

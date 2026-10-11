@@ -12,7 +12,7 @@ import { criarPersonagem } from '../src/motor/pessoas.ts';
 import { proximaEleicao, regraDoPoder } from '../src/motor/poder.ts';
 import { elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
-import { defFase } from '../src/motor/ciclo.ts';
+import { momentoTipico } from '../src/motor/pais.ts';
 import { morrer, nascer } from '../src/motor/vida.ts';
 
 const c = carregarConteudo();
@@ -116,7 +116,7 @@ describe('poder', () => {
     expect(eu.n['dinheiro']).toBeCloseTo(10_000_000 - vereador.campanha, 0);
     if (eu.t['cargo'] !== 'vereador') return; // perdeu (raro com essa influência): o resto não se aplica
     expect(eu.n['renda']).toBe(vereador.salario);
-    const fase = defFase(c, 'normal');
+    const fase = momentoTipico('normal');
     for (let i = 0; i < 6 && eu.t['cargo']; i++) regraDoPoder(e, c, fase, []);
     expect(eu.t['cargo']).toBe('');
     expect(eu.q['ex_politico']).toBeTruthy();
@@ -125,7 +125,7 @@ describe('poder', () => {
   it('a influência anda para o alvo: mais patrimônio, mais influência', () => {
     const pobre = adulto(8, { dinheiro: 10000 });
     const rico = adulto(8, { dinheiro: 500_000_000 });
-    const fase = defFase(c, 'normal');
+    const fase = momentoTipico('normal');
     for (let i = 0; i < 15; i++) {
       regraDoPoder(pobre, c, fase, []);
       regraDoPoder(rico, c, fase, []);

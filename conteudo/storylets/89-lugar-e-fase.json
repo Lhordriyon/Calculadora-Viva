@@ -416,7 +416,7 @@
   {
     "id": "construtora_quebrou",
     "apenasAgendado": true,
-    "condicoes": { "marcas": ["apartamento_na_planta", "pais.crise"] },
+    "condicoes": { "marcas": ["apartamento_na_planta"], "algumaMarca": ["pais.recessao", "pais.crise"] },
     "texto": "A crise pegou a construtora no meio da obra: o prédio parou no quinto andar, o estande virou depósito e o corretor não atende mais ninguém.",
     "resumo": "viu a construtora do seu apartamento quebrar na crise",
     "escolhas": [

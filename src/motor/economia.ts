@@ -7,17 +7,16 @@
  */
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { anotar } from './livro.ts';
-import { normal, type Rng } from './rng.ts';
 import {
   CAPACIDADE_DO_MERCADO,
   GASTO_DA_SOBRA,
   GASTO_DO_PATRIMONIO,
   IDADE_GASTO_VELHICE,
-  INFLACAO_DESVIO,
-  INFLACAO_MEDIA,
   JUROS_DIVIDA,
   LIMITE_CREDITO_MINIMO,
   LIMITE_CREDITO_RENDAS,
+  LINHA_DA_POBREZA,
+  META_DE_INFLACAO,
   PATRIMONIO_SEM_GASTO,
   PROPENSAO_GASTO_ENDIVIDADO,
   gastoDaVelhice,
@@ -38,12 +37,6 @@ export function padraoDe(e: EstadoVida): Padrao {
 export function gastoDaSobra(e: EstadoVida): number {
   const gasto = GASTO_DA_SOBRA[padraoDe(e)];
   return (e.entidades['eu']?.n['divida'] ?? 0) > 0 ? Math.min(gasto, PROPENSAO_GASTO_ENDIVIDADO) : gasto;
-}
-
-/** Inflação do ano: média de 4,5% mais o que a fase do ciclo soma (a crise empurra para cima). */
-export function sortearInflacao(rng: Rng, extra = 0): number {
-  const i = normal(rng, INFLACAO_MEDIA + extra, INFLACAO_DESVIO);
-  return Math.min(0.25, Math.max(0.005, i));
 }
 
 /** Tira até `valor` das classes investidas, na ordem dada (a de liquidez, por padrão). Devolve quanto saiu. */
@@ -113,32 +106,29 @@ export interface Ano {
   deficit: number;
 }
 
-/** O que a fase do ciclo muda na economia do ano (somado às médias). */
-export interface FaseEconomica {
-  inflacao: number;
-  retorno: number;
+/** O que o país faz no bolso neste ano (pais.ts › bolsoDoPais); o que faltar fica no de sempre. */
+export interface PaisNoBolso {
+  inflacao?: number | undefined;
+  jurosDaDivida?: number | undefined;
+  /** O que o imposto muda na renda de quem não é pobre (−0,04 = 4% a menos). */
+  imposto?: number | undefined;
+  /** O que o auxílio soma à renda de quem é pobre (reais por ano). */
+  auxilio?: number | undefined;
 }
 
 /**
- * Um ano de economia de quem joga. Da sobra do ano (renda menos custo), uma
- * parte vira gasto, conforme o padrão de vida (menos, para quem está
- * devendo); quem tem patrimônio também gasta uma parte dele, pelo mesmo
- * padrão. Déficit vira dívida só até o limite de crédito; acima dele, a
- * dívida congela e o resto do déficit vira privação.
+ * Um ano de economia de quem joga. A inflação é a do país; a renda paga o
+ * imposto do governo (quem é pobre não paga e recebe o auxílio). Da
+ * sobra do ano (renda menos custo), uma parte vira gasto, conforme o padrão
+ * de vida (menos, para quem está devendo); quem tem patrimônio também gasta
+ * uma parte dele, pelo mesmo padrão. Déficit vira dívida, com os juros do
+ * momento, só até o limite de crédito; acima dele, a dívida congela e o resto
+ * do déficit vira privação.
  */
-export function economiaDoAno(
-  e: EstadoVida,
-  rng: Rng,
-  reg: Mudanca[],
-  fase: FaseEconomica = { inflacao: 0, retorno: 0 },
-  retornos: Partial<Record<Ativo, number>> = {},
-): Ano {
+export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso = {}, retornos: Partial<Record<Ativo, number>> = {}): Ano {
   const n = e.entidades['eu']!.n;
   const antes = caixaDe(n);
-  const inflacao = sortearInflacao(rng, fase.inflacao);
-  const pais = e.entidades['pais']!.n;
-  anotar(reg, 'pais.inflacao', Math.round(inflacao * 1000) / 10 - (pais['inflacao'] ?? 0), 'economia');
-  pais['inflacao'] = Math.round(inflacao * 1000) / 10;
+  const inflacao = pais.inflacao ?? (e.entidades['pais']?.n['inflacao'] ?? META_DE_INFLACAO) / 100;
 
   const dinheiroAntes = n['dinheiro'] ?? 0;
   n['dinheiro'] = dinheiroAntes / (1 + inflacao);
@@ -151,13 +141,16 @@ export function economiaDoAno(
   const renda = n['renda'] ?? 0;
   const limite = limiteDeCredito(renda);
   const comJuros = Math.min(n['divida'] ?? 0, limite);
-  n['divida'] = (n['divida'] ?? 0) + comJuros * ((1 + JUROS_DIVIDA) / (1 + inflacao) - 1);
+  n['divida'] = (n['divida'] ?? 0) + comJuros * ((1 + (pais.jurosDaDivida ?? JUROS_DIVIDA)) / (1 + inflacao) - 1);
 
   let privacao = false;
   let deficit = 0;
   if (e.idade >= 18) {
     const custoVida = e.entidades['lugar']?.n['custo_vida'] ?? 1;
-    const sobra = Math.max(renda, pisoRenda(e.idade)) - Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
+    const pobre = renda < LINHA_DA_POBREZA;
+    const liquida = pobre ? renda : renda * (1 + (pais.imposto ?? 0));
+    const auxilio = pobre ? (pais.auxilio ?? 0) : 0;
+    const sobra = Math.max(liquida, pisoRenda(e.idade)) + auxilio - Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
     if (sobra >= 0) {
       n['dinheiro'] += sobra * (1 - gastoDaSobra(e));
     } else {

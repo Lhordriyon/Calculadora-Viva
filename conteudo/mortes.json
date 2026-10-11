@@ -152,5 +152,28 @@
     "idade": [40, 120],
     "condicoes": { "marcas": ["colesterol_alto"] },
     "peso": 4
+  },
+  {
+    "causa": "num assalto, por causa de um celular",
+    "categoria": "violencia",
+    "idade": [14, 85],
+    "peso": 2,
+    "daViolencia": true
+  },
+  {
+    "causa": "atingid{o|a} por uma bala perdida, no caminho de casa",
+    "categoria": "violencia",
+    "idade": [10, 85],
+    "condicoes": { "pais.violencia": { "min": 24 } },
+    "peso": 1.5,
+    "daViolencia": true
+  },
+  {
+    "causa": "num sequestro-relâmpago que deu errado",
+    "categoria": "violencia",
+    "idade": [20, 75],
+    "condicoes": { "classe": { "min": 3 } },
+    "peso": 1,
+    "daViolencia": true
   }
 ]

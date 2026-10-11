@@ -9,11 +9,13 @@
  * parcela saem da conta e o aluguel entra.
  */
 import { bensDe } from './campos.ts';
+import { FASES } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { movimentar } from './economia.ts';
 import { liquidoDe, tirarDeQuemJoga } from './empresa.ts';
 import type { DefBem } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
+import { FREQUENCIA_DAS_FASES } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   ALUGUEL_DA_MORADIA,
@@ -200,8 +202,7 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
  */
 function mercadoMedioDeImoveis(c: Conteudo): number {
   const fii = c.mundo.ativos.find((a) => a.id === 'fii');
-  const pesos = c.mundo.fases.reduce((s, f) => s + f.peso, 0);
-  return fii ? c.mundo.fases.reduce((s, f) => s + (fii.retorno[f.id] ?? 0) * f.peso, 0) / pesos : 0;
+  return fii ? FASES.reduce((s, f) => s + fii.retorno[f] * FREQUENCIA_DAS_FASES[f], 0) : 0;
 }
 
 /** O ano dos bens: o valor anda (imóvel com o mercado), a manutenção e a parcela saem, o aluguel entra (anotado à parte). */

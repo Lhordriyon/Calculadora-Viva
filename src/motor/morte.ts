@@ -15,11 +15,16 @@ interface Sorteio {
   fonte?: number;
 }
 
-function sortearCausa(e: EstadoVida, c: Conteudo): Sorteio {
+/**
+ * Sorteia a causa em mortes.json. A morte do corpo escolhe entre todas, menos as que são só da violência do país;
+ * a da violência do país (vida.ts), só entre as violentas (o traço, as marcas e o bairro escolhem qual).
+ */
+function sortearCausa(e: EstadoVida, c: Conteudo, categoria?: string): Sorteio {
   const pesos = c.mortes.map((m) =>
-    (!m.idade || (m.idade[0] <= e.idade && e.idade <= m.idade[1])) && atende(m.condicoes, e) ? (m.peso ?? 1) : 0,
+    (categoria ? m.categoria === categoria : !m.daViolencia) && (!m.idade || (m.idade[0] <= e.idade && e.idade <= m.idade[1])) && atende(m.condicoes, e) ? (m.peso ?? 1) : 0,
   );
   const i = sortearIndice(e.rng, pesos);
+  if (i < 0 && categoria === 'violencia') return { causa: 'num assalto, numa noite qualquer', categoria, causas: [] };
   if (i < 0) return { causa: 'de causas que nem o médico soube explicar', categoria: 'doenca', causas: [] };
   const m = c.mortes[i]!;
   return { causa: m.causa, categoria: m.categoria, causas: causasDe(m.condicoes, e), fonte: i };
@@ -30,10 +35,12 @@ export interface DeOndeVeio {
   causa?: string;
   categoria?: string;
   causas?: number[];
+  /** Sorteia de mortes.json só entre as causas da categoria (a morte pela violência do país). */
+  sortear?: boolean;
 }
 
 export function morrer(e: EstadoVida, c: Conteudo, de: DeOndeVeio = {}): void {
-  const sorteada = de.causa === undefined ? sortearCausa(e, c) : null;
+  const sorteada = de.causa === undefined ? sortearCausa(e, c, de.sortear ? de.categoria : undefined) : null;
   const texto = renderizar(de.causa ?? sorteada!.causa, contexto(e));
   const causas = [...new Set([...(de.causas ?? []), ...(sorteada?.causas ?? [])])];
   e.vivo = false;

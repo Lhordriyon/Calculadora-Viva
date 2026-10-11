@@ -76,7 +76,7 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         <div class="confirmar">
           <p>
             <b>{noGenero(sel.k.nome, g)}</b>: {porMes(salarioDoCargo(sel.k, 0))} no começo, até {porMes(sel.k.salario[1])} como {noGenero(sel.k.cargos.at(-1)!, g)}.
-            {sel.motivo ? ` Agora não: ${sel.motivo}.` : ` Chance de passar: ${pct(chanceDeEntrar(vida, conteudo, sel.k))}.`}
+            {sel.motivo ? ` Agora não: ${sel.motivo}.` : ` Chance de passar: ${pct(chanceDeEntrar(vida, sel.k))}.`}
           </p>
           <div class="escolhas-origem">
             <button type="button" class="botao" disabled={sel.motivo !== null} onClick={() => aoOperar({ tipo: 'candidatar', carreira: sel.k.id })}>
@@ -97,7 +97,7 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
                 <b>{noGenero(k.nome, g)}</b>
                 <small>
                   {porMes(salarioDoCargo(k, 0))} → {porMes(k.salario[1])}
-                  {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEntrar(vida, conteudo, k))} de chance`}
+                  {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEntrar(vida, k))} de chance`}
                   {k.fama ? ' · fama' : ''}
                   {min !== 18 || max !== 64 ? ` · ${min}–${max} anos` : ''}
                 </small>

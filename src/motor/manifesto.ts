@@ -7,6 +7,7 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
+import { POLITICAS } from './constantes.ts';
 
 export interface LeituraMotor {
   caminho: string;
@@ -101,7 +102,19 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // o ano dos bens: o valor anda com o mercado e o financiamento é pago
   'bem.valor',
   'bem.financiado',
-  // o ciclo econômico (fora do normal, a fase é uma qualidade do país)
+  // o país vivo: as estatísticas andam, governos se alternam na eleição e quem governa muda as políticas
+  'pais.crescimento',
+  'pais.desemprego',
+  'pais.juros',
+  'pais.divida',
+  'pais.pobreza',
+  'pais.violencia',
+  'pais.saude',
+  'pais.educacao',
+  'pais.aprovacao',
+  'pais.governo',
+  ...POLITICAS.map((p) => `pais.pol_${p}`),
+  // o ciclo econômico (fora do normal, a fase é uma qualidade do país, o nome do crescimento)
   'pais.expansao',
   'pais.recessao',
   'pais.crise',
@@ -135,6 +148,9 @@ export const ESCRITAS_DO_MOTOR: string[] = [
 
 const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[] => caminhos.map((caminho) => ({ caminho, regra, decide }));
 
+/** Quem joga vota (qualidade voto_<bloco>, da eleição do ano): o motor pesa o voto no resultado. */
+export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): string[] => governos.filter((g) => g.eleito).map((g) => `eu.voto_${g.id}`);
+
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo'];
 
@@ -158,7 +174,24 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.popularidade'], 'poder: a imagem pesa em toda eleição e começa o mandato; baixa, derruba o cargo', true),
   ...ler(['eu.cargo', 'eu.mandato'], 'poder: salário, fim do mandato e reeleição', true),
   ...ler(['eu.carreira', 'eu.nivel'], 'carreira: cargo, promoção, salário e fama', true),
-  ...ler(['pais.impulso'], 'ciclo: quem governa empurra a economia', true),
+  ...ler(['pais.impulso'], 'país: o decreto empurra o crescimento, a inflação e a dívida', true),
+  ...ler(['pais.crescimento'], 'país: a fase do ciclo, salários, empresas, desemprego, inflação e aprovação', true),
+  ...ler(['pais.desemprego'], 'país: demissão e recolocação, vaga, pobreza e aprovação', true),
+  ...ler(['pais.juros'], 'país: juros da dívida de quem joga, renda fixa e crescimento', true),
+  ...ler(['pais.divida'], 'país: crescimento, juros, inflação e chance de crise lá fora', true),
+  ...ler(['pais.pobreza'], 'país: violência e o desejo do eleitor', true),
+  ...ler(['pais.violencia'], 'país: chance de morrer de violência, crescimento e aprovação', true),
+  ...ler(['pais.saude'], 'país: mortalidade de quem depende do SUS e aprovação', true),
+  ...ler(['pais.educacao'], 'país: inteligência de quem estuda na escola pública, desemprego e crescimento', true),
+  ...ler(['pais.aprovacao'], 'país: reeleição do governo', true),
+  ...ler(['pais.governo'], 'país: quem governa adota as políticas; eleição e transição', true),
+  ...ler(
+    POLITICAS.map((p) => `pais.pol_${p}`),
+    'país: as políticas puxam as estatísticas, o imposto e o auxílio de quem joga',
+    true,
+  ),
+  ...ler(['pais.regime'], 'país: sob o regime, não há eleição', true),
+  ...ler(['eu.classe_origem'], 'escola pública: quem estuda nela sente a educação do país', true),
   ...ler(['empresa.aquisicoes'], 'empresa: três compras fazem um truste', true),
   ...ler(['eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico'], 'poder: a linhagem dá influência', false),
   ...ler(['eu.lei_da_heranca'], 'herança: a lei comprada baixa o imposto de 4% para 1%', true),
@@ -171,7 +204,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.classe_origem'], 'renda e poupança da família', false),
   ...ler(['eu.irmaos'], 'divisão da herança', true),
   ...ler(['eu.mora_com_pais'], 'distância da família', false),
-  ...ler(['pais.inflacao'], 'economia', false),
+  ...ler(['pais.inflacao'], 'economia: o dinheiro parado encolhe; país: juros e aprovação', true),
   ...ler(['pais.expansao', 'pais.recessao', 'pais.crise'], 'ciclo: inflação, rendimento, demissões e salários', true),
   ...ler(['lugar.desemprego'], 'demissão e recolocação dos pais', true),
   ...ler(['lugar.custo_vida'], 'custo mínimo de vida', true),

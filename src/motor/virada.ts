@@ -95,15 +95,15 @@ function frase(h: Entrada): { texto: string; doJogador: boolean } | null {
   return null;
 }
 
-/** O que acontece com quem joga mostra o porquê; o que ele mesmo fez (ações, folhas), não. */
-const COM_PORQUE = new Set<Entrada['tipo']>(['evento', 'npc', 'morte']);
+/** O que acontece com quem joga e com o país mostra o porquê; o que ele mesmo fez (ações, folhas), não. */
+const COM_PORQUE = new Set<Entrada['tipo']>(['evento', 'npc', 'morte', 'mundo']);
 
 /**
  * Por que esta entrada aconteceu: a causa direta mais recente, de um ano
  * anterior, que se conta numa frase (a do jogador antes da do mundo). A linha
  * do tempo mostra "Porque aos 34, você bancou a campanha…": a consequência
  * aponta para a decisão no momento em que acontece, não só no cartão final.
- * Só no que acontece com quem joga (eventos, iniciativas dos outros, a morte).
+ * Só no que acontece com quem joga (eventos, iniciativas dos outros, a morte) e com o país (a fase, a eleição).
  */
 export function porqueDe(h: Entrada, porId: ReadonlyMap<number, Entrada>): { idade: number; texto: string } | null {
   if (!COM_PORQUE.has(h.tipo)) return null;

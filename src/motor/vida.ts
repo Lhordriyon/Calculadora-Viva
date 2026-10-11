@@ -4,7 +4,6 @@
  * escolha → efeitos. Funções puras sobre o estado
  * (mutam o objeto recebido; a interface clona antes).
  */
-import { cicloDoAno, sortearFaseInicial } from './ciclo.ts';
 import { regraDoPadrao, regraDoTrabalho } from './trabalho.ts';
 import { ATRIBUTOS } from './constantes.ts';
 import { patrimonioTotal } from './campos.ts';
@@ -13,6 +12,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { escolherDoAno } from './diretor.ts';
 import { mercadoDoAno } from './carteira.ts';
+import { anoDoPais, bolsoDoPais, escolaPublica, fatorDaSaudePublica, paisInicial, riscoDeViolencia } from './pais.ts';
 import { economiaDoAno, padraoDe } from './economia.ts';
 import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
@@ -100,7 +100,7 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   e.entidades['eu'] = novaEntidade({ id: 'eu', tipo: 'pessoa', nome, genero, nascimento: op.ano, vivo: true });
   e.sobrenome = limparNome(escolha?.sobrenome) || `${sortear(rng, c.mundo.sobrenomes)} ${sortear(rng, c.mundo.sobrenomes)}`;
   gerarOrigem(e, c, op.origem);
-  sortearFaseInicial(e, c);
+  paisInicial(e, c);
   e.historico.push({
     id: 0,
     idade: 0,
@@ -134,6 +134,9 @@ function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   somar(e, reg, 'eu', 'saude', derivaSaude(e.idade, a['saude'] ?? 70) + normal(r, 0, 1.2), 'idade');
   somar(e, reg, 'eu', 'felicidade', (felicidadeDeBase(e, c) - (a['felicidade'] ?? 60)) * RETORNO_FELICIDADE + normal(r, 0, 2.5), 'humor');
   somar(e, reg, 'eu', 'inteligencia', derivaInteligencia(e.idade), 'idade');
+  // A escola pública que o país mantém (dos 6 aos 17, para quem não está na particular).
+  const escola = escolaPublica(e);
+  if (escola !== 0) somar(e, reg, 'eu', 'inteligencia', escola, 'escola');
   somar(e, reg, 'eu', 'aparencia', derivaAparencia(e.idade) + normal(r, 0, 0.8), 'idade');
   for (const m of Object.keys(eu.q)) {
     const porAno = c.marcas[m]?.porAno;
@@ -149,6 +152,15 @@ function envelhecer(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   }
 }
 
+/**
+ * A chance de morrer no ano: a do corpo (que a saúde pública alivia ou agrava para quem depende dela; com saúde
+ * zero, nada salva) e a da violência do país.
+ */
+export function chanceDeMorrer(e: EstadoVida): { corpo: number; violencia: number } {
+  const corpo = riscoDeMorte(e.idade, e.entidades['eu']!.n['saude'] ?? 0);
+  return { corpo: corpo >= 1 ? 1 : Math.min(1, corpo * fatorDaSaudePublica(e)), violencia: riscoDeViolencia(e) };
+}
+
 export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador): void {
   if (!e.vivo) throw new Error('Esta vida já terminou.');
   if (e.pendente) throw new Error('Há uma escolha esperando resposta.');
@@ -156,13 +168,13 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   e.ano++;
   const eu = e.entidades['eu']!;
   const inicio = e.historico.length;
-  // O país primeiro: a fase do ciclo vale para a economia, os empregos e os storylets do ano.
-  const fase = cicloDoAno(e, c);
+  // O país primeiro: quem governa, as estatísticas e a fase valem para a economia, os empregos e os storylets do ano.
   const regAno: Mudanca[] = [];
+  const fase = anoDoPais(e, c, regAno);
   const idRegras = e.proximoId++;
 
   const mercado = mercadoDoAno(e, c, fase.id, regAno);
-  const ano = economiaDoAno(e, e.rng, regAno, fase, mercado);
+  const ano = economiaDoAno(e, regAno, bolsoDoPais(e, c), mercado);
   regraDaEmpresa(e, c, fase, regAno);
   regraDosBens(e, c, regAno);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
@@ -182,8 +194,14 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   lancar(e, { id: idRegras, idade: e.idade, ano: e.ano, tipo: 'regra', causa: 'regra', ref: 'ano', texto: '' }, regAno);
 
-  if (e.idade >= IDADE_MAXIMA || aleatorio(e.rng) < riscoDeMorte(e.idade, eu.n['saude'] ?? 0)) {
+  const chance = chanceDeMorrer(e);
+  const sorte = aleatorio(e.rng);
+  if (e.idade >= IDADE_MAXIMA || sorte < chance.corpo) {
     morrer(e, c);
+    return;
+  }
+  if (sorte < chance.corpo + chance.violencia) {
+    morrer(e, c, { categoria: 'violencia', sortear: true });
     return;
   }
   regraDoAmor(e, c);

@@ -99,11 +99,7 @@ export function derivaAparencia(idade: number): number {
   return -0.6;
 }
 
-/** Inflação anual sorteada: média de 4,5%; as fases do ciclo (mundo.json) somam ou tiram. */
-export const INFLACAO_MEDIA = 0.045;
-export const INFLACAO_DESVIO = 0.02;
-
-/** Juros nominais anuais da dívida (cartão, cheque especial, financiamento). */
+/** Juros nominais anuais da dívida (cartão, cheque especial) com a Selic em JUROS_MEDIOS; andam junto com ela. */
 export const JUROS_DIVIDA = 0.22;
 
 /**
@@ -290,3 +286,56 @@ export const DESCONTO_DA_DEPENDENCIA = 0.25;
  * sozinha: o freio vezes 1 + GARGALO_DO_DONO × (dependência − 0,5). Com dependência de 50%, é o freio de sempre.
  */
 export const GARGALO_DO_DONO = 0.8;
+
+// ---- o país vivo (incremento 8: estatísticas que andam, governos que se alternam, políticas que mudam a vida)
+
+/** O crescimento (% do PIB ao ano) para onde a economia volta, com as políticas médias e as contas em ordem. */
+export const CRESCIMENTO_POTENCIAL = 2;
+/** Quanto do desvio do crescimento fica para o ano seguinte, e a sorte do ano (pontos percentuais). */
+export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
+export const DESVIO_DO_CRESCIMENTO = 1.15;
+/** A fase do ciclo é o nome do crescimento: a partir de quanto é expansão, normal e recessão (abaixo, crise). */
+export const LIMITES_DAS_FASES = { expansao: 4, normal: -0.5, recessao: -2.5 } as const;
+/** Para sair de uma fase, o crescimento precisa passar do limite com esta folga (sem ela, o país trocava de fase a cada ano). */
+export const FOLGA_DAS_FASES = { expansao: 1, recessao: 0.5, crise: 0.5 } as const;
+/** Choques de fora, por ano: a crise lá fora (tira crescimento e põe inflação) e a alta das commodities. */
+export const CHANCE_CRISE_DE_FORA = 0.05;
+export const CHOQUE_DA_CRISE = -3;
+export const INFLACAO_DA_CRISE = 2.5;
+export const CHANCE_BOOM = 0.03;
+export const CHOQUE_DO_BOOM = 2;
+/** Desemprego (%) com a economia no potencial; a inflação que o Banco Central persegue; o juro real neutro. */
+export const DESEMPREGO_NATURAL = 8.5;
+export const META_DE_INFLACAO = 4.5;
+export const JURO_REAL_NEUTRO = 4;
+/** A Selic média (%) do modelo: com ela, a dívida de quem joga paga JUROS_DIVIDA. */
+export const JUROS_MEDIOS = 9.2;
+/** A dívida pública (% do PIB) para onde as contas puxam: acima dela, o mercado cobra e quem governa corta. */
+export const DIVIDA_DE_EQUILIBRIO = 75;
+export const REACAO_FISCAL = 0.05;
+/** No ano da eleição, o governo abre os cofres (empurrão na economia). */
+export const IMPULSO_ELEITORAL = 0.5;
+/** Quanto do empurrão de quem governa (pais.impulso) sobra no ano seguinte. */
+export const MEMORIA_DO_IMPULSO = 0.5;
+/** Chance de o governo ser reconduzido: a aprovação (0 a 1) mais isto, entre os limites. */
+export const VANTAGEM_DE_QUEM_GOVERNA = 0.05;
+export const LIMITES_DA_RECONDUCAO = [0.15, 0.85] as const;
+/** Peso do voto de quem joga (com amigos e família que vão atrás): o mínimo, mais a influência dividida por isto. */
+export const PESO_DO_VOTO = 0.04;
+export const INFLUENCIA_POR_VOTO = 250;
+/** Renda anual abaixo da qual a pessoa é pobre: não paga o imposto de renda e recebe o auxílio. */
+export const LINHA_DA_POBREZA = 24000;
+/** A saúde pública pesa na mortalidade de quem depende dela (classe até 4): (50 − índice) / isto. */
+export const PESO_DA_SAUDE_PUBLICA = 120;
+/** Homicídios por 100 mil, vezes o perfil de idade e gênero, é a chance anual de morrer de violência. */
+export const PERFIL_DA_VIOLENCIA: readonly [number, number, number][] = [
+  [15, 24, 2],
+  [25, 34, 1.5],
+  [35, 44, 0.9],
+  [45, 59, 0.45],
+];
+export const VIOLENCIA_POR_GENERO = { m: 1.5, f: 0.3 } as const;
+/** Quem é rico (classe 5 ou mais) tem carro blindado e condomínio: a violência pesa isto. */
+export const VIOLENCIA_DOS_RICOS = 0.4;
+/** A escola pública (classe de origem até 3) soma à inteligência, dos 6 aos 17, (índice − 50) / isto por ano. */
+export const PESO_DA_ESCOLA_PUBLICA = 40;

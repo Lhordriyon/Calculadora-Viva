@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { carregarConteudo, lerFontes } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
 import { acoesPossiveis } from '../src/motor/acoes.ts';
-import { defFase } from '../src/motor/ciclo.ts';
+import { momentoTipico, TIPICO } from '../src/motor/pais.ts';
 import { ler, parteNaEmpresa, patrimonioDe, patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
@@ -86,7 +86,7 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     const antes = e.entidades['eu']!.n['dinheiro']!;
     e.rng = criarRng(3);
     const reg: Mudanca[] = [];
-    regraDaEmpresa(e, c, defFase(c, 'normal'), reg);
+    regraDaEmpresa(e, c, momentoTipico('normal'), reg);
     const pago = (e.entidades['eu']!.n['dinheiro'] ?? 0) - antes;
     expect(pago).toBeGreaterThan(0);
     expect(pago).toBeCloseTo((emp.n['valor']! / 0.92) * 0.08 * 0.75, -1);
@@ -98,12 +98,13 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 100000 });
     const nome = empresaDe(e)!.nome;
     ganhar(e, [], 'pais', 'crise', null);
+    Object.assign(e.entidades['pais']!.n, TIPICO.crise);
     const antes = e.entidades['eu']!.n['dinheiro'] ?? 0;
     // Aberta por quem joga, sem sócios: depende 80% dele, e quem compra desconta um quarto disso.
     expect(descontoDaDependencia(e)).toBeCloseTo(DESCONTO_DA_DEPENDENCIA * 0.8);
     const venda = operar(e, c, { tipo: 'vender' });
     const recebido = (e.entidades['eu']!.n['dinheiro'] ?? 0) - antes;
-    expect(recebido).toBeCloseTo(100000 * precoDeVenda(defFase(c, 'crise').empresa) * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
+    expect(recebido).toBeCloseTo(100000 * precoDeVenda(momentoTipico('crise').empresa) * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
     expect(recebido).toBeLessThan(100000);
     expect(empresaDe(e)).toBeUndefined();
     expect(e.entidades['empresa']!.nome).toBe(nome);
@@ -125,7 +126,7 @@ describe('o ano da empresa', () => {
         e.rng = criarRng(misturar(9, i));
         for (let ano = 0; ano < 15 && empresaDe(e); ano++) {
           if (dedicacao) efeitos(e, { 'empresa.tracao': 1.5 });
-          regraDaEmpresa(e, c, defFase(c, 'normal'), []);
+          regraDaEmpresa(e, c, momentoTipico('normal'), []);
         }
         total += Math.log(Math.max(1000, parteNaEmpresa(e)));
       }
@@ -138,7 +139,7 @@ describe('o ano da empresa', () => {
     const e = adulto();
     const abertura = operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 });
     empresaDe(e)!.n['valor'] = PISO_EMPRESA / 10;
-    regraDaEmpresa(e, c, defFase(c, 'crise'), []);
+    regraDaEmpresa(e, c, momentoTipico('crise'), []);
     expect(e.agenda).toContainEqual({ evento: 'empresa_quebrou', ano: e.ano, origem: abertura.id });
   });
 
@@ -149,7 +150,7 @@ describe('o ano da empresa', () => {
         const e = adulto(misturar(11, i));
         operar(e, c, { tipo: 'abrir', setor, valor: 100000 });
         e.rng = criarRng(misturar(13, i));
-        regraDaEmpresa(e, c, defFase(c, 'crise'), []);
+        regraDaEmpresa(e, c, momentoTipico('crise'), []);
         soma += empresaDe(e)?.n['lucro'] ?? -100000;
       }
       return soma / 400;

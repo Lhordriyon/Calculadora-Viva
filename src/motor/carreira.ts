@@ -8,7 +8,7 @@
  */
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
-import { defFase, faseDe } from './ciclo.ts';
+import { momentoDoPais } from './pais.ts';
 import type { DefCarreira } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { PIRAMIDE, PIRAMIDE_DA_FAMA } from './regras.ts';
@@ -49,9 +49,9 @@ export function nomeDoCargo(def: DefCarreira, nivel: number, genero: Genero | un
 }
 
 /** Chance de passar na seleção: a base da profissão, o talento e o desemprego da fase. */
-export function chanceDeEntrar(e: EstadoVida, c: Conteudo, def: DefCarreira): number {
+export function chanceDeEntrar(e: EstadoVida, def: DefCarreira): number {
   const talento = e.entidades['eu']!.n[def.talento] ?? 50;
-  const fase = defFase(c, faseDe(e));
+  const fase = momentoDoPais(e);
   return Math.min(0.95, Math.max(0.02, (def.chance * (1 + (talento - 55) / 60)) / Math.sqrt(fase.desemprego)));
 }
 
@@ -100,7 +100,7 @@ export function operarCarreira(e: EstadoVida, c: Conteudo, op: OperacaoCarreira,
   }
   const def = defCarreira(c, op.carreira)!;
   const nome = noGenero(def.nome, eu.genero);
-  if (aleatorio(e.rng) >= chanceDeEntrar(e, c, def)) {
+  if (aleatorio(e.rng) >= chanceDeEntrar(e, def)) {
     return { texto: `Tentou uma vaga de ${nome} e não passou. Ano que vem tem outra seleção.`, resumo: `tentou ser ${nome} e não passou` };
   }
   largarEmprego(e, reg);

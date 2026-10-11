@@ -15,9 +15,10 @@ import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
 import { chanceDeEleicao } from './poder.ts';
+import { governoAtual, nivelDe } from './pais.ts';
 import { bensDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PADROES, PERFIS, RETIRADAS, VERBOS, type Verbo } from './constantes.ts';
+import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Politica, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
 import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
@@ -240,7 +241,14 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   }
   const daEmpresa = decidirEmpresa(estrategia, e, c, rng);
   ops.push(...daEmpresa);
-  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng), ...decidirJogada(estrategia, e, c, rng), ...decidirQuemManda(estrategia, e, c, rng));
+  ops.push(
+    ...decidirCarreira(estrategia, e, c, rng),
+    ...decidirPoder(estrategia, e, c, rng),
+    ...decidirGoverno(estrategia, e, c, rng),
+    ...decidirBens(estrategia, e, c, rng),
+    ...decidirJogada(estrategia, e, c, rng),
+    ...decidirQuemManda(estrategia, e, c, rng),
+  );
   // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência).
   if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < 0.03) {
     const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
@@ -282,11 +290,11 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
     if (aleatorio(rng) < (atual ? 0.06 : 0.25)) alvo = sortear(rng, vagas);
   } else if (estrategia === 'cautelosa') {
     if (!atual || (eu.n['nivel'] ?? 0) >= atual.cargos.length - 1) {
-      const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, c, k) * salarioDoCargo(k, 1) * (k.estavel ? 1.4 : 1);
+      const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, k) * salarioDoCargo(k, 1) * (k.estavel ? 1.4 : 1);
       alvo = [...vagas].sort((a, b) => nota(b) - nota(a))[0];
     }
   } else if (!atual?.fama && e.idade <= 40) {
-    const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, c, k) * k.salario[1];
+    const nota = (k: (typeof vagas)[number]) => chanceDeEntrar(e, k) * k.salario[1];
     alvo = [...vagas].sort((a, b) => nota(b) - nota(a))[0];
   }
   if (!alvo) return [];
@@ -296,6 +304,32 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
 }
 
 /** Eleições: a arriscada disputa o cargo mais alto com chance razoável; a cautelosa, só o que é quase certo; a aleatória, às vezes. */
+/**
+ * Quem governa o país, uma reforma por ano. A cautelosa governa com as contas em ordem: imposto médio, saúde e
+ * escola caprichadas, e sobe o imposto ou corta o social quando a dívida passa de 90% do PIB. A arriscada é
+ * populista: imposto baixo, programa social amplo e polícia na rua (a conta fica para depois). A aleatória
+ * mexe numa política sorteada de vez em quando.
+ */
+const GOVERNO_DOS_ROBOS: Record<'cautelosa' | 'arriscada', Record<Politica, number>> = {
+  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1 },
+  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2 },
+};
+
+function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (estrategia === 'primeira' || governoAtual(e) !== 'voce') return [];
+  if (estrategia === 'aleatoria') {
+    if (aleatorio(rng) >= 0.35) return [];
+    const op: Operacao = { tipo: 'politica', politica: sortear(rng, POLITICAS), nivel: sortear(rng, [0, 1, 2]) };
+    return pode(e, c, op) ? [op] : [];
+  }
+  const alvo = { ...GOVERNO_DOS_ROBOS[estrategia] };
+  if (estrategia === 'cautelosa' && (e.entidades['pais']?.n['divida'] ?? 0) > 90) Object.assign(alvo, { impostos: 2, social: 0 });
+  const politica = POLITICAS.find((p) => nivelDe(e, p) !== alvo[p]);
+  if (!politica) return [];
+  const op: Operacao = { tipo: 'politica', politica, nivel: alvo[politica] };
+  return pode(e, c, op) ? [op] : [];
+}
+
 function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   if (e.idade < 18 || estrategia === 'primeira') return [];
   const liquido = liquidoDe(e);

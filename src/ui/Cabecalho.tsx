@@ -1,5 +1,5 @@
 import { conteudo } from '../conteudo.ts';
-import { defFase, faseDe } from '../motor/ciclo.ts';
+import { defFase, faseDe } from '../motor/pais.ts';
 import { investidoDe, parteNaEmpresa, valorDosBens } from '../motor/campos.ts';
 import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
 import { cargoDe } from '../motor/poder.ts';

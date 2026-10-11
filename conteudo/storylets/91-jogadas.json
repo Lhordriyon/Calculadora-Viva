@@ -914,13 +914,18 @@
       "patrimonio": {
         "min": 200000000000.0
       },
-      "algumaMarca": [
-        "pais.recessao",
-        "pais.crise"
-      ]
+      "pais.crescimento": {
+        "max": 1
+      }
     },
     "intervalo": 10,
-    "texto": "O país está em [crise|recessão] e o ministro da Fazenda pediu uma reunião. Com você, não com o banco central.",
+    "trechos": {
+      "rumo": [
+        { "se": { "pais.crescimento": { "max": -0.5 } }, "texto": "encolhe" },
+        { "texto": "patina" }
+      ]
+    },
+    "texto": "A economia do país {rumo} ({pais.crescimento}% no ano, desemprego de {pais.desemprego}%) e o ministro da Fazenda pediu uma reunião. Com você, não com o banco central.",
     "resumo": "decidiu o que fazer com o país em crise",
     "escolhas": [
       {
@@ -972,6 +977,13 @@
               "em": [
                 2,
                 4
+              ]
+            },
+            {
+              "evento": "dono_do_brasil",
+              "em": [
+                1,
+                2
               ]
             }
           ]

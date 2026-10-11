@@ -12,7 +12,7 @@ import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
-import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR } from './manifesto.ts';
+import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 import { analisarModelo, comprimentoMaximo } from './texto.ts';
@@ -181,6 +181,7 @@ function valoresDe(c: Conteudo, ent: string, campo: string): Set<string> | null 
   if (campo === 'perfil') return new Set(PERFIS);
   if (campo === 'familia') return new Set(TIPOS_FAMILIA);
   if (campo === 'cargo') return new Set(['', ...c.mundo.cargos.map((x) => x.id)]);
+  if (campo === 'governo') return new Set(['voce', ...c.mundo.governos.map((x) => x.id)]);
   if (campo === 'carreira') return new Set(['', ...c.mundo.carreiras.map((x) => x.id)]);
   if (campo === 'testamento') return new Set<string>(DESTINOS);
   if (campo === 'traco') return new Set(ent === 'eu' ? c.mundo.tracosJogador.map((t) => t.id) : c.mundo.tracos.map((t) => t.id));
@@ -210,6 +211,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   // ---- o que o motor escreve e lê
   for (const caminho of ESCRITAS_DO_MOTOR) for (const k of chavesDoManifesto(caminho)) escrever(k, 'motor');
   for (const l of LEITURAS_DO_MOTOR) for (const k of chavesDoManifesto(l.caminho)) ler(k, { sistema: 'motor', decide: l.decide, onde: `motor › ${l.regra}` });
+  for (const k of VOTOS(c.mundo.governos)) ler(k, { sistema: 'motor', decide: true, onde: 'motor › eleição: o voto de quem joga pesa no resultado' });
   for (const cidade of c.mundo.cidades) for (const m of cidade.marcas) escrever(`lugar.${m}`, `mundo.json › ${cidade.nome}`);
   // Catálogos: quem compra um bem ganha a qualidade dele; quem nasce numa linhagem, as dela (e o pai ou a mãe, a do papel).
   for (const b of c.mundo.bens) escrever(`eu.${b.marca}`, `mundo.json › bens › ${b.id}`);

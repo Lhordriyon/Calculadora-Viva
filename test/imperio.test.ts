@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { defFase } from '../src/motor/ciclo.ts';
+import { momentoTipico } from '../src/motor/pais.ts';
 import { operar } from '../src/motor/carteira.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
 import { dependenciaDe, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
@@ -49,7 +49,7 @@ describe('quem manda na empresa', () => {
       const e = dono(1_000_000, 9, { inteligencia });
       e.entidades['empresa']!.n['dependencia'] = dependencia;
       e.entidades['empresa']!.n['tracao'] = 0;
-      regraDaEmpresa(e, c, defFase(c, 'normal'), []);
+      regraDaEmpresa(e, c, momentoTipico('normal'), []);
       return e.entidades['empresa']!.n['tracao']!;
     };
     // A mesma semente sorteia a mesma sorte: a diferença é só a regra.

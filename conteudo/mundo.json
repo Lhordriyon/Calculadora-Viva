@@ -896,13 +896,6 @@
     {
       "id": "normal",
       "nome": "",
-      "peso": 62,
-      "transicoes": { "expansao": 0.06, "recessao": 0.05 },
-      "inflacao": 0,
-      "retorno": 0,
-      "desemprego": 1,
-      "salario": 0.005,
-      "empresa": 0,
       "textos": [
         "A economia voltou ao normal, seja lá o que isso signifique. [O jornal parou de usar a palavra \"crise\".|O desemprego caiu um pouco; o preço do café, nada.|Os economistas já discordam sobre o ano que vem.]",
         "A economia esfriou. [Os anúncios de vaga ficaram mais modestos.|O shopping voltou a ter vaga no estacionamento.|Ninguém mais fala em \"oportunidade imperdível\".]",
@@ -913,58 +906,174 @@
     {
       "id": "expansao",
       "nome": "economia aquecida",
-      "peso": 21,
-      "transicoes": { "normal": 0.17, "recessao": 0.04 },
-      "inflacao": 0.01,
-      "retorno": 0.04,
-      "desemprego": 0.65,
-      "salario": 0.025,
-      "empresa": 0.06,
       "textos": [
         "O país entrou num ciclo de crescimento. [Tem placa de \"contrata-se\" em toda esquina.|O shopping abriu outra ala e a fila do restaurante dobrou.|Todo mundo que você conhece trocou de emprego, para melhor.]",
         "A economia acelerou. [Guindaste no horizonte virou paisagem.|O crédito ficou fácil e as concessionárias, cheias.|Até o tio pessimista admitiu que \"as coisas melhoraram\".]"
+      ],
+      "choque": [
+        "O preço das commodities disparou lá fora [e o dinheiro entrou pelo porto: soja, minério e petróleo valendo ouro.|e o interior do país virou canteiro de obras.|e até a cidade pequena ganhou concessionária nova.]"
       ],
       "resumo": "o país entrou num ciclo de crescimento"
     },
     {
       "id": "recessao",
       "nome": "recessão",
-      "peso": 13,
-      "transicoes": { "normal": 0.28, "crise": 0.15, "expansao": 0.02 },
-      "inflacao": 0.005,
-      "retorno": -0.05,
-      "desemprego": 1.6,
-      "salario": -0.01,
-      "empresa": -0.07,
       "textos": [
         "O país entrou em recessão. [As lojas do centro começaram a fechar mais cedo.|A palavra \"corte\" apareceu em todas as reuniões.|O jornal da noite agora tem um gráfico vermelho fixo.]",
         "A economia encolheu dois trimestres seguidos, e os economistas finalmente concordaram em alguma coisa: recessão. [Vaga de emprego virou notícia.|O mercado do bairro trocou a marca do arroz.|O grupo da família começou a mandar dica de economia doméstica.]"
+      ],
+      "choque": [
+        "A crise lá fora chegou aqui: [as encomendas do exterior sumiram e a economia encolheu.|o dólar subiu, o crédito secou e o país entrou em recessão.]"
       ],
       "resumo": "o país entrou em recessão"
     },
     {
       "id": "crise",
       "nome": "crise",
-      "peso": 4,
-      "transicoes": { "recessao": 0.35, "normal": 0.15 },
-      "inflacao": 0.06,
-      "retorno": -0.12,
-      "desemprego": 2.4,
-      "salario": -0.03,
-      "empresa": -0.18,
       "textos": [
         "A recessão virou crise: [a inflação disparou e o mercado remarca o preço duas vezes por semana.|fábricas fecharam turnos e o desemprego bateu recorde.|o dinheiro guardado parece derreter na conta.]",
         "Crise. [Fila de emprego dobrando o quarteirão, juros nas alturas e o dólar fazendo o que quer.|O governo anunciou um pacote de medidas que ninguém entendeu.|Até a feira de domingo diminuiu.]"
       ],
+      "choque": [
+        "Uma crise lá fora derrubou as bolsas do mundo inteiro, e o Brasil foi junto. [O dólar disparou e o pãozinho veio atrás.|As fábricas cortaram turnos antes do Natal.|O noticiário aprendeu o nome de um banco estrangeiro.]",
+        "O mundo espirrou e o Brasil pegou pneumonia: [a crise de fora chegou com juros altos, dólar nas alturas e demissão.|a exportação parou e o porto encheu de contêiner vazio.]"
+      ],
       "resumo": "o país mergulhou numa crise econômica"
+    }
+  ],
+  "politicas": [
+    {
+      "id": "impostos",
+      "nome": "Impostos",
+      "niveis": ["baixos", "médios", "altos"],
+      "descricao": "Mais imposto paga a conta do governo e segura a dívida; tira o fôlego da economia, do seu salário e da popularidade de quem governa.",
+      "efeitos": {
+        "receita": [-3, 0, 3],
+        "potencial": [0.5, 0, -0.5],
+        "aprovacao": [3, 0, -5],
+        "renda": [0.04, 0, -0.04]
+      },
+      "subir": {
+        "texto": "A arrecadação sobe e a dívida agradece; a sua popularidade, não.",
+        "resumo": "subiu os impostos"
+      },
+      "baixar": {
+        "texto": "Sobra mais no bolso de todo mundo e menos no caixa do governo.",
+        "resumo": "cortou os impostos"
+      }
+    },
+    {
+      "id": "social",
+      "nome": "Programas sociais",
+      "niveis": ["mínimos", "médios", "amplos"],
+      "descricao": "Dinheiro na mão de quem tem pouco: a pobreza cai, a violência vem atrás e o voto agradece. A conta vai para o orçamento.",
+      "efeitos": {
+        "gasto": [-1.5, 0, 1.5],
+        "pobreza": [6, 0, -6],
+        "aprovacao": [-2, 0, 3],
+        "auxilio": [0, 1800, 4800]
+      },
+      "subir": {
+        "texto": "Mais gente com o que comer no fim do mês; a oposição já fala em \"farra\".",
+        "resumo": "ampliou os programas sociais"
+      },
+      "baixar": {
+        "texto": "O orçamento respira. Nas periferias, o mês ficou mais comprido.",
+        "resumo": "cortou os programas sociais"
+      }
+    },
+    {
+      "id": "saude",
+      "nome": "Saúde pública",
+      "niveis": ["à míngua", "como dá", "caprichada"],
+      "descricao": "Posto que funciona e fila menor: quem depende do SUS vive mais. Custa caro e ninguém inaugura.",
+      "efeitos": { "gasto": [-1, 0, 1], "saude": [-15, 0, 15], "aprovacao": [-1, 0, 1] },
+      "subir": {
+        "texto": "Posto com médico e remédio na prateleira. Ninguém inaugura fila menor, mas todo mundo nota.",
+        "resumo": "pôs mais dinheiro na saúde pública"
+      },
+      "baixar": {
+        "texto": "A fila do posto vai crescer devagar, longe das câmeras.",
+        "resumo": "cortou a verba da saúde pública"
+      }
+    },
+    {
+      "id": "educacao",
+      "nome": "Educação pública",
+      "niveis": ["abandonada", "regular", "prioridade"],
+      "descricao": "Escola boa forma criança mais preparada e, devagar, um país que cresce e emprega mais. O resultado leva uma geração.",
+      "efeitos": { "gasto": [-1, 0, 1], "educacao": [-15, 0, 15] },
+      "subir": {
+        "texto": "Escola com professor e merenda. O resultado aparece daqui a uma geração, tarde demais para render voto.",
+        "resumo": "pôs a educação pública como prioridade"
+      },
+      "baixar": {
+        "texto": "A conta fecha hoje; a de amanhã vai chegar em forma de gente menos preparada.",
+        "resumo": "cortou a verba da educação pública"
+      }
+    },
+    {
+      "id": "seguranca",
+      "nome": "Segurança",
+      "niveis": ["frouxa", "regular", "linha dura"],
+      "descricao": "Mais polícia na rua derruba a violência e agrada nas pesquisas; custa dinheiro, como tudo.",
+      "efeitos": { "gasto": [-0.7, 0, 0.7], "violencia": [8, 0, -8], "aprovacao": [-1, 0, 2] },
+      "subir": {
+        "texto": "Viatura em toda esquina e a violência caindo. Custa caro, mas dá foto.",
+        "resumo": "endureceu a segurança pública"
+      },
+      "baixar": {
+        "texto": "Menos viatura na rua. O crime agradece a economia.",
+        "resumo": "afrouxou a segurança pública"
+      }
+    }
+  ],
+  "governos": [
+    {
+      "id": "frente_popular",
+      "nome": "a frente popular",
+      "promessa": "comida no prato, posto de saúde e escola boa, pagos por quem pode mais",
+      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1 },
+      "eleito": true
+    },
+    {
+      "id": "bloco_liberal",
+      "nome": "o bloco liberal",
+      "promessa": "menos imposto, menos Estado e a economia andando com as próprias pernas",
+      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1 },
+      "eleito": true
+    },
+    {
+      "id": "alianca_da_ordem",
+      "nome": "a aliança da ordem",
+      "promessa": "polícia na rua, contas em dia e o resto depois",
+      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2 },
+      "eleito": true
+    },
+    {
+      "id": "centrao",
+      "nome": "o centrão",
+      "promessa": "um pouco de tudo para todo mundo, desde que sobrem cargos",
+      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1 },
+      "gasto": 1,
+      "aprovacao": 4,
+      "eleito": true
+    },
+    {
+      "id": "regime",
+      "nome": "o regime",
+      "promessa": "ordem, progresso e nenhuma pergunta",
+      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2 },
+      "eleito": false
     }
   ],
   "ativos": [
     {
       "id": "renda_fixa",
       "nome": "Renda fixa",
-      "retorno": { "normal": 0.035, "expansao": 0.025, "recessao": 0.05, "crise": 0.07 },
-      "desvio": 0.01
+      "retorno": { "normal": 0.032, "expansao": 0.027, "recessao": 0.037, "crise": 0.042 },
+      "desvio": 0.01,
+      "juros": 1
     },
     {
       "id": "acoes",
@@ -981,7 +1090,7 @@
     {
       "id": "dolar",
       "nome": "Dólar",
-      "retorno": { "normal": 0.0, "expansao": -0.06, "recessao": 0.07, "crise": 0.22 },
+      "retorno": { "normal": 0, "expansao": -0.06, "recessao": 0.07, "crise": 0.22 },
       "desvio": 0.08
     },
     {
@@ -2231,7 +2340,8 @@
       "salario": 550000,
       "mandato": 4,
       "poder": 50,
-      "onde": "do Brasil"
+      "onde": "do Brasil",
+      "governa": true
     },
     {
       "id": "rei",
@@ -2244,7 +2354,8 @@
       "salario": 4000000,
       "mandato": 0,
       "poder": 45,
-      "onde": "do Brasil"
+      "onde": "do Brasil",
+      "governa": true
     },
     {
       "id": "ditador",
@@ -2257,7 +2368,8 @@
       "salario": 6000000,
       "mandato": 0,
       "poder": 60,
-      "onde": "do Brasil"
+      "onde": "do Brasil",
+      "governa": true
     },
     {
       "id": "soberano",

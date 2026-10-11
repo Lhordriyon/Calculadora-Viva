@@ -104,7 +104,7 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const lucro = n['lucro'] ?? 0;
   const aporte: Operacao = { tipo: 'aportar', valor };
   const motivoAporte = motivoParaNaoOperar(vida, conteudo, aporte);
-  const venda = vendaDaParte(vida, conteudo);
+  const venda = vendaDaParte(vida);
   const preco = venda.preco;
   const dependencia = n['dependencia'] ?? 0;
   const naEmpresa = jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s));

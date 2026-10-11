@@ -3,7 +3,6 @@ import { carregarConteudo } from '../scripts/disco.ts';
 import { mercadoDoAno } from '../src/motor/carteira.ts';
 import { acertarCaixa, economiaDoAno, movimentar } from '../src/motor/economia.ts';
 import { GASTO_DA_SOBRA, GASTO_VELHICE, gastoDaVelhice } from '../src/motor/regras.ts';
-import { criarRng } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { nascer } from '../src/motor/vida.ts';
 
@@ -18,17 +17,16 @@ function pessoa(semente: number, idade: number, n: Record<string, number>): Esta
 
 describe('economia', () => {
   it('a inflação come dinheiro parado; investimento rende; dívida cresce', () => {
-    const rng = criarRng(4);
     let encolheu = 0;
     let rendeu = 0;
     let cresceu = 0;
     for (let i = 0; i < 200; i++) {
       const e = pessoa(i, 10, { dinheiro: 10000, renda_fixa: 10000 });
-      economiaDoAno(e, rng, [], undefined, mercadoDoAno(e, c, 'normal', []));
+      economiaDoAno(e, [], undefined, mercadoDoAno(e, c, 'normal', []));
       if (e.entidades['eu']!.n['dinheiro']! < 10000) encolheu++;
       if (e.entidades['eu']!.n['renda_fixa']! > 10000) rendeu++;
       const d = pessoa(i, 10, { divida: 10000 });
-      economiaDoAno(d, rng, []);
+      economiaDoAno(d, []);
       if (d.entidades['eu']!.n['divida']! > 10000) cresceu++;
     }
     expect(encolheu).toBe(200);
@@ -39,7 +37,7 @@ describe('economia', () => {
   it('adulto recebe a sobra do ano menos o padrão de vida, e tudo vai para o livro', () => {
     const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
     const reg: Mudanca[] = [];
-    economiaDoAno(e, criarRng(1), reg);
+    economiaDoAno(e, reg);
     expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
     expect(reg.find((m) => m.c === 'eu.dinheiro')?.d).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
     expect(reg.every((m) => m.r === 'economia')).toBe(true);
@@ -49,7 +47,7 @@ describe('economia', () => {
     const guardado = (padrao: string): number => {
       const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
       e.entidades['eu']!.t['padrao'] = padrao;
-      economiaDoAno(e, criarRng(1), []);
+      economiaDoAno(e, []);
       return e.entidades['eu']!.n['dinheiro']!;
     };
     expect(guardado('simples')).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.simples), 0);
@@ -57,10 +55,10 @@ describe('economia', () => {
     expect(guardado('simples')).toBeGreaterThan(guardado('confortavel'));
     expect(guardado('confortavel')).toBeGreaterThan(guardado('luxo'));
     // quem deve aperta o cinto, mesmo no luxo
-    const devendo = pessoa(1, 30, { renda: 40000, custo: 20000, divida: 100000 });
+    const devendo = pessoa(1, 30, { renda: 40000, custo: 20000, divida: 50000 });
     devendo.entidades['eu']!.t['padrao'] = 'luxo';
     const antes = devendo.entidades['eu']!.n['divida']!;
-    economiaDoAno(devendo, criarRng(1), []);
+    economiaDoAno(devendo, [], { inflacao: 0.045 });
     expect(devendo.entidades['eu']!.n['divida']!).toBeLessThan(antes);
   });
 
@@ -73,13 +71,13 @@ describe('economia', () => {
 
   it('depois dos 65, a velhice consome parte do patrimônio', () => {
     const e = pessoa(2, 70, { renda_fixa: 1_000_000, renda: 18000, custo: 10000 });
-    economiaDoAno(e, criarRng(2), [], undefined, { renda_fixa: 0.04 });
+    economiaDoAno(e, [], undefined, { renda_fixa: 0.04 });
     const n = e.entidades['eu']!.n;
     const patrimonio = n['dinheiro']! + n['renda_fixa']! - n['divida']!;
     // rende ~4% e gasta 4%: fica perto de onde estava, nunca cresce como antes dos 65
     expect(patrimonio).toBeLessThan(1_000_000 * (1 + 0.2) - 1_000_000 * GASTO_VELHICE);
     const jovem = pessoa(2, 40, { renda_fixa: 1_000_000, renda: 18000, custo: 10000 });
-    economiaDoAno(jovem, criarRng(2), [], undefined, { renda_fixa: 0.04 });
+    economiaDoAno(jovem, [], undefined, { renda_fixa: 0.04 });
     const nj = jovem.entidades['eu']!.n;
     expect(nj['dinheiro']! + nj['renda_fixa']!).toBeGreaterThan(patrimonio);
   });

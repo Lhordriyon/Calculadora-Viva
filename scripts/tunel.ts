@@ -13,7 +13,7 @@ import { carregarConteudo, RAIZ } from './disco.ts';
 import { classeDoPatrimonio, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
-import { cicloDoAno, faseDe } from '../src/motor/ciclo.ts';
+import { anoDoPais, faseDe } from '../src/motor/pais.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
 import { mercadoDoAno, motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
@@ -655,7 +655,7 @@ const laboratorio = PERFIS_TUNEL.map((perfil) => {
     for (let ano = 0; ano < 30; ano++) {
       e.idade++;
       e.ano++;
-      const fase = cicloDoAno(e, c);
+      const fase = anoDoPais(e, c, []);
       const r = mercadoDoAno(e, c, fase.id, []);
       total = ATIVOS.reduce((soma, a) => soma + total * (pesos[a] ?? 0) * (1 + (r[a] ?? 0)), 0);
     }

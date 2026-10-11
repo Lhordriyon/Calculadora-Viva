@@ -14,7 +14,8 @@ import { statusDosBens } from './bens.ts';
 import { noGenero, largarEmprego, tentouEsteAno } from './carreira.ts';
 import type { Conteudo } from './conteudo.ts';
 import { liquidoDe, tirarDeQuemJoga } from './empresa.ts';
-import type { DefCargo, DefFase } from './esquema.ts';
+import type { DefCargo } from './esquema.ts';
+import type { Momento } from './pais.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, somar } from './livro.ts';
 import { influenciaDoPatrimonio, POPULARIDADE_CRITICA, RITMO_INFLUENCIA, RITMO_POPULARIDADE } from './regras.ts';
 import { aleatorio, normal } from './rng.ts';
@@ -123,20 +124,18 @@ export function influenciaAlvo(e: EstadoVida, c: Conteudo): number {
 
 const BONUS_DA_FASE: Record<string, number> = { normal: 0, expansao: 10, recessao: -10, crise: -20 };
 
-/** O ano do poder: influência e popularidade andam, o mandato corre, o empurrão no país se desfaz. */
-export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: DefFase, reg: Mudanca[]): void {
+/** O ano do poder: influência e popularidade andam, o mandato corre. */
+export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
-  const pais = e.entidades['pais']!;
-  const impulso = pais.n['impulso'] ?? 0;
-  if (Math.abs(impulso) >= 0.05) somar(e, reg, 'pais', 'impulso', -impulso * 0.5, 'poder');
   if (e.idade < 14) return;
   const inf = eu.n['influencia'] ?? 0;
   const alvo = influenciaAlvo(e, c);
   if (Math.abs(alvo - inf) >= 0.3) somar(e, reg, 'eu', 'influencia', (alvo - inf) * RITMO_INFLUENCIA, 'poder');
   const def = cargoDe(e, c);
   if (!def) return;
+  // Quem governa o país tem a aprovação do governo como popularidade (pais.ts); os outros cargos sentem a fase.
   const pop = eu.n['popularidade'] ?? 50;
-  somar(e, reg, 'eu', 'popularidade', (50 + (BONUS_DA_FASE[fase.id] ?? 0) - pop) * RITMO_POPULARIDADE + normal(e.rng, 0, 3), 'poder');
+  if (!def.governa) somar(e, reg, 'eu', 'popularidade', (50 + (BONUS_DA_FASE[fase.id] ?? 0) - pop) * RITMO_POPULARIDADE + normal(e.rng, 0, 3), 'poder');
   if ((eu.n['popularidade'] ?? 50) < POPULARIDADE_CRITICA && c.porId.has('queda_do_cargo') && !e.agenda.some((a) => a.evento === 'queda_do_cargo')) {
     e.agenda.push({ evento: 'queda_do_cargo', ano: e.ano, origem: eu.q['politico']?.causa ?? eu.q['monarca']?.causa ?? eu.q['ditador']?.causa ?? null });
   }

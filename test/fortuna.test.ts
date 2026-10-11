@@ -31,10 +31,11 @@ describe('brincar de deus', () => {
     expect(ids(adulto(3e9))).toEqual(expect.arrayContaining(['fundacao', 'bancar_presidente', 'pix_para_a_cidade']));
     expect(ids(adulto(3e9))).not.toContain('colonia_em_marte');
     expect(ids(adulto(2e12))).toEqual(expect.arrayContaining(['colonia_em_marte', 'fundar_um_pais', 'fundar_uma_cidade']));
-    // Salvar o país só existe com o país em recessão ou crise.
+    // Salvar o país só existe com a economia patinando (crescimento de até 1% no ano).
     const rico = adulto(2e12);
+    rico.entidades['pais']!.n['crescimento'] = 3;
     expect(ids(rico)).not.toContain('salvar_o_pais');
-    rico.entidades['pais']!.q['crise'] = { v: 1, ano: rico.ano, idade: rico.idade, causa: null };
+    rico.entidades['pais']!.n['crescimento'] = -2;
     expect(ids(rico)).toContain('salvar_o_pais');
   });
 

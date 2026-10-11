@@ -11,8 +11,7 @@
  * de déficit (storylet agendado cuja causa é a escolha que subiu o padrão).
  */
 import type { Conteudo } from './conteudo.ts';
-import type { DefFase } from './esquema.ts';
-import { faseDe } from './ciclo.ts';
+import { faseDe, type Momento } from './pais.ts';
 import { patrimonioDe } from './campos.ts';
 import { somar } from './livro.ts';
 import { ANOS_DE_RESERVA, CHANCE_APERTO_NEGOCIO, DEMISSAO_JOGADOR, IDADE_APOSENTADORIA, VARIACAO_NEGOCIO } from './regras.ts';
@@ -30,7 +29,7 @@ function agendarJa(e: EstadoVida, c: Conteudo, evento: string, origem: number | 
   e.agenda.push({ evento, ano: e.ano, origem });
 }
 
-export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: DefFase, reg: Mudanca[]): void {
+export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
   const renda = eu.n['renda'] ?? 0;
   if (e.idade < 18 || e.idade >= IDADE_APOSENTADORIA || renda <= 0 || eu.q['aposentado']) return;

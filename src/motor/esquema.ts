@@ -14,6 +14,7 @@ import {
   PAPEIS,
   PERFIS,
   PAPEIS_NOVOS,
+  POLITICAS,
   TIPOS_FAMILIA,
   TIPOS_STORYLET,
   VERBOS,
@@ -360,6 +361,8 @@ export const CausaMorte = z.strictObject({
   idade: FaixaIdade.optional(),
   condicoes: Condicoes.optional(),
   peso: z.number().positive().optional(),
+  /** Só quando quem joga morre pela violência do país (pais.ts › riscoDeViolencia), nunca na morte do corpo. */
+  daViolencia: z.literal(true).optional(),
 });
 export type CausaMorte = z.infer<typeof CausaMorte>;
 export const ArquivoMortes = z.array(CausaMorte);
@@ -406,26 +409,18 @@ export type DefSetor = z.infer<typeof DefSetor>;
 export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu'] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 
-/** Uma fase do ciclo econômico: para onde vai no ano seguinte e o que muda na economia. */
+/**
+ * Uma fase do ciclo econômico, o nome do crescimento do país (pais.crescimento; os limites ficam em regras.ts).
+ * O que ela muda na economia sai das estatísticas do país (pais.ts › momentoDoPais), não daqui.
+ */
 export const DefFase = z.strictObject({
   id: z.enum(FASES),
   /** Como aparece no cabeçalho ("recessão"); vazio no normal. */
   nome: z.string(),
-  /** Peso no sorteio da fase em que a vida começa. */
-  peso: z.number().positive(),
-  /** Chance de passar a cada outra fase no ano (o resto fica). */
-  transicoes: z.partialRecord(z.enum(FASES), z.number().min(0).max(1)),
-  /** Somado à inflação média e ao rendimento real médio do ano (0,02 = 2 pontos). */
-  inflacao: z.number(),
-  retorno: z.number(),
-  /** Multiplica a chance de demissão (e divide a de recolocação). */
-  desemprego: z.number().positive(),
-  /** Variação real dos salários no ano (0,02 = +2%). */
-  salario: z.number(),
-  /** Somado ao crescimento das empresas no ano, multiplicado pelo quanto o setor sente o ciclo (−0,18 = a crise tira 18 pontos). */
-  empresa: z.number(),
   /** O que a linha do tempo conta quando o país entra nesta fase. */
   textos: z.array(z.string()).min(1),
+  /** Quando quem empurrou foi um choque de fora (a crise lá fora, o preço das commodities): no lugar dos textos. */
+  choque: z.array(z.string()).min(1).optional(),
   resumo: z.string().min(3),
 });
 export type DefFase = z.infer<typeof DefFase>;
@@ -436,6 +431,8 @@ export const DefAtivo = z.strictObject({
   nome: z.string(),
   retorno: z.strictObject({ normal: z.number(), expansao: z.number(), recessao: z.number(), crise: z.number() }),
   desvio: z.number().min(0).max(1),
+  /** Quanto o rendimento acompanha o juro real do país acima ou abaixo do neutro (1 = ponto a ponto; a renda fixa). */
+  juros: z.number().min(-2).max(2).optional(),
 });
 export type DefAtivo = z.infer<typeof DefAtivo>;
 
@@ -598,8 +595,53 @@ export const DefCargo = z.strictObject({
   poder: z.number().min(0).max(80),
   /** Onde: "de {cidade}", "do Brasil". */
   onde: z.string(),
+  /** Quem ocupa governa o país: escolhe as políticas (folha País) e a aprovação do governo é a sua popularidade. */
+  governa: z.boolean().optional(),
 });
 export type DefCargo = z.infer<typeof DefCargo>;
+
+/** O que uma política muda, por nível (baixo, médio, alto). Os números entram nas contas de pais.ts. */
+export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'renda', 'auxilio'] as const;
+export type EfeitoDePolitica = (typeof EFEITOS_DE_POLITICA)[number];
+
+/** Uma política do governo: três níveis, cada um com efeitos nas contas, nas estatísticas e no bolso de quem joga. */
+export const DefPolitica = z.strictObject({
+  id: z.enum(POLITICAS),
+  nome: z.string(),
+  /** O nome de cada nível ("baixos", "médios", "altos"). */
+  niveis: z.tuple([z.string(), z.string(), z.string()]),
+  /** Para a folha País: o que se ganha e o que se perde ao subir. */
+  descricao: z.string(),
+  efeitos: z.partialRecord(z.enum(EFEITOS_DE_POLITICA), z.tuple([z.number(), z.number(), z.number()])),
+  /** O que a reforma conta na linha do tempo, ao subir e ao baixar (o resumo completa "aos 52, você…"). */
+  subir: z.strictObject({ texto: z.string(), resumo: z.string() }),
+  baixar: z.strictObject({ texto: z.string(), resumo: z.string() }),
+});
+export type DefPolitica = z.infer<typeof DefPolitica>;
+
+/** Um governo possível: um bloco fictício e genérico, com as políticas que adota ao assumir. */
+export const DefGoverno = z.strictObject({
+  id,
+  /** Em minúsculas, com artigo: "a frente popular". */
+  nome: z.string().regex(/^(o|a|os|as) [a-zà-ú ]+$/, 'nome genérico em minúsculas, com artigo'),
+  /** O que o bloco promete na campanha (uma frase). */
+  promessa: z.string(),
+  /** Os níveis das políticas (0 a 2) que o bloco adota ao assumir. */
+  politicas: z.strictObject({
+    impostos: z.number().int().min(0).max(2),
+    social: z.number().int().min(0).max(2),
+    saude: z.number().int().min(0).max(2),
+    educacao: z.number().int().min(0).max(2),
+    seguranca: z.number().int().min(0).max(2),
+  }),
+  /** Gasto a mais (pontos do PIB): as emendas de quem negocia apoio. */
+  gasto: z.number().min(0).max(3).optional(),
+  /** Aprovação a mais (governabilidade). */
+  aprovacao: z.number().min(-10).max(10).optional(),
+  /** Sem eleição: só governa quando o país vive sob o regime. */
+  eleito: z.boolean(),
+});
+export type DefGoverno = z.infer<typeof DefGoverno>;
 
 /** Uma linhagem: começar a vida como herdeiro de uma coroa, de um regime, de gente famosa. */
 export const DefLinhagem = z.strictObject({
@@ -642,6 +684,10 @@ export const Mundo = z.strictObject({
   setores: z.array(DefSetor).min(6),
   /** O ciclo econômico do país, uma fase por id. */
   fases: z.array(DefFase).length(FASES.length),
+  /** As políticas do governo, uma por id. */
+  politicas: z.array(DefPolitica).length(POLITICAS.length),
+  /** Quem pode governar o país (blocos eleitos e o regime). */
+  governos: z.array(DefGoverno).min(3),
   ativos: z.array(DefAtivo).length(ATIVOS.length),
   perfis: z.array(DefPerfil).length(PERFIS.length),
   bens: z.array(DefBem).min(5),

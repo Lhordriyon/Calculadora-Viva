@@ -103,6 +103,28 @@ const PAIS: Record<string, DefCampo> = {
   ret_cripto: { tipo: 'num', sistema: 'mundo' },
   /** Empurrão de quem governa na economia (−3 a 3): decretos que aquecem ou esfriam o ciclo. Some com o tempo. */
   impulso: { tipo: 'num', sistema: 'mundo', limites: [-3, 3] },
+  /** O país vivo (pais.ts): crescimento do PIB (% ao ano), desemprego (%), Selic (%), dívida pública (% do PIB). */
+  crescimento: { tipo: 'num', sistema: 'mundo', limites: [-15, 15] },
+  desemprego: { tipo: 'num', sistema: 'mundo', limites: [0, 40] },
+  juros: { tipo: 'num', sistema: 'mundo', limites: [0, 60] },
+  divida: { tipo: 'num', sistema: 'mundo', limites: [0, 300] },
+  /** Gente na pobreza (%), homicídios por 100 mil, saúde e educação públicas (índices de 0 a 100). */
+  pobreza: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  violencia: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  saude: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  educacao: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  /** Aprovação do governo (%): decide a reeleição; quando quem governa é quem joga, é a popularidade dele. */
+  aprovacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
+  /** Quem governa: o id de um bloco (mundo.json › governos), 'regime' ou 'voce'. */
+  governo: { tipo: 'texto', sistema: 'poder' },
+  /** As políticas em vigor (0 baixo, 1 médio, 2 alto): mundo.json › politicas. */
+  pol_impostos: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  pol_social: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  pol_saude: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  pol_educacao: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  pol_seguranca: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  /** Ano de eleição geral (2026, 2030…): o voto aparece. */
+  eleicao: { tipo: 'bool', sistema: 'poder', derivado: true },
 };
 
 /** Um bem de quem joga (bem1, bem2…): imóvel, veículo, luxo, mídia. */
@@ -275,6 +297,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.genero ?? 'm';
       case 'quem':
         return quemE(ent, en);
+      case 'eleicao':
+        return e.ano % 4 === 2;
     }
     return undefined;
   }

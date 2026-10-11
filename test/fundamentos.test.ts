@@ -10,7 +10,7 @@ import { funcionariosDe } from '../src/motor/campos.ts';
 import { defCargo, chanceDeEleicao } from '../src/motor/poder.ts';
 import { economiaDoAno } from '../src/motor/economia.ts';
 import { regraDaEmpresa, empresaDe } from '../src/motor/empresa.ts';
-import { defFase } from '../src/motor/ciclo.ts';
+import { momentoTipico } from '../src/motor/pais.ts';
 import { ESCRITAS_DO_MOTOR } from '../src/motor/manifesto.ts';
 import { CAPACIDADE_DO_MERCADO, MAX_FUNCIONARIOS, TETO_EMPRESA } from '../src/motor/regras.ts';
 import { misturar } from '../src/motor/rng.ts';
@@ -85,7 +85,7 @@ describe('o mundo tem tamanho', () => {
     expect(empresaDe(e)).toBeTruthy();
     for (let ano = 0; ano < 30; ano++) {
       const antes = e.entidades['empresa']!.n['valor']!;
-      regraDaEmpresa(e, c, defFase(c, 'expansao'), reg);
+      regraDaEmpresa(e, c, momentoTipico('expansao'), reg);
       // Acima do teto, só cai; abaixo, o ganho encolhe perto dele (passa no máximo uma fração mínima).
       expect(e.entidades['empresa']!.n['valor']!).toBeLessThanOrEqual(Math.max(antes + 1, TETO_EMPRESA * 1.01));
     }
@@ -95,7 +95,7 @@ describe('o mundo tem tamanho', () => {
     const e = nascer(c, { semente: 4, ano: 2026 });
     const eu = e.entidades['eu']!;
     Object.assign(eu.n, { dinheiro: 0, renda_fixa: 4 * CAPACIDADE_DO_MERCADO, acoes: 0, fii: 0, dolar: 0, cripto: 0, renda: 0, custo: 0, divida: 0 });
-    economiaDoAno(e, e.rng, [], { inflacao: 0, retorno: 0 }, { renda_fixa: 0.1 });
+    economiaDoAno(e, [], { inflacao: 0 }, { renda_fixa: 0.1 });
     // 10% sobre a parte que cabe (um quarto): o total cresce 2,5%, não 10%.
     expect(eu.n['renda_fixa']! / (4 * CAPACIDADE_DO_MERCADO)).toBeCloseTo(1.025, 3);
   });

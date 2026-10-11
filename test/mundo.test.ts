@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
-import { chancesDeMudar, cicloDoAno, defFase, faseDe } from '../src/motor/ciclo.ts';
+import { anoDoPais, faseDe, faseDoCrescimento, momentoTipico, TIPICO } from '../src/motor/pais.ts';
 import { patrimonioDe } from '../src/motor/campos.ts';
 import { mercadoDoAno } from '../src/motor/carteira.ts';
 import { economiaDoAno } from '../src/motor/economia.ts';
@@ -30,6 +30,7 @@ function adulto(setor: string, fase: 'normal' | 'recessao' | 'crise', semente = 
     const anuncio = novaEntrada(e, { tipo: 'mundo', causa: 'regra', ref: `ciclo:${fase}`, ator: 'pais', texto: 'O país mudou.' });
     ganhar(e, [], 'pais', fase, anuncio.id);
   }
+  Object.assign(e.entidades['pais']!.n, TIPICO[fase]);
   return e;
 }
 
@@ -38,10 +39,13 @@ describe('o ciclo da economia', () => {
     const e = adulto('comercio', 'normal');
     const vistas = new Set<string>();
     for (let ano = 0; ano < 400; ano++) {
+      e.ano++;
       const antes = faseDe(e);
-      cicloDoAno(e, c);
+      anoDoPais(e, c, []);
       const depois = faseDe(e);
       vistas.add(depois);
+      // A fase é o nome do crescimento do ano (sair da fase de antes pede uma folga).
+      expect(depois).toBe(faseDoCrescimento(e.entidades['pais']!.n['crescimento']!, antes));
       if (depois === antes) continue;
       const anuncio = e.historico.at(-1)!;
       expect(anuncio.tipo).toBe('mundo');
@@ -52,43 +56,38 @@ describe('o ciclo da economia', () => {
     }
     expect([...vistas].sort()).toEqual(['crise', 'expansao', 'normal', 'recessao']);
   });
-
-  it('segue as chances de transição dos dados', () => {
-    const p = defFase(c, 'crise').transicoes.recessao ?? 0;
-    let saiu = 0;
-    const n = 3000;
-    for (let i = 0; i < n; i++) {
-      const e = adulto('comercio', 'crise', misturar(11, i));
-      e.rng = criarRng(misturar(13, i));
-      cicloDoAno(e, c);
-      if (faseDe(e) === 'recessao') saiu++;
-    }
-    expect(Math.abs(saiu / n - p)).toBeLessThan(0.04);
-  });
 });
 
-describe('quem governa empurra o ciclo na direção certa', () => {
-  const sair = (fase: 'crise' | 'expansao', impulso: number): number => {
-    const e = adulto('comercio', fase === 'crise' ? 'crise' : 'normal');
-    if (fase === 'expansao') ganhar(e, [], 'pais', 'expansao', null);
-    e.entidades['pais']!.n['impulso'] = impulso;
-    return chancesDeMudar(e, c).reduce((s, [, p]) => s + p, 0);
+describe('quem governa empurra o crescimento na direção certa', () => {
+  /** O crescimento do ano seguinte com o país em crise e o empurrão dado (a mesma sorte para todos). */
+  const crescimento = (impulso: number, semente: number): number => {
+    const e = adulto('comercio', 'crise', semente);
+    // Fora do ano da posse: ninguém troca de governo no meio da conta.
+    if (e.ano % 4 === 3) e.ano++;
+    Object.assign(e.entidades['pais']!.n, { crescimento: -4, desemprego: 13, impulso });
+    e.rng = criarRng(semente);
+    anoDoPais(e, c, []);
+    return e.entidades['pais']!.n['crescimento']!;
   };
 
-  it('aquecer tira o país da crise mais depressa e esfriar o prende mais (antes, aquecer prendia na crise)', () => {
-    expect(sair('crise', 3)).toBeGreaterThan(sair('crise', 0));
-    expect(sair('crise', -3)).toBeLessThan(sair('crise', 0));
-    // Esfriar corta no máximo pela metade a chance de melhorar: nenhuma crise é para sempre.
-    expect(sair('crise', -3)).toBeCloseTo(sair('crise', 0) * 0.5);
+  it('aquecer tira o país da crise mais depressa e esfriar o prende mais', () => {
+    for (let i = 0; i < 20; i++) {
+      expect(crescimento(3, i)).toBeGreaterThan(crescimento(0, i));
+      expect(crescimento(-3, i)).toBeLessThan(crescimento(0, i));
+    }
   });
 
-  it('aquecer segura a expansão e esfriar a encerra mais cedo', () => {
-    expect(sair('expansao', 3)).toBeLessThan(sair('expansao', 0));
-    expect(sair('expansao', -3)).toBeGreaterThan(sair('expansao', 0));
-  });
-
-  it('as chances de mudar nunca somam mais que 1', () => {
-    for (const impulso of [-3, -1, 0, 1, 3]) for (const fase of ['crise', 'expansao'] as const) expect(sair(fase, impulso)).toBeLessThanOrEqual(1 + 1e-9);
+  it('nenhuma crise é para sempre: mesmo esfriando, o crescimento volta para o potencial', () => {
+    const e = adulto('comercio', 'crise', 3);
+    Object.assign(e.entidades['pais']!.n, { crescimento: -6, desemprego: 15 });
+    let anosDeCrise = 0;
+    for (let ano = 0; ano < 30; ano++) {
+      e.ano++;
+      e.entidades['pais']!.n['impulso'] = -1;
+      anoDoPais(e, c, []);
+      if (faseDe(e) === 'crise') anosDeCrise++;
+    }
+    expect(anosDeCrise).toBeLessThan(15);
   });
 });
 
@@ -99,7 +98,7 @@ describe('o trabalho reage ao mundo', () => {
       const e = adulto(setor, fase, misturar(3, i));
       if (servidor) ganhar(e, [], 'eu', 'servidor', null);
       e.rng = criarRng(misturar(17, i));
-      regraDoTrabalho(e, c, defFase(c, fase), []);
+      regraDoTrabalho(e, c, momentoTipico(fase), []);
       const item = e.agenda.find((a) => a.evento === 'demissao');
       if (!item) continue;
       n++;
@@ -121,7 +120,7 @@ describe('o trabalho reage ao mundo', () => {
     const variacao = (fase: 'normal' | 'crise', setor: string): number => {
       const e = adulto(setor, fase);
       const reg: Mudanca[] = [];
-      regraDoTrabalho(e, c, defFase(c, fase), reg);
+      regraDoTrabalho(e, c, momentoTipico(fase), reg);
       return (e.entidades['eu']!.n['renda'] ?? 0) - 40000;
     };
     expect(variacao('normal', 'industria')).toBeGreaterThan(variacao('crise', 'industria'));
@@ -143,7 +142,7 @@ describe('o trabalho reage ao mundo', () => {
       ganhar(e, [], 'eu', 'negocio_familiar', null);
       e.rng = criarRng(misturar(29, i));
       const inicio = e.historico.length;
-      regrasDosPersonagens(e, c, [], defFase(c, 'crise'));
+      regrasDosPersonagens(e, c, [], momentoTipico('crise'));
       const entrada = e.historico.slice(inicio).find((h) => h.ref === 'regra:faliu');
       if (!entrada) continue;
       quebrou = e;
@@ -197,7 +196,7 @@ describe('efeitos de riqueza', () => {
       let menor = Infinity;
       for (let ano = 0; ano < 30; ano++) {
         e.idade++;
-        economiaDoAno(e, e.rng, [], undefined, mercadoDoAno(e, c, 'normal', []));
+        economiaDoAno(e, [], undefined, mercadoDoAno(e, c, 'normal', []));
         menor = Math.min(menor, patrimonioDe(eu));
       }
       return menor;

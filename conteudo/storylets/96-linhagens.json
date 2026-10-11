@@ -918,7 +918,8 @@
           "efeitos": { "inteligencia": 3, "felicidade": 2, "mae.vinculo": -3, "pai.vinculo": -3 }
         }
       }
-    ]
+    ],
+    "peso": 2
   },
   {
     "id": "anos_depois_do_poder",
@@ -1042,6 +1043,7 @@
           "efeitos": { "eu.influencia": 8, "dinheiro": 400000, "felicidade": -1 }
         }
       }
-    ]
+    ],
+    "peso": 3
   }
 ]
