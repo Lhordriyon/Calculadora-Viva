@@ -95,7 +95,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   carreira.ts          profissões (mundo.json › carreiras): vaga, cargo, promoção em pirâmide, fama
   poder.ts             influência, eleições, mandato, popularidade, queda do cargo
   herdeiro.ts          dinastia e testamento: partilha, quem herda (filho, sobrinho, par, amigo) e a vida nova
-  fortuna.ts           brincar de deus: as jogadas de quem tem muito dinheiro (storylets "jogada") e a operação da folha
+  fortuna.ts           brincar de deus e quem manda na empresa: as jogadas (storylets "jogada") e a operação da folha
   morte.ts             morte de quem joga
   virada.ts            pontos de virada e resumo da vida a partir do livro-razão
   memoria.ts           memória do jogador entre vidas (reduz repetição)
@@ -168,4 +168,6 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |
 | O mundo tem tamanho: empresa até ~R$ 20 tri, investimento que rende até R$ 5 tri, no máximo 3 milhões de funcionários | agente | o dono viu 957 milhões de funcionários e uma herdeira com R$ 357 tri em títulos; estado impossível quebra o Brasil real |
 | Popularidade é a imagem pública: pesa em toda eleição e segue para o mandato | agente | 103 efeitos do conteúdo mexiam nela sem consequência para quem não tinha cargo |
+| A empresa depende de quem manda (talento, freio do tamanho, morte, venda); só decisões mudam isso | agente | das 250 ideias do dono, as que mudam a história e não só a despesa: mandar sem centralizar e construir o que sobrevive a você |
+| Todo acontecimento mostra o porquê (a causa de um ano anterior) na linha do tempo | agente | a causalidade é o diferencial que o dono pediu para o jogo inteiro; o cartão final contava tarde demais |
 | A linha do tempo mostra as entradas de regra que têm texto (promoção, fim de mandato); só o resumo do ano fica escondido | agente | o porquê de cada mudança precisa estar à vista |

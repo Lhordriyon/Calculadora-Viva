@@ -294,6 +294,53 @@ O relatório completo, com os três mapas (princípios, complexidade e oportunid
 - **O porquê visível.** A linha do tempo escondia toda entrada de regra; promoções, fins de mandato e fins de carreira não apareciam. Agora só o resumo do ano fica escondido.
 - **Um número de regra na interface:** o aviso da popularidade usa o mesmo limiar que derruba o cargo (30), em vez de 25.
 
+## Incremento 6: quem manda e o porquê (as 250 ideias do dono, 11/10)
+
+O dono mandou "O livro dos 250 experimentos de um império" e pediu que eu decidisse sozinho, por primeiros princípios.
+
+**O que as 250 ideias pedem, reduzido ao essencial.** Não são 250 telas. Cada ideia é intervenção → consequência que ninguém previu → próxima missão, e o próprio texto diz: "histórias diferentes, não somente despesas diferentes". Disso saem três necessidades:
+1. A intervenção mexe num estado que decide algo depois.
+2. O resultado depende do que o jogador construiu, não só de sorte.
+3. O porquê fica à vista quando a consequência chega.
+
+**O que o jogo já tinha.** A jogada do incremento 5 já é intervenção → reação agendada → marca. Faltavam duas peças:
+- **A empresa era só um número, sem ninguém mandando nela.** É o que pedem a ideia 44 ("mobilizar quase um bilhão de pessoas sem centralizar") e a 250 ("tornar-se dispensável").
+- **O porquê só aparecia no cartão final.** É o que pede a ideia 236, o "museu das consequências".
+
+**A conta pelos 12 critérios.**
+- **Dependência da empresa:** alta em decisão, consequência, interação (empresa, dinastia, morte, venda, saúde), história emergente e fantasia. Custa pouco: um campo e três leituras do motor.
+- **Porquê na linha do tempo:** compreensão e história emergente máximas, com custo quase zero, porque os dados já estavam no livro-razão.
+- **Ficaram de fora** as ideias que viram tela de gestão (orçamentos, turnos, índices), proibidas pelo CLAUDE.md, e as que só trocam uma despesa por outra.
+
+**Decisões tomadas e por quê:**
+- **Só decisões mudam a dependência.** Na primeira versão, "tocar a empresa até tarde" somava 3 pontos por ano (depois, 1).
+  - Medido: a ação aconteceu 3.874 vezes; as decisões somaram −825; a mediana na morte ficou em 99.
+  - Uma rotina que desfaz a decisão a cada ano vira esteira.
+  - Sem ela, a mediana ficou em 80 (quem nunca decidiu nada) e 15% das empresas grandes terminaram delegadas.
+- **O freio do tamanho depende de quem manda.** Sem um custo de centralizar em vida, delegar só servia para a hora da morte.
+  - A mesa do dono tem tamanho: o freio passa a ser multiplicado por 1 + 0,8 × (dependência − 0,5).
+  - Quem tem talento e centraliza cresce mais enquanto a empresa é pequena; depois de grande, quem não delegou trava.
+  - O bilionário feito continuou em 0,84% das vidas (era 0,79%).
+- **Perda na morte e desconto na venda.** Na morte, a empresa perde 0,4 × a dependência do valor; na venda, quem compra desconta 0,25 × a dependência. A perda fica no livro com a morte como causa, e a abertura do herdeiro conta o que aconteceu.
+- **Uma marca, um conceito.** O conteúdo já tinha `passou_o_comando` (contratar um executivo, passar a empresa ao filho). A jogada nova usa a mesma marca, e as duas decisões antigas agora também baixam a dependência (−30 e −25).
+- **O porquê só no que acontece com quem joga:** eventos, iniciativas dos outros e a morte.
+  - Nas ações, a mesma causa se repetia todo ano ("Tocou a empresa… porque aos 32…").
+  - Em 80 vidas, 21% de todas as entradas tinham uma causa. Contando só os acontecimentos, são 22%, ou 16 por vida.
+
+- **Robôs que experimentam e um lote de fortunas maior.** O primeiro túnel de 10.000 vidas do incremento matou `os_bancos_pagam`: a reação a "Emprestar aos bancos", uma opção do meio da jogada mais rara (salvar o país pede crise e R$ 200 bilhões).
+  - O robô arriscado sempre escolhia a opção mais cara entre todas as jogadas, e o cauteloso a mais barata. Assim, a opção do meio de uma jogada rara saía 1 vez em 200 vidas de fortuna, e a meta passava ou caía por sorteio.
+  - Agora cada robô sorteia uma jogada que cabe no bolso e escolhe a opção do seu jeito dentro dela: em 200 vidas, "Emprestar aos bancos" foi de 1 para 5 escolhas.
+  - O lote de fortunas foi de 200 para 496 vidas (13 segundos a mais no túnel). A opção mais rara sai 5 vezes, e a chance de uma reação morrer por sorteio fica abaixo de 1%.
+
+**Portões novos (10.000 vidas):**
+- Quem manda é decisão em 39,5% das 1.728 vidas que morrem com empresa de R$ 1 milhão (alvo: 30%).
+- As duas histórias existem entre as 713 empresas de R$ 15 milhões: 20,8% delegaram e 57,2% centralizaram (alvo: 10% cada).
+  - O primeiro desenho contava todas as empresas de R$ 1 milhão. Passei a contar só as de R$ 15 milhões, onde as jogadas existem e os dois caminhos estão abertos.
+- O porquê aparece em 21,8% dos acontecimentos, 16,5 por vida (alvo: 20%).
+- Na morte de quem manda, a empresa perde em média 26% do valor.
+
+**Sem regressão:** zero storylets mortos; nenhuma estratégia domina; bilionário feito em 0,71% das vidas (era 0,79%); quem nasce com fortuna faz jogadas em 98,4% das vidas; 76,4% das jogadas causam algo depois. O rico que fica pobre voltou a 3,1% (estava em 2,9%, um décimo abaixo do portão).
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

@@ -80,6 +80,14 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] O mundo responde: 46 eventos agendados e sorteados que leem as marcas (lei da herança que baixa o imposto para 1%, apagão, calote do governo, patente da cura, greve na ilha, asteroide com o seu nome…)
 - [x] Portões: as 14 jogadas acontecem; 98% das vidas de fortuna fazem jogadas (8,2 por vida); 79% das jogadas causam algum acontecimento depois
 
+## Incremento 6 (as 250 ideias do dono, 11/10): quem manda e o porquê
+
+- [x] A empresa depende de quem manda (`empresa.dependencia`): o talento pesa nessa proporção, o tamanho trava mais, a morte de quem manda custa valor (com a morte como causa) e quem compra desconta; o herdeiro fica sabendo na abertura
+- [x] Delegar e centralizar são decisões: 5 jogadas na seção Empresa (um conselho que diz não, um mural de problemas, tornar-se dispensável, uma equipe para desmontar, bancar quem quer sair), 8 reações agendadas e 5 eventos que leem a dependência; contratar um executivo e passar o comando ao filho também delegam
+- [x] O porquê na linha do tempo: cada acontecimento aponta a decisão (ou o fato do mundo) de um ano anterior que o causou
+- [x] Portões: quem manda é decisão em 39,5% das vidas com empresa de R$ 1 milhão; entre as de R$ 15 milhões, 20,8% delegaram e 57,2% centralizaram; o porquê aparece em 21,8% dos acontecimentos (16,5 por vida); zero storylets mortos
+- [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
+
 ## Próximo incremento (proposta)
 
 Outros países (emigrar, morar fora, cidadania), crime com consequência (golpes, prisão, fuga), relacionamentos com mais gente (vários filhos, ex, amantes), e a velhice com mais escolhas (cuidador, asilo, herança em vida).
