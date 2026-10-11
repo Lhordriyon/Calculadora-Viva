@@ -13,12 +13,14 @@ interface Props {
   aoAbrirFamilia: () => void;
   aoAbrirCarreira: () => void;
   aoAbrirDinheiro: () => void;
+  /** A linha do lugar e do ano abre a folha do país. */
+  aoAbrirPais: () => void;
   aoAbrirMenu: () => void;
   /** Durante um evento que não cabe na tela: só nome e idade, para o cartão inteiro aparecer. */
   compacto?: boolean;
 }
 
-export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirMenu, compacto = false }: Props) {
+export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirPais, aoAbrirMenu, compacto = false }: Props) {
   const eu = vida.entidades['eu']!;
   const lugar = vida.entidades['lugar'];
   const n = eu.n;
@@ -77,11 +79,15 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
           </button>
         </div>
       </div>
-      <p class="sub">
+      <button class="sub" type="button" aria-label={`${anos(vida.idade)}, ${lugar?.nome}, ${vida.ano}${nomeFase ? `, ${nomeFase}` : ''}: ver o país`} onClick={aoAbrirPais}>
         {titulo && <b class="titulo-nobre">{titulo} · </b>}
         {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
         {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
-      </p>
+        <span class="ver-pais" aria-hidden="true">
+          {' '}
+          · {vida.entidades['pais']?.nome ?? 'país'} ›
+        </span>
+      </button>
       <div class="atributos">
         {ATRIBUTOS.map((a) => {
           const valor = Math.round(n[a] ?? 0);

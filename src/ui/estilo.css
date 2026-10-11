@@ -302,11 +302,33 @@ a.botao {
   font-weight: 600;
 }
 
+/* A linha do lugar e do ano abre a folha do país: alvo de 44px sem empurrar o cabeçalho (as margens negativas devolvem a altura). */
 .cabecalho .sub {
-  margin: 0;
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: -10px 0 -8px;
+  padding: 10px 0 8px;
+  border: 0;
+  background: transparent;
   color: var(--texto-suave);
+  font: inherit;
   font-size: 13px;
   line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cabecalho .sub:focus-visible {
+  outline: 3px solid var(--inteligencia);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.cabecalho .sub .ver-pais {
+  color: var(--inteligencia);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .atributos {
@@ -1276,4 +1298,75 @@ a.botao {
 /* Brincar de deus: as opções da jogada abrem dentro da folha, como no cartão do evento. */
 .dinheiro-folha .confirmar .opcoes {
   margin-top: 10px;
+}
+
+/* ---------------------------------------------------------------- a folha País */
+
+.estatisticas {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.estatistica {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.estatistica:last-child {
+  border-bottom: 0;
+}
+
+.estatistica dt {
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.estatistica dd {
+  margin: 0;
+  font-size: 15px;
+}
+
+.estatistica small {
+  display: block;
+  color: var(--texto-suave);
+  font-size: 12px;
+}
+
+.estatistica .seta {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.estatistica .seta.bom {
+  color: var(--dinheiro);
+}
+
+.estatistica .seta.ruim {
+  color: var(--ruim);
+}
+
+.politicas {
+  display: grid;
+  gap: 12px;
+}
+
+.politica-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.politica-topo span {
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.politica .escolhas-origem {
+  margin-top: 6px;
 }
