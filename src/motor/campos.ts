@@ -135,6 +135,11 @@ const EMPRESA: Record<string, DefCampo> = {
   retirada: { tipo: 'num', sistema: 'dinheiro', limites: [0, 0.2] },
   /** Gente trabalhando lá (pelo tamanho), para o texto. */
   funcionarios: { tipo: 'num', sistema: 'carreira', derivado: true },
+  /**
+   * Quanto ela depende de quem manda nela (0 = anda sozinha; 100 = tudo passa pela sua mesa): o talento de quem manda pesa
+   * na tração nessa proporção, a morte de quem manda custa valor e quem compra desconta.
+   */
+  dependencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
 };
 
 export function camposDe(ent: string): Record<string, DefCampo> {

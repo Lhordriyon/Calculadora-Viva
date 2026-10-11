@@ -13,26 +13,37 @@
  *
  * A parte de quem joga entra no patrimônio e na classe, mas não paga conta
  * sozinha: só vira dinheiro pela retirada ou pela venda.
+ *
+ * Quem manda pesa na proporção do quanto a empresa depende dele
+ * (`empresa.dependencia`): o talento conta mais, a morte custa valor e quem
+ * compra desconta. Delegar (conselho, carta branca, sair de cena) é decisão
+ * do jogador, com o que ela custa e o que ela causa.
  */
 import { faseDe, defFase } from './ciclo.ts';
 import { entidadeDe, investidoDe, lerCaminho, parteNaEmpresa } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { AberturaEmpresa, DefFase, DefSetor } from './esquema.ts';
 import { anotarCaixa, caixaDe, movimentar, resgatarDe } from './economia.ts';
-import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar, somarQualidade } from './livro.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   AQUISICOES_TRUSTE,
   CAPITAL_MINIMO_EMPRESA,
   CUSTO_AQUISICAO,
+  DEPENDENCIA_INICIAL,
+  DESCONTO_DA_DEPENDENCIA,
   DESVIO_TRACAO,
+  GARGALO_DO_DONO,
+  PERDA_SEM_DONO,
   PENALIDADE_PORTE,
   PIOR_ANO_EMPRESA,
   PISO_EMPRESA,
   PORTE_GRANDE,
   REVERSAO_TRACAO,
-  TETO_EMPRESA,
+  TALENTO_MINIMO,
   TALENTO_TRACAO,
+  TETO_EMPRESA,
+  TRACAO_DA_EQUIPE,
   precoDeVenda,
   volatilidadeDaEmpresa,
 } from './regras.ts';
@@ -48,6 +59,16 @@ const QUEBRA = 'empresa_quebrou';
 export function empresaDe(e: EstadoVida): Entidade | undefined {
   const emp = e.entidades['empresa'];
   return emp && emp.vivo !== false ? emp : undefined;
+}
+
+/** Quanto a empresa depende de quem manda nela (0 a 1; 0 sem empresa). */
+export function dependenciaDe(e: EstadoVida): number {
+  return (empresaDe(e)?.n['dependencia'] ?? 0) / 100;
+}
+
+/** O que quem compra desconta pela dependência: comprar uma empresa que depende do dono é comprar o dono junto, e ele não vem. */
+export function descontoDaDependencia(e: EstadoVida): number {
+  return DESCONTO_DA_DEPENDENCIA * dependenciaDe(e);
 }
 
 /** Setores em que dá para abrir uma empresa (os que têm nomes de empresa nos dados). */
@@ -100,6 +121,8 @@ function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, origem:
   somar(e, reg, 'empresa', 'valor', f.valor);
   somar(e, reg, 'empresa', 'tracao', f.tracao ?? setor?.tracao ?? 4);
   somar(e, reg, 'empresa', 'participacao', f.participacao ?? 1);
+  // Nasce dependendo de quem abriu; com sócios, eles dividem o comando.
+  somar(e, reg, 'empresa', 'dependencia', DEPENDENCIA_INICIAL * (f.participacao ?? 1));
   ganhar(e, reg, 'empresa', 'fundada', origem);
   return emp;
 }
@@ -161,13 +184,13 @@ function encerrar(e: EstadoVida, reg: Mudanca[]): void {
   definirNumero(e, reg, 'eu', 'renda', 0);
 }
 
-/** Vende esta fração da parte de quem joga, pelo valor de agora vezes o prêmio. Vendeu tudo, a empresa sai da vida. Devolve o preço. */
+/** Vende esta fração da parte de quem joga, pelo valor de agora vezes o prêmio, menos o desconto da dependência. Vendeu tudo, a empresa sai da vida. Devolve o preço. */
 export function venderParte(e: EstadoVida, reg: Mudanca[], fracao: number, premio = 1): number {
   const emp = empresaDe(e);
   if (!emp) return 0;
   const parte = emp.n['participacao'] ?? 1;
   const vendida = parte * Math.min(1, Math.max(0, fracao));
-  const preco = Math.max(0, emp.n['valor'] ?? 0) * vendida * premio;
+  const preco = Math.max(0, emp.n['valor'] ?? 0) * vendida * premio * (1 - descontoDaDependencia(e));
   if (preco > 0) movimentar(e, reg, { dinheiro: preco });
   if (parte - vendida < 0.005) encerrar(e, reg);
   else somar(e, reg, 'empresa', 'participacao', -vendida);
@@ -206,11 +229,15 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: DefFase, reg: M
     somar(e, reg, 'empresa', 'valor', -retirada, 'empresa');
     movimentar(e, reg, { dinheiro: retirada * (n['participacao'] ?? 1) }, 'eu', 'empresa');
   }
-  const talento = ((e.entidades['eu']!.n['inteligencia'] ?? 50) - 50) * TALENTO_TRACAO;
-  const porte = PENALIDADE_PORTE * Math.max(0, Math.log10(Math.max(1, n['valor'] ?? 0) / PORTE_GRANDE));
+  // Quanto mais a empresa depende de quem manda, mais o talento dele (ou a falta) pesa; a que anda sozinha tem o ritmo da equipe.
+  const dependencia = (n['dependencia'] ?? 0) / 100;
+  const talento = ((e.entidades['eu']!.n['inteligencia'] ?? 50) - 50) * TALENTO_TRACAO * (TALENTO_MINIMO + (1 - TALENTO_MINIMO) * dependencia);
+  const equipe = TRACAO_DA_EQUIPE * (1 - dependencia);
+  // Crescer trava com o tamanho, e trava mais quando tudo passa pela mesa de quem manda.
+  const porte = PENALIDADE_PORTE * Math.max(0, Math.log10(Math.max(1, n['valor'] ?? 0) / PORTE_GRANDE)) * (1 + GARGALO_DO_DONO * (dependencia - 0.5));
   // Influência abre portas (contrato, crédito, fornecedor): até +2 pontos de tração.
   const portas = Math.min(2, (e.entidades['eu']!.n['influencia'] ?? 0) / 40);
-  const alvo = (setor?.tracao ?? 4) + talento + portas - porte;
+  const alvo = (setor?.tracao ?? 4) + talento + equipe + portas - porte;
   somar(e, reg, 'empresa', 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
   if ((n['valor'] ?? 0) < PISO_EMPRESA && c.porId.has(QUEBRA) && !e.agenda.some((a) => a.evento === QUEBRA)) {
     e.agenda.push({ evento: QUEBRA, ano: e.ano, origem: emp.q['fundada']?.causa ?? null });
@@ -235,9 +262,31 @@ export function ehOperacaoDeEmpresa(op: { tipo: string }): op is OperacaoEmpresa
   return op.tipo === 'abrir' || op.tipo === 'aportar' || op.tipo === 'retirada' || op.tipo === 'vender' || op.tipo === 'adquirir';
 }
 
-/** O preço da parte de quem joga se vender agora (o valor, com o desconto ou o prêmio da fase). */
+/** O preço da parte de quem joga se vender agora, e por quê: o prêmio (ou o desconto) da fase do país e o desconto da dependência. */
+export function vendaDaParte(e: EstadoVida, c: Conteudo): { preco: number; fase: number; desconto: number } {
+  const fase = precoDeVenda(defFase(c, faseDe(e)).empresa);
+  const desconto = descontoDaDependencia(e);
+  return { preco: parteNaEmpresa(e) * fase * (1 - desconto), fase, desconto };
+}
+
 export function precoDaParte(e: EstadoVida, c: Conteudo): number {
-  return parteNaEmpresa(e) * precoDeVenda(defFase(c, faseDe(e)).empresa);
+  return vendaDaParte(e, c).preco;
+}
+
+/**
+ * Quem manda morreu: a empresa perde valor na proporção do quanto dependia
+ * dele (o que só ele sabia, os clientes que eram dele, a assinatura que
+ * ninguém mais tinha). A entrada fica no livro com a morte como causa.
+ */
+export function semQuemManda(e: EstadoVida, morte: number): void {
+  const emp = empresaDe(e);
+  const perda = PERDA_SEM_DONO * dependenciaDe(e);
+  if (!emp || perda < 0.005) return;
+  const reg: Mudanca[] = [];
+  multiplicarEmpresa(e, reg, 1 - perda);
+  const pct = Math.round(perda * 100);
+  const texto = `Sem você, a ${emp.nome} perdeu ${pct}% do valor: ${perda >= 0.2 ? 'tudo passava pela sua mesa' : 'quase tudo já andava sem você'}.`;
+  lancar(e, novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'empresa:sem_dono', texto, resumo: `a ${emp.nome} perdeu ${pct}% do valor sem você`, causas: [morte] }), reg);
 }
 
 export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa): string | null {

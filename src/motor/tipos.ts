@@ -63,7 +63,7 @@ export interface Mudanca {
 
 export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'dinheiro' | 'npc' | 'mundo' | 'linha' | 'regra' | 'morte';
 
-/** Entrada do livro-razão. As de tipo `regra` não aparecem na linha do tempo. */
+/** Entrada do livro-razão. A de tipo `regra` com ref `ano` (as regras miúdas do ano) não aparece na linha do tempo. */
 export interface Entrada {
   id: number;
   idade: number;

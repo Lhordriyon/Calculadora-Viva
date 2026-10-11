@@ -2,6 +2,7 @@
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
+import { semQuemManda } from './empresa.ts';
 import { lancar, novaEntrada } from './livro.ts';
 import { sortearIndice } from './rng.ts';
 import { renderizar } from './texto.ts';
@@ -42,7 +43,7 @@ export function morrer(e: EstadoVida, c: Conteudo, de: DeOndeVeio = {}): void {
   e.morte = { idade: e.idade, ano: e.ano, causa: texto, categoria: de.categoria ?? sorteada?.categoria ?? 'acidente' };
   if (sorteada?.fonte !== undefined) e.morte.fonte = sorteada.fonte;
   const anos = e.idade === 1 ? 'ano' : 'anos';
-  lancar(
+  const entrada = lancar(
     e,
     novaEntrada(e, {
       tipo: 'morte',
@@ -54,6 +55,8 @@ export function morrer(e: EstadoVida, c: Conteudo, de: DeOndeVeio = {}): void {
     }),
     [],
   );
+  // A empresa sente a falta de quem mandava nela, na medida do quanto dependia dele.
+  semQuemManda(e, entrada.id);
 }
 
 /** Morte vinda de um efeito (causa explícita) ou de saúde zerada; a entrada que a provocou vira causa. */

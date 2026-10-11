@@ -6,11 +6,11 @@ import { defFase } from '../src/motor/ciclo.ts';
 import { ler, parteNaEmpresa, patrimonioDe, patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
-import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
+import { descontoDaDependencia, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import type { Efeitos } from '../src/motor/esquema.ts';
 import { continuarComoHerdeiro } from '../src/motor/herdeiro.ts';
 import { ganhar, novaEntrada } from '../src/motor/livro.ts';
-import { PISO_EMPRESA, precoDeVenda } from '../src/motor/regras.ts';
+import { DESCONTO_DA_DEPENDENCIA, PISO_EMPRESA, precoDeVenda } from '../src/motor/regras.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { validarConteudo } from '../src/motor/validacao.ts';
@@ -93,15 +93,17 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     expect(reg.find((m) => m.c === 'eu.dinheiro')?.r).toBe('empresa');
   });
 
-  it('vender paga o valor com o prêmio ou o desconto da fase; a empresa sai da vida e fica só o nome', () => {
+  it('vender paga o valor com o prêmio ou o desconto da fase, menos o desconto da dependência; a empresa sai da vida e fica só o nome', () => {
     const e = adulto();
     operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 100000 });
     const nome = empresaDe(e)!.nome;
     ganhar(e, [], 'pais', 'crise', null);
     const antes = e.entidades['eu']!.n['dinheiro'] ?? 0;
+    // Aberta por quem joga, sem sócios: depende 80% dele, e quem compra desconta um quarto disso.
+    expect(descontoDaDependencia(e)).toBeCloseTo(DESCONTO_DA_DEPENDENCIA * 0.8);
     const venda = operar(e, c, { tipo: 'vender' });
     const recebido = (e.entidades['eu']!.n['dinheiro'] ?? 0) - antes;
-    expect(recebido).toBeCloseTo(100000 * precoDeVenda(defFase(c, 'crise').empresa));
+    expect(recebido).toBeCloseTo(100000 * precoDeVenda(defFase(c, 'crise').empresa) * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
     expect(recebido).toBeLessThan(100000);
     expect(empresaDe(e)).toBeUndefined();
     expect(e.entidades['empresa']!.nome).toBe(nome);
@@ -188,7 +190,7 @@ describe('efeitos de empresa nos storylets', () => {
     expect(empresaDe(e)!.n['participacao']).toBeCloseTo(0.8);
     expect(parteNaEmpresa(e)).toBeCloseTo(800000);
     const venda = efeitos(e, { venderEmpresa: { fracao: 0.25, premio: 1.2 } }).valores['venda']!;
-    expect(venda).toBeCloseTo(1_000_000 * 0.8 * 0.25 * 1.2);
+    expect(venda).toBeCloseTo(1_000_000 * 0.8 * 0.25 * 1.2 * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
     expect(empresaDe(e)!.n['participacao']).toBeCloseTo(0.6);
     const sobra = efeitos(e, { fecharEmpresa: { sobra: 0.1 } }).valores['sobra']!;
     expect(sobra).toBeCloseTo(1_000_000 * 0.6 * 0.1);

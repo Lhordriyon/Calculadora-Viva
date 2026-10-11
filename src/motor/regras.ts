@@ -271,3 +271,21 @@ export const CAPACIDADE_DO_MERCADO = 5e12;
 export const MAX_FUNCIONARIOS = 3e6;
 /** Valor da empresa por pessoa empregada, enquanto ela é pequena. */
 export const VALOR_POR_FUNCIONARIO = 150000;
+
+// ---- quem manda na empresa (incremento 6: a empresa que depende de quem manda nela)
+
+/** Quanto uma empresa nova depende de quem a abriu (0 a 100); com sócios, só a parte de quem joga. */
+export const DEPENDENCIA_INICIAL = 80;
+/** Quanto do talento de quem manda ainda pesa na tração de uma empresa que não depende de ninguém; o resto pesa na proporção da dependência. */
+export const TALENTO_MINIMO = 0.25;
+/** Pontos de tração que a equipe dá sozinha a uma empresa que anda sem o dono (proporcional ao quanto ela anda sozinha). */
+export const TRACAO_DA_EQUIPE = 1;
+/** Fração do valor que a empresa perde na morte de quem manda, vezes a dependência (a 80, perde 32%). */
+export const PERDA_SEM_DONO = 0.4;
+/** Desconto que o comprador dá pela dependência, vezes ela (a 80, paga 20% menos). */
+export const DESCONTO_DA_DEPENDENCIA = 0.25;
+/**
+ * O freio do tamanho pesa mais na empresa que depende do dono (a mesa dele tem tamanho) e menos na que anda
+ * sozinha: o freio vezes 1 + GARGALO_DO_DONO × (dependência − 0,5). Com dependência de 50%, é o freio de sempre.
+ */
+export const GARGALO_DO_DONO = 0.8;

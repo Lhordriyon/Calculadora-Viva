@@ -17,7 +17,7 @@ import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
 import { definirTexto, ganhar, lancar, novaEntrada } from './livro.ts';
 import { criarPersonagem, nomeLivre, novaEntidade } from './pessoas.ts';
-import { ANOS_UNIAO } from './regras.ts';
+import { ANOS_UNIAO, PERDA_SEM_DONO } from './regras.ts';
 import { aleatorio, criarRng, inteiro, misturar, normal, sortear, sortearIndice } from './rng.ts';
 import { capitalizar, formatarDinheiro } from './texto.ts';
 import { VERSAO_ESTADO, type Antepassado, type Entidade, type EstadoVida, type Genero, type Mudanca } from './tipos.ts';
@@ -464,11 +464,14 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   const testamento = filho.parentesco === 'filho' ? '' : 'em testamento ';
   const herdada = e.entidades['empresa'];
   const fatia = herdada?.n['participacao'] ?? 0;
+  // A empresa que dependia de quem morreu sentiu a falta (a entrada está na vida anterior, com a morte como causa).
+  const sentiu = herdada && antiga.historico.some((h) => h.ref === 'empresa:sem_dono') ? Math.round(PERDA_SEM_DONO * (herdada.n['dependencia'] ?? 0)) : 0;
+  const perda = sentiu >= 1 ? `perdeu ${sentiu}% do valor com a morte de ${velho.nome}` : '';
   const naEmpresa = !herdada
     ? ''
     : fatia >= 0.995
-      ? ` (${formatarDinheiro(parteNaEmpresa(e))} disso na ${herdada.nome}, que agora é sua)`
-      : ` (${formatarDinheiro(parteNaEmpresa(e))} disso em ${Math.round(fatia * 100)}% da ${herdada.nome})`;
+      ? ` (${formatarDinheiro(parteNaEmpresa(e))} disso na ${herdada.nome}, que agora é sua${perda ? ` e ${perda}` : ''})`
+      : ` (${formatarDinheiro(parteNaEmpresa(e))} disso em ${Math.round(fatia * 100)}% da ${herdada.nome}${perda ? `, que ${perda}` : ''})`;
   const heranca =
     espolio.deixou >= 1
       ? `deixou ${testamento}${formatarDinheiro(espolio.deixou)} para você${naEmpresa}, depois do imposto${conjuge}`

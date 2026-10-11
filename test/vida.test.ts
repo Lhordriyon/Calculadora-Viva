@@ -64,7 +64,10 @@ describe('ciclo da vida', () => {
       const e = viverAteOFim(nascer(real, { semente: misturar(11, i), ano: 2026 }), real, i);
       expect(e.vivo).toBe(false);
       expect(e.morte).not.toBeNull();
-      expect(e.historico.at(-1)?.tipo).toBe('morte');
+      // A morte fecha a vida: depois dela, só o que ela causou (a empresa que sentiu a falta de quem mandava).
+      const morte = e.historico.find((h) => h.tipo === 'morte');
+      expect(morte).toBeDefined();
+      for (const h of e.historico.slice(e.historico.indexOf(morte!) + 1)) expect(h.causas).toContain(morte!.id);
       const vistos = new Map<string, number>();
       for (const h of e.historico) {
         if ((h.tipo === 'evento' || h.tipo === 'npc') && h.instancia && !h.ref?.startsWith('regra:')) vistos.set(h.instancia, (vistos.get(h.instancia) ?? 0) + 1);
