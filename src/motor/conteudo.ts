@@ -3,7 +3,7 @@
  * no Node, `leitura.ts` (com Zod); no navegador, o bundle confia no que o CI
  * já validou e só indexa.
  */
-import { VERBOS, type Verbo } from './constantes.ts';
+import { VERBOS, type TipoStorylet, type Verbo } from './constantes.ts';
 import type { CausaMorte, DefSetor, InfoMarca, Linha, Mundo, Storylet, Traco, TracoJogador } from './esquema.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 
@@ -33,6 +33,8 @@ export interface Conteudo {
   acoes: Map<Verbo, Storylet[]>;
   /** Storylets que cada papel pode protagonizar por conta própria. */
   npcPorPapel: Map<string, Storylet[]>;
+  /** Jogadas de quem tem muito dinheiro: a folha Dinheiro mostra as que valem agora. */
+  jogadas: Storylet[];
   linhas: Linha[];
   /** Índices das linhas possíveis em cada idade. */
   linhasPorIdade: number[][];
@@ -44,7 +46,7 @@ export interface Conteudo {
   setores: Map<string, DefSetor>;
 }
 
-export function tipoDe(s: Storylet): 'evento' | 'acao' | 'npc' {
+export function tipoDe(s: Storylet): TipoStorylet {
   return s.tipo ?? 'evento';
 }
 
@@ -70,8 +72,13 @@ export function indexarConteudo(dados: DadosConteudo, problemas: Problema[] = []
   for (let idade = 0; idade <= IDADE_MAXIMA; idade++) eventosPorIdade.push([]);
   const acoes = new Map<Verbo, Storylet[]>(VERBOS.map((v) => [v, []]));
   const npcPorPapel = new Map<string, Storylet[]>();
+  const jogadas: Storylet[] = [];
   for (const s of storylets) {
     const tipo = tipoDe(s);
+    if (tipo === 'jogada') {
+      jogadas.push(s);
+      continue;
+    }
     if (tipo === 'acao') {
       acoes.get(s.verbo!)!.push(s);
       continue;
@@ -103,6 +110,7 @@ export function indexarConteudo(dados: DadosConteudo, problemas: Problema[] = []
     eventosPorIdade,
     acoes,
     npcPorPapel,
+    jogadas,
     linhas: dados.linhas,
     linhasPorIdade,
     mortes: dados.mortes,

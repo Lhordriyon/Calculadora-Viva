@@ -17,6 +17,7 @@ import { acertarCaixa, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } 
 import { ehOperacaoDeBem, motivoParaNaoOperarBem, operarBem, type OperacaoBem } from './bens.ts';
 import { ehOperacaoDeCarreira, motivoParaNaoOperarCarreira, operarCarreira, type OperacaoCarreira } from './carreira.ts';
 import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
+import { ehOperacaoDeJogada, jogar, motivoParaNaoOperarJogada, type OperacaoJogada } from './fortuna.ts';
 import { ehOperacaoDePoder, motivoParaNaoOperarPoder, operarPoder, type OperacaoPoder } from './poder.ts';
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
@@ -79,7 +80,8 @@ export type Operacao =
   | OperacaoBem
   | OperacaoCarreira
   | OperacaoPoder
-  | OperacaoTestamento;
+  | OperacaoTestamento
+  | OperacaoJogada;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
 export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
@@ -101,6 +103,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (ehOperacaoDeCarreira(op)) return motivoParaNaoOperarCarreira(e, c, op);
   if (ehOperacaoDePoder(op)) return motivoParaNaoOperarPoder(e, c, op);
   if (ehOperacaoDeTestamento(op)) return motivoParaNaoOperarTestamento(e, op);
+  if (ehOperacaoDeJogada(op)) return motivoParaNaoOperarJogada(e, c, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -124,6 +127,8 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
 export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   const motivo = motivoParaNaoOperar(e, c, op);
   if (motivo) throw new Error(`Operação impossível: ${motivo}.`);
+  // A jogada é um storylet: a entrada leva a escolha e o desfecho, como um evento respondido.
+  if (ehOperacaoDeJogada(op)) return jogar(e, c, op);
   const eu = e.entidades['eu']!;
   const n = eu.n;
   const reg: Mudanca[] = [];

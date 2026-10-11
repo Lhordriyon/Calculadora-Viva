@@ -20,6 +20,7 @@ import type { Conteudo } from './conteudo.ts';
 import { PADROES, PERFIS, RETIRADAS, VERBOS, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
+import { jogadasDe } from './fortuna.ts';
 import { REVERSAO_TRACAO } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
@@ -239,7 +240,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   }
   const daEmpresa = decidirEmpresa(estrategia, e, c, rng);
   ops.push(...daEmpresa);
-  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng));
+  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng), ...decidirJogada(estrategia, e, c, rng));
   // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência).
   if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < 0.03) {
     const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
@@ -333,6 +334,28 @@ function decidirBens(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rn
   if (aleatorio(rng) >= 0.1) return [];
   const opcoes = c.mundo.bens.filter((b) => b.preco <= liquido * 0.3);
   return opcoes.length ? compra(sortear(rng, opcoes).id) : [];
+}
+
+/**
+ * Brincar de deus: a cautelosa, de vez em quando, faz a jogada mais barata que
+ * cabe em 8% do que tem; a arriscada, a mais cara que cabe em 35%; a aleatória
+ * sorteia qualquer uma que caiba na metade (inclusive as de graça).
+ */
+function decidirJogada(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  // Quem não tem nem R$ 20 milhões na mão nem abre a seção (e não gasta sorteio: as vidas comuns ficam iguais).
+  if (e.idade < 20 || liquidoDe(e) < 2e7) return [];
+  const chance = estrategia === 'cautelosa' ? 0.12 : estrategia === 'arriscada' ? 0.3 : 0.25;
+  if (aleatorio(rng) >= chance) return [];
+  const teto = liquidoDe(e) * (estrategia === 'cautelosa' ? 0.08 : estrategia === 'arriscada' ? 0.35 : 0.5);
+  const opcoes = jogadasDe(e, c).flatMap((j) =>
+    j.opcoes.map((o, i) => ({ id: j.s.id, i, custo: j.custos[i]!, livre: o.disponivel })).filter((x) => x.livre && x.custo <= teto && (x.custo > 0 || estrategia === 'aleatoria')),
+  );
+  if (opcoes.length === 0) return [];
+  const alvo =
+    estrategia === 'aleatoria'
+      ? sortear(rng, opcoes)
+      : [...opcoes].sort((a, b) => (estrategia === 'arriscada' ? b.custo - a.custo : a.custo - b.custo))[0]!;
+  return [{ tipo: 'jogada', id: alvo.id, escolha: alvo.i }];
 }
 
 function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {

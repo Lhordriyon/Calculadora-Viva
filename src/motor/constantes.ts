@@ -18,7 +18,7 @@ export type IdEntidade = (typeof ENTIDADES)[number];
 export const VERBOS = ['estudar', 'trabalhar', 'saude', 'familia', 'sair', 'poupar'] as const;
 export type Verbo = (typeof VERBOS)[number];
 
-export const TIPOS_STORYLET = ['evento', 'acao', 'npc'] as const;
+export const TIPOS_STORYLET = ['evento', 'acao', 'npc', 'jogada'] as const;
 export type TipoStorylet = (typeof TIPOS_STORYLET)[number];
 
 /** Classes por patrimônio, da origem ao fim (as mesmas faixas nos dois lados). */

@@ -273,11 +273,11 @@ const Trecho = z.strictObject({ se: Condicoes.optional(), texto: z.string() });
 export const Storylet = z
   .strictObject({
     id,
-    /** evento (padrão): o diretor escolhe. acao: o jogador escolhe pela ficha do ano. npc: a regra do personagem escolhe. */
+    /** evento (padrão): o diretor escolhe. acao: o jogador escolhe pela ficha do ano. npc: a regra do personagem escolhe. jogada: o jogador escolhe na folha Dinheiro, sem gastar ficha. */
     tipo: z.enum(TIPOS_STORYLET).optional(),
     /** Ações: o verbo da ficha. */
     verbo: z.enum(VERBOS).optional(),
-    /** Ações: o que aparece no botão do verbo ("cursinho do ENEM"). */
+    /** Ações: o que aparece no botão do verbo ("cursinho do ENEM"). Jogadas: o nome na lista ("Fundar uma cidade"). */
     rotulo: z.string().min(3).optional(),
     /** Papéis que podem ocupar {ator}: quem age (npc) ou de quem se trata. */
     ator: z.array(z.enum(PAPEIS)).min(1).optional(),
@@ -318,7 +318,7 @@ export const Storylet = z
     if (!s.apenasAgendado && !s.idade) erro('storylet sorteável precisa de idade', 'idade');
     if (s.idade && s.idade[0] > s.idade[1]) erro('idade mínima maior que a máxima', 'idade');
     if (s.escolhas && (s.efeitos || s.teste)) erro('use escolhas ou efeitos/teste, não os dois');
-    if (s.intervalo && !s.repetivel && tipo !== 'acao') erro('intervalo só vale para storylet repetível', 'intervalo');
+    if (s.intervalo && !s.repetivel && tipo !== 'acao' && tipo !== 'jogada') erro('intervalo só vale para storylet repetível', 'intervalo');
     if (s.marco && s.apenasAgendado) erro('marco não combina com apenasAgendado', 'marco');
     if (!s.escolhas) conferirDesfechos({ ...s, resultado: undefined }, ctx, false);
     if (tipo === 'acao') {
@@ -326,8 +326,13 @@ export const Storylet = z
       if (!s.rotulo) erro('ação precisa de rótulo', 'rotulo');
       if (s.escolhas) erro('ação não tem escolhas: o jogador já escolheu ao tocar no verbo', 'escolhas');
       if (s.marco || s.apenasAgendado) erro('ação não é marco nem agendada');
+    } else if (tipo === 'jogada') {
+      if (!s.rotulo) erro('jogada precisa de rótulo', 'rotulo');
+      if (!s.escolhas) erro('jogada precisa de escolhas', 'escolhas');
+      if (s.verbo || s.ator) erro('jogada não tem verbo nem ator');
+      if (s.marco || s.apenasAgendado || s.repetivel) erro('jogada não é marco, agendada nem repetível (repete com intervalo, e as condições dizem quando)');
     } else if (s.verbo || s.rotulo) {
-      erro('verbo e rótulo são só de ações');
+      erro('verbo e rótulo são só de ações e jogadas');
     }
     if (tipo === 'npc' && !s.ator) erro('storylet de personagem precisa de ator', 'ator');
     if (s.preferir && !s.ator) erro('preferir só vale com ator', 'preferir');

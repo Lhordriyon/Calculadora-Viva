@@ -26,6 +26,8 @@ export type { Antepassado, Dinastia } from './tipos.ts';
 
 /** Imposto sobre herança (o ITCMD dos estados fica entre 4% e 8%). */
 export const IMPOSTO_HERANCA = 0.04;
+/** Com a lei da herança que um presidente amigo aprovou (jogada "Bancar um presidente"). */
+export const IMPOSTO_HERANCA_DA_LEI = 0.01;
 /** O testamento solidário deixa um quarto do espólio para uma causa (antes do cônjuge e do imposto). */
 export const PARTE_SOLIDARIA = 0.25;
 
@@ -172,7 +174,7 @@ function partilhar(antiga: EstadoVida, herdeiroEhOPar = false): Espolio {
   const conjuge = casal && !herdeiroEhOPar ? 0.5 : 0;
   const doacao = velho.q['testamento_solidario'] ? total * PARTE_SOLIDARIA : 0;
   const doConjuge = (total - doacao) * conjuge;
-  const imposto = (total - doacao - doConjuge) * IMPOSTO_HERANCA;
+  const imposto = (total - doacao - doConjuge) * (velho.q['lei_da_heranca'] ? IMPOSTO_HERANCA_DA_LEI : IMPOSTO_HERANCA);
   const sai = doacao + doConjuge + imposto;
   const doDinheiro = Math.min(bruto, sai);
   const daEmpresa = Math.min(naEmpresa, sai - doDinheiro);

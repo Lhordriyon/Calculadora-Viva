@@ -404,7 +404,16 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     const tipo = tipoDe(s);
     if (s.apenasAgendado && !agendados.has(s.id)) erro(onde, 'é apenasAgendado, mas ninguém o agenda (storylet morto)');
     if (s.idade && s.idade[1] > IDADE_MAXIMA) erro(onde, `idade máxima acima de ${IDADE_MAXIMA}`);
-    if (s.escolhas && !s.escolhas.some((esc) => !esc.condicoes)) erro(onde, 'precisa de pelo menos uma escolha sem condições (senão a vida pode travar)');
+    // A jogada não trava a vida (a folha tem "Voltar"); o resto precisa de uma saída sempre aberta.
+    if (tipo !== 'jogada' && s.escolhas && !s.escolhas.some((esc) => !esc.condicoes)) erro(onde, 'precisa de pelo menos uma escolha sem condições (senão a vida pode travar)');
+    if (tipo === 'jogada') {
+      s.escolhas?.forEach((esc, i) => {
+        const so: Storylet = { ...s, escolhas: [esc] };
+        const sistemas = new Set(blocosDe(so, onde).flatMap((b) => escritasDe(b.efeitos, undefined).map((w) => w.sistema)));
+        if (sistemas.size < 2) erro(`${onde} › escolha ${i + 1}`, `a jogada mexe em ${sistemas.size === 0 ? 'nada' : [...sistemas].join('')}; precisa de pelo menos 2 sistemas`);
+      });
+      if (s.rotulo && (/[[\]]/.test(s.rotulo) || comprimentoMaximo(s.rotulo) > LIMITE_ROTULO)) erro(onde, `rótulo sem alternâncias e com até ${LIMITE_ROTULO} caracteres`);
+    }
     if (tipo === 'acao') {
       const sistemas = new Set(blocosDe(s, onde).flatMap((b) => escritasDe(b.efeitos, s.ator).map((w) => w.sistema)));
       if (sistemas.size < 2) erro(onde, `ação mexe em ${sistemas.size === 0 ? 'nada' : [...sistemas].join('')}; precisa de pelo menos 2 sistemas`);

@@ -154,6 +154,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.impulso'], 'ciclo: quem governa empurra a economia', true),
   ...ler(['empresa.aquisicoes'], 'empresa: três compras fazem um truste', true),
   ...ler(['eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico'], 'poder: a linhagem dá influência', false),
+  ...ler(['eu.lei_da_heranca'], 'herança: a lei comprada baixa o imposto de 4% para 1%', true),
   ...ler(['eu.monarca', 'eu.ditador'], 'dinastia: a coroa e o regime passam ao filho', true),
   ...ler(['eu.testamento'], 'dinastia: quem herda e continua a história', true),
   ...ler(['eu.politico', 'eu.monarca', 'eu.ditador'], 'poder: a posse é a causa da queda', false),

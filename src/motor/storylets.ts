@@ -3,17 +3,17 @@
  * escolha e apresentação com escolha. Evento, ação e ação de personagem
  * passam todos por aqui.
  */
-import { lerCaminho } from './campos.ts';
+import { investidoDe, lerCaminho } from './campos.ts';
 import { atende, motivoBloqueio } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { tipoDe } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aplicarEfeitos, type ContextoEfeito } from './efeitos.ts';
-import type { Resultado, Storylet, Teste } from './esquema.ts';
+import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
 import { lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
 import { aleatorio } from './rng.ts';
-import { capitalizar, renderizar } from './texto.ts';
+import { capitalizar, formatarDinheiro, renderizar } from './texto.ts';
 import type { Causa, Entrada, EstadoVida, Mudanca, OpcaoPendente, TipoEntrada } from './tipos.ts';
 
 /** Anos mínimos entre repetições de um storylet repetível sem intervalo próprio. */
@@ -51,7 +51,8 @@ export function elegivel(s: Storylet, e: EstadoVida, ator: string | undefined): 
   const vezes = e.vistos[instanciaDe(s, ator)];
   if (vezes && vezes.length > 0) {
     const ultima = vezes[vezes.length - 1]!;
-    if (tipoDe(s) === 'acao') {
+    const t = tipoDe(s);
+    if (t === 'acao' || t === 'jogada') {
       if (s.intervalo && e.idade - ultima < s.intervalo) return false;
     } else {
       if (!s.repetivel) return false;
@@ -61,7 +62,7 @@ export function elegivel(s: Storylet, e: EstadoVida, ator: string | undefined): 
   return atende(s.condicoes, e, ator);
 }
 
-function marcarVisto(e: EstadoVida, s: Storylet, ator: string | undefined): void {
+export function marcarVisto(e: EstadoVida, s: Storylet, ator: string | undefined): void {
   (e.vistos[instanciaDe(s, ator)] ??= []).push(e.idade);
 }
 
@@ -123,6 +124,32 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   return entrada;
 }
 
+/** O que a escolha custa na hora: o dinheiro que sai e o capital de uma empresa aberta com ela. */
+export function custoDaEscolha(esc: Escolha): number {
+  return Math.max(0, -(esc.efeitos?.dinheiro ?? 0)) + (esc.efeitos?.abrirEmpresa?.capital ?? 0);
+}
+
+/**
+ * As opções de um storylet agora: o texto, se dá para escolher e, se não, por
+ * quê. Numa jogada, o preço também precisa estar na mão (conta e investimentos):
+ * jogada não se faz no fiado.
+ */
+export function opcoesDe(e: EstadoVida, s: Storylet, ator: string | undefined, ctx = contexto(e, { ator, valores: s.valores, trechos: s.trechos })): OpcaoPendente[] {
+  const eu = e.entidades['eu']!;
+  const naMao = tipoDe(s) === 'jogada' ? Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu) : Infinity;
+  return (s.escolhas ?? []).map((esc) => {
+    const opcao: OpcaoPendente = { texto: capitalizar(renderizar(esc.texto, ctx)), disponivel: atende(esc.condicoes, e, ator) };
+    if (!opcao.disponivel) {
+      const motivo = esc.bloqueio ? renderizar(esc.bloqueio, ctx) : motivoBloqueio(esc.condicoes, e);
+      if (motivo) opcao.motivo = motivo;
+    } else if (custoDaEscolha(esc) > naMao + 0.5) {
+      opcao.disponivel = false;
+      opcao.motivo = `precisa de ${formatarDinheiro(custoDaEscolha(esc))} na mão`;
+    }
+    return opcao;
+  });
+}
+
 /** Storylet com escolha: vira a pendência que o jogador responde. */
 export function apresentarStorylet(
   e: EstadoVida,
@@ -134,15 +161,7 @@ export function apresentarStorylet(
 ): void {
   marcarVisto(e, s, ator);
   const ctx = contexto(e, { ator, valores: s.valores, trechos: s.trechos });
-  const opcoes: OpcaoPendente[] = (s.escolhas ?? []).map((esc) => {
-    const disponivel = atende(esc.condicoes, e, ator);
-    const opcao: OpcaoPendente = { texto: capitalizar(renderizar(esc.texto, ctx)), disponivel };
-    if (!disponivel) {
-      const motivo = esc.bloqueio ? renderizar(esc.bloqueio, ctx) : motivoBloqueio(esc.condicoes, e);
-      if (motivo) opcao.motivo = motivo;
-    }
-    return opcao;
-  });
+  const opcoes = opcoesDe(e, s, ator, ctx);
   if (opcoes.length > 0 && !opcoes.some((o) => o.disponivel)) opcoes[0]!.disponivel = true;
   e.pendente = {
     storylet: s.id,
@@ -154,6 +173,49 @@ export function apresentarStorylet(
     ...(ator ? { ator } : {}),
     ...(inflacao !== undefined ? { inflacao } : {}),
   };
+}
+
+/** O que a entrada da escolha leva além do desfecho: de onde veio e o texto que o jogador viu. */
+export interface BaseDaEscolha {
+  tipo: TipoEntrada;
+  ref: string;
+  instancia: string;
+  texto: string;
+  /** O texto da opção como apareceu. */
+  opcao: string;
+  ator?: string | undefined;
+  causas?: number[];
+  inflacao?: number | undefined;
+}
+
+/** Aplica a escolha (efeitos certos, teste e desfecho) e lança a entrada no livro, com a causa do jogador. */
+export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: number, base: BaseDaEscolha): Entrada {
+  const esc = s.escolhas![indice]!;
+  const ator = base.ator;
+  const entrada = novaEntrada(e, {
+    tipo: base.tipo,
+    causa: 'escolha',
+    ref: base.ref,
+    instancia: base.instancia,
+    texto: base.texto,
+    ...(ator ? { ator } : {}),
+    ...(base.causas?.length ? { causas: base.causas } : {}),
+    ...(base.inflacao !== undefined ? { inflacao: base.inflacao } : {}),
+  });
+  const reg: Mudanca[] = [];
+  const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
+  aplicarEfeitos(e, c, esc.efeitos, ef);
+  const resultado: Resultado = esc.teste
+    ? (aleatorio(e.rng) < chanceDeSucesso(esc.teste, e, ator) ? esc.sucesso : esc.fracasso)!
+    : esc.resultado!;
+  aplicarEfeitos(e, c, resultado.efeitos, ef);
+  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos });
+  entrada.resumo = renderizar(s.resumo, ctx);
+  entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
+  entrada.resultado = capitalizar(renderizar(resultado.texto, ctx));
+  lancar(e, entrada, reg);
+  morrerSePreciso(e, c, resultado.efeitos?.morte ?? esc.efeitos?.morte, entrada.id);
+  return entrada;
 }
 
 /** O jogador responde à pendência: efeitos da escolha, teste, desfecho e entrada no livro. */
@@ -169,29 +231,15 @@ export function escolher(e: EstadoVida, c: Conteudo, indice: number): void {
   const esc = s.escolhas[indice];
   const opcao = p.opcoes[indice];
   if (!esc || !opcao?.disponivel) throw new Error('Essa escolha não está disponível.');
-  const ator = p.ator;
-  const entrada = novaEntrada(e, {
+  e.pendente = null;
+  aplicarEscolha(e, c, s, indice, {
     tipo: p.causa === 'npc' ? 'npc' : 'evento',
-    causa: 'escolha',
     ref: s.id,
     instancia: p.instancia,
     texto: p.texto,
-    ...(ator ? { ator } : {}),
-    ...(p.causas.length > 0 ? { causas: p.causas } : {}),
-    ...(p.inflacao !== undefined ? { inflacao: p.inflacao } : {}),
+    opcao: opcao.texto,
+    ator: p.ator,
+    causas: p.causas,
+    inflacao: p.inflacao,
   });
-  const reg: Mudanca[] = [];
-  const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
-  aplicarEfeitos(e, c, esc.efeitos, ef);
-  const resultado: Resultado = esc.teste
-    ? (aleatorio(e.rng) < chanceDeSucesso(esc.teste, e, ator) ? esc.sucesso : esc.fracasso)!
-    : esc.resultado!;
-  aplicarEfeitos(e, c, resultado.efeitos, ef);
-  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos });
-  entrada.resumo = renderizar(s.resumo, ctx);
-  entrada.escolha = { indice, texto: opcao.texto, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
-  entrada.resultado = capitalizar(renderizar(resultado.texto, ctx));
-  e.pendente = null;
-  lancar(e, entrada, reg);
-  morrerSePreciso(e, c, resultado.efeitos?.morte ?? esc.efeitos?.morte, entrada.id);
 }
