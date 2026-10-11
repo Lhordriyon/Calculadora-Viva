@@ -97,6 +97,9 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // truste: compras de concorrentes
   'empresa.aquisicoes',
   'empresa.truste',
+  // o ano dos bens: o valor anda com o mercado e o financiamento é pago
+  'bem.valor',
+  'bem.financiado',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país)
   'pais.expansao',
   'pais.recessao',
@@ -120,7 +123,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...de(TODOS, 'saude'),
   ...de(PESSOAS, 'vinculo'),
   ...de(TODOS, 'faleceu'),
-  ...de(PAIS_E_AVO, 'dinheiro'),
+  // O dinheiro dos pais e da avó anda todo ano; o de qualquer pessoa vai para os herdeiros quando ela morre.
+  ...de(PESSOAS, 'dinheiro'),
   ...de(PAIS_E_AVO, 'renda'),
   ...de(DOENTES, 'doente'),
   ...de(['mae', 'pai'], 'desempregado'),

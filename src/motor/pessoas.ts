@@ -34,6 +34,19 @@ function darTraco(e: EstadoVida, c: Conteudo, en: Entidade): void {
   en.n['saude'] = Math.max(20, Math.min(98, (en.n['saude'] ?? 75) + traco.saude));
 }
 
+/**
+ * Troca quem ocupa o papel, com tudo no livro: quem sai deixa os números
+ * (marcados `saida`) e quem chega entra com os seus (o vínculo como o chip
+ * mostra; o resto marcado `nascimento`). Assim, para toda entidade, o começo
+ * mais a soma das variações dá o estado de agora.
+ */
+function ocuparPapel(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[]): void {
+  const antes = e.entidades[papel];
+  if (antes) for (const [campo, v] of Object.entries(antes.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: -v, r: 'saida' });
+  e.entidades[papel] = en;
+  for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: v, ...(campo === 'vinculo' ? {} : { r: 'nascimento' }) });
+}
+
 /** Cria um personagem novo (amor, filho, paixão, bicho) com um começo de vínculo. */
 export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, reg: Mudanca[]): void {
   const idadeEu = e.idade;
@@ -51,8 +64,7 @@ export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, re
     if (papel !== 'filho') en.n['dinheiro'] = 0;
     if (COM_TRACO.has(papel)) darTraco(e, c, en);
   }
-  e.entidades[papel] = en;
-  if (papel !== 'pet') reg.push({ c: `${papel}.vinculo`, d: en.n['vinculo']! });
+  ocuparPapel(e, papel, en, reg);
 }
 
 /** Copia um personagem para outro papel (o primeiro amor vira o amor atual). */
@@ -60,9 +72,8 @@ export function promover(e: EstadoVida, c: Conteudo, de: string, para: string, r
   const origem = e.entidades[de];
   if (!origem) return;
   const novo = structuredClone({ ...origem, id: para });
-  e.entidades[para] = novo;
   if (COM_TRACO.has(para) && !novo.t['traco']) darTraco(e, c, novo);
-  reg.push({ c: `${para}.vinculo`, d: novo.n['vinculo'] ?? 0 });
+  ocuparPapel(e, para, novo, reg);
 }
 
 /** Para onde vai o dinheiro de quem morre: cônjuge, depois descendentes; o resto vai para quem joga. */
