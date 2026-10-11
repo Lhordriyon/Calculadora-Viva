@@ -3,7 +3,7 @@ import { NOMES_VERBO } from '../motor/acoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Entrada, EstadoVida } from '../motor/tipos.ts';
 import { conteudo } from '../conteudo.ts';
-import { avisosDeInflacao, chipDoBalanco, chipsDe, type Chip } from './formato.ts';
+import { avisosDeInflacao, chipDoBalanco, chipsDe, visivel, type Chip } from './formato.ts';
 
 /** O verbo de uma ação ("Estudar"), para a etiqueta da entrada. */
 function verboDe(h: Entrada, c: Conteudo): string | undefined {
@@ -70,7 +70,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
     const m = new Map<number, Chip>();
     let regra: Entrada | undefined;
     for (const h of historico) {
-      if (h.tipo === 'regra') regra = h;
+      if (!visivel(h)) regra = h;
       else if (regra && h.idade === regra.idade) {
         const chip = chipDoBalanco(regra, participacao);
         if (chip) m.set(h.id, chip);
@@ -82,7 +82,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
   return (
     <ol class="linha-do-tempo" aria-label="Linha do tempo da vida">
       {historico.map((h, i) =>
-        h.tipo === 'regra' ? null : (
+        !visivel(h) ? null : (
           <Item h={h} nova={i >= novasDesde} inflacao={inflacao.has(h.id)} nomeDe={nomeDe} balanco={balancos.get(h.id) ?? null} key={h.id} />
         ),
       )}

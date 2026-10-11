@@ -66,6 +66,15 @@ export function variacoes(h: Entrada): Map<string, number> {
   return d;
 }
 
+/**
+ * A entrada aparece na linha do tempo? Só a das regras miúdas do ano (`ano`)
+ * fica escondida; as regras que contam algo (promoção, fim de mandato, fim de
+ * carreira) aparecem, para a renda não mudar sem explicação.
+ */
+export function visivel(h: Entrada): boolean {
+  return !(h.tipo === 'regra' && h.ref === 'ano');
+}
+
 /** Os efeitos visíveis de uma entrada, para os chips da linha do tempo. */
 export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefined, mostrarInflacao = false): Chip[] {
   const chips: Chip[] = [];
