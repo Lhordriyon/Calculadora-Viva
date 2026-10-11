@@ -3,6 +3,7 @@ import { carreiraDe, chanceDeEntrar, faixaDeIdade, nomeDoCargo, noGenero, salari
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { cargoDe, chanceDeEleicao, ondeDoCargo, proximaEleicao } from '../motor/poder.ts';
+import { POPULARIDADE_CRITICA } from '../motor/regras.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
@@ -136,7 +137,7 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
               {noGenero(cargo.nome, g)} {ondeDoCargo(vida, cargo)}
             </dd>
             <dt>Aprovação</dt>
-            <dd class={(eu.n['popularidade'] ?? 50) < 25 ? 'ruim' : ''}>{Math.round(eu.n['popularidade'] ?? 50)}%</dd>
+            <dd class={(eu.n['popularidade'] ?? 50) < POPULARIDADE_CRITICA + 5 ? 'ruim' : ''}>{Math.round(eu.n['popularidade'] ?? 50)}%</dd>
             {cargo.esfera !== 'vitalicio' && (
               <>
                 <dt>Mandato</dt>

@@ -52,7 +52,7 @@ const PESSOA: Record<string, DefCampo> = {
   influencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quanto gente que você não conhece sabe quem você é (0 a 100). */
   fama: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
-  /** Aprovação de quem governa (0 a 100); abaixo de 20 o cargo balança. */
+  /** Imagem pública (0 a 100): sobe com o que se faz pelos outros e cai com escândalo; pesa em toda eleição. No cargo, é a aprovação de quem governa: abaixo de POPULARIDADE_CRITICA, o cargo balança. */
   popularidade: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Cargo de poder (id de mundo.json › cargos: vereador, prefeito, presidente, rei, ditador…) e anos de mandato que faltam. */
   cargo: { tipo: 'texto', sistema: 'poder' },

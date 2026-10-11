@@ -47,11 +47,11 @@ export function proximaEleicao(ano: number, def: DefCargo): number {
   return ano + ((resto - (ano % 4) + 4) % 4);
 }
 
-/** Chance de ganhar: influência contra a dificuldade do cargo, a aparência e, na reeleição, a popularidade. */
+/** Chance de ganhar: influência contra a dificuldade do cargo, a imagem pública (na reeleição, a aprovação do mandato) e a aparência. */
 export function chanceDeEleicao(e: EstadoVida, def: DefCargo): number {
   const eu = e.entidades['eu']!;
-  const reeleicao = eu.t['cargo'] === def.id ? ((eu.n['popularidade'] ?? 50) - 50) / 3 : 0;
-  const x = ((eu.n['influencia'] ?? 0) - def.dificuldade + reeleicao) / 7 + ((eu.n['aparencia'] ?? 50) - 50) / 50;
+  const imagem = ((eu.n['popularidade'] ?? 50) - 50) / 3;
+  const x = ((eu.n['influencia'] ?? 0) - def.dificuldade + imagem) / 7 + ((eu.n['aparencia'] ?? 50) - 50) / 50;
   return Math.min(0.95, Math.max(0.03, 1 / (1 + Math.exp(-x))));
 }
 
@@ -80,7 +80,8 @@ function assumir(e: EstadoVida, reg: Mudanca[], def: DefCargo, origem: number): 
   definirNumero(e, reg, 'eu', 'renda', def.salario);
   definirTexto(e, reg, 'eu', 'ocupacao', noGenero(def.nome, eu.genero));
   definirTexto(e, reg, 'eu', 'setor', 'publico');
-  definirNumero(e, reg, 'eu', 'popularidade', 55);
+  // O mandato começa com a imagem de quem ganhou, mais a lua de mel (quem venceu tem ao menos o crédito de quem votou).
+  definirNumero(e, reg, 'eu', 'popularidade', Math.min(90, Math.max(45, (eu.n['popularidade'] ?? 50) + 5)));
   ganhar(e, reg, 'eu', 'politico', origem);
 }
 
