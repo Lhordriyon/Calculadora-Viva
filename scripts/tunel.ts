@@ -25,7 +25,8 @@ import { aleatorio, criarRng, misturar, type Rng } from '../src/motor/rng.ts';
 import type { Entrada, EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
-import { pontosDeVirada } from '../src/motor/virada.ts';
+import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
+import { empresaDe } from '../src/motor/empresa.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
 import { assinaturasPorBloco, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
@@ -187,6 +188,13 @@ interface Vida {
   /** Jogadas feitas (brincar de deus) e quantas delas causaram algum acontecimento depois. */
   jogadas: string[];
   jogadasComReacao: number;
+  /** Acontecimentos (eventos, iniciativas dos outros, a morte) e quantos mostram o porquê na linha do tempo. */
+  acontecimentos: number;
+  comPorque: number;
+  /** A empresa viva na morte de quem joga: o quanto dependia dele (0 a 100) e quanto do valor perdeu com a morte. */
+  empresaNaMorte: { dependencia: number; perda: number; valor: number } | null;
+  /** Alguma escolha (evento ou jogada) mudou o quanto a empresa depende de quem manda. */
+  decidiuQuemManda: boolean;
 }
 
 /** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
@@ -313,6 +321,18 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       for (let a = 18; a < e.idade; a++) if (!comEvento.has(a)) vazios++;
       return e.idade > 18 ? vazios / (e.idade - 18) : 0;
     })(),
+    acontecimentos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'morte').length,
+    comPorque: e.historico.filter((h) => porqueDe(h, porId) !== null).length,
+    empresaNaMorte: (() => {
+      const emp = empresaDe(e);
+      if (!emp) return null;
+      const d = -(e.historico.find((h) => h.ref === 'empresa:sem_dono')?.mudancas?.find((m) => m.c === 'empresa.valor')?.d ?? 0);
+      const valor = emp.n['valor'] ?? 0;
+      return { dependencia: emp.n['dependencia'] ?? 0, perda: valor + d > 0 ? d / (valor + d) : 0, valor: valor + d };
+    })(),
+    decidiuQuemManda: e.historico.some(
+      (h) => h.causa === 'escolha' && h.mudancas?.some((m) => m.c === 'empresa.dependencia') && !h.mudancas.some((m) => m.c === 'empresa.fundada'),
+    ),
     fundou: e.historico.some((h) => h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === 1)),
     quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
     vendeu: 'vendeu_empresa' in q,
@@ -413,7 +433,9 @@ c.mundo.linhagens.forEach((l) => {
 
 // Brincar de deus: quem nasce bilionário ou trilionário e mexe no mundo com o dinheiro.
 // Também só contam para storylet morto (e para a tabela de origens), e medem as jogadas.
-const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 5));
+// Metade dos jogadores por classe e estratégia (~500 vidas): com 200, a opção mais rara de uma jogada rara
+// (salvar o país, que pede crise e R$ 200 bilhões) saía 1 ou 2 vezes, e a reação dela às vezes morria por sorteio.
+const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 2));
 const fortunas: Vida[] = [];
 for (const classe of [6, 7]) {
   ESTRATEGIAS.forEach((estrategia, s) => {
@@ -660,6 +682,18 @@ const jogadasPorVida = totalDeJogadas / Math.max(1, jogadores.length);
 const jogadasComReacao = jogadores.reduce((s, v) => s + v.jogadasComReacao, 0) / Math.max(1, totalDeJogadas);
 const jogadasVistas = new Set([...fortunas, ...vidas, ...escolhidas.map((x) => x.vida)].flatMap((v) => v.jogadas));
 const mortesEmJogada = fortunas.filter((v) => /Lua|Marte|foguete/.test(v.causaMorte)).length;
+/** Incremento 6: quem manda na empresa (todas as vidas jogadas: sorteadas, de origem escolhida e de fortuna) e o porquê. */
+const todasAsVidas = [...vidas, ...escolhidas.map((x) => x.vida)];
+const donosNaMorte = todasAsVidas.filter((v) => v.empresaNaMorte !== null && v.empresaNaMorte.valor >= 1e6);
+const decidiramQuemManda = donosNaMorte.filter((v) => v.decidiuQuemManda).length / Math.max(1, donosNaMorte.length);
+const dependenciasNaMorte = ordenar(donosNaMorte.map((v) => v.empresaNaMorte!.dependencia));
+/** As jogadas na empresa existem a partir de R$ 15 milhões: é onde os dois caminhos estão abertos. */
+const donosGrandes = donosNaMorte.filter((v) => v.empresaNaMorte!.valor >= 1.5e7);
+const delegaram = donosGrandes.filter((v) => v.empresaNaMorte!.dependencia <= 30).length / Math.max(1, donosGrandes.length);
+const centralizaram = donosGrandes.filter((v) => v.empresaNaMorte!.dependencia >= 60).length / Math.max(1, donosGrandes.length);
+const perdaNaMorte = media(donosNaMorte.map((v) => v.empresaNaMorte!.perda));
+const porqueVisivel = vidas.reduce((s, v) => s + v.comPorque, 0) / Math.max(1, vidas.reduce((s, v) => s + v.acontecimentos, 0));
+const porquesPorVida = media(vidas.map((v) => v.comPorque));
 
 // ---------------------------------------------------------------- portões
 
@@ -701,6 +735,16 @@ const portoes5 = [
   ['Toda jogada acontece em alguma vida', jogadasVistas.size === c.jogadas.length, `${jogadasVistas.size} de ${c.jogadas.length}`],
   ['Quem nasce com fortuna brinca de deus: ≥ 60% das vidas fazem uma jogada', fortunaJoga >= 0.6, `${pct(fortunaJoga)} (${num(jogadasPorVida, 1)} jogadas por vida, ${jogadores.length} vidas)`],
   ['O mundo responde: ≥ 50% das jogadas causam um acontecimento depois', jogadasComReacao >= 0.5, `${pct(jogadasComReacao)} de ${totalDeJogadas} jogadas`],
+] as const;
+/** Incremento 6 (as 250 ideias do dono, 11/10/2026): quem manda na empresa e o porquê de cada acontecimento. */
+const portoes6 = [
+  ['Quem manda é decisão: ≥ 30% de quem morre com empresa de R$ 1 milhão mudou a dependência numa escolha', decidiramQuemManda >= 0.3, `${pct(decidiramQuemManda)} de ${donosNaMorte.length} vidas`],
+  [
+    'As duas histórias existem: entre quem morre com empresa de R$ 15 milhões, ≥ 10% delegou (dependência ≤ 30) e ≥ 10% centralizou (≥ 60)',
+    delegaram >= 0.1 && centralizaram >= 0.1,
+    `${pct(delegaram)} delegaram, ${pct(centralizaram)} centralizaram (${donosGrandes.length} vidas)`,
+  ],
+  ['O porquê à vista: ≥ 20% dos acontecimentos mostram a causa de um ano anterior', porqueVisivel >= 0.2, `${pct(porqueVisivel)} (${num(porquesPorVida, 1)} por vida)`],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
@@ -772,6 +816,20 @@ l();
   const nomes = [...contagem].sort((a, b) => b[1] - a[1]).map(([id, n]) => `${c.porId.get(id)?.rotulo ?? id} (${n})`);
   l(`- **Jogadas mais feitas pelos robôs:** ${nomes.join(', ') || 'nenhuma'}.`);
   l(`- **Mortes numa jogada (a caminho da Lua ou de Marte):** ${mortesEmJogada} de ${fortunas.length} vidas.`);
+}
+l();
+l('## Portões do incremento 6 (quem manda na empresa e o porquê)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+{
+  const contagem = new Map<string, number>();
+  for (const v of todasAsVidas) for (const id of v.jogadas) if (Object.keys(c.porId.get(id)?.condicoes ?? {}).some((k) => k.startsWith('empresa.'))) contagem.set(id, (contagem.get(id) ?? 0) + 1);
+  const nomes = [...contagem].sort((a, b) => b[1] - a[1]).map(([id, n]) => `${c.porId.get(id)?.rotulo ?? id} (${n})`);
+  l(`- **Jogadas na empresa mais feitas pelos robôs:** ${nomes.join(', ') || 'nenhuma'}.`);
+  l(`- **Na morte de quem manda:** a empresa perde em média ${pct(perdaNaMorte)} do valor; dependência p10 / mediana / p90: ${num(percentil(dependenciasNaMorte, 10), 0)} / ${num(percentil(dependenciasNaMorte, 50), 0)} / ${num(percentil(dependenciasNaMorte, 90), 0)}.`);
 }
 l();
 l('## Life simulator');
@@ -994,6 +1052,7 @@ for (const [nome, ok, detalhe] of portoes) console.log(`${ok ? '✓' : '·'} por
 for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} portão 2: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes3) console.log(`${ok ? '✓' : '·'} portão 3: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes5) console.log(`${ok ? '✓' : '·'} portão 5: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes6) console.log(`${ok ? '✓' : '·'} portão 6: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

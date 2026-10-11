@@ -20,7 +20,7 @@ import type { Conteudo } from './conteudo.ts';
 import { PADROES, PERFIS, RETIRADAS, VERBOS, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
-import { jogadasDe } from './fortuna.ts';
+import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
 import { REVERSAO_TRACAO } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
@@ -240,7 +240,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   }
   const daEmpresa = decidirEmpresa(estrategia, e, c, rng);
   ops.push(...daEmpresa);
-  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng), ...decidirJogada(estrategia, e, c, rng));
+  ops.push(...decidirCarreira(estrategia, e, c, rng), ...decidirPoder(estrategia, e, c, rng), ...decidirBens(estrategia, e, c, rng), ...decidirJogada(estrategia, e, c, rng), ...decidirQuemManda(estrategia, e, c, rng));
   // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência).
   if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < 0.03) {
     const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
@@ -347,14 +347,49 @@ function decidirJogada(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: 
   const chance = estrategia === 'cautelosa' ? 0.12 : estrategia === 'arriscada' ? 0.3 : 0.25;
   if (aleatorio(rng) >= chance) return [];
   const teto = liquidoDe(e) * (estrategia === 'cautelosa' ? 0.08 : estrategia === 'arriscada' ? 0.35 : 0.5);
-  const opcoes = jogadasDe(e, c).flatMap((j) =>
-    j.opcoes.map((o, i) => ({ id: j.s.id, i, custo: j.custos[i]!, livre: o.disponivel })).filter((x) => x.livre && x.custo <= teto && (x.custo > 0 || estrategia === 'aleatoria')),
-  );
-  if (opcoes.length === 0) return [];
+  const jogadas = jogadasDe(e, c)
+    .filter((j) => !ehDaEmpresa(j.s))
+    .map((j) =>
+      j.opcoes.map((o, i) => ({ id: j.s.id, i, custo: j.custos[i]!, livre: o.disponivel })).filter((x) => x.livre && x.custo <= teto && (x.custo > 0 || estrategia === 'aleatoria')),
+    )
+    .filter((opcoes) => opcoes.length > 0);
+  if (jogadas.length === 0) return [];
+  // Como quem joga: escolhe o que fazer (qualquer jogada que caiba no bolso) e, dentro dela, a opção do seu jeito:
+  // a cautelosa a mais barata, a arriscada a mais cara, a aleatória qualquer uma.
+  const opcoes = sortear(rng, jogadas);
   const alvo =
     estrategia === 'aleatoria'
       ? sortear(rng, opcoes)
       : [...opcoes].sort((a, b) => (estrategia === 'arriscada' ? b.custo - a.custo : a.custo - b.custo))[0]!;
+  return [{ tipo: 'jogada', id: alvo.id, escolha: alvo.i }];
+}
+
+/** O quanto a opção mexe na dependência da empresa (negativo é delegar). */
+function deltaDependencia(e: EstadoVida, esc: Escolha | undefined): number {
+  const v = (esc?.efeitos as Record<string, unknown> | undefined)?.['empresa.dependencia'];
+  if (typeof v === 'number') return v;
+  if (v && typeof v === 'object' && 'definir' in v) return Number((v as { definir: unknown }).definir) - (empresaDe(e)?.n['dependencia'] ?? 0);
+  return 0;
+}
+
+/**
+ * Quem manda na empresa (as jogadas da seção Empresa), em um ano a cada cinco
+ * para quem tem uma de R$ 15 milhões: a cautelosa delega (a empresa sobrevive
+ * a ela); a arriscada quer crescer, então centraliza enquanto a empresa é
+ * pequena (o talento pesa mais) e delega quando ela passa de R$ 100 milhões
+ * (a mesa do dono vira o freio); a aleatória sorteia.
+ */
+function decidirQuemManda(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (e.idade < 22 || (empresaDe(e)?.n['valor'] ?? 0) < 1.5e7) return [];
+  if (aleatorio(rng) >= 0.2) return [];
+  const teto = liquidoDe(e) * 0.2;
+  const opcoes = jogadasDe(e, c)
+    .filter((j) => ehDaEmpresa(j.s))
+    .flatMap((j) => j.opcoes.map((o, i) => ({ id: j.s.id, i, livre: o.disponivel && j.custos[i]! <= teto, delta: deltaDependencia(e, j.s.escolhas?.[i]) })))
+    .filter((x) => x.livre);
+  if (opcoes.length === 0) return [];
+  const centralizar = estrategia === 'arriscada' && (empresaDe(e)?.n['valor'] ?? 0) < 1e8;
+  const alvo = estrategia === 'aleatoria' ? sortear(rng, opcoes) : [...opcoes].sort((a, b) => (centralizar ? b.delta - a.delta : a.delta - b.delta))[0]!;
   return [{ tipo: 'jogada', id: alvo.id, escolha: alvo.i }];
 }
 
