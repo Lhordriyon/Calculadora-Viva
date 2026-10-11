@@ -21,7 +21,7 @@ import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
-import { gerarOrigem, type EscolhaOrigem } from './origem.ts';
+import { gerarOrigem, limparNome, type EscolhaOrigem } from './origem.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   FELICIDADE_BASE,
@@ -75,7 +75,8 @@ function textosDeNascimento(e: EstadoVida, c: Conteudo): Conteudo['mundo']['nasc
 
 export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   const rng = criarRng(op.semente);
-  const genero: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
+  const escolha = op.origem;
+  const genero: Genero = escolha?.genero === 'f' || escolha?.genero === 'm' ? escolha.genero : aleatorio(rng) < 0.5 ? 'f' : 'm';
   const e: EstadoVida = {
     versao: VERSAO_ESTADO,
     semente: op.semente,
@@ -95,8 +96,9 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
     somaFelicidade: 0,
     proximoId: 1,
   };
-  e.entidades['eu'] = novaEntidade({ id: 'eu', tipo: 'pessoa', nome: sortear(rng, c.mundo.nomes[genero]), genero, nascimento: op.ano, vivo: true });
-  e.sobrenome = `${sortear(rng, c.mundo.sobrenomes)} ${sortear(rng, c.mundo.sobrenomes)}`;
+  const nome = limparNome(escolha?.nome) || sortear(rng, c.mundo.nomes[genero]);
+  e.entidades['eu'] = novaEntidade({ id: 'eu', tipo: 'pessoa', nome, genero, nascimento: op.ano, vivo: true });
+  e.sobrenome = limparNome(escolha?.sobrenome) || `${sortear(rng, c.mundo.sobrenomes)} ${sortear(rng, c.mundo.sobrenomes)}`;
   gerarOrigem(e, c, op.origem);
   sortearFaseInicial(e, c);
   e.historico.push({

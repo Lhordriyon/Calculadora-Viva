@@ -1,8 +1,8 @@
 /**
  * Origem procedural: classe (8, da extrema pobreza à família trilionária) × tipo de família (4) × traços. Sorteada em
- * um toque; quem quiser escolhe a classe e o tipo de família. A origem
- * decide quem são os pais (idade, ocupação, renda, dinheiro, saúde, traço,
- * vínculo), a avó e o amigo de infância, a cidade e o traço de quem joga.
+ * um toque; quem quiser cria o personagem: nome, sobrenome, gênero, cidade, classe, família, linhagem, irmãos,
+ * temperamento e talentos. O que não for escolhido é sorteado. A origem decide quem são os pais (idade, ocupação,
+ * renda, dinheiro, saúde, traço, vínculo), a avó e o amigo de infância.
  */
 import type { Conteudo } from './conteudo.ts';
 import { TIPOS_FAMILIA, type TipoFamilia } from './constantes.ts';
@@ -19,6 +19,55 @@ export interface EscolhaOrigem {
   familia?: TipoFamilia;
   /** Linhagem (mundo.json › linhagens): coroa, regime, gente famosa. No começo em um toque, às vezes vem sorteada. */
   linhagem?: string;
+  /** Nome e sobrenome de quem joga (o sobrenome é o da família toda) e o gênero. */
+  nome?: string;
+  sobrenome?: string;
+  genero?: Genero;
+  /** Cidade (pelo nome, de mundo.json › cidades). */
+  cidade?: string;
+  /** Temperamento (id de mundo.json › tracosJogador). */
+  traco?: string;
+  /** Irmãos (0 a 6): dividem a herança e aparecem na infância. */
+  irmaos?: number;
+  /** Talentos: 0 (pouco), 1 (médio) ou 2 (muito) em cada atributo, somando no máximo TALENTOS_DA_CRIACAO. */
+  talentos?: Talentos;
+}
+
+export type Talento = 'saude' | 'inteligencia' | 'aparencia' | 'felicidade';
+export type Talentos = Partial<Record<Talento, number>>;
+/** Pontos de talento na criação: quatro atributos médios, ou um muito à custa de outro pouco. */
+export const TALENTOS_DA_CRIACAO = 4;
+/** O atributo ao nascer em cada nível de talento (pouco, médio, muito), antes da classe e do temperamento. */
+const NIVEIS: Record<Talento, readonly [number, number, number]> = {
+  saude: [72, 80, 89],
+  felicidade: [55, 65, 76],
+  inteligencia: [20, 30, 44],
+  aparencia: [36, 50, 66],
+};
+
+/** Talentos válidos (cada um de 0 a 2, a soma dentro dos pontos) ou nada: aí o atributo é sorteado. */
+export function talentosValidos(t: Talentos | undefined): Talentos | undefined {
+  if (!t) return undefined;
+  const niveis = Object.values(t);
+  if (niveis.some((n) => !Number.isInteger(n) || n < 0 || n > 2)) return undefined;
+  return niveis.reduce((s, n) => s + n, 0) <= TALENTOS_DA_CRIACAO ? t : undefined;
+}
+
+/** Nome digitado por quem joga: só letras, espaço, hífen e apóstrofo (o texto do jogo não pode virar modelo), até 24 caracteres. */
+export function limparNome(s: string | undefined): string {
+  return (s ?? '')
+    .replace(/[^\p{L}' -]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 24)
+    .trim();
+}
+
+/** As cidades por região, para a escolha. */
+export function cidadesPorRegiao(c: Conteudo): { regiao: string; cidades: { nome: string; uf: string }[] }[] {
+  return REGIOES_DO_BRASIL.map((regiao) => ({ regiao, cidades: c.mundo.cidades.filter((x) => REGIOES[x.uf] === regiao).map((x) => ({ nome: x.nome, uf: x.uf })) })).filter(
+    (g) => g.cidades.length > 0,
+  );
 }
 
 const REGIOES: Record<string, string> = {
@@ -68,7 +117,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   const eu = e.entidades['eu']!;
 
   // ---- lugar e país
-  const cidade = sortear(rng, mundo.cidades);
+  const cidade = mundo.cidades.find((x) => x.nome === op.cidade) ?? sortear(rng, mundo.cidades);
   const regiao = REGIOES[cidade.uf] ?? 'sudeste';
   const capital = cidade.marcas.includes('capital');
   const lugar = novaEntidade({ id: 'lugar', tipo: 'lugar', nome: cidade.nome });
@@ -172,18 +221,27 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   }
 
   // ---- quem joga
-  const traco = mundo.tracosJogador[sortearIndice(rng, mundo.tracosJogador.map((t) => t.peso))]!;
+  const traco = mundo.tracosJogador.find((t) => t.id === op.traco) ?? mundo.tracosJogador[sortearIndice(rng, mundo.tracosJogador.map((t) => t.peso))]!;
   eu.t['traco'] = traco.id;
   eu.t['familia'] = tipo.id;
   eu.t['ocupacao'] = '';
   eu.n['classe_origem'] = iClasse;
   // Famílias mais pobres têm, em média, mais filhos.
-  eu.n['irmaos'] = Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2, 1.4, 1.3][iClasse] ?? 1.5, 1.1))));
+  eu.n['irmaos'] =
+    op.irmaos !== undefined && Number.isInteger(op.irmaos)
+      ? limitar(op.irmaos, 0, 6)
+      : Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2, 1.4, 1.3][iClasse] ?? 1.5, 1.1))));
   eu.n['riqueza_origem'] = riqueza;
-  eu.n['saude'] = Math.round(limitar(normal(rng, 80, 7) + classe.saude + traco.saude, 40, 99));
-  eu.n['felicidade'] = Math.round(limitar(normal(rng, 65, 8) + traco.felicidade, 25, 97));
-  eu.n['inteligencia'] = Math.round(limitar(normal(rng, 30, 10) + traco.inteligencia, 5, 80));
-  eu.n['aparencia'] = Math.round(limitar(normal(rng, 50, 14) + traco.aparencia, 8, 97));
+  // Talento escolhido: o nível dá a média, e sobra um pouco de sorte; sem escolha, o atributo é sorteado como sempre.
+  const talentos = talentosValidos(op.talentos);
+  const base = (t: Talento, media: number, desvio: number): number => {
+    const nivel = talentos?.[t];
+    return nivel !== undefined ? normal(rng, NIVEIS[t][nivel]!, desvio / 3) : normal(rng, media, desvio);
+  };
+  eu.n['saude'] = Math.round(limitar(base('saude', 80, 7) + classe.saude + traco.saude, 40, 99));
+  eu.n['felicidade'] = Math.round(limitar(base('felicidade', 65, 8) + traco.felicidade, 25, 97));
+  eu.n['inteligencia'] = Math.round(limitar(base('inteligencia', 30, 10) + traco.inteligencia, 5, 80));
+  eu.n['aparencia'] = Math.round(limitar(base('aparencia', 50, 14) + traco.aparencia, 8, 97));
 }
 
 export function tipoDeFamiliaValido(x: string): x is TipoFamilia {

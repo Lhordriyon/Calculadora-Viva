@@ -1224,6 +1224,50 @@ a.botao {
   opacity: 0.5;
 }
 
+/* Criar o personagem: nome, sobrenome e cidade em campos grandes; talentos em fileiras. */
+.campos-nome {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.campo {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 2px solid var(--borda);
+  border-radius: 14px;
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  font-size: 16px;
+}
+
+.campo:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 1px;
+}
+
+.talentos {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.talento {
+  display: grid;
+  gap: 4px;
+}
+
+.talento > span {
+  font-weight: 600;
+}
+
+.chip-origem:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .titulo-nobre {
   color: var(--destaque);
   font-weight: 700;
