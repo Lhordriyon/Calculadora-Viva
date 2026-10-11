@@ -260,3 +260,14 @@ export function volatilidadeDaEmpresa(valor: number): number {
 export function precoDeVenda(faseEmpresa: number): number {
   return Math.max(0.5, 1 + 2 * faseEmpresa);
 }
+
+// ---- o tamanho do mundo (auditoria de 11/10: sem isto, a empresa e a fortuna cresciam sem fim)
+
+/** O tamanho do mercado: nenhuma empresa passa disso (é o valor das maiores do mundo); perto do teto, crescer fica difícil. */
+export const TETO_EMPRESA = 2e13;
+/** Quanto o mercado comporta de dinheiro investido de uma só pessoa: o excedente fica parado (nem rende, nem perde). */
+export const CAPACIDADE_DO_MERCADO = 5e12;
+/** Gente que uma empresa consegue empregar no máximo (as maiores do mundo empregam uns 3 milhões). */
+export const MAX_FUNCIONARIOS = 3e6;
+/** Valor da empresa por pessoa empregada, enquanto ela é pequena. */
+export const VALOR_POR_FUNCIONARIO = 150000;

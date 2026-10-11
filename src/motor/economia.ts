@@ -9,6 +9,7 @@ import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } fro
 import { anotar } from './livro.ts';
 import { normal, type Rng } from './rng.ts';
 import {
+  CAPACIDADE_DO_MERCADO,
   GASTO_DA_SOBRA,
   GASTO_DO_PATRIMONIO,
   IDADE_GASTO_VELHICE,
@@ -143,7 +144,10 @@ export function economiaDoAno(
   n['dinheiro'] = dinheiroAntes / (1 + inflacao);
   const comida = dinheiroAntes - n['dinheiro'];
   // Cada classe investida rende o que o mercado do ano deu a ela (acima da inflação).
-  for (const a of ATIVOS) if (n[a]) n[a] = n[a] * (1 + (retornos[a] ?? 0));
+  // Acima do que o mercado comporta, o excedente fica parado: rende (ou perde) só a parte que cabe.
+  const aplicado = ATIVOS.reduce((s, a) => s + Math.max(0, n[a] ?? 0), 0);
+  const cabe = aplicado > CAPACIDADE_DO_MERCADO ? CAPACIDADE_DO_MERCADO / aplicado : 1;
+  for (const a of ATIVOS) if (n[a]) n[a] = n[a] * (1 + (retornos[a] ?? 0) * cabe);
   const renda = n['renda'] ?? 0;
   const limite = limiteDeCredito(renda);
   const comJuros = Math.min(n['divida'] ?? 0, limite);

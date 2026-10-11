@@ -31,6 +31,7 @@ import {
   PISO_EMPRESA,
   PORTE_GRANDE,
   REVERSAO_TRACAO,
+  TETO_EMPRESA,
   TALENTO_TRACAO,
   precoDeVenda,
   volatilidadeDaEmpresa,
@@ -195,7 +196,9 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: DefFase, reg: M
   const valor = n['valor'] ?? 0;
   const tracao = n['tracao'] ?? 0;
   const sorte = normal(e.rng, 0, volatilidadeDaEmpresa(valor) * (setor?.risco ?? 1));
-  const crescimento = Math.max(PIOR_ANO_EMPRESA, tracao / 100 + fase.empresa * (setor?.ciclo ?? 1) + sorte);
+  const bruto = Math.max(PIOR_ANO_EMPRESA, tracao / 100 + fase.empresa * (setor?.ciclo ?? 1) + sorte);
+  // O mercado tem tamanho: o ganho encolhe perto do teto e some acima dele; a perda vale inteira.
+  const crescimento = bruto > 0 ? bruto * Math.max(0, 1 - valor / TETO_EMPRESA) : bruto;
   somar(e, reg, 'empresa', 'valor', valor * crescimento, 'empresa');
   definirNumero(e, reg, 'empresa', 'lucro', valor * crescimento, 'empresa');
   const retirada = (n['retirada'] ?? 0) * (n['valor'] ?? 0);

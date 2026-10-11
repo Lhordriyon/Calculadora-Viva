@@ -4,6 +4,7 @@
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
 import { ATIVOS, CLASSES, ENTIDADES } from './constantes.ts';
+import { MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
@@ -211,9 +212,9 @@ export function patrimonioTotal(e: EstadoVida): number {
   return patrimonioDe(e.entidades['eu']!) + parteNaEmpresa(e) + valorDosBens(e);
 }
 
-/** Gente trabalhando numa empresa deste valor (uma pessoa a cada R$ 150 mil, pelo menos uma). */
+/** Gente empregada pelo tamanho da empresa: uma pessoa a cada R$ 150 mil enquanto ela é pequena, saturando nas maiores do mundo. */
 export function funcionariosDe(valor: number): number {
-  return Math.max(1, Math.round(valor / 150000));
+  return Math.max(1, Math.round(MAX_FUNCIONARIOS * (1 - Math.exp(-Math.max(0, valor) / (VALOR_POR_FUNCIONARIO * MAX_FUNCIONARIOS)))));
 }
 
 /** Limites das classes por patrimônio (reais de hoje): abaixo de LIMITES[i] está a classe i. */
