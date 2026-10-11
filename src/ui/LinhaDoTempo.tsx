@@ -4,7 +4,7 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import type { Entrada, EstadoVida } from '../motor/tipos.ts';
 import { porqueDe } from '../motor/virada.ts';
 import { conteudo } from '../conteudo.ts';
-import { avisosDeInflacao, chipDoBalanco, chipsDe, visivel, type Chip } from './formato.ts';
+import { avisosDeInflacao, chipDoBalanco, chipDosAlugueis, chipsDe, visivel, type Chip } from './formato.ts';
 
 /** O verbo de uma ação ("Estudar"), para a etiqueta da entrada. */
 function verboDe(h: Entrada, c: Conteudo): string | undefined {
@@ -25,15 +25,15 @@ interface PropsItem {
   nova: boolean;
   inflacao: boolean;
   nomeDe: (papel: string) => string | undefined;
-  /** O balanço do ano, na primeira entrada visível dele. */
-  balanco: Chip | null;
+  /** O balanço do ano (e os aluguéis), na primeira entrada visível dele. */
+  balanco: Chip[];
   /** A causa de um ano anterior, no que aconteceu com quem joga (eventos, iniciativas dos outros, a morte). */
   porque: { idade: number; texto: string } | null;
 }
 
 function Item({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
-  if (balanco) chips.push(balanco);
+  chips.push(...balanco);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   return (
     <li class={`ano ${h.tipo}`}>
@@ -76,13 +76,13 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
   const porId = useMemo(() => new Map(historico.map((h) => [h.id, h])), [historico]);
   // Cada ano tem uma entrada invisível com as regras (salário, rendimentos, inflação, empresa): o balanço dela vai na primeira entrada visível do ano.
   const balancos = useMemo(() => {
-    const m = new Map<number, Chip>();
+    const m = new Map<number, Chip[]>();
     let regra: Entrada | undefined;
     for (const h of historico) {
       if (!visivel(h)) regra = h;
       else if (regra && h.idade === regra.idade) {
-        const chip = chipDoBalanco(regra, participacao);
-        if (chip) m.set(h.id, chip);
+        const chips = [chipDoBalanco(regra, participacao), chipDosAlugueis(regra)].filter((x): x is Chip => x !== null);
+        if (chips.length > 0) m.set(h.id, chips);
         regra = undefined;
       }
     }
@@ -97,7 +97,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
             nova={i >= novasDesde}
             inflacao={inflacao.has(h.id)}
             nomeDe={nomeDe}
-            balanco={balancos.get(h.id) ?? null}
+            balanco={balancos.get(h.id) ?? []}
             porque={porqueDe(h, porId)}
             key={h.id}
           />

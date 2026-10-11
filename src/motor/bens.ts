@@ -26,8 +26,6 @@ import {
 } from './regras.ts';
 import { normal } from './rng.ts';
 
-/** O que um imóvel alugado rende num ano normal (o retorno do mercado de imóveis além disso vira valorização). */
-const RENDA_NORMAL_IMOVEL = 0.06;
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
@@ -196,24 +194,36 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
     : { texto: `Tirou ${comArtigo(def)} do aluguel.`, resumo: `tirou ${comArtigo(def)} do aluguel` };
 }
 
-/** O ano dos bens: o valor anda (imóvel com o mercado), a manutenção e a parcela saem, o aluguel entra. */
+/**
+ * O retorno médio dos fundos imobiliários, pesado pela frequência de cada fase: o imóvel anda com o mercado acima ou
+ * abaixo disso (o ciclo não tira nem põe valor no longo prazo; o que fica é a valorização própria de cada bem).
+ */
+function mercadoMedioDeImoveis(c: Conteudo): number {
+  const fii = c.mundo.ativos.find((a) => a.id === 'fii');
+  const pesos = c.mundo.fases.reduce((s, f) => s + f.peso, 0);
+  return fii ? c.mundo.fases.reduce((s, f) => s + (fii.retorno[f.id] ?? 0) * f.peso, 0) / pesos : 0;
+}
+
+/** O ano dos bens: o valor anda (imóvel com o mercado), a manutenção e a parcela saem, o aluguel entra (anotado à parte). */
 export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const bens = bensDe(e);
   if (bens.length === 0) return;
   const mercado = (e.entidades['pais']?.n['ret_fii'] ?? 0) / 100;
+  const medio = mercadoMedioDeImoveis(c);
   let caixa = 0;
+  let aluguel = 0;
   for (const b of bens) {
     const def = defDoBem(c, b);
     if (!def) continue;
     const valor = b.n['valor'] ?? 0;
     const imovel = ehImovel(def);
     // O imóvel acompanha o mercado de imóveis do ano acima ou abaixo do que um aluguel normal rende (o aluguel já é a outra parte do retorno).
-    const anda = def.valorizacao + (imovel ? (mercado - RENDA_NORMAL_IMOVEL) * 0.8 : 0) + normal(e.rng, 0, def.desvio ?? (imovel ? 0.03 : 0.02));
+    const anda = def.valorizacao + (imovel ? (mercado - medio) * 0.8 : 0) + normal(e.rng, 0, def.desvio ?? (imovel ? 0.03 : 0.02));
     let novo = Math.max(0, valor * (1 + anda));
     if (def.categoria === 'veiculo') novo = Math.max(novo, def.preco * PISO_VEICULO);
     somar(e, reg, b.id, 'valor', novo - valor, 'bens');
     caixa -= novo * def.manutencao;
-    if (b.q['alugado']) caixa += novo * taxaDeAluguel(def);
+    if (b.q['alugado']) aluguel += novo * taxaDeAluguel(def);
     const financiado = b.n['financiado'] ?? 0;
     if (financiado > 0) {
       const juros = financiado * JUROS_FINANCIAMENTO;
@@ -222,6 +232,7 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
       caixa -= parcela;
     }
   }
+  if (aluguel >= 1) movimentar(e, reg, { dinheiro: aluguel }, 'eu', 'aluguel');
   if (Math.abs(caixa) >= 1) movimentar(e, reg, { dinheiro: caixa }, 'eu', 'bens');
 }
 

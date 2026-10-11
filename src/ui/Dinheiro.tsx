@@ -360,6 +360,25 @@ const CATEGORIAS = [
 ] as const;
 
 /** Imóveis e bens: o que você tem (morar, alugar, vender) e a loja (à vista ou financiado). */
+/** Por quanto o bem foi comprado nesta vida (a última compra no livro-razão), ou undefined se veio de herança. */
+function precoDeCompra(vida: EstadoVida, id: string): number | undefined {
+  for (let i = vida.historico.length - 1; i >= 0; i--) {
+    const h = vida.historico[i]!;
+    if (h.ref !== 'bens:comprar') continue;
+    const m = h.mudancas?.find((x) => x.c === `${id}.valor` && (x.d ?? 0) > 0);
+    if (m) return m.d;
+  }
+  return undefined;
+}
+
+/** "comprou por R$ 420 mil, hoje +18%". */
+function desdeACompra(vida: EstadoVida, id: string, valor: number): string {
+  const compra = precoDeCompra(vida, id);
+  if (!compra) return '';
+  const pct = Math.round((valor / compra - 1) * 100);
+  return ` · comprou por ${formatarDinheiro(compra)}${pct === 0 ? '' : `, ${pct > 0 ? '+' : ''}${pct}%`}`;
+}
+
 function Bens({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const [categoria, setCategoria] = useState<(typeof CATEGORIAS)[number]['id']>('moradia');
   const [item, setItem] = useState<string | null>(null);
@@ -387,8 +406,9 @@ function Bens({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           <div class="bem-meu" key={b.id}>
             <p>
               <b>{d.nome}</b> · {formatarDinheiro(valor)}
+              {desdeACompra(vida, b.id, valor)}
               {deve >= 1 ? ` (faltam ${formatarDinheiro(deve)})` : ''}
-              {mora ? ' · você mora aqui' : alugado ? ` · alugado, ${formatarDinheiro((valor * taxaDeAluguel(d)) / 12)}/mês` : ''}
+              {mora ? ' · você mora aqui' : alugado ? ` · alugado, rende ${formatarDinheiro((valor * taxaDeAluguel(d)) / 12)}/mês` : ''}
             </p>
             {vendendo === b.id ? (
               <div class="escolhas-origem">

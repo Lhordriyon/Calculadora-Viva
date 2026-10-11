@@ -113,8 +113,16 @@ export function balancoDoAno(regra: Entrada, participacao: number): number {
     if (m.c === 'eu.dinheiro' || ATIVOS.some((a) => m.c === `eu.${a}`)) total += m.d;
     else if (m.c === 'eu.divida') total -= m.d;
     else if (m.c === 'empresa.valor') total += m.d * participacao;
+    // Os bens também: o imóvel que valorizou e a dívida do financiamento que diminuiu.
+    else if (/^bem\d+\.valor$/.test(m.c)) total += m.d;
+    else if (/^bem\d+\.financiado$/.test(m.c)) total -= m.d;
   }
   return total;
+}
+
+/** O que os imóveis alugados pagaram no ano (anotado à parte pela regra dos bens). */
+export function alugueisDoAno(regra: Entrada): number {
+  return (regra.mudancas ?? []).reduce((s, m) => s + (m.c === 'eu.dinheiro' && m.r === 'aluguel' ? (m.d ?? 0) : 0), 0);
 }
 
 /** O chip do balanço do ano, na primeira entrada visível do ano (só para adultos, só quando mexe). */
@@ -123,6 +131,13 @@ export function chipDoBalanco(regra: Entrada | undefined, participacao: number):
   const v = balancoDoAno(regra, participacao);
   if (Math.abs(v) < 1000) return null;
   return { texto: `no ano, ${sinal(v)}${dinheiro(v)} de patrimônio`, cor: 'var(--dinheiro)', ruim: v < 0 };
+}
+
+/** O chip dos aluguéis do ano, ao lado do balanço. */
+export function chipDosAlugueis(regra: Entrada | undefined): Chip | null {
+  if (!regra) return null;
+  const v = alugueisDoAno(regra);
+  return v >= 1 ? { texto: `aluguéis, +${dinheiro(v)}`, cor: 'var(--dinheiro)' } : null;
 }
 
 /** "seu filho", "sua sobrinha": quem continua a história, do ponto de vista de quem morreu. */
