@@ -26,7 +26,7 @@ const c = carregarConteudo();
 function vidas(): EstadoVida[] {
   const estrategias: Estrategia[] = ['primeira', 'cautelosa', 'arriscada', 'aleatoria'];
   const saida: EstadoVida[] = [];
-  const origens = [undefined, undefined, { classe: 6 }, { classe: 7 }, { linhagem: 'real' }] as const;
+  const origens = [undefined, undefined, { classe: 6 }, { classe: 7 }, { linhagem: 'realeza' }] as const;
   origens.forEach((origem, o) => {
     for (let k = 0; k < 4; k++) {
       const e = nascer(c, { semente: misturar(1110, o, k), ano: 2026, ...(origem ? { origem } : {}) });
@@ -78,7 +78,7 @@ describe('o mundo tem tamanho', () => {
     expect(funcionariosDe(Number.MAX_VALUE)).toBeLessThanOrEqual(MAX_FUNCIONARIOS);
   });
 
-  it('a empresa não cresce acima do teto do mercado (mas pode cair)', () => {
+  it('a empresa não cresce acima do teto do mercado (pode cair, e abaixo dele volta a crescer)', () => {
     const e = nascer(c, { semente: 3, ano: 2026, origem: { classe: 7 } });
     const reg: Mudanca[] = [];
     e.entidades['empresa'] = { id: 'empresa', tipo: 'empresa', nome: 'Teste', vivo: true, n: { valor: 2 * TETO_EMPRESA, tracao: 60, participacao: 1 }, t: { setor: 'tecnologia' }, q: {} };
@@ -86,7 +86,8 @@ describe('o mundo tem tamanho', () => {
     for (let ano = 0; ano < 30; ano++) {
       const antes = e.entidades['empresa']!.n['valor']!;
       regraDaEmpresa(e, c, defFase(c, 'expansao'), reg);
-      expect(e.entidades['empresa']!.n['valor']!).toBeLessThanOrEqual(antes + 1);
+      // Acima do teto, só cai; abaixo, o ganho encolhe perto dele (passa no máximo uma fração mínima).
+      expect(e.entidades['empresa']!.n['valor']!).toBeLessThanOrEqual(Math.max(antes + 1, TETO_EMPRESA * 1.01));
     }
   });
 

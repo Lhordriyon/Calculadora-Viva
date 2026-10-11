@@ -195,6 +195,12 @@ interface Vida {
   empresaNaMorte: { dependencia: number; perda: number; valor: number } | null;
   /** Alguma escolha (evento ou jogada) mudou o quanto a empresa depende de quem manda. */
   decidiuQuemManda: boolean;
+  /** Quanto durou cada crise do país que começou durante a vida (anos até a próxima mudança de fase). */
+  crises: number[];
+  /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
+  comeco: string;
+  decisoesAntesDos5: number;
+  infanciaVoltou: boolean;
 }
 
 /** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
@@ -321,6 +327,16 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       for (let a = 18; a < e.idade; a++) if (!comEvento.has(a)) vazios++;
       return e.idade > 18 ? vazios / (e.idade - 18) : 0;
     })(),
+    crises: (() => {
+      const mudancas = e.historico.filter((h) => h.ref?.startsWith('ciclo:'));
+      return mudancas.flatMap((h, i) => (h.ref === 'ciclo:crise' && mudancas[i + 1] ? [mudancas[i + 1]!.idade - h.idade] : []));
+    })(),
+    comeco: e.historico
+      .filter((h) => h.idade <= 6 && (h.tipo === 'evento' || h.tipo === 'npc'))
+      .map((h) => `${h.ref}:${h.escolha?.indice ?? ''}`)
+      .join('>'),
+    decisoesAntesDos5: e.historico.filter((h) => h.idade < 5 && (h.escolha !== undefined || h.tipo === 'acao')).length,
+    infanciaVoltou: e.historico.some((h) => h.idade >= 5 && h.idade <= 12 && (h.causas ?? []).some((id) => (porId.get(id)?.idade ?? 99) <= 4 && porId.get(id)?.tipo !== 'nascimento')),
     acontecimentos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'morte').length,
     comPorque: e.historico.filter((h) => porqueDe(h, porId) !== null).length,
     empresaNaMorte: (() => {
@@ -406,7 +422,7 @@ ESTRATEGIAS.forEach((estrategia, s) => {
 const idAleatoria = ESTRATEGIAS.indexOf('aleatoria');
 for (let j = 0; j < JOGADORES_BASE; j++) rodarJogador('aleatoria', idAleatoria, j, false, false);
 
-// Quem usa "Escolher a origem": cada classe (da extrema pobreza à trilionária) com cada estratégia.
+// Quem cria o personagem escolhendo a classe: cada classe (da extrema pobreza à trilionária) com cada estratégia.
 // Não entram nas métricas das 10.000 vidas; contam para storylet morto e para a tabela por origem.
 const VIDAS_POR_ORIGEM = Math.max(2, Math.round(JOGADORES / 20));
 const escolhidas: { classe: number; vida: Vida }[] = [];
@@ -693,6 +709,11 @@ const delegaram = donosGrandes.filter((v) => v.empresaNaMorte!.dependencia <= 30
 const centralizaram = donosGrandes.filter((v) => v.empresaNaMorte!.dependencia >= 60).length / Math.max(1, donosGrandes.length);
 const perdaNaMorte = media(donosNaMorte.map((v) => v.empresaNaMorte!.perda));
 const porqueVisivel = vidas.reduce((s, v) => s + v.comPorque, 0) / Math.max(1, vidas.reduce((s, v) => s + v.acontecimentos, 0));
+/** Incremento 7: crises que acabam, começos que variam e uma primeira infância que pesa depois. */
+const duracoesDeCrise = ordenar(vidas.flatMap((v) => v.crises));
+const comecosDistintos = (1000 * new Set(vidas.map((v) => v.comeco)).size) / Math.max(1, vidas.length);
+const decidemCedo = vidas.filter((v) => v.decisoesAntesDos5 >= 2).length / Math.max(1, vidas.length);
+const infanciaVolta = vidas.filter((v) => v.infanciaVoltou).length / Math.max(1, vidas.length);
 const porquesPorVida = media(vidas.map((v) => v.comPorque));
 
 // ---------------------------------------------------------------- portões
@@ -745,6 +766,13 @@ const portoes6 = [
     `${pct(delegaram)} delegaram, ${pct(centralizaram)} centralizaram (${donosGrandes.length} vidas)`,
   ],
   ['O porquê à vista: ≥ 20% dos acontecimentos mostram a causa de um ano anterior', porqueVisivel >= 0.2, `${pct(porqueVisivel)} (${num(porquesPorVida, 1)} por vida)`],
+] as const;
+/** Incremento 7 (pedidos do dono em 11/10/2026): a crise que não acabava, os começos iguais e a infância sem efeito. */
+const portoes7 = [
+  ['Toda crise acaba: 99% duram até 8 anos', percentil(duracoesDeCrise, 99) <= 8, `mediana ${num(percentil(duracoesDeCrise, 50), 0)}, p99 ${num(percentil(duracoesDeCrise, 99), 0)}, maior ${num(duracoesDeCrise.at(-1) ?? 0, 0)} anos (${duracoesDeCrise.length} crises)`],
+  ['Cada vida começa diferente: ≥ 800 começos distintos por 1.000 vidas (histórias até os 6 anos, com a escolha)', comecosDistintos >= 800, num(comecosDistintos, 0)],
+  ['Decidir desde cedo: ≥ 80% das vidas têm 2 decisões ou mais antes dos 5 anos', decidemCedo >= 0.8, pct(decidemCedo)],
+  ['A infância volta: ≥ 30% das vidas têm algo dos 5 aos 12 causado pelos anos até os 4', infanciaVolta >= 0.3, pct(infanciaVolta)],
 ] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
@@ -831,6 +859,12 @@ l();
   l(`- **Jogadas na empresa mais feitas pelos robôs:** ${nomes.join(', ') || 'nenhuma'}.`);
   l(`- **Na morte de quem manda:** a empresa perde em média ${pct(perdaNaMorte)} do valor; dependência p10 / mediana / p90: ${num(percentil(dependenciasNaMorte, 10), 0)} / ${num(percentil(dependenciasNaMorte, 50), 0)} / ${num(percentil(dependenciasNaMorte, 90), 0)}.`);
 }
+l();
+l('## Portões do incremento 7 (as crises acabam, a vida começa sua)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes7) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## Life simulator');
 l();
@@ -1053,6 +1087,7 @@ for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes3) console.log(`${ok ? '✓' : '·'} portão 3: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes5) console.log(`${ok ? '✓' : '·'} portão 5: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes6) console.log(`${ok ? '✓' : '·'} portão 6: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes7) console.log(`${ok ? '✓' : '·'} portão 7: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(
