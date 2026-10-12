@@ -10,10 +10,10 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { carregarConteudo, RAIZ } from './disco.ts';
-import { classeDoPatrimonio, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
+import { classeDoPatrimonio, empresasDe, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
-import { anoDoPais, ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
+import { anoDoPais, ESTATISTICAS, faseDe, governoAtual, momentoTipico, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
 import { mercadoDoAno, motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
@@ -26,9 +26,9 @@ import type { Entrada, EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts'
 import { listarCadeias } from '../src/motor/validacao.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
 import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
-import { empresaDe } from '../src/motor/empresa.ts';
+import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
-import { assinaturasPorBloco, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
+import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
 const args = new Map(
   process.argv.slice(2).map((a) => {
@@ -56,6 +56,44 @@ interface Jogada {
   operacoes: number;
   /** O país ano a ano (só o que os portões do incremento 8 contam). */
   pais: PaisDaVida;
+  /** O grupo de empresas ano a ano (o que os portões do incremento 9 contam). */
+  grupo: GrupoDaVida;
+}
+
+/** O grupo de empresas visto por uma vida. */
+interface GrupoDaVida {
+  /** O máximo de empresas de uma vez e de subsidiárias somadas. */
+  maxEmpresas: number;
+  maxSubsidiarias: number;
+  anosEmGrupo: number;
+  /** Por empresa e ano: [crescimento, humor da bolsa] (o que a bolsa rendeu além do esperado para a fase), na bolsa e fora dela. */
+  listadas: [number, number][];
+  fechadas: [number, number][];
+  /** Pontos de tração que a mesa tirou de cada empresa, nos anos em que várias dependiam de quem manda (carga > 1,2) e ele tinha talento (inteligência ≥ 65). */
+  mesa: number[];
+}
+
+/** As empresas antes do +1 ano: lugar, nome e valor (para o crescimento do ano). */
+function fotoDoGrupo(e: EstadoVida): Map<string, { nome: string; valor: number }> {
+  return new Map(empresasDe(e).map((x) => [x.id, { nome: x.nome, valor: x.n['valor'] ?? 0 }]));
+}
+
+/** Anota o ano do grupo na vida (depois do +1 ano). */
+function anotarGrupo(e: EstadoVida, c: Conteudo, antes: Map<string, { nome: string; valor: number }>, g: GrupoDaVida): void {
+  const grupo = empresasDe(e);
+  if (grupo.length === 0) return;
+  g.maxEmpresas = Math.max(g.maxEmpresas, grupo.length);
+  g.maxSubsidiarias = Math.max(g.maxSubsidiarias, grupo.reduce((s, x) => s + (x.n['subsidiarias'] ?? 0), 0));
+  if (grupo.length >= 2) g.anosEmGrupo++;
+  const acoes = c.mundo.ativos.find((a) => a.id === 'acoes')!;
+  const humor = (e.entidades['pais']!.n['ret_acoes'] ?? 0) / 100 - acoes.retorno[faseDe(e)];
+  const carga = cargaDaMesa(e);
+  const talento = (e.entidades['eu']!.n['inteligencia'] ?? 50) >= 65;
+  for (const emp of grupo) {
+    const a = antes.get(emp.id);
+    if (a && a.nome === emp.nome && a.valor >= 1e5) (emp.q['na_bolsa'] ? g.listadas : g.fechadas).push([(emp.n['lucro'] ?? 0) / a.valor, humor]);
+    if (carga > 1.2 && talento) g.mesa.push(alvoDaTracao(e, c, emp, 1) - alvoDaTracao(e, c, emp, carga));
+  }
 }
 
 /** O país visto por uma vida: as estatísticas por governo, o trabalho pelo desemprego e o governo de quem joga. */
@@ -93,6 +131,7 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
   let operacoes = 0;
   const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
   const pais: PaisDaVida = { porGoverno: {}, anosDeTrabalho: [], governo: null };
+  const grupo: GrupoDaVida = { maxEmpresas: 0, maxSubsidiarias: 0, anosEmGrupo: 0, listadas: [], fechadas: [], mesa: [] };
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
@@ -113,12 +152,14 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
     }
     if (e.vivo && !e.pendente) {
       if (!jaAgiu(e)) toques++;
+      const antes = fotoDoGrupo(e);
       avancarAno(e, c, memoria);
       anosPorFase[faseDe(e)]++;
       anotarPais(e, pais);
+      if (e.vivo) anotarGrupo(e, c, antes, grupo);
     }
   }
-  return { toques, anosPorFase, operacoes, pais };
+  return { toques, anosPorFase, operacoes, pais, grupo };
 }
 
 function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
@@ -126,7 +167,7 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
   const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
   const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
   const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
-  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais };
+  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -238,6 +279,10 @@ interface Vida {
   viradas: number;
   trocasDeGoverno: number;
   governo: (NonNullable<PaisDaVida['governo']> & { reformas: number; caiu: boolean }) | null;
+  /** O grupo de empresas: o que a vida viu ano a ano, as fusões e as estreias na bolsa. */
+  grupo: GrupoDaVida;
+  fusoes: number;
+  bolsas: number;
   /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
   comeco: string;
   decisoesAntesDos5: number;
@@ -417,7 +462,10 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     decidiuQuemManda: e.historico.some(
       (h) => h.causa === 'escolha' && h.mudancas?.some((m) => m.c === 'empresa.dependencia') && !h.mudancas.some((m) => m.c === 'empresa.fundada'),
     ),
-    fundou: e.historico.some((h) => h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === 1)),
+    fundou: e.historico.some((h) => h.ref !== 'empresa:cuidar' && h.mudancas?.some((m) => /^empresa\d*\.fundada$/.test(m.c) && m.q === 1)),
+    grupo: j.grupo,
+    fusoes: e.historico.filter((h) => h.ref === 'empresa:fundir').length,
+    bolsas: e.historico.filter((h) => h.ref === 'empresa:abrirCapital' || (h.ref === 'abrir_capital' && h.escolha?.indice === 0)).length,
     quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
     vendeu: 'vendeu_empresa' in q,
   };
@@ -909,6 +957,54 @@ const portoes8 = [
   ],
   ['A violência do país mata, e pouco: entre 0,5% e 6% das vidas', mortesViolentas >= 0.005 && mortesViolentas <= 0.06, pct(mortesViolentas, 1)],
 ] as const;
+/** Incremento 9 (pedido do dono em 11/10/2026): o grupo de empresas, com subsidiárias, fusões e bolsa. Todas as vidas jogadas: sorteadas, de origem escolhida e de fortuna. */
+const vidasDoGrupo = [...todasAsVidas, ...fortunas];
+const fundadores = vidasDoGrupo.filter((v) => v.fundou || v.grupo.maxEmpresas > 0);
+const emGrupo = fundadores.filter((v) => v.grupo.maxEmpresas >= 2).length / Math.max(1, fundadores.length);
+const comFusao = fundadores.filter((v) => v.fusoes > 0).length / Math.max(1, fundadores.length);
+const naBolsa = fundadores.filter((v) => v.bolsas > 0).length / Math.max(1, fundadores.length);
+const subsidiariasDosGrupos = ordenar(fundadores.map((v) => v.grupo.maxSubsidiarias));
+const maiorGrupo = subsidiariasDosGrupos.at(-1) ?? 0;
+const perdasDaMesa = vidasDoGrupo.flatMap((v) => v.grupo.mesa);
+const perdaDaMesa = media(perdasDaMesa);
+const corr = (pares: [number, number][]): number => correlacao(pares.map((x) => x[0]), pares.map((x) => x[1]));
+const listadas = vidasDoGrupo.flatMap((v) => v.grupo.listadas);
+const fechadas = vidasDoGrupo.flatMap((v) => v.grupo.fechadas);
+const corrListadas = corr(listadas);
+const corrFechadas = corr(fechadas);
+/** Laboratório do grupo: um grupo de R$ 10 bilhões que compra uma concorrente por ano (o caminho para as centenas de subsidiárias). */
+const laboratorioDoGrupo = (() => {
+  const e = nascer(c, { semente: misturar(SEMENTE, 909), ano: ANO });
+  e.idade = 40;
+  e.ano += 40;
+  for (const f of ['expansao', 'recessao', 'crise']) delete e.entidades['pais']!.q[f];
+  e.entidades['eu']!.n['dinheiro'] = 5e10;
+  operar(e, c, { tipo: 'abrir', setor: 'tecnologia', valor: 1e10 });
+  for (let ano = 1; ano <= 30; ano++) {
+    if (motivoParaNaoOperar(e, c, { tipo: 'adquirir' }) === null) operar(e, c, { tipo: 'adquirir' });
+    const subsidiarias = empresaDe(e)?.n['subsidiarias'] ?? 0;
+    if (subsidiarias >= 100) return { anos: ano, subsidiarias };
+    e.ano++;
+    e.idade++;
+    regraDaEmpresa(e, c, momentoTipico('normal'), []);
+  }
+  return { anos: Infinity, subsidiarias: empresaDe(e)?.n['subsidiarias'] ?? 0 };
+})();
+const portoes9 = [
+  ['O grupo existe: ≥ 10% de quem tem empresa chega a ter duas ou mais de uma vez', emGrupo >= 0.1, `${pct(emGrupo)} de ${fundadores.length} vidas com empresa`],
+  ['Fundir e abrir o capital acontecem: ≥ 2% de quem tem empresa funde e ≥ 2% vai para a bolsa', comFusao >= 0.02 && naBolsa >= 0.02, `${pct(comFusao)} fundiram, ${pct(naBolsa)} abriram o capital`],
+  [
+    'Centenas de subsidiárias são possíveis: um grupo de R$ 10 bilhões que compra uma concorrente por ano passa de 100 em até 10 anos',
+    laboratorioDoGrupo.anos <= 10,
+    `${Number.isFinite(laboratorioDoGrupo.anos) ? `${laboratorioDoGrupo.anos} anos` : `nunca (${laboratorioDoGrupo.subsidiarias})`}; nas vidas jogadas, o maior grupo teve ${num(maiorGrupo, 0)} (p99 ${num(percentil(subsidiariasDosGrupos, 99), 0)})`,
+  ],
+  ['A mesa pesa: com várias empresas dependendo de quem tem talento, cada uma perde ≥ 0,5 ponto de tração', perdaDaMesa >= 0.5, `${num(perdaDaMesa, 2)} ponto em média (${perdasDaMesa.length} empresas-ano)`],
+  [
+    'Na bolsa, o valor anda com o mercado: a correlação do crescimento com o humor da bolsa é ≥ 0,2 maior que a das fechadas',
+    corrListadas - corrFechadas >= 0.2,
+    `${num(corrListadas, 2)} na bolsa (${listadas.length} empresas-ano) × ${num(corrFechadas, 2)} fechadas (${fechadas.length})`,
+  ],
+] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
@@ -1006,6 +1102,12 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes8) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Portões do incremento 9 (o grupo de empresas)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes9) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('| Governo | Anos | Crescimento | Desemprego | Inflação | Dívida | Pobreza | Violência | Saúde | Educação | Aprovação |');
 l('|---|---|---|---|---|---|---|---|---|---|---|');
@@ -1238,6 +1340,7 @@ for (const [nome, ok, detalhe] of portoes5) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes6) console.log(`${ok ? '✓' : '·'} portão 6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes7) console.log(`${ok ? '✓' : '·'} portão 7: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes8) console.log(`${ok ? '✓' : '·'} portão 8: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes9) console.log(`${ok ? '✓' : '·'} portão 9: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

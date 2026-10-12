@@ -64,7 +64,7 @@ function postos(xs: number[]): number[] {
   return r;
 }
 
-function correlacao(a: number[], b: number[]): number {
+export function correlacao(a: number[], b: number[]): number {
   const ma = media(a);
   const mb = media(b);
   let num = 0;
