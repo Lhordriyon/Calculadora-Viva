@@ -33,7 +33,7 @@
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
 import { momentoDoPais, type Momento } from './pais.ts';
-import { empresasDe, entidadeDe, investidoDe, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { empresasDe, entidadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import type { Ativo } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { AberturaEmpresa, DefSetor } from './esquema.ts';
@@ -84,7 +84,7 @@ const QUEBRA = 'empresa_quebrou';
 export const PRINCIPAL = 'empresa';
 
 /** Os lugares das empresas: `empresa`, `empresa2`… */
-export const SLOTS: readonly string[] = Array.from({ length: MAX_EMPRESAS }, (_, i) => (i === 0 ? PRINCIPAL : `${PRINCIPAL}${i + 1}`));
+export const SLOTS: readonly string[] = LUGARES_DE_EMPRESA;
 
 export function empresaDe(e: EstadoVida, id = PRINCIPAL): Entidade | undefined {
   const emp = e.entidades[id];

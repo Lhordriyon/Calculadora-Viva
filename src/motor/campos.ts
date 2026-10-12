@@ -3,8 +3,8 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { ATIVOS, CLASSES, ENTIDADES } from './constantes.ts';
-import { MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
+import { ATIVOS, CLASSES, ENTIDADES, POLITICAS } from './constantes.ts';
+import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
@@ -119,12 +119,8 @@ const PAIS: Record<string, DefCampo> = {
   aprovacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quem governa: o id de um bloco (mundo.json › governos), 'regime' ou 'voce'. */
   governo: { tipo: 'texto', sistema: 'poder' },
-  /** As políticas em vigor (0 baixo, 1 médio, 2 alto): mundo.json › politicas. */
-  pol_impostos: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
-  pol_social: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
-  pol_saude: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
-  pol_educacao: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
-  pol_seguranca: { tipo: 'num', sistema: 'poder', limites: [0, 2] },
+  /** As políticas em vigor (pol_impostos, pol_social…; 0 baixo, 1 médio, 2 alto): mundo.json › politicas. Saem da lista, para nenhuma virar qualidade por esquecimento. */
+  ...Object.fromEntries(POLITICAS.map((p): [string, DefCampo] => [`pol_${p}`, { tipo: 'num', sistema: 'poder', limites: [0, 2] }])),
   /** Ano de eleição geral (2026, 2030…): o voto aparece. */
   eleicao: { tipo: 'bool', sistema: 'poder', derivado: true },
 };
@@ -224,10 +220,17 @@ export function patrimonioDe(en: Entidade): number {
  * que o conteúdo chama de "a empresa"), depois as outras (`empresa2`…).
  */
 export function empresasDe(e: EstadoVida): Entidade[] {
-  return Object.values(e.entidades)
-    .filter((x) => x.tipo === 'empresa' && x.vivo !== false)
-    .sort((a, b) => ordemDaEmpresa(a.id) - ordemDaEmpresa(b.id));
+  // Pelos lugares, e não por todas as entidades: é chamado a cada leitura do patrimônio.
+  const saida: Entidade[] = [];
+  for (const id of LUGARES_DE_EMPRESA) {
+    const x = e.entidades[id];
+    if (x && x.tipo === 'empresa' && x.vivo !== false) saida.push(x);
+  }
+  return saida;
 }
+
+/** Os lugares das empresas de quem joga: `empresa` (a que ele cuida de perto) e `empresa2`…`empresa5`. */
+export const LUGARES_DE_EMPRESA: readonly string[] = Array.from({ length: MAX_EMPRESAS }, (_, i) => (i === 0 ? 'empresa' : `empresa${i + 1}`));
 
 /** `empresa` é 1, `empresa2` é 2… */
 export function ordemDaEmpresa(id: string): number {
@@ -250,7 +253,13 @@ export function parteNasEmpresas(e: EstadoVida): number {
 
 /** Os bens de quem joga (imóveis, veículos, luxo), na ordem da compra. */
 export function bensDe(e: EstadoVida): Entidade[] {
-  return Object.values(e.entidades).filter((x) => x.tipo === 'bem' && x.vivo !== false);
+  const saida: Entidade[] = [];
+  for (const id in e.entidades) {
+    if (!id.startsWith('bem')) continue;
+    const x = e.entidades[id]!;
+    if (x.tipo === 'bem' && x.vivo !== false) saida.push(x);
+  }
+  return saida;
 }
 
 /** O que os bens valem, menos o que falta pagar deles. */
