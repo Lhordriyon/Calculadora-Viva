@@ -132,6 +132,30 @@ describe('a vida de quem herda', () => {
     });
   });
 
+  it('o mundo lá fora passa para quem herda: a relação, a sanção em vigor e o dólar', () => {
+    const e = velorio(7, { dinheiro: 100000 }, { filho: true });
+    const celeste = e.entidades['celeste']!;
+    celeste.n['relacao'] = 12;
+    celeste.q['sancao'] = { v: 1, ano: e.ano - 2, idade: 58, causa: e.historico.at(-1)!.id };
+    e.entidades['pais']!.n['cambio'] = 7.25;
+    const h = continuarComoHerdeiro(e, c);
+    expect(h.entidades['celeste']!.n['relacao']).toBe(12);
+    expect(h.entidades['celeste']!.q['sancao']?.causa).toBe(h.historico.find((x) => x.ref === 'herdeiro')!.id);
+    expect(h.entidades['pais']!.n['cambio']).toBe(7.25);
+    for (const p of ['federacao', 'liga', 'pacto']) expect(h.entidades[p]!.n['relacao']).toBe(e.entidades[p]!.n['relacao']);
+    // O livro fecha também para os países de fora, do começo da vida nova até o fim.
+    const inicio = new Map(Object.values(h.entidades).map((en) => [en.id, { ...en.n }]));
+    viverAteOFim(h, c, 7, 'aleatoria');
+    const soma = new Map<string, number>();
+    for (const x of h.historico) for (const m of x.mudancas ?? []) if (m.d !== undefined) soma.set(m.c, (soma.get(m.c) ?? 0) + m.d);
+    for (const p of ['federacao', 'celeste', 'liga', 'pacto', 'pais']) {
+      for (const [campo, fim] of Object.entries(h.entidades[p]!.n)) {
+        const esperado = (inicio.get(p)?.[campo] ?? 0) + (soma.get(`${p}.${campo}`) ?? 0);
+        expect(Math.abs(esperado - fim), `${p}.${campo}`).toBeLessThan(0.01);
+      }
+    }
+  });
+
   it('a dinastia volta igual depois de salvar e ler', () => {
     const h = lista[0]!;
     const lido = lerSave(escreverSave({ ...saveVazio(), vida: h }), c);
