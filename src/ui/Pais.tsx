@@ -2,9 +2,10 @@ import { useEffect, useState } from 'preact/hooks';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Politica } from '../motor/constantes.ts';
+import { ACOES_DIPLOMATICAS, chanceDeSancao, defEstrangeiro, oPais, parceirosDe, type AcaoDiplomatica } from '../motor/diplomacia.ts';
 import type { DefPolitica, EfeitoDePolitica } from '../motor/esquema.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
-import { META_DE_INFLACAO } from '../motor/regras.ts';
+import { ACORDO, ATO, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
@@ -114,6 +115,146 @@ function Estatisticas({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
   );
 }
 
+/** Quanto o dólar andou no último ano (a regra do ano o escreve com o mundo lá fora). */
+function variacaoDoCambio(vida: EstadoVida): number {
+  for (let i = vida.historico.length - 1; i >= 0; i--) {
+    const h = vida.historico[i]!;
+    if (h.tipo !== 'regra' || h.ref !== 'ano') continue;
+    return (h.mudancas ?? []).reduce((soma, x) => soma + (x.c === 'pais.cambio' ? (x.d ?? 0) : 0), 0);
+  }
+  return 0;
+}
+
+/** A relação com um país de fora, em palavras, no gênero dele ("a Celeste é amiga", "o Pacto é frio"). */
+function nivelDaRelacao(r: number, genero: 'm' | 'f'): string {
+  const [m, f] = r >= 75 ? ['aliado', 'aliada'] : r >= 55 ? ['amigo', 'amiga'] : r >= 35 ? ['neutro', 'neutra'] : r >= 20 ? ['frio', 'fria'] : ['hostil', 'hostil'];
+  return genero === 'm' ? m : f;
+}
+
+const ROTULO_DO_ATO: Record<AcaoDiplomatica, string> = { aproximar: 'Visita de Estado', acordo: 'Assinar acordo comercial', romper: 'Romper relações' };
+
+/** O mundo lá fora: o dólar e cada país (a economia, a relação com o Brasil, sanção, acordo, crise); quem governa faz um ato por ano. */
+function LaFora({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [aberto, setAberto] = useState<string | null>(null);
+  const [rompendo, setRompendo] = useState(false);
+  const governa = governoAtual(vida) === 'voce';
+  const cambio = vida.entidades['pais']!.n['cambio'] ?? 5;
+  const d = variacaoDoCambio(vida);
+  const pct = cambio - d > 0 ? (100 * d) / (cambio - d) : 0;
+  const paises = parceirosDe(vida);
+  return (
+    <>
+      <dl class="estatisticas">
+        <div class="estatistica">
+          <dt>Dólar</dt>
+          <dd>
+            <b>R$ {cambio.toFixed(2).replace('.', ',')}</b>
+            {Math.abs(pct) >= 0.5 && (
+              <span class={`seta ${pct > 0 ? 'ruim' : 'bom'}`} aria-label={`${pct > 0 ? 'subiu' : 'caiu'} ${inteiro(Math.abs(pct))}% no ano`}>
+                {' '}
+                {pct > 0 ? '▲' : '▼'} {inteiro(Math.abs(pct))}%
+              </span>
+            )}
+            <small>sobe com a dívida, a economia fraca, a crise lá fora e as sanções; cai com juro alto e o mundo comprando do Brasil</small>
+          </dd>
+        </div>
+      </dl>
+      <ul class="vagas" aria-label="Países de fora">
+        {paises.map((en) => {
+          const def = defEstrangeiro(conteudo, en.id);
+          if (!def) return null;
+          const rel = en.n['relacao'] ?? 50;
+          const estado = [en.q['sancao'] ? 'sanção contra o Brasil' : '', en.q['acordo'] ? 'acordo comercial' : '', en.q['crise'] ? 'em crise' : ''].filter(Boolean);
+          const rival = def.rival ? vida.entidades[def.rival] : undefined;
+          const ato = (acao: AcaoDiplomatica): { op: Operacao; motivo: string | null } => {
+            const op: Operacao = { tipo: 'diplomacia', parceiro: def.id, acao };
+            return { op, motivo: motivoParaNaoOperar(vida, conteudo, op) };
+          };
+          return (
+            <li key={en.id}>
+              <button
+                type="button"
+                class="vaga"
+                aria-expanded={aberto === en.id}
+                onClick={() => {
+                  setAberto(aberto === en.id ? null : en.id);
+                  setRompendo(false);
+                }}
+              >
+                <b>{en.nome}</b>
+                <small>
+                  {capitalizar(nivelDaRelacao(rel, en.genero === 'm' ? 'm' : 'f'))} ({inteiro(rel)}) · cresce {num(en.n['crescimento'] ?? 0)}% ao ano{estado.length ? ` · ${estado.join(' · ')}` : ''}
+                </small>
+              </button>
+              {aberto === en.id && (
+                <div class="empresa-cartao">
+                  <p class="nota">
+                    {capitalizar(def.descricao)}. Compra do Brasil {def.produtos}: {inteiro(def.peso * 100)}% do que o Brasil vende lá fora.
+                    {rival ? ` Rival ${oPais(rival, 'da')}.` : ''}{' '}
+                    {en.q['sancao']
+                      ? `A sanção acaba quando a relação passa de ${SANCAO.acaba}.`
+                      : chanceDeSancao(rel) > 0
+                        ? `Com a relação abaixo de ${SANCAO.abaixo}, a chance de uma sanção deles é de ${chanceDeSancao(rel) < 0.01 ? 'menos de 1' : inteiro(100 * chanceDeSancao(rel))}% ao ano.`
+                        : `Abaixo de ${SANCAO.abaixo}, a relação pode virar sanção; acima de ${ACORDO.acima}, acordo.`}
+                  </p>
+                  {governa &&
+                    (rompendo ? (
+                      <div class="confirmar">
+                        <p>
+                          Romper com {oPais(en)}? A sua popularidade sobe {ATO.popularidade} pontos agora; a relação cai para {inteiro(Math.max(0, rel + ATO.romper))}
+                          {en.q['acordo'] ? ', o acordo acaba' : ''} e a chance de uma sanção deles passa a {inteiro(100 * chanceDeSancao(Math.max(0, rel + ATO.romper)))}% ao ano.
+                        </p>
+                        <div class="escolhas-origem">
+                          <button
+                            type="button"
+                            class="botao"
+                            disabled={ato('romper').motivo !== null}
+                            onClick={() => {
+                              setRompendo(false);
+                              aoOperar(ato('romper').op);
+                            }}
+                          >
+                            Romper
+                          </button>
+                          <button type="button" class="botao secundario" onClick={() => setRompendo(false)}>
+                            Voltar
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="acoes">
+                        {ACOES_DIPLOMATICAS.map((acao) => {
+                          const { op, motivo } = ato(acao);
+                          return (
+                            <button
+                              type="button"
+                              class="botao secundario"
+                              key={acao}
+                              disabled={motivo !== null}
+                              onClick={() => (acao === 'romper' ? setRompendo(true) : aoOperar(op))}
+                            >
+                              {ROTULO_DO_ATO[acao]}
+                              {motivo ? <small> · {motivo}</small> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p class="nota">
+        {governa
+          ? 'Um ato lá fora por ano: a visita de Estado esquenta a relação (e esfria a do rival), o acordo soma crescimento e o rompimento rende popularidade agora e a conta depois.'
+          : 'A crise de lá vira crise aqui, a sanção tira crescimento e o acordo soma. Quem governa escolhe de quem se aproximar.'}
+      </p>
+    </>
+  );
+}
+
 /** As políticas em vigor; quem governa muda uma por ano. */
 function Politicas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const governa = governoAtual(vida) === 'voce';
@@ -212,6 +353,10 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
         <fieldset class="grupo">
           <legend>Como está</legend>
           <Estatisticas vida={vida} conteudo={conteudo} />
+        </fieldset>
+        <fieldset class="grupo">
+          <legend>Lá fora</legend>
+          <LaFora vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         </fieldset>
         <fieldset class="grupo">
           <legend>Políticas</legend>
