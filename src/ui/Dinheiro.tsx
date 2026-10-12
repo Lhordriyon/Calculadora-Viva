@@ -3,6 +3,7 @@ import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteN
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
+import { comPreposicao, extrato } from '../motor/contas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
@@ -705,6 +706,45 @@ function ListaDeJogadas({ lista, aoOperar, rotulo }: { lista: JogadaDisponivel[]
   );
 }
 
+/** De quem veio e para quem foi o dinheiro: o extrato do ano (ou da vida), lido do livro. */
+function Extrato({ vida }: { vida: EstadoVida }) {
+  const [quando, setQuando] = useState<'ano' | 'vida'>('ano');
+  const x = extrato(vida, quando === 'ano' ? vida.ano : undefined);
+  if (vida.idade < 14 && x.linhas.length === 0) return null;
+  return (
+    <fieldset class="grupo">
+      <legend>Extrato</legend>
+      <div class="escolhas-origem" role="group" aria-label="Período do extrato">
+        <button type="button" class="chip-origem" aria-pressed={quando === 'ano'} onClick={() => setQuando('ano')}>
+          Este ano
+        </button>
+        <button type="button" class="chip-origem" aria-pressed={quando === 'vida'} onClick={() => setQuando('vida')}>
+          A vida toda
+        </button>
+      </div>
+      <p class="nota">
+        De quem veio e para quem foi cada real{quando === 'ano' ? ` em ${vida.ano}` : ''}: entrou {formatarDinheiro(x.entrou)} e saiu {formatarDinheiro(x.saiu)}
+        {Math.abs(x.reavaliacao) >= 1 ? `; a inflação e a cotação mudaram ${sinalDinheiro(x.reavaliacao)}, sem dinheiro trocar de mão` : ''}.
+      </p>
+      {x.linhas.length > 0 ? (
+        <ul class="carteira" aria-label="Extrato">
+          {x.linhas.slice(0, 12).map((l) => (
+            <li key={`${l.rotulo}|${l.contraparte}`}>
+              <span class="nome">{l.rotulo}</span>
+              <b>{sinalDinheiro(l.valor)}</b>
+              <span class={`ret ${l.valor < 0 ? 'ruim' : ''}`}>
+                {l.contraparte === 'reavaliacao' ? 'preço que mudou: ninguém pagou' : comPreposicao(vida, l.contraparte, l.valor >= 0 ? 'de' : 'para')}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="nota">Nada entrou nem saiu {quando === 'ano' ? 'neste ano' : 'ainda'}.</p>
+      )}
+    </fieldset>
+  );
+}
+
 function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s));
   if (lista.length === 0) return null;
@@ -736,6 +776,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
           Patrimônio <b>{formatarDinheiro(patrimonioTotal(vida))}</b> · na conta {formatarDinheiro(conta)}
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
         </p>
+        <Extrato vida={vida} />
         {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
