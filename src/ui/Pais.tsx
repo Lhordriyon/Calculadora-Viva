@@ -57,6 +57,8 @@ const EFEITO: Record<EfeitoDePolitica, (d: number) => string> = {
   educacao: (d) => `educação pública ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma geração`,
   renda: (d) => `renda de quem não é pobre ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d) * 100)}%`,
   auxilio: (d) => `auxílio de quem é pobre ${d > 0 ? '+' : '−'}${formatarDinheiro(Math.abs(d) / 12)} por mês`,
+  inflacao: (d) => `inflação ${d > 0 ? '+' : '−'}${num(Math.abs(d))} ponto`,
+  relacao: (d) => `relação com os países de fora ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, com o tempo`,
 };
 
 function efeitosDaMudanca(def: DefPolitica, de: number, para: number): string {

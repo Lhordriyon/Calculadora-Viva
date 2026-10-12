@@ -20,6 +20,7 @@ import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type Op
 import { ehOperacaoDeJogada, jogar, motivoParaNaoOperarJogada, type OperacaoJogada } from './fortuna.ts';
 import { ehOperacaoDePoder, motivoParaNaoOperarPoder, operarPoder, type OperacaoPoder } from './poder.ts';
 import { ehOperacaoDePais, juroReal, motivoParaNaoOperarPais, operarPais, type OperacaoPais } from './pais.ts';
+import { ehOperacaoDeDiplomacia, motivoParaNaoOperarDiplomacia, operarDiplomacia, type OperacaoDiplomacia } from './diplomacia.ts';
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
@@ -44,12 +45,13 @@ export function pesosDoPerfil(e: EstadoVida, c: Conteudo): Pesos {
  * O que cada classe rendeu no ano (acima da inflação), sorteado em torno da média da fase; a renda fixa acompanha
  * o juro real do país (a Selic menos a inflação). Fica anotado no país.
  */
-export function mercadoDoAno(e: EstadoVida, c: Conteudo, fase: Fase, reg: Mudanca[]): Record<Ativo, number> {
+export function mercadoDoAno(e: EstadoVida, c: Conteudo, fase: Fase, reg: Mudanca[], variacaoDoCambio = 0): Record<Ativo, number> {
   const pais = e.entidades['pais']!.n;
   const r = {} as Record<Ativo, number>;
   const juros = (juroReal(e) - JURO_REAL_NEUTRO) / 100;
   for (const a of c.mundo.ativos) {
-    const v = Math.max(-0.9, a.retorno[fase] + (a.juros ?? 0) * juros + normal(e.rng, 0, a.desvio));
+    // O dólar rende o quanto ele subiu em reais no ano (o mundo lá fora e as contas daqui: diplomacia.ts).
+    const v = Math.max(-0.9, a.retorno[fase] + (a.juros ?? 0) * juros + (a.cambio ?? 0) * variacaoDoCambio + normal(e.rng, 0, a.desvio));
     r[a.id] = v;
     // Sem −0: o save (JSON) não guarda o sinal do zero, e a vida salva no meio tem de ser igual.
     const pct = Math.round(v * 1000) / 10 || 0;
@@ -88,7 +90,8 @@ export type Operacao =
   | OperacaoPoder
   | OperacaoTestamento
   | OperacaoJogada
-  | OperacaoPais;
+  | OperacaoPais
+  | OperacaoDiplomacia;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
 export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
@@ -112,6 +115,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (ehOperacaoDeTestamento(op)) return motivoParaNaoOperarTestamento(e, op);
   if (ehOperacaoDeJogada(op)) return motivoParaNaoOperarJogada(e, c, op);
   if (ehOperacaoDePais(op)) return motivoParaNaoOperarPais(e, c, op);
+  if (ehOperacaoDeDiplomacia(op)) return motivoParaNaoOperarDiplomacia(e, c, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -154,6 +158,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   if (ehOperacaoDePoder(op)) return lancarCom('poder', (id) => operarPoder(e, c, op, reg, id));
   if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
   if (ehOperacaoDePais(op)) return lancarCom('pais', () => operarPais(e, c, op, reg));
+  if (ehOperacaoDeDiplomacia(op)) return lancarCom('pais', (id) => operarDiplomacia(e, c, op, reg, id));
   let texto: string;
   let resumo: string;
   if (op.tipo === 'aplicar') {

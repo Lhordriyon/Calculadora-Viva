@@ -19,16 +19,15 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefFase, DefGoverno, EfeitoDePolitica } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import type { Exterior } from './diplomacia.ts';
 import {
-  CHANCE_BOOM,
-  CHANCE_CRISE_DE_FORA,
   CHOQUE_DA_CRISE,
-  CHOQUE_DO_BOOM,
   CRESCIMENTO_POTENCIAL,
   DESEMPREGO_NATURAL,
   DESVIO_DO_CRESCIMENTO,
   DIVIDA_DE_EQUILIBRIO,
   FOLGA_DAS_FASES,
+  FUGA_DE_CAPITAIS,
   IMPULSO_ELEITORAL,
   INFLACAO_DA_CRISE,
   INFLUENCIA_POR_VOTO,
@@ -45,6 +44,7 @@ import {
   PESO_DA_SAUDE_PUBLICA,
   PESO_DO_VOTO,
   REACAO_FISCAL,
+  REPASSE_DO_CAMBIO,
   VANTAGEM_DE_QUEM_GOVERNA,
   VIOLENCIA_DOS_RICOS,
   VIOLENCIA_POR_GENERO,
@@ -100,6 +100,8 @@ export interface Momento {
   empresa: number;
   /** Rendimento a mais (ou a menos) do dinheiro guardado da família. */
   retorno: number;
+  /** Quanto o dólar subiu (ou caiu) no ano, em fração: as empresas que exportam ou importam e o investimento em dólar sentem. */
+  cambio?: number;
 }
 
 function momentoDe(id: Fase, crescimento: number, desemprego: number): Momento {
@@ -466,7 +468,7 @@ function causasDaVirada(e: EstadoVida, melhorou: boolean, pot: number): number[]
 }
 
 /** A fase mudou: a entrada visível que conta (o choque de fora, quando foi ele), com quem empurrou como causa. */
-function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 'crise' | 'boom' | null, pot: number): void {
+function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 'crise' | 'boom' | null, pot: number, origem: number | null): void {
   const def = defFase(c, nova);
   const melhorou = ORDEM_DAS_FASES[nova] > ORDEM_DAS_FASES[antes];
   const entrada = novaEntrada(e, { tipo: 'mundo', causa: 'regra', ref: `ciclo:${nova}`, ator: 'pais', texto: '' });
@@ -477,7 +479,8 @@ function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 
   const ctx = contexto(e, { ator: 'pais' });
   entrada.texto = capitalizar(renderizar(sortear(e.rng, doChoque ? def.choque! : def.textos), ctx));
   entrada.resumo = renderizar(def.resumo, ctx);
-  const causas = causasDaVirada(e, melhorou, pot);
+  // O choque de fora que virou a fase (a notícia da crise ou do boom lá fora) vem antes de quem empurrou daqui.
+  const causas = [...(doChoque && origem !== null ? [origem] : []), ...causasDaVirada(e, melhorou, pot)];
   if (causas.length > 0) entrada.causas = causas;
   lancar(e, entrada, reg);
 }
@@ -488,7 +491,7 @@ function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 
  * e a fase. As estatísticas vão para as regras do ano (`reg`); a eleição, a
  * transição e a virada de fase, para entradas visíveis. Devolve o momento.
  */
-export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[]): Momento {
+export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exterior = { choque: 0, deFora: null, origem: null, cambio: 0 }): Momento {
   const pais = e.entidades['pais']!;
   const n = pais.n;
   if (n['crescimento'] === undefined) migrarPais(e, c);
@@ -506,19 +509,15 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[]): Momento {
   const edu0 = n['educacao'] ?? 50;
   const pot = potencialDe(e, c);
 
-  // A sorte do ano e os choques de fora (a crise lá fora fica mais provável com a dívida alta).
-  let choque = normal(r, 0, DESVIO_DO_CRESCIMENTO);
-  let choqueNaInflacao = 0;
-  let deFora: 'crise' | 'boom' | null = null;
-  const sorte = aleatorio(r);
-  const chanceDeCrise = CHANCE_CRISE_DE_FORA + Math.min(0.08, 0.002 * Math.max(0, d0 - 100));
-  if (sorte < chanceDeCrise) {
+  // A sorte do ano, o que o mundo lá fora fez com o Brasil (diplomacia.ts) e a fuga de capitais quando a dívida daqui passa do ponto.
+  let choque = normal(r, 0, DESVIO_DO_CRESCIMENTO) + fora.choque;
+  let choqueNaInflacao = fora.deFora === 'crise' ? INFLACAO_DA_CRISE : 0;
+  let deFora = fora.deFora;
+  const fuga = Math.min(FUGA_DE_CAPITAIS.teto, FUGA_DE_CAPITAIS.porPonto * Math.max(0, d0 - FUGA_DE_CAPITAIS.acima));
+  if (fuga > 0 && aleatorio(r) < fuga) {
     choque += CHOQUE_DA_CRISE;
     choqueNaInflacao = INFLACAO_DA_CRISE;
     deFora = 'crise';
-  } else if (sorte < chanceDeCrise + CHANCE_BOOM) {
-    choque += CHOQUE_DO_BOOM;
-    deFora = 'boom';
   }
 
   // Crescimento: volta para o potencial, com a sorte, o empurrão e o freio do juro real alto.
@@ -528,8 +527,17 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[]): Momento {
   const natural = DESEMPREGO_NATURAL - 0.03 * (edu0 - 50);
   const u = limitar(natural + 0.6 * (u0 - natural) - 0.45 * hiato, 3, 25);
   // Inflação: metade da do ano passado, metade da meta, mais a economia quente, o empurrão e a dívida que ninguém acredita.
+  // E o dólar que subiu (o importado fica caro) e a tarifa na fronteira.
   const pi = limitar(
-    0.5 * pi0 + 0.5 * META_DE_INFLACAO + 0.35 * hiato + 0.4 * impulso + Math.min(3, 0.02 * Math.max(0, d0 - 100)) + normal(r, 0, 1.3) + choqueNaInflacao,
+    0.5 * pi0 +
+      0.5 * META_DE_INFLACAO +
+      0.35 * hiato +
+      0.4 * impulso +
+      Math.min(3, 0.02 * Math.max(0, d0 - 100)) +
+      normal(r, 0, 1.3) +
+      choqueNaInflacao +
+      REPASSE_DO_CAMBIO * 100 * fora.cambio +
+      0.5 * efeito('inflacao'),
     0.5,
     30,
   );
@@ -578,8 +586,9 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[]): Momento {
 
   const antes = faseDe(e);
   const nova = faseDoCrescimento(n['crescimento']!, antes);
-  if (nova !== antes) virarFase(e, c, antes, nova, deFora, pot);
-  return momentoDoPais(e);
+  // A virada só aponta para a notícia de fora se o choque veio de lá (a fuga de capitais é daqui).
+  if (nova !== antes) virarFase(e, c, antes, nova, deFora, pot, deFora === fora.deFora ? fora.origem : null);
+  return { ...momentoDoPais(e), cambio: fora.cambio };
 }
 
 // ---------------------------------------------------------------- o país na vida de quem joga

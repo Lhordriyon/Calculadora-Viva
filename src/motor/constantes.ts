@@ -10,8 +10,12 @@ export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
 
-/** Entidades da vida: quem joga, as pessoas, o lugar, o país e a empresa (quando quem joga tem uma). */
-export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', 'empresa'] as const;
+/** Os países de fora com quem o Brasil negocia (mundo.json › estrangeiros): entidades que nascem com a vida. */
+export const PARCEIROS = ['federacao', 'celeste', 'liga', 'pacto'] as const;
+export type Parceiro = (typeof PARCEIROS)[number];
+
+/** Entidades da vida: quem joga, as pessoas, o lugar, o país, os países de fora e a empresa (quando quem joga tem uma). */
+export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', ...PARCEIROS, 'empresa'] as const;
 export type IdEntidade = (typeof ENTIDADES)[number];
 
 /** Os verbos da ficha do ano. */
@@ -35,7 +39,7 @@ export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
 export type Fase = (typeof FASES)[number];
 
 /** As políticas do governo (pais.pol_impostos…), cada uma em três níveis: 0 baixo, 1 médio, 2 alto. */
-export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca'] as const;
+export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca', 'comercio'] as const;
 export type Politica = (typeof POLITICAS)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];
 

@@ -326,17 +326,21 @@ export const SUBSIDIARIAS_DO_CONGLOMERADO = 20;
 export const CRESCIMENTO_POTENCIAL = 2;
 /** Quanto do desvio do crescimento fica para o ano seguinte, e a sorte do ano (pontos percentuais). */
 export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
-export const DESVIO_DO_CRESCIMENTO = 1.15;
+export const DESVIO_DO_CRESCIMENTO = 1.05;
 /** A fase do ciclo é o nome do crescimento: a partir de quanto é expansão, normal e recessão (abaixo, crise). */
 export const LIMITES_DAS_FASES = { expansao: 4, normal: -0.5, recessao: -2.5 } as const;
 /** Para sair de uma fase, o crescimento precisa passar do limite com esta folga (sem ela, o país trocava de fase a cada ano). */
 export const FOLGA_DAS_FASES = { expansao: 1, recessao: 0.5, crise: 0.5 } as const;
-/** Choques de fora, por ano: a crise lá fora (tira crescimento e põe inflação) e a alta das commodities. */
-export const CHANCE_CRISE_DE_FORA = 0.05;
+/**
+ * Os choques: a crise (tira crescimento e põe inflação) e o boom de quem compra o que o Brasil vende. Vêm dos
+ * países de fora (diplomacia.ts), vezes o peso deles no comércio, ou da fuga de capitais quando a dívida daqui
+ * passa de 100% do PIB.
+ */
 export const CHOQUE_DA_CRISE = -3;
 export const INFLACAO_DA_CRISE = 2.5;
-export const CHANCE_BOOM = 0.03;
 export const CHOQUE_DO_BOOM = 2;
+/** A fuga de capitais: a chance por ano cresce 0,2 ponto por ponto de dívida acima de 100% do PIB, até 8%. */
+export const FUGA_DE_CAPITAIS = { acima: 100, porPonto: 0.002, teto: 0.08 } as const;
 /** Desemprego (%) com a economia no potencial; a inflação que o Banco Central persegue; o juro real neutro. */
 export const DESEMPREGO_NATURAL = 8.5;
 export const META_DE_INFLACAO = 4.5;
@@ -372,3 +376,53 @@ export const VIOLENCIA_POR_GENERO = { m: 1.5, f: 0.3 } as const;
 export const VIOLENCIA_DOS_RICOS = 0.4;
 /** A escola pública (classe de origem até 3) soma à inteligência, dos 6 aos 17, (índice − 50) / isto por ano. */
 export const PESO_DA_ESCOLA_PUBLICA = 40;
+
+// ---- o mundo lá fora (incremento 10: os países de fora, o dólar, sanções e acordos)
+
+/** A sorte que todos os países de fora dividem num ano (pontos de crescimento) e quanto do desvio de cada um fica para o ano seguinte. */
+export const DESVIO_DO_MUNDO = 0.5;
+export const PERSISTENCIA_DE_FORA = 0.6;
+/** A crise e o boom lá fora: o tombo e o salto do crescimento deles. */
+export const CHOQUE_LA_FORA = { crise: -4, boom: 3 } as const;
+/** Um país de fora com este peso no comércio passa o choque inteiro ao Brasil; os menores, uma parte. */
+export const PESO_CHEIO = 0.3;
+/** Quanto do que o mundo compra a mais (ou a menos) vira crescimento aqui: por ponto de crescimento lá, vezes o peso dele. */
+export const PESO_DA_DEMANDA_EXTERNA = 0.15;
+/** Sanção e acordo: pontos de crescimento por ano aqui, vezes o peso do país (a Celeste pesa 0,35). */
+export const CUSTO_DA_SANCAO = 1.2;
+export const GANHO_DO_ACORDO = 0.5;
+/** A relação anda este tanto do caminho até o alvo por ano, com sorte (pontos). */
+export const RITMO_DA_RELACAO = 0.2;
+export const DESVIO_DA_RELACAO = 3;
+/** A postura de quem governa: a relação com quem ele se aproxima sobe, e a com o rival deles cai. */
+export const POSTURA = { amigo: 15, rival: -15 } as const;
+/**
+ * A sanção: abaixo desta relação, a chance por ano cresce com o quadrado da distância, até `chance` com a
+ * relação em zero (27 dá 3% ao ano; 15, 20%); acima do fim, acaba, e mesmo com a relação fria ela cansa
+ * (chance por ano): o mercado de lá sente falta do que comprava daqui.
+ */
+export const SANCAO = { abaixo: 35, chance: 0.6, acaba: 38, cansaco: 0.15 } as const;
+/** O acordo: acima desta relação (com a fronteira aberta ou moderada), fica à vista; abaixo do fim, acaba. */
+export const ACORDO = { acima: 70, chance: 0.12, acaba: 45 } as const;
+/** O dólar em reais de hoje com o mundo calmo e as contas em ordem; quanto do caminho até o alvo ele anda por ano e a sorte de um ano. */
+export const CAMBIO_BASE = 5;
+export const RITMO_DO_CAMBIO = 0.3;
+export const DESVIO_DO_CAMBIO = 0.08;
+/**
+ * O que leva o dólar: a dívida daqui (por ponto acima de 75% do PIB), o juro real (por ponto acima de 4%), o
+ * que o mundo compra, as sanções e a economia daqui no ano anterior (por ponto acima ou abaixo do potencial:
+ * o Brasil em crise espanta o dinheiro) puxam o alvo; a crise e o boom lá fora são um salto no ano (log), que
+ * o ritmo desfaz aos poucos.
+ */
+export const PESOS_DO_CAMBIO = { divida: 0.004, juroReal: -0.03, demanda: -0.04, sancao: 0.06, hiato: -0.03, crise: 0.15, boom: -0.08 } as const;
+/** Quanto a alta do dólar passa para a inflação: pontos de inflação por ponto percentual de alta. */
+export const REPASSE_DO_CAMBIO = 0.08;
+/** O ato de quem governa lá fora: aproximar-se sobe a relação (e esfria a do rival); romper derruba a relação e dá popularidade. */
+export const ATO = { aproximar: 15, rival: -8, romper: -40, popularidade: 4 } as const;
+/** O acordo proposto por quem governa precisa desta relação. */
+export const RELACAO_PARA_ACORDO = 60;
+/** Nas empresas, por ano: o dólar (vezes a sensibilidade do setor), a tarifa (vezes a proteção do setor) e a sanção e o acordo de quem compra do setor (vezes peso ÷ 0,3). */
+export const DOLAR_NA_EMPRESA = 0.5;
+export const PROTECAO_NA_EMPRESA = 0.02;
+export const SANCAO_NA_EMPRESA = -0.08;
+export const ACORDO_NA_EMPRESA = 0.02;

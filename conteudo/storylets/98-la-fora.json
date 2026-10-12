@@ -1,0 +1,679 @@
+[
+  {
+    "id": "dolar_barato",
+    "idade": [18, 85],
+    "condicoes": { "pais.cambio": { "max": 4.3 }, "patrimonio": { "min": 20000 } },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "Com o dólar a {pais.cambio}, [metade do seu grupo de amigos postou foto em aeroporto|o celular importado custa quase o mesmo que o daqui|a loja de eletrônicos parece promoção de fim de ano em março].",
+    "resumo": "aproveitou o dólar barato",
+    "escolhas": [
+      {
+        "texto": "Fazer a viagem dos sonhos",
+        "resumo": "viajou para fora com o dólar barato",
+        "condicoes": { "dinheiro": { "min": 12000 } },
+        "bloqueio": "não há R$ 12 mil na conta",
+        "resultado": {
+          "texto": "Duas semanas de museu, fila e foto. Voltou com uma mala a mais e a certeza de que o pão de queijo daqui é melhor.",
+          "efeitos": { "dinheiro": -12000, "felicidade": 6, "marcas": ["viajou_para_fora"] }
+        }
+      },
+      {
+        "texto": "Comprar o importado",
+        "resumo": "comprou um importado com o dólar barato",
+        "condicoes": { "dinheiro": { "min": 4000 } },
+        "bloqueio": "não há R$ 4 mil na conta",
+        "resultado": {
+          "texto": "O aparelho chegou em três semanas, com manual em quatro línguas e nenhuma que você lê de verdade.",
+          "efeitos": { "dinheiro": -4000, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Guardar a diferença",
+        "resumo": "guardou o que o dólar barato economizou",
+        "resultado": {
+          "texto": "Comprou dólar barato para quando ele subir. Ficou com cara de quem sabe das coisas.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "dolar", "fracao": 0.1 }, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "exportacao_bate_recorde",
+    "idade": [18, 64],
+    "condicoes": {
+      "pais.cambio": { "min": 6 },
+      "setor": ["agro", "industria"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "texto": "Com o dólar a {pais.cambio}, a firma em que você trabalha bate recorde de exportação. [O chefe comprou um carro novo.|Tem bolo no refeitório.|O caminhão sai do pátio de madrugada.]",
+    "resumo": "viu a firma bater recorde de exportação",
+    "escolhas": [
+      {
+        "texto": "Pedir aumento agora",
+        "resumo": "pediu aumento no ano do recorde de exportação",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "O chefe concordou antes de você terminar o discurso. Dólar alto deixa todo mundo generoso.",
+          "resumo": "ganhou aumento no ano do recorde de exportação",
+          "efeitos": { "rendaFator": 1.15, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "\"O dólar sobe, mas o custo sobe junto\", disse o chefe, olhando o carro novo pela janela.",
+          "resumo": "ouviu um não no ano do recorde de exportação",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer hora extra",
+        "resumo": "fez hora extra no ano do recorde",
+        "resultado": {
+          "texto": "Turno dobrado enquanto o mundo compra. O dinheiro veio; o sono, nem tanto.",
+          "efeitos": { "dinheiro": 6000, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Só comemorar",
+        "resumo": "comemorou o recorde da firma",
+        "resultado": {
+          "texto": "Comeu o bolo, tirou foto com o caminhão e foi para casa no horário.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "importado_ficou_caro",
+    "idade": [18, 64],
+    "condicoes": {
+      "pais.cambio": { "min": 6.2 },
+      "setor": ["comercio", "tecnologia", "saude"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "texto": "Com o dólar a {pais.cambio}, tudo o que a sua firma compra lá fora ficou caro: [o fornecedor reajustou a tabela inteira|o chefe cortou o cafezinho e o bônus|o estoque está pela metade].",
+    "resumo": "viu o dólar alto apertar a firma",
+    "escolhas": [
+      {
+        "texto": "Procurar vaga numa exportadora",
+        "resumo": "foi atrás de vaga numa exportadora",
+        "teste": { "atributo": "inteligencia", "dificuldade": 58 },
+        "sucesso": {
+          "texto": "Trocou de lado: agora o dólar alto é festa, não crise. A carteira de trabalho agradece.",
+          "resumo": "trocou de emprego por uma exportadora",
+          "efeitos": { "eu.setor": { "definir": "agro" }, "rendaFator": 1.1 }
+        },
+        "fracasso": {
+          "texto": "A exportadora estava cheia de gente com a mesma ideia. Você voltou ao estoque pela metade.",
+          "resumo": "não conseguiu vaga numa exportadora",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Aguentar firme",
+        "resumo": "aguentou o aperto do dólar alto",
+        "resultado": {
+          "texto": "Você segurou as pontas junto com a firma. Dólar não sobe para sempre, dizem; ninguém diz quando desce.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "salario_em_dolar",
+    "idade": [22, 55],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "preferir": "+ator.relacao",
+    "condicoes": {
+      "marcas": ["formado"],
+      "inteligencia": { "min": 60 },
+      "renda": { "min": 1 },
+      "ator.relacao": { "min": 45 },
+      "semMarcas": ["salario_em_dolar", "aposentado", "servidor", "empreendedor", "socio", "herdeiro_negocio"]
+    },
+    "peso": 2,
+    "texto": "Uma empresa d{ator:o|a} {ator} quer você em trabalho remoto, pagando em dólar: [reunião às seis da manhã|um chefe que diz \"awesome\" para tudo|plano de saúde que só vale lá].",
+    "resumo": "recebeu proposta de trabalho remoto em dólar",
+    "escolhas": [
+      {
+        "texto": "Aceitar e ganhar em dólar",
+        "resumo": "passou a trabalhar remoto ganhando em dólar",
+        "resultado": {
+          "texto": "Agora o seu salário anda com o dólar, não com o país: quando ele sobe, você sobe junto; quando cai, também.",
+          "efeitos": { "rendaFator": 1.5, "marcas": ["salario_em_dolar"], "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Ficar no emprego daqui",
+        "resumo": "recusou o salário em dólar",
+        "resultado": {
+          "texto": "Preferiu o chefe que fala português e o fuso daqui. A conversão de moeda, você faz de cabeça quando dá saudade.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "dolar_virou_salario",
+    "idade": [22, 70],
+    "condicoes": { "marcas": ["salario_em_dolar"], "pais.cambio": { "min": 6 }, "semMarcas": ["aposentado"] },
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Dólar a {pais.cambio}: o seu salário em dólar virou assunto do almoço de domingo. [Um primo pediu empréstimo.|A sua mãe pergunta se é legal.|O vizinho quer saber onde se inscreve.]",
+    "resumo": "viu o salário em dólar render com o dólar alto",
+    "escolhas": [
+      {
+        "texto": "Guardar a diferença",
+        "resumo": "guardou o que o dólar alto rendeu no salário",
+        "resultado": {
+          "texto": "Aplicou a diferença, porque dólar alto, você aprendeu, também desce.",
+          "efeitos": { "investir": 8000, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Gastar com a família",
+        "resumo": "gastou o que o dólar alto rendeu com a família",
+        "resultado": {
+          "texto": "Churrasco com picanha, a geladeira da sua mãe e um empréstimo que você já sabe que não volta.",
+          "efeitos": { "dinheiro": -6000, "felicidade": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "crise_la_fora",
+    "idade": [16, 90],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "marcas": ["ator.crise"] },
+    "peso": 3,
+    "texto": "A crise n{ator:o|a} {ator} chegou até a sua rua: [o primo que morava lá voltou com duas malas e uma dívida|o pedido de {ator.produtos} foi cancelado|a vaga que você tentava sumiu do site].",
+    "resumo": "sentiu a crise lá fora chegar perto",
+    "escolhas": [
+      {
+        "texto": "Segurar os gastos",
+        "resumo": "segurou os gastos quando a crise lá fora chegou",
+        "resultado": {
+          "texto": "Cancelou duas assinaturas e um sonho. A conta respirou.",
+          "efeitos": { "dinheiro": 3000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Comprar ações na baixa",
+        "resumo": "comprou ações na baixa da crise lá fora",
+        "condicoes": { "dinheiro": { "min": 10000 } },
+        "bloqueio": "não há R$ 10 mil na conta",
+        "resultado": {
+          "texto": "Comprou quando todo mundo vendia. A bolsa vai dizer, com o tempo, se foi coragem ou teimosia.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "acoes", "fracao": 0.25 } }
+        }
+      },
+      {
+        "texto": "Desligar o noticiário",
+        "resumo": "desligou o noticiário da crise lá fora",
+        "resultado": {
+          "texto": "A crise continuou; você só parou de assistir. O sono melhorou bastante.",
+          "efeitos": { "felicidade": 1, "saude": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "la_fora_comprando",
+    "idade": [18, 70],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": {
+      "ator.crescimento": { "min": 6 },
+      "setor": ["agro", "industria", "transporte"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "texto": "{ator:O|A} {ator} está crescendo como nunca e comprando {ator.produtos} do Brasil sem pechinchar. No seu trabalho, [o turno da noite voltou|o caminhão não para|tem fila de navio no porto].",
+    "resumo": "viu o mundo lá fora comprar tudo do Brasil",
+    "escolhas": [
+      {
+        "texto": "Pegar o turno a mais",
+        "resumo": "pegou o turno a mais no ano em que o mundo comprou tudo",
+        "resultado": {
+          "texto": "Trabalhou dobrado enquanto o mundo comprava. O dinheiro veio; as costas reclamaram.",
+          "efeitos": { "dinheiro": 7000, "saude": -1.5 }
+        }
+      },
+      {
+        "texto": "Pedir para ir para a área de vendas lá fora",
+        "resumo": "pediu para trabalhar com as vendas lá fora",
+        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Virou a pessoa que atende os compradores de lá. Ganhou aumento e um fuso horário novo.",
+          "resumo": "passou a cuidar das vendas para fora",
+          "efeitos": { "rendaFator": 1.2, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A vaga foi para quem fala a língua deles. Você ficou com o turno da noite.",
+          "resumo": "não conseguiu a vaga das vendas para fora",
+          "efeitos": { "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Não mudar nada",
+        "resumo": "seguiu na mesma enquanto o mundo comprava",
+        "resultado": {
+          "texto": "O mundo comprou, o patrão lucrou e você ganhou uma camiseta comemorativa.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sancao_parou_o_porto",
+    "idade": [18, 70],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": {
+      "marcas": ["ator.sancao"],
+      "setor": ["agro", "industria", "transporte"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado", "servidor"]
+    },
+    "peso": 4,
+    "texto": "Com a sanção d{ator:o|a} {ator}, {ator.produtos} estão parados no porto, e o seu trabalho parou junto: [férias coletivas sem data para acabar|turno cortado pela metade|o patrão fala em \"reestruturação\"].",
+    "resumo": "viu a sanção de fora parar o próprio trabalho",
+    "escolhas": [
+      {
+        "texto": "Aceitar as férias coletivas",
+        "resumo": "aceitou férias coletivas por causa da sanção",
+        "resultado": {
+          "texto": "Ganhou tempo com a família e um corte no salário enquanto os navios esperam.",
+          "efeitos": { "rendaFator": 0.85, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Procurar outro emprego",
+        "resumo": "procurou outro emprego quando a sanção parou tudo",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Achou vaga num setor que não depende de navio. Respirou fundo pela primeira vez no ano.",
+          "resumo": "mudou de setor para fugir da sanção",
+          "efeitos": { "eu.setor": { "definir": "servicos" }, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Todo mundo do porto teve a mesma ideia ao mesmo tempo. Você voltou para a fila.",
+          "resumo": "não achou outro emprego durante a sanção",
+          "efeitos": { "felicidade": -3, "rendaFator": 0.85 }
+        }
+      },
+      {
+        "texto": "Fazer bico até passar",
+        "resumo": "fez bico até a sanção passar",
+        "resultado": {
+          "texto": "Entrega, frete, conserto: o que aparecer. A sanção não acabou, mas o mês fechou.",
+          "efeitos": { "dinheiro": 3000, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "acordo_abriu_mercado",
+    "idade": [18, 70],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": {
+      "marcas": ["ator.acordo"],
+      "setor": ["agro", "industria", "comercio"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 3,
+    "texto": "O acordo com {ator:o|a} {ator} abriu mercado: a sua firma começou a vender {ator.produtos} para lá, e [o chefe aprendeu duas palavras na língua deles|chegou um contêiner de pedidos|a planilha ganhou uma coluna em dólar].",
+    "resumo": "viu o acordo de fora abrir mercado para a firma",
+    "escolhas": [
+      {
+        "texto": "Se oferecer para cuidar da conta de lá",
+        "resumo": "cuidou dos clientes do acordo lá fora",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Virou a pessoa que resolve tudo com os clientes de lá. Promoção e viagem paga no fim do ano.",
+          "resumo": "foi promovido cuidando dos clientes de fora",
+          "efeitos": { "rendaFator": 1.15, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O cliente de lá pediu outra pessoa na segunda reunião. Educadamente, na língua deles.",
+          "resumo": "perdeu a conta dos clientes de fora",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Deixar para quem já sabe",
+        "resumo": "deixou o mercado novo para os colegas",
+        "resultado": {
+          "texto": "Os colegas viajaram, você ficou com o escritório vazio e o ar-condicionado no ponto certo.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "viagem_la_para_fora",
+    "idade": [20, 85],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "preferir": "+ator.relacao",
+    "condicoes": { "ator.relacao": { "min": 55 }, "patrimonio": { "min": 80000 }, "semMarcas": ["viajou_para_fora"] },
+    "peso": 2,
+    "texto": "O visto para {ator:o|a} {ator} saiu, as passagens estão em promoção e [a sua amiga já montou o roteiro|o hotel tem foto bonita demais para ser verdade|o guia de viagem pesa mais que a mala].",
+    "resumo": "teve a chance de viajar para fora",
+    "escolhas": [
+      {
+        "texto": "Ir",
+        "resumo": "viajou para fora",
+        "condicoes": { "dinheiro": { "min": 15000 } },
+        "bloqueio": "não há R$ 15 mil na conta",
+        "resultado": {
+          "texto": "Viu o que só tinha visto em filme, se perdeu no metrô e voltou falando \"lá eles fazem assim\".",
+          "efeitos": { "dinheiro": -15000, "felicidade": 6, "marcas": ["viajou_para_fora"] }
+        }
+      },
+      {
+        "texto": "Deixar para o ano que vem",
+        "resumo": "adiou a viagem para fora",
+        "resultado": {
+          "texto": "O roteiro ficou salvo no celular, ao lado de outros três.",
+          "efeitos": { "dinheiro": 1000 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "saudade_de_la",
+    "idade": [25, 95],
+    "condicoes": { "marcaHa": [{ "marca": "viajou_para_fora", "min": 3, "max": 20 }] },
+    "peso": 2,
+    "texto": "Anos depois da viagem para fora, você ainda [conta a história do metrô em toda festa|tem o ímã na geladeira|compara o café de lá com o daqui, sempre em desvantagem para o de lá].",
+    "resumo": "lembrou da viagem para fora",
+    "escolhas": [
+      {
+        "texto": "Planejar a próxima",
+        "resumo": "começou a planejar outra viagem para fora",
+        "resultado": {
+          "texto": "Abriu uma planilha chamada \"próxima\". Ela já tem doze abas.",
+          "efeitos": { "felicidade": 2, "removerMarcas": ["viajou_para_fora"] }
+        }
+      },
+      {
+        "texto": "Ficar com a lembrança",
+        "resumo": "ficou com a lembrança da viagem",
+        "resultado": {
+          "texto": "Tem viagem que se faz uma vez e se conta a vida inteira.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "bolsa_la_fora",
+    "idade": [16, 25],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "preferir": "+ator.relacao",
+    "condicoes": { "inteligencia": { "min": 58 }, "ator.relacao": { "min": 40 }, "semMarcas": ["fala_ingles"] },
+    "peso": 2,
+    "texto": "Abriu uma bolsa de estudos n{ator:o|a} {ator}: um ano de faculdade lá, [casa de família incluída|com uma prova em língua estrangeira|e um formulário de vinte páginas].",
+    "resumo": "teve a chance de estudar fora",
+    "escolhas": [
+      {
+        "texto": "Tentar a bolsa",
+        "resumo": "tentou uma bolsa de estudos lá fora",
+        "teste": { "atributo": "inteligencia", "dificuldade": 62 },
+        "sucesso": {
+          "texto": "Passou. Um ano lá, uma língua nova, saudade do arroz com feijão e um currículo que abre portas.",
+          "resumo": "estudou um ano fora com bolsa",
+          "efeitos": { "inteligencia": 5, "felicidade": 4, "marcas": ["fala_ingles"] }
+        },
+        "fracasso": {
+          "texto": "Ficou na lista de espera, em décimo segundo. Pelo menos agora sabe o que estudar para a próxima.",
+          "resumo": "ficou na lista de espera da bolsa de fora",
+          "efeitos": { "inteligencia": 1, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ficar por aqui",
+        "resumo": "preferiu não estudar fora",
+        "resultado": { "texto": "O mundo pode esperar; a turma daqui, não.", "efeitos": { "felicidade": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "cupula_la_fora",
+    "idade": [30, 95],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "pais.governo": "voce", "ator.relacao": { "min": 25 } },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "A cúpula internacional deste ano é n{ator:o|a} {ator}, e o anfitrião quer [uma foto apertando a sua mão|o seu apoio numa votação que ninguém entende|que o Brasil compre mais {ator.produtos} deles].",
+    "resumo": "foi à cúpula internacional",
+    "escolhas": [
+      {
+        "texto": "Agradar o anfitrião",
+        "resumo": "agradou o anfitrião da cúpula internacional",
+        "resultado": {
+          "texto": "Sorriu, assinou e posou. A relação esquentou; a oposição daqui chamou de \"subserviência\".",
+          "efeitos": { "ator.relacao": 10, "eu.popularidade": -2 }
+        }
+      },
+      {
+        "texto": "Discursar duro contra eles",
+        "resumo": "discursou duro contra o anfitrião da cúpula",
+        "resultado": {
+          "texto": "O discurso viralizou aqui e foi traduzido mal lá. A popularidade subiu; o embaixador deles, nem tanto.",
+          "efeitos": { "ator.relacao": -10, "eu.popularidade": 4 }
+        }
+      },
+      {
+        "texto": "Sair mais cedo",
+        "resumo": "saiu mais cedo da cúpula internacional",
+        "resultado": {
+          "texto": "Pegou o voo de volta antes do jantar oficial. Ninguém lembra do que você não disse.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "embaixador_pede",
+    "idade": [30, 95],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "pais.governo": "voce", "ator.relacao": { "min": 30 } },
+    "peso": 3,
+    "texto": "O embaixador d{ator:o|a} {ator} pede uma audiência e um favor: [tarifa menor para os produtos deles|que o Brasil vote com eles no conselho internacional|uma base de pesquisa no litoral, \"só para ciência\"].",
+    "resumo": "recebeu um pedido de um embaixador",
+    "escolhas": [
+      {
+        "texto": "Ceder",
+        "resumo": "cedeu ao pedido de um embaixador",
+        "resultado": {
+          "texto": "Eles agradeceram com um jantar e uma promessa de comprar mais. Aqui, a manchete foi menos educada.",
+          "efeitos": { "ator.relacao": 12, "eu.popularidade": -3 }
+        }
+      },
+      {
+        "texto": "Negociar em troca de algo",
+        "resumo": "negociou com um embaixador",
+        "teste": { "atributo": "influencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Deu um pouco, levou um pouco mais. Os dois lados saíram dizendo que ganharam, o que é a definição de diplomacia.",
+          "resumo": "negociou bem com um embaixador",
+          "efeitos": { "ator.relacao": 6, "eu.popularidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A conversa azedou no cafezinho. O embaixador saiu sem tomar.",
+          "resumo": "azedou a conversa com um embaixador",
+          "efeitos": { "ator.relacao": -5 }
+        }
+      },
+      {
+        "texto": "Negar",
+        "resumo": "negou o pedido de um embaixador",
+        "resultado": {
+          "texto": "\"O Brasil decide sozinho\", você disse. Aqui aplaudiram; lá, anotaram.",
+          "efeitos": { "ator.relacao": -8, "eu.popularidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ameaca_de_sancao",
+    "idade": [30, 95],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "pais.governo": "voce", "ator.relacao": { "max": 32 }, "semMarcas": ["ator.sancao"] },
+    "peso": 5,
+    "tensao": 2,
+    "texto": "{ator:O|A} {ator} ameaça sanções se o Brasil não [baixar as tarifas|mudar de lado na votação internacional|soltar um navio deles retido no porto]. O dólar já subiu de nervoso.",
+    "resumo": "recebeu uma ameaça de sanções de fora",
+    "escolhas": [
+      {
+        "texto": "Ceder",
+        "resumo": "cedeu a uma ameaça de sanções",
+        "resultado": {
+          "texto": "A ameaça passou e a oposição daqui achou o assunto da semana: \"o governo ajoelhou\".",
+          "efeitos": { "ator.relacao": 15, "eu.popularidade": -4 }
+        }
+      },
+      {
+        "texto": "Resistir",
+        "resumo": "resistiu a uma ameaça de sanções",
+        "resultado": {
+          "texto": "Bandeira na janela, discurso na TV e a relação lá embaixo. Se a sanção vier, veio.",
+          "efeitos": { "ator.relacao": -6, "eu.popularidade": 4 }
+        }
+      },
+      {
+        "texto": "Negociar com calma",
+        "resumo": "negociou para evitar sanções",
+        "teste": { "atributo": "influencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Três rodadas, um acordo de cavalheiros e nenhuma manchete. A melhor diplomacia é a que não aparece.",
+          "resumo": "negociou e evitou sanções de fora",
+          "efeitos": { "ator.relacao": 10, "eu.popularidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A negociação vazou pela metade, e a metade errada. Eles endureceram.",
+          "resumo": "viu a negociação contra as sanções azedar",
+          "efeitos": { "ator.relacao": -8, "eu.popularidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "guerra_comercial",
+    "idade": [30, 95],
+    "condicoes": { "pais.governo": "voce", "federacao.relacao": { "min": 30 }, "celeste.relacao": { "min": 30 } },
+    "peso": 2,
+    "tensao": 2,
+    "texto": "A Federação do Norte e a República Celeste entraram em guerra comercial, e as duas querem o Brasil do seu lado: uma compra o aço, a outra, a soja. O telefone toca de hora em hora, em dois fusos.",
+    "resumo": "viu duas potências disputarem o Brasil",
+    "escolhas": [
+      {
+        "texto": "Ficar com a Federação do Norte",
+        "resumo": "ficou do lado da Federação do Norte na guerra comercial",
+        "resultado": {
+          "texto": "A Federação agradeceu com investimento; a Celeste, com silêncio e menos navio de soja.",
+          "efeitos": { "federacao.relacao": 15, "celeste.relacao": -15 }
+        }
+      },
+      {
+        "texto": "Ficar com a República Celeste",
+        "resumo": "ficou do lado da República Celeste na guerra comercial",
+        "resultado": {
+          "texto": "A Celeste dobrou a compra de soja; a Federação passou a olhar o aço daqui com lupa.",
+          "efeitos": { "celeste.relacao": 15, "federacao.relacao": -15 }
+        }
+      },
+      {
+        "texto": "Não escolher lado",
+        "resumo": "ficou neutro na guerra comercial entre potências",
+        "resultado": {
+          "texto": "Vendeu para as duas e não agradou nenhuma. Na diplomacia, isso tem nome: tradição.",
+          "efeitos": { "federacao.relacao": -3, "celeste.relacao": -3, "eu.popularidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fronteira_fechada",
+    "idade": [18, 64],
+    "condicoes": {
+      "pais.pol_comercio": { "min": 2 },
+      "setor": ["industria", "comercio", "tecnologia"],
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado"]
+    },
+    "peso": 2,
+    "texto": "Com a tarifa alta na fronteira, [a fábrica da cidade voltou a contratar|o importado sumiu da prateleira|a peça que vinha de fora agora custa o dobro]. No seu trabalho, isso virou [hora extra|corte de custos|assunto de toda reunião].",
+    "resumo": "sentiu a fronteira fechada no trabalho",
+    "escolhas": [
+      {
+        "texto": "Aproveitar a onda da indústria",
+        "resumo": "aproveitou a fronteira fechada para crescer no trabalho",
+        "condicoes": { "setor": "industria" },
+        "bloqueio": "só quem trabalha na indústria",
+        "resultado": {
+          "texto": "Turno a mais, promessa de promoção e o chefe falando em \"indústria nacional\" com a mão no peito.",
+          "efeitos": { "rendaFator": 1.1, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Apertar o cinto",
+        "resumo": "apertou o cinto com a fronteira fechada",
+        "resultado": {
+          "texto": "O importado ficou caro, o nacional ficou caro também, e você ficou com o que dava.",
+          "efeitos": { "dinheiro": 1500, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "importado_invadiu",
+    "idade": [18, 64],
+    "condicoes": {
+      "pais.pol_comercio": { "max": 0 },
+      "setor": "industria",
+      "renda": { "min": 1 },
+      "semMarcas": ["aposentado", "servidor"]
+    },
+    "peso": 2,
+    "texto": "Com a fronteira aberta, o importado barato encheu as lojas, e a fábrica em que você trabalha [fechou o turno da noite|anunciou um \"programa de demissão voluntária\"|trocou metade da linha por robôs de fora].",
+    "resumo": "viu o importado barato apertar a fábrica",
+    "escolhas": [
+      {
+        "texto": "Aderir à demissão voluntária",
+        "resumo": "aderiu a uma demissão voluntária na fábrica",
+        "resultado": {
+          "texto": "Saiu com um ano de salário no bolso e a pergunta \"e agora?\" na cabeça.",
+          "efeitos": { "dinheiro": 30000, "renda": { "definir": 0 }, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Aprender a operar a máquina nova",
+        "resumo": "aprendeu a operar a máquina importada",
+        "teste": { "atributo": "inteligencia", "dificuldade": 52 },
+        "sucesso": {
+          "texto": "Virou a pessoa que entende a máquina de fora. Ninguém demite quem sabe onde fica o botão.",
+          "resumo": "virou quem opera a máquina importada",
+          "efeitos": { "rendaFator": 1.1, "inteligencia": 1 }
+        },
+        "fracasso": {
+          "texto": "O manual era em outra língua e o curso, em outro estado. Você ficou na linha que sobrou.",
+          "resumo": "não conseguiu operar a máquina importada",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Esperar para ver",
+        "resumo": "esperou para ver o que a fábrica ia fazer",
+        "resultado": { "texto": "A fábrica sobreviveu, menor. Você também.", "efeitos": { "felicidade": -1 } }
+      }
+    ]
+  }
+]

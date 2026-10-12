@@ -82,12 +82,15 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     }
   }
 
-  // Um storylet que troca a ocupação ou zera a renda (a demissão, o bico) encerra a carreira escolhida na folha.
+  // Um storylet que troca a ocupação ou zera a renda (a demissão, o bico) encerra a carreira escolhida na folha,
+  // e o salário em dólar, que era daquele emprego.
   const zerou = ef.renda !== undefined && typeof ef.renda === 'object' && ef.renda.definir === 0;
-  if (ef['eu.carreira'] === undefined && (ef['eu.ocupacao'] !== undefined || ef['eu.setor'] !== undefined || zerou) && (eu.t['carreira'] ?? '') !== '') {
+  const trocou = ef['eu.ocupacao'] !== undefined || ef['eu.setor'] !== undefined || zerou;
+  if (ef['eu.carreira'] === undefined && trocou && (eu.t['carreira'] ?? '') !== '') {
     definirTexto(e, reg, 'eu', 'carreira', '');
     definirNumero(e, reg, 'eu', 'nivel', 0);
   }
+  if (trocou && !(ef.marcas ?? []).includes('salario_em_dolar')) perder(e, reg, 'eu', 'salario_em_dolar');
 
   if (ef.transferir) {
     const t = ef.transferir;

@@ -32,6 +32,7 @@
  * na medida em que elas dependem dele. Delegar (conselho, carta branca, sair
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
+import { exteriorNaEmpresa } from './diplomacia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
 import { empresasDe, entidadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import type { Ativo } from './constantes.ts';
@@ -381,7 +382,9 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const valor = n['valor'] ?? 0;
   const tracao = n['tracao'] ?? 0;
   const sorte = normal(e.rng, 0, volatilidadeDaEmpresa(valor) * (setor?.risco ?? 1)) + (emp.q['na_bolsa'] ? PESO_DA_BOLSA * humor : 0);
-  const bruto = Math.max(PIOR_ANO_EMPRESA, tracao / 100 + fase.empresa * (setor?.ciclo ?? 1) + sorte);
+  // O mundo lá fora: o dólar (quem exporta ganha, quem importa perde), a tarifa na fronteira e a sanção ou o acordo de quem compra do setor.
+  const fora = exteriorNaEmpresa(e, c, emp.t['setor'] ?? '', fase.cambio ?? 0);
+  const bruto = Math.max(PIOR_ANO_EMPRESA, tracao / 100 + fase.empresa * (setor?.ciclo ?? 1) + sorte + fora);
   // O mercado tem tamanho: o ganho encolhe perto do teto e some acima dele; a perda vale inteira.
   const crescimento = bruto > 0 ? bruto * Math.max(0, 1 - valor / TETO_EMPRESA) : bruto;
   somar(e, reg, id, 'valor', valor * crescimento, 'empresa');

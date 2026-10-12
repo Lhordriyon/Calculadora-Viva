@@ -7,7 +7,7 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
-import { POLITICAS } from './constantes.ts';
+import { PARCEIROS, POLITICAS } from './constantes.ts';
 
 export interface LeituraMotor {
   caminho: string;
@@ -78,6 +78,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.ocupacao',
   'eu.setor',
   'eu.servidor',
+  // o fim da carreira (atleta, modelo) larga o emprego, e o salário em dólar vai junto
+  'eu.salario_em_dolar',
   'eu.fama',
   // poder: influência, eleições, mandato, popularidade; decretos empurram o país
   'eu.influencia',
@@ -123,6 +125,13 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'pais.aprovacao',
   'pais.governo',
   ...POLITICAS.map((p) => `pais.pol_${p}`),
+  // o mundo lá fora: a economia e a relação de cada país, as crises de lá, as sanções e os acordos, e o dólar
+  ...de(PARCEIROS, 'crescimento'),
+  ...de(PARCEIROS, 'relacao'),
+  ...de(PARCEIROS, 'crise'),
+  ...de(PARCEIROS, 'sancao'),
+  ...de(PARCEIROS, 'acordo'),
+  'pais.cambio',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país, o nome do crescimento)
   'pais.expansao',
   'pais.recessao',
@@ -200,6 +209,13 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
     true,
   ),
   ...ler(['pais.regime'], 'país: sob o regime, não há eleição', true),
+  ...ler(de(PARCEIROS, 'crescimento'), 'mundo lá fora: o que o Brasil vende para lá e a economia de lá no ano seguinte', true),
+  ...ler(de(PARCEIROS, 'relacao'), 'mundo lá fora: relação ruim vira sanção, boa vira acordo', true),
+  ...ler(de(PARCEIROS, 'sancao'), 'mundo lá fora: a sanção tira crescimento, sobe o dólar e pesa nas empresas de quem vendia para lá', true),
+  ...ler(de(PARCEIROS, 'acordo'), 'mundo lá fora: o acordo soma crescimento e ajuda as empresas de quem vende para lá', true),
+  ...ler(de(PARCEIROS, 'crise'), 'mundo lá fora: a crise de lá acaba quando a economia deles volta a crescer', false),
+  ...ler(['pais.cambio'], 'dólar: a inflação, o investimento em dólar e as empresas que exportam ou importam', true),
+  ...ler(['eu.salario_em_dolar'], 'trabalho: o salário em dólar anda com o dólar, e a crise daqui não demite', true),
   ...ler(['eu.classe_origem'], 'escola pública: quem estuda nela sente a educação do país', true),
   ...ler(['empresa.aquisicoes'], 'empresa: três compras fazem um truste', true),
   ...ler(['empresa.subsidiarias'], 'grupo: vender subsidiárias dá dinheiro sem largar a empresa; o conglomerado dá influência', true),

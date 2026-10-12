@@ -3,7 +3,7 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { ATIVOS, CLASSES, ENTIDADES, POLITICAS } from './constantes.ts';
+import { ATIVOS, CLASSES, ENTIDADES, PARCEIROS, POLITICAS } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
@@ -17,6 +17,8 @@ export interface DefCampo {
   derivado?: boolean;
   /** Em reais de hoje (o texto mostra como dinheiro). */
   reais?: boolean;
+  /** Com centavos no texto (o dólar: R$ 6,80). */
+  centavos?: boolean;
   limites?: readonly [number, number];
 }
 
@@ -119,10 +121,23 @@ const PAIS: Record<string, DefCampo> = {
   aprovacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quem governa: o id de um bloco (mundo.json › governos), 'regime' ou 'voce'. */
   governo: { tipo: 'texto', sistema: 'poder' },
-  /** As políticas em vigor (pol_impostos, pol_social…; 0 baixo, 1 médio, 2 alto): mundo.json › politicas. Saem da lista, para nenhuma virar qualidade por esquecimento. */
+  /** As políticas em vigor (pol_impostos, pol_comercio…; 0 baixo, 1 médio, 2 alto): mundo.json › politicas. Saem da lista, para nenhuma virar qualidade por esquecimento. */
   ...Object.fromEntries(POLITICAS.map((p): [string, DefCampo] => [`pol_${p}`, { tipo: 'num', sistema: 'poder', limites: [0, 2] }])),
   /** Ano de eleição geral (2026, 2030…): o voto aparece. */
   eleicao: { tipo: 'bool', sistema: 'poder', derivado: true },
+  /** O dólar em reais de hoje: anda com o mundo lá fora, a dívida e os juros daqui; pesa na inflação, no investimento em dólar e nas empresas que exportam ou importam. */
+  cambio: { tipo: 'num', sistema: 'mundo', reais: true, centavos: true, limites: [1.5, 20] },
+};
+
+/** Um país de fora (mundo.json › estrangeiros): a economia dele e a relação com o Brasil. */
+const ESTRANGEIRO: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
+  /** O que ele compra do Brasil ("soja, minério e carne"), para o texto. */
+  produtos: { tipo: 'texto', sistema: 'mundo' },
+  /** Quanto a economia dele cresceu no último ano (%): puxa o que o Brasil vende para lá. */
+  crescimento: { tipo: 'num', sistema: 'mundo', limites: [-15, 15] },
+  /** A relação com o Brasil (0 hostil, 100 aliado): abaixo de 35, o risco de sanção cresce; acima de 70, o acordo fica à vista. */
+  relacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
 };
 
 /** Um bem de quem joga (bem1, bem2…): imóvel, veículo, luxo, mídia. */
@@ -168,6 +183,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent === 'lugar') return LUGAR;
   if (ent === 'pais') return PAIS;
   if (ent.startsWith('empresa')) return EMPRESA;
+  if ((PARCEIROS as readonly string[]).includes(ent)) return ESTRANGEIRO;
   if (ent.startsWith('bem')) return BEM;
   return PESSOA;
 }

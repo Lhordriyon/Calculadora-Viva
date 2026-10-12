@@ -23,7 +23,9 @@ function formatar(ent: string, campo: string, v: number | string | boolean | und
   if (v === undefined) return undefined;
   if (typeof v === 'string') return v;
   if (typeof v === 'boolean') return v ? 'sim' : 'não';
-  if (defCampo(ent, campo)?.reais) return formatarDinheiro(v);
+  const def = defCampo(ent, campo);
+  if (def?.centavos) return `R$ ${v.toFixed(2).replace('.', ',')}`;
+  if (def?.reais) return formatarDinheiro(v);
   return String(Math.round(v));
 }
 

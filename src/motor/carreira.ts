@@ -81,13 +81,14 @@ export function motivoParaNaoOperarCarreira(e: EstadoVida, c: Conteudo, op: Oper
   return null;
 }
 
-/** Larga o emprego atual (de qualquer origem). */
+/** Larga o emprego atual (de qualquer origem): o salário em dólar, que era dele, acaba junto. */
 export function largarEmprego(e: EstadoVida, reg: Mudanca[]): void {
   definirNumero(e, reg, 'eu', 'renda', 0);
   definirTexto(e, reg, 'eu', 'ocupacao', '');
   definirTexto(e, reg, 'eu', 'carreira', '');
   definirNumero(e, reg, 'eu', 'nivel', 0);
   perder(e, reg, 'eu', 'servidor');
+  perder(e, reg, 'eu', 'salario_em_dolar');
 }
 
 /** Faz a operação (já conferida) e devolve o texto e o resumo da entrada. */

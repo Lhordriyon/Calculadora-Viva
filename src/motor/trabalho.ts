@@ -42,8 +42,11 @@ export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: 
   // O salário do ano (ou o faturamento, que balança o dobro e tem sorte e azar).
   let variacao = estavel ? crescimento : crescimento + fase.salario * sente;
   if (dono) variacao = crescimento + fase.salario * sente * 2 + normal(e.rng, 0, VARIACAO_NEGOCIO);
+  // Quem ganha em dólar (o trabalho remoto para fora) vê o salário andar com o dólar, não com o país daqui, e não é demitido pela crise daqui.
+  const emDolar = Boolean(eu.q['salario_em_dolar']);
+  if (emDolar) variacao = crescimento + (fase.cambio ?? 0);
   somar(e, reg, 'eu', 'renda', renda * Math.max(-0.25, variacao), 'carreira');
-  if (estavel) return;
+  if (estavel || emDolar) return;
 
   const piora = Math.max(0, fase.desemprego - 1) * sente;
   if (dono) {

@@ -985,5 +985,70 @@
     "idade": [25, 95],
     "condicoes": { "marcas": ["empresa.na_bolsa"] },
     "texto": "Abriu o aplicativo da corretora antes de abrir os olhos. {empresa:O|A} {empresa} subiu 2%; o seu humor, 10%."
+  },
+  {
+    "idade": [14, 95],
+    "condicoes": { "pais.cambio": { "min": 6.5 } },
+    "texto": "O dólar está a {pais.cambio}. O seu tio, que nunca viajou, agora acompanha a cotação todo dia."
+  },
+  {
+    "idade": [18, 95],
+    "condicoes": { "pais.cambio": { "max": 4.3 } },
+    "texto": "Dólar a {pais.cambio}: a fila do aeroporto parece a do posto de saúde, só que mais animada."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["celeste.sancao"] },
+    "texto": "Com a República Celeste sem comprar soja do Brasil, o caminhoneiro da sua rua está parado na porta de casa."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["federacao.sancao"] },
+    "texto": "A Federação do Norte cortou o crédito e os voos. No jornal, a palavra do ano é \"sanção\"."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["liga.acordo"] },
+    "texto": "Por causa do acordo com a Liga Atlântica, o queijo de lá chegou mais barato; o café daqui foi para lá mais caro."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["pacto.crise"] },
+    "texto": "Crise de novo no Pacto do Sul: as lojas da fronteira estão cheias de vizinhos procurando o que lá ficou caro."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["federacao.crise"] },
+    "texto": "A crise na Federação do Norte é o assunto da padaria. Ninguém entende, todo mundo tem opinião."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "celeste.crescimento": { "min": 6 } },
+    "texto": "A República Celeste cresce sem parar e compra soja sem pechinchar. No interior, ninguém reclama do preço do adubo."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["pacto.acordo"] },
+    "texto": "Com o acordo do Pacto do Sul, carro feito aqui atravessa a fronteira sem tarifa e volta cheio de vinho."
+  },
+  {
+    "idade": [16, 95],
+    "condicoes": { "marcas": ["liga.sancao"] },
+    "texto": "A Liga Atlântica suspendeu as compras e mandou um relatório sobre a floresta. O café ficou no armazém."
+  },
+  {
+    "idade": [14, 95],
+    "condicoes": { "pais.pol_comercio": { "min": 2 } },
+    "texto": "Tarifa alta na fronteira: o videogame importado custa um salário, e a fábrica de panelas da cidade contratou de novo."
+  },
+  {
+    "idade": [14, 95],
+    "condicoes": { "pais.pol_comercio": { "max": 0 } },
+    "texto": "Fronteira aberta: o importado barato encheu as lojas, e o comércio da sua rua aprendeu a pronunciar marca estrangeira."
+  },
+  {
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["viajou_para_fora"] },
+    "texto": "Desde a viagem para fora, toda conversa sua tem um \"lá eles fazem assim\". Os amigos já contam quantas vezes."
   }
 ]

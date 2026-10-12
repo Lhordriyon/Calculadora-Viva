@@ -18,15 +18,16 @@ import { chanceDeEleicao } from './poder.ts';
 import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
 import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Politica, type Verbo } from './constantes.ts';
+import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Parceiro, type Politica, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
+import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
 import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
-import type { EstadoVida } from './tipos.ts';
+import type { Entidade, EstadoVida } from './tipos.ts';
 
 export const ESTRATEGIAS = ['primeira', 'cautelosa', 'arriscada', 'aleatoria'] as const;
 export type Estrategia = (typeof ESTRATEGIAS)[number];
@@ -253,6 +254,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirCarreira(estrategia, e, c, rng),
     ...decidirPoder(estrategia, e, c, rng),
     ...decidirGoverno(estrategia, e, c, rng),
+    ...decidirDiplomacia(estrategia, e, c, rng),
     ...decidirBens(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
@@ -315,12 +317,12 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
 /**
  * Quem governa o país, uma reforma por ano. A cautelosa governa com as contas em ordem: imposto médio, saúde e
  * escola caprichadas, e sobe o imposto ou corta o social quando a dívida passa de 90% do PIB. A arriscada é
- * populista: imposto baixo, programa social amplo e polícia na rua (a conta fica para depois). A aleatória
+ * populista: imposto baixo, programa social amplo, polícia na rua e a fronteira fechada (a conta fica para depois). A aleatória
  * mexe numa política sorteada de vez em quando.
  */
 const GOVERNO_DOS_ROBOS: Record<'cautelosa' | 'arriscada', Record<Politica, number>> = {
-  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1 },
-  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2 },
+  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1 },
+  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2 },
 };
 
 function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
@@ -336,6 +338,33 @@ function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   if (!politica) return [];
   const op: Operacao = { tipo: 'politica', politica, nivel: alvo[politica] };
   return pode(e, c, op) ? [op] : [];
+}
+
+/**
+ * Lá fora, um ato por ano. A cautelosa assina acordo quando a relação deixa e,
+ * senão, se aproxima de quem anda frio com o Brasil (abaixo de 45), para fugir
+ * da sanção. A arriscada, com a popularidade baixa, rompe com quem anda mais
+ * frio (a bandeira na janela rende voto agora; a sanção chega depois). A
+ * aleatória faz um ato sorteado de vez em quando.
+ */
+function decidirDiplomacia(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (estrategia === 'primeira' || governoAtual(e) !== 'voce') return [];
+  const paises = parceirosDe(e);
+  if (paises.length === 0) return [];
+  const ato = (p: Entidade, acao: AcaoDiplomatica): Operacao[] => {
+    const op: Operacao = { tipo: 'diplomacia', parceiro: p.id as Parceiro, acao };
+    return pode(e, c, op) ? [op] : [];
+  };
+  const maisFrio = paises.reduce((a, b) => ((b.n['relacao'] ?? 50) < (a.n['relacao'] ?? 50) ? b : a));
+  if (estrategia === 'aleatoria') return aleatorio(rng) < 0.15 ? ato(sortear(rng, paises), sortear(rng, ACOES_DIPLOMATICAS)) : [];
+  if (estrategia === 'cautelosa') {
+    for (const p of paises) {
+      const acordo = ato(p, 'acordo');
+      if (acordo.length > 0) return acordo;
+    }
+    return (maisFrio.n['relacao'] ?? 50) < 45 ? ato(maisFrio, 'aproximar') : [];
+  }
+  return (e.entidades['eu']!.n['popularidade'] ?? 50) < 40 && (maisFrio.n['relacao'] ?? 50) < 50 ? ato(maisFrio, 'romper') : [];
 }
 
 function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {

@@ -386,7 +386,7 @@
   {
     "id": "chaves_do_apartamento",
     "apenasAgendado": true,
-    "condicoes": { "marcas": ["apartamento_na_planta"], "semMarcas": ["pais.crise"] },
+    "condicoes": { "marcas": ["apartamento_na_planta"], "semMarcas": ["pais.recessao", "pais.crise"] },
     "texto": "As chaves do apartamento chegaram, com três meses de atraso e um vazamento de brinde no banheiro.",
     "resumo": "recebeu as chaves do apartamento comprado na planta",
     "escolhas": [

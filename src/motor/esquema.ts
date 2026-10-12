@@ -12,6 +12,7 @@ import {
   CLASSES,
   FASES,
   PAPEIS,
+  PARCEIROS,
   PERFIS,
   PAPEIS_NOVOS,
   POLITICAS,
@@ -287,8 +288,8 @@ export const Storylet = z
     verbo: z.enum(VERBOS).optional(),
     /** Ações: o que aparece no botão do verbo ("cursinho do ENEM"). Jogadas: o nome na lista ("Fundar uma cidade"). */
     rotulo: z.string().min(3).optional(),
-    /** Papéis que podem ocupar {ator}: quem age (npc) ou de quem se trata. */
-    ator: z.array(z.enum(PAPEIS)).min(1).optional(),
+    /** Papéis que podem ocupar {ator}: quem age (npc) ou de quem se trata; ou os países de fora (todos do mesmo tipo). */
+    ator: z.array(z.enum([...PAPEIS, ...PARCEIROS])).min(1).optional(),
     /** Entre vários atores possíveis, prefere o de menor ("-ator.vinculo") ou maior ("+ator.dinheiro") valor. */
     preferir: z.string().regex(/^[+-]ator\.[a-z_]+$/).optional(),
     /** Faixa de idade [min, max] de quem joga. */
@@ -409,6 +410,10 @@ export const DefSetor = z.strictObject({
   risco: z.number().min(0.3).max(3).optional(),
   /** Nomes de empresa ({sobrenome}, {nome}, {o|a}). Sem nomes, não dá para abrir empresa no setor. */
   empresas: z.array(z.string().min(3)).min(2).optional(),
+  /** Quanto a empresa do setor ganha com o dólar subindo (exporta: positivo; importa: negativo). */
+  cambio: z.number().min(-1).max(1).optional(),
+  /** Quanto ela ganha com a tarifa alta na fronteira (a indústria protegida: positivo; quem vende importado: negativo). */
+  protecao: z.number().min(-1).max(1).optional(),
 });
 export type DefSetor = z.infer<typeof DefSetor>;
 
@@ -438,10 +443,43 @@ export const DefAtivo = z.strictObject({
   nome: z.string(),
   retorno: z.strictObject({ normal: z.number(), expansao: z.number(), recessao: z.number(), crise: z.number() }),
   desvio: z.number().min(0).max(1),
+  /** Quanto o rendimento acompanha a variação do dólar em reais no ano (1 = o quanto o dólar subiu; o dólar). */
+  cambio: z.number().min(0).max(2).optional(),
   /** Quanto o rendimento acompanha o juro real do país acima ou abaixo do neutro (1 = ponto a ponto; a renda fixa). */
   juros: z.number().min(-2).max(2).optional(),
 });
 export type DefAtivo = z.infer<typeof DefAtivo>;
+
+/** Um país de fora: quanto pesa no comércio do Brasil, como a economia dele anda, o que ele compra daqui e a relação de partida. */
+export const DefEstrangeiro = z.strictObject({
+  id: z.enum(PARCEIROS),
+  /** Sem artigo ("Federação do Norte"); o gênero dá o artigo no texto ({ator:o|a}). */
+  nome: z.string().min(3),
+  genero: z.enum(['f', 'm']),
+  /** Para a folha País: quem é, numa frase. */
+  descricao: z.string().min(3),
+  /** O que ele compra do Brasil ("soja, minério e carne"), para o texto ({ator.produtos}). */
+  produtos: z.string().min(3),
+  /** A parte dele no comércio do Brasil (os pesos somam até 1). */
+  peso: z.number().gt(0).max(1),
+  /** O crescimento para onde a economia dele volta (% ao ano) e a sorte de um ano. */
+  crescimento: z.number().min(-2).max(10),
+  desvio: z.number().min(0).max(5),
+  /** Chance por ano de uma crise (e de um boom) lá. */
+  crise: z.number().min(0).max(0.2),
+  boom: z.number().min(0).max(0.2).optional(),
+  /** O rival dele: aproximar-se de um esfria a relação com o outro. */
+  rival: z.enum(PARCEIROS).optional(),
+  /** Setores daqui que vendem para ele (a sanção dele pesa nas empresas desses setores; o acordo ajuda). */
+  compra: z.array(id).min(1),
+  /** A relação de partida com o Brasil (0 a 100). */
+  relacao: z.number().min(0).max(100),
+});
+export type DefEstrangeiro = z.infer<typeof DefEstrangeiro>;
+
+/** O que o mundo lá fora conta na linha do tempo, por tipo de notícia ({ator} é o país de fora); os três últimos são os atos de quem governa (o resumo completa "aos 52, você…"). */
+export const NOTICIAS = ['crise', 'boom', 'sancao', 'fimDaSancao', 'acordo', 'fimDoAcordo', 'aproximar', 'assinar', 'romper'] as const;
+export type Noticia = (typeof NOTICIAS)[number];
 
 /** Perfil de investidor: a divisão do dinheiro novo entre as classes (somando 1). */
 export const DefPerfil = z
@@ -608,7 +646,7 @@ export const DefCargo = z.strictObject({
 export type DefCargo = z.infer<typeof DefCargo>;
 
 /** O que uma política muda, por nível (baixo, médio, alto). Os números entram nas contas de pais.ts. */
-export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'renda', 'auxilio'] as const;
+export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'renda', 'auxilio', 'inflacao', 'relacao'] as const;
 export type EfeitoDePolitica = (typeof EFEITOS_DE_POLITICA)[number];
 
 /** Uma política do governo: três níveis, cada um com efeitos nas contas, nas estatísticas e no bolso de quem joga. */
@@ -640,7 +678,10 @@ export const DefGoverno = z.strictObject({
     saude: z.number().int().min(0).max(2),
     educacao: z.number().int().min(0).max(2),
     seguranca: z.number().int().min(0).max(2),
+    comercio: z.number().int().min(0).max(2),
   }),
+  /** Os países de fora de quem o bloco se aproxima no governo (a relação com eles sobe, com os rivais deles cai). */
+  aproxima: z.array(z.enum(PARCEIROS)).optional(),
   /** Gasto a mais (pontos do PIB): as emendas de quem negocia apoio. */
   gasto: z.number().min(0).max(3).optional(),
   /** Aprovação a mais (governabilidade). */
@@ -689,6 +730,9 @@ export const Mundo = z.strictObject({
   ),
   /** Setores da economia (o emprego de quem joga e dos pais pertence a um). */
   setores: z.array(DefSetor).min(6),
+  /** Os países de fora, um por id, e o que o mundo lá fora conta na linha do tempo. */
+  estrangeiros: z.array(DefEstrangeiro).length(PARCEIROS.length),
+  noticias: z.record(z.enum(NOTICIAS), z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string().min(3) })),
   /** O ciclo econômico do país, uma fase por id. */
   fases: z.array(DefFase).length(FASES.length),
   /** As políticas do governo, uma por id. */

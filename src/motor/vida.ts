@@ -14,6 +14,7 @@ import { escolherDoAno } from './diretor.ts';
 import { mercadoDoAno } from './carteira.ts';
 import { anoDoPais, bolsoDoPais, escolaPublica, fatorDaSaudePublica, paisInicial, riscoDeViolencia } from './pais.ts';
 import { economiaDoAno, padraoDe } from './economia.ts';
+import { anoDoExterior, exteriorInicial } from './diplomacia.ts';
 import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDaCarreira } from './carreira.ts';
@@ -101,6 +102,7 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   e.sobrenome = limparNome(escolha?.sobrenome) || `${sortear(rng, c.mundo.sobrenomes)} ${sortear(rng, c.mundo.sobrenomes)}`;
   gerarOrigem(e, c, op.origem);
   paisInicial(e, c);
+  exteriorInicial(e, c);
   e.historico.push({
     id: 0,
     idade: 0,
@@ -168,12 +170,12 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   e.ano++;
   const eu = e.entidades['eu']!;
   const inicio = e.historico.length;
-  // O país primeiro: quem governa, as estatísticas e a fase valem para a economia, os empregos e os storylets do ano.
+  // O mundo lá fora e o país primeiro: quem governa, as estatísticas, o dólar e a fase valem para a economia, os empregos e os storylets do ano.
   const regAno: Mudanca[] = [];
-  const fase = anoDoPais(e, c, regAno);
+  const fase = anoDoPais(e, c, regAno, anoDoExterior(e, c, regAno));
   const idRegras = e.proximoId++;
 
-  const mercado = mercadoDoAno(e, c, fase.id, regAno);
+  const mercado = mercadoDoAno(e, c, fase.id, regAno, fase.cambio);
   const ano = economiaDoAno(e, regAno, bolsoDoPais(e, c), mercado);
   regraDaEmpresa(e, c, fase, regAno, mercado);
   regraDosBens(e, c, regAno);

@@ -275,7 +275,7 @@
       "peso": 24,
       "patrimonio": [2000, 35000],
       "renda": [14000, 30000],
-      "poupanca": 0.0,
+      "poupanca": 0,
       "saude": -3,
       "ocupacoes": [
         { "m": "pedreiro", "f": "diarista", "setor": { "m": "construcao", "f": "servicos" } },
@@ -777,8 +777,10 @@
       "ciclo": 1.2,
       "crescimento": 0.004,
       "tracao": 4,
-      "risco": 1.0,
-      "empresas": ["Empório {sobrenome}", "Casa {sobrenome}", "Mercadinho d{o|a} {nome}", "{sobrenome} Atacado"]
+      "risco": 1,
+      "empresas": ["Empório {sobrenome}", "Casa {sobrenome}", "Mercadinho d{o|a} {nome}", "{sobrenome} Atacado"],
+      "cambio": -0.4,
+      "protecao": -0.5
     },
     {
       "id": "servicos",
@@ -786,7 +788,7 @@
       "ciclo": 1.1,
       "crescimento": 0.003,
       "tracao": 5,
-      "risco": 1.0,
+      "risco": 1,
       "empresas": ["{sobrenome} Serviços", "Lavanderia d{o|a} {nome}", "{sobrenome} & Associados", "Studio {nome}"]
     },
     {
@@ -801,7 +803,9 @@
         "Indústria {sobrenome}",
         "{sobrenome} Embalagens",
         "Fábrica de Doces {sobrenome}"
-      ]
+      ],
+      "cambio": 0.4,
+      "protecao": 1
     },
     {
       "id": "construcao",
@@ -815,7 +819,8 @@
         "{sobrenome} Engenharia",
         "Reformas d{o|a} {nome}",
         "{sobrenome} Empreendimentos"
-      ]
+      ],
+      "cambio": -0.1
     },
     {
       "id": "agro",
@@ -824,16 +829,20 @@
       "crescimento": 0.009,
       "tracao": 5,
       "risco": 0.8,
-      "empresas": ["Fazenda {sobrenome}", "Agropecuária {sobrenome}", "Grãos {sobrenome}", "Sítio d{o|a} {nome}"]
+      "empresas": ["Fazenda {sobrenome}", "Agropecuária {sobrenome}", "Grãos {sobrenome}", "Sítio d{o|a} {nome}"],
+      "cambio": 0.8,
+      "protecao": -0.5
     },
     {
       "id": "tecnologia",
       "nome": "tecnologia",
-      "ciclo": 1.0,
+      "ciclo": 1,
       "crescimento": 0.02,
       "tracao": 10,
       "risco": 1.2,
-      "empresas": ["{sobrenome} Tech", "{nome}.app", "Nuvem {sobrenome}", "{sobrenome} Labs"]
+      "empresas": ["{sobrenome} Tech", "{nome}.app", "Nuvem {sobrenome}", "{sobrenome} Labs"],
+      "cambio": -0.3,
+      "protecao": -0.5
     },
     {
       "id": "saude",
@@ -842,7 +851,9 @@
       "crescimento": 0.011,
       "tracao": 6,
       "risco": 0.7,
-      "empresas": ["Clínica {sobrenome}", "Farmácia {sobrenome}", "Instituto {sobrenome}", "Laboratório {sobrenome}"]
+      "empresas": ["Clínica {sobrenome}", "Farmácia {sobrenome}", "Instituto {sobrenome}", "Laboratório {sobrenome}"],
+      "cambio": -0.3,
+      "protecao": -0.2
     },
     {
       "id": "educacao",
@@ -863,15 +874,16 @@
       "id": "transporte",
       "nome": "transporte e entregas",
       "ciclo": 1.3,
-      "crescimento": 0.0,
+      "crescimento": 0,
       "tracao": 3,
-      "risco": 1.0,
+      "risco": 1,
       "empresas": [
         "Transportadora {sobrenome}",
         "{sobrenome} Logística",
         "Entregas d{o|a} {nome}",
         "Expresso {sobrenome}"
-      ]
+      ],
+      "cambio": -0.2
     },
     {
       "id": "financas",
@@ -880,7 +892,8 @@
       "crescimento": 0.016,
       "tracao": 7,
       "risco": 1.1,
-      "empresas": ["{sobrenome} Investimentos", "{sobrenome} Capital", "Banco {sobrenome}", "{sobrenome} Seguros"]
+      "empresas": ["{sobrenome} Investimentos", "{sobrenome} Capital", "Banco {sobrenome}", "{sobrenome} Seguros"],
+      "cambio": 0.1
     },
     {
       "id": "cultura",
@@ -892,6 +905,121 @@
       "empresas": ["Produtora {sobrenome}", "{sobrenome} Filmes", "Estúdio d{o|a} {nome}", "{sobrenome} Eventos"]
     }
   ],
+  "estrangeiros": [
+    {
+      "id": "federacao",
+      "nome": "Federação do Norte",
+      "genero": "f",
+      "descricao": "a superpotência rica do norte, dona do dinheiro do mundo",
+      "produtos": "aviões, aço e suco de laranja",
+      "peso": 0.3,
+      "crescimento": 2.2,
+      "desvio": 1.3,
+      "crise": 0.015,
+      "rival": "celeste",
+      "compra": ["industria", "agro"],
+      "relacao": 52
+    },
+    {
+      "id": "celeste",
+      "nome": "República Celeste",
+      "genero": "f",
+      "descricao": "o gigante industrial do Oriente, que compra tudo o que a terra dá",
+      "produtos": "soja, minério e carne",
+      "peso": 0.35,
+      "crescimento": 4.5,
+      "desvio": 1.5,
+      "crise": 0.015,
+      "boom": 0.03,
+      "rival": "federacao",
+      "compra": ["agro"],
+      "relacao": 50
+    },
+    {
+      "id": "liga",
+      "nome": "Liga Atlântica",
+      "genero": "f",
+      "descricao": "as velhas democracias do outro lado do oceano, que pagam bem e cobram floresta em pé",
+      "produtos": "café, frutas e celulose",
+      "peso": 0.2,
+      "crescimento": 1.5,
+      "desvio": 1,
+      "crise": 0.01,
+      "compra": ["agro", "industria"],
+      "relacao": 50
+    },
+    {
+      "id": "pacto",
+      "nome": "Pacto do Sul",
+      "genero": "m",
+      "descricao": "os vizinhos do continente, sócios de longa data e de crises frequentes",
+      "produtos": "carros, máquinas e calçados",
+      "peso": 0.15,
+      "crescimento": 2.5,
+      "desvio": 2,
+      "crise": 0.02,
+      "compra": ["industria", "comercio"],
+      "relacao": 55
+    }
+  ],
+  "noticias": {
+    "crise": {
+      "textos": [
+        "{ator:O|A} {ator} entrou em crise: [bancos quebrando|a bolsa derretendo|fila no seguro-desemprego de lá]. Aqui, o dólar acordou nervoso e o noticiário aprendeu a pronunciar o nome do ministro de lá.",
+        "A crise começou n{ator:o|a} {ator} e atravessou o oceano em uma semana: [quem vendia para lá parou de vender|o dólar subiu antes do café|a bolsa daqui caiu por solidariedade]."
+      ],
+      "resumo": "{ator:o|a} {ator} entrou em crise"
+    },
+    "boom": {
+      "textos": [
+        "{ator:O|A} {ator} está comprando o mundo: [soja a preço de ouro|navio na fila do porto|minério que não para de subir]. Quem vende {ator.produtos} para lá anda sorrindo à toa."
+      ],
+      "resumo": "{ator:o|a} {ator} saiu comprando o mundo"
+    },
+    "sancao": {
+      "textos": [
+        "{ator:O|A} {ator} impôs sanções ao Brasil: [{ator.produtos} parados no porto|contas congeladas e voos cancelados|uma lista de empresas proibidas de vender para lá]. O dólar subiu antes da coletiva acabar."
+      ],
+      "resumo": "{ator:o|a} {ator} impôs sanções ao Brasil"
+    },
+    "fimDaSancao": {
+      "textos": [
+        "{ator:O|A} {ator} suspendeu as sanções: os navios com {ator.produtos} voltaram a sair do porto, e os diplomatas voltaram a sorrir nas fotos.",
+        "{ator:O|A} {ator} suspendeu as sanções sem dizer por quê: [o mercado de lá sentiu falta de {ator.produtos}|os importadores de lá ameaçaram parar o país|a sanção virou piada nos jornais de lá]. O Brasil comemorou como se tivesse ganhado alguma coisa."
+      ],
+      "resumo": "{ator:o|a} {ator} suspendeu as sanções ao Brasil"
+    },
+    "acordo": {
+      "textos": [
+        "O Brasil assinou um acordo comercial com {ator:o|a} {ator}: tarifa menor dos dois lados, mais {ator.produtos} indo para lá e [importado mais barato chegando|uma cerimônia com caneta de ouro|um discurso de duas horas sobre \"nova era\"]."
+      ],
+      "resumo": "o Brasil assinou um acordo comercial com {ator:o|a} {ator}"
+    },
+    "fimDoAcordo": {
+      "textos": [
+        "O acordo com {ator:o|a} {ator} acabou: a relação azedou, as tarifas voltaram e quem vendia {ator.produtos} para lá ficou com o estoque."
+      ],
+      "resumo": "o acordo comercial com {ator:o|a} {ator} acabou"
+    },
+    "aproximar": {
+      "textos": [
+        "Fez uma visita de Estado {ator:ao|à} {ator}: [tapete vermelho na pista|banquete de doze pratos e nenhum que você reconhecesse|foto apertando a mão por um minuto inteiro]. A relação esquentou, e quem é rival del{ator:e|a} anotou o nome do restaurante."
+      ],
+      "resumo": "fez uma visita de Estado {ator:ao|à} {ator}"
+    },
+    "assinar": {
+      "textos": [
+        "Assinou um acordo comercial com {ator:o|a} {ator}: tarifa menor dos dois lados, mais {ator.produtos} indo para lá e uma caneta de ouro que a assessoria jura que é emprestada."
+      ],
+      "resumo": "assinou um acordo comercial com {ator:o|a} {ator}"
+    },
+    "romper": {
+      "textos": [
+        "Rompeu com {ator:o|a} {ator}: embaixador chamado de volta, discurso em rede nacional e a bandeira em todas as janelas. A popularidade subiu; a conta, que vem em dólar, chega depois."
+      ],
+      "resumo": "rompeu relações com {ator:o|a} {ator}"
+    }
+  },
   "fases": [
     {
       "id": "normal",
@@ -967,12 +1095,7 @@
       "nome": "Programas sociais",
       "niveis": ["mínimos", "médios", "amplos"],
       "descricao": "Dinheiro na mão de quem tem pouco: a pobreza cai, a violência vem atrás e o voto agradece. A conta vai para o orçamento.",
-      "efeitos": {
-        "gasto": [-1.5, 0, 1.5],
-        "pobreza": [6, 0, -6],
-        "aprovacao": [-2, 0, 3],
-        "auxilio": [0, 1800, 4800]
-      },
+      "efeitos": { "gasto": [-1.5, 0, 1.5], "pobreza": [6, 0, -6], "aprovacao": [-2, 0, 3], "auxilio": [0, 1800, 4800] },
       "subir": {
         "texto": "Mais gente com o que comer no fim do mês; a oposição já fala em \"farra\".",
         "resumo": "ampliou os programas sociais"
@@ -1026,6 +1149,26 @@
         "texto": "Menos viatura na rua. O crime agradece a economia.",
         "resumo": "afrouxou a segurança pública"
       }
+    },
+    {
+      "id": "comercio",
+      "nome": "Comércio exterior",
+      "niveis": ["aberto", "moderado", "fechado"],
+      "descricao": "Tarifa alta protege a indústria daqui e agrada quem trabalha nela; deixa tudo mais caro, a economia mais lenta e os parceiros de cara feia.",
+      "efeitos": {
+        "potencial": [0.3, 0, -0.4],
+        "inflacao": [-0.5, 0, 0.8],
+        "relacao": [5, 0, -8],
+        "aprovacao": [-1, 0, 1]
+      },
+      "subir": {
+        "texto": "Tarifa alta na fronteira: a fábrica daqui comemora, o importado some da prateleira e os parceiros reclamam em todo fórum internacional.",
+        "resumo": "fechou o comércio exterior com tarifas altas"
+      },
+      "baixar": {
+        "texto": "Tarifa baixa na fronteira: o importado chega barato, a fábrica daqui sua para competir e os parceiros abrem as portas.",
+        "resumo": "abriu o comércio exterior"
+      }
     }
   ],
   "governos": [
@@ -1033,28 +1176,31 @@
       "id": "frente_popular",
       "nome": "a frente popular",
       "promessa": "comida no prato, posto de saúde e escola boa, pagos por quem pode mais",
-      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1 },
-      "eleito": true
+      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1 },
+      "eleito": true,
+      "aproxima": ["pacto", "celeste"]
     },
     {
       "id": "bloco_liberal",
       "nome": "o bloco liberal",
       "promessa": "menos imposto, menos Estado e a economia andando com as próprias pernas",
-      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1 },
-      "eleito": true
+      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0 },
+      "eleito": true,
+      "aproxima": ["federacao", "liga"]
     },
     {
       "id": "alianca_da_ordem",
       "nome": "a aliança da ordem",
       "promessa": "polícia na rua, contas em dia e o resto depois",
-      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2 },
-      "eleito": true
+      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2 },
+      "eleito": true,
+      "aproxima": ["federacao"]
     },
     {
       "id": "centrao",
       "nome": "o centrão",
       "promessa": "um pouco de tudo para todo mundo, desde que sobrem cargos",
-      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1 },
+      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1 },
       "gasto": 1,
       "aprovacao": 4,
       "eleito": true
@@ -1063,8 +1209,9 @@
       "id": "regime",
       "nome": "o regime",
       "promessa": "ordem, progresso e nenhuma pergunta",
-      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2 },
-      "eleito": false
+      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2 },
+      "eleito": false,
+      "aproxima": ["celeste"]
     }
   ],
   "ativos": [
@@ -1090,8 +1237,9 @@
     {
       "id": "dolar",
       "nome": "Dólar",
-      "retorno": { "normal": 0, "expansao": -0.06, "recessao": 0.07, "crise": 0.22 },
-      "desvio": 0.08
+      "retorno": { "normal": 0, "expansao": 0, "recessao": 0, "crise": 0 },
+      "desvio": 0.02,
+      "cambio": 1
     },
     {
       "id": "cripto",
@@ -1196,7 +1344,7 @@
       "categoria": "imovel",
       "preco": 420000,
       "manutencao": 0.015,
-      "valorizacao": 0.0,
+      "valorizacao": 0,
       "aluguel": 0.065,
       "conforto": 0,
       "status": 0,
@@ -1469,7 +1617,7 @@
       "categoria": "luxo",
       "preco": 600000000,
       "manutencao": 0.08,
-      "valorizacao": 0.0,
+      "valorizacao": 0,
       "desvio": 0.15,
       "conforto": 4,
       "status": 20,
@@ -1482,7 +1630,7 @@
       "categoria": "midia",
       "preco": 25000000,
       "manutencao": 0.05,
-      "valorizacao": 0.0,
+      "valorizacao": 0,
       "desvio": 0.06,
       "conforto": 0,
       "status": 7,
@@ -1509,7 +1657,7 @@
       "categoria": "midia",
       "preco": 1500000000,
       "manutencao": 0.05,
-      "valorizacao": 0.0,
+      "valorizacao": 0,
       "desvio": 0.08,
       "conforto": 1,
       "status": 25,
@@ -1990,11 +2138,7 @@
       "chance": 0.6,
       "talento": "inteligencia",
       "salario": [50000, 240000],
-      "cargos": [
-        "assistente contábil",
-        "contador|contadora",
-        "dono de escritório contábil|dona de escritório contábil"
-      ],
+      "cargos": ["assistente contábil", "contador|contadora", "dono de escritório contábil|dona de escritório contábil"],
       "promocao": 0.12
     },
     {
@@ -2485,11 +2629,38 @@
   ],
   "nascimento": [
     {
-      "se": { "marcas": ["prematuro"], "semMarcas": ["filho_de_craque", "filho_de_famoso", "filho_de_imigrantes", "filho_de_militar", "filho_de_politico", "filho_do_agro", "filho_do_circo", "herdeiro_regime", "principe"] },
+      "se": {
+        "marcas": ["prematuro"],
+        "semMarcas": [
+          "filho_de_craque",
+          "filho_de_famoso",
+          "filho_de_imigrantes",
+          "filho_de_militar",
+          "filho_de_politico",
+          "filho_do_agro",
+          "filho_do_circo",
+          "herdeiro_regime",
+          "principe"
+        ]
+      },
       "texto": "Você nasceu em {cidade}, {uf}, [sete semanas|um mês e meio|dois meses] antes da hora, com menos de dois quilos. Passou as primeiras semanas numa incubadora, e {mae} passou essas semanas ao lado dela."
     },
     {
-      "se": { "marcas": ["prematuro"], "pai.ausente": false, "semMarcas": ["filho_de_craque", "filho_de_famoso", "filho_de_imigrantes", "filho_de_militar", "filho_de_politico", "filho_do_agro", "filho_do_circo", "herdeiro_regime", "principe"] },
+      "se": {
+        "marcas": ["prematuro"],
+        "pai.ausente": false,
+        "semMarcas": [
+          "filho_de_craque",
+          "filho_de_famoso",
+          "filho_de_imigrantes",
+          "filho_de_militar",
+          "filho_de_politico",
+          "filho_do_agro",
+          "filho_do_circo",
+          "herdeiro_regime",
+          "principe"
+        ]
+      },
       "texto": "Nasceu {nome}, em {cidade} ({uf}), antes de todo mundo estar pronto: {prematuro|prematura} de [32|33|34] semanas. {pai} aprendeu a palavra \"incubadora\", e {mae}, a palavra \"paciência\"."
     },
     {

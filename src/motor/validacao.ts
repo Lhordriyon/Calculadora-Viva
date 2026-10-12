@@ -7,7 +7,7 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, PADROES, PAPEIS, PAPEIS_NOVOS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, PADROES, PAPEIS, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
@@ -173,6 +173,13 @@ function leiturasDe(cond: Condicoes | undefined): string[] {
 }
 
 const PAPEL_PESSOA = new Set<string>(PAPEIS);
+const PAIS_DE_FORA = new Set<string>(PARCEIROS);
+
+/** A entidade que dá os campos de um caminho: "ator.x" é de pessoa, ou de país de fora quando os atores do storylet são países. */
+function modeloDe(ent: string, atores: readonly string[] | undefined): string {
+  if (ent !== 'ator') return ent;
+  return atores && atores.length > 0 && atores.every((a) => PAIS_DE_FORA.has(a)) ? atores[0]! : 'mae';
+}
 
 /** Normaliza um caminho concreto para a chave de leitura/escrita ("pessoa.x" do manifesto vira cada papel). */
 function chavesDoManifesto(caminho: string): string[] {
@@ -255,7 +262,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       if (pedido === undefined || CHAVES_CONDICAO.has(chave)) continue;
       if (!conferirCaminho(chave, onde, atores)) continue;
       const { ent, campo } = separar(chave);
-      const def = defCampo(ent === 'ator' ? 'mae' : ent, campo);
+      const def = defCampo(modeloDe(ent, atores), campo);
       const tipo = typeof pedido === 'boolean' ? 'bool' : typeof pedido === 'string' || Array.isArray(pedido) ? 'texto' : 'faixa';
       const validos = valoresDe(c, ent, campo);
       if (validos && tipo === 'texto') {
@@ -287,7 +294,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (!chave.includes('.')) continue;
         if (!conferirCaminho(chave, b.onde, atores)) continue;
         const { ent, campo } = separar(chave);
-        const def = defCampo(ent === 'ator' ? 'mae' : ent, campo);
+        const def = defCampo(modeloDe(ent, atores), campo);
         if (!def) erro(b.onde, `"${chave}" não é campo (qualidades vão em "marcas" ou "qualidades")`);
         else if (def.derivado) erro(b.onde, `"${chave}" é calculado; não dá para escrever`);
         const v = ef[chave];
@@ -297,7 +304,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         }
         if (copia !== undefined && conferirCaminho(copia, b.onde, atores)) {
           const { ent: entOrigem, campo: campoOrigem } = separar(copia);
-          const defOrigem = defCampo(entOrigem === 'ator' ? 'mae' : entOrigem, campoOrigem);
+          const defOrigem = defCampo(modeloDe(entOrigem, atores), campoOrigem);
           if (!defOrigem || defOrigem.tipo !== def?.tipo) erro(b.onde, `"${chave}" copia "${copia}", que não é um campo do mesmo tipo`);
           for (const k of concretos(copia, atores)) ler(k, { sistema: 'efeito', decide: false, onde: b.onde });
         }
@@ -308,7 +315,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       for (const m of [...(ef.marcas ?? []), ...(ef.removerMarcas ?? []), ...Object.keys(ef.qualidades ?? {})]) {
         if (!conferirCaminho(m, b.onde, atores)) continue;
         const { ent, campo } = separar(m);
-        if (defCampo(ent === 'ator' ? 'mae' : ent, campo)) erro(b.onde, `"${m}" é campo, não qualidade`);
+        if (defCampo(modeloDe(ent, atores), campo)) erro(b.onde, `"${m}" é campo, não qualidade`);
       }
       for (const w of escritasDe(ef, atores)) {
         if (w.caminho) escrever(w.caminho, b.onde);
@@ -380,6 +387,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   }
   c.mundo.nascimento.forEach((n, i) => lerTexto(n.texto, `mundo.json › nascimento[${i}]`, undefined));
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) for (const t of ac.textos) lerTexto(t, `mundo.json › acontecimentos.${g}`, PAPEIS);
+  for (const [g, n] of Object.entries(c.mundo.noticias)) for (const t of [...n.textos, n.resumo]) lerTexto(t, `mundo.json › noticias.${g}`, PARCEIROS);
 
   // ---- qualidades consultadas que nada cria
   for (const [chave, lista] of leitores) {
@@ -397,7 +405,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const [chave, onde] of escritores) {
     const { ent, campo } = separar(chave);
     if (defCampo(ent, campo)?.derivado) continue;
-    if (!PAPEL_PESSOA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais' && ent !== 'empresa') continue;
+    if (!PAPEL_PESSOA.has(ent) && !PAIS_DE_FORA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais' && ent !== 'empresa') continue;
     const lista = leitores.get(chave) ?? [];
     const sistemas = new Set(lista.map((l) => l.sistema));
     const local = onde.find((o) => o !== 'motor') ?? onde[0]!;
@@ -413,6 +421,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     const onde = nomeDe(s);
     const tipo = tipoDe(s);
     if (s.apenasAgendado && !agendados.has(s.id)) erro(onde, 'é apenasAgendado, mas ninguém o agenda (storylet morto)');
+    if (s.ator && s.ator.some((a) => PAIS_DE_FORA.has(a)) && !s.ator.every((a) => PAIS_DE_FORA.has(a))) erro(onde, 'atores de um tipo só: pessoas ou países de fora');
     if (s.idade && s.idade[1] > IDADE_MAXIMA) erro(onde, `idade máxima acima de ${IDADE_MAXIMA}`);
     // A jogada não trava a vida (a folha tem "Voltar"); o resto precisa de uma saída sempre aberta.
     if (tipo !== 'jogada' && s.escolhas && !s.escolhas.some((esc) => !esc.condicoes)) erro(onde, 'precisa de pelo menos uma escolha sem condições (senão a vida pode travar)');
@@ -453,6 +462,15 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
     for (const t of [...ac.textos, ac.resumo]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, new Set(['como']), new Set(), marcasDoPapel, erro, PAPEIS);
   }
+  for (const [g, n] of Object.entries(c.mundo.noticias)) {
+    for (const t of [...n.textos, n.resumo]) verificarModelo(t, `mundo.json › noticias.${g}`, new Set(), new Set(), marcasDoPapel, erro, PARCEIROS);
+  }
+  for (const est of c.mundo.estrangeiros) {
+    const onde = `mundo.json › estrangeiros › ${est.id}`;
+    if (est.rival && est.rival === est.id) erro(onde, 'o rival não pode ser ele mesmo');
+    for (const setor of est.compra) if (!c.mundo.setores.some((x) => x.id === setor)) erro(onde, `setor desconhecido "${setor}"`);
+  }
+  if (c.mundo.estrangeiros.reduce((soma, x) => soma + x.peso, 0) > 1 + 1e-9) erro('mundo.json › estrangeiros', 'os pesos no comércio somam mais que 1');
   for (let idade = 1; idade <= 100; idade++) {
     if (!c.linhas.some((l) => !l.condicoes && l.idade[0] <= idade && idade <= l.idade[1])) aviso('linhas.json', `nenhuma linha sem condição cobre a idade ${idade}`);
   }
@@ -556,7 +574,7 @@ function verificarModelo(
 ): string[] {
   const a = analisarModelo(texto);
   for (const m of a.erros) erro(onde, m);
-  const papeis = new Set<string>([...PAPEIS, 'empresa']);
+  const papeis = new Set<string>([...PAPEIS, ...PARCEIROS, 'empresa']);
   const globais = new Set<string>(VARIAVEIS_GLOBAIS);
   for (const v of a.variaveis) {
     if (v === 'ator') {
@@ -567,7 +585,7 @@ function verificarModelo(
       const { ent, campo } = separar(v);
       if (ent === 'ator' && !atores) erro(onde, `{${v}} sem ator no storylet`);
       else if (!entidadeValida(ent) || ent === 'pessoa') erro(onde, `entidade desconhecida em {${v}}`);
-      else if (!camposDe(ent)[campo]) erro(onde, `{${v}}: "${campo}" não é campo (qualidades não aparecem no texto)`);
+      else if (!camposDe(modeloDe(ent, atores))[campo]) erro(onde, `{${v}}: "${campo}" não é campo (qualidades não aparecem no texto)`);
       continue;
     }
     if (!globais.has(v) && !papeis.has(v) && !extras.has(v)) erro(onde, `variável desconhecida {${v}}`);
