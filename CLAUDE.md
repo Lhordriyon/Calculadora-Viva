@@ -6,7 +6,7 @@ A visão em uma troca: o jogador pensa "eu posso tentar qualquer coisa", e o jog
 
 ## Fluxo de cada sessão
 
-1. Leia este arquivo, `docs/roteiro.md`, `docs/metricas.md` e `docs/decisoes.md`.
+1. Leia este arquivo, `docs/roteiro.md`, `docs/metricas.md` e `docs/decisoes.md`. Para a missão "Universo de bolso", leia também `docs/arquitetura.md` (módulos, contratos e a ordem das fases) e `docs/ideias.md`: toda ideia nova entra no registro antes de entrar no código.
 2. Escolha o incremento de maior impacto pelo método abaixo.
 3. Commits pequenos e descritivos. Antes de cada push: `npm run verificar` (tipos, testes, validador, túnel e build).
 4. Push na `main` (o CI publica no GitHub Pages). Sem permissão, abra um PR e diga isso.
@@ -116,7 +116,7 @@ android/               app Android (Capacitor): o jogo vai dentro do APK, offlin
 test/                  Vitest
 ```
 
-Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteudo.md`; estado dos níveis em `docs/roteiro.md`.
+Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteudo.md`; estado dos níveis em `docs/roteiro.md`; a arquitetura do universo de bolso (os 13 módulos e as fases) em `docs/arquitetura.md`, sobre a auditoria de `docs/auditoria-universo.md`.
 
 ## Comandos
 

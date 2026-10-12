@@ -6,6 +6,30 @@ A visão: o jogador pensa "eu posso tentar qualquer coisa", e o jogo responde "p
 
 Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jogáveis, medidos, publicados); depois do primeiro, seguir para o próximo nível enquanto os portões passarem, sem esperar ordem. Ao fim de cada incremento, relatório curto: o que mudou, métricas antes e depois, decisões tomadas sozinho, link e o que jogar.
 
+## A missão "Universo de bolso" (12/10/2026)
+
+O dono pediu que o Trajetória vire um universo:
+- vida, patrimônio, empresas, Estados e sistema internacional;
+- contas que fecham;
+- causalidade rastreável;
+- agentes com mandato.
+Tudo sem tentar implementar de uma vez.
+
+A Fase 0 entregou três documentos:
+- `docs/auditoria-universo.md`: o que existe, o que falta e o que quebra, com a linha de base;
+- `docs/arquitetura.md`: os 13 módulos, os contratos, as fases e a primeira fatia;
+- `docs/ideias.md`: o registro permanente de ideias, com dependências e fase.
+
+Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra primeiro no registro.
+
+- [x] Fase 0: auditoria, arquitetura e registro de ideias
+- [ ] Fatia 1.1: toda transferência tem dois lados (contas com contrapartida e o extrato do ano)
+- [ ] Fatia 1.2: dívida e financiamento como contrato
+- [ ] Fatia 1.3: o ano em etapas declaradas e o livro compacto
+- [ ] Fatia 1.4: identidade de pessoas
+
+O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
+
 ## Invariantes
 
 1. **Um formato de estado.** Pessoa, bicho, lugar, país e empresa são entidades com id, tipo, campos e qualidades. Condições e efeitos leem e escrevem caminhos (`mae.saude`, `lugar.desemprego`).
@@ -136,9 +160,12 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 
 ## Próximos incrementos
 
-1. **Holding familiar.** Pôr as empresas e os bens numa holding para a herança (menos imposto e nada de partilha que racha a empresa), com o custo de manter e o que ela trava.
-2. **Morar lá fora.** Emigrar para um dos países de fora (a vida continua lá, com a economia e o custo de vida dele, a saudade e a volta), e a empresa que exporta para lá.
-3. Depois: crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
+As fatias da missão, na ordem de `docs/arquitetura.md` (fases 1 a 9). O que estava aqui antes virou ideia registrada em `docs/ideias.md`:
+- a holding familiar é a I-13;
+- morar lá fora é a I-23;
+- o crime é a I-90;
+- vários filhos e o ex são a I-05;
+- a velhice com mais escolhas é a I-91.
 
 ## Como uma sessão continua
 
