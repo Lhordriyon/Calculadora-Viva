@@ -29,6 +29,7 @@ import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
 import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { anoDoExterior, parceirosDe } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
+import { conferirContas, extrato } from '../src/motor/contas.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
 const args = new Map(
@@ -349,6 +350,11 @@ interface Vida {
   comeco: string;
   decisoesAntesDos5: number;
   infanciaVoltou: boolean;
+  /** Toda transferência tem dois lados: problemas de contas (devem ser zero), entradas conferidas e o extrato da vida por fluxo e contraparte. */
+  contasErradas: number;
+  entradasConferidas: number;
+  exemploDeConta: string;
+  extrato: { rotulo: string; contraparte: string; valor: number }[];
 }
 
 /** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
@@ -566,7 +572,20 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     bolsas: e.historico.filter((h) => h.ref === 'empresa:abrirCapital' || (h.ref === 'abrir_capital' && h.escolha?.indice === 0)).length,
     quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
     vendeu: 'vendeu_empresa' in q,
+    ...contasDaVida(e),
   };
+}
+
+/** As contas da vida: quantos problemas a conferência acha (entrada por entrada) e o extrato da vida inteira. */
+function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entradasConferidas' | 'exemploDeConta' | 'extrato'> {
+  let contasErradas = 0;
+  let exemploDeConta = '';
+  for (const h of e.historico) {
+    const problemas = conferirContas(e, h);
+    if (problemas.length > 0 && !exemploDeConta) exemploDeConta = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${problemas[0]}`;
+    contasErradas += problemas.length;
+  }
+  return { contasErradas, entradasConferidas: e.historico.length, exemploDeConta, extrato: extrato(e).linhas };
 }
 
 // ---------------------------------------------------------------- estatística
@@ -1230,8 +1249,17 @@ const portoes = [
   ['Toques por vida ≤ 480 (subiu no incremento 4: três ações escolhidas por ano)', toques <= TETO_TOQUES, `${num(toques)} (base ${num(BASE.toques)}, teto ${TETO_TOQUES})`],
 ] as const;
 
+const contasErradas = vidas.reduce((s, v) => s + v.contasErradas, 0);
+const entradasConferidas = vidas.reduce((s, v) => s + v.entradasConferidas, 0);
 const metas = [
   ['Zero storylets mortos', mortos.length === 0, `${mortos.length} mortos`],
+  [
+    'Todo real tem contraparte: as contas fecham em toda entrada (fatia 1.1)',
+    contasErradas === 0,
+    contasErradas === 0
+      ? `0 problemas em ${num(entradasConferidas, 0)} entradas`
+      : `${contasErradas} problemas; ex.: ${vidas.find((v) => v.exemploDeConta)?.exemploDeConta ?? ''}`,
+  ],
   ['Nenhum storylet não-repetível repetido na mesma vida', duplicados.length === 0, `${duplicados.length} repetições`],
   ['Nenhuma estratégia fixa domina', dominantes.length === 0, dominantes.length ? `domina: ${dominantes.join(', ')}` : 'nenhuma domina'],
 ] as const;
@@ -1260,6 +1288,43 @@ l();
 l('| Meta | Situação | Detalhe |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of metas) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O dinheiro de uma vida, por contraparte (fatia 1.1)');
+l();
+l('De quem veio e para quem foi o dinheiro de quem joga na vida inteira, pelo extrato do livro: a mediana entre as vidas que tiveram o fluxo (positivo entrou). Os 16 fluxos mais comuns.');
+l();
+l('| Fluxo | Contraparte | Vidas com ele | Mediana por vida |');
+l('|---|---|---|---|');
+{
+  const CONTAS: Record<string, string> = {
+    mercado: 'o mercado',
+    tesouro: 'o governo',
+    banco: 'o banco',
+    parentes: 'os parentes',
+    reavaliacao: 'os preços',
+    mae: 'a mãe',
+    pai: 'o pai',
+    avo: 'a avó ou o avô',
+    amor: 'o par',
+    filho: 'o filho',
+    amigo: 'o amigo',
+    paixao: 'a paixão',
+  };
+  const porFluxo = new Map<string, number[]>();
+  for (const v of vidas) {
+    for (const x of v.extrato) {
+      const k = `${x.rotulo}|${CONTAS[x.contraparte] ?? (/^empresa\d*$/.test(x.contraparte) ? 'a empresa' : /^bem/.test(x.contraparte) ? 'um bem' : x.contraparte)}`;
+      const lista = porFluxo.get(k) ?? [];
+      lista.push(x.valor);
+      porFluxo.set(k, lista);
+    }
+  }
+  const ordem = [...porFluxo.entries()].sort((a, b) => b[1].length - a[1].length || (a[0] < b[0] ? -1 : 1)).slice(0, 16);
+  for (const [k, xs] of ordem) {
+    const [rotulo, quem] = k.split('|');
+    l(`| ${rotulo} | ${quem} | ${pct(xs.length / vidas.length)} | ${formatarDinheiro(percentil(ordenar(xs), 50))} |`);
+  }
+}
 l();
 l('## Portões do incremento 1');
 l();
