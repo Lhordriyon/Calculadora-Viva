@@ -27,6 +27,7 @@ import { listarCadeias } from '../src/motor/validacao.ts';
 import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
 import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
 import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
+import { anoDoExterior, parceirosDe } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
@@ -58,6 +59,54 @@ interface Jogada {
   pais: PaisDaVida;
   /** O grupo de empresas ano a ano (o que os portões do incremento 9 contam). */
   grupo: GrupoDaVida;
+  /** O mundo lá fora ano a ano (o que os portões do incremento 10 contam). */
+  fora: ForaDaVida;
+}
+
+/** O mundo lá fora visto por uma vida. */
+interface ForaDaVida {
+  /** O dólar no fim de cada ano (R$ de hoje). */
+  cambios: number[];
+  /** Por ano: [quanto o dólar andou (fração), a inflação do ano (%)]. */
+  repasse: [number, number][];
+  /** Por empresa e ano: [setor, crescimento do valor, quanto o dólar andou]. */
+  setores: [string, number, number][];
+  /** Por governo: anos e as sanções e os acordos que começaram (os da Celeste à parte: a rival dela é a Federação). */
+  porGoverno: Record<string, { anos: number; sancoes: number; acordos: number; sancoesDaCeleste: number }>;
+}
+
+/** Sanção e acordo de cada país de fora (para ver o que começou no ano). */
+function fotoDosParceiros(e: EstadoVida): Map<string, { sancao: boolean; acordo: boolean }> {
+  return new Map(parceirosDe(e).map((p) => [p.id, { sancao: Boolean(p.q['sancao']), acordo: Boolean(p.q['acordo']) }]));
+}
+
+/** Anota o ano do mundo lá fora na vida (depois do +1 ano): o dólar, a inflação, as empresas por setor e o que começou sob cada governo. */
+function anotarFora(
+  e: EstadoVida,
+  cambioAntes: number,
+  empresasAntes: Map<string, { nome: string; valor: number }>,
+  parceirosAntes: Map<string, { sancao: boolean; acordo: boolean }>,
+  f: ForaDaVida,
+): void {
+  const pais = e.entidades['pais']!;
+  const cambio = pais.n['cambio'] ?? cambioAntes;
+  const variacao = cambioAntes > 0 ? cambio / cambioAntes - 1 : 0;
+  f.cambios.push(cambio);
+  f.repasse.push([variacao, pais.n['inflacao'] ?? 0]);
+  for (const emp of empresasDe(e)) {
+    const a = empresasAntes.get(emp.id);
+    if (a && a.nome === emp.nome && a.valor >= 1e5) f.setores.push([emp.t['setor'] ?? '', (emp.n['lucro'] ?? 0) / a.valor, variacao]);
+  }
+  const g = (f.porGoverno[governoAtual(e)] ??= { anos: 0, sancoes: 0, acordos: 0, sancoesDaCeleste: 0 });
+  g.anos++;
+  for (const p of parceirosDe(e)) {
+    const x = parceirosAntes.get(p.id);
+    if (p.q['sancao'] && !x?.sancao) {
+      g.sancoes++;
+      if (p.id === 'celeste') g.sancoesDaCeleste++;
+    }
+    if (p.q['acordo'] && !x?.acordo) g.acordos++;
+  }
 }
 
 /** O grupo de empresas visto por uma vida. */
@@ -132,6 +181,9 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
   const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
   const pais: PaisDaVida = { porGoverno: {}, anosDeTrabalho: [], governo: null };
   const grupo: GrupoDaVida = { maxEmpresas: 0, maxSubsidiarias: 0, anosEmGrupo: 0, listadas: [], fechadas: [], mesa: [] };
+  const fora: ForaDaVida = { cambios: [], repasse: [], setores: [], porGoverno: {} };
+  let cambioAntes = e.entidades['pais']?.n['cambio'] ?? 0;
+  let parceirosAntes = fotoDosParceiros(e);
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
@@ -157,9 +209,12 @@ function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, me
       anosPorFase[faseDe(e)]++;
       anotarPais(e, pais);
       if (e.vivo) anotarGrupo(e, c, antes, grupo);
+      anotarFora(e, cambioAntes, antes, parceirosAntes, fora);
+      cambioAntes = e.entidades['pais']?.n['cambio'] ?? cambioAntes;
+      parceirosAntes = fotoDosParceiros(e);
     }
   }
-  return { toques, anosPorFase, operacoes, pais, grupo };
+  return { toques, anosPorFase, operacoes, pais, grupo, fora };
 }
 
 function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
@@ -167,7 +222,7 @@ function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: Me
   const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
   const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
   const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
-  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo };
+  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo, fora: r.fora };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -283,6 +338,13 @@ interface Vida {
   grupo: GrupoDaVida;
   fusoes: number;
   bolsas: number;
+  /** O mundo lá fora: o que a vida viu ano a ano, as viradas do ciclo para pior (e quantas a crise de fora causou), as sanções (anos até acabar, ou null se a vida acabou antes, com os anos vistos) e os atos de quem governa. */
+  fora: ForaDaVida;
+  viradasRuins: number;
+  viradasDeFora: number;
+  sancoes: { anos: number | null; vistos: number; comCausa: boolean }[];
+  acordos: number;
+  atos: number;
   /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
   comeco: string;
   decisoesAntesDos5: number;
@@ -304,6 +366,37 @@ function positivas(cond: Condicoes | undefined): string[] {
   for (const [chave, v] of Object.entries(cond)) {
     if (CHAVES_CONDICAO.has(chave) || chave.includes('.')) continue;
     if (v === true || (typeof v === 'object' && !Array.isArray(v) && 'min' in v && (v.min ?? 0) > 0)) saida.push(chave);
+  }
+  return saida;
+}
+
+const ORDEM_DA_FASE: Record<string, number> = { crise: 0, recessao: 1, normal: 2, expansao: 3 };
+
+/** As viradas do ciclo para pior (para recessão ou crise) e quantas apontam a crise de um país de fora como causa. */
+function viradasDoCiclo(e: EstadoVida, porId: Map<number, Entrada>): { viradasRuins: number; viradasDeFora: number } {
+  let antes = 'normal';
+  let viradasRuins = 0;
+  let viradasDeFora = 0;
+  for (const h of e.historico) {
+    if (!h.ref?.startsWith('ciclo:')) continue;
+    const nova = h.ref.slice('ciclo:'.length);
+    if ((ORDEM_DA_FASE[nova] ?? 2) < (ORDEM_DA_FASE[antes] ?? 2) && (nova === 'recessao' || nova === 'crise')) {
+      viradasRuins++;
+      if ((h.causas ?? []).some((id) => porId.get(id)?.ref?.startsWith('exterior:crise:'))) viradasDeFora++;
+    }
+    antes = nova;
+  }
+  return { viradasRuins, viradasDeFora };
+}
+
+/** As sanções que a vida viu: quantos anos duraram (null se a vida acabou antes), quantos anos ela viu e se apontam a decisão que esfriou a relação. */
+function sancoesDaVida(e: EstadoVida): Vida['sancoes'] {
+  const saida: Vida['sancoes'] = [];
+  for (const h of e.historico) {
+    if (!h.ref?.startsWith('exterior:sancao:')) continue;
+    const quem = h.ref.slice('exterior:sancao:'.length);
+    const fim = e.historico.find((x) => x.id > h.id && x.ref === `exterior:fimDaSancao:${quem}`);
+    saida.push({ anos: fim ? fim.ano - h.ano : null, vistos: (fim?.ano ?? e.ano) - h.ano, comCausa: (h.causas?.length ?? 0) > 0 });
   }
   return saida;
 }
@@ -423,6 +516,11 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       .join('>'),
     decisoesAntesDos5: e.historico.filter((h) => h.idade < 5 && (h.escolha !== undefined || h.tipo === 'acao')).length,
     porGoverno: j.pais.porGoverno,
+    fora: j.fora,
+    ...viradasDoCiclo(e, porId),
+    sancoes: sancoesDaVida(e),
+    acordos: e.historico.filter((h) => h.ref?.startsWith('exterior:acordo:') || (h.ref === 'pais:diplomacia' && h.mudancas?.some((m) => m.c.endsWith('.acordo') && m.q === 1))).length,
+    atos: e.historico.filter((h) => h.ref === 'pais:diplomacia').length,
     trabalho: (() => {
       const demitido = new Set(e.historico.filter((h) => h.ref === 'demissao').map((h) => h.ano));
       const t = { alto: 0, demitidoAlto: 0, baixo: 0, demitidoBaixo: 0 };
@@ -771,8 +869,8 @@ const laboratorio = PERFIS_TUNEL.map((perfil) => {
     for (let ano = 0; ano < 30; ano++) {
       e.idade++;
       e.ano++;
-      const fase = anoDoPais(e, c, []);
-      const r = mercadoDoAno(e, c, fase.id, []);
+      const fase = anoDoPais(e, c, [], anoDoExterior(e, c, []));
+      const r = mercadoDoAno(e, c, fase.id, [], fase.cambio);
       total = ATIVOS.reduce((soma, a) => soma + total * (pesos[a] ?? 0) * (1 + (r[a] ?? 0)), 0);
     }
     finais.push(total);
@@ -1005,6 +1103,126 @@ const portoes9 = [
     `${num(corrListadas, 2)} na bolsa (${listadas.length} empresas-ano) × ${num(corrFechadas, 2)} fechadas (${fechadas.length})`,
   ],
 ] as const;
+/** Incremento 10 (o roteiro: diplomacia): os países de fora, o dólar, sanções, acordos e alinhamento. Todas as vidas jogadas: sorteadas e de origem escolhida. */
+const viradasRuins = todasAsVidas.reduce((s, v) => s + v.viradasRuins, 0);
+const parteDeFora = todasAsVidas.reduce((s, v) => s + v.viradasDeFora, 0) / Math.max(1, viradasRuins);
+const dolares = ordenar(vidas.flatMap((v) => v.fora.cambios));
+const dolarP10 = percentil(dolares, 10);
+const dolarP50 = percentil(dolares, 50);
+const dolarP90 = percentil(dolares, 90);
+const repasse = vidas.flatMap((v) => v.fora.repasse);
+const inflacaoNaAlta = media(repasse.filter(([d]) => d >= 0.1).map(([, i]) => i));
+const inflacaoNaQueda = media(repasse.filter(([d]) => d <= -0.1).map(([, i]) => i));
+/** Quanto o crescimento das empresas do setor anda por ponto de alta do dólar (a inclinação da reta). */
+const inclinacao = (setor: string): { valor: number; n: number } => {
+  const pares = todasAsVidas.flatMap((v) => v.fora.setores.filter((x) => x[0] === setor));
+  const mx = media(pares.map((x) => x[2]));
+  const my = media(pares.map((x) => x[1]));
+  const sxy = pares.reduce((s, x) => s + (x[2] - mx) * (x[1] - my), 0);
+  const sxx = pares.reduce((s, x) => s + (x[2] - mx) ** 2, 0);
+  return { valor: sxx > 0 ? sxy / sxx : 0, n: pares.length };
+};
+const noAgro = inclinacao('agro');
+const noComercio = inclinacao('comercio');
+const comSancao = vidas.filter((v) => v.sancoes.length > 0).length / Math.max(1, vidas.length);
+const comAcordo = vidas.filter((v) => v.acordos > 0).length / Math.max(1, vidas.length);
+const sancoesVistas = todasAsVidas.flatMap((v) => v.sancoes);
+/** Toda sanção acaba: as que a vida viu acabar em até 15 anos, entre as que acabaram e as que a vida viu passar de 15. */
+const sancoesDecididas = sancoesVistas.filter((x) => x.anos !== null || x.vistos > 15);
+const sancoesQueAcabam = sancoesDecididas.filter((x) => x.anos !== null && x.anos <= 15).length / Math.max(1, sancoesDecididas.length);
+const duracoesDeSancao = ordenar(sancoesVistas.filter((x) => x.anos !== null).map((x) => x.anos!));
+const sancoesComCausa = sancoesVistas.filter((x) => x.comCausa).length / Math.max(1, sancoesVistas.length);
+const foraPorGoverno = new Map<string, { anos: number; sancoes: number; acordos: number; sancoesDaCeleste: number }>();
+for (const v of todasAsVidas) {
+  for (const [g, x] of Object.entries(v.fora.porGoverno)) {
+    const t = foraPorGoverno.get(g) ?? { anos: 0, sancoes: 0, acordos: 0, sancoesDaCeleste: 0 };
+    t.anos += x.anos;
+    t.sancoes += x.sancoes;
+    t.acordos += x.acordos;
+    t.sancoesDaCeleste += x.sancoesDaCeleste;
+    foraPorGoverno.set(g, t);
+  }
+}
+const porAnoDe = (g: string, k: 'sancoes' | 'acordos' | 'sancoesDaCeleste'): number => (foraPorGoverno.get(g)?.[k] ?? 0) / Math.max(1, foraPorGoverno.get(g)?.anos ?? 0);
+const alinhamento = [
+  [
+    'a Celeste sanciona mais com a aliança da ordem (amiga da rival dela) que com a frente popular (amiga dela)',
+    porAnoDe('alianca_da_ordem', 'sancoesDaCeleste') > porAnoDe('frente_popular', 'sancoesDaCeleste'),
+    `${pct(porAnoDe('alianca_da_ordem', 'sancoesDaCeleste'), 2)} × ${pct(porAnoDe('frente_popular', 'sancoesDaCeleste'), 2)} por ano`,
+  ],
+  [
+    'mais acordos com a fronteira aberta (bloco liberal) que fechada (aliança da ordem)',
+    porAnoDe('bloco_liberal', 'acordos') > porAnoDe('alianca_da_ordem', 'acordos'),
+    `${pct(porAnoDe('bloco_liberal', 'acordos'), 2)} × ${pct(porAnoDe('alianca_da_ordem', 'acordos'), 2)} por ano`,
+  ],
+] as const;
+const governantes = governaram.filter((v) => v.estrategia !== 'primeira');
+const fizeramAto = governantes.filter((v) => v.atos > 0).length / Math.max(1, governantes.length);
+/**
+ * Laboratório do ato lá fora: quem governa rompe com a Celeste (ou faz uma visita de Estado), com o país em ordem,
+ * e o mundo anda cinco anos. Mede a chance de a Celeste sancionar o Brasil depois (as mesmas sementes para os dois atos).
+ */
+const LAB_DIPLOMATICO = Math.max(200, JOGADORES * 2);
+const laboratorioDiplomatico = (acao: 'romper' | 'aproximar'): number => {
+  let sancoes = 0;
+  for (let i = 0; i < LAB_DIPLOMATICO; i++) {
+    const e = nascer(c, { semente: misturar(SEMENTE, 1010, i), ano: ANO });
+    e.idade = 50;
+    e.ano += 50;
+    const eu = e.entidades['eu']!;
+    eu.t['cargo'] = 'presidente';
+    eu.n['mandato'] = 8;
+    eu.n['popularidade'] = 50;
+    anoDoPais(e, c, [], anoDoExterior(e, c, []));
+    operar(e, c, { tipo: 'diplomacia', parceiro: 'celeste', acao });
+    for (let ano = 0; ano < 5; ano++) {
+      e.ano++;
+      e.idade++;
+      anoDoPais(e, c, [], anoDoExterior(e, c, []));
+      if (e.entidades['celeste']!.q['sancao']) {
+        sancoes++;
+        break;
+      }
+    }
+  }
+  return sancoes / LAB_DIPLOMATICO;
+};
+const sancaoDepoisDeRomper = laboratorioDiplomatico('romper');
+const sancaoDepoisDaVisita = laboratorioDiplomatico('aproximar');
+const portoes10 = [
+  ['A crise lá fora chega aqui: ≥ 10% das viradas para recessão ou crise apontam a crise de um país de fora como causa', parteDeFora >= 0.1, `${pct(parteDeFora)} de ${viradasRuins} viradas`],
+  [
+    'O dólar anda e volta: p90 ≥ 1,3× o p10, com a mediana entre R$ 4 e R$ 6',
+    dolarP90 >= 1.3 * dolarP10 && dolarP50 >= 4 && dolarP50 <= 6,
+    `p10 R$ ${num(dolarP10, 2)} · mediana R$ ${num(dolarP50, 2)} · p90 R$ ${num(dolarP90, 2)}`,
+  ],
+  [
+    'O dólar pesa na inflação: nos anos em que ele sobe 10% ou mais, a inflação é ≥ 1 ponto maior do que nos anos em que cai 10% ou mais',
+    inflacaoNaAlta - inflacaoNaQueda >= 1,
+    `${num(inflacaoNaAlta, 1)}% × ${num(inflacaoNaQueda, 1)}%`,
+  ],
+  [
+    'O dólar divide os setores: na alta do dólar, a empresa do agro cresce mais e a do comércio menos',
+    noAgro.valor > 0 && noComercio.valor < 0 && noAgro.n >= 100 && noComercio.n >= 100,
+    `${num(noAgro.valor, 2)} no agro (${noAgro.n} empresas-ano) × ${num(noComercio.valor, 2)} no comércio (${noComercio.n}), por ponto de alta`,
+  ],
+  [
+    'Sanções e acordos acontecem e acabam: sanção em 5% a 40% das vidas, acordo em ≥ 30%, e ≥ 90% das sanções acabam em até 15 anos',
+    comSancao >= 0.05 && comSancao <= 0.4 && comAcordo >= 0.3 && sancoesQueAcabam >= 0.9,
+    `sanção em ${pct(comSancao)}, acordo em ${pct(comAcordo)}; ${pct(sancoesQueAcabam)} das sanções acabam em até 15 anos (mediana ${num(percentil(duracoesDeSancao, 50), 0)}, p90 ${num(percentil(duracoesDeSancao, 90), 0)})`,
+  ],
+  [
+    'Toda sanção tem um porquê: ≥ 80% apontam a decisão que esfriou a relação (a posse de um governo, a tarifa, o ato de quem governa, uma escolha)',
+    sancoesComCausa >= 0.8,
+    `${pct(sancoesComCausa)} de ${sancoesVistas.length} sanções`,
+  ],
+  ['Alinhar-se tem preço e abrir tem prêmio: as 2 direções certas', alinhamento.every(([, ok]) => ok), alinhamento.map(([nome, ok, valor]) => `${ok ? '✓' : '✗'} ${nome} (${valor})`).join('; ')],
+  [
+    'Quem governa decide lá fora: ≥ 50% de quem governa faz um ato, e romper traz sanção em até 5 anos em ≥ 30% dos casos, a visita de Estado em ≤ 5%',
+    fizeramAto >= 0.5 && sancaoDepoisDeRomper >= 0.3 && sancaoDepoisDaVisita <= 0.05,
+    `${pct(fizeramAto)} de ${governantes.length} governos; sanção depois de romper ${pct(sancaoDepoisDeRomper)}, depois da visita ${pct(sancaoDepoisDaVisita)} (laboratório de ${LAB_DIPLOMATICO} governos)`,
+  ],
+] as const;
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
@@ -1103,18 +1321,31 @@ l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes8) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
-l('## Portões do incremento 9 (o grupo de empresas)');
-l();
-l('| Portão | Situação | Valor |');
-l('|---|---|---|');
-for (const [nome, ok, detalhe] of portoes9) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
-l();
 l('| Governo | Anos | Crescimento | Desemprego | Inflação | Dívida | Pobreza | Violência | Saúde | Educação | Aprovação |');
 l('|---|---|---|---|---|---|---|---|---|---|---|');
 for (const [g, x] of [...noGoverno].sort((a, b) => b[1].anos - a[1].anos)) {
   const m = (k: Estatistica): number => x.soma[k] / Math.max(1, x.anos);
   const nome = g === 'voce' ? 'quem joga' : (c.mundo.governos.find((d) => d.id === g)?.nome ?? g);
   l(`| ${nome} | ${x.anos.toLocaleString('pt-BR')} | ${num(m('crescimento'), 1)}% | ${num(m('desemprego'), 1)}% | ${num(m('inflacao'), 1)}% | ${num(m('divida'), 0)}% | ${num(m('pobreza'), 1)}% | ${num(m('violencia'), 1)} | ${num(m('saude'), 0)} | ${num(m('educacao'), 0)} | ${num(m('aprovacao'), 0)}% |`);
+}
+l();
+l('## Portões do incremento 9 (o grupo de empresas)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes9) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Portões do incremento 10 (o mundo lá fora)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes10) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('| Governo | Anos | Sanções que começaram (por ano) | Acordos que começaram (por ano) |');
+l('|---|---|---|---|');
+for (const [g, x] of [...foraPorGoverno].sort((a, b) => b[1].anos - a[1].anos)) {
+  const nome = g === 'voce' ? 'quem joga' : (c.mundo.governos.find((d) => d.id === g)?.nome ?? g);
+  l(`| ${nome} | ${x.anos.toLocaleString('pt-BR')} | ${pct(x.sancoes / Math.max(1, x.anos), 2)} | ${pct(x.acordos / Math.max(1, x.anos), 2)} |`);
 }
 l();
 l('## Life simulator');
@@ -1341,6 +1572,7 @@ for (const [nome, ok, detalhe] of portoes6) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes7) console.log(`${ok ? '✓' : '·'} portão 7: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes8) console.log(`${ok ? '✓' : '·'} portão 8: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes9) console.log(`${ok ? '✓' : '·'} portão 9: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes10) console.log(`${ok ? '✓' : '·'} portão 10: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(
