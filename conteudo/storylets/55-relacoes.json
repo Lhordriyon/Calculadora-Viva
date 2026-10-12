@@ -377,6 +377,7 @@
     "tipo": "npc",
     "ator": ["filho"],
     "idade": [40, 85],
+    "peso": 3,
     "condicoes": {
       "marcas": ["pai_mae"],
       "ator.idade": { "min": 22, "max": 45 },
