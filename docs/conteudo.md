@@ -92,6 +92,12 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "cargo": ["prefeito", "governador", "presidente", "rei", "ditador"], "popularidade": { "max": 30 }, "mandato": { "max": 0 },
   "testamento": ["amigo", "causa"],                             // para quem vai tudo ('' é a lei)
   "pais.impulso": { "min": 1 },                                 // decretos que aquecem (+) ou esfriam (−) a economia
+  "pais.desemprego": { "min": 11 }, "pais.inflacao": { "min": 8 }, "pais.juros": { "min": 13 }, // o país vivo: crescimento, desemprego, inflação, juros (%)
+  "pais.divida": { "min": 100 }, "pais.pobreza": { "min": 31 }, "pais.violencia": { "min": 24 }, // dívida (% do PIB), pobreza (%), homicídios por 100 mil
+  "pais.saude": { "max": 38 }, "pais.educacao": { "min": 58 }, "pais.aprovacao": { "max": 34 }, // saúde e educação públicas (0 a 100), aprovação do governo (%)
+  "pais.governo": ["frente_popular", "centrao"], "pais.governo": "voce", // quem governa (mundo.json › governos, 'regime' ou 'voce')
+  "pais.pol_social": { "min": 2 }, "pais.pol_impostos": { "max": 0 },  // políticas em vigor (0 baixo, 1 médio, 2 alto)
+  "pais.eleicao": true, "marcas": ["voto_bloco_liberal"],          // ano de eleição geral; o voto de quem joga (marcaHa para "anos depois")
   "marcas": ["iate"], "marcas": ["senhorio"],                   // bens: a qualidade de cada item (mundo.json › bens › marca); senhorio = tem imóvel alugado
   "familia": "religiosa", "traco": ["ansioso", "timido"],      // texto: igual a um, ou a um dentre vários
   "mae.vivo": true, "ator.traco": "gastador", "ator.idade": { "min": 13, "max": 17 },
@@ -110,6 +116,8 @@ Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condi
 O validador confere os campos de texto de vocabulário fechado: `lugar.regiao` (norte, nordeste, centro_oeste, sudeste, sul), `setor` (os 12 de `mundo.json`), `padrao`, `perfil`, `familia` e `traco` (de quem joga ou de personagem).
 
 A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, `pais.crise`; no normal, nenhuma). Storylet que a consulta tem a entrada que anunciou a fase como causa: o cartão da vida pode contar "o país entrou em crise → você perdeu o emprego".
+
+O nome de quem governa vem por trecho, pela condição `pais.governo` (veja `99-pais.json`): `{ "se": { "pais.governo": "centrao" }, "texto": "o centrão" }`. Personagens, partidos e eventos políticos são fictícios e genéricos: blocos em minúsculas, com artigo, sem nome próprio.
 
 ## Efeitos
 
@@ -141,7 +149,9 @@ A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, 
 | `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
 | caminhos de poder | `"eu.influencia": 5`, `"eu.popularidade": -8`, `"eu.fama": 10`, `"eu.cargo": { "definir": "rei" }` | a coroa e o Regime entram assim; eleição é pela folha Carreira |
 | caminhos de carreira | `"eu.carreira": { "definir": "ator" }`, `"eu.nivel": 1` | dá uma profissão (com `renda` e `eu.setor`); trocar `eu.setor` ou zerar a renda sem `eu.carreira` encerra a carreira |
-| `pais.impulso` | `1.5` | decreto que aquece a economia (mais expansão, menos recessão); some pela metade a cada ano |
+| `pais.impulso` | `1.5` | decreto que aquece a economia (mais crescimento, inflação e dívida); some pela metade a cada ano |
+| `pais.pol_<política>` | `"pais.pol_social": 1` | quem governa muda uma política (0 a 2): as estatísticas andam para o novo alvo nos anos seguintes |
+| `pais.divida`, `pais.inflacao` | `-5`, `1` | o decreto que paga dívida ou que solta a inflação |
 | caminho na empresa | `"empresa.tracao": 2`, `"empresa.valor": -30000`, `"empresa.retirada": { "definir": 0 }` | sem empresa, não faz nada |
 
 A qualidade `empresa.sustenta` (gravada junto com `abrirEmpresa`) diz que a renda de quem joga vem dela: quando ela é vendida ou fecha, a renda vai a zero e as qualidades de dono (`empreendedor`, `socio`, `herdeiro_negocio`) somem.
@@ -188,7 +198,7 @@ Os arquivos de storylet do incremento 4: `96-linhagens`, `97-carreiras` (profiss
 
 - `linhas.json`: `{ "idade": [30, 49], "texto": "...", "condicoes": {...}, "peso": 1 }`. Linha com condição é o jeito mais barato de a vida lembrar de escolhas antigas e do lugar onde se vive.
 - `mortes.json`: `{ "causa": "de ...", "categoria": "violencia", "idade": [18, 75], "condicoes": {...}, "peso": 2 }`. Categorias: velhice, coração, doença, acidente, violência.
-- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), as 6 classes (patrimônio, renda, poupança, saúde, ocupações com setor, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, faliu, morreu…), os 12 **setores** (quanto sentem o ciclo, quanto crescem, se são estáveis), as 4 **fases** da economia (peso, chances de transição, o que somam à inflação, ao rendimento, ao desemprego e aos salários, e os textos que anunciam cada uma), nascimento e epitáfios genéricos.
+- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), as 6 classes (patrimônio, renda, poupança, saúde, ocupações com setor, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, faliu, morreu…), os 12 **setores** (quanto sentem o ciclo, quanto crescem, se são estáveis), as 4 **fases** da economia (o nome do crescimento: só os textos que anunciam cada uma e, em `choque`, os de quando foi a crise lá fora ou a alta das commodities), as 5 **políticas** (níveis, descrição para a folha País, o que cada nível faz nas contas, nas estatísticas e no bolso, e o texto da reforma ao subir e ao baixar), os **governos** (blocos fictícios com as políticas que adotam, a promessa, emendas e governabilidade; o regime não é eleito), nascimento e epitáfios genéricos. Em `mortes.json`, `daViolencia: true` marca as causas que só servem para a morte pela violência do país.
 
 ## Guia de escrita
 

@@ -381,6 +381,82 @@ O dono relatou: uma crise interminável, aluguéis que não rendiam nem valoriza
 
 Aos 18, quem dormia ouvindo histórias ganhou em média 57 pontos de inteligência; quem dormia com o celular, 31. Parte da diferença vem do resto da vida e da estratégia dos robôs, mas a direção é a da vida real.
 
+## Incremento 8: o país vivo (pedido do dono em 11/10)
+
+O dono pediu um mundo inteiro vivo e integrado, com política, diplomacia e estatísticas que respondem ao mundo do Trajetória: "se o personagem governa, quero que suas decisões alterem estatísticas populacionais e econômicas", sem perder a simplicidade. A diplomacia ficou para um incremento próprio (`docs/roteiro.md`); este faz o país.
+
+**O que mudou:**
+- **O ciclo sorteado saiu.** A cadeia de Markov de quatro fases deu lugar a dez estatísticas que se causam: crescimento, desemprego, inflação, juros (Selic), dívida pública, pobreza, violência, saúde e educação públicas e aprovação do governo (`src/motor/pais.ts`, que substitui `ciclo.ts`). A fase virou o nome do crescimento, e o que ela fazia com a vida (demissão, salário, empresa, poupança da família) agora sai do crescimento e do desemprego de verdade.
+- **Governos fictícios que se alternam.** Quatro blocos genéricos, cada um com as cinco políticas que adota (impostos, programas sociais, saúde, educação, segurança), e o regime. Na posse, um ano depois da eleição geral, quem governa fica pela aprovação, e os outros disputam o resto pelo que o eleitor quer no momento.
+- **O voto.** O primeiro voto é um marco aos 18–21 anos, e depois o voto aparece por saliência, umas duas vezes por vida. Ele pesa no resultado (mais com influência), entra como causa da posse quando o escolhido ganha e volta 2 a 4 anos depois como "o governo que você elegeu".
+- **Governar.** Presidente, monarca e chefe do Regime mudam as políticas pela folha País, uma reforma por ano, com o efeito à vista antes de aprovar. A aprovação do governo passa a ser a popularidade de quem governa, então governar mal derruba o cargo pela regra que já existia.
+- **O país na vida.** Imposto e auxílio no bolso, juros na dívida e na renda fixa, saúde pública na mortalidade de quem não é rico, violência que mata (mais o jovem, o homem e quem não é rico) e escola pública na inteligência de quem estuda nela.
+- **Conteúdo:** 33 storylets (`99-pais.json`), 15 linhas curtas e 3 causas de morte que leem o país.
+- **O porquê:** a virada de fase aponta para o decreto que empurrou e para quem decidiu as políticas que puxam o crescimento; a posse aponta para o voto. A linha do tempo passa a mostrar o porquê também nas entradas do mundo.
+- **Folha País** (toque na linha do lugar e do ano, no cabeçalho): o governo, as dez estatísticas com a seta do ano e para onde vão com as políticas de agora, e as políticas.
+
+**Decisões tomadas sozinho:**
+- **Calibrar antes de escrever.** O modelo foi calibrado em Python antes do motor, para manter as fases com o tamanho de antes.
+  - A primeira versão da dívida explodia: juros sobre a dívida, prêmio de risco e crise se alimentavam sem freio.
+  - A dívida agora se estabiliza pela reação de quem governa: corta 5% do que passa de 75% do PIB por ano. O que pesa nela é o que se gasta acima do que se arrecada e a recessão.
+- **Folga para sair da fase.** Sem folga, o crescimento oscilava em volta dos limites e o país trocava de fase 23 vezes por vida, contra umas 13 no ciclo sorteado. Com folga de 1 ponto para sair da expansão e de 0,5 para sair da recessão e da crise: 15,4 viradas a cada 70 anos (portão: até 18).
+- **Nenhum bloco é o melhor em tudo.** Na primeira calibração, a frente popular vencia em quase todas as estatísticas, o que é tomar partido. Agora:
+  - o imposto alto custa 0,5 ponto de crescimento;
+  - a segurança linha dura tira 8 pontos de violência;
+  - a pobreza pesa 0,3 na violência;
+  - o centrão ganha governabilidade (+4 de aprovação) e gasta em emendas.
+
+  O resultado, por governo (médias de 10.000 vidas):
+
+  | Governo | Crescimento | Desemprego | Dívida | Pobreza | Violência | Saúde | Educação | Aprovação |
+  |---|---|---|---|---|---|---|---|---|
+  | a frente popular | 1,7% | 8,2% | 80% | 21,0% | 20,4 | 57 | 55 | 51% |
+  | o bloco liberal | 2,4% | 8,6% | 81% | 29,6% | 22,1 | 43 | 50 | 51% |
+  | a aliança da ordem | 2,0% | 8,5% | 70% | 29,5% | 17,6 | 50 | 45 | 52% |
+  | o centrão | 2,1% | 8,4% | 84% | 25,2% | 21,4 | 50 | 50 | 55% |
+
+  Cada bloco ganha numa coisa e perde em outra: a frente popular na pobreza, na saúde e na escola, o bloco liberal no crescimento, a aliança da ordem na violência e na dívida, o centrão na aprovação.
+- **Imposto baixo sem cortar gasto cresce mais no começo e menos depois**: a dívida sobe e freia o crescimento. Ficou assim de propósito, e há teste.
+- **O voto não aparece em toda eleição.** Seriam 15 cartões iguais por vida; com o marco e a saliência, são 1,7 por vida.
+  - O marco começou aos 16–19 e roubava um ano da adolescência: a escola militar morreu no túnel e o título de eleitor ficou raro.
+  - Aos 18–21, ele vem depois do ENEM.
+- **Uma reforma por ano.** Sem limite, bastava acertar as políticas uma vez e esquecer; com ele, cada reforma tem custo de oportunidade.
+- **A violência mata por um canal próprio.** A chance é homicídios por 100 mil × idade × gênero × bolso, e as causas novas só servem a esse canal (`daViolencia`). Na primeira versão elas entravam também no sorteio da morte natural e 15,5% das vidas morriam de violência; agora são 4,0% (antes do incremento eram uns 3%, das causas violentas que já existiam no sorteio da morte natural).
+- **A renda fixa acompanha o juro real** do país, em vez de uma tabela por fase. A dívida de quem joga paga 22% com a Selic média e anda junto com ela.
+- **Removido:**
+  - `ciclo.ts`;
+  - o peso e as transições das fases em `mundo.json`;
+  - a inflação sorteada à parte (`sortearInflacao`);
+  - uma função que ninguém chamava (`precoDaParte`);
+  - o parâmetro de conteúdo que duas funções não liam.
+- **A folha País abre pela linha do lugar e do ano**, não por um quinto ícone, que não cabia no celular de 360 px. O alvo tem 44 px sem crescer o cabeçalho.
+- **Save antigo:** o país ganha as estatísticas típicas da fase que tinha e o centrão no governo. A vida continua (há teste).
+- **Conserto:** com saúde zero, a morte é certa; a saúde pública boa não salva quem já não tem saúde (a primeira versão deixava até 40% de chance).
+- **Conserto no chip dos aluguéis:** ele contava só o que entrava na conta. Para quem tinha dívida, a parte do aluguel que já ia para ela sumia do chip. Agora conta as duas (um teste que dependia da sorte da vida simulada achou o defeito).
+- **Cadeias que pediam crise:** com menos anos ruins (12% contra 15%), elas ficaram raras demais, e o túnel achou 5 storylets mortos.
+  - A construtora agora quebra também na recessão.
+  - Salvar o país vale com a economia patinando (crescimento de até 1%).
+  - A manchete "O dono do Brasil?" vem também de emprestar aos bancos.
+  - A escola militar e a vida depois da coroa ganharam peso.
+
+**Portões (10.000 vidas):**
+- fases com o tamanho de antes: normal 64,7%, expansão 23,1%, recessão 10,0%, crise 2,2% dos anos (antes: 65/20/12/3%);
+- o país não pisca: 15,4 viradas de fase a cada 70 anos (portão: até 18);
+- os governos se alternam: cada bloco governa entre 24% e 27% dos anos, com 8,4 trocas por vida;
+- a política muda o país nas 4 direções medidas: pobreza 21,0% × 29,6% (frente popular × bloco liberal), violência 17,6 × 22,1 (aliança da ordem × bloco liberal), crescimento 2,37% × 1,74% (bloco liberal × frente popular), dívida 70% × 84% do PIB (aliança da ordem × centrão);
+- o país pesa no trabalho: com desemprego de 10,5% ou mais, 3,85% de chance de demissão por ano; com 6,5% ou menos, 0,91%;
+- o voto aparece e conta: 1,7 voto por vida, e 32% deles ajudam a eleger quem ganha;
+- quem governa decide: no poder, a dívida sobe 3,59 pontos do PIB por ano com a populista (arriscada) e 0,64 com a responsável (cautelosa); 97% de quem governa reforma;
+- a violência do país mata 4,0% das vidas;
+- zero storylets mortos, nenhuma estratégia dominante; crises com mediana de 1 ano e 99% em até 7.
+
+**O que melhorou de carona:** o rico que termina pobre voltou a 4,5% (era 2,5% no incremento 7, abaixo do portão de 3,0%): imposto, crise, violência e saúde pública agora também derrubam quem tem. A saturação ficou em 59,8% (V5) e 91,4% (V20), contra 60,9% e 92,1%.
+
+**O que não mudou ou piorou:**
+- Continuam abaixo dos portões antigos: a herança entre gerações (Spearman 0,81; portão até 0,8) e as assinaturas (906 por 1.000 vidas; portão 918, eram 900).
+- O bilionário feito subiu de 0,89% para 1,41% de quem nasce sem fortuna (portão: até 1%). Fora do túnel, com as mesmas 2.000 vidas de origem até a classe média e as quatro estratégias, o motor antigo fez 1,30% e o novo 1,10%. A alta vem da composição da amostra do túnel, não do país (só 1 dos bilionários do comparativo tinha a empresa como metade do patrimônio). Não mexi.
+- CPU por vida: 64 ms no túnel desta sessão (portão antigo: 30 ms, que já não passava). A máquina ficou mais lenta depois de um reinício: o motor antigo, que media 41 ms no túnel do incremento 7, mede 61 ms nela. No mesmo hardware e em sequência, o motor novo gasta 67 ms, 10% a mais, porque o país roda todo ano.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

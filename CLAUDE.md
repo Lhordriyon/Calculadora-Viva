@@ -71,7 +71,7 @@ conteudo/              dados, nunca código
   linhas.json          linhas curtas dos anos sem storylet
   mortes.json          causas de morte (com condições e categoria)
   marcas.json          efeitos passivos e epitáfios de qualidades
-  mundo.json           nomes, cidades, classes, tipos de família, traços, setores, fases, acontecimentos
+  mundo.json           nomes, cidades, classes, tipos de família, traços, setores, fases, políticas, governos, acontecimentos
 src/motor/             motor puro, sem UI: roda em Node e no navegador
   vida.ts              nascer → (fichas do ano) → +1 ano → regras → personagens → diretor → escolha
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
@@ -79,7 +79,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança)
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
-  ciclo.ts             ciclo da economia do país (normal, expansão, recessão, crise)
+  pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
   pessoas.ts           criar, promover e matar personagens (luto, herança, viuvez)
   storylets.ts         elegibilidade, aplicar e apresentar storylets, escolher
@@ -109,7 +109,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini)
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, CartaoVida
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida
 scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
@@ -154,6 +154,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Primeira infância com decisões e consequências na ordem causal da vida real (quem cuida, vacina, fome, histórias, pré-escola → o que volta dos 5 aos 12) | dono | todos os começos eram iguais e as escolhas não mudavam nada |
 | "Nova vida" (no menu, no palco, no cartão) abre a escolha da origem | dono | escolher como será a próxima vida, no começo, durante e depois |
 | Testamento escolhido em vida (filho, par, amigo, sobrinhos, causa, bicho) | dono | decidir quem herda e com quem a história continua |
+| O país vivo: estatísticas que se causam (crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, aprovação), governos fictícios que se alternam em eleição, o voto de quem joga, e quem governa muda as estatísticas pelas políticas | dono | o mundo inteiro vivo e integrado, com política e estatísticas que respondem a quem joga |
 | Brincar de deus: jogadas de bilhões e trilhões (fundação, cura, foguete, cidade, presidente, salvar o país, fundar um país, Marte) e o mundo reagindo a elas | dono | riqueza extrema vira possibilidade, não só número; a causa de cada consequência fica no livro |
 | Origens de realeza e de regime num Brasil fictício; profissões, imóveis, bens, eleições, truste | dono | liberdade de verdade e dinheiro que vira poder |
 | Expansão por incremento: portões + 3 vidas do dono | dono | provar cada nível antes do próximo |
@@ -168,9 +169,13 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | O verbo é um botão curto de uma linha (um ponto marca o que é novo); tocar abre todas as ações possíveis dele | agente | liberdade de verdade, sem 500 botões na tela, e cabe com a letra grande |
 | Fichas por ano: 1 criança, 2 adolescente, 3 adulto, 2 depois dos 65; a mesma ação não repete no ano | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
 | Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |
-| O empurrão de quem governa vale pela direção da mudança (aquecer ajuda a sair da crise) | agente | o estímulo prendia o país numa crise sem fim (o dono viveu uma) |
+| O empurrão de quem governa soma ao crescimento do país (aquecer ajuda a sair da crise) | agente | o estímulo prendia o país numa crise sem fim (o dono viveu uma) |
 | O mundo tem tamanho: empresa até ~R$ 20 tri, investimento que rende até R$ 5 tri, no máximo 3 milhões de funcionários | agente | o dono viu 957 milhões de funcionários e uma herdeira com R$ 357 tri em títulos; estado impossível quebra o Brasil real |
 | Popularidade é a imagem pública: pesa em toda eleição e segue para o mandato | agente | 103 efeitos do conteúdo mexiam nela sem consequência para quem não tinha cargo |
 | A empresa depende de quem manda (talento, freio do tamanho, morte, venda); só decisões mudam isso | agente | das 250 ideias do dono, as que mudam a história e não só a despesa: mandar sem centralizar e construir o que sobrevive a você |
 | Todo acontecimento mostra o porquê (a causa de um ano anterior) na linha do tempo | agente | a causalidade é o diferencial que o dono pediu para o jogo inteiro; o cartão final contava tarde demais |
 | A linha do tempo mostra as entradas de regra que têm texto (promoção, fim de mandato); só o resumo do ano fica escondido | agente | o porquê de cada mudança precisa estar à vista |
+| A fase do ciclo é o nome do crescimento, com folga para sair dela | agente | sem folga, o país trocava de fase a cada três anos e a linha do tempo virava noticiário |
+| Quem governa faz uma reforma por ano (a folha País mostra o efeito antes) | agente | sem limite, bastava acertar as políticas uma vez; com ele, cada reforma tem custo de oportunidade |
+| O primeiro voto é marco aos 18–21 e os outros aparecem por saliência (uns 2 por vida) | agente | votar a cada 4 anos repetia o mesmo cartão 15 vezes por vida; aos 16, o marco roubava um ano da adolescência |
+| Nenhum bloco é o melhor em tudo: cada um ganha numa estatística e perde em outra | agente | política fictícia e genérica; o jogo mostra trocas, não toma partido |

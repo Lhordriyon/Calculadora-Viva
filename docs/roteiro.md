@@ -17,11 +17,11 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 | Nível | Conteúdo | Estado |
 |---|---|---|
 | 1. Fundamentos | livro-razão causal; entidades com qualidades; storylets por saliência; validador (≥2 sistemas lendo cada campo, ações em ≥2 sistemas) | **feito** (incremento 1) |
-| 2. Agência | fichas de ação por ano; origem procedural | mínimo feito: 1 ficha, 6 verbos; 6 classes × 4 tipos de família × traços. Falta: 2–3 fichas se o túnel pedir; famílias política, artística e com doença hereditária |
-| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | mínimo feito: ciclo da economia do país (4 fases em dados, com causa), 12 setores com sensibilidade ao ciclo, lugar com região, desemprego e custo de vida. Falta: setores por UF, jurisdição em dados, balanço por entidade |
-| 4. Pessoas | relações como arestas, NPCs com nível de detalhe, regras anuais, herdeiro | mínimo feito: família viva (regras anuais, traços, iniciativas, herança, viuvez), amor por regra. Falta: arestas entre NPCs, confiança e dívida, continuar como herdeiro |
-| 5. Riqueza e poder | empresas, ativos, status, cargos | começo: carreira por setor (curso, primeiro emprego, salário e demissão pelo mundo), padrão de vida com decisão, herança como bifurcação, riscos proporcionais ao patrimônio. Falta: negócio próprio como entidade, ativos separados, status e cargos |
-| 6. Sandbox | política, países, narradores, vida do dia | a fazer |
+| 2. Agência | fichas de ação por ano; origem procedural | feito: fichas por ano (1 criança, 2 adolescente, 3 adulto, 2 depois dos 65), cada verbo abre todas as ações possíveis, 8 classes × 4 tipos de família × traços × linhagens, criar o personagem escolhendo tudo. Falta: famílias artística e com doença hereditária |
+| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, a fase como o nome do crescimento, governos fictícios, eleição, políticas), 12 setores com sensibilidade ao ciclo, lugar com região, desemprego e custo de vida. Falta: setores por UF, outros países |
+| 4. Pessoas | relações como arestas, NPCs com nível de detalhe, regras anuais, herdeiro | feito: família viva (regras anuais, traços, iniciativas, herança, viuvez), amor por regra, herdeiro e dinastia (filho, sobrinho, testamento). Falta: arestas entre NPCs, vários filhos, confiança e dívida |
+| 5. Riqueza e poder | empresas, ativos, status, cargos | feito: carreiras, carteira em cinco classes, empresa (quem manda nela), bens, cargos e eleições, truste, brincar de deus. Falta: grupo de empresas (holdings, subsidiárias, fusões) |
+| 6. Sandbox | política, países, narradores, vida do dia | começo: política (o país vivo, o voto, governar pelas políticas). Falta: diplomacia, outros países, narradores |
 
 ## Incremento 1: família viva + origem que importa + uma ficha por ano
 
@@ -97,10 +97,22 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] Portões: crises com mediana de 1 ano e 99% em até 7; 975 começos distintos por 1.000 vidas; 100% das vidas decidem antes dos 5; em 45%, algo dos 5 aos 12 tem causa nos primeiros anos; zero storylets mortos. Caiu: o rico que termina pobre (2,5%, portão de 3,0%)
 - [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
 
-## Próximos incrementos (pedidos do dono em 11/10)
+## Incremento 8 (pedido do dono em 11/10): o país vivo
 
-1. **O país vivo.** O país ganha estatísticas que se causam umas às outras (crescimento, desemprego, inflação, juros, dívida pública, pobreza, desigualdade, violência, saúde e educação públicas, aprovação), com atraso como na vida real (educação hoje, produtividade em dez anos). Quem governa escolhe políticas, poucas e com troca (impostos, gasto social, saúde, educação, segurança, juros, salário mínimo, abertura comercial), e os grupos da população reagem. Quem não governa sente o governo eleito: os partidos fictícios têm programas, e a eleição muda o país. O ciclo da economia passa a nascer das estatísticas. Diplomacia com países fictícios: comércio, câmbio, sanções.
-2. **Grupo de empresas.** Mais de uma empresa, holdings e subsidiárias, comprar concorrentes como subsidiárias, fundir, vender ou abrir o capital de cada uma; a seção Empresa vira a árvore do grupo.
+- [x] O país ganha dez estatísticas que se causam (crescimento, desemprego, inflação, juros, dívida pública, pobreza, violência, saúde e educação públicas, aprovação do governo), com atraso como na vida real: a escola leva uma geração
+- [x] A fase do ciclo deixa de ser sorteada: é o nome do crescimento, com folga para sair dela
+- [x] Quatro blocos fictícios (a frente popular, o bloco liberal, a aliança da ordem, o centrão) e o regime; eleição geral de quatro em quatro anos, pela aprovação e pelo que o eleitor quer; nenhum bloco é o melhor em tudo
+- [x] O voto de quem joga (o primeiro voto e as eleições seguintes) pesa no resultado e volta como "o governo que você elegeu"
+- [x] Quem governa (presidente, monarca, chefe do Regime) muda as políticas pela folha País, uma reforma por ano, com o efeito à vista antes
+- [x] O país na vida: emprego e salário pelo crescimento e pelo desemprego; imposto e auxílio no bolso; juros na dívida e na renda fixa; saúde pública na mortalidade; violência que mata; escola pública na inteligência
+- [x] Folha País: o governo, as estatísticas com a seta do ano e para onde vão, e as políticas
+- [x] Portões do incremento 8 (docs/decisoes.md)
+- [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
+
+## Próximos incrementos
+
+1. **Grupo de empresas.** Mais de uma empresa, holdings e subsidiárias, comprar concorrentes como subsidiárias, fundir, vender ou abrir o capital de cada uma; a seção Empresa vira a árvore do grupo.
+2. **Diplomacia.** Países fictícios com estatísticas próprias; comércio, câmbio, tarifas, sanções e alinhamento; o que o país decide lá fora muda o crescimento, o dólar e os setores daqui.
 3. Depois: outros países para morar, crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
 
 ## Como uma sessão continua
