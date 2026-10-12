@@ -287,6 +287,39 @@ export const DESCONTO_DA_DEPENDENCIA = 0.25;
  */
 export const GARGALO_DO_DONO = 0.8;
 
+// ---- o grupo de empresas (incremento 9: mais de uma empresa, subsidiárias, fusões e bolsa)
+
+/** Empresas de uma vez (a que quem joga toca e as outras); para abrir mais, venda ou junte duas. */
+export const MAX_EMPRESAS = 5;
+/**
+ * A concorrente comprada vem com as subsidiárias dela, pelo tamanho: nenhuma até uns R$ 4 milhões, umas 8 com
+ * R$ 300 milhões, 27 com R$ 3 bilhões. É o que leva um grupo às centenas.
+ */
+export function subsidiariasDoRival(valor: number): number {
+  return Math.floor(Math.sqrt(Math.max(0, valor) / 1e6) / 2);
+}
+/** Cada subsidiária vale isto do valor da empresa: o negócio da própria empresa conta por duas. */
+export function fracaoDeUmaSubsidiaria(subsidiarias: number): number {
+  return 1 / (Math.max(0, subsidiarias) + 2);
+}
+/** Quantas subsidiárias saem de uma vez numa venda: uma, até dez; depois, um décimo delas. */
+export function subsidiariasPorVenda(subsidiarias: number): number {
+  return Math.max(1, Math.floor(subsidiarias / 10));
+}
+/** Fusão de duas empresas de quem joga: o ganho (corte de custos, preço) no mesmo ramo e o desconto de conglomerado em ramos diferentes, com sorte. */
+export const SINERGIA_DA_FUSAO = { mesmoRamo: 0.08, outroRamo: -0.02, desvio: 0.08 } as const;
+/** Pontos de tração da fusão no mesmo ramo (o mercado fica mais fechado, como numa compra). */
+export const TRACAO_DA_FUSAO = 2;
+/** Abrir o capital: o menor valor, quanto a empresa passa a valer a mais por ter preço todo dia, quanto da parte de quem joga ele vende na estreia e quanto a dependência cai (conselho, auditoria, balanço público). */
+export const MINIMO_BOLSA = 1e8;
+export const PREMIO_DA_BOLSA = 0.2;
+export const FRACAO_NA_ESTREIA = 0.2;
+export const GOVERNANCA_DA_BOLSA = 15;
+/** Na bolsa, o valor anda também com o humor do mercado de ações do ano (o que a bolsa rendeu além do esperado para a fase). */
+export const PESO_DA_BOLSA = 0.6;
+/** A partir de tantas subsidiárias, o grupo é um conglomerado: o nome abre portas (influência). */
+export const SUBSIDIARIAS_DO_CONGLOMERADO = 20;
+
 // ---- o país vivo (incremento 8: estatísticas que andam, governos que se alternam, políticas que mudam a vida)
 
 /** O crescimento (% do PIB ao ano) para onde a economia volta, com as políticas médias e as contas em ordem. */

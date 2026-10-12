@@ -32,7 +32,11 @@ export function contexto(e: EstadoVida, op: OpcoesContexto = {}): ContextoTexto 
   const ctx: ContextoTexto = {
     rng: e.rng,
     genero: eu.genero ?? 'm',
-    generoDe: (papel) => e.entidades[entidadeDe(papel, op.ator)]?.genero as Genero | undefined,
+    // A empresa sem gênero (de antes do grupo) é "a" empresa.
+    generoDe: (papel) => {
+      const en = e.entidades[entidadeDe(papel, op.ator)];
+      return (en?.genero ?? (en?.tipo === 'empresa' ? 'f' : undefined)) as Genero | undefined;
+    },
     variavel: (nome) => {
       switch (nome) {
         case 'nome':

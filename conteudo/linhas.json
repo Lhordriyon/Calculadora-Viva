@@ -607,27 +607,27 @@
   },
   {
     "idade": [25, 95],
-    "texto": "A {empresa} lucrou {empresa.lucro} no ano. Você comemorou conferindo o extrato duas vezes.",
+    "texto": "{empresa:O|A} {empresa} lucrou {empresa.lucro} no ano. Você comemorou conferindo o extrato duas vezes.",
     "condicoes": { "empresa.lucro": { "min": 100000 } }
   },
   {
     "idade": [20, 90],
-    "texto": "O contador da {empresa} disse que o ano foi \"desafiador\". Contador só diz isso quando foi ruim.",
+    "texto": "O contador d{empresa:o|a} {empresa} disse que o ano foi \"desafiador\". Contador só diz isso quando foi ruim.",
     "condicoes": { "empresa.lucro": { "max": -1 } }
   },
   {
     "idade": [25, 95],
-    "texto": "O gerente do banco agora liga no seu aniversário. É o que acontece quando a {empresa} vale {empresa.valor}.",
+    "texto": "O gerente do banco agora liga no seu aniversário. É o que acontece quando {empresa:o|a} {empresa} vale {empresa.valor}.",
     "condicoes": { "empresa.valor": { "min": 5000000 } }
   },
   {
     "idade": [20, 80],
-    "texto": "Mais um ano tirando o próprio salário da {empresa}. Patr{ão|oa} de si mesm{o|a}, funcionári{o|a} do boleto.",
+    "texto": "Mais um ano tirando o próprio salário d{empresa:o|a} {empresa}. Patr{ão|oa} de si mesm{o|a}, funcionári{o|a} do boleto.",
     "condicoes": { "marcas": ["empresa.sustenta"] }
   },
   {
     "idade": [25, 95],
-    "texto": "As ações da {empresa} subiram, desceram e subiram de novo. Você parou de olhar a cotação no almoço. Quase.",
+    "texto": "As ações d{empresa:o|a} {empresa} subiram, desceram e subiram de novo. Você parou de olhar a cotação no almoço. Quase.",
     "condicoes": { "marcas": ["empresa.na_bolsa"] }
   },
   {
@@ -637,12 +637,12 @@
   },
   {
     "idade": [20, 90],
-    "texto": "Na reunião de condomínio, alguém pediu emprego na {empresa}. Você anotou o telefone e mudou de assunto.",
+    "texto": "Na reunião de condomínio, alguém pediu emprego n{empresa:o|a} {empresa}. Você anotou o telefone e mudou de assunto.",
     "condicoes": { "empresa.valor": { "min": 300000 } }
   },
   {
     "idade": [20, 85],
-    "texto": "Você sonhou com planilha de novo. A {empresa} invade até o sono.",
+    "texto": "Você sonhou com planilha de novo. {empresa:O|A} {empresa} invade até o sono.",
     "condicoes": { "empresa.tracao": { "min": 15 } }
   },
   {
@@ -955,5 +955,35 @@
     "idade": [16, 95],
     "condicoes": { "pais.pol_seguranca": { "max": 0 } },
     "texto": "Faz meses que você não vê uma viatura no bairro. O crime percebeu antes de você."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "empresas": { "min": 2 } },
+    "texto": "O grupo fez a reunião anual num resort. Você dormiu no quarto slide, que era o seu."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "empresas": { "min": 3 } },
+    "texto": "Três empresas, três aniversários de fundação, três bolos que você não comeu."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "empresa.subsidiarias": { "min": 5 } },
+    "texto": "Descobriu que {empresa:o|a} {empresa} tem uma subsidiária em Campina Grande. Mandou um e-mail de boas-vindas com anos de atraso."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "empresa.subsidiarias": { "min": 30 } },
+    "texto": "Assinou as atas de {empresa.subsidiarias} subsidiárias numa tarde só. A caneta pediu aposentadoria."
+  },
+  {
+    "idade": [20, 95],
+    "condicoes": { "marcaHa": [{ "marca": "empresa.fundiu", "min": 1, "max": 6 }] },
+    "texto": "N{empresa:o|a} {empresa}, ainda tem quem atenda o telefone com o nome da empresa de antes da fusão."
+  },
+  {
+    "idade": [25, 95],
+    "condicoes": { "marcas": ["empresa.na_bolsa"] },
+    "texto": "Abriu o aplicativo da corretora antes de abrir os olhos. {empresa:O|A} {empresa} subiu 2%; o seu humor, 10%."
   }
 ]

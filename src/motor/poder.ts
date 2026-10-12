@@ -9,7 +9,7 @@
  * governa tem popularidade; abaixo do ponto crítico, o cargo balança (storylet
  * agendado). Decretos são storylets que mexem no país (`pais.impulso`).
  */
-import { patrimonioTotal } from './campos.ts';
+import { empresasDe, patrimonioTotal } from './campos.ts';
 import { statusDosBens } from './bens.ts';
 import { noGenero, largarEmprego, tentouEsteAno } from './carreira.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -17,7 +17,7 @@ import { liquidoDe, tirarDeQuemJoga } from './empresa.ts';
 import type { DefCargo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, somar } from './livro.ts';
-import { influenciaDoPatrimonio, POPULARIDADE_CRITICA, RITMO_INFLUENCIA, RITMO_POPULARIDADE } from './regras.ts';
+import { influenciaDoPatrimonio, POPULARIDADE_CRITICA, RITMO_INFLUENCIA, RITMO_POPULARIDADE, SUBSIDIARIAS_DO_CONGLOMERADO } from './regras.ts';
 import { aleatorio, normal } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
@@ -111,11 +111,13 @@ export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: 
   };
 }
 
-/** O que a influência persegue: patrimônio, cargo, fama, bens, empresa grande e linhagem. */
+/** O que a influência persegue: patrimônio, cargo, fama, bens, empresas grandes (o conglomerado, mais) e linhagem. */
 export function influenciaAlvo(e: EstadoVida, c: Conteudo): number {
   const eu = e.entidades['eu']!;
-  const empresa = e.entidades['empresa'];
-  const grande = empresa && empresa.vivo !== false && (empresa.n['valor'] ?? 0) >= 1e8 ? 6 : 0;
+  const grupo = empresasDe(e);
+  const valor = grupo.reduce((s, x) => s + (x.n['valor'] ?? 0), 0);
+  const subsidiarias = grupo.reduce((s, x) => s + (x.n['subsidiarias'] ?? 0), 0);
+  const grande = (valor >= 1e8 ? 6 : 0) + (subsidiarias >= SUBSIDIARIAS_DO_CONGLOMERADO ? 3 : 0);
   const linhagem = eu.q['principe'] || eu.q['herdeiro_regime'] ? 20 : eu.q['filho_de_politico'] ? 8 : 0;
   const alvo =
     influenciaDoPatrimonio(patrimonioTotal(e)) + statusDosBens(e, c) + 0.3 * (eu.n['fama'] ?? 0) + (cargoDe(e, c)?.poder ?? 0) + grande + linhagem;

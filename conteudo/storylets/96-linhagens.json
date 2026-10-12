@@ -740,7 +740,7 @@
         "texto": "Assumir a fazenda",
         "resumo": "assumiu a fazenda da família",
         "resultado": {
-          "texto": "Botina, caminhonete e reunião com cooperativa às cinco da manhã. A {empresa} agora é sua.",
+          "texto": "Botina, caminhonete e reunião com cooperativa às cinco da manhã. {empresa:O|A} {empresa} agora é sua.",
           "efeitos": {
             "abrirEmpresa": { "setor": "agro", "de": "ator", "fracao": 0.4 },
             "marcas": ["herdeiro_negocio"],

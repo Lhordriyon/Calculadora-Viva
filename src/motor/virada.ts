@@ -51,7 +51,9 @@ export function descendentes(historico: Entrada[]): Map<number, Set<number>> {
   return resultado;
 }
 
-const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto', 'eu.divida', 'empresa.valor']);
+const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii', 'eu.dolar', 'eu.cripto', 'eu.divida']);
+/** O valor de qualquer empresa do grupo (trocar duas de lugar não mexe no patrimônio: as variações se anulam). */
+const VALOR_DE_EMPRESA = /^empresa\d*\.valor$/;
 
 /** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda, vínculos, morte. */
 export function impacto(h: Entrada): number {
@@ -62,7 +64,7 @@ export function impacto(h: Entrada): number {
       if (m.q !== undefined) x += 0.5;
       continue;
     }
-    if (PATRIMONIO.has(m.c)) patrimonio += m.c === 'eu.divida' ? -m.d : m.d;
+    if (PATRIMONIO.has(m.c) || VALOR_DE_EMPRESA.test(m.c)) patrimonio += m.c === 'eu.divida' ? -m.d : m.d;
     else if (m.c === 'eu.renda') x += Math.abs(m.d) / 6000;
     else if (m.c.startsWith('eu.')) x += Math.abs(m.d);
     else if (m.c.endsWith('.vinculo')) x += Math.abs(m.d) / 3;

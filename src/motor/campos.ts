@@ -79,6 +79,8 @@ const PESSOA: Record<string, DefCampo> = {
   genero: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   /** "sua mãe", "seu pai", "sua amiga Ana": o personagem como sujeito de uma frase. */
   quem: { tipo: 'texto', sistema: 'relacoes', derivado: true },
+  /** Quantas empresas quem joga tem (o grupo; 0 para os outros). */
+  empresas: { tipo: 'num', sistema: 'dinheiro', derivado: true },
 };
 
 const LUGAR: Record<string, DefCampo> = {
@@ -162,12 +164,14 @@ const EMPRESA: Record<string, DefCampo> = {
    * na tração nessa proporção, a morte de quem manda custa valor e quem compra desconta.
    */
   dependencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
+  /** Empresas que ela comprou ou absorveu e que seguem com o nome delas, dentro do valor dela: vender uma dá dinheiro sem largar o resto. */
+  subsidiarias: { tipo: 'num', sistema: 'poder', limites: [0, Infinity] },
 };
 
 export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent === 'lugar') return LUGAR;
   if (ent === 'pais') return PAIS;
-  if (ent === 'empresa') return EMPRESA;
+  if (ent.startsWith('empresa')) return EMPRESA;
   if (ent.startsWith('bem')) return BEM;
   return PESSOA;
 }
@@ -215,11 +219,33 @@ export function patrimonioDe(en: Entidade): number {
   return (en.n['dinheiro'] ?? 0) + investidoDe(en) - (en.n['divida'] ?? 0);
 }
 
-/** A parte de quem joga na empresa, em reais (0 sem empresa). Conta no patrimônio, mas só vira dinheiro pela retirada ou pela venda. */
-export function parteNaEmpresa(e: EstadoVida): number {
-  const emp = e.entidades['empresa'];
+/**
+ * As empresas de quem joga: primeiro a que ele cuida de perto (`empresa`, a
+ * que o conteúdo chama de "a empresa"), depois as outras (`empresa2`…).
+ */
+export function empresasDe(e: EstadoVida): Entidade[] {
+  return Object.values(e.entidades)
+    .filter((x) => x.tipo === 'empresa' && x.vivo !== false)
+    .sort((a, b) => ordemDaEmpresa(a.id) - ordemDaEmpresa(b.id));
+}
+
+/** `empresa` é 1, `empresa2` é 2… */
+export function ordemDaEmpresa(id: string): number {
+  return Number(id.slice('empresa'.length) || 1);
+}
+
+/** A parte de quem joga numa empresa (sem dizer qual, a que ele cuida de perto), em reais (0 sem ela). Conta no patrimônio, mas só vira dinheiro pela retirada ou pela venda. */
+export function parteNaEmpresa(e: EstadoVida, id = 'empresa'): number {
+  const emp = e.entidades[id];
   if (!emp || emp.vivo === false) return 0;
   return Math.max(0, emp.n['valor'] ?? 0) * (emp.n['participacao'] ?? 1);
+}
+
+/** A parte de quem joga em todas as empresas dele. */
+export function parteNasEmpresas(e: EstadoVida): number {
+  let total = 0;
+  for (const emp of empresasDe(e)) total += parteNaEmpresa(e, emp.id);
+  return total;
 }
 
 /** Os bens de quem joga (imóveis, veículos, luxo), na ordem da compra. */
@@ -234,9 +260,9 @@ export function valorDosBens(e: EstadoVida): number {
   return total;
 }
 
-/** Patrimônio de quem joga: o de fora, a parte na empresa e os bens. */
+/** Patrimônio de quem joga: o de fora, a parte nas empresas e os bens. */
 export function patrimonioTotal(e: EstadoVida): number {
-  return patrimonioDe(e.entidades['eu']!) + parteNaEmpresa(e) + valorDosBens(e);
+  return patrimonioDe(e.entidades['eu']!) + parteNasEmpresas(e) + valorDosBens(e);
 }
 
 /** Gente empregada pelo tamanho da empresa: uma pessoa a cada R$ 150 mil enquanto ela é pequena, saturando nas maiores do mundo. */
@@ -299,6 +325,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return quemE(ent, en);
       case 'eleicao':
         return e.ano % 4 === 2;
+      case 'empresas':
+        return ent === 'eu' ? empresasDe(e).length : 0;
     }
     return undefined;
   }

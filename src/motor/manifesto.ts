@@ -99,6 +99,15 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // truste: compras de concorrentes
   'empresa.aquisicoes',
   'empresa.truste',
+  // o grupo: a concorrente comprada e a empresa absorvida viram subsidiárias; a bolsa; a fusão; quem sustentava passa o sustento;
+  // e a empresa que afunda vem para a mesa de quem joga (troca de lugar com as qualidades que o conteúdo deu a ela)
+  'empresa.subsidiarias',
+  'empresa.na_bolsa',
+  'empresa.fundiu',
+  'empresa.sustenta',
+  'empresa.conselho',
+  'empresa.mural',
+  'empresa.incubadora',
   // o ano dos bens: o valor anda com o mercado e o financiamento é pago
   'bem.valor',
   'bem.financiado',
@@ -193,6 +202,8 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.regime'], 'país: sob o regime, não há eleição', true),
   ...ler(['eu.classe_origem'], 'escola pública: quem estuda nela sente a educação do país', true),
   ...ler(['empresa.aquisicoes'], 'empresa: três compras fazem um truste', true),
+  ...ler(['empresa.subsidiarias'], 'grupo: vender subsidiárias dá dinheiro sem largar a empresa; o conglomerado dá influência', true),
+  ...ler(['empresa.na_bolsa'], 'grupo: na bolsa, o valor anda com o humor do mercado e quem compra não desconta a dependência', true),
   ...ler(['eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico'], 'poder: a linhagem dá influência', false),
   ...ler(['eu.lei_da_heranca'], 'herança: a lei comprada baixa o imposto de 4% para 1%', true),
   ...ler(['eu.monarca', 'eu.ditador'], 'dinastia: a coroa e o regime passam ao filho', true),

@@ -15,14 +15,14 @@ import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
 import { chanceDeEleicao } from './poder.ts';
-import { governoAtual, nivelDe } from './pais.ts';
-import { bensDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
+import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
+import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Politica, type Verbo } from './constantes.ts';
 import { padraoDe } from './economia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
 import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
-import { REVERSAO_TRACAO } from './regras.ts';
+import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
@@ -94,6 +94,14 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   if (ef.empresaFator !== undefined) v += ((ef.empresaFator - 1) * parte) / REAIS_POR_PONTO;
   if (ef.venderEmpresa) v += (((ef.venderEmpresa.premio ?? 1) - 1) * parte * ef.venderEmpresa.fracao) / REAIS_POR_PONTO;
   if (ef.fecharEmpresa) v -= ((1 - ef.fecharEmpresa.sobra) * parte) / REAIS_POR_PONTO;
+  if (ef.venderSubsidiarias && emp) {
+    const subs = emp.n['subsidiarias'] ?? 0;
+    const f = ef.venderSubsidiarias.fracao;
+    const vendidas = Math.min(subs, f !== undefined ? Math.ceil(subs * f) : (ef.venderSubsidiarias.quantas ?? subsidiariasPorVenda(subs)));
+    v += (((ef.venderSubsidiarias.premio ?? 1) - 1) * parte * vendidas * fracaoDeUmaSubsidiaria(subs)) / REAIS_POR_PONTO;
+  }
+  // A estreia na bolsa reavalia a parte de quem joga.
+  if (ef.abrirCapital && emp && !emp.q['na_bolsa']) v += (PREMIO_DA_BOLSA * parte) / REAIS_POR_PONTO;
   for (const [chave, valor] of Object.entries(ef)) {
     if (!chave.includes('.') || typeof valor !== 'number') continue;
     const { ent, campo } = separar(chave);
@@ -427,12 +435,19 @@ function decidirQuemManda(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rn
   return [{ tipo: 'jogada', id: alvo.id, escolha: alvo.i }];
 }
 
+/**
+ * O grupo dos robôs (uma decisão que mexe nele por ano, porque fundir e
+ * vender mudam as empresas de lugar). A arriscada compra concorrentes quando
+ * o dinheiro dá, leva para a bolsa na economia aquecida e, quando a primeira
+ * passa de R$ 20 milhões, abre uma segunda em outro ramo; a aleatória faz um
+ * pouco de tudo, raramente (é ela quem funde); a cautelosa vende tudo aos 65.
+ */
 function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   const emp = empresaDe(e);
   const liquido = liquidoDe(e);
   const idade = e.idade;
+  const setores = setoresDeEmpresa(c).map((s) => s.id);
   if (!emp) {
-    const setores = setoresDeEmpresa(c).map((s) => s.id);
     if (estrategia === 'arriscada' && idade >= 22 && idade <= 45 && liquido >= 20000) {
       const setor = e.entidades['eu']!.t['setor'] ?? '';
       return [{ tipo: 'abrir', setor: setores.includes(setor) ? setor : 'tecnologia', valor: Math.floor(liquido * 0.5) }];
@@ -442,15 +457,42 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     }
     return [];
   }
+  const grupo = empresasDe(e);
+  const outras = grupo.filter((x) => x.id !== emp.id);
+  if (estrategia === 'cautelosa') {
+    // As outras primeiro: vender a que toca põe outra no lugar dela.
+    return idade >= 65 ? [...grupo].reverse().map((x) => ({ tipo: 'vender', empresa: x.id }) as Operacao) : [];
+  }
   if (estrategia === 'aleatoria') {
     if (e.ano - (emp.nascimento ?? e.ano) === 1) {
       const fracao = sortear(rng, RETIRADAS);
       return fracao !== (emp.n['retirada'] ?? 0) ? [{ tipo: 'retirada', fracao }] : [];
     }
     if (idade >= 60 && aleatorio(rng) < 0.05) return [{ tipo: 'vender' }];
+    const sorte = aleatorio(rng);
+    if (sorte < 0.02 && idade <= 60 && liquido >= 50000) return [{ tipo: 'abrir', setor: sortear(rng, setores), valor: Math.floor(liquido * (0.2 + 0.3 * aleatorio(rng))) }];
+    if (sorte < 0.04 && outras.length > 0) return [{ tipo: 'fundir', empresa: emp.id, com: sortear(rng, outras).id }];
+    if (sorte < 0.07) {
+      const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
+      return bolsa ? [{ tipo: 'abrirCapital', empresa: bolsa.id }] : [];
+    }
+    if (sorte < 0.09) {
+      const com = grupo.find((x) => (x.n['subsidiarias'] ?? 0) > 0);
+      return com ? [{ tipo: 'venderSubsidiaria', empresa: com.id }] : [];
+    }
+    if (sorte < 0.11 && outras.length > 0) return [{ tipo: 'cuidar', empresa: sortear(rng, outras).id }];
+    return [];
   }
-  if (estrategia === 'cautelosa' && idade >= 65) return [{ tipo: 'vender' }];
-  if (estrategia === 'arriscada' && pode(e, c, { tipo: 'adquirir' }) && (emp.n['valor'] ?? 0) * 0.3 <= liquido * 0.5) return [{ tipo: 'adquirir' }];
+  if (estrategia !== 'arriscada') return [];
+  if (pode(e, c, { tipo: 'adquirir' }) && (emp.n['valor'] ?? 0) * 0.3 <= liquido * 0.5) return [{ tipo: 'adquirir' }];
+  if (momentoDoPais(e).id === 'expansao') {
+    const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
+    if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];
+  }
+  if (grupo.length < 2 && idade <= 55 && (emp.n['valor'] ?? 0) >= 2e7 && liquido >= 1e6) {
+    const ramo = setores.find((s) => s !== emp.t['setor']) ?? 'tecnologia';
+    return [{ tipo: 'abrir', setor: ramo, valor: Math.floor(liquido * 0.4) }];
+  }
   return [];
 }
 

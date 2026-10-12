@@ -7,7 +7,7 @@ import { pesosDoPerfil, realocar } from './carteira.ts';
 import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { movimentar } from './economia.ts';
-import { abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte } from './empresa.ts';
+import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { criarPersonagem, morrerPersonagem, promover } from './pessoas.ts';
@@ -112,6 +112,13 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   // Vender ou fechar vem depois dos caminhos: a empresa ainda existe para o que o bloco muda nela.
   if (ef.venderEmpresa) ctx.valores['venda'] = venderParte(e, reg, ef.venderEmpresa.fracao, ef.venderEmpresa.premio ?? 1);
   if (ef.fecharEmpresa) ctx.valores['sobra'] = fecharEmpresa(e, reg, ef.fecharEmpresa.sobra);
+  if (ef.venderSubsidiarias) {
+    const v = ef.venderSubsidiarias;
+    const subs = e.entidades['empresa']?.n['subsidiarias'] ?? 0;
+    const quantas = v.fracao !== undefined ? Math.ceil(subs * v.fracao) : v.quantas;
+    ctx.valores['venda'] = venderSubsidiarias(e, reg, v.premio ?? 1, undefined, quantas).preco;
+  }
+  if (ef.abrirCapital) ctx.valores['venda'] = abrirCapital(e, reg, origem);
 
   for (const caminho of ef.removerMarcas ?? []) {
     const q = qualidade(caminho, ator);

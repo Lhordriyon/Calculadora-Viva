@@ -433,7 +433,7 @@
         "texto": "Aceitar o favor",
         "resumo": "aceitou uma regra feita sob medida para a própria empresa",
         "resultado": {
-          "texto": "A regra saiu no Diário Oficial. A {empresa} cresceu, e os concorrentes contrataram jornalistas.",
+          "texto": "A regra saiu no Diário Oficial. {empresa:O|A} {empresa} cresceu, e os concorrentes contrataram jornalistas.",
           "efeitos": {
             "empresa.tracao": 5,
             "eu.influencia": 3,
@@ -446,7 +446,7 @@
         "texto": "Competir no braço",
         "resumo": "recusou o lobby e competiu sem favor",
         "resultado": {
-          "texto": "A {empresa} cresceu mais devagar e sem manchete. Você dorme bem.",
+          "texto": "{empresa:O|A} {empresa} cresceu mais devagar e sem manchete. Você dorme bem.",
           "efeitos": { "felicidade": 2, "empresa.tracao": 1 }
         }
       }
@@ -456,7 +456,7 @@
     "id": "escandalo_do_lobby",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["lobista"], "empresa.valor": true },
-    "texto": "Um jornal publicou as mensagens do jantar com o ministro. A {empresa} está na capa, e você, na foto.",
+    "texto": "Um jornal publicou as mensagens do jantar com o ministro. {empresa:O|A} {empresa} está na capa, e você, na foto.",
     "resumo": "virou escândalo por causa de lobby",
     "escolhas": [
       {
@@ -486,7 +486,7 @@
     "id": "cade_investiga",
     "idade": [25, 95],
     "condicoes": { "marcas": ["empresa.truste"] },
-    "texto": "O órgão de defesa da concorrência abriu investigação contra a {empresa}: depois de tantas compras, ela domina o mercado. Pode haver multa ou divisão da empresa.",
+    "texto": "O órgão de defesa da concorrência abriu investigação contra {empresa:o|a} {empresa}: depois de tantas compras, ela domina o mercado. Pode haver multa ou divisão da empresa.",
     "resumo": "teve a empresa investigada por monopólio",
     "escolhas": [
       {
@@ -498,11 +498,25 @@
         }
       },
       {
+        "texto": "Vender subsidiárias para encerrar o caso",
+        "resumo": "vendeu subsidiárias para encerrar uma investigação de monopólio",
+        "condicoes": { "empresa.subsidiarias": { "min": 3 } },
+        "bloqueio": "a empresa não tem subsidiárias para vender",
+        "resultado": {
+          "texto": "Um terço das subsidiárias foi para concorrentes, por {venda}, e o caso foi arquivado. O truste acabou; o grupo, não.",
+          "efeitos": {
+            "venderSubsidiarias": { "fracao": 0.34, "premio": 0.9 },
+            "removerMarcas": ["empresa.truste"],
+            "empresa.tracao": -2
+          }
+        }
+      },
+      {
         "texto": "Brigar na Justiça",
         "resumo": "brigou na Justiça para manter o monopólio",
         "teste": { "atributo": "influencia", "dificuldade": 50 },
         "sucesso": {
-          "texto": "Dez anos de recursos e o caso morreu de velhice. A {empresa} seguiu dona do mercado.",
+          "texto": "Dez anos de recursos e o caso morreu de velhice. {empresa:O|A} {empresa} seguiu dona do mercado.",
           "efeitos": { "dinheiro": -3000000, "empresa.tracao": 2, "eu.influencia": 3 }
         },
         "fracasso": {

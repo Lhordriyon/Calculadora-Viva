@@ -7,6 +7,7 @@
 import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EstadoVida, MemoriaJogador } from '../motor/tipos.ts';
+import { generoDoNome } from '../motor/empresa.ts';
 import { migrarPais } from '../motor/pais.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
@@ -160,6 +161,8 @@ export function lerSave(texto: string | null, conteudo: Conteudo): Save {
   }
   // Antes do país vivo, o país só tinha a fase: ganha as estatísticas típicas dela e um governo.
   migrarPais(v, conteudo);
+  // Antes do grupo, a empresa não tinha gênero: ganha o do nome ("o Instituto", "a Clínica").
+  for (const en of Object.values(v.entidades)) if (en.tipo === 'empresa' && en.vivo !== false && !en.genero) en.genero = generoDoNome(v, en.nome);
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.
   if (v.pendente && conteudo.porId.get(v.pendente.storylet)?.escolhas?.length !== v.pendente.opcoes.length) v.pendente = null;
   return { ...base, vida: v };

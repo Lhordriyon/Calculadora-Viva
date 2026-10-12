@@ -61,7 +61,7 @@ describe('livro-razão', () => {
         if (h.causa !== 'regra') continue;
         for (const m of h.mudancas ?? []) {
           const [ent, campo] = m.c.split('.') as [string, string];
-          const chave = `${/^bem\d+$/.test(ent) ? 'bem' : ent}.${campo}`;
+          const chave = `${ent.replace(/^(bem|empresa)\d+$/, '$1')}.${campo}`;
           if (!declaradas.has(chave)) fora.add(chave);
         }
       }

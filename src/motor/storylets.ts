@@ -9,6 +9,7 @@ import type { Conteudo } from './conteudo.ts';
 import { tipoDe } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import { aplicarEfeitos, type ContextoEfeito } from './efeitos.ts';
+import { reorganizarGrupo } from './empresa.ts';
 import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
 import { lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
@@ -119,6 +120,8 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   const causas = [...new Set(extras.causas ?? [])];
   if (causas.length > 0) entrada.causas = causas;
   if (extras.inflacao !== undefined) entrada.inflacao = extras.inflacao;
+  // Depois do texto (que ainda fala da empresa que saiu), outra do grupo toma o lugar dela.
+  reorganizarGrupo(e, reg);
   lancar(e, entrada, reg);
   morrerSePreciso(e, c, morte, entrada.id);
   return entrada;
@@ -213,6 +216,7 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = capitalizar(renderizar(resultado.texto, ctx));
+  reorganizarGrupo(e, reg);
   lancar(e, entrada, reg);
   morrerSePreciso(e, c, resultado.efeitos?.morte ?? esc.efeitos?.morte, entrada.id);
   return entrada;

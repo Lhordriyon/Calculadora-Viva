@@ -180,6 +180,13 @@ const EFEITOS_FIXOS = {
   venderEmpresa: z.strictObject({ fracao: z.number().gt(0).max(1), premio: z.number().gt(0).max(5).optional() }).optional(),
   /** A empresa fecha as portas: volta para quem joga esta fração da parte dele (o estoque, os móveis). */
   fecharEmpresa: z.strictObject({ sobra: z.number().min(0).max(1) }).optional(),
+  /** A empresa vende subsidiárias (uma, até dez; depois, um décimo delas; ou `quantas`; ou esta `fracao` delas), pelo que valem vezes o prêmio; a parte de quem joga vira dinheiro. */
+  venderSubsidiarias: z
+    .strictObject({ quantas: z.number().int().min(1).max(1000).optional(), fracao: z.number().gt(0).max(1).optional(), premio: z.number().gt(0).max(5).optional() })
+    .refine((v) => v.quantas === undefined || v.fracao === undefined, 'venderSubsidiarias usa quantas ou fracao (um só)')
+    .optional(),
+  /** A empresa vai para a bolsa: passa a valer mais, quem joga vende um pedaço da parte dele na estreia e ela depende menos dele. */
+  abrirCapital: z.literal(true).optional(),
   /** Um personagem morre (a causa fica no texto do storylet). */
   matar: Ref.optional(),
   /** Causa da morte de quem joga, terminando a frase "morreu aos N anos, ...". */

@@ -1,0 +1,287 @@
+[
+  {
+    "id": "duas_empresas_uma_agenda",
+    "idade": [22, 85],
+    "condicoes": { "empresas": { "min": 2 }, "empresa.valor": true },
+    "peso": 4,
+    "texto": "Duas empresas, uma agenda: você [confundiu as reuniões de segunda|mandou o relatório de uma para o conselho da outra|prometeu a mesma sala para as duas diretorias]. {empresa:O|A} {empresa} reclama que você sumiu; a outra, que você aparece.",
+    "resumo": "descobriu que duas empresas não cabem numa agenda",
+    "escolhas": [
+      {
+        "texto": "Pôr um diretor-geral n{empresa:o|a} {empresa}",
+        "resumo": "pôs um diretor-geral na própria empresa",
+        "resultado": {
+          "texto": "O diretor-geral chegou com planilha, terno e opinião. {empresa:O|A} {empresa} passou a depender menos de você, e você passou a almoçar.",
+          "efeitos": { "empresa.dependencia": -12, "empresa.tracao": -1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Dividir a semana ao meio",
+        "resumo": "dividiu a semana entre duas empresas",
+        "resultado": {
+          "texto": "Segunda a quarta numa, quinta a sábado na outra, domingo no médico. As duas andam; você, menos.",
+          "efeitos": { "empresa.tracao": 1, "saude": -2, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Focar nesta e torcer pela outra",
+        "resumo": "focou numa empresa e deixou a outra no piloto automático",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "{empresa:O|A} {empresa} acelerou com você por perto, e a outra nem percebeu. Às vezes o piloto automático é melhor piloto.",
+          "resumo": "focou numa empresa e as duas andaram",
+          "efeitos": { "empresa.tracao": 3, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Enquanto você cuidava de uma, a outra perdeu o maior cliente. Você soube pelo jornal, como os acionistas.",
+          "resumo": "focou numa empresa e quase perdeu a outra",
+          "efeitos": { "empresa.tracao": 1, "felicidade": -3, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "choque_de_culturas",
+    "idade": [20, 95],
+    "condicoes": { "marcaHa": [{ "marca": "empresa.fundiu", "min": 1, "max": 3 }], "empresa.valor": true },
+    "peso": 6,
+    "texto": "Depois da fusão, metade d{empresa:o|a} {empresa} ainda chama a outra metade de \"o pessoal de lá\". [São dois cafés, dois happy hours e dois grupos de mensagem.|O RH já fez três dinâmicas de integração; ninguém integrou.|Os crachás novos chegaram em duas cores, por engano de ninguém.]",
+    "resumo": "viu a fusão virar duas empresas no mesmo prédio",
+    "escolhas": [
+      {
+        "texto": "Uma cultura só, custe o que custar",
+        "resumo": "impôs uma cultura só depois da fusão",
+        "efeitos": { "felicidade": -1 },
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Um ano de reuniões e um manual de valores depois, ninguém lembra quem veio de onde. A fusão finalmente rendeu.",
+          "resumo": "fez a fusão virar uma empresa só",
+          "efeitos": { "empresa.tracao": 3 }
+        },
+        "fracasso": {
+          "texto": "Os melhores dos dois lados saíram juntos e abriram uma concorrente. Pelo menos, nela, a integração deu certo.",
+          "resumo": "impôs uma cultura e perdeu os melhores dos dois lados",
+          "efeitos": { "empresa.tracao": -2, "empresaFator": 0.95 }
+        }
+      },
+      {
+        "texto": "Deixar cada um no seu canto",
+        "resumo": "deixou as duas metades da empresa como estavam",
+        "resultado": {
+          "texto": "Cada metade toca a sua parte e as duas se encontram na festa de fim de ano, em mesas separadas. Ninguém depende de ninguém, nem de você.",
+          "efeitos": { "empresa.tracao": -1, "empresa.dependencia": -4 }
+        }
+      },
+      {
+        "texto": "Demitir quem veio de lá",
+        "resumo": "demitiu quem veio da empresa absorvida",
+        "resultado": {
+          "texto": "Resolveu a cultura e criou um problema: trezentas demissões numa sexta-feira não passam despercebidas.",
+          "efeitos": { "empresa.tracao": 1, "eu.popularidade": -5, "felicidade": -2, "marcas": ["demitiu_em_massa"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "subsidiaria_esquecida",
+    "idade": [25, 95],
+    "condicoes": { "empresa.subsidiarias": { "min": 8 } },
+    "peso": 3,
+    "texto": "A auditoria d{empresa:o|a} {empresa} achou uma subsidiária que ninguém lembrava ter comprado: [uma fábrica de parafusos em Joinville que dá lucro|um galpão vazio em Manaus com o aluguel em dia|uma rádio AM no interior de Goiás|uma empresa com sede numa caixa postal].",
+    "resumo": "descobriu uma subsidiária esquecida no próprio grupo",
+    "escolhas": [
+      {
+        "texto": "Vender antes que alguém pergunte",
+        "resumo": "vendeu uma subsidiária esquecida sem perguntar o que era",
+        "resultado": {
+          "texto": "Saiu por {venda}, sem perguntas de nenhum dos lados. O comprador parecia saber mais do que você.",
+          "efeitos": { "venderSubsidiarias": { "quantas": 1, "premio": 0.8 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Investigar",
+        "resumo": "mandou investigar uma subsidiária esquecida",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "Era a melhor do grupo: margem alta e ninguém por perto para atrapalhar. Você anotou a lição e não aplicou.",
+          "resumo": "descobriu que a subsidiária esquecida era a melhor do grupo",
+          "efeitos": { "empresa.tracao": 2 }
+        },
+        "fracasso": {
+          "texto": "Era fachada de um diretor antigo. Multa, manchete e um processo que vai durar mais que todos os envolvidos.",
+          "resumo": "achou uma fraude numa subsidiária esquecida",
+          "efeitos": { "empresaFator": 0.97, "eu.popularidade": -3 }
+        }
+      },
+      {
+        "texto": "Deixar quieta",
+        "resumo": "deixou quieta uma subsidiária esquecida",
+        "resultado": {
+          "texto": "Se ninguém lembrava, não devia fazer falta. A bagunça que não atrapalha também cresce.",
+          "efeitos": { "empresa.tracao": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "oferta_pela_subsidiaria",
+    "idade": [25, 95],
+    "condicoes": { "empresa.subsidiarias": { "min": 1 }, "empresa.valor": { "min": 5000000 } },
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 10,
+    "texto": "Um fundo [estrangeiro|de pensão do Canadá|de um banco que patrocina até novela] quer comprar uma subsidiária d{empresa:o|a} {empresa}, a que menos dá trabalho, por bem mais do que ela vale no balanço.",
+    "resumo": "recebeu uma oferta por uma subsidiária",
+    "escolhas": [
+      {
+        "texto": "Vender",
+        "resumo": "vendeu uma subsidiária por um preço acima do balanço",
+        "resultado": {
+          "texto": "Saiu por {venda}. A diretoria comemorou; os funcionários de lá ganharam um logo novo e um chefe que fala inglês nas reuniões.",
+          "efeitos": { "venderSubsidiarias": { "quantas": 1, "premio": 1.5 }, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou vender uma subsidiária",
+        "resultado": {
+          "texto": "Você disse que nada no grupo está à venda. O fundo comprou a concorrente e mandou um cartão de Natal.",
+          "efeitos": { "empresa.tracao": 1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "conglomerado_com_desconto",
+    "idade": [25, 95],
+    "condicoes": { "marcas": ["empresa.na_bolsa"], "empresa.subsidiarias": { "min": 10 } },
+    "peso": 3,
+    "texto": "Um analista de banco de [vinte e quatro|vinte e seis] anos publicou que {empresa:o|a} {empresa} vale menos que a soma das partes: \"um conglomerado sem foco\". A ação caiu; o seu almoço de domingo também.",
+    "resumo": "viu um analista chamar o próprio grupo de conglomerado sem foco",
+    "escolhas": [
+      {
+        "texto": "Vender o que não é o foco",
+        "resumo": "vendeu um terço das subsidiárias para agradar o mercado",
+        "resultado": {
+          "texto": "O mercado aplaudiu: {empresa:o|a} {empresa} ficou menor, mais rápida e {venda} mais rica. O analista virou palestrante.",
+          "efeitos": { "venderSubsidiarias": { "fracao": 0.3, "premio": 1.1 }, "empresa.tracao": 2 }
+        }
+      },
+      {
+        "texto": "Ignorar o analista",
+        "resumo": "ignorou o analista que pedia para desmontar o grupo",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Em dois anos, o analista mudou de banco e de opinião. A ação voltou antes dele.",
+          "resumo": "ignorou o mercado e o mercado voltou",
+          "efeitos": { "empresa.tracao": 1, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "O mercado concordou com ele por mais tempo do que você aguentou ler.",
+          "resumo": "ignorou o mercado e o mercado não esqueceu",
+          "efeitos": { "empresaFator": 0.92, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ligar para o banco dele",
+        "resumo": "ligou para o banco de um analista que falou mal do grupo",
+        "teste": { "atributo": "influencia", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "O relatório ganhou uma revisão \"técnica\". Ninguém acreditou, mas a ação subiu.",
+          "resumo": "fez um relatório ser revisado com um telefonema",
+          "efeitos": { "empresaFator": 1.05, "eu.popularidade": -2 }
+        },
+        "fracasso": {
+          "texto": "O telefonema virou notícia antes de você desligar. O analista ganhou seguidores; você, um apelido.",
+          "resumo": "pressionou um analista e virou notícia",
+          "efeitos": { "empresaFator": 0.95, "eu.popularidade": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "primeiro_balanco_na_bolsa",
+    "idade": [25, 95],
+    "condicoes": { "marcaHa": [{ "marca": "empresa.na_bolsa", "min": 1, "max": 2 }], "empresa.valor": true },
+    "peso": 6,
+    "texto": "O primeiro balanço d{empresa:o|a} {empresa} na bolsa: [o lucro veio 20% maior e a ação caiu 8%, porque esperavam 22|um analista que nunca viu a fábrica rebaixou a recomendação|a teleconferência teve mais perguntas sobre a sua vida pessoal do que sobre a margem].",
+    "resumo": "conheceu o humor da bolsa no primeiro balanço",
+    "escolhas": [
+      {
+        "texto": "Prometer crescimento acelerado",
+        "resumo": "prometeu ao mercado um crescimento acelerado",
+        "resultado": {
+          "texto": "A ação gostou. Agora cada trimestre é uma prova, e você estuda de madrugada.",
+          "efeitos": { "empresa.tracao": 2, "saude": -1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Falar de longo prazo",
+        "resumo": "falou de longo prazo para o mercado",
+        "resultado": {
+          "texto": "Metade dos analistas dormiu, a outra metade elogiou a governança. O conselho passou a decidir mais, e você, a dormir.",
+          "efeitos": { "empresa.dependencia": -4, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "grupo_na_capa",
+    "idade": [25, 95],
+    "condicoes": { "empresas": { "min": 3 }, "patrimonio": { "min": 100000000 } },
+    "peso": 3,
+    "texto": "Uma revista de negócios pôs o seu grupo na capa: [\"O império que ninguém viu crescer\"|\"O sobrenome que está em tudo\"|\"Três empresas, nenhuma folga\"]. Na foto, você aparece de braços cruzados, como pediram.",
+    "resumo": "foi capa de revista por causa do próprio grupo",
+    "escolhas": [
+      {
+        "texto": "Dar a entrevista",
+        "resumo": "deu entrevista para a capa de uma revista de negócios",
+        "resultado": {
+          "texto": "Você falou de trabalho duro e omitiu a sorte. A revista esgotou; os pedidos de emprego e de empréstimo também chegaram.",
+          "efeitos": { "eu.fama": 4, "eu.popularidade": 2, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Recusar a foto",
+        "resumo": "recusou a capa de uma revista de negócios",
+        "resultado": {
+          "texto": "Saiu uma foto antiga, de crachá. Quem manda de verdade não aparece, dizem; você só não gostou do ângulo.",
+          "efeitos": { "eu.influencia": 2, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fusao_de_iguais",
+    "idade": [25, 90],
+    "condicoes": { "empresa.valor": { "min": 50000000 }, "empresa.tracao": { "min": 4 } },
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 15,
+    "texto": "A maior rival d{empresa:o|a} {empresa} propôs uma fusão de iguais: [as duas marcas juntas|um nome novo que ninguém vai lembrar|a sede na cidade dela e a presidência com você]. Juntas, seriam o dobro; separadas, seguem brigando por cliente.",
+    "resumo": "recebeu uma proposta de fusão da maior rival",
+    "escolhas": [
+      {
+        "texto": "Aceitar a fusão",
+        "resumo": "fundiu a própria empresa com a maior rival",
+        "resultado": {
+          "texto": "Agora são uma só: {empresa:o|a} {empresa} dobrou de tamanho, com metade dela sua, a rival virou subsidiária e o conselho discorda de tudo em dobro.",
+          "efeitos": {
+            "rodada": { "parte": 0.5 },
+            "empresa.subsidiarias": 1,
+            "empresa.tracao": 2,
+            "empresa.dependencia": -10
+          }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou a fusão com a maior rival",
+        "resultado": {
+          "texto": "A rival foi atrás de outra concorrente. Agora são duas contra você, e você gosta de briga.",
+          "efeitos": { "empresa.tracao": -1, "felicidade": 1 }
+        }
+      }
+    ]
+  }
+]

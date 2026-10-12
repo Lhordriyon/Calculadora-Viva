@@ -505,7 +505,7 @@
     "idade": [25, 75],
     "condicoes": { "marcas": ["ator.aposentado"], "empresa.valor": true, "ator.idade": { "max": 82 } },
     "peso": 3,
-    "texto": "{ator.quem} se aposentou e está entediad{ator:o|a}. Quer \"dar uma ajuda\" na {empresa}: já tem até crachá improvisado e opinião sobre o atendimento.",
+    "texto": "{ator.quem} se aposentou e está entediad{ator:o|a}. Quer \"dar uma ajuda\" n{empresa:o|a} {empresa}: já tem até crachá improvisado e opinião sobre o atendimento.",
     "resumo": "recebeu a oferta de {ator.quem} para ajudar na empresa",
     "escolhas": [
       {
@@ -539,7 +539,7 @@
     "idade": [40, 85],
     "condicoes": { "ator.idade": { "min": 19, "max": 40 }, "empresa.valor": true, "semMarcas": ["filho_na_empresa"] },
     "peso": 3,
-    "texto": "{ator} quer trabalhar na {empresa}. Diz que é pela experiência; você desconfia que é pelo almoço de graça. Os funcionários antigos estão de olho.",
+    "texto": "{ator} quer trabalhar n{empresa:o|a} {empresa}. Diz que é pela experiência; você desconfia que é pelo almoço de graça. Os funcionários antigos estão de olho.",
     "resumo": "teve que decidir se {ator} trabalharia na empresa",
     "escolhas": [
       {
@@ -577,7 +577,7 @@
       "semMarcas": ["passou_o_comando"]
     },
     "peso": 4,
-    "texto": "Você já tem idade para passar o comando da {empresa}. {filho}, que trabalha lá há anos, espera a conversa; o conselho também.",
+    "texto": "Você já tem idade para passar o comando d{empresa:o|a} {empresa}. {filho}, que trabalha lá há anos, espera a conversa; o conselho também.",
     "resumo": "pensou em passar o comando da empresa para {filho}",
     "escolhas": [
       {

@@ -60,7 +60,7 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     expect(ler(e, 'eu', 'patrimonio')).toBeCloseTo(100000);
   });
 
-  it('recusa o que não dá: menor de idade, pouco capital, dinheiro que não existe, segunda empresa, escolha pendente', () => {
+  it('recusa o que não dá: menor de idade, pouco capital, dinheiro que não existe, escolha pendente', () => {
     const jovem = adulto();
     jovem.idade = 17;
     expect(motivoParaNaoOperar(jovem, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 })).toMatch(/18/);
@@ -69,7 +69,8 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 500000 })).toMatch(/dinheiro/);
     expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'publico', valor: 10000 })).toMatch(/ramo/);
     operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 });
-    expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 })).toMatch(/já tem/);
+    // A segunda empresa pode (o grupo vai até cinco: test/grupo.test.ts).
+    expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 })).toBeNull();
     e.pendente = { storylet: 'x', instancia: 'x', causa: 'diretor', texto: '', causas: [], opcoes: [] };
     expect(motivoParaNaoOperar(e, c, { tipo: 'aportar', valor: 1000 })).toMatch(/cartão/);
   });

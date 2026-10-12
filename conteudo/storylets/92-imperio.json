@@ -5,7 +5,7 @@
     "rotulo": "Um conselho que diz não",
     "idade": [22, 95],
     "condicoes": { "empresa.valor": { "min": 15000000 }, "semMarcas": ["empresa.conselho"] },
-    "texto": "Na {empresa}, {empresa.funcionarios} pessoas trabalham e uma opinião decide: a sua. Um conselho de gente de fora, com poder de veto, deixaria a empresa menos sua e mais difícil de afundar.",
+    "texto": "N{empresa:o|a} {empresa}, {empresa.funcionarios} pessoas trabalham e uma opinião decide: a sua. Um conselho de gente de fora, com poder de veto, deixaria a empresa menos sua e mais difícil de afundar.",
     "resumo": "montou um conselho na própria empresa",
     "escolhas": [
       {
@@ -42,7 +42,7 @@
     "rotulo": "Um mural de problemas",
     "idade": [22, 95],
     "condicoes": { "empresa.valor": { "min": 30000000 }, "semMarcas": ["empresa.mural"] },
-    "texto": "Toda área da {empresa} tem um problema que ninguém resolve. A ideia: pôr todos num mural, com prêmio, e deixar qualquer uma das {empresa.funcionarios} pessoas tentar. Os diretores adoram, desde que o problema não seja o deles.",
+    "texto": "Toda área d{empresa:o|a} {empresa} tem um problema que ninguém resolve. A ideia: pôr todos num mural, com prêmio, e deixar qualquer uma das {empresa.funcionarios} pessoas tentar. Os diretores adoram, desde que o problema não seja o deles.",
     "resumo": "abriu os problemas da empresa para qualquer um resolver",
     "escolhas": [
       {
@@ -79,7 +79,7 @@
       "empresa.dependencia": { "max": 50 },
       "semMarcas": ["passou_o_comando"]
     },
-    "texto": "Escrever tudo o que só você sabe, passar a caneta e ver se a {empresa} anda sem você. Se andar, você fica dispensável: o maior elogio para quem manda, e o mais difícil de ouvir.",
+    "texto": "Escrever tudo o que só você sabe, passar a caneta e ver se {empresa:o|a} {empresa} anda sem você. Se andar, você fica dispensável: o maior elogio para quem manda, e o mais difícil de ouvir.",
     "resumo": "tentou se tornar dispensável na própria empresa",
     "escolhas": [
       {
@@ -117,7 +117,7 @@
     "idade": [22, 95],
     "intervalo": 12,
     "condicoes": { "empresa.valor": { "min": 50000000 } },
-    "texto": "Uma equipe paga para provar que metade do que a {empresa} faz não serve para nada: relatórios que ninguém lê, reuniões sobre reuniões, um departamento que ninguém sabe o que faz, nem o próprio departamento.",
+    "texto": "Uma equipe paga para provar que metade do que {empresa:o|a} {empresa} faz não serve para nada: relatórios que ninguém lê, reuniões sobre reuniões, um departamento que ninguém sabe o que faz, nem o próprio departamento.",
     "resumo": "mandou desmontar o que não servia na própria empresa",
     "escolhas": [
       {
@@ -149,7 +149,7 @@
     "rotulo": "Bancar quem quer sair",
     "idade": [22, 95],
     "condicoes": { "empresa.valor": { "min": 30000000 }, "semMarcas": ["empresa.incubadora"] },
-    "texto": "Tem gente boa na {empresa} com ideias que não cabem nela. Dá para segurar essa gente com bônus ou bancar a saída: dinheiro para começar, em troca de uma fatia do que vier.",
+    "texto": "Tem gente boa n{empresa:o|a} {empresa} com ideias que não cabem nela. Dá para segurar essa gente com bônus ou bancar a saída: dinheiro para começar, em troca de uma fatia do que vier.",
     "resumo": "decidiu o que fazer com quem queria sair da empresa",
     "escolhas": [
       {
@@ -184,7 +184,7 @@
     "id": "o_conselho_vetou",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["empresa.conselho"], "empresa.valor": true },
-    "texto": "O conselho da {empresa} vetou o seu plano de [comprar a maior rival|entrar no ramo de cassino on-line|mudar a sede para um navio]. Cinco a zero. Você nunca tinha ouvido um não tão bem fundamentado.",
+    "texto": "O conselho d{empresa:o|a} {empresa} vetou o seu plano de [comprar a maior rival|entrar no ramo de cassino on-line|mudar a sede para um navio]. Cinco a zero. Você nunca tinha ouvido um não tão bem fundamentado.",
     "resumo": "teve um plano vetado pelo conselho da própria empresa",
     "escolhas": [
       {
@@ -213,7 +213,7 @@
           "efeitos": { "empresa.tracao": 3, "eu.fama": 3 }
         },
         "fracasso": {
-          "texto": "Deu errado, e agora sem ninguém para dividir a culpa. A {empresa} perde um quinto do valor em uma semana.",
+          "texto": "Deu errado, e agora sem ninguém para dividir a culpa. {empresa:O|A} {empresa} perde um quinto do valor em uma semana.",
           "resumo": "atropelou o conselho da empresa e errou sem ninguém para dividir a culpa",
           "efeitos": { "empresaFator": 0.8, "eu.popularidade": -5 }
         }
@@ -224,7 +224,7 @@
     "id": "conselho_de_fachada",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["empresa.conselho"], "empresa.valor": true },
-    "texto": "Um jornal descobriu quem está no conselho da {empresa}: um primo, o seu personal e o seu dentista. A manchete: \"Governança em família\". O dentista pede para sair da foto.",
+    "texto": "Um jornal descobriu quem está no conselho d{empresa:o|a} {empresa}: um primo, o seu personal e o seu dentista. A manchete: \"Governança em família\". O dentista pede para sair da foto.",
     "resumo": "viu o conselho de amigos da empresa estampado no jornal",
     "escolhas": [
       {
@@ -247,7 +247,7 @@
     "id": "solucao_inesperada",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["empresa.mural"], "empresa.valor": true },
-    "texto": "O mural de problemas da {empresa} fez um ano. Tem quem jure que é a melhor coisa que já aconteceu ali, e quem jure o contrário.",
+    "texto": "O mural de problemas d{empresa:o|a} {empresa} fez um ano. Tem quem jure que é a melhor coisa que já aconteceu ali, e quem jure o contrário.",
     "resumo": "viu o mural de problemas da empresa fazer um ano",
     "teste": { "chance": 0.65 },
     "sucesso": {
@@ -265,7 +265,7 @@
     "id": "o_mural_do_boton",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["empresa.mural"], "empresa.valor": true },
-    "texto": "O mural de problemas da {empresa}, com prêmio em bóton, fez um ano.",
+    "texto": "O mural de problemas d{empresa:o|a} {empresa}, com prêmio em bóton, fez um ano.",
     "resumo": "viu o mural de problemas com prêmio em bóton fazer um ano",
     "teste": { "chance": 0.3 },
     "sucesso": {
@@ -283,16 +283,16 @@
     "id": "a_empresa_sem_voce",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["dispensavel", "passou_o_comando"], "empresa.valor": true },
-    "texto": "Faz dois anos que você não manda na {empresa}. Às vezes você passa na frente da sede, de carro, devagar.",
+    "texto": "Faz dois anos que você não manda n{empresa:o|a} {empresa}. Às vezes você passa na frente da sede, de carro, devagar.",
     "resumo": "viu a própria empresa andar dois anos sem você",
     "teste": { "atributo": "empresa.tracao", "dificuldade": 0 },
     "sucesso": {
-      "texto": "A {empresa} bateu recorde no ano em que você só apareceu na festa de fim de ano. Ninguém sentiu a sua falta, e era exatamente esse o plano.",
+      "texto": "{empresa:O|A} {empresa} bateu recorde no ano em que você só apareceu na festa de fim de ano. Ninguém sentiu a sua falta, e era exatamente esse o plano.",
       "resumo": "viu a própria empresa bater recorde sem precisar de você",
       "efeitos": { "felicidade": 6, "empresaFator": 1.05 }
     },
     "fracasso": {
-      "texto": "A {empresa} perdeu o rumo sem você. Os diretores mandam um e-mail com o assunto \"Volta?\", sem ponto de exclamação, o que é pior.",
+      "texto": "{empresa:O|A} {empresa} perdeu o rumo sem você. Os diretores mandam um e-mail com o assunto \"Volta?\", sem ponto de exclamação, o que é pior.",
       "resumo": "viu a própria empresa se perder sem você",
       "efeitos": {
         "empresa.dependencia": 25,
@@ -306,7 +306,7 @@
     "id": "presidente_pediu_as_contas",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["passou_o_comando"], "empresa.valor": true },
-    "texto": "A presidente que você pôs na {empresa} pediu demissão. Na carta, uma frase sublinhada duas vezes: \"Ou eu mando, ou você manda.\"",
+    "texto": "A presidente que você pôs n{empresa:o|a} {empresa} pediu demissão. Na carta, uma frase sublinhada duas vezes: \"Ou eu mando, ou você manda.\"",
     "resumo": "perdeu a presidente da empresa por ligar demais",
     "escolhas": [
       {
@@ -332,7 +332,7 @@
     "id": "acampamento_na_porta",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["demitiu_em_massa"], "empresa.valor": true },
-    "texto": "Os demitidos da {empresa} acamparam na porta da sede, com faixa, carro de som e uma marchinha com o seu nome que, convenhamos, é boa.",
+    "texto": "Os demitidos d{empresa:o|a} {empresa} acamparam na porta da sede, com faixa, carro de som e uma marchinha com o seu nome que, convenhamos, é boa.",
     "resumo": "teve os demitidos da empresa acampados na porta",
     "escolhas": [
       {
@@ -348,7 +348,7 @@
         "resumo": "chamou a polícia para os demitidos da própria empresa",
         "efeitos": { "eu.popularidade": -8, "eu.fama": 5 },
         "resultado": {
-          "texto": "A foto do camburão na porta da {empresa} roda o país. A marchinha ganha uma segunda estrofe."
+          "texto": "A foto do camburão na porta d{empresa:o|a} {empresa} roda o país. A marchinha ganha uma segunda estrofe."
         }
       }
     ]
@@ -361,12 +361,12 @@
     "resumo": "viu no que deram os ex-funcionários que bancou",
     "teste": { "atributo": "inteligencia", "dificuldade": 55 },
     "sucesso": {
-      "texto": "Virou fornecedora da {empresa}, e das boas. A sua fatia já vale dez vezes o cheque.",
+      "texto": "Virou fornecedora d{empresa:o|a} {empresa}, e das boas. A sua fatia já vale dez vezes o cheque.",
       "resumo": "viu a startup de ex-funcionários que bancou virar fornecedora",
       "efeitos": { "dinheiro": 30000000, "empresa.tracao": 1.5 }
     },
     "fracasso": {
-      "texto": "Virou concorrente. Levou vinte pessoas da {empresa} e o seu melhor cliente. Pelo menos mandou convite para a inauguração.",
+      "texto": "Virou concorrente. Levou vinte pessoas d{empresa:o|a} {empresa} e o seu melhor cliente. Pelo menos mandou convite para a inauguração.",
       "resumo": "bancou ex-funcionários que viraram concorrentes",
       "efeitos": { "empresa.tracao": -2, "empresaFator": 0.97 }
     }
@@ -375,7 +375,7 @@
     "id": "ferias_do_dono",
     "idade": [25, 85],
     "condicoes": { "empresa.dependencia": { "min": 70 }, "empresa.valor": { "min": 300000 } },
-    "texto": "Primeira semana de férias em [quatro|seis|nove] anos. No terceiro dia, a {empresa} parou: ninguém sabia se podia assinar nada sem você.",
+    "texto": "Primeira semana de férias em [quatro|seis|nove] anos. No terceiro dia, {empresa:o|a} {empresa} parou: ninguém sabia se podia assinar nada sem você.",
     "resumo": "viu a própria empresa parar nas suas férias",
     "escolhas": [
       {
@@ -391,12 +391,12 @@
         "resumo": "deixou a empresa se virar nas suas férias",
         "teste": { "chance": 0.5 },
         "sucesso": {
-          "texto": "Na segunda semana, alguém assinou. Depois outro. Quando você volta, a {empresa} aprendeu a andar um pouco sozinha, e você aprendeu a nadar.",
+          "texto": "Na segunda semana, alguém assinou. Depois outro. Quando você volta, {empresa:o|a} {empresa} aprendeu a andar um pouco sozinha, e você aprendeu a nadar.",
           "resumo": "deixou a empresa se virar nas férias, e ela aprendeu",
           "efeitos": { "empresa.dependencia": -12, "felicidade": 3 }
         },
         "fracasso": {
-          "texto": "Um contrato grande venceu na sua caixa de entrada. A {empresa} perdeu o cliente; você ganhou um bronzeado.",
+          "texto": "Um contrato grande venceu na sua caixa de entrada. {empresa:O|A} {empresa} perdeu o cliente; você ganhou um bronzeado.",
           "resumo": "perdeu um cliente grande da empresa por tirar férias",
           "efeitos": { "empresaFator": 0.96, "empresa.dependencia": -6, "felicidade": 1 }
         }
@@ -407,7 +407,7 @@
     "id": "carta_branca",
     "idade": [25, 85],
     "condicoes": { "empresa.dependencia": { "min": 45 }, "empresa.valor": { "min": 20000000 } },
-    "texto": "Quem dirige a maior área da {empresa} pediu carta branca: orçamento próprio, equipe própria e você longe das reuniões dela.",
+    "texto": "Quem dirige a maior área d{empresa:o|a} {empresa} pediu carta branca: orçamento próprio, equipe própria e você longe das reuniões dela.",
     "resumo": "recebeu um pedido de carta branca dentro da própria empresa",
     "escolhas": [
       {
@@ -440,7 +440,7 @@
     "id": "tudo_pela_sua_mesa",
     "idade": [35, 90],
     "condicoes": { "empresa.dependencia": { "min": 85 }, "empresa.valor": { "min": 5000000 } },
-    "texto": "Na {empresa}, tudo passa pela sua mesa: a compra de clipes, a cor do logotipo, o nome do cachorro da recepção. O médico pediu um exame, e a sua agenda não tem espaço até março.",
+    "texto": "N{empresa:o|a} {empresa}, tudo passa pela sua mesa: a compra de clipes, a cor do logotipo, o nome do cachorro da recepção. O médico pediu um exame, e a sua agenda não tem espaço até março.",
     "resumo": "percebeu que tudo na própria empresa passava pela sua mesa",
     "escolhas": [
       {
@@ -465,7 +465,7 @@
     "id": "quem_manda_se_voce_faltar",
     "idade": [55, 95],
     "condicoes": { "empresa.dependencia": { "min": 60 }, "empresa.valor": { "min": 50000000 } },
-    "texto": "Um investidor faz a pergunta que ninguém faz: \"Se você morrer amanhã, quem manda na {empresa}?\" O silêncio na sala responde por todo mundo.",
+    "texto": "Um investidor faz a pergunta que ninguém faz: \"Se você morrer amanhã, quem manda n{empresa:o|a} {empresa}?\" O silêncio na sala responde por todo mundo.",
     "resumo": "ouviu de um investidor que ninguém mandaria na empresa sem você",
     "escolhas": [
       {
@@ -488,7 +488,7 @@
     "id": "a_empresa_anda_sozinha",
     "idade": [25, 99],
     "condicoes": { "empresa.dependencia": { "max": 25 }, "empresa.valor": { "min": 5000000 } },
-    "texto": "A {empresa} atravessou uma crise inteira, com recall, CPI e tudo, sem te ligar nenhuma vez. Você soube pelo jornal, e sorriu.",
+    "texto": "{empresa:O|A} {empresa} atravessou uma crise inteira, com recall, CPI e tudo, sem te ligar nenhuma vez. Você soube pelo jornal, e sorriu.",
     "resumo": "viu a própria empresa atravessar uma crise sem precisar de você",
     "efeitos": { "felicidade": 4, "empresa.tracao": 1 }
   }

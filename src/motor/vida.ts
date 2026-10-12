@@ -175,7 +175,7 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
 
   const mercado = mercadoDoAno(e, c, fase.id, regAno);
   const ano = economiaDoAno(e, regAno, bolsoDoPais(e, c), mercado);
-  regraDaEmpresa(e, c, fase, regAno);
+  regraDaEmpresa(e, c, fase, regAno, mercado);
   regraDosBens(e, c, regAno);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {

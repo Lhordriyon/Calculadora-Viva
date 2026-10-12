@@ -324,7 +324,7 @@
     "idade": [55, 95],
     "condicoes": { "empresa.valor": { "min": 50000000 }, "semMarcas": ["passou_o_comando"] },
     "peso": 3,
-    "texto": "O conselho da {empresa} sugere, com toda a delicadeza de um conselho, que talvez seja hora de um presidente de mercado. Você nunca ouviu a palavra \"talvez\" tão alta.",
+    "texto": "O conselho d{empresa:o|a} {empresa} sugere, com toda a delicadeza de um conselho, que talvez seja hora de um presidente de mercado. Você nunca ouviu a palavra \"talvez\" tão alta.",
     "resumo": "ouviu do conselho que era hora de passar a presidência",
     "escolhas": [
       {

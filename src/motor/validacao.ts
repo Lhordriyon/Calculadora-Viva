@@ -120,6 +120,14 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
     out.push({ caminho: 'eu.renda', sistema: 'dinheiro' }, ...['empreendedor', 'socio', 'herdeiro_negocio'].map((q) => ({ caminho: `eu.${q}`, sistema: 'historia' as Sistema })));
   }
+  if (ef.venderSubsidiarias) {
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.subsidiarias', sistema: 'poder' });
+  }
+  if (ef.abrirCapital) {
+    // A estreia vende um pedaço da parte de quem joga e tira um pouco da empresa da mesa dele.
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
+    out.push({ caminho: 'empresa.dependencia', sistema: 'poder' }, { caminho: 'empresa.na_bolsa', sistema: 'historia' });
+  }
   if (ef.custo !== undefined || ef.custoFator !== undefined || ef.custoDoPatrimonio !== undefined) out.push({ caminho: 'eu.custo', sistema: 'dinheiro' });
   for (const chave of Object.keys(ef)) {
     if (!chave.includes('.')) continue;
@@ -490,7 +498,7 @@ function verificarTextos(
   // Valores calculados pelos efeitos da empresa: com quanto ela abriu, quanto a rodada pôs, por quanto vendeu, o que sobrou.
   if (blocos.some((b) => b.efeitos.abrirEmpresa)) extras.add('capital');
   if (blocos.some((b) => b.efeitos.rodada)) extras.add('rodada');
-  if (blocos.some((b) => b.efeitos.venderEmpresa)) extras.add('venda');
+  if (blocos.some((b) => b.efeitos.venderEmpresa || b.efeitos.venderSubsidiarias || b.efeitos.abrirCapital)) extras.add('venda');
   if (blocos.some((b) => b.efeitos.fecharEmpresa)) extras.add('sobra');
   const exigidasStorylet = new Set(qualidadesGarantidas(s.condicoes));
   const usados = new Set<string>();
