@@ -457,6 +457,54 @@ O dono pediu um mundo inteiro vivo e integrado, com política, diplomacia e esta
 - O bilionário feito subiu de 0,89% para 1,41% de quem nasce sem fortuna (portão: até 1%). Fora do túnel, com as mesmas 2.000 vidas de origem até a classe média e as quatro estratégias, o motor antigo fez 1,30% e o novo 1,10%. A alta vem da composição da amostra do túnel, não do país (só 1 dos bilionários do comparativo tinha a empresa como metade do patrimônio). Não mexi.
 - CPU por vida: 64 ms no túnel desta sessão (portão antigo: 30 ms, que já não passava). A máquina ficou mais lenta depois de um reinício: o motor antigo, que media 41 ms no túnel do incremento 7, mede 61 ms nela. No mesmo hardware e em sequência, o motor novo gasta 67 ms, 10% a mais, porque o país roda todo ano.
 
+## Incremento 9: o grupo de empresas (pedido do dono em 11/10)
+
+O dono escreveu: "Eu só posso ter uma empresa, poderia ter uma empresa mãe, poderia ter subsidiárias, posso ter mais de uma empresa mãe, centenas de subsidiárias, possibilidade de fundi-las". O roteiro juntou a isso vender ou abrir o capital de cada uma.
+
+**O que mudou:**
+- **Até cinco empresas de uma vez.** Cada uma é uma entidade como as outras: `empresa` é a que quem joga cuida de perto, e `empresa2` a `empresa5` são as outras. A seção Empresa da folha Dinheiro vira a árvore do grupo: uma linha por empresa (ramo, valor, a sua parte, as subsidiárias, se está na bolsa); tocar numa abre os números e o que dá para fazer com ela.
+- **A empresa de que a história fala.** Os eventos, as jogadas de quem manda e o "Trabalhar" do ano vão para a que quem joga cuida de perto. Trocar é decisão dele ("Cuidar desta de perto"). Se ela é vendida, fecha ou é absorvida, a maior das outras toma o lugar, no fim da entrada, para o texto ainda falar da que saiu.
+- **Subsidiárias.** A concorrente comprada vira subsidiária, com as subsidiárias dela: nenhuma até uns R$ 4 milhões, 8 numa de R$ 300 milhões, 27 numa de R$ 3 bilhões. Elas ficam dentro do valor (cada uma vale valor ÷ (subsidiárias + 2)); vender algumas dá dinheiro sem largar a empresa: uma até dez, depois um décimo delas, pelo preço da fase do país.
+- **Fundir.** Uma empresa de quem joga absorve outra, que vira subsidiária dela. Os valores se somam com o corte de custos no mesmo ramo (+8%) ou o desconto de conglomerado em ramos diferentes (−2%), com sorte (± 8%). A parte de quem joga, a dependência e a tração viram a média pelo valor. No mesmo ramo, a fusão conta como uma compra para o truste. Em ramos diferentes, a empresa vira o "Grupo {sobrenome}". O sustento de quem joga passa para a que fica.
+- **Abrir o capital de cada uma**, a partir de R$ 100 milhões, fora da recessão e da crise:
+  - a empresa passa a valer 20% mais (tem preço todo dia);
+  - quem joga vende 20% da parte dele na estreia, pelo preço da fase;
+  - a dependência cai 15 (conselho, auditoria, balanço público);
+  - depois, o valor anda também com o humor do mercado (0,6 × o que as ações renderam além do esperado para a fase), e quem compra não desconta a dependência.
+
+  O evento "abrir capital" usa a mesma mecânica (um efeito, `abrirCapital`).
+- **A mesa de quem manda.** O talento de quem joga se divide entre as empresas na medida em que elas dependem dele: duas empresas a 80% somam 160%, e cada uma recebe o talento ÷ 1,6. Delegar libera a mesa. Se uma das outras afunda, ela vem para a mesa de quem joga (troca de lugar com a que ele cuidava) e a quebra é dela, com a fundação dela como causa.
+- **O grupo na vida:** o patrimônio, a classe e a herança contam todas as empresas (o grupo passa inteiro ao herdeiro, e o que a conta não paga da partilha sai de cada uma na mesma proporção); na morte de quem manda, cada empresa sente a falta na medida da dependência; o conglomerado (20 subsidiárias ou mais) dá influência.
+- **Conteúdo:** 8 eventos do grupo (`92-grupo.json`: duas empresas numa agenda, o choque de culturas depois da fusão, a subsidiária esquecida, a oferta por uma subsidiária, o conglomerado que o mercado desconta, o primeiro balanço na bolsa, a capa da revista, a fusão de iguais), 6 linhas curtas, e o órgão de concorrência pode mandar vender subsidiárias.
+- **O nome da empresa concorda com o artigo** em todo texto: "o Instituto Silva", "da Clínica Silva", "no Grupo Silva". As 83 ocorrências de "a {empresa}" no conteúdo viraram `{empresa:o|a} {empresa}`; o gênero sai do nome, e o save antigo ganha o dele ao abrir.
+
+**Decisões tomadas sozinho:**
+- **Subsidiária é um número, não uma entidade.** Centenas de entidades seriam uma tela de gestão e um save pesado; o pedido era poder ter centenas e juntar, e isso cabe num campo (`empresa.subsidiarias`) lido pela venda, pela influência e pelo conteúdo.
+- **Cinco empresas no máximo**, porque a árvore precisa caber no celular. Para abrir a sexta, venda ou junte duas.
+- **O conteúdo fala só da que quem joga cuida de perto.** Assim, os 60 storylets da empresa continuam valendo sem reescrever, e escolher qual cuidar é uma decisão com custo (as outras andam com a diretoria).
+- **A mesa de quem manda é o custo do grupo.** Sem ela, ter cinco empresas era só somar. Com ela, quem tem talento perde 1,35 ponto de tração por empresa, em média, nos anos em que várias dependem dele (portão abaixo).
+- **A holding familiar (instrumento de herança) ficou para depois** (`docs/roteiro.md`): ela mexe na herança e no imposto, e merece um incremento próprio.
+- **Os robôs:** a arriscada compra concorrentes quando o dinheiro dá, abre o capital na economia aquecida e abre uma segunda empresa quando a primeira passa de R$ 20 milhões. A primeira versão abria até três e fundia a menor todo ano, num vai e vem que gastava o dinheiro dela. A aleatória faz um pouco de tudo, raramente; a cautelosa vende o grupo aos 65.
+- **Fusão sem prêmio garantido:** no mesmo ramo, ganha 8% em média; em ramos diferentes, perde 2%. Há sorte nos dois casos: fusão boa existe, e ruim também.
+- **A troca de lugar espera o texto.** Quando um evento vende ou fecha a empresa que quem joga cuida, a maior das outras só toma o lugar no fim da entrada: o texto ("a rede comprou a {empresa}") ainda fala da que saiu. Na primeira versão, a troca acontecia no meio do efeito e o texto falava da empresa errada (há teste).
+- **O gênero do nome sai da primeira palavra** ("Instituto", "Banco", "Grupo" são "o"; "Clínica", "Fazenda" são "a"); com o sobrenome ou o nome de quem joga na frente, é "a" empresa ("a Silva Tech"). O conteúdo já dizia "a Instituto Silva" antes; o grupo, que cria o "Grupo Silva", deixaria o erro em toda parte. Save antigo: a empresa ganha o gênero do nome ao abrir; sem gênero, o texto usa "a".
+
+**Portões (10.000 vidas):**
+- o grupo existe: 15,1% das 7.050 vidas com empresa chegaram a ter duas ou mais de uma vez (portão: 10%);
+- fundir e abrir o capital acontecem: 3,5% fundiram e 5,4% abriram o capital (portão: 2% cada);
+- centenas de subsidiárias são possíveis: no laboratório, um grupo de R$ 10 bilhões que compra uma concorrente por ano passa de 100 em 4 anos (portão: 10); nas vidas jogadas, o maior grupo chegou a 2.316 subsidiárias, e o p99 de quem tem empresa é 320;
+- a mesa pesa: nos anos em que várias empresas dependem de quem tem talento, cada uma perde 1,35 ponto de tração (28.246 empresas-ano; portão: 0,5);
+- na bolsa, o valor anda com o mercado: correlação de 0,35 entre o crescimento e o humor da bolsa nas listadas, contra 0,00 nas fechadas (portão: 0,2 a mais);
+- zero storylets mortos, nenhuma estratégia dominante. Os 8 eventos novos aparecem; os que pedem bolsa, muitas subsidiárias ou três empresas são raros, de propósito.
+
+**O que não mudou ou piorou:**
+- Continuam abaixo dos portões antigos:
+  - a herança entre gerações: Spearman 0,82, contra 0,81 (portão: até 0,8). O grupo passa inteiro ao herdeiro;
+  - as assinaturas: 904 por 1.000 vidas, contra 906 (portão: 918);
+  - o bilionário feito: 1,34% de quem nasce sem fortuna, contra 1,41% (portão: até 1%).
+- CPU por vida: 66,8 ms no túnel, contra 64,2. No mesmo hardware e em sequência, o motor antigo gasta 79,5 ms de CPU por vida e o novo, 80,6 (+1%). A diferença do túnel é ruído da máquina.
+- Melhorou de carona: o rico que termina pobre foi de 4,5% para 4,9%, e a saturação V5 de 59,8% para 59,4%.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
