@@ -9,8 +9,32 @@ Gerado por `npm run tunel`. Não edite à mão: rode o túnel e faça commit do 
 | Meta | Situação | Detalhe |
 |---|---|---|
 | Zero storylets mortos | ✅ | 0 mortos |
+| Todo real tem contraparte: as contas fecham em toda entrada (fatia 1.1) | ✅ | 0 problemas em 3838873 entradas |
 | Nenhum storylet não-repetível repetido na mesma vida | ✅ | 0 repetições |
 | Nenhuma estratégia fixa domina | ✅ | nenhuma domina |
+
+## O dinheiro de uma vida, por contraparte (fatia 1.1)
+
+De quem veio e para quem foi o dinheiro de quem joga na vida inteira, pelo extrato do livro: a mediana entre as vidas que tiveram o fluxo (positivo entrou). Os 16 fluxos mais comuns.
+
+| Fluxo | Contraparte | Vidas com ele | Mediana por vida |
+|---|---|---|---|
+| Ações do ano | o mercado | 99,9% | R$ 81 mil |
+| Acontecimentos | o mercado | 99,9% | -R$ 23 mil |
+| Inflação no dinheiro parado | os preços | 99,9% | -R$ 537 mil |
+| Custo de vida | o mercado | 99,9% | -R$ 638 mil |
+| Padrão de vida | o mercado | 99,8% | -R$ 5,9 milhões |
+| Bico | o mercado | 99,4% | R$ 45 mil |
+| Salário | o mercado | 97,7% | R$ 4 milhões |
+| Juro da renda fixa | o governo | 95,3% | R$ 224 mil |
+| Cotação dos investimentos | os preços | 92,2% | R$ 1,7 milhão |
+| Imposto | o governo | 85,1% | -R$ 68 mil |
+| Imposto mais baixo | o governo | 82,1% | R$ 65 mil |
+| Auxílio | o governo | 81,4% | R$ 16 mil |
+| Juros da dívida | o banco | 79,0% | -R$ 1,7 mil |
+| Compras e vendas | o mercado | 73,6% | -R$ 1,7 milhão |
+| Manutenção dos bens | o mercado | 73,6% | -R$ 488 mil |
+| Gastos da velhice | o mercado | 61,7% | -R$ 1,8 milhão |
 
 ## Portões do incremento 1
 
@@ -31,7 +55,7 @@ Gerado por `npm run tunel`. Não edite à mão: rode o túnel e faça commit do 
 | Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7) | ✅ | 0,31 |
 | Saturação V20 ≤ 95% | ✅ | 90,8% (base 95,9%) |
 | Assinaturas sem regressão | ✅ | 903 (base 893) |
-| CPU por vida ≤ 30 ms | ❌ | 88,49 ms (base 14,5 ms) |
+| CPU por vida ≤ 30 ms | ❌ | 46,35 ms (base 14,5 ms) |
 
 ## Portões do incremento 3
 
@@ -48,7 +72,7 @@ Gerado por `npm run tunel`. Não edite à mão: rode o túnel e faça commit do 
 | Saturação V20 sem regressão (≤ 95%) | ✅ | 90,8% |
 | Assinaturas sem regressão (≥ 918) | ❌ | 903 |
 | Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques) | ✅ | 453,3 |
-| CPU por vida ≤ 30 ms | ❌ | 88,49 ms |
+| CPU por vida ≤ 30 ms | ❌ | 46,35 ms |
 
 ## Portões do incremento 5 (brincar de deus)
 
@@ -153,7 +177,7 @@ Gerado por `npm run tunel`. Não edite à mão: rode o túnel e faça commit do 
 | Vidas com patrimônio negativo ao morrer | 0,6% |
 | Mudanças de estado causadas pelo jogador | 44,7% |
 | Toques por vida | 453,3 |
-| Tempo de CPU por vida | 88,49 ms |
+| Tempo de CPU por vida | 46,35 ms |
 | Ações (fichas usadas) por vida | 159,7 |
 | Mortes na família por vida | 3,8 |
 | Pontos de virada que vêm do mundo (não do jogador) | 9,6% |
