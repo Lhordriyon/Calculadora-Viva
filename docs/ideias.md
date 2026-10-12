@@ -45,7 +45,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 
 | Id | Ideia | Fase | Prioridade | Estado |
 |---|---|---|---|---|
-| I-01 | Contas com contrapartida e o extrato do ano | 1 | Alta | próxima (fatia 1.1) |
+| I-01 | Contas com contrapartida e o extrato do ano | 1 | Alta | feita (fatia 1.1) |
 | I-02 | Dívida e financiamento como contrato | 1 | Alta | proposta |
 | I-03 | O ano em etapas declaradas | 1 | Alta | proposta |
 | I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | proposta |
@@ -132,7 +132,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
   - `docs/metricas.md` igual ao de antes, fora as linhas novas;
   - o extrato na folha Dinheiro.
 - **Prioridade:** Alta · Fase 1 (fatia 1.1).
-- **Estado:** próxima.
+- **Estado:** feita (fatia 1.1, 12/10). O livro guarda a contraparte (`Mudanca.p`); `contas.ts` confere e faz o extrato. O túnel conta 0 problemas, e as métricas das vidas saíram iguais.
 
 ### I-02 · Dívida e financiamento como contrato
 - **Problema:**

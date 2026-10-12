@@ -23,7 +23,7 @@ A Fase 0 entregou três documentos:
 Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra primeiro no registro.
 
 - [x] Fase 0: auditoria, arquitetura e registro de ideias
-- [ ] Fatia 1.1: toda transferência tem dois lados (contas com contrapartida e o extrato do ano)
+- [x] Fatia 1.1: toda transferência tem dois lados. Toda mudança de dinheiro diz de quem veio ou para quem foi (o mercado, o governo, o banco, os parentes, outra pessoa, ou o preço que mudou). As contas fecham entrada por entrada, e o túnel trava o contrário. A folha Dinheiro ganhou o extrato do ano e o da vida. Nenhuma vida mudou: as métricas saíram iguais
 - [ ] Fatia 1.2: dívida e financiamento como contrato
 - [ ] Fatia 1.3: o ano em etapas declaradas e o livro compacto
 - [ ] Fatia 1.4: identidade de pessoas

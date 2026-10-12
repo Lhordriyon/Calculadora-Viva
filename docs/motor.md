@@ -75,6 +75,47 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 Elegível = idade na faixa, ator possível (vivo, salvo storylets sobre quem morreu), condições atendidas e, se não for repetível, nunca visto nesta vida (repetível: respeita o intervalo).
 
+## Contas e contrapartes (`contas.ts`, fatia 1.1 do universo de bolso)
+
+Toda mudança de dinheiro no livro diz a contraparte (`Mudanca.p`): de quem veio ou para quem foi. As mudanças de dinheiro são as que mexem no dinheiro, nas cinco classes investidas ou na dívida de uma pessoa. A contraparte pode ser:
+- uma entidade da vida: a mãe, a empresa, um bem;
+- uma conta de fora (`CONTAS_DE_FORA`):
+  - `mercado`: o setor privado, que paga salário, vende, aluga e compra;
+  - `tesouro`: o governo, com imposto, auxílio, aposentadoria, salário de servidor e de cargo público, e o juro da renda fixa;
+  - `banco`: o juro da dívida, a parcela e a quitação de financiamento;
+  - `parentes`: a parte dos irmãos numa herança;
+- `reavaliacao`: preço que mudou sem dinheiro trocar de mão, como a inflação no dinheiro parado e a cotação das ações, dos fundos, do dólar e das criptomoedas.
+
+As contas de fora ainda não são estado: o saldo delas sai do livro. Viram entidades com balanço quando passarem a decidir alguma coisa (Fase 4 de `docs/arquitetura.md`).
+
+**O que muda nas funções do livro e da economia:**
+- **`anotar` e `somar`** recebem a contraparte. **`somarRepartido`** soma um total de uma vez e anota as partes, cada uma com a sua contraparte (a herança que vai para quem joga e para os irmãos).
+- **`movimentar`** pede `contraparte` (para o dinheiro) ou `fluxos` (o dinheiro repartido por contraparte). A dívida nova é com o banco, salvo `contraparteDaDivida`.
+- **`tirarDeQuemJoga`** pede quem recebe.
+- **`economiaDoAno`** faz a mesma conta de antes, mas anota fluxo por fluxo:
+  - salário ou aposentadoria;
+  - imposto;
+  - bico do piso;
+  - auxílio;
+  - consumo;
+  - padrão de vida;
+  - gastos da velhice;
+  - juros da dívida;
+  - juro da renda fixa;
+  - inflação;
+  - cotação.
+- **`anotarCaixa`** anota os fluxos e, sem contraparte, o resto de cada campo: a conversão dentro da mesma pessoa (aplicar, resgatar, pagar dívida com dinheiro), que soma zero.
+
+**Conferência (`conferirContas`), entrada por entrada:**
+- toda contraparte é conhecida;
+- para cada pessoa, o que não tem contraparte soma zero;
+- dinheiro entre duas pessoas aparece nos dois lados.
+Ficam de fora a troca de quem ocupa um papel (`saida`, `nascimento`) e os campos que não são caixa. A dívida do país, por exemplo, é um percentual do PIB.
+
+O túnel trava o CI se houver um problema sequer. O teste `test/contas.test.ts` confere vidas sorteadas, pobres, de fortuna, de linhagem e de herdeiro, e prova que a conferência acusa dinheiro sem contraparte e transferência que não volta.
+
+**Extrato (`extrato`, `saldosComOMundo`):** o que entrou e saiu do patrimônio financeiro de quem joga, por fluxo e contraparte, num ano ou na vida inteira; a reavaliação vai à parte. A folha Dinheiro mostra o extrato do ano e o da vida. Save antigo não tem a contraparte nas entradas velhas, e o extrato mostra só o que veio depois.
+
 ## As fichas do ano (`acoes.ts`)
 
 Criança faz uma coisa por ano; adolescente, duas; adulto, três; depois dos 65, duas (`regras.ts › fichasDoAno`). Seis verbos (estudar, trabalhar extra, cuidar da saúde, ver a família, sair, poupar); tocar num verbo abre **todas as ações possíveis dele agora**, da que mais combina com o estado (mais cláusulas, mais peso, menos repetida) para a que menos combina, e o jogador escolhe. Com uma ação só, o toque já age. A mesma ação não se repete no mesmo ano. Quando as fichas acabam, o ano passa.

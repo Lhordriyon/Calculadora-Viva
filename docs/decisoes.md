@@ -579,6 +579,65 @@ O roteiro dizia: "Países fictícios com estatísticas próprias; comércio, câ
 - Melhorou de carona: o porquê à vista foi de 25,9% para 29,8% dos acontecimentos (as notícias de fora explicam viradas daqui), a saturação V5 de 59,4% para 58,0%, e o mundo nos pontos de virada de 9,1% para 9,6%.
 - Um storylet antigo morreu com o sorteio novo e voltou: `construtora_quebrou` só acontecia se o país estivesse em crise exatamente três anos depois da compra na planta (as chaves chegavam antes na recessão). Agora a recessão também para a obra, e toda compra na planta termina numa das duas histórias.
 
+## Universo de bolso: Fase 0 e a fatia 1.1, toda transferência tem dois lados (12/10)
+
+O dono mandou a missão "Universo de bolso" e pediu: "audite o projeto antes de modificar qualquer código". Depois da auditoria, pediu: "Lance uma atualização nova".
+
+### Fase 0
+
+- `docs/auditoria-universo.md`: o inventário de cada área, a linha de base e os defeitos achados.
+- `docs/arquitetura.md`: os 13 módulos, os contratos, os conflitos com os requisitos de hoje, as fases e a primeira fatia.
+- `docs/ideias.md`: o registro permanente de ideias.
+
+O incremento 11 ("morar lá fora") ficou como rascunho, não publicado: a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2, depois da decisão sobre países reais.
+
+### Fatia 1.1: toda transferência tem dois lados
+
+**O que mudou:**
+- **A contraparte no livro.** Toda mudança de dinheiro diz de quem veio ou para quem foi (`Mudanca.p`). Pode ser:
+  - o mercado, o governo, o banco ou os parentes;
+  - uma pessoa ou empresa da vida;
+  - a reavaliação, quando é preço que mudou sem dinheiro trocar de mão.
+- **O ano econômico, fluxo por fluxo:** salário, imposto, auxílio, bico, consumo, padrão de vida, velhice, juros da dívida, juro da renda fixa, inflação e cotação. Também dizem a contraparte:
+  - bens, empresas e campanhas;
+  - as heranças entre personagens e a família;
+  - os efeitos do conteúdo.
+- **`contas.ts`** confere as contas entrada por entrada e monta o extrato. O túnel trava o CI se uma entrada não fechar.
+- **A folha Dinheiro** mostra o extrato do ano e o da vida toda: "Salário, +R$ 240 mil, do mercado", "Imposto, −R$ 18 mil, para o governo", "Juros da dívida, −R$ 2,4 mil, para o banco", "Inflação no dinheiro parado: preço que mudou, ninguém pagou".
+- **Efeito novo no conteúdo:** `contraparte`. Sem ele, o dinheiro do bloco é com o mercado.
+
+**Decisões tomadas sozinho:**
+- **A conta do estado ficou idêntica; só a anotação mudou.** Por isso nenhuma vida mudou, e o túnel prova: o `docs/metricas.md` saiu igual linha por linha, fora as linhas novas e o tempo de CPU. Mexer nos números ficou para quando houver uma decisão nova (a dívida como contrato, a fatia 1.2).
+- **As contas de fora ficam só no livro, não no estado.** Elas ainda não decidem nada, e o validador exige que todo campo escrito seja lido por quem decide. Viram entidades com balanço na Fase 4 (o banco e o tesouro).
+- **As contrapartes:**
+  - o salário vem do mercado; para servidor, cargo público e aposentadoria, do tesouro;
+  - o juro da renda fixa vem do tesouro (títulos);
+  - a cotação das ações, dos fundos, do dólar e das criptomoedas é reavaliação;
+  - a dívida é com o banco;
+  - a parte dos irmãos numa herança vai para os parentes;
+  - a venda de imóvel separa a corretagem e a quitação do financiamento.
+- **O imposto.** A renda já vem sem o imposto de sempre; a política do governo cobra a mais ("Imposto") ou devolve ("Imposto mais baixo"). Na primeira versão do extrato, um corte de imposto aparecia como "Imposto, +R$ 9,6 mil, do governo", o que confunde.
+- **A troca de quem ocupa um papel não entra na conferência.** O amor novo entra com os números dele, e o antigo sai com os seus: não é dinheiro trocando de mão.
+- **O esquema do save ganhou o campo.** Sem isso, a contraparte sumia ao recarregar, a mesma fragilidade que a auditoria apontou (o Zod descarta chave desconhecida). O teste de ida e volta pegou na hora. Save antigo carrega; o extrato só mostra o que veio depois.
+- **A conferência só olha pessoas.** A primeira versão acusou 5.030 "problemas" que eram a dívida do país, um percentual do PIB, não dinheiro.
+
+**Medidas:**
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Entradas com dinheiro sem contraparte | 86,6% das que mexem em dinheiro (sonda de 450 vidas) | 0 problemas em 3.838.873 entradas (10.000 vidas do túnel) |
+| Métricas do túnel | | iguais, fora as linhas novas e o tempo de CPU |
+| CPU por vida (mesma máquina, três rodadas alternadas de 240 vidas) | 50 ms | 53 ms (+6%) |
+| Save no fim da vida | mediana 279 KB, p90 384 KB, máximo 445 KB | 304 KB, 421 KB, 487 KB (+9%) |
+| Testes | 197 | 204 (7 de contas, inclusive os que provam que a conferência acusa o erro) |
+
+**O que não mudou, ou ficou de fora:**
+- A dívida continua um número: o contrato é a fatia 1.2.
+- A empresa continua sem caixa: fatia 2.2.
+- O governo continua sem orçamento: Fase 4.
+- **Herança de quem joga.** A partilha cria a vida nova com o espólio já dividido. O que saiu dele (o imposto, a metade do cônjuge, a dívida que ele não cobria) ainda não aparece como fluxo, porque a vida nova começa um livro novo.
+- **Leitura do extrato da vida.** Ele soma valores de anos diferentes em reais de hoje. A inflação já está fora deles; o que aparece como "inflação no dinheiro parado" é o que o dinheiro parado perdeu.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

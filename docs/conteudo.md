@@ -150,6 +150,7 @@ Os quatro países de fora (`mundo.json › estrangeiros`) são entidades como as
 | `custoDoPatrimonio` | `0.06` | soma ao custo anual 6% do patrimônio de agora (subir de padrão com a herança) |
 | caminho com `copiar` | `"eu.setor": { "copiar": "pai.setor" }` | copia o valor de outro caminho da mesma espécie |
 | `transferir` | `{ "de": "ator", "para": "eu", "fracao": 0.2, "max": 30000 }` | dinheiro de uma pessoa para outra; `{transferido}` no texto |
+| `contraparte` | `"tesouro"` | de quem vem ou para quem vai o `dinheiro` do bloco: o mercado, se nada for dito; o tesouro (imposto, multa, título do governo), o banco ou os parentes. A dívida é sempre com o banco. O livro guarda a contraparte, e o extrato a mostra |
 | `marcas`, `removerMarcas` | `["fumante", "ator.desempregado"]` | a qualidade guarda ano, idade e a entrada que a gravou |
 | `qualidades` | `{ "paquera": 1 }` | soma a um contador |
 | `personagens` | `["amor"]` | cria `amor`, `filho`, `paixao` ou `pet` (pessoas nascem com traço) |

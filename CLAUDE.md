@@ -52,7 +52,8 @@ O erro mais caro é otimizar algo que nem deveria existir. Decisão sem número 
 `npm run tunel` joga 10.000 vidas (4 estratégias × 125 jogadores × 20 vidas seguidas, com a memória entre vidas) e escreve `docs/metricas.md`. Falha (e trava o CI) se:
 
 - algum storylet nunca aparece (morto) ou um não-repetível se repete na mesma vida;
-- uma estratégia fixa vence as outras em idade, patrimônio e felicidade ao mesmo tempo.
+- uma estratégia fixa vence as outras em idade, patrimônio e felicidade ao mesmo tempo;
+- o dinheiro de alguma entrada não tem contraparte (as contas não fecham).
 
 E mede, com portões por incremento (`docs/decisoes.md` e `docs/roteiro.md`):
 
@@ -76,7 +77,8 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   vida.ts              nascer → (fichas do ano) → +1 ano → regras → personagens → diretor → escolha
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
   campos.ts            campos de cada entidade e leitura de caminhos ("mae.saude")
-  livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança)
+  livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança, e o dinheiro com a contraparte)
+  contas.ts            toda transferência tem dois lados: a conferência das contas (entrada por entrada) e o extrato
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
@@ -149,6 +151,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Motor puro e determinístico, em Node e navegador | dono | o túnel joga com o mesmo motor que o jogador |
 | Conteúdo em JSON, validado (`npm run validar`) | dono | conteúdo escala sem código e sem quebrar |
 | Toda variável lida por ≥ 2 sistemas e altera ≥ 1 decisão | dono | estado que nada decide é peso morto |
+| Todo real tem contraparte: toda mudança de dinheiro diz de quem veio ou para quem foi, e as contas fecham entrada por entrada (o túnel trava o contrário) | dono (missão Universo de Bolso) | dívida com credor, orçamento do governo, caixa da empresa e taxa de gestor precisam de contas que fecham |
 | Túnel com metas e portões (saturação, assinaturas, mobilidade, dispersão, agência, toques) | dono | qualidade se mede |
 | Caminho padrão em um toque; origem opcional | dono | começar rápido, e quem quiser escolhe |
 | Criar o personagem escolhendo tudo: nome, sobrenome, gênero, cidade, classe, família, linhagem, irmãos, jeito e talentos (pontos) | dono | liberdade na criação; o que não se escolhe é sorteado |
