@@ -164,14 +164,17 @@ export function liquidoDe(e: EstadoVida): number {
   return Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu);
 }
 
-/** Tira até `valor` de quem joga: da conta e depois dos investimentos (o mais fácil de vender primeiro). Devolve quanto saiu. */
-export function tirarDeQuemJoga(e: EstadoVida, reg: Mudanca[], valor: number): number {
+/**
+ * Tira até `valor` de quem joga e paga a `para` (a empresa, o mercado): da conta e depois dos investimentos (o mais
+ * fácil de vender primeiro). Devolve quanto saiu.
+ */
+export function tirarDeQuemJoga(e: EstadoVida, reg: Mudanca[], valor: number, para: string): number {
   const n = e.entidades['eu']!.n;
   const antes = caixaDe(n);
   const daConta = Math.min(Math.max(0, n['dinheiro'] ?? 0), Math.max(0, valor));
   n['dinheiro'] = (n['dinheiro'] ?? 0) - daConta;
   const dosInvestimentos = resgatarDe(n, valor - daConta);
-  anotarCaixa(reg, 'eu', antes, n);
+  anotarCaixa(reg, 'eu', antes, n, undefined, [{ campo: 'dinheiro', d: -(daConta + dosInvestimentos), p: para }]);
   return daConta + dosInvestimentos;
 }
 
@@ -204,14 +207,14 @@ export function abrirPorEfeito(e: EstadoVida, c: Conteudo, reg: Mudanca[], a: Ab
   if (empresaDe(e)) return 0;
   const setor = a.setor ?? String(lerCaminho(e, a.copiarSetor ?? '', ator) ?? '');
   let valor = a.valor ?? 0;
-  if (a.capital !== undefined) valor = tirarDeQuemJoga(e, reg, a.capital);
+  if (a.capital !== undefined) valor = tirarDeQuemJoga(e, reg, a.capital, PRINCIPAL);
   if (a.fracao !== undefined) {
     const de = entidadeDe(a.de ?? 'eu', ator);
     if (de === 'eu') {
-      valor = tirarDeQuemJoga(e, reg, liquidoDe(e) * a.fracao);
+      valor = tirarDeQuemJoga(e, reg, liquidoDe(e) * a.fracao, PRINCIPAL);
     } else {
       valor = Math.max(0, e.entidades[de]?.n['dinheiro'] ?? 0) * a.fracao;
-      somar(e, reg, de, 'dinheiro', -valor);
+      somar(e, reg, de, 'dinheiro', -valor, undefined, PRINCIPAL);
     }
   }
   const setorValido = c.setores.has(setor) ? setor : 'comercio';
@@ -321,7 +324,7 @@ export function venderParte(e: EstadoVida, reg: Mudanca[], fracao: number, premi
   const parte = emp.n['participacao'] ?? 1;
   const vendida = parte * Math.min(1, Math.max(0, fracao));
   const preco = Math.max(0, emp.n['valor'] ?? 0) * vendida * premio * (1 - descontoDaDependencia(e, id));
-  if (preco > 0) movimentar(e, reg, { dinheiro: preco });
+  if (preco > 0) movimentar(e, reg, { dinheiro: preco, contraparte: 'mercado' });
   if (parte - vendida < 0.005) encerrar(e, reg, id);
   else somar(e, reg, id, 'participacao', -vendida);
   return preco;
@@ -331,7 +334,7 @@ export function venderParte(e: EstadoVida, reg: Mudanca[], fracao: number, premi
 export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number, id = PRINCIPAL): number {
   if (!empresaDe(e, id)) return 0;
   const volta = parteNaEmpresa(e, id) * sobra;
-  if (volta > 0) movimentar(e, reg, { dinheiro: volta });
+  if (volta > 0) movimentar(e, reg, { dinheiro: volta, contraparte: id });
   encerrar(e, reg, id);
   return volta;
 }
@@ -346,7 +349,7 @@ export function venderSubsidiarias(e: EstadoVida, reg: Mudanca[], premio: number
   somar(e, reg, id, 'valor', -fatia);
   somar(e, reg, id, 'subsidiarias', -vendidas);
   const preco = fatia * (emp.n['participacao'] ?? 1) * premio;
-  if (preco > 0) movimentar(e, reg, { dinheiro: preco });
+  if (preco > 0) movimentar(e, reg, { dinheiro: preco, contraparte: 'mercado' });
   return { preco, vendidas };
 }
 
@@ -392,7 +395,7 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const retirada = (n['retirada'] ?? 0) * (n['valor'] ?? 0);
   if (retirada > 0) {
     somar(e, reg, id, 'valor', -retirada, 'empresa');
-    movimentar(e, reg, { dinheiro: retirada * (n['participacao'] ?? 1) }, 'eu', 'empresa');
+    movimentar(e, reg, { dinheiro: retirada * (n['participacao'] ?? 1), contraparte: id }, 'eu', 'empresa');
   }
   const alvo = alvoDaTracao(e, c, emp, carga);
   somar(e, reg, id, 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
@@ -583,8 +586,8 @@ const subsidiariasTexto = (n: number): string => (n === 1 ? 'uma subsidiária' :
 /** Faz a operação (já conferida) e devolve o texto e o resumo da entrada. */
 export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, reg: Mudanca[], origem: number): { texto: string; resumo: string } {
   if (op.tipo === 'abrir') {
-    const valor = tirarDeQuemJoga(e, reg, op.valor);
     const lugar = lugarLivre(e)!;
+    const valor = tirarDeQuemJoga(e, reg, op.valor, lugar);
     const emp = fundar(e, c, reg, { setor: op.setor, valor }, origem, lugar)!;
     const ramo = c.setores.get(op.setor)?.nome ?? op.setor;
     const quantas = empresasDe(e).length;
@@ -595,13 +598,13 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   const emp = empresaDe(e, id)!;
   if (op.tipo === 'aportar') {
     // Dinheiro novo de quem joga aumenta a parte dele (os outros sócios não puseram nada).
-    const valor = tirarDeQuemJoga(e, reg, op.valor);
+    const valor = tirarDeQuemJoga(e, reg, op.valor, id);
     porNaEmpresa(e, reg, id, valor, valor);
     return { texto: `Pôs ${formatarDinheiro(valor)} ${aEmpresa(emp, 'na')}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
   }
   if (op.tipo === 'adquirir') {
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
-    const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e, id));
+    const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e, id), 'mercado');
     // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
     porNaEmpresa(e, reg, id, custo, custo * 0.95);
     somar(e, reg, id, 'tracao', 2);

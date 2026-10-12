@@ -27,6 +27,9 @@ function ajustar(atual: number, ajuste: number | { definir: number }): number {
   return Math.max(0, typeof ajuste === 'number' ? atual + ajuste : ajuste.definir);
 }
 
+/** Os campos do caixa de uma pessoa: o dinheiro, as classes investidas e a dívida (mudança neles tem contraparte). */
+const CAMPOS_DE_CAIXA = new Set<string>(['dinheiro', ...ATIVOS, 'divida']);
+
 /** Os caminhos de qualidade em efeitos aceitam "ator.x"; sem ponto, são de quem joga. */
 function qualidade(caminho: string, ator: string | undefined): { ent: string; nome: string } {
   const { ent, campo } = separar(caminho);
@@ -41,15 +44,18 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     if (v) somar(e, reg, 'eu', at, v);
   }
   const eu = e.entidades['eu']!;
+  // O dinheiro do conteúdo é com o mercado (quem vende, quem paga, quem dá o golpe), salvo quando o bloco diz outra
+  // contraparte; a dívida é com o banco.
+  const contraparte = ef.contraparte ?? 'mercado';
   if (ef.dividaFator !== undefined) {
-    somar(e, reg, 'eu', 'divida', (eu.n['divida'] ?? 0) * (ef.dividaFator - 1));
+    somar(e, reg, 'eu', 'divida', (eu.n['divida'] ?? 0) * (ef.dividaFator - 1), undefined, 'banco');
   }
   if (ef.patrimonioFator !== undefined) {
     const f = ef.patrimonioFator - 1;
-    somar(e, reg, 'eu', 'dinheiro', Math.max(0, eu.n['dinheiro'] ?? 0) * f);
-    for (const a of ATIVOS) if (eu.n[a]) somar(e, reg, 'eu', a, (eu.n[a] ?? 0) * f);
+    somar(e, reg, 'eu', 'dinheiro', Math.max(0, eu.n['dinheiro'] ?? 0) * f, undefined, contraparte);
+    for (const a of ATIVOS) if (eu.n[a]) somar(e, reg, 'eu', a, (eu.n[a] ?? 0) * f, undefined, contraparte);
   }
-  if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, divida: ef.divida, pesos: pesosDoPerfil(e, c) });
+  if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, divida: ef.divida, pesos: pesosDoPerfil(e, c), contraparte });
   if (ef.realocar) realocar(e, reg, ef.realocar.de, ef.realocar.para, ef.realocar.fracao);
   if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
@@ -69,12 +75,14 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     if (!e.entidades[ent]) continue;
     const def = defCampo(ent, campo);
     if (!def || def.derivado) continue;
+    // Dinheiro, investimento e dívida de alguém por caminho ("mae.dinheiro": 5000) também têm contraparte.
+    const p = CAMPOS_DE_CAIXA.has(campo) ? (campo === 'divida' ? 'banco' : contraparte) : undefined;
     if (typeof valor === 'number') {
-      if (ent === 'eu' && def.sistema === 'dinheiro' && campo === 'dinheiro') movimentar(e, reg, { dinheiro: valor });
-      else somar(e, reg, ent, campo, valor);
+      if (ent === 'eu' && def.sistema === 'dinheiro' && campo === 'dinheiro') movimentar(e, reg, { dinheiro: valor, contraparte });
+      else somar(e, reg, ent, campo, valor, undefined, p);
     } else if (typeof valor === 'object' && 'definir' in valor) {
       if (typeof valor.definir === 'string') definirTexto(e, reg, ent, campo, valor.definir);
-      else definirNumero(e, reg, ent, campo, valor.definir);
+      else definirNumero(e, reg, ent, campo, valor.definir, undefined, p);
     } else if (typeof valor === 'object' && 'copiar' in valor) {
       const v = lerCaminho(e, String(valor.copiar), ator);
       if (typeof v === 'string' && v !== '') definirTexto(e, reg, ent, campo, v);
@@ -103,10 +111,10 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
       if (t.max !== undefined) valor = Math.min(valor, t.max);
       valor = Math.round(Math.min(valor, disponivel) / 50) * 50;
       if (valor > 0) {
-        if (de === 'eu') movimentar(e, reg, { dinheiro: -valor });
-        else somar(e, reg, de, 'dinheiro', -valor);
-        if (para === 'eu') movimentar(e, reg, { dinheiro: valor });
-        else somar(e, reg, para, 'dinheiro', valor);
+        if (de === 'eu') movimentar(e, reg, { dinheiro: -valor, contraparte: para });
+        else somar(e, reg, de, 'dinheiro', -valor, undefined, para);
+        if (para === 'eu') movimentar(e, reg, { dinheiro: valor, contraparte: de });
+        else somar(e, reg, para, 'dinheiro', valor, undefined, de);
       }
       ctx.valores['transferido'] = valor;
     }

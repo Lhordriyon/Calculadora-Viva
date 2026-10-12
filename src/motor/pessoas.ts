@@ -6,7 +6,7 @@ import type { Conteudo } from './conteudo.ts';
 import type { PapelNovo } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
-import { ganhar, perder, somar } from './livro.ts';
+import { ganhar, perder, somar, somarRepartido } from './livro.ts';
 import { ANOS_UNIAO } from './regras.ts';
 import { aleatorio, inteiro, sortear } from './rng.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
@@ -109,16 +109,20 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   const dinheiro = en.n['dinheiro'] ?? 0;
   const para = herdeiro(e, papel);
   if (dinheiro <= 0 || !para) return 0;
-  somar(e, reg, papel, 'dinheiro', -dinheiro);
   if (para === 'eu') {
-    // Dos pais e da avó, cada irmão leva a sua parte.
+    // Dos pais e da avó, cada irmão leva a sua parte (os irmãos não são personagens: a parte deles vai para os parentes).
     const irmaos = papel === 'amor' || papel === 'filho' ? 0 : (e.entidades['eu']!.n['irmaos'] ?? 0);
     const parte = dinheiro / (1 + irmaos);
-    movimentar(e, reg, { dinheiro: parte });
+    somarRepartido(e, reg, papel, 'dinheiro', -dinheiro, [
+      { d: -parte, p: 'eu' },
+      { d: -(dinheiro - parte), p: 'parentes' },
+    ]);
+    movimentar(e, reg, { dinheiro: parte, contraparte: papel });
     ganhar(e, reg, 'eu', 'herdou', causa);
     return parte;
   }
-  somar(e, reg, para, 'dinheiro', dinheiro);
+  somar(e, reg, papel, 'dinheiro', -dinheiro, undefined, para);
+  somar(e, reg, para, 'dinheiro', dinheiro, undefined, papel);
   return 0;
 }
 

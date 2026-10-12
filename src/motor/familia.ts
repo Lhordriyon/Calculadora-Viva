@@ -146,7 +146,7 @@ export function regrasDosPersonagens(
           (reg, id) => {
             perder(e, reg, papel, 'dono_do_negocio');
             ganhar(e, reg, papel, 'desempregado', id);
-            somar(e, reg, papel, 'dinheiro', -Math.max(0, en.n['dinheiro'] ?? 0) * 0.6);
+            somar(e, reg, papel, 'dinheiro', -Math.max(0, en.n['dinheiro'] ?? 0) * 0.6, undefined, 'mercado');
             somar(e, reg, papel, 'renda', -(en.n['renda'] ?? 0) * 0.7);
             const outro = e.entidades[papel === 'mae' ? 'pai' : 'mae'];
             if (!outro?.q['dono_do_negocio']) perder(e, reg, 'eu', 'negocio_familiar');
@@ -189,7 +189,7 @@ export function regrasDosPersonagens(
       const aperto = en.q['desempregado'] ? 6000 * (lugar?.n['custo_vida'] ?? 1) : 0;
       // Rende um pouco acima da inflação (e sobe e desce com o ciclo); depois dos 65, a saúde e a família consomem parte do que foi guardado.
       const rende = Math.max(0, dinheiro) * ((idade >= IDADE_APOSENTADORIA ? -0.03 : 0.01) + fase.retorno);
-      somar(e, regAno, papel, 'dinheiro', guarda - aperto + rende, 'dinheiro');
+      somar(e, regAno, papel, 'dinheiro', guarda - aperto + rende, 'dinheiro', 'mercado');
     }
 
     // ---- vínculo: volta para o jeito da família; esfria sem contato na vida adulta (bicho não tem)

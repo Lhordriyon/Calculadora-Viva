@@ -89,7 +89,7 @@ function assumir(e: EstadoVida, reg: Mudanca[], def: DefCargo, origem: number): 
 export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: Mudanca[], origem: number): { texto: string; resumo: string } {
   const eu = e.entidades['eu']!;
   const def = defCargo(c, op.cargo)!;
-  const custo = tirarDeQuemJoga(e, reg, def.campanha);
+  const custo = tirarDeQuemJoga(e, reg, def.campanha, 'mercado');
   const chance = chanceDeEleicao(e, def);
   const ganhou = aleatorio(e.rng) < chance;
   const votos = Math.round(Math.min(78, Math.max(4, 50 + (chance - 0.5) * 36 + normal(e.rng, 0, 4) + (ganhou ? 4 : -4))));

@@ -143,7 +143,7 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
   if (op.tipo === 'comprar') {
     const def = defBem(c, op.item)!;
     const financiar = Boolean(op.financiar && def.financiavel);
-    const entrada = tirarDeQuemJoga(e, reg, custoDaCompra(def, financiar));
+    const entrada = tirarDeQuemJoga(e, reg, custoDaCompra(def, financiar), 'mercado');
     const id = `bem${origem}`;
     const b = novaEntidade({ id, tipo: 'bem', nome: def.nome, nascimento: e.ano, vivo: true });
     e.entidades[id] = b;
@@ -167,7 +167,15 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
     const taxa = ehImovel(def) ? valor * CUSTO_VENDA_IMOVEL : 0;
     const financiado = b.n['financiado'] ?? 0;
     if (b.q['moradia']) sairDe(e, reg, b);
-    movimentar(e, reg, { dinheiro: valor - taxa - financiado });
+    // Quem compra paga o valor; a corretagem vai para o mercado e o que faltava do financiamento, para o banco.
+    movimentar(e, reg, {
+      dinheiro: valor - taxa - financiado,
+      fluxos: [
+        { campo: 'dinheiro', d: valor, p: 'mercado', r: 'venda' },
+        { campo: 'dinheiro', d: -taxa, p: 'mercado', r: 'corretagem' },
+        { campo: 'dinheiro', d: -financiado, p: 'banco', r: 'quitacao' },
+      ],
+    });
     somar(e, reg, b.id, 'valor', -valor);
     if (financiado) somar(e, reg, b.id, 'financiado', -financiado);
     perder(e, reg, b.id, 'alugado');
@@ -213,6 +221,9 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const medio = mercadoMedioDeImoveis(c);
   let caixa = 0;
   let aluguel = 0;
+  // O que sai, por contraparte: a manutenção para o mercado e a parcela para o banco (o caixa é a soma).
+  let manutencao = 0;
+  let parcelas = 0;
   for (const b of bens) {
     const def = defDoBem(c, b);
     if (!def) continue;
@@ -224,6 +235,7 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
     if (def.categoria === 'veiculo') novo = Math.max(novo, def.preco * PISO_VEICULO);
     somar(e, reg, b.id, 'valor', novo - valor, 'bens');
     caixa -= novo * def.manutencao;
+    manutencao += novo * def.manutencao;
     if (b.q['alugado']) aluguel += novo * taxaDeAluguel(def);
     const financiado = b.n['financiado'] ?? 0;
     if (financiado > 0) {
@@ -231,10 +243,25 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
       const parcela = Math.min(financiado + juros, parcelaDe(def));
       somar(e, reg, b.id, 'financiado', juros - parcela, 'bens');
       caixa -= parcela;
+      parcelas += parcela;
     }
   }
-  if (aluguel >= 1) movimentar(e, reg, { dinheiro: aluguel }, 'eu', 'aluguel');
-  if (Math.abs(caixa) >= 1) movimentar(e, reg, { dinheiro: caixa }, 'eu', 'bens');
+  if (aluguel >= 1) movimentar(e, reg, { dinheiro: aluguel, contraparte: 'mercado' }, 'eu', 'aluguel');
+  if (Math.abs(caixa) >= 1) {
+    movimentar(
+      e,
+      reg,
+      {
+        dinheiro: caixa,
+        fluxos: [
+          { campo: 'dinheiro', d: -manutencao, p: 'mercado', r: 'manutencao' },
+          { campo: 'dinheiro', d: -parcelas, p: 'banco', r: 'parcela' },
+        ],
+      },
+      'eu',
+      'bens',
+    );
+  }
 }
 
 /** Felicidade que os bens dão por ano: a casa onde mora, o melhor veículo, o lazer e o luxo (com teto). */

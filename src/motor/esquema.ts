@@ -9,6 +9,7 @@ import {
   ATIVOS,
   ATRIBUTOS,
   CATEGORIAS_MORTE,
+  CONTAS_DE_FORA,
   CLASSES,
   FASES,
   PAPEIS,
@@ -171,6 +172,11 @@ const EFEITOS_FIXOS = {
     .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })
     .refine((r) => r.de !== r.para, 'realocar precisa de origem e destino diferentes')
     .optional(),
+  /**
+   * De quem vem ou para quem vai o `dinheiro` do bloco (e o de caminhos como "mae.dinheiro"): o mercado, se nada for
+   * dito; o tesouro, quando é o governo (imposto, multa, título); os parentes; o banco. A dívida é sempre com o banco.
+   */
+  contraparte: z.enum(CONTAS_DE_FORA).optional(),
   /** Abre a empresa de quem joga (uma por vez; se já houver uma, nada acontece). */
   abrirEmpresa: AberturaEmpresa.optional(),
   /** Multiplica o valor da empresa (o contrato grande, o escândalo, a crise do setor). */
