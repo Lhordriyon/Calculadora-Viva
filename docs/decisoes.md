@@ -505,6 +505,80 @@ O dono escreveu: "Eu só posso ter uma empresa, poderia ter uma empresa mãe, po
 - CPU por vida: 66,8 ms no túnel, contra 64,2. No mesmo hardware e em sequência, o motor antigo gasta 79,5 ms de CPU por vida e o novo, 80,6 (+1%). A diferença do túnel é ruído da máquina.
 - Melhorou de carona: o rico que termina pobre foi de 4,5% para 4,9%, e a saturação V5 de 59,8% para 59,4%.
 
+## Incremento 10: o mundo lá fora (o roteiro; o dono pediu a próxima em 12/10)
+
+O roteiro dizia: "Países fictícios com estatísticas próprias; comércio, câmbio, tarifas, sanções e alinhamento; o que o país decide lá fora muda o crescimento, o dólar e os setores daqui." O dono pediu "Próxima".
+
+**O que mudou:**
+- **Quatro países fictícios** (`mundo.json › estrangeiros`, entidades do tipo jurisdição):
+  - a Federação do Norte, a superpotência rica: compra aviões, aço e suco de laranja, pesa 30% do que o Brasil vende lá fora e é rival da Celeste;
+  - a República Celeste, o gigante industrial: compra soja, minério e carne, pesa 35%, cresce 4,5% ao ano e tem booms;
+  - a Liga Atlântica, as velhas democracias do outro lado do oceano: compra café, frutas e celulose e pesa 20%;
+  - o Pacto do Sul, os vizinhos: compra carros, máquinas e calçados, pesa 15% e tem crises frequentes.
+
+  Cada um tem a economia dele (o crescimento volta para o de sempre, com a sorte que o mundo divide e a dele), as crises e os booms de lá (notícias na linha do tempo), a relação com o Brasil (0 a 100) e o que compra daqui.
+- **Alinhamento e tarifa.** Cada governo daqui se aproxima de uns (`aproxima`): a frente popular do Pacto e da Celeste, o bloco liberal da Federação e da Liga, a aliança da ordem da Federação, o regime da Celeste; o centrão de ninguém. A relação com eles sobe 15, e a com o rival deles cai 15. A nova política de comércio exterior (aberto, moderado, fechado) mexe no potencial (+0,3 / 0 / −0,4), na inflação (−0,5 / 0 / +0,8 ponto, com o tempo), na relação com todos (+5 / 0 / −8) e na aprovação (quem trabalha na fábrica gosta da tarifa).
+- **Sanção e acordo nascem da relação.** Abaixo de 35, a chance de sanção cresce com o quadrado da distância (3% ao ano com a relação em 27; 20% em 15). A sanção tira 1,2 × o peso do país do crescimento daqui, por ano, e a demanda dele; acaba quando a relação passa de 38, ou cansa (15% por ano). Acima de 70, com a fronteira aberta ou moderada, o governo de turno assina um acordo (12% ao ano): soma 0,5 × o peso por ano; acaba abaixo de 45. As notícias apontam para a decisão que levou a relação até ali.
+- **O que chega aqui:** a crise lá fora tira até 3 pontos do crescimento daqui e põe 2,5 de inflação, e a notícia dela é a primeira causa da virada da fase ("a República Celeste entrou em crise → o país entrou em recessão → você perdeu o emprego"); o boom soma 2; o que o mundo compra a mais ou a menos soma 0,15 × peso × o desvio de cada um.
+- **O dólar** (`pais.cambio`, em reais de hoje, perto de R$ 5): sobe com a dívida, com as sanções e com a economia daqui fraca, e cai com o juro real alto e com o mundo comprando do Brasil. A crise lá fora o faz saltar 16% no ano, e o boom o derruba 8%. Ele pesa:
+  - na inflação: 0,08 ponto por ponto percentual de alta;
+  - no investimento em dólar, que rende o quanto ele subiu (antes, o rendimento era sorteado pela fase);
+  - nas empresas de cada setor (o agro ganha com o dólar alto, o comércio perde; a indústria ganha com a tarifa; a sanção de quem compra o setor dói);
+  - no salário em dólar (o trabalho remoto para fora), que anda com ele e não é demitido pela crise daqui.
+- **Quem governa faz um ato lá fora por ano** (folha País, seção "Lá fora"):
+  - a visita de Estado: +15 na relação e −8 na do rival;
+  - o acordo comercial: pede relação 60, a fronteira aberta ou moderada e nenhuma sanção;
+  - romper relações: −40 na relação, o acordo acaba e a popularidade sobe 4 agora. A confirmação mostra a chance de sanção que fica.
+- **Conteúdo:** 18 eventos (`98-la-fora.json`):
+  - o dólar barato e o dólar caro;
+  - a exportação que bate recorde, o importado que ficou caro;
+  - o salário em dólar e o que ele vira com o dólar alto;
+  - a crise lá fora na sua rua, o país que compra sem pechinchar, a sanção que para o porto, o acordo que abre mercado;
+  - a viagem para fora e a saudade dela, a bolsa de estudos lá fora;
+  - para quem governa: a cúpula, o embaixador, a ameaça de sanção, a guerra comercial entre a Federação e a Celeste;
+  - a fronteira fechada, o importado que invadiu a fábrica.
+
+  Mais 13 linhas curtas e as notícias do mundo (crise, boom, sanção, acordo e os três atos).
+
+**Decisões tomadas sozinho:**
+- **Quatro países, não um mundo inteiro.** Cada um faz um papel na história: o grande cliente industrial, o gigante que compra a soja, o bloco rico e os vizinhos. Com rivalidade entre os dois maiores, escolher lado tem preço. Mais países seriam nomes a decorar sem decisão nova.
+- **O choque de fora agora vem dos países.** A crise de lá substituiu a "crise lá fora" sorteada do incremento 2; a alta das commodities virou o boom da Celeste. Para o país não mudar de tamanho, calibrei pelo mesmo conjunto de vidas (300 vidas com as mesmas sementes, antes e depois):
+  - as chances de crise de cada país: 1% a 2% ao ano;
+  - o peso da demanda: 0,15;
+  - o desvio do crescimento daqui: de 1,15 para 1,05, porque o mundo já balança;
+  - as relações de sempre: em torno de 50.
+
+  Resultado: as fases ficaram 63,6% / 24,9% / 9,3% / 2,1% (normal, expansão, recessão, crise), contra 64,0% / 24,2% / 9,8% / 2,0% antes. Na primeira versão, com os acordos sempre ativos, a expansão chegava a 30,6% (o portão é 30%).
+- **Sanção pela distância, não por limiar.** Com um limiar (abaixo de 20, 30% ao ano), a sanção nunca acontecia: nenhuma postura levava a relação tão baixo. Com a chance crescendo com o quadrado da distância abaixo de 35, acontece em 25,5% das vidas, quase sempre com a Celeste sob a aliança da ordem, que se aproxima da rival dela (1,21% de chance por ano de governo, contra 0,09% com a frente popular).
+- **A sanção cansa.** Sem isso, a aliança da ordem reeleita prendia o país numa sanção de 20 anos: só 82,6% acabavam em até 15 anos. Com 15% de chance por ano de acabar mesmo com a relação fria, a mediana é de 4 anos e o p90, de 9.
+- **O porquê da sanção.** Primeiro, a decisão sobre a relação com aquele país nos últimos dez anos, no mesmo sentido (o ato de quem governa, uma escolha); senão, a posse ou a reeleição do governo cuja postura puxa a relação para baixo, ou a tarifa. A reeleição não mudava nada no livro, e 14% das sanções ficavam sem causa por isso. As que sobram sem causa são de governos que já estavam lá quando a vida começou.
+- **O dólar rende o que o dólar sobe.** O investimento em dólar tinha rendimento sorteado pela fase (+22% na crise). Agora ele segue o câmbio, que sobe na crise, mas menos (+7% em média nos anos de crise, +4% na recessão, −1% na expansão): continua sendo o seguro da carteira, com uma causa à vista.
+- **Romper relações dá popularidade e custa caro.** No laboratório, romper com a Celeste traz a sanção em até 5 anos em 34,8% dos casos; depois de uma visita de Estado, em 0,8%. A folha mostra a chance antes de confirmar. A arriscada rompe quando a popularidade cai; a cautelosa assina o acordo que dá e visita quem esfriou.
+- **O salário em dólar acaba com o emprego.** Largar o emprego (folha Carreira, fim de carreira, storylet que troca de emprego ou zera a renda) encerra a marca; sem isso, quem virava empresário continuava "ganhando em dólar".
+- **Um defeito antigo apareceu:** o campo `pais.pol_comercio` não foi declarado e o motor o lia como qualidade (sempre 0). Por isso a fronteira fechada nunca acontecia, e o importado barato acontecia sempre. Os campos de política agora saem da lista de políticas, para nenhum ficar de fora.
+- **CPU:** com quatro entidades a mais, as funções que varriam todas as entidades a cada leitura do patrimônio ficaram mais caras. As empresas agora são lidas pelos lugares delas (`empresa`, `empresa2`…), os bens pelo prefixo do id, e a postura do governo é calculada uma vez por ano. Mesmo assim, o motor novo custa uns 10% a mais de CPU por vida (108,5 contra 98,5 ms, três rodadas alternadas de 600 vidas no mesmo hardware): é o preço de um sistema inteiro novo.
+
+**Portões (10.000 vidas):**
+- a crise lá fora chega aqui: 48,4% das 37.034 viradas para recessão ou crise apontam a crise de um país de fora como causa (portão: 10%);
+- o dólar anda e volta: p10 R$ 4,09, mediana R$ 5,06, p90 R$ 6,31 (portão: p90 ≥ 1,3 × p10, mediana entre R$ 4 e R$ 6);
+- o dólar pesa na inflação: 6,5% nos anos em que ele sobe 10% ou mais, contra 4,2% nos anos em que cai 10% ou mais (portão: 1 ponto);
+- o dólar divide os setores: por ponto de alta, a empresa do agro cresce 0,30 ponto a mais e a do comércio, 0,31 a menos (4.431 e 33.047 empresas-ano);
+- sanções e acordos acontecem e acabam: sanção em 25,5% das vidas, acordo em 71,9%, e 98,7% das sanções acabam em até 15 anos (portão: 5% a 40%, 30% e 90%);
+- toda sanção tem um porquê: 87,3% das 3.448 sanções apontam a decisão que esfriou a relação (portão: 80%); as outras são de governos que já estavam lá quando a vida começou;
+- alinhar-se tem preço e abrir tem prêmio: a Celeste sanciona 1,21% dos anos com a aliança da ordem e 0,09% com a frente popular; acordos começam em 3,75% dos anos com o bloco liberal e 0,30% com a aliança da ordem;
+- quem governa decide lá fora: 73,5% dos 351 governos de quem joga fazem um ato; romper traz sanção em 34,8%, a visita, em 0,8% (portão: 50%, 30% e 5%);
+- zero storylets mortos, nenhuma estratégia dominante; as fases ficaram 63,2% / 24,9% / 9,7% / 2,2% (antes 64,7% / 23,1% / 10,0% / 2,2%), com 14,0 viradas a cada 70 anos (antes 15,4).
+
+**O que não mudou ou piorou:**
+- Continuam abaixo dos portões antigos:
+  - a herança entre gerações: Spearman 0,81 (antes 0,82; portão: até 0,8);
+  - as assinaturas: 903 por 1.000 vidas (antes 904; portão: 918);
+  - o bilionário feito: 1,70% de quem nasce sem fortuna (antes 1,34%; portão: até 1%). Não isolei a causa: o sorteio de todas as vidas mudou, e as empresas agora também andam com o dólar.
+- CPU por vida no túnel: 87,4 ms, contra 66,8 (o túnel roda junto com outras coisas na máquina; a comparação justa é a de cima, +10%).
+- O rico que termina pobre caiu de 4,9% para 3,8% (portão: 3,0%). O pobre que termina rico, de 14,6% para 14,0%.
+- Melhorou de carona: o porquê à vista foi de 25,9% para 29,8% dos acontecimentos (as notícias de fora explicam viradas daqui), a saturação V5 de 59,4% para 58,0%, e o mundo nos pontos de virada de 9,1% para 9,6%.
+- Um storylet antigo morreu com o sorteio novo e voltou: `construtora_quebrou` só acontecia se o país estivesse em crise exatamente três anos depois da compra na planta (as chaves chegavam antes na recessão). Agora a recessão também para a obra, e toda compra na planta termina numa das duas histórias.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
