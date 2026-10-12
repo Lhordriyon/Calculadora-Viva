@@ -34,13 +34,17 @@ describe('economia', () => {
     expect(cresceu).toBe(200);
   });
 
-  it('adulto recebe a sobra do ano menos o padrão de vida, e tudo vai para o livro', () => {
+  it('adulto recebe a sobra do ano menos o padrão de vida, e cada parte vai para o livro com a contraparte', () => {
     const e = pessoa(1, 30, { renda: 40000, custo: 20000 });
     const reg: Mudanca[] = [];
     economiaDoAno(e, reg);
-    expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
-    expect(reg.find((m) => m.c === 'eu.dinheiro')?.d).toBeCloseTo(20000 * (1 - GASTO_DA_SOBRA.confortavel), 0);
-    expect(reg.every((m) => m.r === 'economia')).toBe(true);
+    const sobra = 20000 * (1 - GASTO_DA_SOBRA.confortavel);
+    expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(sobra, 0);
+    const dinheiro = reg.filter((m) => m.c === 'eu.dinheiro');
+    expect(dinheiro.reduce((s, m) => s + (m.d ?? 0), 0)).toBeCloseTo(sobra, 0);
+    expect(dinheiro.find((m) => m.r === 'salario')).toMatchObject({ d: 40000, p: 'mercado' });
+    expect(dinheiro.find((m) => m.r === 'consumo')).toMatchObject({ d: -20000, p: 'mercado' });
+    expect(dinheiro.find((m) => m.r === 'padrao')?.p).toBe('mercado');
   });
 
   it('o padrão de vida escolhido decide quanto da sobra fica', () => {

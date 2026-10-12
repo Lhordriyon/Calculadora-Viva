@@ -3,7 +3,9 @@
  * dinheiro parado (encolhe), o investimento rende juros compostos acima dela
  * e a dívida cresce com juros bem acima dela. O resto (resgatar para cobrir
  * buraco, amortizar com sobra) é automático, porque não é uma decisão.
- * Toda variação vai para o livro-razão.
+ * Toda variação vai para o livro-razão, com a contraparte: o salário vem do
+ * mercado (ou do tesouro), o imposto vai para o tesouro, o juro da dívida para
+ * o banco; a inflação e a cotação são reavaliação (ninguém pagou nada).
  */
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { anotar } from './livro.ts';
@@ -84,6 +86,18 @@ export function acertarCaixa(n: Numeros): void {
 }
 
 const CAMPOS_CAIXA = ['dinheiro', ...ATIVOS, 'divida'] as const;
+export type CampoDeCaixa = (typeof CAMPOS_CAIXA)[number];
+
+/** Contraparte de quem o código esqueceu de dizer: o teste das contas (contas.ts) acusa. */
+export const SEM_CONTRAPARTE = 'desconhecida';
+
+/** Um fluxo de dinheiro com contraparte: o campo do caixa que mudou, quanto, de quem veio ou para quem foi, e o rótulo. */
+export interface Fluxo {
+  campo: CampoDeCaixa;
+  d: number;
+  p: string;
+  r?: string | undefined;
+}
 
 /** O caixa de uma entidade agora (para anotar a diferença depois). */
 export function caixaDe(n: Numeros): Numeros {
@@ -93,8 +107,28 @@ export function caixaDe(n: Numeros): Numeros {
 }
 
 /** Anota no livro a diferença do caixa de uma entidade entre dois momentos. */
-export function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Numeros, r?: string): void {
-  for (const k of CAMPOS_CAIXA) anotar(reg, `${ent}.${k}`, (n[k] ?? 0) - (antes[k] ?? 0), r);
+/**
+ * Anota a diferença do caixa de uma entidade. Cada fluxo vai para o livro com a contraparte; o que sobra em cada
+ * campo é conversão dentro da mesma pessoa (aplicar, resgatar, pagar dívida com dinheiro), sem contraparte, e soma
+ * zero quando os fluxos dizem tudo o que entrou e saiu.
+ */
+export function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Numeros, r?: string, fluxos: readonly Fluxo[] = []): void {
+  const resto: Numeros = {};
+  for (const k of CAMPOS_CAIXA) resto[k] = (n[k] ?? 0) - (antes[k] ?? 0);
+  for (const f of fluxos) {
+    if (!f.d || !Number.isFinite(f.d)) continue;
+    anotar(reg, `${ent}.${f.campo}`, f.d, f.r ?? r, f.p);
+    resto[f.campo] = (resto[f.campo] ?? 0) - f.d;
+  }
+  for (const k of CAMPOS_CAIXA) anotar(reg, `${ent}.${k}`, resto[k] ?? 0, r);
+}
+
+/** Quem paga a renda de quem joga: o tesouro paga a aposentadoria, o servidor e o cargo público; o resto vem do mercado. */
+function pagadorDaRenda(e: EstadoVida): { p: string; r: string } {
+  const eu = e.entidades['eu']!;
+  if (eu.q['aposentado']) return { p: 'tesouro', r: 'aposentadoria' };
+  if (eu.q['servidor'] || (eu.t['cargo'] ?? '') !== '') return { p: 'tesouro', r: 'salario' };
+  return { p: 'mercado', r: 'salario' };
 }
 
 export interface Ano {
@@ -128,20 +162,31 @@ export interface PaisNoBolso {
 export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso = {}, retornos: Partial<Record<Ativo, number>> = {}): Ano {
   const n = e.entidades['eu']!.n;
   const antes = caixaDe(n);
+  // A conta é a de sempre; os fluxos só dizem de quem veio e para quem foi cada parte (o livro).
+  const fluxos: Fluxo[] = [];
   const inflacao = pais.inflacao ?? (e.entidades['pais']?.n['inflacao'] ?? META_DE_INFLACAO) / 100;
 
   const dinheiroAntes = n['dinheiro'] ?? 0;
   n['dinheiro'] = dinheiroAntes / (1 + inflacao);
   const comida = dinheiroAntes - n['dinheiro'];
+  fluxos.push({ campo: 'dinheiro', d: -comida, p: 'reavaliacao', r: 'inflacao' });
   // Cada classe investida rende o que o mercado do ano deu a ela (acima da inflação).
   // Acima do que o mercado comporta, o excedente fica parado: rende (ou perde) só a parte que cabe.
+  // O juro da renda fixa é pago pelo tesouro (os títulos); o resto é cotação, que ninguém paga.
   const aplicado = ATIVOS.reduce((s, a) => s + Math.max(0, n[a] ?? 0), 0);
   const cabe = aplicado > CAPACIDADE_DO_MERCADO ? CAPACIDADE_DO_MERCADO / aplicado : 1;
-  for (const a of ATIVOS) if (n[a]) n[a] = n[a] * (1 + (retornos[a] ?? 0) * cabe);
+  for (const a of ATIVOS) {
+    if (!n[a]) continue;
+    const antesDaClasse = n[a];
+    n[a] = n[a] * (1 + (retornos[a] ?? 0) * cabe);
+    fluxos.push(a === 'renda_fixa' ? { campo: a, d: n[a] - antesDaClasse, p: 'tesouro', r: 'rendimento' } : { campo: a, d: n[a] - antesDaClasse, p: 'reavaliacao', r: 'cotacao' });
+  }
   const renda = n['renda'] ?? 0;
   const limite = limiteDeCredito(renda);
   const comJuros = Math.min(n['divida'] ?? 0, limite);
+  const dividaAntes = n['divida'] ?? 0;
   n['divida'] = (n['divida'] ?? 0) + comJuros * ((1 + (pais.jurosDaDivida ?? JUROS_DIVIDA)) / (1 + inflacao) - 1);
+  fluxos.push({ campo: 'divida', d: n['divida'] - dividaAntes, p: 'banco', r: 'juros' });
 
   let privacao = false;
   let deficit = 0;
@@ -150,22 +195,43 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
     const pobre = renda < LINHA_DA_POBREZA;
     const liquida = pobre ? renda : renda * (1 + (pais.imposto ?? 0));
     const auxilio = pobre ? (pais.auxilio ?? 0) : 0;
-    const sobra = Math.max(liquida, pisoRenda(e.idade)) + auxilio - Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
+    const recebido = Math.max(liquida, pisoRenda(e.idade));
+    const consumo = Math.max(n['custo'] ?? 0, pisoCusto(e.idade) * custoVida);
+    const sobra = recebido + auxilio - consumo;
+    const pagador = pagadorDaRenda(e);
+    fluxos.push({ campo: 'dinheiro', d: renda, p: pagador.p, r: pagador.r });
+    // A renda já vem sem o imposto de sempre: a política do governo cobra a mais (imposto) ou devolve (imposto mais baixo).
+    fluxos.push({ campo: 'dinheiro', d: liquida - renda, p: 'tesouro', r: liquida < renda ? 'imposto' : 'imposto_mais_baixo' });
+    fluxos.push({ campo: 'dinheiro', d: recebido - liquida, p: 'mercado', r: 'bico' });
+    fluxos.push({ campo: 'dinheiro', d: auxilio, p: 'tesouro', r: 'auxilio' });
     if (sobra >= 0) {
-      n['dinheiro'] += sobra * (1 - gastoDaSobra(e));
+      const gasto = gastoDaSobra(e);
+      n['dinheiro'] += sobra * (1 - gasto);
+      fluxos.push({ campo: 'dinheiro', d: -consumo, p: 'mercado', r: 'consumo' });
+      fluxos.push({ campo: 'dinheiro', d: -(sobra * gasto), p: 'mercado', r: 'padrao' });
     } else {
       deficit = -sobra;
       const folga = Math.max(0, n['dinheiro']) + somaInvestida(n) + Math.max(0, limite - (n['divida'] ?? 0));
       const coberto = Math.min(-sobra, folga);
       n['dinheiro'] -= coberto;
       privacao = coberto < -sobra;
+      // Na privação, o que não coube no crédito não foi gasto: o consumo é só o que foi pago.
+      fluxos.push({ campo: 'dinheiro', d: -(consumo - (deficit - coberto)), p: 'mercado', r: 'consumo' });
     }
   }
   const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
-  if (e.idade >= 18) n['dinheiro'] = (n['dinheiro'] ?? 0) - Math.max(0, patrimonio - PATRIMONIO_SEM_GASTO) * GASTO_DO_PATRIMONIO[padraoDe(e)];
-  if (e.idade >= IDADE_GASTO_VELHICE) n['dinheiro'] = (n['dinheiro'] ?? 0) - gastoDaVelhice(patrimonio);
+  if (e.idade >= 18) {
+    const gasto = Math.max(0, patrimonio - PATRIMONIO_SEM_GASTO) * GASTO_DO_PATRIMONIO[padraoDe(e)];
+    n['dinheiro'] = (n['dinheiro'] ?? 0) - gasto;
+    fluxos.push({ campo: 'dinheiro', d: -gasto, p: 'mercado', r: 'padrao' });
+  }
+  if (e.idade >= IDADE_GASTO_VELHICE) {
+    const gasto = gastoDaVelhice(patrimonio);
+    n['dinheiro'] = (n['dinheiro'] ?? 0) - gasto;
+    fluxos.push({ campo: 'dinheiro', d: -gasto, p: 'mercado', r: 'velhice' });
+  }
   acertarCaixa(n);
-  anotarCaixa(reg, 'eu', antes, n, 'economia');
+  anotarCaixa(reg, 'eu', antes, n, 'economia', fluxos);
   return { comida, privacao, deficit };
 }
 
@@ -181,16 +247,30 @@ export interface Movimento {
   divida?: number | undefined;
   /** Para onde vai o que se aplica (o perfil de investidor); sem pesos, renda fixa. */
   pesos?: Partial<Record<Ativo, number>> | undefined;
+  /** De quem veio ou para quem foi o `dinheiro` (uma entidade ou uma conta de fora). Sem ela, o teste das contas acusa. */
+  contraparte?: string | undefined;
+  /** De quem é a `divida` nova (ou quem perdoa): o banco, se nada for dito. */
+  contraparteDaDivida?: string | undefined;
+  /** O `dinheiro` repartido por contraparte (a manutenção para o mercado, a parcela para o banco): somam `dinheiro`. */
+  fluxos?: readonly Fluxo[] | undefined;
 }
 
-/** Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro. */
+/** Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro, com a contraparte. */
 export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 'eu', r?: string): void {
   const n = e.entidades[ent]?.n;
   if (!n) return;
   const antes = caixaDe(n);
-  if (mov.dinheiro) n['dinheiro'] = (n['dinheiro'] ?? 0) + mov.dinheiro;
+  const fluxos: Fluxo[] = mov.fluxos ? [...mov.fluxos] : [];
+  if (mov.dinheiro) {
+    n['dinheiro'] = (n['dinheiro'] ?? 0) + mov.dinheiro;
+    if (!mov.fluxos) fluxos.push({ campo: 'dinheiro', d: mov.dinheiro, p: mov.contraparte ?? SEM_CONTRAPARTE });
+  }
   // Dívida negativa é desconto ou perdão; para pagar com dinheiro, some também um dinheiro negativo.
-  if (mov.divida) n['divida'] = Math.max(0, (n['divida'] ?? 0) + mov.divida);
+  if (mov.divida) {
+    const dividaAntes = n['divida'] ?? 0;
+    n['divida'] = Math.max(0, (n['divida'] ?? 0) + mov.divida);
+    fluxos.push({ campo: 'divida', d: n['divida'] - dividaAntes, p: mov.contraparteDaDivida ?? 'banco' });
+  }
   if (mov.investir) {
     if (mov.investir > 0) {
       const valor = Math.min(mov.investir, Math.max(n['dinheiro'] ?? 0, 0));
@@ -202,5 +282,5 @@ export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 
   }
   // Só quem joga tem banco (crédito, dívida); personagens ficam com o saldo como está.
   if (ent === 'eu') acertarCaixa(n);
-  anotarCaixa(reg, ent, antes, n, r);
+  anotarCaixa(reg, ent, antes, n, r, fluxos);
 }
