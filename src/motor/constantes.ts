@@ -14,6 +14,17 @@ export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
 export const PARCEIROS = ['federacao', 'celeste', 'liga', 'pacto'] as const;
 export type Parceiro = (typeof PARCEIROS)[number];
 
+/**
+ * As contas de fora, contrapartes do dinheiro que entra e sai das pessoas da vida (incremento "toda transferência
+ * tem dois lados"): o setor privado (quem paga salário, vende, aluga e compra), o governo (imposto, auxílio, cargo
+ * público, juro dos títulos), o sistema bancário (crédito e juros) e a família que não é personagem (os irmãos).
+ * Por enquanto só existem no livro: viram entidades com balanço quando passarem a decidir alguma coisa.
+ */
+export const CONTAS_DE_FORA = ['mercado', 'tesouro', 'banco', 'parentes'] as const;
+export type ContaDeFora = (typeof CONTAS_DE_FORA)[number];
+/** Contraparte de uma mudança de dinheiro: uma entidade da vida, uma conta de fora ou a reavaliação (preço que mudou). */
+export type Contraparte = ContaDeFora | 'reavaliacao' | (string & {});
+
 /** Entidades da vida: quem joga, as pessoas, o lugar, o país, os países de fora e a empresa (quando quem joga tem uma). */
 export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', ...PARCEIROS, 'empresa'] as const;
 export type IdEntidade = (typeof ENTIDADES)[number];

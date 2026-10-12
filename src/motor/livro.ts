@@ -12,33 +12,57 @@ function limitar(v: number, limites: readonly [number, number] | undefined): num
   return v < limites[0] ? limites[0] : v > limites[1] ? limites[1] : v;
 }
 
-/** Soma uma variação ao registro, juntando com a do mesmo caminho e regra. */
-export function anotar(reg: Mudanca[], c: string, d: number, r?: string): void {
+/** Soma uma variação ao registro, juntando com a do mesmo caminho, regra e contraparte (o dinheiro diz de quem veio). */
+export function anotar(reg: Mudanca[], c: string, d: number, r?: string, p?: string): void {
   if (d === 0) return;
   for (const m of reg) {
-    if (m.c === c && m.r === r && m.d !== undefined && m.q === undefined && m.t === undefined) {
+    if (m.c === c && m.r === r && m.p === p && m.d !== undefined && m.q === undefined && m.t === undefined) {
       m.d += d;
       return;
     }
   }
-  reg.push(r ? { c, d, r } : { c, d });
+  const m: Mudanca = { c, d };
+  if (r) m.r = r;
+  if (p) m.p = p;
+  reg.push(m);
 }
 
 /** Soma `delta` a um campo numérico (respeitando os limites do campo); devolve a variação real. */
-export function somar(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, delta: number, r?: string): number {
+export function somar(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, delta: number, r?: string, p?: string): number {
   const en = e.entidades[ent];
   if (!en || delta === 0 || !Number.isFinite(delta)) return 0;
   const antes = en.n[campo] ?? 0;
   const depois = limitar(antes + delta, defCampo(ent, campo)?.limites);
   en.n[campo] = depois;
   const d = depois - antes;
-  anotar(reg, `${ent}.${campo}`, d, r);
+  anotar(reg, `${ent}.${campo}`, d, r, p);
   return d;
 }
 
-export function definirNumero(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, valor: number, r?: string): number {
+/**
+ * Soma `total` de uma vez (a conta do estado é a de sempre) e anota as partes, cada uma com a sua contraparte: a
+ * herança que vai uma parte para quem joga e o resto para os irmãos. A última parte é o que falta para o total
+ * (inclusive o corte do limite do campo).
+ */
+export function somarRepartido(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, total: number, partes: { d: number; p: string; r?: string }[]): number {
+  const en = e.entidades[ent];
+  if (!en || total === 0 || !Number.isFinite(total)) return 0;
+  const antes = en.n[campo] ?? 0;
+  const depois = limitar(antes + total, defCampo(ent, campo)?.limites);
+  en.n[campo] = depois;
+  const d = depois - antes;
+  let anotado = 0;
+  partes.forEach((x, i) => {
+    const v = i === partes.length - 1 ? d - anotado : x.d;
+    anotar(reg, `${ent}.${campo}`, v, x.r, x.p);
+    anotado += v;
+  });
+  return d;
+}
+
+export function definirNumero(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, valor: number, r?: string, p?: string): number {
   const atual = e.entidades[ent]?.n[campo] ?? 0;
-  return somar(e, reg, ent, campo, valor - atual, r);
+  return somar(e, reg, ent, campo, valor - atual, r, p);
 }
 
 export function definirTexto(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, valor: string, r?: string): void {

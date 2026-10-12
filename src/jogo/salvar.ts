@@ -54,6 +54,8 @@ const Mudanca = z.object({
   q: z.optional(z.union([z.literal(1), z.literal(-1)])),
   t: z.optional(z.string()),
   r: z.optional(z.string()),
+  /** A contraparte do dinheiro (de quem veio, para quem foi). Save antigo não tem: o extrato só mostra o que veio depois. */
+  p: z.optional(z.string()),
 });
 
 const Causa = z.enum(['nascimento', 'escolha', 'acao', 'diretor', 'npc', 'regra']);

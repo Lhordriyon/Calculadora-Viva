@@ -59,6 +59,14 @@ export interface Mudanca {
   /** Novo valor de um campo de texto (ocupação, traço). */
   t?: string;
   r?: string;
+  /**
+   * Contraparte de uma mudança de dinheiro (conta, investimento ou dívida): de quem veio ou para quem foi. Uma
+   * entidade da vida ("mae", "empresa", "bem123"), uma conta de fora (`CONTAS_DE_FORA`: o mercado, o tesouro, o
+   * banco, os parentes) ou "reavaliacao", quando é preço que mudou sem dinheiro trocar de mão (a inflação, a
+   * cotação). Sem contraparte, é conversão dentro da mesma pessoa (aplicar, resgatar, pagar dívida), que soma zero
+   * na entrada (contas.ts › conferirContas).
+   */
+  p?: string;
 }
 
 export type TipoEntrada = 'nascimento' | 'evento' | 'acao' | 'dinheiro' | 'npc' | 'mundo' | 'linha' | 'regra' | 'morte';
