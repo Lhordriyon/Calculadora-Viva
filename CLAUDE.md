@@ -80,6 +80,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
+  diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
   pessoas.ts           criar, promover e matar personagens (luto, herança, viuvez)
   storylets.ts         elegibilidade, aplicar e apresentar storylets, escolher
@@ -182,3 +183,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem governa faz uma reforma por ano (a folha País mostra o efeito antes) | agente | sem limite, bastava acertar as políticas uma vez; com ele, cada reforma tem custo de oportunidade |
 | O primeiro voto é marco aos 18–21 e os outros aparecem por saliência (uns 2 por vida) | agente | votar a cada 4 anos repetia o mesmo cartão 15 vezes por vida; aos 16, o marco roubava um ano da adolescência |
 | Nenhum bloco é o melhor em tudo: cada um ganha numa estatística e perde em outra | agente | política fictícia e genérica; o jogo mostra trocas, não toma partido |
+| O mundo lá fora: quatro países fictícios com economia e relação próprias; alinhamento, tarifa, sanção, acordo e o dólar mudam o crescimento, a inflação e os setores daqui | agente (o dono pediu a próxima do roteiro) | o que o país decide lá fora precisa voltar para a vida de quem joga, como o resto do mundo |
+| Sanção e acordo nascem da relação e apontam a decisão que a levou até ali (o ato de quem governa, a posse ou a reeleição de um governo, a tarifa) | agente | o porquê vale lá fora também; sanção sorteada do nada seria ruído |
+| A sanção acaba quando a relação volta ou cansa (15% por ano) | agente | sem isso, um governo reeleito prendia o país numa sanção de 20 anos |
+| Quem governa faz um ato lá fora por ano (visita, acordo, romper), com a chance de sanção à vista antes | agente | como na reforma: custo de oportunidade e consequência à vista |

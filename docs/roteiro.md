@@ -18,10 +18,10 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 |---|---|---|
 | 1. Fundamentos | livro-razão causal; entidades com qualidades; storylets por saliência; validador (≥2 sistemas lendo cada campo, ações em ≥2 sistemas) | **feito** (incremento 1) |
 | 2. Agência | fichas de ação por ano; origem procedural | feito: fichas por ano (1 criança, 2 adolescente, 3 adulto, 2 depois dos 65), cada verbo abre todas as ações possíveis, 8 classes × 4 tipos de família × traços × linhagens, criar o personagem escolhendo tudo. Falta: famílias artística e com doença hereditária |
-| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, a fase como o nome do crescimento, governos fictícios, eleição, políticas), 12 setores com sensibilidade ao ciclo, lugar com região, desemprego e custo de vida. Falta: setores por UF, outros países |
+| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, a fase como o nome do crescimento, governos fictícios, eleição, políticas), quatro países de fora com economia e relação próprias, o dólar, 12 setores com sensibilidade ao ciclo, ao dólar e à tarifa, lugar com região, desemprego e custo de vida. Falta: setores por UF, morar em outro país |
 | 4. Pessoas | relações como arestas, NPCs com nível de detalhe, regras anuais, herdeiro | feito: família viva (regras anuais, traços, iniciativas, herança, viuvez), amor por regra, herdeiro e dinastia (filho, sobrinho, testamento). Falta: arestas entre NPCs, vários filhos, confiança e dívida |
 | 5. Riqueza e poder | empresas, ativos, status, cargos | feito: carreiras, carteira em cinco classes, o grupo de empresas (até cinco, subsidiárias, fusão, bolsa, a mesa de quem manda), bens, cargos e eleições, truste, brincar de deus. Falta: holding familiar como instrumento de herança |
-| 6. Sandbox | política, países, narradores, vida do dia | começo: política (o país vivo, o voto, governar pelas políticas). Falta: diplomacia, outros países, narradores |
+| 6. Sandbox | política, países, narradores, vida do dia | começo: política (o país vivo, o voto, governar pelas políticas) e diplomacia (alinhamento, tarifa, sanções, acordos, o ato de quem governa lá fora). Falta: morar em outro país, narradores |
 
 ## Incremento 1: família viva + origem que importa + uma ficha por ano
 
@@ -122,11 +122,23 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] Portões do incremento 9 (docs/decisoes.md)
 - [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
 
+## Incremento 10 (o roteiro; o dono pediu a próxima em 12/10): o mundo lá fora
+
+- [x] Quatro países fictícios (a Federação do Norte, a República Celeste, a Liga Atlântica, o Pacto do Sul), cada um com a economia dele, o que compra do Brasil, a relação com o Brasil e, às vezes, um rival
+- [x] Alinhamento: cada governo daqui se aproxima de uns e esfria com os rivais deles; a tarifa (a política de comércio exterior) mexe no potencial, na inflação e na relação com todos
+- [x] Sanção e acordo nascem da relação, acabam quando ela muda (a sanção também cansa) e apontam a decisão que a levou até ali
+- [x] A crise e o boom lá fora viram notícias e chegam aqui: no crescimento, na inflação, na fase (a notícia é a causa da virada) e no que o mundo compra
+- [x] O dólar anda com o mundo, com a dívida, com os juros e com a economia daqui; pesa na inflação, no investimento em dólar, nas empresas de cada setor e no salário em dólar
+- [x] Quem governa faz um ato lá fora por ano (visita de Estado, acordo, romper), com a chance de sanção à vista antes
+- [x] Folha País: a seção "Lá fora" (o dólar e cada país); 18 eventos e 13 linhas
+- [x] Portões do incremento 10 (docs/decisoes.md)
+- [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
+
 ## Próximos incrementos
 
-1. **Diplomacia.** Países fictícios com estatísticas próprias; comércio, câmbio, tarifas, sanções e alinhamento; o que o país decide lá fora muda o crescimento, o dólar e os setores daqui.
-2. **Holding familiar.** Pôr as empresas e os bens numa holding para a herança (menos imposto e nada de partilha que racha a empresa), com o custo de manter e o que ela trava.
-3. Depois: outros países para morar, crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
+1. **Holding familiar.** Pôr as empresas e os bens numa holding para a herança (menos imposto e nada de partilha que racha a empresa), com o custo de manter e o que ela trava.
+2. **Morar lá fora.** Emigrar para um dos países de fora (a vida continua lá, com a economia e o custo de vida dele, a saudade e a volta), e a empresa que exporta para lá.
+3. Depois: crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
 
 ## Como uma sessão continua
 

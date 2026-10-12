@@ -1,6 +1,6 @@
 # Conteúdo: formato e guia de escrita
 
-Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida, `90-investimentos` e `91-fortuna` para a carteira, as fortunas e a dinastia, `92-empresa`, `92-imperio` e `92-grupo` para a empresa de quem joga, quem manda nela e o grupo, `93-vida-adulta` e `94-gente` para o que enche os anos entre os 20 e os 70). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
+Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida, `90-investimentos` e `91-fortuna` para a carteira, as fortunas e a dinastia, `92-empresa`, `92-imperio` e `92-grupo` para a empresa de quem joga, quem manda nela e o grupo, `93-vida-adulta` e `94-gente` para o que enche os anos entre os 20 e os 70, `98-la-fora` para o mundo lá fora e o dólar, `99-pais` para o país vivo). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
 
 ## Storylet
 
@@ -31,7 +31,7 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 |---|---|
 | `id` | único, `minusculas_com_sublinhado` |
 | `tipo` | `evento`, `npc`, `acao` ou `jogada` |
-| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`); cada papel é uma instância diferente |
+| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente |
 | `preferir` | entre vários atores possíveis, o de menor (`-ator.vinculo`) ou maior (`+ator.dinheiro`) valor |
 | `idade` | faixa `[min, max]` de quem joga (obrigatória, exceto em `apenasAgendado`) |
 | `apenasAgendado` | só acontece quando outro efeito o agenda |
@@ -98,7 +98,11 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "pais.divida": { "min": 100 }, "pais.pobreza": { "min": 31 }, "pais.violencia": { "min": 24 }, // dívida (% do PIB), pobreza (%), homicídios por 100 mil
   "pais.saude": { "max": 38 }, "pais.educacao": { "min": 58 }, "pais.aprovacao": { "max": 34 }, // saúde e educação públicas (0 a 100), aprovação do governo (%)
   "pais.governo": ["frente_popular", "centrao"], "pais.governo": "voce", // quem governa (mundo.json › governos, 'regime' ou 'voce')
-  "pais.pol_social": { "min": 2 }, "pais.pol_impostos": { "max": 0 },  // políticas em vigor (0 baixo, 1 médio, 2 alto)
+  "pais.pol_social": { "min": 2 }, "pais.pol_impostos": { "max": 0 },  // políticas em vigor (0 baixo, 1 médio, 2 alto; pol_comercio 2 é a fronteira fechada)
+  "pais.cambio": { "min": 6 },                                   // o dólar, em reais de hoje (anda em volta de R$ 5)
+  "ator.relacao": { "max": 32 }, "ator.crescimento": { "min": 6 }, // com ator país de fora: a relação com o Brasil (0 a 100) e a economia dele (%)
+  "marcas": ["ator.sancao"], "marcas": ["celeste.acordo"], "marcas": ["federacao.crise"], // sanção contra o Brasil, acordo comercial, crise lá
+  "marcas": ["salario_em_dolar"],                                // o salário de quem joga anda com o dólar
   "pais.eleicao": true, "marcas": ["voto_bloco_liberal"],          // ano de eleição geral; o voto de quem joga (marcaHa para "anos depois")
   "marcas": ["iate"], "marcas": ["senhorio"],                   // bens: a qualidade de cada item (mundo.json › bens › marca); senhorio = tem imóvel alugado
   "familia": "religiosa", "traco": ["ansioso", "timido"],      // texto: igual a um, ou a um dentre vários
@@ -120,6 +124,16 @@ O validador confere os campos de texto de vocabulário fechado: `lugar.regiao` (
 A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, `pais.crise`; no normal, nenhuma). Storylet que a consulta tem a entrada que anunciou a fase como causa: o cartão da vida pode contar "o país entrou em crise → você perdeu o emprego".
 
 O nome de quem governa vem por trecho, pela condição `pais.governo` (veja `99-pais.json`): `{ "se": { "pais.governo": "centrao" }, "texto": "o centrão" }`. Personagens, partidos e eventos políticos são fictícios e genéricos: blocos em minúsculas, com artigo, sem nome próprio.
+
+## O mundo lá fora (incremento 10)
+
+Os quatro países de fora (`mundo.json › estrangeiros`) são entidades como as pessoas: `{ator}` dá o nome ("República Celeste"), `{ator:O|A} {ator}`, `d{ator:o|a} {ator}` e `n{ator:o|a} {ator}` concordam com o artigo ("o Pacto do Sul", "na Federação do Norte"), e `{ator.produtos}` diz o que ele compra do Brasil ("soja, minério e carne"). Com `"ator": ["federacao", "celeste", "liga", "pacto"]` e `"preferir": "+ator.relacao"`, o mesmo storylet acontece com o país que faz mais sentido. Fora de `ator`, o caminho é pelo id: `"celeste.relacao"`, `"federacao.acordo"`.
+
+- Cada país tem: `nome`, `genero`, `descricao` (a folha País mostra), `produtos`, `peso` no que o Brasil vende lá fora (a soma não passa de 1), o `crescimento` dele, o `desvio` e as chances de `crise` e de `boom`, o `rival` (opcional), os setores daqui que ele `compra` e a `relacao` de sempre.
+- As notícias (`mundo.json › noticias`: crise, boom, sanção e o fim dela, acordo e o fim dele, e os três atos de quem governa) são textos com o país como ator, e o resumo completa o porquê ("Porque aos 41, a República Celeste impôs sanções ao Brasil").
+- Os governos dizem de quem se aproximam (`aproxima`): a relação com eles sobe 15, e a com o rival deles cai 15. A política `comercio` (aberto, moderado, fechado) mexe no potencial, na inflação, na relação com todos (`relacao`: +5, 0, −8) e na aprovação.
+- Os setores dizem quanto sentem o dólar (`cambio`: o agro ganha com ele alto, o comércio perde) e a tarifa (`protecao`: a indústria ganha com a fronteira fechada). O investimento em dólar (`ativos › dolar`, `cambio: 1`) rende o quanto o dólar subiu.
+- Efeitos: `"ator.relacao": 10` (a cúpula, o embaixador), `"celeste.relacao": -15` (escolher lado numa guerra comercial). Sanção e acordo não se escrevem pelo conteúdo: nascem da relação.
 
 ## Efeitos
 
@@ -202,7 +216,7 @@ Os arquivos de storylet do incremento 4: `96-linhagens`, `97-carreiras` (profiss
 
 - `linhas.json`: `{ "idade": [30, 49], "texto": "...", "condicoes": {...}, "peso": 1 }`. Linha com condição é o jeito mais barato de a vida lembrar de escolhas antigas e do lugar onde se vive.
 - `mortes.json`: `{ "causa": "de ...", "categoria": "violencia", "idade": [18, 75], "condicoes": {...}, "peso": 2 }`. Categorias: velhice, coração, doença, acidente, violência.
-- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), as 6 classes (patrimônio, renda, poupança, saúde, ocupações com setor, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, faliu, morreu…), os 12 **setores** (quanto sentem o ciclo, quanto crescem, se são estáveis), as 4 **fases** da economia (o nome do crescimento: só os textos que anunciam cada uma e, em `choque`, os de quando foi a crise lá fora ou a alta das commodities), as 5 **políticas** (níveis, descrição para a folha País, o que cada nível faz nas contas, nas estatísticas e no bolso, e o texto da reforma ao subir e ao baixar), os **governos** (blocos fictícios com as políticas que adotam, a promessa, emendas e governabilidade; o regime não é eleito), nascimento e epitáfios genéricos. Em `mortes.json`, `daViolencia: true` marca as causas que só servem para a morte pela violência do país.
+- `mundo.json`: nomes, sobrenomes, bichos, cidades (com qualidades de lugar), os países de fora e as notícias deles (ver "O mundo lá fora"), as 8 classes (patrimônio, renda, poupança, saúde, ocupações com setor, negócio), os 4 tipos de família (vínculo, traços), os traços de personagem e de quem joga, como morrem os personagens (por idade), os textos das regras (adoeceu, perdeu o emprego, faliu, morreu…), os 12 **setores** (quanto sentem o ciclo, quanto crescem, se são estáveis, quanto sentem o dólar e a tarifa), as 4 **fases** da economia (o nome do crescimento: só os textos que anunciam cada uma e, em `choque`, os de quando foi a crise lá fora ou a alta das commodities), as 6 **políticas** (níveis, descrição para a folha País, o que cada nível faz nas contas, nas estatísticas e no bolso, e o texto da reforma ao subir e ao baixar), os **governos** (blocos fictícios com as políticas que adotam, a promessa, emendas e governabilidade; o regime não é eleito), nascimento e epitáfios genéricos. Em `mortes.json`, `daViolencia: true` marca as causas que só servem para a morte pela violência do país.
 
 ## Guia de escrita
 
