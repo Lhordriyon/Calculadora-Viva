@@ -105,14 +105,18 @@ export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefine
   return chips;
 }
 
-/** O balanço de um ano (a entrada invisível das regras): salário guardado, rendimentos, inflação, empresa. */
-export function balancoDoAno(regra: Entrada, participacao: number): number {
+/** A parte de quem joga em cada empresa, pelo lugar dela (um número só vale para todas). */
+export type Participacoes = number | Readonly<Record<string, number>>;
+
+/** O balanço de um ano (a entrada invisível das regras): salário guardado, rendimentos, inflação, empresas. */
+export function balancoDoAno(regra: Entrada, participacao: Participacoes): number {
   let total = 0;
   for (const m of regra.mudancas ?? []) {
     if (m.d === undefined) continue;
+    const empresa = /^(empresa\d*)\.valor$/.exec(m.c)?.[1];
     if (m.c === 'eu.dinheiro' || ATIVOS.some((a) => m.c === `eu.${a}`)) total += m.d;
     else if (m.c === 'eu.divida') total -= m.d;
-    else if (m.c === 'empresa.valor') total += m.d * participacao;
+    else if (empresa) total += m.d * (typeof participacao === 'number' ? participacao : (participacao[empresa] ?? 1));
     // Os bens também: o imóvel que valorizou e a dívida do financiamento que diminuiu.
     else if (/^bem\d+\.valor$/.test(m.c)) total += m.d;
     else if (/^bem\d+\.financiado$/.test(m.c)) total -= m.d;
@@ -127,7 +131,7 @@ export function alugueisDoAno(regra: Entrada): number {
 }
 
 /** O chip do balanço do ano, na primeira entrada visível do ano (só para adultos, só quando mexe). */
-export function chipDoBalanco(regra: Entrada | undefined, participacao: number): Chip | null {
+export function chipDoBalanco(regra: Entrada | undefined, participacao: Participacoes): Chip | null {
   if (!regra || regra.idade < 18) return null;
   const v = balancoDoAno(regra, participacao);
   if (Math.abs(v) < 1000) return null;

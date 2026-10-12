@@ -1,6 +1,6 @@
 import { conteudo } from '../conteudo.ts';
 import { defFase, faseDe } from '../motor/pais.ts';
-import { investidoDe, parteNaEmpresa, valorDosBens } from '../motor/campos.ts';
+import { empresasDe, investidoDe, parteNasEmpresas, valorDosBens } from '../motor/campos.ts';
 import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
 import { cargoDe } from '../motor/poder.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
@@ -26,7 +26,8 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
   const n = eu.n;
   const dinheiro = n['dinheiro'] ?? 0;
   const investido = investidoDe(eu);
-  const empresa = parteNaEmpresa(vida);
+  const empresa = parteNasEmpresas(vida);
+  const empresas = empresasDe(vida).length;
   const divida = n['divida'] ?? 0;
   const renda = n['renda'] ?? 0;
   const fase = faseDe(vida);
@@ -144,7 +145,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         )}
         {empresa >= 1 && (
           <span>
-            Empresa <b>{formatarDinheiro(empresa)}</b>
+            {empresas > 1 ? `${empresas} empresas` : 'Empresa'} <b>{formatarDinheiro(empresa)}</b>
           </span>
         )}
         {renda >= 1 && (

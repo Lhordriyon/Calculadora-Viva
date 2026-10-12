@@ -72,7 +72,12 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
   const historico = vida.historico;
   const inflacao = useMemo(() => avisosDeInflacao(historico), [historico]);
   const nomeDe = (papel: string) => vida.entidades[papel]?.nome;
-  const participacao = vida.entidades['empresa']?.n['participacao'] ?? 1;
+  // A parte de quem joga em cada empresa (a chave muda só quando alguma parte muda).
+  const partes = Object.values(vida.entidades)
+    .filter((x) => x.tipo === 'empresa')
+    .map((x) => `${x.id}:${x.n['participacao'] ?? 1}`)
+    .join(',');
+  const participacao = useMemo(() => Object.fromEntries(partes.split(',').filter(Boolean).map((p) => [p.split(':')[0]!, Number(p.split(':')[1])])), [partes]);
   const porId = useMemo(() => new Map(historico.map((h) => [h.id, h])), [historico]);
   // Cada ano tem uma entrada invisível com as regras (salário, rendimentos, inflação, empresa): o balanço dela vai na primeira entrada visível do ano.
   const balancos = useMemo(() => {

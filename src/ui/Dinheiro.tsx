@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'preact/hooks';
-import { bensDe, funcionariosDe, investidoDe, parteNaEmpresa, patrimonioTotal } from '../motor/campos.ts';
+import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { padraoDe } from '../motor/economia.ts';
-import { custoDaAquisicao, empresaDe, liquidoDe, setoresDeEmpresa, vendaDaParte } from '../motor/empresa.ts';
+import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
 import { ehDaEmpresa, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
-import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
+import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, MAX_EMPRESAS, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
-import type { EstadoVida } from '../motor/tipos.ts';
+import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { anos } from './formato.ts';
 
 interface Props {
@@ -52,69 +52,119 @@ function Quanto({ fracao, aoMudar, rotulo }: { fracao: number; aoMudar: (f: numb
   );
 }
 
-/** A empresa: abrir (ramo e capital) ou tocar a que existe (retirada, aporte, venda). */
-function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+/** Abrir uma empresa: o ramo e o capital (a primeira, ou mais uma no grupo). */
+function AbrirEmpresa({ vida, conteudo, aoOperar, outra }: Omit<Props, 'aoFechar'> & { outra: boolean }) {
   const setores = setoresDeEmpresa(conteudo);
   const [ramo, setRamo] = useState(() => {
     const atual = vida.entidades['eu']!.t['setor'] ?? '';
     return setores.some((s) => s.id === atual) ? atual : (setores[0]?.id ?? '');
   });
   const [fracao, setFracao] = useState(0.25);
-  const [vendendo, setVendendo] = useState(false);
-  const emp = empresaDe(vida);
-  const liquido = liquidoDe(vida);
-  const valor = Math.floor(liquido * fracao);
+  const valor = Math.floor(liquidoDe(vida) * fracao);
+  const op: Operacao = { tipo: 'abrir', setor: ramo, valor };
+  const motivo = motivoParaNaoOperar(vida, conteudo, op);
+  const def = setores.find((s) => s.id === ramo);
+  const risco = (def?.risco ?? 1) >= 1.3 ? 'balança muito' : (def?.risco ?? 1) <= 0.8 ? 'balança pouco' : 'balança na média';
+  const crise = (def?.ciclo ?? 1) >= 1.4 ? ' e sofre nas crises' : (def?.ciclo ?? 1) <= 0.5 ? ' e quase não sente as crises' : '';
+  return (
+    <>
+      <p class="nota">
+        {outra
+          ? 'Mais uma empresa: ela nasce dependendo de você, e o seu talento passa a se dividir entre as que dependem.'
+          : 'Ela cresce ou quebra com o ramo, com o país e com o quanto você a toca (o “Trabalhar” do ano). O dinheiro sai da conta e, se faltar, dos investimentos.'}
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="Ramo">
+        {setores.map((s) => (
+          <button type="button" class="chip-origem" key={s.id} aria-pressed={ramo === s.id} onClick={() => setRamo(s.id)}>
+            {capitalizar(s.nome)}
+          </button>
+        ))}
+      </div>
+      {def && (
+        <p class="nota">
+          {capitalizar(def.nome)}: uma pequena cresce uns {def.tracao ?? 4}% ao ano, {risco}
+          {crise}.
+        </p>
+      )}
+      <Quanto fracao={fracao} aoMudar={setFracao} rotulo="Capital" />
+      <button class="botao grande" type="button" disabled={motivo !== null} onClick={() => aoOperar(op)}>
+        Abrir com {formatarDinheiro(valor)}
+      </button>
+      {motivo && <p class="nota">Agora não: {motivo}.</p>}
+    </>
+  );
+}
 
-  if (!emp) {
-    const op: Operacao = { tipo: 'abrir', setor: ramo, valor };
-    const motivo = motivoParaNaoOperar(vida, conteudo, op);
-    const def = setores.find((s) => s.id === ramo);
-    const risco = (def?.risco ?? 1) >= 1.3 ? 'balança muito' : (def?.risco ?? 1) <= 0.8 ? 'balança pouco' : 'balança na média';
-    const crise = (def?.ciclo ?? 1) >= 1.4 ? ' e sofre nas crises' : (def?.ciclo ?? 1) <= 0.5 ? ' e quase não sente as crises' : '';
-    return (
-      <fieldset class="grupo">
-        <legend>Empresa</legend>
-        <p class="nota">Ela cresce ou quebra com o ramo, com o país e com o quanto você a toca (o “Trabalhar” do ano). O dinheiro sai da conta e, se faltar, dos investimentos.</p>
-        <div class="escolhas-origem" role="group" aria-label="Ramo">
-          {setores.map((s) => (
-            <button type="button" class="chip-origem" key={s.id} aria-pressed={ramo === s.id} onClick={() => setRamo(s.id)}>
-              {capitalizar(s.nome)}
-            </button>
-          ))}
-        </div>
-        {def && (
-          <p class="nota">
-            {capitalizar(def.nome)}: uma pequena cresce uns {def.tracao ?? 4}% ao ano, {risco}
-            {crise}.
-          </p>
-        )}
-        <Quanto fracao={fracao} aoMudar={setFracao} rotulo="Capital" />
-        <button class="botao grande" type="button" disabled={motivo !== null} onClick={() => aoOperar(op)}>
-          Abrir com {formatarDinheiro(valor)}
-        </button>
-        {motivo && <p class="nota">Agora não: {motivo}.</p>}
-      </fieldset>
-    );
-  }
+const subsidiariasTexto = (n: number): string => (n === 1 ? '1 subsidiária' : `${n.toLocaleString('pt-BR')} subsidiárias`);
 
+/** Uma empresa do grupo: o resumo numa linha; aberta, os números e o que dá para fazer com ela. */
+function CartaoDaEmpresa({
+  vida,
+  conteudo,
+  aoOperar,
+  emp,
+  aberta,
+  aoAlternar,
+  aoCuidar,
+}: Omit<Props, 'aoFechar'> & { emp: Entidade; aberta: boolean; aoAlternar: () => void; aoCuidar: () => void }) {
+  const [fracao, setFracao] = useState(0.25);
+  /** O que espera confirmação: vender, abrir capital ou fundir com outra (pelo lugar dela). */
+  const [confirmando, setConfirmando] = useState<string | null>(null);
+  const id = emp.id;
+  const principal = id === PRINCIPAL;
+  const grupo = empresasDe(vida);
   const n = emp.n;
   const ramoNome = conteudo.setores.get(emp.t['setor'] ?? '')?.nome ?? '';
   const parte = n['participacao'] ?? 1;
+  const subs = n['subsidiarias'] ?? 0;
+  const naBolsa = Boolean(emp.q['na_bolsa']);
+  const linha = `${capitalizar(ramoNome)} · ${formatarDinheiro(n['valor'] ?? 0)} · ${Math.round(parte * 100)}% seu${subs > 0 ? ` · ${subsidiariasTexto(subs)}` : ''}${naBolsa ? ' · na bolsa' : ''}`;
+  const cabeca = (
+    <button type="button" class="vaga" aria-expanded={aberta} onClick={aoAlternar}>
+      <b>
+        {emp.nome}
+        {principal && grupo.length > 1 ? ' · você cuida desta' : ''}
+      </b>
+      <small>{linha}</small>
+    </button>
+  );
+  if (!aberta) return cabeca;
+
   const idade = vida.ano - (emp.nascimento ?? vida.ano);
   const lucro = n['lucro'] ?? 0;
-  const aporte: Operacao = { tipo: 'aportar', valor };
+  const valor = Math.floor(liquidoDe(vida) * fracao);
+  const aporte: Operacao = { tipo: 'aportar', valor, empresa: id };
   const motivoAporte = motivoParaNaoOperar(vida, conteudo, aporte);
-  const venda = vendaDaParte(vida);
-  const preco = venda.preco;
+  const venda = vendaDaParte(vida, id);
   const dependencia = n['dependencia'] ?? 0;
-  const naEmpresa = jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s));
+  const naEmpresa = principal ? jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s)) : [];
   const pessoas = funcionariosDe(n['valor'] ?? 0);
-  const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir' });
+  const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir', empresa: id });
+  const subsidiarias = vendaDeSubsidiarias(vida, id);
+  const motivoBolsa = naBolsa ? null : motivoParaNaoOperar(vida, conteudo, { tipo: 'abrirCapital', empresa: id });
+  const outras = grupo.filter((x) => x.id !== id);
+  const sobrenome = vida.sobrenome.split(' ').at(-1) ?? vida.sobrenome;
+  const operar = (op: Operacao) => {
+    setConfirmando(null);
+    aoOperar(op);
+  };
+  const confirmar = (pergunta: string, sim: string, nao: string, op: Operacao) => (
+    <div class="confirmar">
+      <p>{pergunta}</p>
+      <div class="escolhas-origem">
+        <button type="button" class="botao" onClick={() => operar(op)}>
+          {sim}
+        </button>
+        <button type="button" class="botao secundario" onClick={() => setConfirmando(null)}>
+          {nao}
+        </button>
+      </div>
+    </div>
+  );
   return (
-    <fieldset class="grupo">
-      <legend>Empresa</legend>
+    <>
+      {cabeca}
       <div class="empresa-cartao">
-        <h3>{emp.nome}</h3>
         <p class="nota">
           {capitalizar(ramoNome)} · {idade === 0 ? 'aberta este ano' : `${anos(idade)} de vida`} · {pessoas === 1 ? 'só você' : `${pessoas.toLocaleString('pt-BR')} pessoas`}
         </p>
@@ -123,7 +173,7 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           <dd>{formatarDinheiro(n['valor'] ?? 0)}</dd>
           <dt>Sua parte</dt>
           <dd>
-            {Math.round(parte * 100)}% · {formatarDinheiro(parteNaEmpresa(vida))}
+            {Math.round(parte * 100)}% · {formatarDinheiro(parteNaEmpresa(vida, id))}
           </dd>
           {idade > 0 && (
             <>
@@ -137,8 +187,19 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           <dd>
             {Math.round(dependencia)}% · {nivelDeDependencia(dependencia)}
           </dd>
+          {subs > 0 && (
+            <>
+              <dt>Subsidiárias</dt>
+              <dd>{subs.toLocaleString('pt-BR')}</dd>
+            </>
+          )}
         </dl>
-        <p class="nota">Quanto mais ela depende de você, mais o seu talento pesa no ritmo, mais ela trava ao crescer e mais perde se você faltar. Quem compra também desconta.</p>
+        <p class="nota">
+          {principal
+            ? 'É desta que você cuida de perto: o “Trabalhar” do ano e as decisões de quem manda vão para ela.'
+            : 'Esta anda com a diretoria; o “Trabalhar” do ano vai para a que você cuida de perto.'}{' '}
+          {naBolsa ? 'Na bolsa, o valor anda também com o humor do mercado, e quem compra não desconta o quanto ela depende de você.' : 'Quanto mais ela depende de você, mais o seu talento pesa no ritmo, mais ela trava ao crescer e mais perde se você faltar.'}
+        </p>
       </div>
       {naEmpresa.length > 0 && (
         <>
@@ -155,7 +216,7 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
             class="chip-origem"
             key={r}
             aria-pressed={Math.abs((n['retirada'] ?? 0) - r) < 1e-9}
-            onClick={() => Math.abs((n['retirada'] ?? 0) - r) >= 1e-9 && aoOperar({ tipo: 'retirada', fracao: r })}
+            onClick={() => Math.abs((n['retirada'] ?? 0) - r) >= 1e-9 && aoOperar({ tipo: 'retirada', fracao: r, empresa: id })}
           >
             {RETIRADA_ROTULO[i]}
           </button>
@@ -171,39 +232,132 @@ function Empresa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         Pôr {formatarDinheiro(valor)} na empresa
       </button>
       {motivoAporte && <p class="nota">Agora não: {motivoAporte}.</p>}
-      <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir' })}>
-        Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida))})
+      <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir', empresa: id })}>
+        Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida, id))})
       </button>
       <p class="nota">
         {motivoCompra
           ? `Comprar concorrentes: ${motivoCompra}.`
-          : `${emp.q['truste'] ? 'Já é um truste: mais compras, mais mercado (e mais olhos do governo).' : `Três compras fazem um truste (${emp.q['aquisicoes']?.v ?? 0} até agora).`}`}
+          : `Ela vira subsidiária, com as subsidiárias que já tinha. ${emp.q['truste'] ? 'Já é um truste: mais compras, mais mercado (e mais olhos do governo).' : `Três compras fazem um truste (${emp.q['aquisicoes']?.v ?? 0} até agora).`}`}
       </p>
-      {vendendo ? (
-        <div class="confirmar">
-          <p>
-            Vender a sua parte por {formatarDinheiro(preco)}
-            {porQueOPreco(venda, preco, parteNaEmpresa(vida))}?
+      {subsidiarias.vendidas > 0 && (
+        <button class="botao secundario" type="button" disabled={vida.pendente !== null} onClick={() => aoOperar({ tipo: 'venderSubsidiaria', empresa: id })}>
+          Vender {subsidiarias.vendidas === 1 ? 'uma subsidiária' : `${subsidiarias.vendidas} subsidiárias`} ({formatarDinheiro(subsidiarias.preco)})
+        </button>
+      )}
+      {!naBolsa &&
+        (confirmando === 'bolsa' ? (
+          confirmar(
+            `Levar ${aEmpresa(emp)} para a bolsa? Ela passa a valer mais, você vende um pedaço da sua parte por uns ${formatarDinheiro(vendaNaEstreia(vida, id))} na estreia e ela passa a depender menos de você. O valor passa a andar também com o humor da bolsa.`,
+            'Abrir capital',
+            'Agora não',
+            { tipo: 'abrirCapital', empresa: id },
+          )
+        ) : (
+          <>
+            <button class="botao secundario" type="button" disabled={motivoBolsa !== null || vida.pendente !== null} onClick={() => setConfirmando('bolsa')}>
+              Abrir o capital
+            </button>
+            {motivoBolsa && <p class="nota">Bolsa: {motivoBolsa}.</p>}
+          </>
+        ))}
+      {outras.length > 0 && (
+        <>
+          <p class="nota">
+            <b>Fundir.</b> A outra vira subsidiária desta. No mesmo ramo, a fusão corta custos e fecha o mercado; em ramos diferentes, vira o Grupo {sobrenome}, e o mercado desconta conglomerado.
           </p>
-          <div class="escolhas-origem">
-            <button
-              type="button"
-              class="botao"
-              onClick={() => {
-                setVendendo(false);
-                aoOperar({ tipo: 'vender' });
-              }}
-            >
-              Vender
-            </button>
-            <button type="button" class="botao secundario" onClick={() => setVendendo(false)}>
-              Ficar com ela
-            </button>
+          <div class="escolhas-origem" role="group" aria-label="Fundir com">
+            {outras.map((x) => (
+              <button type="button" class="chip-origem" key={x.id} aria-pressed={confirmando === `fundir:${x.id}`} disabled={vida.pendente !== null} onClick={() => setConfirmando(`fundir:${x.id}`)}>
+                Trazer {aEmpresa(x)}
+              </button>
+            ))}
           </div>
-        </div>
+          {outras.map((x) =>
+            confirmando === `fundir:${x.id}`
+              ? confirmar(`Trazer ${aEmpresa(x)} para dentro ${aEmpresa(emp, 'da')}? Ela deixa de ser uma empresa à parte e vira subsidiária.`, 'Fundir', 'Deixar separadas', {
+                  tipo: 'fundir',
+                  empresa: id,
+                  com: x.id,
+                })
+              : null,
+          )}
+        </>
+      )}
+      {!principal && (
+        <button
+          class="botao secundario"
+          type="button"
+          disabled={motivoParaNaoOperar(vida, conteudo, { tipo: 'cuidar', empresa: id }) !== null}
+          onClick={() => {
+            aoCuidar();
+            aoOperar({ tipo: 'cuidar', empresa: id });
+          }}
+        >
+          Cuidar desta de perto
+        </button>
+      )}
+      {confirmando === 'vender' ? (
+        confirmar(`Vender a sua parte por ${formatarDinheiro(venda.preco)}${porQueOPreco(venda, venda.preco, parteNaEmpresa(vida, id))}?`, 'Vender', 'Ficar com ela', { tipo: 'vender', empresa: id })
       ) : (
-        <button class="botao secundario" type="button" disabled={vida.pendente !== null} onClick={() => setVendendo(true)}>
+        <button class="botao secundario" type="button" disabled={vida.pendente !== null} onClick={() => setConfirmando('vender')}>
           Vender a empresa
+        </button>
+      )}
+    </>
+  );
+}
+
+/** As empresas de quem joga: abrir a primeira, ou a árvore do grupo (cada empresa com as subsidiárias dela) e abrir mais uma. */
+function Grupo({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [aberta, setAberta] = useState<string | null>(PRINCIPAL);
+  const [abrindo, setAbrindo] = useState(false);
+  const empresas = empresasDe(vida);
+  // Abriu (ou vendeu, ou fundiu): o formulário de abrir fecha.
+  useEffect(() => setAbrindo(false), [empresas.length]);
+  if (empresas.length === 0) {
+    return (
+      <fieldset class="grupo">
+        <legend>Empresa</legend>
+        <AbrirEmpresa vida={vida} conteudo={conteudo} aoOperar={aoOperar} outra={false} />
+      </fieldset>
+    );
+  }
+  const sobrenome = vida.sobrenome.split(' ').at(-1) ?? vida.sobrenome;
+  const subs = empresas.reduce((s, x) => s + (x.n['subsidiarias'] ?? 0), 0);
+  const carga = cargaDaMesa(vida);
+  return (
+    <fieldset class="grupo">
+      <legend>{empresas.length > 1 ? `Grupo ${sobrenome}` : 'Empresa'}</legend>
+      {empresas.length > 1 && (
+        <p class="nota">
+          {empresas.length} empresas · sua parte {formatarDinheiro(parteNasEmpresas(vida))}
+          {subs > 0 ? ` · ${subsidiariasTexto(subs)}` : ''}.
+          {carga > 1.05 ? ` A sua mesa está a ${Math.round(carga * 100)}%: com mais de uma empresa dependendo de você, o seu talento se divide entre elas. Delegar libera a mesa.` : ''}
+        </p>
+      )}
+      <ul class="vagas" aria-label="Empresas">
+        {empresas.map((emp) => (
+          <li key={emp.id}>
+            <CartaoDaEmpresa
+              vida={vida}
+              conteudo={conteudo}
+              aoOperar={aoOperar}
+              emp={emp}
+              aberta={aberta === emp.id}
+              aoAlternar={() => setAberta(aberta === emp.id ? null : emp.id)}
+              aoCuidar={() => setAberta(PRINCIPAL)}
+            />
+          </li>
+        ))}
+      </ul>
+      {!lugarLivre(vida) ? (
+        <p class="nota">São {MAX_EMPRESAS} empresas, o máximo de uma vez: venda ou junte duas para abrir outra.</p>
+      ) : abrindo ? (
+        <AbrirEmpresa vida={vida} conteudo={conteudo} aoOperar={aoOperar} outra />
+      ) : (
+        <button class="botao secundario" type="button" onClick={() => setAbrindo(true)}>
+          Abrir outra empresa
         </button>
       )}
     </fieldset>
@@ -583,7 +737,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
         </p>
         {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
-        {vida.idade >= 18 && <Empresa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
+        {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <Investimentos vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         <PadraoDeVida vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
