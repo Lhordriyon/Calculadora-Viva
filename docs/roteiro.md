@@ -8,7 +8,7 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 
 ## Invariantes
 
-1. **Um formato de estado.** Pessoa, bicho, lugar e país (depois empresa) são entidades com id, tipo, campos e qualidades. Condições e efeitos leem e escrevem caminhos (`mae.saude`, `lugar.desemprego`).
+1. **Um formato de estado.** Pessoa, bicho, lugar, país e empresa são entidades com id, tipo, campos e qualidades. Condições e efeitos leem e escrevem caminhos (`mae.saude`, `lugar.desemprego`).
 2. **Um formato de conteúdo.** Evento (o diretor escolhe), ação (o jogador escolhe) e iniciativa de personagem (a regra do personagem escolhe) são o mesmo storylet.
 3. **Uma causa por mutação.** Toda mudança de estado registra quem a causou: escolha, ação, diretor, personagem ou regra. Pontos de virada e a crônica saem desse livro-razão.
 
@@ -20,7 +20,7 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 | 2. Agência | fichas de ação por ano; origem procedural | feito: fichas por ano (1 criança, 2 adolescente, 3 adulto, 2 depois dos 65), cada verbo abre todas as ações possíveis, 8 classes × 4 tipos de família × traços × linhagens, criar o personagem escolhendo tudo. Falta: famílias artística e com doença hereditária |
 | 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, a fase como o nome do crescimento, governos fictícios, eleição, políticas), 12 setores com sensibilidade ao ciclo, lugar com região, desemprego e custo de vida. Falta: setores por UF, outros países |
 | 4. Pessoas | relações como arestas, NPCs com nível de detalhe, regras anuais, herdeiro | feito: família viva (regras anuais, traços, iniciativas, herança, viuvez), amor por regra, herdeiro e dinastia (filho, sobrinho, testamento). Falta: arestas entre NPCs, vários filhos, confiança e dívida |
-| 5. Riqueza e poder | empresas, ativos, status, cargos | feito: carreiras, carteira em cinco classes, empresa (quem manda nela), bens, cargos e eleições, truste, brincar de deus. Falta: grupo de empresas (holdings, subsidiárias, fusões) |
+| 5. Riqueza e poder | empresas, ativos, status, cargos | feito: carreiras, carteira em cinco classes, o grupo de empresas (até cinco, subsidiárias, fusão, bolsa, a mesa de quem manda), bens, cargos e eleições, truste, brincar de deus. Falta: holding familiar como instrumento de herança |
 | 6. Sandbox | política, países, narradores, vida do dia | começo: política (o país vivo, o voto, governar pelas políticas). Falta: diplomacia, outros países, narradores |
 
 ## Incremento 1: família viva + origem que importa + uma ficha por ano
@@ -109,10 +109,23 @@ Ritmo combinado com o dono (06/10/2026): incrementos que vão ao ar inteiros (jo
 - [x] Portões do incremento 8 (docs/decisoes.md)
 - [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
 
+## Incremento 9 (pedido do dono em 11/10): o grupo de empresas
+
+- [x] Até cinco empresas de uma vez; a que quem joga cuida de perto é a de que o conteúdo fala (os eventos, as jogadas de quem manda e o "Trabalhar" do ano), e trocar é decisão dele
+- [x] A concorrente comprada vira subsidiária, com as subsidiárias dela (o caminho para as centenas); vender subsidiárias dá dinheiro sem largar a empresa
+- [x] Fundir duas empresas de quem joga: a absorvida vira subsidiária; no mesmo ramo, corte de custos e um passo para o truste; em ramos diferentes, o grupo da família, com desconto de conglomerado
+- [x] Abrir o capital de cada uma (a mesma mecânica do evento): vale mais, vende um pedaço na estreia, depende menos de quem manda e passa a andar com o humor da bolsa
+- [x] A mesa de quem manda: o talento se divide entre as empresas que dependem dele; a outra que afunda vem para a mesa (a quebra é dela)
+- [x] O grupo inteiro passa ao herdeiro; o conglomerado dá influência
+- [x] A seção Empresa da folha Dinheiro vira a árvore do grupo (uma linha por empresa; tocar abre os números e o que dá para fazer)
+- [x] O nome da empresa concorda com o artigo em todo texto ("o Instituto Silva", "a Clínica Silva", "o Grupo Silva")
+- [x] Portões do incremento 9 (docs/decisoes.md)
+- [ ] O dono joga 3 vidas e conta o que viu de inédito na 3ª
+
 ## Próximos incrementos
 
-1. **Grupo de empresas.** Mais de uma empresa, holdings e subsidiárias, comprar concorrentes como subsidiárias, fundir, vender ou abrir o capital de cada uma; a seção Empresa vira a árvore do grupo.
-2. **Diplomacia.** Países fictícios com estatísticas próprias; comércio, câmbio, tarifas, sanções e alinhamento; o que o país decide lá fora muda o crescimento, o dólar e os setores daqui.
+1. **Diplomacia.** Países fictícios com estatísticas próprias; comércio, câmbio, tarifas, sanções e alinhamento; o que o país decide lá fora muda o crescimento, o dólar e os setores daqui.
+2. **Holding familiar.** Pôr as empresas e os bens numa holding para a herança (menos imposto e nada de partilha que racha a empresa), com o custo de manter e o que ela trava.
 3. Depois: outros países para morar, crime com consequência, relacionamentos com mais gente (vários filhos, ex) e a velhice com mais escolhas.
 
 ## Como uma sessão continua

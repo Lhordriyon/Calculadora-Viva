@@ -1,6 +1,6 @@
 # Conteúdo: formato e guia de escrita
 
-Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida, `90-investimentos` e `91-fortuna` para a carteira, as fortunas e a dinastia, `92-empresa` para a empresa de quem joga, `93-vida-adulta` e `94-gente` para o que enche os anos entre os 20 e os 70). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
+Todo conteúdo é dado. Os storylets ficam em `conteudo/storylets/*.json` (por tema: `00-infancia` a `40-velhice`, `50-familia` e `55-relacoes` para iniciativas de personagens, `60-acoes` para a ficha do ano, `70-origem` e `80-variedade` para o que depende de classe, família, região e traço, `85-carreira` a `89-lugar-e-fase` para curso, setor, ciclo da economia, riqueza e padrão de vida, `90-investimentos` e `91-fortuna` para a carteira, as fortunas e a dinastia, `92-empresa`, `92-imperio` e `92-grupo` para a empresa de quem joga, quem manda nela e o grupo, `93-vida-adulta` e `94-gente` para o que enche os anos entre os 20 e os 70). Depois de mexer, rode `npm run validar`; antes de subir, `npm run tunel`.
 
 ## Storylet
 
@@ -86,6 +86,8 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "padrao": "luxo", "perfil": ["arrojado", "moderado"],        // padrão de vida e perfil de investidor que o jogador escolheu
   "empresa.valor": true, "empresa.tracao": { "min": 12 },      // a empresa de quem joga (qualquer condição sobre ela, menos false, exige que ela exista)
   "empresa.setor": "tecnologia", "marcas": ["empresa.na_bolsa"], "empresa.valor": false, // sem empresa
+  "empresas": { "min": 2 }, "empresa.subsidiarias": { "min": 10 },     // o grupo: quantas empresas quem joga tem e as subsidiárias da que ele cuida
+  "marcaHa": [{ "marca": "empresa.fundiu", "min": 1, "max": 3 }],       // de 1 a 3 anos depois de uma fusão
   "pais.ret_acoes": { "max": -20 },                            // quanto cada classe de investimento rendeu no ano, em %
   "carreira": ["medico", "enfermeiro"], "nivel": { "min": 2 },   // profissão escolhida (mundo.json › carreiras) e o cargo nela
   "influencia": { "min": 30 }, "fama": { "min": 40 },            // poder: 0 a 100
@@ -147,6 +149,8 @@ O nome de quem governa vem por trecho, pela condição `pais.governo` (veja `99-
 | `rodada` | `{ "parte": 0.2 }` | investidores compram 20% pelo valor de agora: o dinheiro entra na empresa e a parte de quem joga encolhe; `{rodada}` no texto |
 | `venderEmpresa` | `{ "fracao": 1, "premio": 1.5 }` | vende a fração da parte de quem joga pelo valor × prêmio; vendeu tudo, a empresa sai da vida; `{venda}` no texto |
 | `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
+| `venderSubsidiarias` | `{ "quantas": 1, "premio": 1.5 }` ou `{ "fracao": 0.3 }` | a empresa vende subsidiárias pelo que valem × prêmio (cada uma vale valor ÷ (subsidiárias + 2)); a parte de quem joga vira dinheiro; `{venda}` no texto |
+| `abrirCapital` | `true` | a empresa vai para a bolsa, como na folha: vale 20% mais, quem joga vende 20% da parte na estreia (`{venda}`), a dependência cai 15 e ela ganha `empresa.na_bolsa` |
 | caminhos de poder | `"eu.influencia": 5`, `"eu.popularidade": -8`, `"eu.fama": 10`, `"eu.cargo": { "definir": "rei" }` | a coroa e o Regime entram assim; eleição é pela folha Carreira |
 | caminhos de carreira | `"eu.carreira": { "definir": "ator" }`, `"eu.nivel": 1` | dá uma profissão (com `renda` e `eu.setor`); trocar `eu.setor` ou zerar a renda sem `eu.carreira` encerra a carreira |
 | `pais.impulso` | `1.5` | decreto que aquece a economia (mais crescimento, inflação e dívida); some pela metade a cada ano |
@@ -159,7 +163,7 @@ A qualidade `empresa.sustenta` (gravada junto com `abrirEmpresa`) diz que a rend
 ## Texto
 
 - Globais: `{nome}`, `{sobrenome}`, `{nomeCompleto}`, `{cidade}`, `{uf}`, `{idade}`, `{ano}`, `{dinheiro}`, `{patrimonio}`, `{salario}`, `{divida}`.
-- Personagens pelo papel (`{mae}`, `{avo}`, `{amor}`, `{pet}`) e pelo ator (`{ator}`); a empresa pelo nome (`{empresa}`, `{empresa.valor}`, `{empresa.funcionarios}`), só em texto cujo storylet exige a empresa ou que a abre. Caminhos: `{mae.ocupacao}`, `{lugar.nome}`, `{ator.quem}` ("sua mãe", "seu avô", "sua amiga Ana"). Campos em reais saem formatados (R$ 4,5 mil).
+- Personagens pelo papel (`{mae}`, `{avo}`, `{amor}`, `{pet}`) e pelo ator (`{ator}`); a empresa pelo nome (`{empresa}`, `{empresa.valor}`, `{empresa.funcionarios}`, `{empresa.subsidiarias}`), só em texto cujo storylet exige a empresa ou que a abre. O artigo concorda com o nome: `{empresa:O|A} {empresa}`, `d{empresa:o|a} {empresa}`, `n{empresa:o|a} {empresa}` ("o Instituto Silva", "da Clínica Silva", "no Grupo Silva"). Caminhos: `{mae.ocupacao}`, `{lugar.nome}`, `{ator.quem}` ("sua mãe", "seu avô", "sua amiga Ana"). Campos em reais saem formatados (R$ 4,5 mil).
 - `{o|a}` concorda com quem joga; `{ator:o|a}` e `{amigo:o amigo|a amiga}` concordam com um personagem.
 - `[uma|outra|mais uma]` sorteia uma alternativa (pode conter variáveis): variedade barata entre vidas.
 - **Trechos** escolhem um pedaço de texto pelo estado: o primeiro cuja condição vale; o último não tem condição (é o padrão).

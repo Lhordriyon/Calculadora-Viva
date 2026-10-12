@@ -90,7 +90,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   contexto.ts          variáveis de texto lidas do estado ({mae.ocupacao}, {ator.quem}, trechos)
   economia.ts          dinheiro em reais de hoje, inflação, juros, crédito, padrão de vida, gasto da velhice
   carteira.ts          investimentos por classe, mercado do ano, perfil, operações da folha Dinheiro
-  empresa.ts           a empresa de quem joga: abrir, crescer, retirar, aportar, vender, comprar concorrente, quebrar
+  empresa.ts           o grupo de quem joga (até 5 empresas): abrir, crescer, retirar, aportar, vender, comprar concorrente (subsidiária), fundir, bolsa, a mesa de quem manda, quebrar
   bens.ts              imóveis, veículos, luxo e mídia: comprar, financiar, morar, alugar, vender; o ano dos bens
   carreira.ts          profissões (mundo.json › carreiras): vaga, cargo, promoção em pirâmide, fama
   poder.ts             influência, eleições, mandato, popularidade, queda do cargo
@@ -173,6 +173,9 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | O mundo tem tamanho: empresa até ~R$ 20 tri, investimento que rende até R$ 5 tri, no máximo 3 milhões de funcionários | agente | o dono viu 957 milhões de funcionários e uma herdeira com R$ 357 tri em títulos; estado impossível quebra o Brasil real |
 | Popularidade é a imagem pública: pesa em toda eleição e segue para o mandato | agente | 103 efeitos do conteúdo mexiam nela sem consequência para quem não tinha cargo |
 | A empresa depende de quem manda (talento, freio do tamanho, morte, venda); só decisões mudam isso | agente | das 250 ideias do dono, as que mudam a história e não só a despesa: mandar sem centralizar e construir o que sobrevive a você |
+| Mais de uma empresa, empresa-mãe com centenas de subsidiárias, fusões; vender ou abrir o capital de cada uma | dono | "eu só posso ter uma empresa": o grupo vira história (comprar, juntar, listar, vender aos pedaços) |
+| Até 5 empresas; o conteúdo fala da que quem joga cuida de perto, e trocar é decisão dele; subsidiárias são um número dentro do valor | agente | a árvore do grupo cabe no celular e o conteúdo inteiro continua valendo sem reescrever; centenas de subsidiárias como entidades seriam uma tela de gestão |
+| A mesa de quem manda: o talento se divide entre as empresas que dependem dele | agente | sem custo, ter cinco empresas era só somar; com ele, crescer o grupo pede delegar |
 | Todo acontecimento mostra o porquê (a causa de um ano anterior) na linha do tempo | agente | a causalidade é o diferencial que o dono pediu para o jogo inteiro; o cartão final contava tarde demais |
 | A linha do tempo mostra as entradas de regra que têm texto (promoção, fim de mandato); só o resumo do ano fica escondido | agente | o porquê de cada mudança precisa estar à vista |
 | A fase do ciclo é o nome do crescimento, com folga para sair dela | agente | sem folga, o país trocava de fase a cada três anos e a linha do tempo virava noticiário |
