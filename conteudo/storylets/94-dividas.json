@@ -1,0 +1,84 @@
+[
+  {
+    "id": "cobranca_no_telefone",
+    "idade": [18, 90],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 3,
+    "condicoes": { "marcas": ["nome_sujo"] },
+    "texto": "O telefone toca às sete da manhã. É a assessoria de cobrança, com uma voz [gravada que sabe o seu CPF de cor|simpática demais para quem quer o seu dinheiro|que já te chama pelo apelido]. A dívida está em {divida} e cresce de mora.",
+    "resumo": "foi caçad{o|a} pela cobrança no telefone",
+    "escolhas": [
+      {
+        "texto": "Atender e fechar um acordo",
+        "resumo": "fechou um acordo com a cobrança",
+        "resultado": {
+          "texto": "Meia hora de música de espera e um acordo em parcelas. O desconto foi o que o atraso rendeu; o nome sai do cadastro assim que nada mais estiver atrasado.",
+          "efeitos": { "renegociar": {}, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Bloquear o número",
+        "resumo": "bloqueou o número da cobrança",
+        "resultado": {
+          "texto": "Ligaram de outro número. E de outro. Você aprendeu a não atender ninguém que não esteja nos contatos.",
+          "efeitos": { "felicidade": -1, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aluguel_com_nome_sujo",
+    "idade": [20, 75],
+    "peso": 3,
+    "condicoes": { "marcas": ["nome_sujo"], "semMarcas": ["casa_propria"] },
+    "texto": "A imobiliária consultou o seu CPF. O apartamento que você queria \"acabou de ser alugado\", cinco minutos depois da consulta.",
+    "resumo": "perdeu um aluguel por causa do nome sujo",
+    "escolhas": [
+      {
+        "texto": "Pedir para {amigo} ser fiador",
+        "resumo": "pediu para {amigo} ser fiador do aluguel",
+        "resultado": {
+          "texto": "{amigo} assinou, leu a cláusula da fiança duas vezes e passou a perguntar, todo mês, se o aluguel estava em dia.",
+          "efeitos": { "amigo.vinculo": -6, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Alugar um lugar pior, de quem não consulta nada",
+        "resumo": "foi morar num lugar pior, de quem não consulta CPF",
+        "resultado": {
+          "texto": "O dono nem pediu documento, só três meses adiantados. A janela dá para um muro; o chuveiro, para a vida.",
+          "efeitos": { "custoFator": 0.9, "felicidade": -3, "saude": -0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "feirao_limpa_nome",
+    "idade": [18, 90],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 4,
+    "condicoes": { "marcas": ["nome_sujo"], "divida": { "min": 2000 } },
+    "texto": "O feirão de limpar o nome chegou ao [shopping|ginásio da cidade|estacionamento do supermercado]: fila na porta, senha na mão e desconto \"de até noventa por cento\" no cartaz.",
+    "resumo": "foi ao feirão de limpar o nome",
+    "escolhas": [
+      {
+        "texto": "Pegar a senha e negociar",
+        "resumo": "limpou o nome num feirão de dívidas",
+        "resultado": {
+          "texto": "Não foram noventa, foram sessenta por cento. Você saiu com um acordo, uma senha de recordação e o nome a caminho de limpar.",
+          "efeitos": { "renegociar": { "desconto": 0.6 }, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Esperar a dívida caducar",
+        "resumo": "resolveu esperar a dívida caducar",
+        "resultado": {
+          "texto": "Você fez as contas: em cinco anos de atraso, a dívida caduca. Até lá, nada de crédito, nada de financiamento e muita música de espera.",
+          "efeitos": { "inteligencia": 1, "felicidade": -1 }
+        }
+      }
+    ]
+  }
+]

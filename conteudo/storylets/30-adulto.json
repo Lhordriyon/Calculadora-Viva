@@ -977,7 +977,7 @@
         "resumo": "renegociou uma dívida que tinha virado bola de neve",
         "resultado": {
           "texto": "Você assinou o acordo, chorou um pouco e fez uma planilha. Pela primeira vez em anos, a conta fecha.",
-          "efeitos": { "dividaFator": 0.3, "felicidade": 4, "removerMarcas": ["nome_sujo"] }
+          "efeitos": { "renegociar": { "desconto": 0.7 }, "felicidade": 4 }
         }
       },
       {
@@ -995,7 +995,7 @@
         "resumo": "fingiu que a dívida não existia",
         "resultado": {
           "texto": "O telefone toca às oito da manhã todo dia. Você atende fingindo ser outra pessoa.",
-          "efeitos": { "felicidade": 1, "marcas": ["nome_sujo"] }
+          "efeitos": { "felicidade": 1 }
         }
       }
     ]

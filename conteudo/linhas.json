@@ -294,6 +294,21 @@
     "condicoes": { "divida": { "min": 20000 } }
   },
   {
+    "idade": [18, 90],
+    "texto": "Mais um ano com o nome sujo. O banco manda lembranças por SMS; você não responde.",
+    "condicoes": { "marcas": ["nome_sujo"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "Tentou parcelar uma geladeira e a loja consultou o seu CPF. A geladeira continua na loja.",
+    "condicoes": { "marcas": ["nome_sujo"] }
+  },
+  {
+    "idade": [18, 90],
+    "texto": "Pagou tudo à vista o ano inteiro. Não por virtude: com o nome sujo, não havia outro jeito.",
+    "condicoes": { "marcas": ["nome_sujo"] }
+  },
+  {
     "idade": [25, 100],
     "texto": "Descobriu que gente rica também reclama, só que de coisas mais caras.",
     "condicoes": { "patrimonio": { "min": 500000 } }

@@ -330,7 +330,7 @@
   {
     "id": "nome_sujo",
     "apenasAgendado": true,
-    "condicoes": { "marcas": ["rotativo"] },
+    "condicoes": { "marcas": ["nome_sujo"] },
     "texto": "Chegou uma carta: seu nome foi negativado. Você nem lembra direito do que comprou. A dívida lembra de tudo.",
     "resumo": "teve o nome negativado",
     "escolhas": [
@@ -338,16 +338,16 @@
         "texto": "Negociar no feirão de dívidas",
         "resumo": "renegociou a dívida num feirão",
         "resultado": {
-          "texto": "Desconto de setenta por cento e uma lição que vale mais que isso.",
-          "efeitos": { "dinheiro": -1500, "divida": -8000, "inteligencia": 1, "removerMarcas": ["rotativo"] }
+          "texto": "Desconto de feirão, parcela que cabe e uma lição que vale mais que isso.",
+          "efeitos": { "renegociar": {}, "inteligencia": 1, "removerMarcas": ["rotativo"] }
         }
       },
       {
         "texto": "Ignorar a carta",
         "resumo": "ignorou o nome sujo",
         "resultado": {
-          "texto": "A carta foi para a gaveta. O seu nome foi para a lista de todos os bancos do país.",
-          "efeitos": { "felicidade": 1, "removerMarcas": ["rotativo"], "marcas": ["nome_sujo"] }
+          "texto": "A carta foi para a gaveta. O seu nome continua na lista de todos os bancos do país, e a dívida, rendendo mora.",
+          "efeitos": { "felicidade": 1, "removerMarcas": ["rotativo"] }
         }
       }
     ]

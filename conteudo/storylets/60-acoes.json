@@ -679,7 +679,7 @@
     "intervalo": 3,
     "texto": "Você ligou para o banco, esperou quarenta minutos ouvindo música de espera e saiu com um acordo melhor que o rotativo.",
     "resumo": "renegociou a dívida do cartão",
-    "efeitos": { "dividaFator": 0.75, "felicidade": 0.25 }
+    "efeitos": { "renegociar": { "desconto": 0.25 }, "felicidade": 0.25 }
   },
   {
     "id": "previdencia",

@@ -466,7 +466,7 @@
         "resumo": "renegociou a dívida no auge dos juros",
         "resultado": {
           "texto": "Duas horas de espera, três atendentes e um acordo com parcela que cabe. O banco ainda sai ganhando, mas menos.",
-          "efeitos": { "dividaFator": 0.85, "felicidade": -1 }
+          "efeitos": { "renegociar": { "desconto": 0.15 }, "felicidade": -1 }
         }
       },
       {

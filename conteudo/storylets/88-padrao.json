@@ -96,8 +96,8 @@
         },
         "fracasso": {
           "texto": "O cartão foi recusado no meio do jantar com os amigos do clube. A conta foi dividida; a vergonha, não.",
-          "resumo": "teve o cartão recusado na frente dos amigos e o nome sujo",
-          "efeitos": { "felicidade": -4, "aparencia": -1, "marcas": ["nome_sujo"] }
+          "resumo": "teve o cartão recusado na frente dos amigos",
+          "efeitos": { "felicidade": -4, "aparencia": -1 }
         }
       }
     ]
