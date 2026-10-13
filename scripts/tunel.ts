@@ -29,7 +29,7 @@ import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
 import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { anoDoExterior, parceirosDe } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
-import { conferirContas, extrato } from '../src/motor/contas.ts';
+import { conferirContas, conferirContratos, conferirDividas, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
 const args = new Map(
@@ -355,6 +355,60 @@ interface Vida {
   entradasConferidas: number;
   exemploDeConta: string;
   extrato: { rotulo: string; contraparte: string; valor: number }[];
+  /** A dívida como contrato (fatia 1.2): problemas da conferência (devem ser zero) e a história das dívidas da vida. */
+  dividasErradas: number;
+  exemploDeDivida: string;
+  dividas: HistoriaDasDividas;
+}
+
+interface HistoriaDasDividas {
+  financiou: boolean;
+  /** O nome sujou alguma vez, e por quantos anos ao todo. */
+  sujo: boolean;
+  anosSujo: number;
+  acordo: boolean;
+  caducou: boolean;
+  leilao: boolean;
+  limpou: boolean;
+  /** Cada vez que o nome sujou: quantos anos durou, se houve acordo no meio e se veio do financiamento (a causa é a compra). */
+  episodios: { anos: number; acordo: boolean; financiamento: boolean }[];
+}
+
+/** A história das dívidas pelo livro: financiamento, nome sujo (cada episódio e os anos com ele), acordo, caducar, leilão. */
+function dividasDaVida(e: EstadoVida): HistoriaDasDividas {
+  const porId = new Map(e.historico.map((h) => [h.id, h]));
+  const episodios: HistoriaDasDividas['episodios'] = [];
+  let atual: { desde: number; acordo: boolean; financiamento: boolean } | null = null;
+  let financiou = false;
+  let acordo = false;
+  for (const h of e.historico) {
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'eu.nome_sujo' && m.q === 1) atual = { desde: h.idade, acordo: false, financiamento: porId.get(h.causas?.[0] ?? -1)?.ref === 'bens:comprar' };
+      if (m.c === 'eu.nome_sujo' && m.q === -1 && atual) {
+        episodios.push({ anos: h.idade - atual.desde, acordo: atual.acordo, financiamento: atual.financiamento });
+        atual = null;
+      }
+      if (m.t !== undefined && /^ctr\w*\.modalidade$/.test(m.c)) {
+        if (m.t === 'financiamento') financiou = true;
+        if (m.t === 'acordo') {
+          acordo = true;
+          if (atual) atual.acordo = true;
+        }
+      }
+    }
+  }
+  if (atual) episodios.push({ anos: e.idade - atual.desde, acordo: atual.acordo, financiamento: atual.financiamento });
+  const tem = (ref: string): boolean => e.historico.some((h) => h.ref === ref);
+  return {
+    financiou,
+    sujo: tem('divida:nome_sujo'),
+    anosSujo: episodios.reduce((s, x) => s + x.anos, 0),
+    acordo,
+    caducou: tem('divida:caducou'),
+    leilao: tem('divida:leilao'),
+    limpou: tem('divida:nome_limpo'),
+    episodios,
+  };
 }
 
 /** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
@@ -576,16 +630,28 @@ function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
   };
 }
 
-/** As contas da vida: quantos problemas a conferência acha (entrada por entrada) e o extrato da vida inteira. */
-function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entradasConferidas' | 'exemploDeConta' | 'extrato'> {
+/**
+ * As contas da vida: quantos problemas a conferência acha (entrada por entrada: o dinheiro com contraparte, e a dívida
+ * de quem joga e o financiado dos bens batendo com os contratos; no fim, o estado das dívidas) e o extrato da vida.
+ */
+function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entradasConferidas' | 'exemploDeConta' | 'extrato' | 'dividasErradas' | 'exemploDeDivida' | 'dividas'> {
   let contasErradas = 0;
   let exemploDeConta = '';
+  let dividasErradas = 0;
+  let exemploDeDivida = '';
+  const garantias = garantiasDosContratos(e);
   for (const h of e.historico) {
     const problemas = conferirContas(e, h);
     if (problemas.length > 0 && !exemploDeConta) exemploDeConta = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${problemas[0]}`;
     contasErradas += problemas.length;
+    const dasDividas = conferirContratos(h, garantias);
+    if (dasDividas.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${dasDividas[0]}`;
+    dividasErradas += dasDividas.length;
   }
-  return { contasErradas, entradasConferidas: e.historico.length, exemploDeConta, extrato: extrato(e).linhas };
+  const noFim = conferirDividas(e);
+  if (noFim.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, no fim: ${noFim[0]}`;
+  dividasErradas += noFim.length;
+  return { contasErradas, entradasConferidas: e.historico.length, exemploDeConta, extrato: extrato(e).linhas, dividasErradas, exemploDeDivida, dividas: dividasDaVida(e) };
 }
 
 // ---------------------------------------------------------------- estatística
@@ -716,6 +782,10 @@ const geracoes: Geracao[] = [];
 /** Pares (patrimônio de quem morreu, patrimônio do herdeiro ao morrer). */
 const paresGeracao: [number, number][] = [];
 const tamanhos: number[] = [];
+/** A conferência das dívidas também nas dinastias: o financiamento passa ao herdeiro com o imóvel. */
+let dividasNasDinastias = 0;
+let entradasNasDinastias = 0;
+let exemploNasDinastias = '';
 ESTRATEGIAS.forEach((estrategia, s) => {
   for (let d = 0; d < DINASTIAS; d++) {
     const semente = misturar(SEMENTE, 777, s, d);
@@ -727,6 +797,10 @@ ESTRATEGIAS.forEach((estrategia, s) => {
       const inicioVida = e.idade;
       const herdou = g > 1 ? (e.dinastia?.antepassados.at(-1)?.deixou ?? 0) : 0;
       viver(c, e, estrategia, robo, undefined);
+      const conferida = contasDaVida(e);
+      dividasNasDinastias += conferida.dividasErradas;
+      entradasNasDinastias += conferida.entradasConferidas;
+      if (!exemploNasDinastias) exemploNasDinastias = conferida.exemploDeDivida;
       const patrimonio = patrimonioTotal(e);
       if (anterior !== null) paresGeracao.push([anterior, patrimonio]);
       const visiveis = apresentados(e);
@@ -1242,6 +1316,30 @@ const portoes10 = [
     `${pct(fizeramAto)} de ${governantes.length} governos; sanção depois de romper ${pct(sancaoDepoisDeRomper)}, depois da visita ${pct(sancaoDepoisDaVisita)} (laboratório de ${LAB_DIPLOMATICO} governos)`,
   ],
 ] as const;
+/** Fatia 1.2 do universo de bolso: a dívida como contrato (atraso, nome sujo, acordo, caducar, leilão). */
+const comDivida = (f: (d: HistoriaDasDividas) => boolean, vs: readonly Vida[] = vidas): number => vs.filter((v) => f(v.dividas)).length / Math.max(1, vs.length);
+const sujas = vidas.filter((v) => v.dividas.sujo);
+/** O nome sujo pela dívida sem garantia (a que se renegocia): com acordo no meio e sem. O do financiamento acaba no leilão ou no pagamento. */
+const episodiosSemGarantia = vidas.flatMap((v) => v.dividas.episodios.filter((x) => !x.financiamento));
+const anosSujoCom = episodiosSemGarantia.filter((x) => x.acordo).map((x) => x.anos);
+const anosSujoSem = episodiosSemGarantia.filter((x) => !x.acordo).map((x) => x.anos);
+const financiaram = vidas.filter((v) => v.dividas.financiou);
+const leiloados = comDivida((d) => d.leilao, financiaram);
+const portoes12 = [
+  ['O nome sujo acontece, mas não é a regra: entre 2% e 25% das vidas', comDivida((d) => d.sujo) >= 0.02 && comDivida((d) => d.sujo) <= 0.25, pct(comDivida((d) => d.sujo))],
+  [
+    'Renegociar muda a história: pela dívida sem garantia, o nome fica sujo menos tempo com acordo do que esperando (média por vez que sujou)',
+    anosSujoCom.length > 0 && anosSujoSem.length > 0 && media(anosSujoCom) < media(anosSujoSem),
+    `${num(media(anosSujoCom), 2)} anos com acordo (${anosSujoCom.length} vezes) × ${num(media(anosSujoSem), 2)} sem (${anosSujoSem.length} vezes; p90 ${num(percentil(ordenar(anosSujoSem), 90), 0)})`,
+  ],
+  [
+    'Financiar tem risco, não sentença: de quem financiou, entre 1% e 25% perde o imóvel em leilão',
+    leiloados >= 0.01 && leiloados <= 0.25,
+    `${pct(leiloados)} de ${financiaram.length} vidas que financiaram`,
+  ],
+  ['Dívida atrasada caduca: acontece, e em no máximo metade das vidas com o nome sujo', sujas.length > 0 && comDivida((d) => d.caducou) > 0 && comDivida((d) => d.caducou, sujas) <= 0.5, `${pct(comDivida((d) => d.caducou))} das vidas; ${pct(comDivida((d) => d.caducou, sujas))} das sujas`],
+] as const;
+
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
@@ -1251,6 +1349,8 @@ const portoes = [
 
 const contasErradas = vidas.reduce((s, v) => s + v.contasErradas, 0);
 const entradasConferidas = vidas.reduce((s, v) => s + v.entradasConferidas, 0);
+const dividasErradas = todasAsVidas.reduce((s, v) => s + v.dividasErradas, 0) + dividasNasDinastias;
+const entradasDasDividas = todasAsVidas.reduce((s, v) => s + v.entradasConferidas, 0) + entradasNasDinastias;
 const metas = [
   ['Zero storylets mortos', mortos.length === 0, `${mortos.length} mortos`],
   [
@@ -1259,6 +1359,13 @@ const metas = [
     contasErradas === 0
       ? `0 problemas em ${num(entradasConferidas, 0)} entradas`
       : `${contasErradas} problemas; ex.: ${vidas.find((v) => v.exemploDeConta)?.exemploDeConta ?? ''}`,
+  ],
+  [
+    'Toda dívida tem credor: o que se deve é o que o banco tem a receber, em toda entrada (fatia 1.2)',
+    dividasErradas === 0,
+    dividasErradas === 0
+      ? `0 problemas em ${num(entradasDasDividas, 0)} entradas (as vidas sorteadas, as de origem escolhida e as gerações das dinastias)`
+      : `${dividasErradas} problemas; ex.: ${todasAsVidas.find((v) => v.exemploDeDivida)?.exemploDeDivida ?? exemploNasDinastias}`,
   ],
   ['Nenhum storylet não-repetível repetido na mesma vida', duplicados.length === 0, `${duplicados.length} repetições`],
   ['Nenhuma estratégia fixa domina', dominantes.length === 0, dominantes.length ? `domina: ${dominantes.join(', ')}` : 'nenhuma domina'],
@@ -1325,6 +1432,24 @@ l('|---|---|---|---|');
     l(`| ${rotulo} | ${quem} | ${pct(xs.length / vidas.length)} | ${formatarDinheiro(percentil(ordenar(xs), 50))} |`);
   }
 }
+l();
+l('## As dívidas como contrato (fatia 1.2)');
+l();
+l('Toda dívida de quem joga é um contrato com o banco: o cheque especial, o empréstimo de uma escolha, o financiamento (com o imóvel em garantia) e o acordo de uma renegociação. Por estratégia, nas vidas sorteadas:');
+l();
+l('| Estratégia | Financiou | Nome sujo | Anos sujo (mediana, entre as sujas) | Acordo | Caducou | Leilão | Nome limpo de novo |');
+l('|---|---|---|---|---|---|---|---|');
+for (const estrategia of ESTRATEGIAS) {
+  const vs = vidas.filter((v) => v.estrategia === estrategia);
+  const anosSujo = ordenar(vs.filter((v) => v.dividas.sujo).map((v) => v.dividas.anosSujo));
+  l(
+    `| ${estrategia} | ${pct(comDivida((d) => d.financiou, vs))} | ${pct(comDivida((d) => d.sujo, vs))} | ${anosSujo.length ? num(percentil(anosSujo, 50), 1) : '—'} | ${pct(comDivida((d) => d.acordo, vs))} | ${pct(comDivida((d) => d.caducou, vs))} | ${pct(comDivida((d) => d.leilao, vs))} | ${pct(comDivida((d) => d.limpou, vs))} |`,
+  );
+}
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes12) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## Portões do incremento 1');
 l();
