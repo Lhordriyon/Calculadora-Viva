@@ -694,13 +694,19 @@ O dono pediu de novo: "Lance uma atualização nova". A fatia seguinte do roteir
   - a cautelosa nunca financia e renegocia na hora;
   - a aleatória faz um pouco de cada.
   Sem isso, o financiamento e o leilão nunca apareciam no túnel: os robôs não financiavam.
+- **O portão do acordo conta cada vez que o nome sujou pela dívida sem garantia.** A primeira versão comparava vidas: a mediana deu 1 ano com acordo e 1 ano sem, e o portão reprovou. A sonda mostrou que o grupo sem acordo era quase todo de financiamento, que acaba no leilão ou no pagamento em cerca de um ano, com acordo ou sem. Pela dívida que se renegocia, o acordo encurta o nome sujo de 2,67 para 0,85 ano.
 - **A herança.** O financiamento passa ao herdeiro com o imóvel. A dívida sem garantia continua paga pelo espólio, e o que ele não cobre o banco perde, como já era. A abertura da vida nova anota de qual imóvel é o financiamento herdado. A conferência achou essa falta na primeira rodada: o livro novo não tinha a compra.
 
 **Medidas** (túnel de 10.000 vidas; CPU e save em A/B na mesma máquina, três rodadas alternadas de 240 vidas):
 
 | Medida | Antes | Depois |
 |---|---|---|
-| Dívida com credor | um número sem credor | toda dívida é contrato; 0 problemas na conferência |
+| Dívida com credor | um número sem credor | toda dívida é contrato; 0 problemas em 4.365.879 entradas (sorteadas, de origem escolhida e dinastias) |
+| Vidas com o nome sujo (portão: 2% a 25%) | só pela marca do conteúdo, sem dívida por trás | 11,7% (arriscada 24,2%, aleatória 17%, primeira 3,4%, cautelosa 2%) |
+| Anos com o nome sujo pela dívida sem garantia: com acordo × esperando | — | 0,85 × 2,67 (p90 4) |
+| Quem financiou e perdeu o imóvel em leilão (portão: 1% a 25%) | ninguém (os robôs não financiavam) | 20,9% de 3.544 vidas |
+| Vidas que viram uma dívida caducar | — | 1,3% (11,3% das que sujaram o nome) |
+| O porquê à vista na linha do tempo | 29,7% dos acontecimentos | 30,1% |
 | Patrimônio mediano: arriscada / aleatória | R$ 2,9 milhões / R$ 2 milhões | R$ 2,4 milhões / R$ 1,7 milhão |
 | Patrimônio mediano: cautelosa / primeira | R$ 73 milhões / R$ 1,4 milhão | R$ 74 milhões / R$ 1,4 milhão |
 | Quem nasce sem fortuna: mediana do patrimônio | R$ 2,5 milhões | R$ 2,2 milhões |
