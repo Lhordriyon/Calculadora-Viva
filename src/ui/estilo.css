@@ -1236,6 +1236,12 @@ a.botao {
   gap: 6px;
 }
 
+/* A dívida atrasada (folha Dinheiro › Dívidas). */
+.bem-meu .atrasada {
+  color: var(--ruim);
+  font-weight: 600;
+}
+
 .nota-origem {
   margin: 8px 0 0;
   color: var(--texto-suave);

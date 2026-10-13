@@ -4,11 +4,22 @@ import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../m
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { comPreposicao, extrato } from '../motor/contas.ts';
+import { contratosDe, emAtraso, limiteDeCredito, modalidadeDe, origemDe } from '../motor/contratos.ts';
+import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
 import { ehDaEmpresa, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
-import { FELICIDADE_DO_PADRAO, GASTO_DA_SOBRA, GASTO_DO_PATRIMONIO, MAX_EMPRESAS, PATRIMONIO_SEM_GASTO } from '../motor/regras.ts';
+import {
+  ANOS_PARA_CADUCAR,
+  ANOS_PARA_LEILAO,
+  FELICIDADE_DO_PADRAO,
+  GASTO_DA_SOBRA,
+  GASTO_DO_PATRIMONIO,
+  MAX_EMPRESAS,
+  PATRIMONIO_SEM_GASTO,
+  PRAZO_ACORDO,
+} from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { anos } from './formato.ts';
@@ -745,6 +756,78 @@ function Extrato({ vida }: { vida: EstadoVida }) {
   );
 }
 
+/** "aos 27, casou numa festa parcelada": de onde veio a dívida (a entrada do livro que a fez). */
+function deOndeVeio(vida: EstadoVida, ct: Entidade): string {
+  const origem = origemDe(ct);
+  const h = origem === null ? undefined : vida.historico.find((x) => x.id === origem);
+  const resumo = h?.escolha?.resumo ?? h?.resumo;
+  return h && resumo ? `aos ${h.idade}, ${resumo}` : '';
+}
+
+/** A situação de uma dívida: em dia, ou quanto falta para caducar (ou para o leilão). */
+function situacao(ct: Entidade): string {
+  const atraso = ct.n['atraso'] ?? 0;
+  if (!emAtraso(ct)) return 'em dia';
+  if (modalidadeDe(ct) === 'financiamento') return ANOS_PARA_LEILAO - atraso <= 1 ? 'parcela atrasada: mais um ano assim e vai a leilão' : `parcela atrasada há ${anos(atraso)}`;
+  const falta = ANOS_PARA_CADUCAR - atraso;
+  return `atrasada há ${anos(atraso)}; caduca em ${anos(falta)}`;
+}
+
+/** As dívidas: cada contrato com o banco (de onde veio, o saldo, o juro, a parcela e o atraso), pagar e renegociar. */
+function Dividas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const eu = vida.entidades['eu']!;
+  const contratos = contratosDe(vida);
+  const sujo = Boolean(eu.q['nome_sujo']);
+  if (contratos.length === 0 && !sujo) return null;
+  const mao = naMao(vida);
+  const renegociar: Operacao = { tipo: 'renegociar' };
+  const proposta = motivoParaNaoOperar(vida, conteudo, renegociar) === null ? propostaDeAcordo(vida) : null;
+  return (
+    <fieldset class="grupo">
+      <legend>Dívidas</legend>
+      <p class="nota">
+        {sujo ? 'Nome sujo: o banco não empresta mais nem financia enquanto houver dívida atrasada. ' : ''}O cheque especial e os empréstimos cabem até{' '}
+        {formatarDinheiro(limiteDeCredito(eu.n['renda'] ?? 0))}; o que passar disso no fim do ano atrasa. Dívida atrasada há {anos(ANOS_PARA_CADUCAR)} caduca.
+      </p>
+      {contratos.map((ct) => {
+        const saldo = ct.n['saldo'] ?? 0;
+        const parcela = ct.n['parcela'] ?? 0;
+        const veio = deOndeVeio(vida, ct);
+        const quitar: Operacao = { tipo: 'quitar', id: ct.id };
+        const motivo = motivoParaNaoOperar(vida, conteudo, quitar);
+        return (
+          <div class="bem-meu" key={ct.id}>
+            <p>
+              <b>{ct.nome}</b> · {formatarDinheiro(saldo)} · juro de {porcento(taxaRealDe(vida, conteudo, ct) * 100).replace('+', '')} ao ano acima da inflação
+              {parcela >= 1 ? ` · parcela de ${formatarDinheiro(parcela / 12)}/mês` : ''}
+            </p>
+            <p class="nota">
+              <span class={emAtraso(ct) ? 'atrasada' : ''}>{capitalizar(situacao(ct))}</span>
+              {veio ? ` · ${veio}` : ''}
+            </p>
+            <div class="escolhas-origem">
+              <button type="button" class="chip-origem" disabled={motivo !== null} onClick={() => aoOperar(quitar)}>
+                {mao < 1 ? 'Sem dinheiro para pagar' : mao >= saldo ? `Quitar (${formatarDinheiro(saldo)})` : `Pagar ${formatarDinheiro(mao)}`}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+      {proposta && (
+        <div class="confirmar">
+          <p>
+            O banco aceita <b>{formatarDinheiro(proposta.depois)}</b> pelos {formatarDinheiro(proposta.antes)} que você deve, em {PRAZO_ACORDO} parcelas de{' '}
+            {formatarDinheiro(proposta.parcela)} por ano. O nome limpa se nada mais atrasar; se a parcela não couber, o acordo quebra.
+          </p>
+          <button type="button" class="botao" onClick={() => aoOperar(renegociar)}>
+            Renegociar
+          </button>
+        </div>
+      )}
+    </fieldset>
+  );
+}
+
 function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s));
   if (lista.length === 0) return null;
@@ -775,8 +858,10 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
         <p class="meta">
           Patrimônio <b>{formatarDinheiro(patrimonioTotal(vida))}</b> · na conta {formatarDinheiro(conta)}
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
+          {eu.q['nome_sujo'] ? ' · nome sujo' : ''}
         </p>
         <Extrato vida={vida} />
+        <Dividas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
