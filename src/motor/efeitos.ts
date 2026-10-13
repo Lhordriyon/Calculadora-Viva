@@ -6,6 +6,7 @@ import { ATIVOS, ATRIBUTOS, type PapelNovo } from './constantes.ts';
 import { pesosDoPerfil, realocar } from './carteira.ts';
 import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
+import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
 import { movimentar } from './economia.ts';
 import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
 import type { Efeitos } from './esquema.ts';
@@ -45,17 +46,18 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   }
   const eu = e.entidades['eu']!;
   // O dinheiro do conteúdo é com o mercado (quem vende, quem paga, quem dá o golpe), salvo quando o bloco diz outra
-  // contraparte; a dívida é com o banco.
+  // contraparte; a dívida é contrato com o banco (dividas.ts): a nova é um empréstimo que nasce desta entrada.
   const contraparte = ef.contraparte ?? 'mercado';
-  if (ef.dividaFator !== undefined) {
-    somar(e, reg, 'eu', 'divida', (eu.n['divida'] ?? 0) * (ef.dividaFator - 1), undefined, 'banco');
-  }
+  if (ef.dividaFator !== undefined) multiplicarDivida(e, reg, ef.dividaFator);
+  if (ef.renegociar) renegociar(e, reg, ef.renegociar.desconto, origem);
+  if (ef.divida && ef.divida > 0) contrairEmprestimo(e, reg, ef.divida, origem);
+  else if (ef.divida && ef.divida < 0) abaterDivida(e, reg, -ef.divida);
   if (ef.patrimonioFator !== undefined) {
     const f = ef.patrimonioFator - 1;
     somar(e, reg, 'eu', 'dinheiro', Math.max(0, eu.n['dinheiro'] ?? 0) * f, undefined, contraparte);
     for (const a of ATIVOS) if (eu.n[a]) somar(e, reg, 'eu', a, (eu.n[a] ?? 0) * f, undefined, contraparte);
   }
-  if (ef.dinheiro || ef.investir || ef.divida) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, divida: ef.divida, pesos: pesosDoPerfil(e, c), contraparte });
+  if (ef.dinheiro || ef.investir) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, pesos: pesosDoPerfil(e, c), contraparte });
   if (ef.realocar) realocar(e, reg, ef.realocar.de, ef.realocar.para, ef.realocar.fracao);
   if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
@@ -77,7 +79,11 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     if (!def || def.derivado) continue;
     // Dinheiro, investimento e dívida de alguém por caminho ("mae.dinheiro": 5000) também têm contraparte.
     const p = CAMPOS_DE_CAIXA.has(campo) ? (campo === 'divida' ? 'banco' : contraparte) : undefined;
-    if (typeof valor === 'number') {
+    if (ent === 'eu' && campo === 'divida' && typeof valor === 'number') {
+      // A dívida de quem joga é a soma dos contratos: por caminho, ela nasce ou encolhe como pelo bloco.
+      if (valor > 0) contrairEmprestimo(e, reg, valor, origem);
+      else abaterDivida(e, reg, -valor);
+    } else if (typeof valor === 'number') {
       if (ent === 'eu' && def.sistema === 'dinheiro' && campo === 'dinheiro') movimentar(e, reg, { dinheiro: valor, contraparte });
       else somar(e, reg, ent, campo, valor, undefined, p);
     } else if (typeof valor === 'object' && 'definir' in valor) {

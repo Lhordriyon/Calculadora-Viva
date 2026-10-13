@@ -81,6 +81,70 @@ export function conferirContas(e: EstadoVida, h: Entrada): string[] {
   return problemas;
 }
 
+// ---------------------------------------------------------------- dívidas: o que se deve é o que o banco tem a receber
+
+/** A garantia de cada contrato que já existiu na vida (o livro guarda; o contrato pago já não está no estado). */
+export function garantiasDosContratos(e: EstadoVida): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.t !== undefined && /^ctr\w*\.garantia$/.test(m.c)) out.set(m.c.slice(0, m.c.indexOf('.')), m.t);
+  for (const en of Object.values(e.entidades)) if (en.tipo === 'contrato' && en.t['garantia']) out.set(en.id, en.t['garantia']);
+  return out;
+}
+
+/**
+ * Confere as dívidas de uma entrada (fatia 1.2): o que mudou no saldo dos contratos sem garantia é o que mudou na
+ * dívida de quem joga, e o do financiamento é o que mudou no financiado do bem em garantia. Devolve os problemas.
+ */
+export function conferirContratos(h: Entrada, garantias: ReadonlyMap<string, string>): string[] {
+  const contas = new Map<string, number>();
+  const somar = (k: string, d: number): void => void contas.set(k, (contas.get(k) ?? 0) + d);
+  let escala = 1;
+  for (const m of h.mudancas ?? []) {
+    if (m.d === undefined || TROCA_DE_PAPEL.has(m.r ?? '')) continue;
+    const [ent, campo] = separar(m.c);
+    if (ent.startsWith('ctr') && campo === 'saldo') somar(garantias.get(ent) ?? 'eu', m.d);
+    else if (ent === 'eu' && campo === 'divida') somar('eu', -m.d);
+    else if (ent.startsWith('bem') && campo === 'financiado') somar(ent, -m.d);
+    else continue;
+    escala = Math.max(escala, Math.abs(m.d));
+  }
+  const tolerancia = 0.5 + escala * 1e-9;
+  const problemas: string[] = [];
+  for (const [quem, v] of contas) {
+    if (Math.abs(v) > tolerancia) problemas.push(`${quem === 'eu' ? 'a dívida de quem joga' : `o financiado de ${quem}`} e os contratos não batem: ${v.toFixed(2)}`);
+  }
+  return problemas;
+}
+
+/**
+ * Confere as dívidas agora: a dívida de quem joga é a soma dos contratos sem garantia, o financiado de cada bem é o
+ * saldo do financiamento dele, todo contrato tem credor e todo financiamento tem o bem em garantia.
+ */
+export function conferirDividas(e: EstadoVida): string[] {
+  const problemas: string[] = [];
+  let semGarantia = 0;
+  const financiado = new Map<string, number>();
+  for (const en of Object.values(e.entidades)) {
+    if (en.tipo !== 'contrato') continue;
+    if (!en.t['credor']) problemas.push(`${en.id}: sem credor`);
+    const g = en.t['garantia'];
+    if (g) {
+      if (e.entidades[g]?.tipo !== 'bem') problemas.push(`${en.id}: a garantia ${g} não existe`);
+      financiado.set(g, (financiado.get(g) ?? 0) + (en.n['saldo'] ?? 0));
+    } else {
+      semGarantia += en.n['saldo'] ?? 0;
+    }
+  }
+  const divida = e.entidades['eu']?.n['divida'] ?? 0;
+  if (Math.abs(divida - semGarantia) > 1 + divida * 1e-9) problemas.push(`a dívida de quem joga (${divida.toFixed(2)}) não é a soma dos contratos (${semGarantia.toFixed(2)})`);
+  for (const b of Object.values(e.entidades)) {
+    if (b.tipo !== 'bem') continue;
+    const v = b.n['financiado'] ?? 0;
+    if (Math.abs(v - (financiado.get(b.id) ?? 0)) > 1 + v * 1e-9) problemas.push(`${b.id}: financiado ${v.toFixed(2)} contra o contrato ${(financiado.get(b.id) ?? 0).toFixed(2)}`);
+  }
+  return problemas;
+}
+
 /** Uma linha do extrato: o rótulo do fluxo (salário, imposto, juros…), a contraparte e quanto (positivo entrou). */
 export interface LinhaDoExtrato {
   rotulo: string;
@@ -109,6 +173,12 @@ const NOMES: Record<string, string> = {
   padrao: 'Padrão de vida',
   velhice: 'Gastos da velhice',
   juros: 'Juros da dívida',
+  mora: 'Mora da dívida atrasada',
+  multa: 'Multa por atraso',
+  emprestimo: 'Dívida nova',
+  desconto: 'Desconto do banco',
+  caducou: 'Dívida que caducou',
+  leilao: 'Leilão',
   rendimento: 'Juro da renda fixa',
   inflacao: 'Inflação no dinheiro parado',
   cotacao: 'Cotação dos investimentos',

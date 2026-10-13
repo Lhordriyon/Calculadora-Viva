@@ -134,10 +134,15 @@ const EFEITOS_FIXOS = {
   dinheiro: z.number().optional(),
   /** Reais de hoje tirados do dinheiro e postos para render (negativo resgata). */
   investir: z.number().optional(),
-  /** Reais de hoje de dívida nova; negativo é desconto (para pagar com dinheiro, some um dinheiro negativo). */
+  /** Reais de hoje de dívida nova (um empréstimo do banco que nasce desta entrada); negativo é desconto (para pagar com dinheiro, some um dinheiro negativo). */
   divida: z.number().optional(),
-  /** Multiplica a dívida (acordo: 0.3 = sobra 30% para pagar). */
+  /** Multiplica a dívida sem garantia (a venda que abateu, os cortes que pagaram: 0.4 = sobram 40%); o banco perdoa a diferença. */
   dividaFator: z.number().min(0).max(1).optional(),
+  /**
+   * Fecha um acordo com o banco: as dívidas sem garantia viram uma só, com parcela, e o nome limpa se nada mais
+   * atrasar. Sem `desconto`, o banco dá o dele pelos anos de atraso de cada dívida (nada no que está em dia).
+   */
+  renegociar: z.strictObject({ desconto: z.number().min(0).max(0.9).optional() }).optional(),
   /** Multiplica o dinheiro e o investido (golpe, sociedade que quebrou, aposta que deu certo): perdas e ganhos proporcionais à riqueza. */
   patrimonioFator: z.number().min(0).max(3).optional(),
   /** Multiplica a renda (corte de salário, proposta melhor): 0,8 = −20%. */

@@ -5,9 +5,12 @@
  * buraco, amortizar com sobra) é automático, porque não é uma decisão.
  * Toda variação vai para o livro-razão, com a contraparte: o salário vem do
  * mercado (ou do tesouro), o imposto vai para o tesouro, o juro da dívida para
- * o banco; a inflação e a cotação são reavaliação (ninguém pagou nada).
+ * o banco; a inflação e a cotação são reavaliação (ninguém pagou nada). A
+ * dívida é feita de contratos com o banco (contratos.ts): o saque no cheque
+ * especial e o pagamento com o que sobra vão para eles também.
  */
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
+import { acompanharCaixa, creditoNovo, jurosDoAno, limiteDeCredito, rotativos, saldoDe } from './contratos.ts';
 import { anotar } from './livro.ts';
 import {
   CAPACIDADE_DO_MERCADO,
@@ -15,8 +18,6 @@ import {
   GASTO_DO_PATRIMONIO,
   IDADE_GASTO_VELHICE,
   JUROS_DIVIDA,
-  LIMITE_CREDITO_MINIMO,
-  LIMITE_CREDITO_RENDAS,
   LINHA_DA_POBREZA,
   META_DE_INFLACAO,
   PATRIMONIO_SEM_GASTO,
@@ -71,18 +72,33 @@ function somaInvestida(n: Numeros): number {
   return t;
 }
 
-/** Cobre dinheiro negativo com investimento (o mais líquido primeiro) e, se não der, com dívida; sobra amortiza dívida. */
-export function acertarCaixa(n: Numeros): void {
+/**
+ * Cobre dinheiro negativo com investimento (o mais líquido primeiro) e, se não der, com dívida; sobra amortiza dívida
+ * (até `pagavel`: o acordo e o financiamento têm parcela e não entram). Só os números: em quem joga, os contratos
+ * acompanham depois (`acertarCaixaDeQuemJoga`).
+ */
+export function acertarCaixa(n: Numeros, pagavel = Infinity): void {
   if ((n['dinheiro'] ?? 0) < 0) n['dinheiro'] = (n['dinheiro'] ?? 0) + resgatarDe(n, -(n['dinheiro'] ?? 0));
   if ((n['dinheiro'] ?? 0) < 0) {
     n['divida'] = (n['divida'] ?? 0) - n['dinheiro']!;
     n['dinheiro'] = 0;
   }
-  if ((n['dinheiro'] ?? 0) > 0 && (n['divida'] ?? 0) > 0) {
-    const pago = Math.min(n['dinheiro']!, n['divida']!);
+  if ((n['dinheiro'] ?? 0) > 0 && (n['divida'] ?? 0) > 0 && pagavel > 0) {
+    const pago = Math.min(n['dinheiro']!, n['divida']!, pagavel);
     n['dinheiro']! -= pago;
     n['divida']! -= pago;
   }
+}
+
+/**
+ * Acerta o caixa de quem joga e leva o que a dívida mudou para os contratos: saque no cheque especial ou pagamento do
+ * crédito que gira (o cheque especial e os empréstimos).
+ */
+export function acertarCaixaDeQuemJoga(e: EstadoVida, reg: Mudanca[]): void {
+  const n = e.entidades['eu']!.n;
+  const dividaAntes = n['divida'] ?? 0;
+  acertarCaixa(n, saldoDe(rotativos(e)));
+  acompanharCaixa(e, reg, dividaAntes);
 }
 
 const CAMPOS_CAIXA = ['dinheiro', ...ATIVOS, 'divida'] as const;
@@ -182,11 +198,11 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
     fluxos.push(a === 'renda_fixa' ? { campo: a, d: n[a] - antesDaClasse, p: 'tesouro', r: 'rendimento' } : { campo: a, d: n[a] - antesDaClasse, p: 'reavaliacao', r: 'cotacao' });
   }
   const renda = n['renda'] ?? 0;
-  const limite = limiteDeCredito(renda);
-  const comJuros = Math.min(n['divida'] ?? 0, limite);
-  const dividaAntes = n['divida'] ?? 0;
-  n['divida'] = (n['divida'] ?? 0) + comJuros * ((1 + (pais.jurosDaDivida ?? JUROS_DIVIDA)) / (1 + inflacao) - 1);
-  fluxos.push({ campo: 'divida', d: n['divida'] - dividaAntes, p: 'banco', r: 'juros' });
+  // Os juros de cada contrato (contratos.ts): o do momento no cheque especial e nos empréstimos em dia, o do acordo e a
+  // mora no que atrasou. O banco recebe.
+  const { juros, mora } = jurosDoAno(e, reg, (1 + (pais.jurosDaDivida ?? JUROS_DIVIDA)) / (1 + inflacao) - 1);
+  n['divida'] = (n['divida'] ?? 0) + juros + mora;
+  fluxos.push({ campo: 'divida', d: juros, p: 'banco', r: 'juros' }, { campo: 'divida', d: mora, p: 'banco', r: 'mora' });
 
   let privacao = false;
   let deficit = 0;
@@ -211,7 +227,8 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
       fluxos.push({ campo: 'dinheiro', d: -(sobra * gasto), p: 'mercado', r: 'padrao' });
     } else {
       deficit = -sobra;
-      const folga = Math.max(0, n['dinheiro']) + somaInvestida(n) + Math.max(0, limite - (n['divida'] ?? 0));
+      // O que cobre o buraco: a conta, os investimentos e o crédito que o banco ainda dá (nenhum, com o nome sujo).
+      const folga = Math.max(0, n['dinheiro']) + somaInvestida(n) + creditoNovo(e);
       const coberto = Math.min(-sobra, folga);
       n['dinheiro'] -= coberto;
       privacao = coberto < -sobra;
@@ -230,32 +247,29 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
     n['dinheiro'] = (n['dinheiro'] ?? 0) - gasto;
     fluxos.push({ campo: 'dinheiro', d: -gasto, p: 'mercado', r: 'velhice' });
   }
-  acertarCaixa(n);
+  acertarCaixaDeQuemJoga(e, reg);
   anotarCaixa(reg, 'eu', antes, n, 'economia', fluxos);
   return { comida, privacao, deficit };
 }
 
-/** Até onde o banco empresta (e cobra juros): reais de hoje. */
-export function limiteDeCredito(renda: number): number {
-  return Math.max(LIMITE_CREDITO_MINIMO, renda * LIMITE_CREDITO_RENDAS);
-}
+export { limiteDeCredito };
 
 export interface Movimento {
   dinheiro?: number | undefined;
   /** Positivo aplica da conta (pelos pesos); negativo resgata (o mais líquido primeiro). */
   investir?: number | undefined;
-  divida?: number | undefined;
   /** Para onde vai o que se aplica (o perfil de investidor); sem pesos, renda fixa. */
   pesos?: Partial<Record<Ativo, number>> | undefined;
   /** De quem veio ou para quem foi o `dinheiro` (uma entidade ou uma conta de fora). Sem ela, o teste das contas acusa. */
   contraparte?: string | undefined;
-  /** De quem é a `divida` nova (ou quem perdoa): o banco, se nada for dito. */
-  contraparteDaDivida?: string | undefined;
   /** O `dinheiro` repartido por contraparte (a manutenção para o mercado, a parcela para o banco): somam `dinheiro`. */
   fluxos?: readonly Fluxo[] | undefined;
 }
 
-/** Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro, com a contraparte. */
+/**
+ * Aplica movimentos de dinheiro (reais de hoje) numa entidade e anota no livro, com a contraparte. Dívida nova ou
+ * perdoada é contrato (dividas.ts › contrairEmprestimo, abaterDivida); aqui ela só muda pelo caixa acertado.
+ */
 export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 'eu', r?: string): void {
   const n = e.entidades[ent]?.n;
   if (!n) return;
@@ -264,12 +278,6 @@ export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 
   if (mov.dinheiro) {
     n['dinheiro'] = (n['dinheiro'] ?? 0) + mov.dinheiro;
     if (!mov.fluxos) fluxos.push({ campo: 'dinheiro', d: mov.dinheiro, p: mov.contraparte ?? SEM_CONTRAPARTE });
-  }
-  // Dívida negativa é desconto ou perdão; para pagar com dinheiro, some também um dinheiro negativo.
-  if (mov.divida) {
-    const dividaAntes = n['divida'] ?? 0;
-    n['divida'] = Math.max(0, (n['divida'] ?? 0) + mov.divida);
-    fluxos.push({ campo: 'divida', d: n['divida'] - dividaAntes, p: mov.contraparteDaDivida ?? 'banco' });
   }
   if (mov.investir) {
     if (mov.investir > 0) {
@@ -281,6 +289,6 @@ export function movimentar(e: EstadoVida, reg: Mudanca[], mov: Movimento, ent = 
     }
   }
   // Só quem joga tem banco (crédito, dívida); personagens ficam com o saldo como está.
-  if (ent === 'eu') acertarCaixa(n);
+  if (ent === 'eu') acertarCaixaDeQuemJoga(e, reg);
   anotarCaixa(reg, ent, antes, n, r, fluxos);
 }

@@ -101,6 +101,8 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     if (ef.investir) out.push(...ATIVOS.map((a) => ({ caminho: `eu.${a}`, sistema: 'dinheiro' as Sistema })));
     if (ef.divida || ef.dividaFator !== undefined) out.push({ caminho: 'eu.divida', sistema: 'dinheiro' });
   }
+  // O acordo troca as dívidas por uma só e limpa o nome se nada mais atrasar.
+  if (ef.renegociar) out.push({ caminho: 'eu.divida', sistema: 'dinheiro' }, { caminho: 'eu.nome_sujo', sistema: 'historia' });
   if (ef.renda !== undefined || ef.rendaFator !== undefined) out.push({ caminho: 'eu.renda', sistema: 'dinheiro' });
   if (ef.abrirEmpresa) {
     const a = ef.abrirEmpresa;

@@ -152,6 +152,28 @@ const BEM: Record<string, DefCampo> = {
   economia: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
 };
 
+/**
+ * Uma dívida de quem joga (dividas.ts): `ctr0` é o cheque especial; `ctr<entrada>`, o empréstimo, o financiamento ou o
+ * acordo que aquela entrada do livro fez. O credor é o banco.
+ */
+const CONTRATO: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  /** credito, emprestimo, financiamento ou acordo (constantes.ts › MODALIDADES). */
+  modalidade: { tipo: 'texto', sistema: 'dinheiro' },
+  /** Quem tem a receber: o banco (uma conta de fora, por enquanto). */
+  credor: { tipo: 'texto', sistema: 'dinheiro' },
+  /** O bem que garante o financiamento (vai a leilão se o contrato atrasar). */
+  garantia: { tipo: 'texto', sistema: 'dinheiro' },
+  /** A entrada do livro que fez a dívida: o porquê do atraso, do leilão e do nome sujo. */
+  origem: { tipo: 'texto', sistema: 'historia' },
+  /** O que falta pagar. */
+  saldo: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** A parcela do ano (financiamento e acordo; o crédito do dia a dia não tem). */
+  parcela: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** Anos seguidos em atraso (0 = em dia). */
+  atraso: { tipo: 'num', sistema: 'dinheiro', limites: [0, 99] },
+};
+
 const EMPRESA: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
   /** Anos desde a fundação. */
@@ -185,6 +207,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent.startsWith('empresa')) return EMPRESA;
   if ((PARCEIROS as readonly string[]).includes(ent)) return ESTRANGEIRO;
   if (ent.startsWith('bem')) return BEM;
+  if (ent.startsWith('ctr')) return CONTRATO;
   return PESSOA;
 }
 

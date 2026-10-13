@@ -113,6 +113,15 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // o ano dos bens: o valor anda com o mercado e o financiamento é pago
   'bem.valor',
   'bem.financiado',
+  // as dívidas como contratos com o banco (contratos.ts, dividas.ts): o saldo, a parcela, o atraso e o nome sujo
+  'ctr.saldo',
+  'ctr.parcela',
+  'ctr.atraso',
+  'ctr.modalidade',
+  'ctr.credor',
+  'ctr.garantia',
+  'ctr.origem',
+  'eu.nome_sujo',
   // o país vivo: as estatísticas andam, governos se alternam na eleição e quem governa muda as políticas
   'pais.crescimento',
   'pais.desemprego',
@@ -170,7 +179,7 @@ const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[]
 export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): string[] => governos.filter((g) => g.eleito).map((g) => `eu.voto_${g.id}`);
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -248,6 +257,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(['mae', 'pai'], 'setor'), 'demissão dos pais (o setor sente o ciclo)', true),
   ...ler(['eu.setor', 'eu.servidor', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.aposentado'], 'trabalho: salário, demissão e aperto do negócio', true),
   ...ler(['eu.padrao_alto'], 'padrão de vida: a conta chega quando a reserva acaba', true),
+  ...ler(['eu.nome_sujo'], 'dívida: com o nome sujo, o banco não empresta mais nem financia', true),
   ...ler(['pai.ausente'], 'herança, vínculo e felicidade de base', true),
   ...ler(['avo.mora_junto'], 'distância da família', false),
   ...ler(de(TODOS, 'faleceu'), 'cartão da vida', false),

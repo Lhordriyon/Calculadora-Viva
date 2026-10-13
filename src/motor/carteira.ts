@@ -13,8 +13,9 @@
 import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase, type Padrao, type Perfil } from './constantes.ts';
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { acertarCaixa, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } from './economia.ts';
+import { acertarCaixaDeQuemJoga, anotarCaixa, caixaDe, distribuir, padraoDe, resgatarDe } from './economia.ts';
 import { ehOperacaoDeBem, motivoParaNaoOperarBem, operarBem, type OperacaoBem } from './bens.ts';
+import { ehOperacaoDeDivida, motivoParaNaoOperarDivida, operarDivida, type OperacaoDivida } from './dividas.ts';
 import { ehOperacaoDeCarreira, motivoParaNaoOperarCarreira, operarCarreira, type OperacaoCarreira } from './carreira.ts';
 import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
 import { ehOperacaoDeJogada, jogar, motivoParaNaoOperarJogada, type OperacaoJogada } from './fortuna.ts';
@@ -68,7 +69,7 @@ export function realocar(e: EstadoVida, reg: Mudanca[], de: 'dinheiro' | Ativo, 
   const valor = Math.max(0, n[de] ?? 0) * Math.min(1, Math.max(0, fracao));
   n[de] = (n[de] ?? 0) - valor;
   n[para] = (n[para] ?? 0) + valor;
-  acertarCaixa(n);
+  acertarCaixaDeQuemJoga(e, reg);
   anotarCaixa(reg, 'eu', antes, n, r);
   return valor;
 }
@@ -86,6 +87,7 @@ export type Operacao =
   /** Troca o padrão de vida: quanto da sobra de cada ano vira gasto. */
   | { tipo: 'padrao'; padrao: Padrao }
   | OperacaoBem
+  | OperacaoDivida
   | OperacaoCarreira
   | OperacaoPoder
   | OperacaoTestamento
@@ -110,6 +112,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (e.pendente) return 'responda o cartão do ano primeiro';
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
   if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
+  if (ehOperacaoDeDivida(op)) return motivoParaNaoOperarDivida(e, op);
   if (ehOperacaoDeCarreira(op)) return motivoParaNaoOperarCarreira(e, c, op);
   if (ehOperacaoDePoder(op)) return motivoParaNaoOperarPoder(e, c, op);
   if (ehOperacaoDeTestamento(op)) return motivoParaNaoOperarTestamento(e, op);
@@ -154,6 +157,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   };
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
   if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));
+  if (ehOperacaoDeDivida(op)) return lancarCom('divida', (id) => operarDivida(e, c, op, reg, id));
   if (ehOperacaoDeCarreira(op)) return lancarCom('carreira', (id) => operarCarreira(e, c, op, reg, id));
   if (ehOperacaoDePoder(op)) return lancarCom('poder', (id) => operarPoder(e, c, op, reg, id));
   if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
@@ -174,7 +178,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
     const antes = caixaDe(n);
     const saiu = resgatarDe(n, op.valor, op.ativo ? [op.ativo] : LIQUIDEZ);
     n['dinheiro'] = (n['dinheiro'] ?? 0) + saiu;
-    acertarCaixa(n);
+    acertarCaixaDeQuemJoga(e, reg);
     anotarCaixa(reg, 'eu', antes, n);
     const de = op.ativo ? DE[op.ativo] : 'dos investimentos';
     texto = `Resgatou ${formatarDinheiro(saiu)} ${de}.`;

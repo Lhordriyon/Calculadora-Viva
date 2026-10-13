@@ -19,6 +19,7 @@ import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
 import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Parceiro, type Politica, type Verbo } from './constantes.ts';
+import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
@@ -59,6 +60,12 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   let v = valorAtributos(ef);
   v += ((ef.dinheiro ?? 0) - (ef.divida ?? 0)) / REAIS_POR_PONTO;
   if (ef.dividaFator !== undefined) v += ((eu.n['divida'] ?? 0) * (1 - ef.dividaFator)) / REAIS_POR_PONTO;
+  // O acordo: o desconto do banco é dinheiro que fica, e o nome limpo devolve o crédito e o financiamento.
+  if (ef.renegociar) {
+    const proposta = propostaDeAcordo(e, ef.renegociar.desconto);
+    if (proposta) v += (proposta.antes - proposta.depois) / REAIS_POR_PONTO;
+    if (eu.q['nome_sujo']) v += 5;
+  }
   if (ef.patrimonioFator !== undefined) v += ((ef.patrimonioFator - 1) * (Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu))) / REAIS_POR_PONTO;
   if (ef.rendaFator !== undefined) v += ((ef.rendaFator - 1) * (eu.n['renda'] ?? 0) * HORIZONTE_RENDA) / REAIS_POR_PONTO;
   // Investir troca dinheiro parado (que encolhe) por dinheiro que rende: ~4% reais em 10 anos de horizonte.
@@ -256,6 +263,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirGoverno(estrategia, e, c, rng),
     ...decidirDiplomacia(estrategia, e, c, rng),
     ...decidirBens(estrategia, e, c, rng),
+    ...decidirDividas(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
   );
@@ -379,12 +387,33 @@ function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
   return alvo ? [{ tipo: 'candidatarCargo', cargo: alvo.id }] : [];
 }
 
-/** Bens: a cautelosa compra casa e carro quando sobra; a arriscada, o mais caro que cabe num quinto do que tem; a aleatória, de vez em quando. */
+/**
+ * Dívida atrasada: a cautelosa renegocia assim que o banco aceita; a aleatória, às vezes; a arriscada espera a dívida
+ * caducar (cinco anos de nome sujo, sem crédito novo nem financiamento).
+ */
+function decidirDividas(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const op: Operacao = { tipo: 'renegociar' };
+  if (estrategia === 'arriscada' || !pode(e, c, op)) return [];
+  if (estrategia === 'cautelosa' || aleatorio(rng) < 0.3) return [op];
+  return [];
+}
+
+/** O imóvel de morar mais caro que dá para financiar agora (a entrada na mão, a parcela até 40% da renda, o nome limpo). */
+function casaFinanciavel(e: EstadoVida, c: Conteudo): string | undefined {
+  if (moradiaDe(e)) return undefined;
+  return c.mundo.bens.filter((b) => b.categoria === 'moradia' && b.financiavel && pode(e, c, { tipo: 'comprar', item: b.id, financiar: true })).sort((a, b) => b.preco - a.preco)[0]?.id;
+}
+
+/**
+ * Bens: a cautelosa compra casa e carro quando sobra, sempre à vista; a arriscada financia a casa assim que a parcela
+ * cabe e compra o mais caro que cabe num quinto do que tem; a aleatória, de vez em quando, à vista ou financiado.
+ */
 function decidirBens(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   if (e.idade < 20 || estrategia === 'primeira') return [];
   const liquido = liquidoDe(e);
   const tem = new Set(bensDe(e).map((b) => defDoBem(c, b)?.marca));
   const compra = (item: string): Operacao[] => (pode(e, c, { tipo: 'comprar', item }) ? [{ tipo: 'comprar', item }] : []);
+  const financia = (item: string): Operacao[] => [{ tipo: 'comprar', item, financiar: true }];
   if (estrategia === 'cautelosa') {
     if (!moradiaDe(e)) {
       const casa = c.mundo.bens.filter((b) => b.categoria === 'moradia' && b.preco * 1.3 <= liquido).sort((a, b) => b.preco - a.preco)[0];
@@ -398,13 +427,18 @@ function decidirBens(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rn
     return [];
   }
   if (estrategia === 'arriscada') {
+    const casa = e.idade >= 25 && e.idade <= 50 ? casaFinanciavel(e, c) : undefined;
+    if (casa) return financia(casa);
     if (e.idade % 2 !== 0) return [];
     const item = c.mundo.bens.filter((b) => b.preco <= liquido * 0.2 && !tem.has(b.marca)).sort((a, b) => b.preco - a.preco)[0];
     return item ? compra(item.id) : [];
   }
   if (aleatorio(rng) >= 0.1) return [];
-  const opcoes = c.mundo.bens.filter((b) => b.preco <= liquido * 0.3);
-  return opcoes.length ? compra(sortear(rng, opcoes).id) : [];
+  const casa = casaFinanciavel(e, c);
+  const opcoes: Operacao[] = [...c.mundo.bens.filter((b) => b.preco <= liquido * 0.3).map((b): Operacao => ({ tipo: 'comprar', item: b.id })), ...(casa ? financia(casa) : [])];
+  if (opcoes.length === 0) return [];
+  const op = sortear(rng, opcoes);
+  return pode(e, c, op) ? [op] : [];
 }
 
 /**

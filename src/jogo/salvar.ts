@@ -7,7 +7,9 @@
 import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EstadoVida, MemoriaJogador } from '../motor/tipos.ts';
+import { migrarFinanciamentos } from '../motor/bens.ts';
 import { migrarExterior } from '../motor/diplomacia.ts';
+import { migrarDividaSemContrato } from '../motor/dividas.ts';
 import { generoDoNome } from '../motor/empresa.ts';
 import { migrarPais } from '../motor/pais.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
@@ -37,7 +39,7 @@ const Qualidade = z.object({ v: z.number(), ano: z.number(), idade: z.number(), 
 
 const Entidade = z.object({
   id: z.string(),
-  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao', 'empresa', 'bem']),
+  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao', 'empresa', 'bem', 'contrato']),
   nome: z.string(),
   genero: z.optional(Genero),
   nascimento: z.optional(z.number()),
@@ -166,6 +168,9 @@ export function lerSave(texto: string | null, conteudo: Conteudo): Save {
   migrarPais(v, conteudo);
   // Antes do mundo lá fora, não havia países de fora nem dólar: eles chegam como os dados os descrevem.
   migrarExterior(v, conteudo);
+  // Antes dos contratos, a dívida era um número em quem joga e no bem: vira o cheque especial e o financiamento de cada imóvel.
+  migrarDividaSemContrato(v);
+  migrarFinanciamentos(v, conteudo);
   // Antes do grupo, a empresa não tinha gênero: ganha o do nome ("o Instituto", "a Clínica").
   for (const en of Object.values(v.entidades)) if (en.tipo === 'empresa' && en.vivo !== false && !en.genero) en.genero = generoDoNome(v, en.nome);
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.

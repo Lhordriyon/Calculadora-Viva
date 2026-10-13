@@ -12,6 +12,7 @@
 import { ATIVOS, PARCEIROS, type Ativo } from './constantes.ts';
 import { bensDe, classeDoPatrimonio, empresasDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, valorDosBens } from './campos.ts';
 import { defDoBem } from './bens.ts';
+import { financiamentoDe } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
 import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -413,6 +414,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   // Os bens passam ao herdeiro (sem a mudança: quem herda mora onde já morava). Se a conta e a empresa
   // não pagaram a partilha, os mais baratos são vendidos e a sobra vira dinheiro.
   let falta = espolio.dosBens;
+  const daAbertura: Mudanca[] = [];
   const herdados = bensDe(antiga).sort((a, b) => (a.n['valor'] ?? 0) - (a.n['financiado'] ?? 0) - ((b.n['valor'] ?? 0) - (b.n['financiado'] ?? 0)));
   for (const b of herdados) {
     const liquido = Math.max(0, (b.n['valor'] ?? 0) - (b.n['financiado'] ?? 0));
@@ -426,6 +428,13 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     delete copia.q['moradia'];
     copia.n['economia'] = 0;
     e.entidades[b.id] = copia;
+    // O financiamento vem junto com o imóvel: o herdeiro continua pagando as parcelas ao banco. A abertura anota de qual
+    // imóvel ele é (o livro novo não tem a compra), para a conferência das dívidas (contas.ts).
+    const financiamento = financiamentoDe(antiga, b.id);
+    if (financiamento) {
+      e.entidades[financiamento.id] = recausar(structuredClone(financiamento), abertura.id);
+      daAbertura.push({ c: `${financiamento.id}.garantia`, t: b.id });
+    }
     const def = defDoBem(c, b);
     if (def) eu.q[def.marca] = { v: 1, ano: e.ano, idade, causa: abertura.id };
     if (copia.q['alugado']) eu.q['senhorio'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
@@ -509,7 +518,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
         : `Geração ${geracao} da família ${ultimo}.`;
   abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}`;
   abertura.resumo = espolio.deixou >= 1 ? `herdou ${formatarDinheiro(espolio.deixou)} da família` : 'começou sem herança';
-  lancar(e, abertura, []);
+  lancar(e, abertura, daAbertura);
   // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.
   eu.n['influencia'] = Math.round(influenciaAlvo(e, c));
   return e;

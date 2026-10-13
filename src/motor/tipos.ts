@@ -14,7 +14,7 @@ export interface Qualidade {
   causa: number | null;
 }
 
-export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao' | 'empresa' | 'bem';
+export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao' | 'empresa' | 'bem' | 'contrato';
 
 /**
  * Um formato de estado: pessoa, bicho, lugar, país e empresa são entidades

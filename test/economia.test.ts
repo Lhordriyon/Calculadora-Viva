@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { mercadoDoAno } from '../src/motor/carteira.ts';
+import { abaterDivida, migrarDividaSemContrato } from '../src/motor/dividas.ts';
 import { acertarCaixa, economiaDoAno, movimentar } from '../src/motor/economia.ts';
 import { GASTO_DA_SOBRA, GASTO_VELHICE, gastoDaVelhice } from '../src/motor/regras.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
@@ -12,6 +13,8 @@ function pessoa(semente: number, idade: number, n: Record<string, number>): Esta
   const e = nascer(c, { semente, ano: 2026 });
   e.idade = idade;
   Object.assign(e.entidades['eu']!.n, { dinheiro: 0, divida: 0, renda: 0, custo: 0 }, n);
+  // A dívida é a soma dos contratos: a de partida vira o cheque especial.
+  migrarDividaSemContrato(e);
   return e;
 }
 
@@ -99,13 +102,14 @@ describe('economia', () => {
     expect(f).toMatchObject({ dinheiro: 0, divida: 1500 });
   });
 
-  it('investir não usa dinheiro que não existe; dívida negativa é desconto', () => {
+  it('investir não usa dinheiro que não existe; dívida abatida sai do contrato e da conta de quem deve', () => {
     const e = pessoa(1, 30, { dinheiro: 1000 });
     const reg: Mudanca[] = [];
     movimentar(e, reg, { investir: 5000, pesos: { renda_fixa: 0.5, acoes: 0.5 } });
     expect(e.entidades['eu']!.n).toMatchObject({ dinheiro: 0, renda_fixa: 500, acoes: 500 });
-    e.entidades['eu']!.n['divida'] = 10000;
-    movimentar(e, reg, { divida: -8000 });
-    expect(e.entidades['eu']!.n['divida']).toBe(2000);
+    const d = pessoa(1, 30, { divida: 10000 });
+    abaterDivida(d, reg, 8000);
+    expect(d.entidades['eu']!.n['divida']).toBe(2000);
+    expect(d.entidades['ctr0']!.n['saldo']).toBe(2000);
   });
 });

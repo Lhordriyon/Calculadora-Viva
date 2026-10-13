@@ -17,6 +17,7 @@ import { economiaDoAno, padraoDe } from './economia.ts';
 import { anoDoExterior, exteriorInicial } from './diplomacia.ts';
 import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
+import { regraDasDividas } from './dividas.ts';
 import { regraDaCarreira } from './carreira.ts';
 import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
@@ -179,6 +180,8 @@ export function avancarAno(e: EstadoVida, c: Conteudo, memoria?: MemoriaJogador)
   const ano = economiaDoAno(e, regAno, bolsoDoPais(e, c), mercado);
   regraDaEmpresa(e, c, fase, regAno, mercado);
   regraDosBens(e, c, regAno);
+  // As dívidas no fim do ano (dividas.ts): a parcela do acordo, o limite, o que caduca e o nome.
+  regraDasDividas(e, c, regAno);
   const inflacao = ano.comida >= LIMITE_CHIP_INFLACAO ? ano.comida : undefined;
   if (ano.privacao) {
     somar(e, regAno, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');

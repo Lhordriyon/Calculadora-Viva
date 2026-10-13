@@ -11,18 +11,22 @@
 import { bensDe } from './campos.ts';
 import { FASES } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
+import { abrirContrato, contratosDe, fecharContrato, fecharSePago, financiamentoDe, mexerNoSaldo, modalidadeDe, origemDe } from './contratos.ts';
+import { atrasar, pagarComOQueHouver, porEmDia } from './dividas.ts';
 import { movimentar } from './economia.ts';
 import { liquidoDe, tirarDeQuemJoga } from './empresa.ts';
 import type { DefBem } from './esquema.ts';
-import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { FREQUENCIA_DAS_FASES } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   ALUGUEL_DA_MORADIA,
+  ANOS_PARA_LEILAO,
   CUSTO_VENDA_IMOVEL,
   ECONOMIA_DA_MORADIA,
   ENTRADA_FINANCIAMENTO,
   JUROS_FINANCIAMENTO,
+  LANCE_DO_LEILAO,
   PARCELA_FINANCIAMENTO,
   PISO_VEICULO,
 } from './regras.ts';
@@ -94,6 +98,7 @@ export function motivoParaNaoOperarBem(e: EstadoVida, c: Conteudo, op: OperacaoB
     if (e.idade < (def.idade ?? 18)) return `só a partir dos ${def.idade ?? 18} anos`;
     const financiar = Boolean(op.financiar);
     if (financiar && !def.financiavel) return 'esse não dá para financiar';
+    if (financiar && eu.q['nome_sujo']) return 'com o nome sujo, o banco não financia';
     if (financiar && parcelaDe(def) > (eu.n['renda'] ?? 0) * 0.4) return `a parcela (${formatarDinheiro(parcelaDe(def) / 12)} por mês) passa de 40% da sua renda`;
     const custo = custoDaCompra(def, financiar);
     if (custo > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custo)}`;
@@ -149,7 +154,11 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
     e.entidades[id] = b;
     definirTexto(e, reg, id, 'item', def.id);
     somar(e, reg, id, 'valor', def.preco);
-    if (financiar) somar(e, reg, id, 'financiado', def.preco - entrada);
+    // O financiamento é um contrato com o banco, com o imóvel em garantia: o saldo dele é o financiado do bem.
+    if (financiar) {
+      const ct = abrirContrato(e, reg, { modalidade: 'financiamento', origem, garantia: id, parcela: parcelaDe(def), nome: `Financiamento d${def.feminino ? 'a' : 'o'} ${def.nome}` });
+      mexerNoSaldo(e, reg, ct, def.preco - entrada, 'financiamento');
+    }
     ganhar(e, reg, 'eu', def.marca, origem);
     if (def.categoria === 'imovel') ganhar(e, reg, id, 'alugado', origem);
     if (def.categoria === 'moradia' && !moradiaDe(e)) morarEm(e, reg, b, origem);
@@ -177,7 +186,11 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
       ],
     });
     somar(e, reg, b.id, 'valor', -valor);
-    if (financiado) somar(e, reg, b.id, 'financiado', -financiado);
+    const ct = financiamentoDe(e, b.id);
+    if (ct) {
+      mexerNoSaldo(e, reg, ct, -(ct.n['saldo'] ?? 0), 'quitacao');
+      fecharContrato(e, reg, ct, 'quitacao');
+    }
     perder(e, reg, b.id, 'alugado');
     delete e.entidades[b.id];
     if (!bensDe(e).some((x) => defDoBem(c, x)?.marca === def.marca)) perder(e, reg, 'eu', def.marca);
@@ -219,11 +232,8 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   if (bens.length === 0) return;
   const mercado = (e.entidades['pais']?.n['ret_fii'] ?? 0) / 100;
   const medio = mercadoMedioDeImoveis(c);
-  let caixa = 0;
   let aluguel = 0;
-  // O que sai, por contraparte: a manutenção para o mercado e a parcela para o banco (o caixa é a soma).
   let manutencao = 0;
-  let parcelas = 0;
   for (const b of bens) {
     const def = defDoBem(c, b);
     if (!def) continue;
@@ -234,33 +244,85 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
     let novo = Math.max(0, valor * (1 + anda));
     if (def.categoria === 'veiculo') novo = Math.max(novo, def.preco * PISO_VEICULO);
     somar(e, reg, b.id, 'valor', novo - valor, 'bens');
-    caixa -= novo * def.manutencao;
     manutencao += novo * def.manutencao;
     if (b.q['alugado']) aluguel += novo * taxaDeAluguel(def);
-    const financiado = b.n['financiado'] ?? 0;
-    if (financiado > 0) {
-      const juros = financiado * JUROS_FINANCIAMENTO;
-      const parcela = Math.min(financiado + juros, parcelaDe(def));
-      somar(e, reg, b.id, 'financiado', juros - parcela, 'bens');
-      caixa -= parcela;
-      parcelas += parcela;
-    }
   }
   if (aluguel >= 1) movimentar(e, reg, { dinheiro: aluguel, contraparte: 'mercado' }, 'eu', 'aluguel');
-  if (Math.abs(caixa) >= 1) {
-    movimentar(
-      e,
-      reg,
-      {
-        dinheiro: caixa,
-        fluxos: [
-          { campo: 'dinheiro', d: -manutencao, p: 'mercado', r: 'manutencao' },
-          { campo: 'dinheiro', d: -parcelas, p: 'banco', r: 'parcela' },
-        ],
-      },
-      'eu',
-      'bens',
-    );
+  if (manutencao >= 1) movimentar(e, reg, { dinheiro: -manutencao, contraparte: 'mercado' }, 'eu', 'manutencao');
+  regraDosFinanciamentos(e, c, reg);
+}
+
+/**
+ * O ano dos financiamentos: o juro entra no saldo e a parcela sai da conta, dos investimentos e do crédito que
+ * sobrar. A que não couber atrasa; dois anos seguidos de atraso, e o banco leva o imóvel a leilão.
+ */
+function regraDosFinanciamentos(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
+  for (const ct of contratosDe(e)) {
+    if (modalidadeDe(ct) !== 'financiamento') continue;
+    const b = e.entidades[ct.t['garantia'] ?? ''];
+    if (!b) continue;
+    mexerNoSaldo(e, reg, ct, (ct.n['saldo'] ?? 0) * JUROS_FINANCIAMENTO, 'juros');
+    const devido = Math.min(ct.n['saldo'] ?? 0, ct.n['parcela'] ?? 0);
+    const falta = devido - pagarComOQueHouver(e, reg, ct, devido, 'parcela');
+    if (fecharSePago(e, reg, ct, 'parcela')) continue;
+    if (falta > 0.5) atrasar(e, reg, ct);
+    else porEmDia(e, reg, ct);
+    if ((ct.n['atraso'] ?? 0) >= ANOS_PARA_LEILAO) leiloar(e, c, b, ct);
+  }
+}
+
+/**
+ * O banco toma o imóvel do financiamento atrasado e leiloa: o lance (uma fração do valor) paga o que faltava, a sobra
+ * volta para quem joga e o que o lance não cobre o banco perde. É entrada própria no livro, com o porquê: a compra.
+ */
+function leiloar(e: EstadoVida, c: Conteudo, b: Entidade, ct: Entidade): void {
+  const def = defDoBem(c, b);
+  const valor = b.n['valor'] ?? 0;
+  const saldo = ct.n['saldo'] ?? 0;
+  const lance = valor * LANCE_DO_LEILAO;
+  const sobra = Math.max(0, lance - saldo);
+  const nome = def ? comDefinido(def) : 'o imóvel';
+  const sobrou = sobra >= 1 ? ` Sobraram ${formatarDinheiro(sobra)} para você.` : saldo > lance + 1 ? ' O lance nem cobriu a dívida; o resto o banco engoliu.' : '';
+  const origem = origemDe(ct);
+  const entrada = novaEntrada(e, {
+    tipo: 'regra',
+    causa: 'regra',
+    ref: 'divida:leilao',
+    texto: `O banco tomou ${nome}: dois anos de parcelas atrasadas viraram leilão, e o lance foi de ${formatarDinheiro(lance)}.${sobrou}`,
+    resumo: `perdeu ${nome} num leilão do banco`,
+    ...(origem !== null ? { causas: [origem] } : {}),
+  });
+  const r: Mudanca[] = [];
+  mexerNoSaldo(e, r, ct, -saldo, 'leilao');
+  fecharContrato(e, r, ct, 'leilao');
+  if (sobra >= 1) movimentar(e, r, { dinheiro: sobra, contraparte: 'banco' }, 'eu', 'leilao');
+  if (b.q['moradia']) sairDe(e, r, b);
+  somar(e, r, b.id, 'valor', -valor, 'leilao');
+  perder(e, r, b.id, 'alugado');
+  delete e.entidades[b.id];
+  if (def && !bensDe(e).some((x) => defDoBem(c, x)?.marca === def.marca)) perder(e, r, 'eu', def.marca);
+  acertarSenhorio(e, r, entrada.id);
+  lancar(e, entrada, r);
+}
+
+/** Antes dos contratos, o financiamento era um número no bem: vira o contrato dele, em dia. */
+export function migrarFinanciamentos(e: EstadoVida, c: Conteudo): void {
+  for (const b of bensDe(e)) {
+    const financiado = b.n['financiado'] ?? 0;
+    if (financiado <= 0 || financiamentoDe(e, b.id)) continue;
+    const def = defDoBem(c, b);
+    const origem = Number(b.id.slice(3)) || 0;
+    const id = e.entidades[`ctr${origem}`] ? `ctr${origem}b` : `ctr${origem}`;
+    e.entidades[id] = {
+      id,
+      tipo: 'contrato',
+      nome: def ? `Financiamento d${def.feminino ? 'a' : 'o'} ${def.nome}` : 'Financiamento',
+      nascimento: b.nascimento ?? e.ano,
+      vivo: true,
+      n: { saldo: financiado, parcela: def ? parcelaDe(def) : financiado * PARCELA_FINANCIAMENTO },
+      t: { modalidade: 'financiamento', credor: 'banco', origem: String(origem), garantia: b.id },
+      q: {},
+    };
   }
 }
 

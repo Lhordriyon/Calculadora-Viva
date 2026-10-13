@@ -25,6 +25,14 @@ export type ContaDeFora = (typeof CONTAS_DE_FORA)[number];
 /** Contraparte de uma mudança de dinheiro: uma entidade da vida, uma conta de fora ou a reavaliação (preço que mudou). */
 export type Contraparte = ContaDeFora | 'reavaliacao' | (string & {});
 
+/**
+ * As modalidades de dívida (dividas.ts): o cheque especial (o crédito do dia a dia, que cobre a conta no vermelho),
+ * o empréstimo que uma escolha fez, o financiamento de um imóvel (com o imóvel em garantia) e o acordo de uma
+ * renegociação. Toda dívida de quem joga é um contrato de uma delas, com o banco como credor.
+ */
+export const MODALIDADES = ['credito', 'emprestimo', 'financiamento', 'acordo'] as const;
+export type Modalidade = (typeof MODALIDADES)[number];
+
 /** Entidades da vida: quem joga, as pessoas, o lugar, o país, os países de fora e a empresa (quando quem joga tem uma). */
 export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', ...PARCEIROS, 'empresa'] as const;
 export type IdEntidade = (typeof ENTIDADES)[number];

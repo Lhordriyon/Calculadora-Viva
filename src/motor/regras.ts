@@ -40,6 +40,31 @@ export const JUROS_FINANCIAMENTO = 0.07;
 export const PARCELA_FINANCIAMENTO = 0.1;
 /** Corretagem e impostos na venda de imóvel. */
 export const CUSTO_VENDA_IMOVEL = 0.06;
+
+/**
+ * A dívida como contrato (dividas.ts). Dívida atrasada paga mora (juro real ao ano, no lugar do juro do contrato)
+ * e uma multa quando atrasa; o acordo de uma renegociação cobra juro real menor que o do cheque especial, em
+ * parcelas por PRAZO_ACORDO anos. Financiamento atrasado ANOS_PARA_LEILAO anos vai a leilão (o lance paga esta
+ * fração do valor do imóvel); dívida atrasada ANOS_PARA_CADUCAR anos caduca: o banco desiste de cobrar.
+ */
+export const MORA_REAL = 0.08;
+export const MULTA_ATRASO = 0.02;
+export const ACORDO_REAL = 0.08;
+export const PRAZO_ACORDO = 4;
+export const ANOS_PARA_LEILAO = 2;
+export const LANCE_DO_LEILAO = 0.7;
+export const ANOS_PARA_CADUCAR = 5;
+
+/** O desconto que o banco oferece para renegociar uma dívida atrasada: cresce com os anos de atraso (o feirão chega a 70%). */
+export function descontoDoAcordo(anosDeAtraso: number): number {
+  return anosDeAtraso <= 0 ? 0 : Math.min(0.7, 0.15 + 0.15 * anosDeAtraso);
+}
+
+/** A parcela anual que paga `saldo` em `anos` com juro `taxa` (tabela Price). */
+export function parcelaPrice(saldo: number, taxa: number, anos: number): number {
+  if (anos <= 0) return saldo;
+  return taxa === 0 ? saldo / anos : (saldo * taxa) / (1 - (1 + taxa) ** -anos);
+}
 /** O carro não vale menos que isto do preço (vira carro velho, não pó). */
 export const PISO_VEICULO = 0.12;
 

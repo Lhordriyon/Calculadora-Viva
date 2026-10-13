@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { conferirContas, extrato, saldosComOMundo } from '../src/motor/contas.ts';
+import { migrarDividaSemContrato } from '../src/motor/dividas.ts';
 import { economiaDoAno, movimentar } from '../src/motor/economia.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import { lancar, novaEntrada } from '../src/motor/livro.ts';
@@ -41,6 +42,7 @@ function pessoa(semente: number, idade: number, n: Record<string, number>): Esta
   const e = nascer(c, { semente, ano: 2026 });
   e.idade = idade;
   Object.assign(e.entidades['eu']!.n, { dinheiro: 0, divida: 0, renda: 0, custo: 0 }, n);
+  migrarDividaSemContrato(e);
   return e;
 }
 
@@ -60,7 +62,7 @@ describe('contas', () => {
     const e = pessoa(3, 40, { renda: 60000, custo: 30000, dinheiro: 10000, divida: 5000 });
     const reg: Mudanca[] = [];
     economiaDoAno(e, reg, { imposto: -0.04, inflacao: 0.05 });
-    const de = (r: string) => reg.find((m) => m.r === r);
+    const de = (r: string) => reg.find((m) => m.r === r && m.c.startsWith('eu.'));
     expect(de('salario')).toMatchObject({ c: 'eu.dinheiro', d: 60000, p: 'mercado' });
     expect(de('imposto')).toMatchObject({ c: 'eu.dinheiro', p: 'tesouro' });
     expect(de('imposto')!.d).toBeCloseTo(-2400, 6);
