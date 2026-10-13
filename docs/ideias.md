@@ -46,7 +46,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | Id | Ideia | Fase | Prioridade | Estado |
 |---|---|---|---|---|
 | I-01 | Contas com contrapartida e o extrato do ano | 1 | Alta | feita (fatia 1.1) |
-| I-02 | Dívida e financiamento como contrato | 1 | Alta | proposta |
+| I-02 | Dívida e financiamento como contrato | 1 | Alta | feita (fatia 1.2, 12/10) |
 | I-03 | O ano em etapas declaradas | 1 | Alta | proposta |
 | I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | proposta |
 | I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | proposta |
@@ -159,7 +159,10 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
   - juros, pagamentos, atrasos e inadimplência testados;
   - o túnel sem estratégia dominante.
 - **Prioridade:** Alta · Fase 1 (fatia 1.2).
-- **Estado:** proposta.
+- **Estado:** feita (fatia 1.2, 12/10).
+  - Toda dívida é um contrato com o banco (`contratos.ts`, `dividas.ts`): cheque especial, empréstimo, financiamento com garantia e acordo.
+  - O atraso suja o nome; o financiamento atrasado vai a leilão; a dívida caduca em cinco anos; renegociar é decisão.
+  - O túnel confere, em toda entrada, que o que se deve é o que o banco tem a receber.
 
 ### I-03 · O ano em etapas declaradas
 - **Problema:**

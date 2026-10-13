@@ -135,6 +135,13 @@ Os quatro países de fora (`mundo.json › estrangeiros`) são entidades como as
 - Os setores dizem quanto sentem o dólar (`cambio`: o agro ganha com ele alto, o comércio perde) e a tarifa (`protecao`: a indústria ganha com a fronteira fechada). O investimento em dólar (`ativos › dolar`, `cambio: 1`) rende o quanto o dólar subiu.
 - Efeitos: `"ator.relacao": 10` (a cúpula, o embaixador), `"celeste.relacao": -15` (escolher lado numa guerra comercial). Sanção e acordo não se escrevem pelo conteúdo: nascem da relação.
 
+## Dívidas (fatia 1.2)
+
+Toda dívida é um contrato com o banco (`docs/motor.md`): o cheque especial, o empréstimo de uma escolha, o financiamento de um imóvel e o acordo.
+- **A qualidade `nome_sujo` é do motor.** Ela existe enquanto alguma dívida estiver atrasada, e o conteúdo só a lê. A cobrança, o aluguel negado, o feirão (`94-dividas.json`) e o carro que não se financia são condições sobre ela. Para a história sujar o nome, a escolha cria a dívida; quem decide se ela atrasa é o limite do banco.
+- **A carta do banco** (o storylet `nome_sujo`) é agendada pelo motor quando o nome suja, e pelo rotativo; ela só chega se o nome estiver sujo.
+- **Renegociar é decisão.** A escolha que fecha um acordo usa `renegociar`. A que só abate (vender o carro, cortar tudo) usa `dividaFator` ou `divida` negativo.
+
 ## Efeitos
 
 | Efeito | Exemplo | Nota |
@@ -143,7 +150,9 @@ Os quatro países de fora (`mundo.json › estrangeiros`) são entidades como as
 | caminho | `"mae.vinculo": 10`, `"ator.saude": 5`, `"ator.ocupacao": { "definir": "aposentada" }` | soma, ou define |
 | `dinheiro` | `-1500` | faltando, resgata investimento e depois vira dívida |
 | `investir` | `10000` | move da conta para o investido (o que houver) |
-| `divida`, `dividaFator` | `35000`, `0.3` | dívida nova (negativo é desconto); acordo que deixa 30% |
+| `divida` | `35000` | um empréstimo do banco que nasce desta entrada (o porquê, se ele atrasar); negativo é desconto do banco, o atrasado primeiro |
+| `dividaFator` | `0.4` | multiplica a dívida sem garantia (a venda do carro que abateu, os cortes que pagaram); o banco perdoa a diferença |
+| `renegociar` | `{}` ou `{ "desconto": 0.6 }` | fecha um acordo com o banco: as dívidas sem garantia viram uma só, com parcela, e o nome limpa se nada mais atrasar. Sem `desconto`, vale o do banco pelos anos de atraso (até 70%) |
 | `patrimonioFator` | `0.5` | multiplica conta e investido (golpe, sociedade que quebrou) |
 | `renda`, `custo` | `20000` ou `{ "definir": 26000 }` | anuais, reais de hoje |
 | `rendaFator`, `custoFator` | `0.8`, `0.5` | multiplicam a renda (corte de salário, proposta) e o custo anual (cortar o padrão) |

@@ -90,7 +90,7 @@ As contas de fora ainda não são estado: o saldo delas sai do livro. Viram enti
 
 **O que muda nas funções do livro e da economia:**
 - **`anotar` e `somar`** recebem a contraparte. **`somarRepartido`** soma um total de uma vez e anota as partes, cada uma com a sua contraparte (a herança que vai para quem joga e para os irmãos).
-- **`movimentar`** pede `contraparte` (para o dinheiro) ou `fluxos` (o dinheiro repartido por contraparte). A dívida nova é com o banco, salvo `contraparteDaDivida`.
+- **`movimentar`** pede `contraparte` (para o dinheiro) ou `fluxos` (o dinheiro repartido por contraparte). Dívida nova ou perdoada é contrato (`dividas.ts`, abaixo).
 - **`tirarDeQuemJoga`** pede quem recebe.
 - **`economiaDoAno`** faz a mesma conta de antes, mas anota fluxo por fluxo:
   - salário ou aposentadoria;
@@ -115,6 +115,41 @@ Ficam de fora a troca de quem ocupa um papel (`saida`, `nascimento`) e os campos
 O túnel trava o CI se houver um problema sequer. O teste `test/contas.test.ts` confere vidas sorteadas, pobres, de fortuna, de linhagem e de herdeiro, e prova que a conferência acusa dinheiro sem contraparte e transferência que não volta.
 
 **Extrato (`extrato`, `saldosComOMundo`):** o que entrou e saiu do patrimônio financeiro de quem joga, por fluxo e contraparte, num ano ou na vida inteira; a reavaliação vai à parte. A folha Dinheiro mostra o extrato do ano e o da vida. Save antigo não tem a contraparte nas entradas velhas, e o extrato mostra só o que veio depois.
+
+## Dívidas como contratos (`contratos.ts`, `dividas.ts`, fatia 1.2 do universo de bolso)
+
+Toda dívida de quem joga é um contrato com o banco: uma entidade `tipo: 'contrato'` com saldo, parcela, atraso, modalidade, credor, garantia e a entrada do livro que a fez (`origem`). As modalidades:
+- **cheque especial** (`ctr0`): cobre a conta no vermelho; abre no primeiro saque e fecha quando é pago;
+- **empréstimo** (`ctr<entrada>`): a dívida que uma escolha fez (o efeito `divida` do conteúdo);
+- **financiamento**: o imóvel comprado financiado, com ele em garantia (`garantia: bem<id>`);
+- **acordo**: a renegociação, com desconto e parcela (tabela Price, `ACORDO_REAL` em `PRAZO_ACORDO` anos).
+
+`eu.divida` é a soma dos contratos sem garantia, e `bem.financiado`, o saldo do financiamento daquele bem: espelhos que mudam junto com o contrato, na mesma entrada (`mexerNoSaldo`). Quando só o espelho mudou por outro caminho (o caixa acertado), `ajustarSaldo` leva a mudança ao contrato.
+
+**O ano das dívidas:**
+1. **Juros** (`jurosDoAno`, dentro de `economiaDoAno`): em dia, o cheque especial e o empréstimo pagam o juro real do momento (a Selic do país); o acordo, o dele; em atraso, a mora (`MORA_REAL`). O financiamento paga `JUROS_FINANCIAMENTO`, em `bens.ts`.
+2. **Caixa** (`acertarCaixaDeQuemJoga`): o dinheiro negativo vira saque no cheque especial; o que sobra paga o crédito que gira, o atrasado primeiro, depois o cheque especial e os empréstimos do mais antigo. O acordo e o financiamento só pela parcela.
+3. **Parcelas** (`pagarComOQueHouver`): a do financiamento (em `regraDosBens`) e a do acordo (em `regraDasDividas`) saem da conta, dos investimentos e do crédito que sobrar. O que não couber atrasa; paga, o contrato volta a ficar em dia.
+4. **Limite** (`regraDasDividas`): quem passou do limite de crédito (`limiteDeCredito`) ou tem dívida atrasada resgata os investimentos para cobrir. O que ainda passa atrasa: o cheque especial e os mais novos primeiro. Ao atrasar, o banco cobra a multa (`MULTA_ATRASO`). Dívida atrasada do crédito que gira só sai do atraso paga, renegociada ou caduca.
+5. **Leilão** (`bens.ts › leiloar`): financiamento atrasado `ANOS_PARA_LEILAO` anos seguidos. O banco toma o imóvel, o lance (`LANCE_DO_LEILAO` do valor) paga o saldo, a sobra volta para quem joga e o que o lance não cobre o banco perde.
+6. **Caducar:** dívida sem garantia atrasada há `ANOS_PARA_CADUCAR` anos. O banco desiste de cobrar (contraparte `banco`, rótulo `caducou`).
+7. **O nome:** `eu.nome_sujo` enquanto alguma dívida estiver atrasada. Sem crédito novo (`creditoNovo` é zero, e o buraco do ano vira privação) e sem financiamento. O motor é o único que escreve a qualidade; o conteúdo lê.
+
+O nome que suja e limpa, a dívida que caduca e o leilão viram entradas próprias no livro (`divida:nome_sujo`, `divida:nome_limpo`, `divida:caducou`, `divida:leilao`), com o porquê. Ele é a entrada que fez a dívida ou, no cheque especial, as que mais sacaram nele. A carta do banco (o storylet `nome_sujo`) chega no ano seguinte ao nome sujo.
+
+**Decisões de quem joga:**
+- **Renegociar** (operação `renegociar`, efeito `renegociar` do conteúdo): as dívidas sem garantia viram um acordo. O desconto cresce com o atraso (`descontoDoAcordo`, até 70%), ou é o que o conteúdo der. O nome limpa se nada mais estiver atrasado.
+- **Quitar** (operação `quitar`): paga um contrato com a conta e os investimentos.
+
+**Herança:** a partilha paga a dívida sem garantia com o espólio, e o que ela não cobre o banco perde. O financiamento passa ao herdeiro com o imóvel; a abertura da vida nova anota a garantia.
+
+**Save antigo:** a dívida vira o cheque especial (`migrarDividaSemContrato`) e o financiado de cada bem vira o financiamento dele (`migrarFinanciamentos`).
+
+**Conferência** (`contas.ts`):
+- **`conferirContratos`**, entrada por entrada: o que mudou nos contratos sem garantia é o que mudou na dívida de quem joga, e o do financiamento é o que mudou no financiado do bem.
+- **`conferirDividas`**, no estado: os espelhos batem com os contratos; todo contrato tem credor e todo financiamento tem o bem em garantia.
+
+O túnel trava o CI se houver um problema sequer, nas vidas sorteadas, nas de origem escolhida e nas gerações das dinastias.
 
 ## As fichas do ano (`acoes.ts`)
 

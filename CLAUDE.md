@@ -53,7 +53,7 @@ O erro mais caro é otimizar algo que nem deveria existir. Decisão sem número 
 
 - algum storylet nunca aparece (morto) ou um não-repetível se repete na mesma vida;
 - uma estratégia fixa vence as outras em idade, patrimônio e felicidade ao mesmo tempo;
-- o dinheiro de alguma entrada não tem contraparte (as contas não fecham).
+- o dinheiro de alguma entrada não tem contraparte (as contas não fecham), ou a dívida de quem joga não bate com os contratos (o que se deve não é o que o banco tem a receber).
 
 E mede, com portões por incremento (`docs/decisoes.md` e `docs/roteiro.md`):
 
@@ -78,7 +78,9 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
   campos.ts            campos de cada entidade e leitura de caminhos ("mae.saude")
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança, e o dinheiro com a contraparte)
-  contas.ts            toda transferência tem dois lados: a conferência das contas (entrada por entrada) e o extrato
+  contas.ts            toda transferência tem dois lados: a conferência das contas e das dívidas (entrada por entrada) e o extrato
+  contratos.ts         a dívida como contrato com o banco (cheque especial, empréstimo, financiamento, acordo): juros, saque, pagamento, limite
+  dividas.ts           o ano das dívidas: parcela, atraso, nome sujo, caducar; renegociar e quitar
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens, regra do amor, iniciativas
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
@@ -152,6 +154,10 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Conteúdo em JSON, validado (`npm run validar`) | dono | conteúdo escala sem código e sem quebrar |
 | Toda variável lida por ≥ 2 sistemas e altera ≥ 1 decisão | dono | estado que nada decide é peso morto |
 | Todo real tem contraparte: toda mudança de dinheiro diz de quem veio ou para quem foi, e as contas fecham entrada por entrada (o túnel trava o contrário) | dono (missão Universo de Bolso) | dívida com credor, orçamento do governo, caixa da empresa e taxa de gestor precisam de contas que fecham |
+| Toda dívida é contrato com credor, saldo, parcela e atraso; o que se deve é o que o banco tem a receber (o túnel trava o contrário) | dono (missão Universo de Bolso) | parcela atrasada, nome sujo, garantia executada e renegociação precisam de um contrato por trás, não de um número |
+| Dívida atrasada só sai do atraso paga, renegociada ou caduca (cinco anos) | agente | quem vivia no limite do cheque especial sujava e limpava o nome a cada ano: ruído na linha do tempo e nenhuma decisão |
+| O nome sujo é do motor: o conteúdo lê, não escreve | agente | o nome sujo tem de ter causa no livro (a dívida que atrasou); a marca solta do conteúdo durava para sempre sem dívida nenhuma |
+| Financiamento atrasado dois anos vai a leilão; a sobra do lance volta para quem joga | agente | garantia executada é a consequência que faz o financiamento ser decisão, e a sobra evita que o leilão confisque o que já foi pago |
 | Túnel com metas e portões (saturação, assinaturas, mobilidade, dispersão, agência, toques) | dono | qualidade se mede |
 | Caminho padrão em um toque; origem opcional | dono | começar rápido, e quem quiser escolhe |
 | Criar o personagem escolhendo tudo: nome, sobrenome, gênero, cidade, classe, família, linhagem, irmãos, jeito e talentos (pontos) | dono | liberdade na criação; o que não se escolhe é sorteado |

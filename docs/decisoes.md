@@ -638,6 +638,89 @@ O incremento 11 ("morar lá fora") ficou como rascunho, não publicado: a emigra
 - **Herança de quem joga.** A partilha cria a vida nova com o espólio já dividido. O que saiu dele (o imposto, a metade do cônjuge, a dívida que ele não cobria) ainda não aparece como fluxo, porque a vida nova começa um livro novo.
 - **Leitura do extrato da vida.** Ele soma valores de anos diferentes em reais de hoje. A inflação já está fora deles; o que aparece como "inflação no dinheiro parado" é o que o dinheiro parado perdeu.
 
+## Universo de bolso: fatia 1.2, a dívida como contrato (12/10)
+
+O dono pediu de novo: "Lance uma atualização nova". A fatia seguinte do roteiro era a 1.2 (I-02 em `docs/ideias.md`).
+
+**O que mudou:**
+- **Toda dívida é um contrato com o banco**, uma entidade com credor, saldo, parcela, atraso e a entrada do livro que a fez (o porquê). As modalidades:
+  - **o cheque especial**, que cobre a conta no vermelho;
+  - **o empréstimo**, que nasce de uma escolha: o efeito `divida` do conteúdo, como a festa parcelada ou o carro em sessenta vezes;
+  - **o financiamento**, com o imóvel em garantia;
+  - **o acordo** de uma renegociação.
+- **A dívida de quem joga e o financiado de cada bem** viraram espelhos dos contratos. O túnel trava o CI se, em alguma entrada, o que se deve não for o que o banco tem a receber.
+- **O ano das dívidas:**
+  - juros por contrato e mora no que atrasou;
+  - o dinheiro que sobra paga primeiro o atrasado;
+  - a parcela sai da conta, dos investimentos e do crédito que sobrar;
+  - o que passa do limite atrasa;
+  - atraso suja o nome, e o banco não empresta mais nem financia;
+  - o financiamento atrasado dois anos vai a leilão;
+  - a dívida atrasada há cinco anos caduca.
+- **Decisões:**
+  - renegociar troca as dívidas por um acordo com desconto, que cresce com o atraso;
+  - quitar paga uma dívida;
+  - financiar é a compra que cria o risco.
+- **A folha Dinheiro tem a seção Dívidas.** Cada contrato mostra de onde veio ("aos 27, casou numa festa parcelada"), o saldo, o juro real, a parcela e quanto falta para caducar ou para o leilão. Ela também mostra a proposta do banco, com o botão "Renegociar".
+- **A linha do tempo conta o nome que suja e limpa, a dívida que caduca e o leilão**, cada um com o porquê: a escolha que fez a dívida ou, no cheque especial, o que mais sacou nele.
+  - As entradas de regra que contam algo passaram a mostrar o "Porque aos 27, você casou numa festa parcelada". Antes, só os eventos, as iniciativas dos personagens, a morte e o país mostravam.
+  - A empresa que perde valor sem o dono ganhou o porquê junto.
+- **Conteúdo:**
+  - três storylets que leem o nome sujo: a cobrança no telefone, o aluguel negado e o feirão de limpar o nome;
+  - três linhas curtas;
+  - o efeito novo `renegociar`;
+  - a carta do banco agora só chega a quem está mesmo com o nome sujo.
+
+**Decisões tomadas sozinho:**
+- **Espelhos em vez de apagar os campos.** `eu.divida` e `bem.financiado` continuam no estado, sempre iguais à soma dos contratos. Assim, o conteúdo e as regras que já liam a dívida seguem valendo, e o túnel confere os dois lados.
+- **O crédito do dia a dia se paga sozinho; o acordo e o financiamento, pela parcela.** O dinheiro que sobra paga o cheque especial e os empréstimos, como antes. Se o acordo também fosse pago assim, a parcela não teria sentido.
+- **O critério do atraso do cheque especial e do empréstimo é o limite de crédito.** Ele é o de antes: duas rendas por ano, no mínimo R$ 30 mil. O que passa dele no fim do ano atrasa, o mais novo primeiro.
+  - Antes, a dívida acima do limite congelava, sem juro e sem consequência.
+  - Quem tem investimentos resgata para cobrir antes de atrasar. Na vida real, a justiça bloquearia; e assim ninguém "espera caducar" com dinheiro aplicado.
+- **O atraso só sai pago, renegociado ou caduco.** Na primeira versão, o atraso sumia quando a dívida voltava a caber no limite. A sonda mostrou o defeito: quem vivia no limite sujava e limpava o nome a cada um ou dois anos, e a linha do tempo virava um pisca-pisca. A parcela do financiamento e a do acordo seguem outra regra: paga, o contrato volta a ficar em dia.
+- **Os números:**
+  - **mora:** 8% reais ao ano no lugar do juro do contrato;
+  - **multa:** 2% ao atrasar;
+  - **acordo:** 8% reais, em quatro parcelas;
+  - **desconto do banco:** 30% com um ano de atraso, chegando a 70%, o desconto de feirão;
+  - **caducar:** cinco anos. É o tempo que a dívida fica no cadastro de devedores e o prazo de cobrança na vida real; "esperar caducar" é uma decisão brasileira de verdade;
+  - **leilão:** dois anos de parcelas atrasadas. O lance paga 70% do valor, a sobra volta para quem joga e o que não cobre o banco perde.
+- **O nome sujo é do motor.** Três escolhas do conteúdo davam a marca sem dívida nenhuma, e ela durava a vida inteira. Agora:
+  - a marca só existe enquanto houver dívida atrasada;
+  - as escolhas que "ignoravam a carta" deixam a dívida atrasar sozinha;
+  - as renegociações do conteúdo usam `renegociar`.
+- **Os robôs:**
+  - a arriscada financia a casa assim que a parcela cabe, e nunca renegocia: espera caducar;
+  - a cautelosa nunca financia e renegocia na hora;
+  - a aleatória faz um pouco de cada.
+  Sem isso, o financiamento e o leilão nunca apareciam no túnel: os robôs não financiavam.
+- **A herança.** O financiamento passa ao herdeiro com o imóvel. A dívida sem garantia continua paga pelo espólio, e o que ele não cobre o banco perde, como já era. A abertura da vida nova anota de qual imóvel é o financiamento herdado. A conferência achou essa falta na primeira rodada: o livro novo não tinha a compra.
+
+**Medidas** (túnel de 10.000 vidas; CPU e save em A/B na mesma máquina, três rodadas alternadas de 240 vidas):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Dívida com credor | um número sem credor | toda dívida é contrato; 0 problemas na conferência |
+| Patrimônio mediano: arriscada / aleatória | R$ 2,9 milhões / R$ 2 milhões | R$ 2,4 milhões / R$ 1,7 milhão |
+| Patrimônio mediano: cautelosa / primeira | R$ 73 milhões / R$ 1,4 milhão | R$ 74 milhões / R$ 1,4 milhão |
+| Quem nasce sem fortuna: mediana do patrimônio | R$ 2,5 milhões | R$ 2,2 milhões |
+| Mobilidade: do quintil mais pobre ao mais rico / do mais rico ao mais pobre | 13,9% / 3,6% | 14,8% / 4,1% |
+| Dinastias: gerações em média / chegam à 3ª | 3,1 / 61,3% | 2,9 / 55,4% |
+| Spearman entre gerações (o portão já reprovava) | 0,81 | 0,85 |
+| Vidas com patrimônio negativo ao morrer | 0,6% | 0,6% |
+| Nenhuma estratégia domina | sim | sim |
+| CPU por vida (A/B) | 53,1 ms | 56,1 ms (+6%) |
+| Save no fim da vida: mediana / p90 / máximo | 273 / 410 / 485 KB | 279 / 411 / 486 KB |
+| Testes | 204 | 216 |
+| Conteúdo | 554 eventos, 232 linhas | 557 eventos, 235 linhas |
+
+**O que ficou de fora:**
+- **O banco como entidade com balanço e capital** (Fase 4). O limite continua pela renda.
+- **Credores que não são o banco** (o agiota, o amigo que empresta). O contrato já tem o campo `credor`.
+- **A penhora de outros bens além da garantia.** Quem tem um iate e nenhum dinheiro pode ficar com o nome sujo.
+- **A dívida da empresa** continua no CPF de quem joga (fatia 2.2).
+- **O Spearman entre gerações piorou um pouco (0,81 para 0,85).** O portão já reprovava. As dinastias da arriscada e da aleatória ficaram mais curtas, porque o leilão e o nome sujo tiram fortuna de quem arrisca. Fica para quando a herança for instrumento (holding, I-13).
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

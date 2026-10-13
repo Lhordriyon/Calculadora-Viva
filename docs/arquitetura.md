@@ -69,7 +69,10 @@ Para cada módulo: o que existe hoje, o contrato (como os outros falam com ele) 
 - **Falta:** identidade estável, arestas, vários filhos e relações entre personagens.
 
 ### 3. Livro-razão financeiro e contabilidade
-- **Hoje:** o livro anota a mudança líquida de cada campo, com a causa. O dinheiro muda de um lado só: 86,6% das entradas que mexem em dinheiro o criam ou o destroem. A dívida é um número.
+- **Hoje (depois das fatias 1.1 e 1.2):**
+  - o livro anota cada fluxo de dinheiro com a contraparte, e a conferência fecha entrada por entrada;
+  - a dívida é contrato com o banco: cheque especial, empréstimo, financiamento e acordo, com saldo, parcela, atraso e a entrada que a fez.
+  - Antes da 1.1, o dinheiro mudava de um lado só: 86,6% das entradas que mexiam em dinheiro o criavam ou o destruíam, e a dívida era um número.
 - **Contrato:**
   - **`transferir(de, para, valor, motivo)`** é o único jeito de mover dinheiro entre entidades, e grava os dois lados na mesma entrada;
   - **`reavaliar(ent, campo, valor, motivo)`** muda valor sem mover dinheiro, marcado como reavaliação;
@@ -227,7 +230,7 @@ Nível de detalhe (I-21) + decisão do dono ── Países reais (I-20) ── M
 | Fase | Entrega | Primeiras fatias |
 |---|---|---|
 | 0 | Auditoria, arquitetura e registro de ideias | estes três documentos |
-| 1 | O livro e as contas | 1.1 contas com contrapartida e o extrato do ano (feita em 12/10); 1.2 dívida como contrato; 1.3 o ano em etapas declaradas, com o livro compacto; 1.4 identidade de pessoas |
+| 1 | O livro e as contas | 1.1 contas com contrapartida e o extrato do ano (feita em 12/10); 1.2 dívida como contrato (feita em 12/10); 1.3 o ano em etapas declaradas, com o livro compacto; 1.4 identidade de pessoas |
 | 2 | Patrimônio e agentes | 2.1 gestor de patrimônio com mandato; 2.2 caixa da empresa; 2.3 holding, fundação e family office; 2.4 concierge |
 | 3 | Países reais e geografia | 3.1 dados de referência e nível de detalhe; 3.2 morar em outra cidade e em outro país; 3.3 mapa |
 | 4 | Bancos, crédito, moedas e dívida | banco e tesouro como entidades; banco central; dívida soberana |
@@ -323,6 +326,66 @@ Tudo o que a missão pede para dinheiro (fases 2, 4, 5 e 6) começa aqui.
 - o extrato aparece nos dois temas;
 - `npm run verificar` passa;
 - `docs/decisoes.md` registra o que mudou.
+
+## A segunda fatia (1.2): a dívida como contrato
+
+**Problema.** A dívida era um número em quem joga, sem credor, prazo, parcela ou atraso:
+- nascia sozinha quando o dinheiro ficava negativo, e era paga sozinha quando sobrava;
+- acima do limite, congelava;
+- o financiamento era um número no bem, e a parcela sempre se pagava, com cheque especial sem limite;
+- "nome sujo" era só uma marca que o conteúdo dava e tirava.
+
+**Regras (feitas):**
+1. **O contrato.** Toda dívida de quem joga é uma entidade `contrato`, com credor (o banco), saldo, parcela, atraso, modalidade, garantia e a entrada que a fez. As modalidades:
+   - cheque especial;
+   - empréstimo (o efeito `divida` do conteúdo);
+   - financiamento (com o imóvel em garantia);
+   - acordo.
+   `eu.divida` e `bem.financiado` são espelhos dos contratos, e mudam na mesma entrada.
+2. **O ano:**
+   - juros por contrato, e mora no atrasado;
+   - o dinheiro que sobra paga o atrasado primeiro;
+   - a parcela sai da conta, dos investimentos e do crédito que sobrar;
+   - o que passa do limite atrasa.
+3. **As consequências:**
+   - atraso suja o nome, e o banco não empresta mais nem financia;
+   - o financiamento atrasado dois anos vai a leilão;
+   - a dívida atrasada há cinco anos caduca;
+   - o atrasado só sai do atraso pago, renegociado ou caduco.
+4. **As decisões:**
+   - renegociar troca as dívidas por um acordo com desconto (que cresce com o atraso);
+   - quitar paga um contrato;
+   - financiar é a compra que cria o risco.
+
+**Invariante:** em cada entrada, o que mudou nos contratos sem garantia é o que mudou em `eu.divida`, e o do financiamento é o que mudou no `financiado` do bem em garantia. No estado, os espelhos batem com os contratos, e todo contrato tem credor e garantia que existe.
+
+**Testes** (`test/dividas.test.ts`):
+- o invariante em vidas sorteadas, de fortuna, de linhagem e de herdeiro;
+- juros e mora;
+- a ordem de pagar;
+- limite, atraso, multa, nome sujo e o porquê;
+- atraso que persiste;
+- caducar;
+- acordo, com o desconto, a parcela Price e o acordo quebrado;
+- financiamento e leilão;
+- herança;
+- save, com ida e volta e com a migração do save antigo.
+
+**Túnel:**
+- a meta permanente "toda dívida tem credor" trava o CI;
+- a seção "As dívidas como contrato" mostra, por estratégia: financiou, nome sujo, anos sujo, acordo, caducou, leilão e nome limpo;
+- quatro portões informativos.
+
+**Interface:** a seção Dívidas da folha Dinheiro.
+- Cada contrato mostra de onde veio, o saldo, o juro real, a parcela e o atraso, com quanto falta para caducar ou para o leilão.
+- O botão "Pagar" ou "Quitar".
+- A proposta do banco, com "Renegociar".
+
+**Fora do escopo:**
+- o banco como entidade com balanço e capital (Fase 4: o limite continua pela renda);
+- credores que não são o banco (o agiota, o amigo que empresta);
+- penhora de outros bens além da garantia;
+- a dívida da empresa, que continua no CPF de quem joga (fatia 2.2).
 
 ## Orçamentos
 

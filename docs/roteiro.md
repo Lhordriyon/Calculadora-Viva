@@ -24,7 +24,7 @@ Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra 
 
 - [x] Fase 0: auditoria, arquitetura e registro de ideias
 - [x] Fatia 1.1: toda transferência tem dois lados. Toda mudança de dinheiro diz de quem veio ou para quem foi (o mercado, o governo, o banco, os parentes, outra pessoa, ou o preço que mudou). As contas fecham entrada por entrada, e o túnel trava o contrário. A folha Dinheiro ganhou o extrato do ano e o da vida. Nenhuma vida mudou: as métricas saíram iguais
-- [ ] Fatia 1.2: dívida e financiamento como contrato
+- [x] Fatia 1.2: a dívida como contrato. Toda dívida é um contrato com o banco: o cheque especial, o empréstimo de uma escolha, o financiamento com o imóvel em garantia e o acordo. O que passa do limite e a parcela que não cabe atrasam, e o atraso suja o nome: o banco não empresta mais nem financia. O financiamento atrasado vai a leilão, a dívida atrasada caduca em cinco anos, e renegociar é decisão. A folha Dinheiro mostra cada dívida, de onde veio e a proposta do banco. O túnel confere, em toda entrada, que o que se deve é o que o banco tem a receber
 - [ ] Fatia 1.3: o ano em etapas declaradas e o livro compacto
 - [ ] Fatia 1.4: identidade de pessoas
 
