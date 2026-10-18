@@ -12,6 +12,7 @@
     "test": "vitest run",
     "validar": "node scripts/validar.ts",
     "tunel": "node scripts/tunel.ts",
+    "tunel:rapido": "node scripts/tunel.ts --vidas=2000",
     "vida": "node scripts/uma-vida.ts",
     "verificar": "npm run checar && npm test && npm run validar && npm run tunel && npm run build",
     "icones": "node scripts/icones.ts"

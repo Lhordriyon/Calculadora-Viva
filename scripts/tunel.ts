@@ -3,34 +3,29 @@
  * 125 jogadores × 20 vidas seguidas, com a memória entre vidas que o jogo usa)
  * e o relatório vai para docs/metricas.md.
  *
- * Opções: --vidas=N (total aproximado), --sem-arquivo, --semente=N.
+ * Opções: --vidas=N (total aproximado), --sem-arquivo, --semente=N, --paralelo=N (trabalhadores; 1 roda tudo aqui).
+ * Só o túnel inteiro escreve docs/metricas.md; um parcial (outro total ou outra semente) escreve dist-tunel.md.
  * Sai com código 1 se uma meta quebrar: storylet morto, storylet
  * não-repetível repetido na mesma vida ou estratégia fixa dominante.
  */
 import { writeFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
+import { Worker } from 'node:worker_threads';
 import { join } from 'node:path';
 import { carregarConteudo, RAIZ } from './disco.ts';
-import { classeDoPatrimonio, empresasDe, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
-import { tipoDe, type Conteudo } from '../src/motor/conteudo.ts';
-import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
-import { anoDoPais, ESTATISTICAS, faseDe, governoAtual, momentoTipico, type Estatistica } from '../src/motor/pais.ts';
+import { tipoDe } from '../src/motor/conteudo.ts';
+import { anoDoPais, ESTATISTICAS, momentoTipico, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
-import { mercadoDoAno, motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
-import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
-import type { EscolhaOrigem } from '../src/motor/origem.ts';
-import { jaAgiu } from '../src/motor/acoes.ts';
-import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
-import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, decidirDinheiro, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
-import { aleatorio, criarRng, misturar, type Rng } from '../src/motor/rng.ts';
-import type { Entrada, EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts';
+import { mercadoDoAno, motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
+import { ESTRATEGIAS, arriscarNaoCompensa, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
+import { misturar } from '../src/motor/rng.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
-import { agir, avancarAno, escolher, nascer, observarOAno } from '../src/motor/vida.ts';
+import { nascer } from '../src/motor/vida.ts';
 import { dependenciasDoAno, ETAPAS_DO_ANO, type IdEtapa } from '../src/motor/manifesto.ts';
-import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
-import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
-import { anoDoExterior, parceirosDe } from '../src/motor/diplomacia.ts';
+import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
+import { anoDoExterior } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
-import { conferirContas, conferirContratos, conferirDividas, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
+import { ANO, executar, type DoJogador, type Geracao, type HistoriaDasDividas, type Resultado, type Tarefa, type Vida } from './tunel-vida.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
 const args = new Map(
@@ -44,616 +39,7 @@ const SEMENTE = Number(args.get('semente') ?? 20261006);
 const VIDAS_POR_JOGADOR = 20;
 const JOGADORES = Math.max(1, Math.round(TOTAL / (ESTRATEGIAS.length * VIDAS_POR_JOGADOR)));
 const JOGADORES_BASE = Math.max(1, Math.round(JOGADORES * 0.4));
-const ANO = 2026;
 
-// ---------------------------------------------------------------- uma vida
-
-interface Jogada {
-  e: EstadoVida;
-  toques: number;
-  ms: number;
-  riquezaOrigem: number;
-  /** Anos vividos em cada fase do ciclo. */
-  anosPorFase: Record<Fase, number>;
-  /** Operações na carteira (aplicar, resgatar, trocar o perfil). */
-  operacoes: number;
-  /** O país ano a ano (só o que os portões do incremento 8 contam). */
-  pais: PaisDaVida;
-  /** O grupo de empresas ano a ano (o que os portões do incremento 9 contam). */
-  grupo: GrupoDaVida;
-  /** O mundo lá fora ano a ano (o que os portões do incremento 10 contam). */
-  fora: ForaDaVida;
-}
-
-/** O mundo lá fora visto por uma vida. */
-interface ForaDaVida {
-  /** O dólar no fim de cada ano (R$ de hoje). */
-  cambios: number[];
-  /** Por ano: [quanto o dólar andou (fração), a inflação do ano (%)]. */
-  repasse: [number, number][];
-  /** Por empresa e ano: [setor, crescimento do valor, quanto o dólar andou]. */
-  setores: [string, number, number][];
-  /** Por governo: anos e as sanções e os acordos que começaram (os da Celeste à parte: a rival dela é a Federação). */
-  porGoverno: Record<string, { anos: number; sancoes: number; acordos: number; sancoesDaCeleste: number }>;
-}
-
-/** Sanção e acordo de cada país de fora (para ver o que começou no ano). */
-function fotoDosParceiros(e: EstadoVida): Map<string, { sancao: boolean; acordo: boolean }> {
-  return new Map(parceirosDe(e).map((p) => [p.id, { sancao: Boolean(p.q['sancao']), acordo: Boolean(p.q['acordo']) }]));
-}
-
-/** Anota o ano do mundo lá fora na vida (depois do +1 ano): o dólar, a inflação, as empresas por setor e o que começou sob cada governo. */
-function anotarFora(
-  e: EstadoVida,
-  cambioAntes: number,
-  empresasAntes: Map<string, { nome: string; valor: number }>,
-  parceirosAntes: Map<string, { sancao: boolean; acordo: boolean }>,
-  f: ForaDaVida,
-): void {
-  const pais = e.entidades['pais']!;
-  const cambio = pais.n['cambio'] ?? cambioAntes;
-  const variacao = cambioAntes > 0 ? cambio / cambioAntes - 1 : 0;
-  f.cambios.push(cambio);
-  f.repasse.push([variacao, pais.n['inflacao'] ?? 0]);
-  for (const emp of empresasDe(e)) {
-    const a = empresasAntes.get(emp.id);
-    if (a && a.nome === emp.nome && a.valor >= 1e5) f.setores.push([emp.t['setor'] ?? '', (emp.n['lucro'] ?? 0) / a.valor, variacao]);
-  }
-  const g = (f.porGoverno[governoAtual(e)] ??= { anos: 0, sancoes: 0, acordos: 0, sancoesDaCeleste: 0 });
-  g.anos++;
-  for (const p of parceirosDe(e)) {
-    const x = parceirosAntes.get(p.id);
-    if (p.q['sancao'] && !x?.sancao) {
-      g.sancoes++;
-      if (p.id === 'celeste') g.sancoesDaCeleste++;
-    }
-    if (p.q['acordo'] && !x?.acordo) g.acordos++;
-  }
-}
-
-/** O grupo de empresas visto por uma vida. */
-interface GrupoDaVida {
-  /** O máximo de empresas de uma vez e de subsidiárias somadas. */
-  maxEmpresas: number;
-  maxSubsidiarias: number;
-  anosEmGrupo: number;
-  /** Por empresa e ano: [crescimento, humor da bolsa] (o que a bolsa rendeu além do esperado para a fase), na bolsa e fora dela. */
-  listadas: [number, number][];
-  fechadas: [number, number][];
-  /** Pontos de tração que a mesa tirou de cada empresa, nos anos em que várias dependiam de quem manda (carga > 1,2) e ele tinha talento (inteligência ≥ 65). */
-  mesa: number[];
-}
-
-/** As empresas antes do +1 ano: lugar, nome e valor (para o crescimento do ano). */
-function fotoDoGrupo(e: EstadoVida): Map<string, { nome: string; valor: number }> {
-  return new Map(empresasDe(e).map((x) => [x.id, { nome: x.nome, valor: x.n['valor'] ?? 0 }]));
-}
-
-/** Anota o ano do grupo na vida (depois do +1 ano). */
-function anotarGrupo(e: EstadoVida, c: Conteudo, antes: Map<string, { nome: string; valor: number }>, g: GrupoDaVida): void {
-  const grupo = empresasDe(e);
-  if (grupo.length === 0) return;
-  g.maxEmpresas = Math.max(g.maxEmpresas, grupo.length);
-  g.maxSubsidiarias = Math.max(g.maxSubsidiarias, grupo.reduce((s, x) => s + (x.n['subsidiarias'] ?? 0), 0));
-  if (grupo.length >= 2) g.anosEmGrupo++;
-  const acoes = c.mundo.ativos.find((a) => a.id === 'acoes')!;
-  const humor = (e.entidades['pais']!.n['ret_acoes'] ?? 0) / 100 - acoes.retorno[faseDe(e)];
-  const carga = cargaDaMesa(e);
-  const talento = (e.entidades['eu']!.n['inteligencia'] ?? 50) >= 65;
-  for (const emp of grupo) {
-    const a = antes.get(emp.id);
-    if (a && a.nome === emp.nome && a.valor >= 1e5) (emp.q['na_bolsa'] ? g.listadas : g.fechadas).push([(emp.n['lucro'] ?? 0) / a.valor, humor]);
-    if (carga > 1.2 && talento) g.mesa.push(alvoDaTracao(e, c, emp, 1) - alvoDaTracao(e, c, emp, carga));
-  }
-}
-
-/** O país visto por uma vida: as estatísticas por governo, o trabalho pelo desemprego e o governo de quem joga. */
-interface PaisDaVida {
-  /** Por governo (bloco, 'regime' ou 'voce'): anos e a soma de cada estatística, para a média. */
-  porGoverno: Record<string, { anos: number; soma: Record<Estatistica, number> }>;
-  /** Anos de trabalho com carteira (18 a 64, com renda, sem estabilidade), pelo desemprego do país no ano. */
-  anosDeTrabalho: { ano: number; desemprego: number }[];
-  /** Quem joga governou: a dívida ao assumir e ao sair, e os anos. */
-  governo: { anos: number; dividaInicio: number; dividaFim: number; aprovacao: number } | null;
-}
-
-const ESTAVEIS = ['servidor', 'empreendedor', 'socio', 'herdeiro_negocio', 'aposentado'];
-
-/** Anota o ano do país na vida (depois do +1 ano). */
-function anotarPais(e: EstadoVida, p: PaisDaVida): void {
-  const pais = e.entidades['pais']!;
-  const gov = governoAtual(e);
-  const g = (p.porGoverno[gov] ??= { anos: 0, soma: Object.fromEntries(ESTATISTICAS.map((k) => [k, 0])) as Record<Estatistica, number> });
-  g.anos++;
-  for (const k of ESTATISTICAS) g.soma[k] += pais.n[k] ?? 0;
-  const eu = e.entidades['eu']!;
-  if (e.idade >= 18 && e.idade <= 64 && (eu.n['renda'] ?? 0) > 0 && !ESTAVEIS.some((m) => eu.q[m])) p.anosDeTrabalho.push({ ano: e.ano, desemprego: pais.n['desemprego'] ?? 8.5 });
-  if (gov === 'voce') {
-    p.governo ??= { anos: 0, dividaInicio: pais.n['divida'] ?? 0, dividaFim: 0, aprovacao: 0 };
-    p.governo.anos++;
-    p.governo.dividaFim = pais.n['divida'] ?? 0;
-    p.governo.aprovacao += pais.n['aprovacao'] ?? 0;
-  }
-}
-
-/** Joga uma vida já começada até o fim, como a interface: dinheiro (sem gastar a ficha), a ficha do ano e as escolhas. */
-function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: Rng, memoria: MemoriaJogador | undefined): Omit<Jogada, 'e' | 'ms' | 'riquezaOrigem'> {
-  let toques = 0;
-  let operacoes = 0;
-  const anosPorFase: Record<Fase, number> = { normal: 0, expansao: 0, recessao: 0, crise: 0 };
-  const pais: PaisDaVida = { porGoverno: {}, anosDeTrabalho: [], governo: null };
-  const grupo: GrupoDaVida = { maxEmpresas: 0, maxSubsidiarias: 0, anosEmGrupo: 0, listadas: [], fechadas: [], mesa: [] };
-  const fora: ForaDaVida = { cambios: [], repasse: [], setores: [], porGoverno: {} };
-  let cambioAntes = e.entidades['pais']?.n['cambio'] ?? 0;
-  let parceirosAntes = fotoDosParceiros(e);
-  while (e.vivo) {
-    if (e.pendente) {
-      escolher(e, c, decidir(estrategia, e, c, robo));
-      toques++;
-      continue;
-    }
-    // Mexer no dinheiro, comprar, tentar vaga, se candidatar: abrir a folha, escolher e confirmar (três toques por operação).
-    for (const op of decidirDinheiro(estrategia, e, c, robo)) {
-      if (motivoParaNaoOperar(e, c, op) !== null) continue;
-      operar(e, c, op);
-      operacoes++;
-      toques += 3;
-    }
-    // Cada ação são dois toques (o verbo e a ação na lista); se sobra ficha, o +1 ano é mais um.
-    for (let a = decidirAcao(estrategia, e, c, robo); a && e.vivo && !e.pendente; a = jaAgiu(e) ? null : decidirAcao(estrategia, e, c, robo)) {
-      agir(e, c, a.verbo, a.escolha);
-      toques += 2;
-    }
-    if (e.vivo && !e.pendente) {
-      if (!jaAgiu(e)) toques++;
-      const antes = fotoDoGrupo(e);
-      avancarAno(e, c, memoria);
-      anosPorFase[faseDe(e)]++;
-      anotarPais(e, pais);
-      if (e.vivo) anotarGrupo(e, c, antes, grupo);
-      anotarFora(e, cambioAntes, antes, parceirosAntes, fora);
-      cambioAntes = e.entidades['pais']?.n['cambio'] ?? cambioAntes;
-      parceirosAntes = fotoDosParceiros(e);
-    }
-  }
-  return { toques, anosPorFase, operacoes, pais, grupo, fora };
-}
-
-function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
-  const t0 = performance.now();
-  const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
-  const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
-  const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
-  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo, fora: r.fora };
-}
-
-// ---------------------------------------------------------------- medidas de uma vida
-
-/** Storylets que o mundo apresentou (diretor e personagens). Ações do jogador e narrativas de regra não contam. */
-function apresentados(e: EstadoVida): Entrada[] {
-  return e.historico.filter((h) => (h.tipo === 'evento' || h.tipo === 'npc') && h.instancia && !h.ref?.startsWith('regra:'));
-}
-
-const CARREIRAS: [string, string][] = [
-  ['vereador', 'política'],
-  ['servidor', 'serviço público'],
-  ['empreendedor', 'negócio próprio'],
-  ['socio', 'negócio próprio'],
-  ['herdeiro_negocio', 'negócio da família'],
-  ['influencer', 'internet'],
-  ['criador_conteudo', 'internet'],
-  ['musico', 'música'],
-  ['pesquisador', 'pesquisa'],
-  ['profissional', 'carreira formal'],
-  ['clt', 'carteira assinada'],
-  ['entregador', 'aplicativo'],
-];
-
-/** Storylets em que a empresa fecha por quebra (e não por venda). */
-const QUEBRAS = new Set(['empresa_quebrou', 'negocio_no_aperto', 'socio_sumiu', 'negocio_da_familia_quebra']);
-
-/** Mudanças de estado de quem joga numa entrada (mesma régua da linha de base). */
-function contarMudancas(h: Entrada): number {
-  let n = 0;
-  let patrimonio = 0;
-  for (const m of h.mudancas ?? []) {
-    if (!m.c.startsWith('eu.')) continue;
-    if (m.q !== undefined) {
-      n++;
-      continue;
-    }
-    if (m.d === undefined) continue;
-    if (m.c === 'eu.dinheiro' || ATIVOS.some((a) => m.c === `eu.${a}`)) patrimonio += m.d;
-    else if (m.c === 'eu.divida') patrimonio -= m.d;
-    else if (m.c === 'eu.renda') n += Math.abs(m.d) >= 600 ? 1 : 0;
-    else if (Math.abs(m.d) >= 0.5) n++;
-  }
-  if (Math.abs(patrimonio) >= 500) n++;
-  return n;
-}
-
-interface Vida {
-  estrategia: Estrategia;
-  idade: number;
-  patrimonio: number;
-  felicidade: number;
-  eventos: string[];
-  instancias: string[];
-  comRegras: string[];
-  acoes: string[];
-  textos: string[];
-  comCausa: number;
-  pontos: number;
-  pontosDoMundo: number;
-  maiorDistancia: number;
-  qualidadesVistas: Set<string>;
-  qualidadesAtivas: Set<string>;
-  causaMorte: string;
-  duplicadosProibidos: string[];
-  assinatura: string;
-  destino: string;
-  origem: number;
-  desempate: number;
-  mudancasJogador: number;
-  mudancasTotal: number;
-  toques: number;
-  ms: number;
-  classeOrigem: number;
-  mortesNaFamilia: number;
-  anosPorFase: Record<Fase, number>;
-  noticias: number;
-  demissoes: number;
-  demissoesPelaFase: number;
-  /** Setor do último trabalho e o jeito de trabalhar (servidor, dono, empregado). */
-  carreiraSetor: string;
-  perfil: string;
-  operacoes: number;
-  /** Ao morrer, havia filho ou filha para continuar a história. */
-  herdeiro: boolean;
-  /** Anos adultos (18+) sem nenhum evento ou iniciativa de personagem: só a linha curta. */
-  anosVazios: number;
-  /** A empresa na vida: abriu alguma (por qualquer caminho), alguma quebrou, vendeu alguma. */
-  fundou: boolean;
-  quebrou: boolean;
-  vendeu: boolean;
-  /** Jogadas feitas (brincar de deus) e quantas delas causaram algum acontecimento depois. */
-  jogadas: string[];
-  jogadasComReacao: number;
-  /** Acontecimentos (eventos, iniciativas dos outros, a morte) e quantos mostram o porquê na linha do tempo. */
-  acontecimentos: number;
-  comPorque: number;
-  /** A empresa viva na morte de quem joga: o quanto dependia dele (0 a 100) e quanto do valor perdeu com a morte. */
-  empresaNaMorte: { dependencia: number; perda: number; valor: number } | null;
-  /** Alguma escolha (evento ou jogada) mudou o quanto a empresa depende de quem manda. */
-  decidiuQuemManda: boolean;
-  /** Quanto durou cada crise do país que começou durante a vida (anos até a próxima mudança de fase). */
-  crises: number[];
-  /** O país vivo: estatísticas por governo, anos de trabalho (com e sem demissão) pelo desemprego, votos, posses e o governo de quem joga. */
-  porGoverno: PaisDaVida['porGoverno'];
-  trabalho: { alto: number; demitidoAlto: number; baixo: number; demitidoBaixo: number };
-  votos: number;
-  votosQueElegeram: number;
-  viradas: number;
-  trocasDeGoverno: number;
-  governo: (NonNullable<PaisDaVida['governo']> & { reformas: number; caiu: boolean }) | null;
-  /** O grupo de empresas: o que a vida viu ano a ano, as fusões e as estreias na bolsa. */
-  grupo: GrupoDaVida;
-  fusoes: number;
-  bolsas: number;
-  /** O mundo lá fora: o que a vida viu ano a ano, as viradas do ciclo para pior (e quantas a crise de fora causou), as sanções (anos até acabar, ou null se a vida acabou antes, com os anos vistos) e os atos de quem governa. */
-  fora: ForaDaVida;
-  viradasRuins: number;
-  viradasDeFora: number;
-  sancoes: { anos: number | null; vistos: number; comCausa: boolean }[];
-  acordos: number;
-  atos: number;
-  /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
-  comeco: string;
-  decisoesAntesDos5: number;
-  infanciaVoltou: boolean;
-  /** Toda transferência tem dois lados: problemas de contas (devem ser zero), entradas conferidas e o extrato da vida por fluxo e contraparte. */
-  contasErradas: number;
-  entradasConferidas: number;
-  exemploDeConta: string;
-  extrato: { rotulo: string; contraparte: string; valor: number }[];
-  /** A dívida como contrato (fatia 1.2): problemas da conferência (devem ser zero) e a história das dívidas da vida. */
-  dividasErradas: number;
-  exemploDeDivida: string;
-  dividas: HistoriaDasDividas;
-}
-
-interface HistoriaDasDividas {
-  financiou: boolean;
-  /** O nome sujou alguma vez, e por quantos anos ao todo. */
-  sujo: boolean;
-  anosSujo: number;
-  acordo: boolean;
-  caducou: boolean;
-  leilao: boolean;
-  limpou: boolean;
-  /** Cada vez que o nome sujou: quantos anos durou, se houve acordo no meio e se veio do financiamento (a causa é a compra). */
-  episodios: { anos: number; acordo: boolean; financiamento: boolean }[];
-}
-
-/** A história das dívidas pelo livro: financiamento, nome sujo (cada episódio e os anos com ele), acordo, caducar, leilão. */
-function dividasDaVida(e: EstadoVida): HistoriaDasDividas {
-  const porId = new Map(e.historico.map((h) => [h.id, h]));
-  const episodios: HistoriaDasDividas['episodios'] = [];
-  let atual: { desde: number; acordo: boolean; financiamento: boolean } | null = null;
-  let financiou = false;
-  let acordo = false;
-  for (const h of e.historico) {
-    for (const m of h.mudancas ?? []) {
-      if (m.c === 'eu.nome_sujo' && m.q === 1) atual = { desde: h.idade, acordo: false, financiamento: porId.get(h.causas?.[0] ?? -1)?.ref === 'bens:comprar' };
-      if (m.c === 'eu.nome_sujo' && m.q === -1 && atual) {
-        episodios.push({ anos: h.idade - atual.desde, acordo: atual.acordo, financiamento: atual.financiamento });
-        atual = null;
-      }
-      if (m.t !== undefined && /^ctr\w*\.modalidade$/.test(m.c)) {
-        if (m.t === 'financiamento') financiou = true;
-        if (m.t === 'acordo') {
-          acordo = true;
-          if (atual) atual.acordo = true;
-        }
-      }
-    }
-  }
-  if (atual) episodios.push({ anos: e.idade - atual.desde, acordo: atual.acordo, financiamento: atual.financiamento });
-  const tem = (ref: string): boolean => e.historico.some((h) => h.ref === ref);
-  return {
-    financiou,
-    sujo: tem('divida:nome_sujo'),
-    anosSujo: episodios.reduce((s, x) => s + x.anos, 0),
-    acordo,
-    caducou: tem('divida:caducou'),
-    leilao: tem('divida:leilao'),
-    limpou: tem('divida:nome_limpo'),
-    episodios,
-  };
-}
-
-/** As jogadas da vida (ids dos storylets) e quantas foram causa de um evento ou iniciativa depois. */
-function jogadasDaVida(e: EstadoVida): { jogadas: string[]; comReacao: number } {
-  const feitas = e.historico.filter((h) => h.ref?.startsWith('jogada:'));
-  const citadas = new Set<number>();
-  for (const h of e.historico) if (h.tipo === 'evento' || h.tipo === 'npc') for (const id of h.causas ?? []) citadas.add(id);
-  return { jogadas: feitas.map((h) => h.ref!.slice('jogada:'.length)), comReacao: feitas.filter((h) => citadas.has(h.id)).length };
-}
-
-/** Qualidades de quem joga que uma condição exige ter (marca, contador com mínimo, ou verdadeiro). */
-function positivas(cond: Condicoes | undefined): string[] {
-  if (!cond) return [];
-  const saida = [...(cond.marcas ?? []), ...(cond.algumaMarca ?? []), ...(cond.marcaHa ?? []).map((x) => x.marca)];
-  for (const [chave, v] of Object.entries(cond)) {
-    if (CHAVES_CONDICAO.has(chave) || chave.includes('.')) continue;
-    if (v === true || (typeof v === 'object' && !Array.isArray(v) && 'min' in v && (v.min ?? 0) > 0)) saida.push(chave);
-  }
-  return saida;
-}
-
-const ORDEM_DA_FASE: Record<string, number> = { crise: 0, recessao: 1, normal: 2, expansao: 3 };
-
-/** As viradas do ciclo para pior (para recessão ou crise) e quantas apontam a crise de um país de fora como causa. */
-function viradasDoCiclo(e: EstadoVida, porId: Map<number, Entrada>): { viradasRuins: number; viradasDeFora: number } {
-  let antes = 'normal';
-  let viradasRuins = 0;
-  let viradasDeFora = 0;
-  for (const h of e.historico) {
-    if (!h.ref?.startsWith('ciclo:')) continue;
-    const nova = h.ref.slice('ciclo:'.length);
-    if ((ORDEM_DA_FASE[nova] ?? 2) < (ORDEM_DA_FASE[antes] ?? 2) && (nova === 'recessao' || nova === 'crise')) {
-      viradasRuins++;
-      if ((h.causas ?? []).some((id) => porId.get(id)?.ref?.startsWith('exterior:crise:'))) viradasDeFora++;
-    }
-    antes = nova;
-  }
-  return { viradasRuins, viradasDeFora };
-}
-
-/** As sanções que a vida viu: quantos anos duraram (null se a vida acabou antes), quantos anos ela viu e se apontam a decisão que esfriou a relação. */
-function sancoesDaVida(e: EstadoVida): Vida['sancoes'] {
-  const saida: Vida['sancoes'] = [];
-  for (const h of e.historico) {
-    if (!h.ref?.startsWith('exterior:sancao:')) continue;
-    const quem = h.ref.slice('exterior:sancao:'.length);
-    const fim = e.historico.find((x) => x.id > h.id && x.ref === `exterior:fimDaSancao:${quem}`);
-    saida.push({ anos: fim ? fim.ano - h.ano : null, vistos: (fim?.ano ?? e.ano) - h.ano, comCausa: (h.causas?.length ?? 0) > 0 });
-  }
-  return saida;
-}
-
-function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
-  const e = j.e;
-  const eu = e.entidades['eu']!;
-  const visiveis = apresentados(e);
-  const eventos = visiveis.map((h) => h.ref!);
-  const instancias = visiveis.map((h) => h.instancia!);
-  const comRegras = e.historico.filter((h) => (h.tipo === 'evento' || h.tipo === 'npc') && h.instancia).map((h) => h.instancia!);
-  const acoes = e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!);
-  const contagem = new Map<string, number>();
-  for (const i of instancias) contagem.set(i, (contagem.get(i) ?? 0) + 1);
-  const duplicadosProibidos = [...contagem].filter(([i, n]) => n > 1 && !c.porId.get(i.split('#')[0]!)?.repetivel).map(([i]) => i);
-  const porId = new Map(e.historico.map((h) => [h.id, h]));
-  let maiorDistancia = 0;
-  for (const h of e.historico) {
-    for (const causa of h.causas ?? []) {
-      const origem = porId.get(causa);
-      if (origem) maiorDistancia = Math.max(maiorDistancia, h.idade - origem.idade);
-    }
-  }
-  // Qualidades de quem joga: ganhas na vida × as que de fato mudaram algo.
-  const qualidadesVistas = new Set<string>();
-  for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.q === 1 && m.c.startsWith('eu.')) qualidadesVistas.add(m.c.slice(3));
-  const qualidadesAtivas = new Set<string>();
-  const ativar = (ms: string[]): void => {
-    for (const m of ms) if (qualidadesVistas.has(m)) qualidadesAtivas.add(m);
-  };
-  for (const id of new Set([...eventos, ...acoes])) {
-    const s = c.porId.get(id);
-    ativar(positivas(s?.condicoes));
-    for (const esc of s?.escolhas ?? []) ativar([...positivas(esc.condicoes), ...(esc.condicoes?.semMarcas ?? [])]);
-  }
-  for (const h of e.historico) if (h.tipo === 'linha' && h.ref?.startsWith('linha:')) ativar(positivas(c.linhas[Number(h.ref.slice(6))]?.condicoes));
-  if (e.morte?.fonte !== undefined) ativar(positivas(c.mortes[e.morte.fonte]?.condicoes));
-  for (const m of Object.keys(eu.q)) if (c.marcas[m]?.porAno || c.marcas[m]?.epitafio) qualidadesAtivas.add(m);
-
-  // Assinatura: origem, classe final, carreira, estado civil, marca principal, categoria da morte.
-  const q = eu.q;
-  const carreira = CARREIRAS.find(([m]) => m in q)?.[1] ?? 'bicos';
-  const civil = 'casado' in q ? 'casado' : 'separado' in q ? 'separado' : 'namoro' in q ? 'namorando' : 'solteiro';
-  const citacoes = new Map<number, number>();
-  for (const h of e.historico) for (const id of h.causas ?? []) citacoes.set(id, (citacoes.get(id) ?? 0) + 1);
-  const principal =
-    Object.entries(q)
-      .filter(([, r]) => r.causa !== null)
-      .map(([m, r]) => [m, citacoes.get(r.causa!) ?? 0] as const)
-      .filter(([, n]) => n > 0)
-      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]?.[0] ?? '-';
-  const patrimonio = patrimonioTotal(e);
-  const destino = [nomeDaClasse(classeDoPatrimonio(patrimonio)), carreira, civil, principal, e.morte?.categoria ?? '?'].join('|');
-  const classeOrigem = eu.n['classe_origem'] ?? 0;
-
-  let mudancasJogador = 0;
-  let mudancasTotal = 0;
-  for (const h of e.historico) {
-    const n = contarMudancas(h);
-    mudancasTotal += n;
-    if (h.causa === 'escolha' || h.causa === 'acao') mudancasJogador += n;
-  }
-  const pontos = pontosDeVirada(e);
-  const demissoes = e.historico.filter((h) => h.ref === 'demissao');
-  const daFortuna = jogadasDaVida(e);
-  return {
-    jogadas: daFortuna.jogadas,
-    jogadasComReacao: daFortuna.comReacao,
-    estrategia,
-    idade: e.idade,
-    patrimonio,
-    felicidade: e.somaFelicidade / Math.max(1, e.idade),
-    eventos,
-    instancias,
-    comRegras,
-    acoes,
-    textos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'linha' || h.tipo === 'npc').map((h) => h.texto),
-    comCausa: e.historico.filter((h) => h.tipo !== 'regra' && (h.causas?.length ?? 0) > 0).length,
-    pontos: pontos.length,
-    pontosDoMundo: pontos.filter((p) => !p.doJogador).length,
-    maiorDistancia,
-    qualidadesVistas,
-    qualidadesAtivas,
-    causaMorte: e.morte?.causa ?? '?',
-    duplicadosProibidos,
-    assinatura: `${classeOrigem}:${eu.t['familia'] ?? '?'}|${destino}`,
-    destino,
-    origem: j.riquezaOrigem,
-    desempate: aleatorio(criarRng(misturar(e.semente, 991))),
-    mudancasJogador,
-    mudancasTotal,
-    toques: j.toques,
-    ms: j.ms,
-    classeOrigem,
-    mortesNaFamilia: e.historico.filter((h) => h.ref === 'regra:faleceu').length,
-    anosPorFase: j.anosPorFase,
-    noticias: e.historico.filter((h) => h.tipo === 'mundo').length,
-    demissoes: demissoes.length,
-    demissoesPelaFase: demissoes.filter((h) => (h.causas ?? []).some((id) => porId.get(id)?.tipo === 'mundo')).length,
-    carreiraSetor: `${eu.t['setor'] || 'sem setor'}/${'servidor' in q ? 'servidor' : 'empreendedor' in q || 'socio' in q || 'herdeiro_negocio' in q ? 'dono' : 'empregado'}`,
-    perfil: perfilDe(e),
-    operacoes: j.operacoes,
-    herdeiro: herdeiroPossivel(e, c) !== null,
-    anosVazios: (() => {
-      const comEvento = new Set(visiveis.map((h) => h.idade));
-      let vazios = 0;
-      for (let a = 18; a < e.idade; a++) if (!comEvento.has(a)) vazios++;
-      return e.idade > 18 ? vazios / (e.idade - 18) : 0;
-    })(),
-    crises: (() => {
-      const mudancas = e.historico.filter((h) => h.ref?.startsWith('ciclo:'));
-      return mudancas.flatMap((h, i) => (h.ref === 'ciclo:crise' && mudancas[i + 1] ? [mudancas[i + 1]!.idade - h.idade] : []));
-    })(),
-    comeco: e.historico
-      .filter((h) => h.idade <= 6 && (h.tipo === 'evento' || h.tipo === 'npc'))
-      .map((h) => `${h.ref}:${h.escolha?.indice ?? ''}`)
-      .join('>'),
-    decisoesAntesDos5: e.historico.filter((h) => h.idade < 5 && (h.escolha !== undefined || h.tipo === 'acao')).length,
-    porGoverno: j.pais.porGoverno,
-    fora: j.fora,
-    ...viradasDoCiclo(e, porId),
-    sancoes: sancoesDaVida(e),
-    acordos: e.historico.filter((h) => h.ref?.startsWith('exterior:acordo:') || (h.ref === 'pais:diplomacia' && h.mudancas?.some((m) => m.c.endsWith('.acordo') && m.q === 1))).length,
-    atos: e.historico.filter((h) => h.ref === 'pais:diplomacia').length,
-    trabalho: (() => {
-      const demitido = new Set(e.historico.filter((h) => h.ref === 'demissao').map((h) => h.ano));
-      const t = { alto: 0, demitidoAlto: 0, baixo: 0, demitidoBaixo: 0 };
-      for (const a of j.pais.anosDeTrabalho) {
-        if (a.desemprego >= 10.5) {
-          t.alto++;
-          if (demitido.has(a.ano)) t.demitidoAlto++;
-        } else if (a.desemprego <= 6.5) {
-          t.baixo++;
-          if (demitido.has(a.ano)) t.demitidoBaixo++;
-        }
-      }
-      return t;
-    })(),
-    votos: e.historico.filter((h) => h.ref === 'primeiro_voto' || h.ref === 'eleicao_geral').length,
-    votosQueElegeram: (() => {
-      const votos = new Set(e.historico.filter((h) => h.ref === 'primeiro_voto' || h.ref === 'eleicao_geral').map((h) => h.id));
-      return e.historico.filter((h) => h.ref?.startsWith('governo:') && (h.causas ?? []).some((id) => votos.has(id))).length;
-    })(),
-    viradas: e.historico.filter((h) => h.ref?.startsWith('ciclo:')).length,
-    trocasDeGoverno: e.historico.filter((h, i, todas) => h.ref?.startsWith('governo:') && todas.slice(0, i).findLast((x) => x.ref?.startsWith('governo:'))?.ref !== h.ref).length,
-    governo: j.pais.governo && {
-      ...j.pais.governo,
-      reformas: e.historico.filter((h) => h.ref === 'pais:politica').length,
-      caiu: Boolean(q['derrubado'] || q['renunciou']),
-    },
-    infanciaVoltou: e.historico.some((h) => h.idade >= 5 && h.idade <= 12 && (h.causas ?? []).some((id) => (porId.get(id)?.idade ?? 99) <= 4 && porId.get(id)?.tipo !== 'nascimento')),
-    acontecimentos: e.historico.filter((h) => h.tipo === 'evento' || h.tipo === 'npc' || h.tipo === 'morte').length,
-    comPorque: e.historico.filter((h) => porqueDe(h, porId) !== null).length,
-    empresaNaMorte: (() => {
-      const emp = empresaDe(e);
-      if (!emp) return null;
-      const d = -(e.historico.find((h) => h.ref === 'empresa:sem_dono')?.mudancas?.find((m) => m.c === 'empresa.valor')?.d ?? 0);
-      const valor = emp.n['valor'] ?? 0;
-      return { dependencia: emp.n['dependencia'] ?? 0, perda: valor + d > 0 ? d / (valor + d) : 0, valor: valor + d };
-    })(),
-    decidiuQuemManda: e.historico.some(
-      (h) => h.causa === 'escolha' && h.mudancas?.some((m) => m.c === 'empresa.dependencia') && !h.mudancas.some((m) => m.c === 'empresa.fundada'),
-    ),
-    fundou: e.historico.some((h) => h.ref !== 'empresa:cuidar' && h.mudancas?.some((m) => /^empresa\d*\.fundada$/.test(m.c) && m.q === 1)),
-    grupo: j.grupo,
-    fusoes: e.historico.filter((h) => h.ref === 'empresa:fundir').length,
-    bolsas: e.historico.filter((h) => h.ref === 'empresa:abrirCapital' || (h.ref === 'abrir_capital' && h.escolha?.indice === 0)).length,
-    quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
-    vendeu: 'vendeu_empresa' in q,
-    ...contasDaVida(e),
-  };
-}
-
-/**
- * As contas da vida: quantos problemas a conferência acha (entrada por entrada: o dinheiro com contraparte, e a dívida
- * de quem joga e o financiado dos bens batendo com os contratos; no fim, o estado das dívidas) e o extrato da vida.
- */
-function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entradasConferidas' | 'exemploDeConta' | 'extrato' | 'dividasErradas' | 'exemploDeDivida' | 'dividas'> {
-  let contasErradas = 0;
-  let exemploDeConta = '';
-  let dividasErradas = 0;
-  let exemploDeDivida = '';
-  const garantias = garantiasDosContratos(e);
-  for (const h of e.historico) {
-    const problemas = conferirContas(e, h);
-    if (problemas.length > 0 && !exemploDeConta) exemploDeConta = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${problemas[0]}`;
-    contasErradas += problemas.length;
-    const dasDividas = conferirContratos(h, garantias);
-    if (dasDividas.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${dasDividas[0]}`;
-    dividasErradas += dasDividas.length;
-  }
-  const noFim = conferirDividas(e);
-  if (noFim.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, no fim: ${noFim[0]}`;
-  dividasErradas += noFim.length;
-  return { contasErradas, entradasConferidas: e.historico.length, exemploDeConta, extrato: extrato(e).linhas, dividasErradas, exemploDeDivida, dividas: dividasDaVida(e) };
-}
 
 // ---------------------------------------------------------------- estatística
 
@@ -678,8 +64,94 @@ function histograma(valores: number[], faixas: { rotulo: string; ate: number }[]
 
 // ---------------------------------------------------------------- simulação
 
+// As vidas rodam em trabalhadores, um por núcleo (--paralelo=N; 1 roda aqui mesmo). Cada tarefa depende só da
+// semente, e os resultados entram na ordem das tarefas: o relatório é o mesmo com qualquer número de trabalhadores.
+const PARALELO = Math.max(1, Math.min(Number(args.get('paralelo') ?? availableParallelism()), 8));
+
+async function executarTodas(tarefas: Tarefa[], trabalhadores = PARALELO): Promise<Resultado[]> {
+  if (PARALELO <= 1) return tarefas.map((t) => executar(c, t));
+  const resultados: Resultado[] = new Array(tarefas.length);
+  let proxima = 0;
+  const trabalhador = (): Promise<void> =>
+    new Promise((pronto, falhou) => {
+      const w = new Worker(new URL('./tunel-trabalhador.ts', import.meta.url));
+      const mandar = (): void => {
+        if (proxima >= tarefas.length) {
+          void w.terminate().then(() => pronto());
+          return;
+        }
+        const i = proxima++;
+        w.postMessage({ i, t: tarefas[i] });
+      };
+      w.on('message', (m: { i: number; r: Resultado }) => {
+        resultados[m.i] = m.r;
+        mandar();
+      });
+      w.on('error', falhou);
+      mandar();
+    });
+  await Promise.all(Array.from({ length: Math.min(trabalhadores, tarefas.length) }, trabalhador));
+  return resultados;
+}
+
 const inicio = performance.now();
 const c = carregarConteudo();
+
+const idAleatoria = ESTRATEGIAS.indexOf('aleatoria');
+// Quem cria o personagem escolhendo a classe ou a linhagem, e quem nasce com fortuna: não entram nas métricas das
+// 10.000 vidas; contam para storylet morto e para a tabela por origem (as fortunas medem as jogadas).
+const VIDAS_POR_ORIGEM = Math.max(2, Math.round(JOGADORES / 20));
+const VIDAS_POR_LINHAGEM = Math.max(3, Math.round(JOGADORES / 12));
+// Metade dos jogadores por classe e estratégia (~500 vidas): com 200, a opção mais rara de uma jogada rara
+// (salvar o país, que pede crise e R$ 200 bilhões) saía 1 ou 2 vezes, e a reação dela às vezes morria por sorteio.
+const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 2));
+// Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
+const DINASTIAS = Math.max(4, Math.round(JOGADORES / 3));
+const MAX_GERACOES = 5;
+
+type ComoEntra = { em: 'vidas' } | { em: 'semMemoria' } | { em: 'escolhida'; classe: number; fortuna: boolean } | { em: 'dinastia' };
+const fila: { t: Tarefa; como: ComoEntra }[] = [];
+ESTRATEGIAS.forEach((estrategia, s) => {
+  for (let j = 0; j < JOGADORES; j++)
+    fila.push({ t: { tipo: 'jogador', semente: SEMENTE, estrategia, idEstrategia: s, jogador: j, vidas: VIDAS_POR_JOGADOR, usarMemoria: true, guardar: true, livro: j % 10 === 0 }, como: { em: 'vidas' } });
+});
+// Efeito da memória: as mesmas vidas (mesmas sementes) da estratégia aleatória, sem memória entre vidas.
+for (let j = 0; j < JOGADORES_BASE; j++)
+  fila.push({ t: { tipo: 'jogador', semente: SEMENTE, estrategia: 'aleatoria', idEstrategia: idAleatoria, jogador: j, vidas: VIDAS_POR_JOGADOR, usarMemoria: false, guardar: false, livro: false }, como: { em: 'semMemoria' } });
+CLASSES.forEach((_, classe) => {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_ORIGEM; k++) fila.push({ t: { tipo: 'origem', semente: misturar(SEMENTE, 404, classe, s, k), estrategia, origem: { classe } }, como: { em: 'escolhida', classe, fortuna: false } });
+  });
+});
+c.mundo.linhagens.forEach((l) => {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_LINHAGEM; k++)
+      fila.push({ t: { tipo: 'origem', semente: misturar(SEMENTE, 505, l.classe, s, k, l.id.length), estrategia, origem: { linhagem: l.id } }, como: { em: 'escolhida', classe: l.classe, fortuna: false } });
+  });
+});
+for (const classe of [6, 7]) {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let k = 0; k < VIDAS_POR_FORTUNA; k++) fila.push({ t: { tipo: 'origem', semente: misturar(SEMENTE, 606, classe, s, k), estrategia, origem: { classe } }, como: { em: 'escolhida', classe, fortuna: true } });
+  });
+}
+ESTRATEGIAS.forEach((estrategia, s) => {
+  for (let d = 0; d < DINASTIAS; d++) fila.push({ t: { tipo: 'dinastia', semente: misturar(SEMENTE, 777, s, d), estrategia, geracoes: MAX_GERACOES }, como: { em: 'dinastia' } });
+});
+
+const resultados = await executarTodas(fila.map((x) => x.t));
+
+// A CPU: com os trabalhadores rodando juntos, cada vida demora mais (a máquina divide cache e memória) e o número não
+// compara com o de antes. Ela sai de uma amostra rodada depois, num trabalhador novo e sozinho (o heap daqui guarda as
+// outras vidas e deixaria a coleta de lixo mais lenta), sem o medidor do livro: os primeiros jogadores de cada
+// estratégia, depois de um aquecimento descartado com sementes de fora da amostra.
+const JOGADORES_CPU = Math.min(JOGADORES, 3);
+const aquecimento: Tarefa[] = ESTRATEGIAS.map((estrategia, s) => ({ tipo: 'jogador', semente: misturar(SEMENTE, 99), estrategia, idEstrategia: s, jogador: 0, vidas: VIDAS_POR_JOGADOR, usarMemoria: true, guardar: false, livro: false }));
+const tarefasCpu: Tarefa[] = ESTRATEGIAS.flatMap((estrategia, s) =>
+  Array.from({ length: JOGADORES_CPU }, (_, j): Tarefa => ({ tipo: 'jogador', semente: SEMENTE, estrategia, idEstrategia: s, jogador: j, vidas: VIDAS_POR_JOGADOR, usarMemoria: true, guardar: true, livro: false })),
+);
+const amostraCpu = (await executarTodas([...aquecimento, ...tarefasCpu], 1)).slice(aquecimento.length) as DoJogador[];
+const vidasDaAmostraCpu = amostraCpu.flatMap((r) => r.vidas);
+
 const vidas: Vida[] = [];
 /** Instâncias de cada vida, por jogador (para a saturação), com e sem as narrativas de regra. */
 const sequencias: string[][][] = [];
@@ -687,130 +159,13 @@ const sequenciasComRegras: string[][][] = [];
 const sequenciasPorEstrategia = new Map<Estrategia, string[][][]>(ESTRATEGIAS.map((s) => [s, []]));
 const sequenciasSemMemoria: string[][][] = [];
 const textosPorK: number[][] = Array.from({ length: VIDAS_POR_JOGADOR }, () => []);
-
-// O custo de cada etapa do ano (fatia 1.3): a CPU nas 10.000 vidas, e o que cada uma deixa no livro numa amostra (1 jogador em 10).
-const cpuDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, 0]));
+// O custo de cada etapa do ano (fatia 1.3): a CPU na amostra rodada sozinha, e o que cada uma deixa no livro em 1 jogador de cada 10.
+const cpuDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, amostraCpu.reduce((t, r) => t + (r.cpu[x.id] ?? 0), 0)]));
 const bytesDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, 0]));
 /** O save de cada vida da amostra (bytes) e quanto dele é o livro. */
 const saves: { total: number; livro: number }[] = [];
-let medirBytes = false;
-let relogio = 0;
-let regAntes = 0;
-let livroAntes = 0;
-const observador = {
-  antes(_etapa: IdEtapa, e: EstadoVida, reg: readonly unknown[]): void {
-    if (medirBytes) {
-      regAntes = reg.length;
-      livroAntes = e.historico.length;
-    }
-    relogio = performance.now();
-  },
-  depois(etapa: IdEtapa, e: EstadoVida, reg: readonly unknown[]): void {
-    cpuDaEtapa.set(etapa, cpuDaEtapa.get(etapa)! + performance.now() - relogio);
-    if (!medirBytes) return;
-    // As regras miúdas vão para a entrada invisível do ano, que já foi contada etapa por etapa pelo registro.
-    let bytes = reg.length > regAntes ? JSON.stringify(reg.slice(regAntes)).length : 0;
-    for (const h of e.historico.slice(livroAntes)) if (h.ref !== 'ano') bytes += JSON.stringify(h).length;
-    bytesDaEtapa.set(etapa, bytesDaEtapa.get(etapa)! + bytes);
-  },
-};
-
-function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: number, usarMemoria: boolean, guardar: boolean): void {
-  let memoria = novaMemoria();
-  medirBytes = guardar && jogador % 10 === 0;
-  const seq: string[][] = [];
-  const seqRegras: string[][] = [];
-  const textosVistos = new Set<string>();
-  for (let k = 0; k < VIDAS_POR_JOGADOR; k++) {
-    const semente = misturar(SEMENTE, idEstrategia, jogador, k);
-    const j = jogar(c, estrategia, semente, usarMemoria ? memoria : undefined);
-    if (medirBytes) saves.push({ total: JSON.stringify(j.e).length, livro: JSON.stringify(j.e.historico).length });
-    const vida = medir(c, j, estrategia);
-    seq.push(vida.instancias);
-    seqRegras.push(vida.comRegras);
-    if (guardar) {
-      vidas.push(vida);
-      if (k > 0 && vida.textos.length > 0) textosPorK[k]!.push(vida.textos.filter((t) => textosVistos.has(t)).length / vida.textos.length);
-      for (const t of vida.textos) textosVistos.add(t);
-    }
-    memoria = lembrarVida(memoria, j.e);
-  }
-  if (guardar) {
-    sequencias.push(seq);
-    sequenciasComRegras.push(seqRegras);
-    sequenciasPorEstrategia.get(estrategia)!.push(seq);
-  } else {
-    sequenciasSemMemoria.push(seq);
-  }
-}
-
-observarOAno(observador);
-ESTRATEGIAS.forEach((estrategia, s) => {
-  for (let j = 0; j < JOGADORES; j++) rodarJogador(estrategia, s, j, true, true);
-});
-observarOAno(null);
-medirBytes = false;
-// Efeito da memória: as mesmas vidas (mesmas sementes) da estratégia aleatória, sem memória entre vidas.
-const idAleatoria = ESTRATEGIAS.indexOf('aleatoria');
-for (let j = 0; j < JOGADORES_BASE; j++) rodarJogador('aleatoria', idAleatoria, j, false, false);
-
-// Quem cria o personagem escolhendo a classe: cada classe (da extrema pobreza à trilionária) com cada estratégia.
-// Não entram nas métricas das 10.000 vidas; contam para storylet morto e para a tabela por origem.
-const VIDAS_POR_ORIGEM = Math.max(2, Math.round(JOGADORES / 20));
 const escolhidas: { classe: number; vida: Vida }[] = [];
-CLASSES.forEach((_, classe) => {
-  ESTRATEGIAS.forEach((estrategia, s) => {
-    for (let k = 0; k < VIDAS_POR_ORIGEM; k++) {
-      const j = jogar(c, estrategia, misturar(SEMENTE, 404, classe, s, k), undefined, { classe });
-      escolhidas.push({ classe, vida: medir(c, j, estrategia) });
-    }
-  });
-});
-
-// Quem escolhe uma linhagem (coroa, regime, gente famosa...): cada linhagem com cada estratégia.
-// Também só contam para storylet morto (e para a tabela de origens, com a classe da linhagem).
-const VIDAS_POR_LINHAGEM = Math.max(3, Math.round(JOGADORES / 12));
-c.mundo.linhagens.forEach((l) => {
-  ESTRATEGIAS.forEach((estrategia, s) => {
-    for (let k = 0; k < VIDAS_POR_LINHAGEM; k++) {
-      const j = jogar(c, estrategia, misturar(SEMENTE, 505, l.classe, s, k, l.id.length), undefined, { linhagem: l.id });
-      escolhidas.push({ classe: l.classe, vida: medir(c, j, estrategia) });
-    }
-  });
-});
-
-// Brincar de deus: quem nasce bilionário ou trilionário e mexe no mundo com o dinheiro.
-// Também só contam para storylet morto (e para a tabela de origens), e medem as jogadas.
-// Metade dos jogadores por classe e estratégia (~500 vidas): com 200, a opção mais rara de uma jogada rara
-// (salvar o país, que pede crise e R$ 200 bilhões) saía 1 ou 2 vezes, e a reação dela às vezes morria por sorteio.
-const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 2));
 const fortunas: Vida[] = [];
-for (const classe of [6, 7]) {
-  ESTRATEGIAS.forEach((estrategia, s) => {
-    for (let k = 0; k < VIDAS_POR_FORTUNA; k++) {
-      const vida = medir(c, jogar(c, estrategia, misturar(SEMENTE, 606, classe, s, k), undefined, { classe }), estrategia);
-      fortunas.push(vida);
-      escolhidas.push({ classe, vida });
-    }
-  });
-}
-
-// Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
-interface Geracao {
-  estrategia: Estrategia;
-  geracao: number;
-  inicio: number;
-  idade: number;
-  patrimonio: number;
-  herdou: number;
-  herdeiro: boolean;
-  instancias: string[];
-  eventos: string[];
-  acoes: string[];
-  jogadas: string[];
-}
-const DINASTIAS = Math.max(4, Math.round(JOGADORES / 3));
-const MAX_GERACOES = 5;
 const geracoes: Geracao[] = [];
 /** Pares (patrimônio de quem morreu, patrimônio do herdeiro ao morrer). */
 const paresGeracao: [number, number][] = [];
@@ -819,42 +174,30 @@ const tamanhos: number[] = [];
 let dividasNasDinastias = 0;
 let entradasNasDinastias = 0;
 let exemploNasDinastias = '';
-ESTRATEGIAS.forEach((estrategia, s) => {
-  for (let d = 0; d < DINASTIAS; d++) {
-    const semente = misturar(SEMENTE, 777, s, d);
-    let e = nascer(c, { semente, ano: ANO });
-    const robo = criarRng(misturar(semente, 78));
-    let anterior: number | null = null;
-    let g = 1;
-    for (; g <= MAX_GERACOES; g++) {
-      const inicioVida = e.idade;
-      const herdou = g > 1 ? (e.dinastia?.antepassados.at(-1)?.deixou ?? 0) : 0;
-      viver(c, e, estrategia, robo, undefined);
-      const conferida = contasDaVida(e);
-      dividasNasDinastias += conferida.dividasErradas;
-      entradasNasDinastias += conferida.entradasConferidas;
-      if (!exemploNasDinastias) exemploNasDinastias = conferida.exemploDeDivida;
-      const patrimonio = patrimonioTotal(e);
-      if (anterior !== null) paresGeracao.push([anterior, patrimonio]);
-      const visiveis = apresentados(e);
-      geracoes.push({
-        estrategia,
-        geracao: g,
-        inicio: inicioVida,
-        idade: e.idade,
-        patrimonio,
-        herdou,
-        herdeiro: herdeiroPossivel(e, c) !== null,
-        instancias: visiveis.map((h) => h.instancia!),
-        eventos: visiveis.map((h) => h.ref!),
-        acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
-        jogadas: jogadasDaVida(e).jogadas,
-      });
-      if (!herdeiroPossivel(e, c) || g === MAX_GERACOES) break;
-      anterior = patrimonio;
-      e = continuarComoHerdeiro(e, c);
+fila.forEach(({ t, como }, i) => {
+  const r = resultados[i]!;
+  if (r.tipo === 'jogador' && t.tipo === 'jogador') {
+    if (como.em === 'semMemoria') {
+      sequenciasSemMemoria.push(r.seq);
+      return;
     }
-    tamanhos.push(Math.min(g, MAX_GERACOES));
+    vidas.push(...r.vidas);
+    r.textos.forEach((x, k) => x !== null && textosPorK[k]!.push(x));
+    sequencias.push(r.seq);
+    sequenciasComRegras.push(r.seqRegras);
+    sequenciasPorEstrategia.get(t.estrategia)!.push(r.seq);
+    saves.push(...r.saves);
+    for (const [id, b] of Object.entries(r.bytes)) bytesDaEtapa.set(id as IdEtapa, bytesDaEtapa.get(id as IdEtapa)! + b);
+  } else if (r.tipo === 'origem' && como.em === 'escolhida') {
+    escolhidas.push({ classe: como.classe, vida: r.vida });
+    if (como.fortuna) fortunas.push(r.vida);
+  } else if (r.tipo === 'dinastia') {
+    geracoes.push(...r.geracoes);
+    paresGeracao.push(...r.pares);
+    tamanhos.push(r.tamanho);
+    dividasNasDinastias += r.dividasErradas;
+    entradasNasDinastias += r.entradasConferidas;
+    if (!exemploNasDinastias) exemploNasDinastias = r.exemploDeDivida;
   }
 });
 const segundos = (performance.now() - inicio) / 1000;
@@ -957,7 +300,7 @@ const desvioFelicidade = desvio(vidas.map((v) => v.felicidade));
 const negativas = vidas.filter((v) => v.patrimonio < 0).length / vidas.length;
 const parteJogador = vidas.reduce((s, v) => s + v.mudancasJogador, 0) / Math.max(1, vidas.reduce((s, v) => s + v.mudancasTotal, 0));
 const toques = media(vidas.map((v) => v.toques));
-const msPorVida = media(vidas.map((v) => v.ms));
+const msPorVida = media(vidasDaAmostraCpu.map((v) => v.ms));
 const pontosMundo = vidas.reduce((s, v) => s + v.pontosDoMundo, 0) / Math.max(1, vidas.reduce((s, v) => s + v.pontos, 0));
 const anosTotal = vidas.reduce((s, v) => s + FASES.reduce((t, f) => t + v.anosPorFase[f], 0), 0);
 const parteFase = (f: Fase): number => vidas.reduce((s, v) => s + v.anosPorFase[f], 0) / Math.max(1, anosTotal);
@@ -1375,7 +718,7 @@ const portoes12 = [
 
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
-const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidas.length);
+const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
 const cpuDasEtapas = ETAPAS_DO_ANO.reduce((t, x) => t + cpuEtapa(x.id), 0);
 const kbEtapa = (id: IdEtapa): number => bytesDaEtapa.get(id)! / Math.max(1, saves.length) / 1024;
 const savesOrdenados = ordenar(saves.map((x) => x.total));
@@ -1501,7 +844,7 @@ l('## O ano em etapas (fatia 1.3)');
 l();
 l(
   `O ano é uma lista de ${ETAPAS_DO_ANO.length} etapas, cada uma com o que lê e escreve declarado (\`manifesto.ts › ETAPAS_DO_ANO\`); \`test/ano.test.ts\` joga vidas com um gravador e falha se uma etapa lê ou escreve o que não declarou. ` +
-    'Pelas declarações, cada etapa lê o valor deste ano do que uma etapa anterior escreveu, e o do ano passado do que vem depois dela. A CPU é a das vidas sorteadas; o livro, o que cada etapa deixa no save, numa amostra de 1 jogador em 10.',
+    `Pelas declarações, cada etapa lê o valor deste ano do que uma etapa anterior escreveu, e o do ano passado do que vem depois dela. A CPU é a de uma amostra de ${vidasDaAmostraCpu.length} vidas rodada sozinha, depois das outras (que rodam em ${PARALELO} trabalhadores); o livro, o que cada etapa deixa no save, em 1 jogador de cada 10.`,
 );
 l();
 l('| Etapa | CPU por vida | Da CPU | Livro por vida | Lê deste ano, de | Lê do ano passado, de |');
@@ -1822,13 +1165,16 @@ l('- **Saturação Vk:** das instâncias de storylet distintas apresentadas na k
 l('- **Assinatura da vida:** origem (classe e tipo de família), classe final (6 faixas de patrimônio), carreira, estado civil, marca principal (a que mais causou eventos depois) e categoria da causa da morte. Contamos as distintas em blocos intercalados de 1.000 vidas; entre parênteses, a mesma conta sem a origem.');
 l('- **Mobilidade:** quintis da riqueza da família ao nascer × quintis do patrimônio ao morrer. Nem determinista (tudo na diagonal) nem aleatória (correlação perto de zero).');
 l('- **Mudança de estado:** atributo de quem joga que andou 0,5 ponto ou mais, patrimônio R$ 500 ou mais, renda R$ 600 por ano ou mais, qualidade ganha ou perdida, contada por entrada do livro-razão. É do jogador quando a entrada é uma escolha ou uma ação dele.');
+l(`- **CPU por vida:** o tempo de uma vida (nascer, os robôs decidindo e o motor), medido numa amostra de ${vidasDaAmostraCpu.length} vidas rodada sozinha depois das outras. As outras rodam em ${PARALELO} trabalhadores, um por núcleo, e cada vida demora mais quando elas dividem a máquina. O relatório sai igual com qualquer número de trabalhadores, menos o tempo.`);
 l('- **Toques:** nascer + um por verbo da ficha (dos 18 aos 40, até dois por ano) ou pelo +1 ano + um por escolha + três por operação na folha Dinheiro (abrir, escolher, confirmar).');
 l();
 
 const relatorio = linhas.join('\n');
-if (!args.has('sem-arquivo')) writeFileSync(join(RAIZ, 'docs', 'metricas.md'), relatorio);
+// Só o túnel inteiro (10.000 vidas, a semente de sempre) escreve docs/metricas.md; um parcial vai para o lado, sem apagar o oficial.
+const oficial = TOTAL === 10000 && !args.has('semente');
+if (!args.has('sem-arquivo')) writeFileSync(oficial ? join(RAIZ, 'docs', 'metricas.md') : join(RAIZ, 'dist-tunel.md'), relatorio);
 
-console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos.toFixed(1)} s`);
+console.log(`Túnel: ${vidas.length.toLocaleString('pt-BR')} vidas em ${segundos.toFixed(1)} s (${PARALELO} ${PARALELO === 1 ? 'núcleo' : 'núcleos'})${oficial ? '' : '; parcial: o relatório foi para dist-tunel.md'}`);
 for (const [nome, ok, detalhe] of metas) console.log(`${ok ? '✓' : '✗'} ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes) console.log(`${ok ? '✓' : '·'} portão: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes2) console.log(`${ok ? '✓' : '·'} portão 2: ${nome} (${detalhe})`);
