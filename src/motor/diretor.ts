@@ -23,6 +23,7 @@ export interface Candidato {
   s: Storylet;
   ator: string | undefined;
   causa: 'diretor' | 'npc';
+  /** As causas de quem acontece: o diretor só as calcula para o escolhido (`comCausas`). */
   causas: number[];
   saliencia: number;
   /** Agendado, marco ou tensão alta: acontece sem depender do ritmo do ano. */
@@ -59,15 +60,18 @@ export function candidatosDe(
   for (const s of lista) {
     const atores = preferidos(s, e, atoresPossiveis(s, e).filter((a) => elegivel(s, e, a)));
     for (const ator of atores) {
-      saida.push({ s, ator, causa, causas: causasDe(s.condicoes, e, ator), saliencia: saliencia(s, e, ator, memoria), urgente: urgente(s) });
+      saida.push({ s, ator, causa, causas: [], saliencia: saliencia(s, e, ator, memoria), urgente: urgente(s) });
     }
   }
   return saida;
 }
 
+/** Sorteia pela saliência; as causas são calculadas só para quem acontece (as das iniciativas já vêm prontas). */
 function sortearPorSaliencia(e: EstadoVida, lista: Candidato[]): Candidato | null {
   const i = sortearIndice(e.rng, lista.map((x) => x.saliencia));
-  return i < 0 ? null : lista[i]!;
+  if (i < 0) return null;
+  const x = lista[i]!;
+  return x.causa === 'diretor' ? { ...x, causas: causasDe(x.s.condicoes, e, x.ator) } : x;
 }
 
 /**

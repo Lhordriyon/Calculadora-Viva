@@ -10,7 +10,7 @@
  * (saúde perdida, dívida contraída, chance de morrer). Gastar dinheiro ou
  * perder felicidade com certeza é custo, não risco.
  */
-import { acoesDoVerbo, acoesPossiveis } from './acoes.ts';
+import { acoesDoVerbo, jaAgiu } from './acoes.ts';
 import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
@@ -220,11 +220,14 @@ export interface AcaoDoRobo {
 }
 
 export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): AcaoDoRobo | null {
-  const acoes = acoesPossiveis(e, c);
-  if (acoes.length === 0) return null;
-  if (estrategia === 'primeira') return { verbo: acoes[0]!.verbo };
+  if (!e.vivo || e.pendente || jaAgiu(e)) return null;
+  // As ações de cada verbo, uma vez só: a primeira de cada uma é a que o verbo faria (acoes.ts › acoesPossiveis).
+  const porVerbo = VERBOS.map((v) => acoesDoVerbo(e, c, v));
+  const primeira = porVerbo.find((l) => l.length > 0)?.[0];
+  if (!primeira) return null;
+  if (estrategia === 'primeira') return { verbo: primeira.verbo };
   // Como quem joga: todas as ações de todos os verbos estão na mesa.
-  const todas = VERBOS.flatMap((v) => acoesDoVerbo(e, c, v));
+  const todas = porVerbo.flat();
   if (estrategia === 'aleatoria') {
     if (aleatorio(rng) < 0.15) return null;
     const a = sortear(rng, todas);
