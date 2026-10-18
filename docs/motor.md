@@ -20,6 +20,18 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 ## Um ano (`avancarAno`)
 
+**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 19 etapas e o que cada uma lê e escreve, em caminhos genéricos:
+- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
+- os caminhos: `pessoa.saude` vale para qualquer personagem; `bem.*`, `ctr.*`, `empresa.*` e `fora.*` valem para qualquer bem, contrato, empresa e país de fora; `agenda` é o que fica marcado para um ano que vem; `ano.fase`, `ano.mercado` e `ano.economia` são o que uma etapa passa às seguintes sem gravar no estado; `*` é o conteúdo.
+
+`vida.ts › ETAPAS` roda as etapas nessa ordem, e o ano para quando a vida acaba ou o storylet do ano acontece.
+
+`dependenciasDoAno` tira das declarações o que cada etapa lê deste ano (escrito por uma etapa anterior) e o que lê do ano passado (escrito por uma que vem depois). Exemplos: a economia de quem joga lê a inflação deste ano e o salário do ano passado; o poder lê a fama que a carreira deu neste ano. O túnel mostra a tabela inteira, com a CPU e o livro de cada etapa.
+
+`test/ano.test.ts` joga vidas com um gravador (`test/gravador.ts`, um Proxy nas entidades e no que passa entre as etapas, mais o livro e a agenda). O teste falha se uma etapa lê ou escreve o que não declarou, e confere que o gravador não muda a vida.
+
+`observarOAno` liga um observador de antes e depois de cada etapa; só o teste e o túnel o usam.
+
 1. Idade e ano +1.
 2. **O mundo lá fora** (`diplomacia.ts`), antes do país daqui. Quatro países fictícios (`mundo.json › estrangeiros`: a Federação do Norte, a República Celeste, a Liga Atlântica e o Pacto do Sul), cada um com o crescimento dele, a relação com o Brasil (0 a 100), o que compra daqui (setores e um peso no que o Brasil vende lá fora) e, às vezes, um rival:
    - **a relação** anda 20% por ano para um alvo, com sorte (3 pontos): a de sempre do país, +5 com a fronteira aberta e −8 com ela fechada (a política de comércio exterior), +15 com quem o governo daqui se aproxima e −15 com o rival desse país (`governos › aproxima`);

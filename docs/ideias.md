@@ -47,12 +47,12 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 |---|---|---|---|---|
 | I-01 | Contas com contrapartida e o extrato do ano | 1 | Alta | feita (fatia 1.1) |
 | I-02 | Dívida e financiamento como contrato | 1 | Alta | feita (fatia 1.2, 12/10) |
-| I-03 | O ano em etapas declaradas | 1 | Alta | proposta |
-| I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | proposta |
+| I-03 | O ano em etapas declaradas | 1 | Alta | feita (fatia 1.3) |
+| I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | reavaliada: adiada com números (fatia 1.3) |
 | I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | proposta |
 | I-06 | Causa com contribuição e explicação incompleta | 1 | Média | proposta |
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
-| I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | proposta |
+| I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | parcial (fatia 1.3) |
 | I-10 | Gestor de patrimônio com mandato | 2 | Alta | proposta |
 | I-11 | Caixa da empresa e lucro com origem | 2 | Alta | proposta |
 | I-12 | Diretor executivo e conselho que propõem | 2 | Média | proposta |
@@ -97,7 +97,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | I-80 | Histórico de indicadores na interface | 9 | Média | proposta |
 | I-81 | Alertas e decisões pendentes num lugar só | 9 | Média | proposta |
 | I-82 | Relatórios dos agentes | 9 | Média | proposta |
-| I-83 | Orçamento de CPU e de save por módulo no túnel | 9 | Alta | proposta |
+| I-83 | Orçamento de CPU e de save por módulo no túnel | 9 | Alta | parcial (fatia 1.3) |
 | I-84 | Interface sem regra copiada do motor | 9 | Média | proposta (auditoria de 11/10) |
 | I-90 | Crime com consequência | — | Baixa | proposta (roteiro) |
 | I-91 | Velhice com mais escolhas | — | Baixa | proposta (roteiro) |
@@ -179,7 +179,11 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Riscos:** mudar a ordem muda as vidas. A primeira versão só declara a ordem atual, sem mudá-la.
 - **Aceitação:** a lista de etapas com leituras e escritas, e um teste que falha se uma etapa escreve o que não declarou.
 - **Prioridade:** Alta · Fase 1 (fatia 1.3).
-- **Estado:** proposta.
+- **Estado:** feita (fatia 1.3, 18/10).
+  - `manifesto.ts › ETAPAS_DO_ANO`: as 19 etapas do ano, na ordem, cada uma com o que lê e escreve (o estado, a agenda e o que passa entre as etapas). `vida.ts` roda a lista.
+  - `test/ano.test.ts` joga vidas com um gravador e falha se uma etapa lê ou escreve o que não declarou.
+  - `dependenciasDoAno` tira das declarações o que cada etapa lê deste ano e do ano passado; o túnel mostra a tabela.
+  - A ordem não mudou: as vidas são as mesmas.
 
 ### I-04 · Livro compacto
 - **Problema:**
@@ -199,7 +203,10 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
   - o save de uma dinastia de 5 gerações abaixo de 1 MB;
   - os pontos de virada iguais antes e depois de compactar.
 - **Prioridade:** Alta · Fase 1.
-- **Estado:** proposta.
+- **Estado:** reavaliada e adiada (fatia 1.3, 18/10). Os números do túnel (`docs/metricas.md` › O ano em etapas):
+  - o maior save de uma vida fica bem abaixo de 1 MB, e a vida de quem herda começa um livro novo, então uma dinastia não acumula;
+  - o que mais pesa no livro é o mundo: o país, o exterior e o mercado anotam todo ano as estatísticas que andaram.
+  - Volta quando o mundo crescer (países reais, I-20) ou o save passar de 1 MB. O primeiro alvo é guardar as estatísticas do mundo como série por ano, não como mudanças de quem joga.
 
 ### I-05 · Identidade de pessoas e relações como arestas
 - **Problema:**
@@ -271,7 +278,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Riscos:** otimização que muda resultado. O `docs/metricas.md` tem de sair igual.
 - **Aceitação:** CPU por vida abaixo de 50 ms, com as mesmas métricas.
 - **Prioridade:** Alta · Fase 1.
-- **Estado:** proposta.
+- **Estado:** parcial (fatia 1.3, 18/10). O diretor calcula as causas só do storylet sorteado, e os robôs listam as ações uma vez: −12% de CPU sem mudar nenhuma vida. O resto está na avaliação das condições de centenas de storylets por ano (o diretor e as iniciativas). Indexar os storylets pelas qualidades que exigem é o próximo passo.
 
 ## Fase 2 — patrimônio, empresas e agentes
 
@@ -927,7 +934,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Riscos:** nenhum.
 - **Aceitação:** o `metricas.md` mostra a CPU e os bytes por módulo, e cada fase tem teto.
 - **Prioridade:** Alta · Fase 9.
-- **Estado:** proposta.
+- **Estado:** parcial (fatia 1.3, 18/10). O túnel mostra a CPU e o que cada etapa do ano deixa no livro, e o tamanho do save. Há dois portões: o save de uma vida ≤ 1 MB e a CPU ≤ +10% da fatia anterior. Falta o teto por fase.
 
 ### I-84 · Interface sem regra copiada do motor
 - **Problema:** é uma proposta aberta da auditoria de 11/10: literais e fórmulas do motor na interface, e botões que falham em silêncio.
@@ -1028,8 +1035,8 @@ Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num c
 | D-05 | Quatro storylets fazem reforma fora do limite de uma por ano | `99-pais.json` | Baixa | aberto |
 | D-06 | A morte do corpo pode sair rotulada como violência | `morte.ts:23-24` | Baixa | aberto |
 | D-07 | Os limites do câmbio divergem entre o motor e o campo | `diplomacia.ts:291`, `campos.ts:129` | Baixa | aberto |
-| D-08 | O agendado que deixou de valer some sem registro | `diretor.ts:91-93` | Baixa | aberto (vai com I-03) |
+| D-08 | O agendado que deixou de valer some sem registro | `diretor.ts:91-93` | Baixa | aberto: a agenda inteira está fora do livro (fatia 1.3) |
 | D-09 | Operações da interface que falham em silêncio, e regras copiadas do motor | `App.tsx:154-157`, `Dinheiro.tsx`, `Pais.tsx` | Média | aberto (I-84) |
 | D-10 | A chave de assinatura do APK está no repositório | `android/app/build.gradle` | Alta (segurança) | decisão do dono |
 | D-11 | O APK sai sem testes e antes do CI terminar | `.github/workflows/android.yml` | Média | aberto |
-| D-12 | O save sem cópia nem exportação: JSON corrompido apaga a memória | `src/jogo/salvar.ts` | Média | aberto (vai com I-04) |
+| D-12 | O save sem cópia nem exportação: JSON corrompido apaga a memória | `src/jogo/salvar.ts` | Média | corrigido (fatia 1.3) |

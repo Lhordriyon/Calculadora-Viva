@@ -230,7 +230,7 @@ Nível de detalhe (I-21) + decisão do dono ── Países reais (I-20) ── M
 | Fase | Entrega | Primeiras fatias |
 |---|---|---|
 | 0 | Auditoria, arquitetura e registro de ideias | estes três documentos |
-| 1 | O livro e as contas | 1.1 contas com contrapartida e o extrato do ano (feita em 12/10); 1.2 dívida como contrato (feita em 12/10); 1.3 o ano em etapas declaradas, com o livro compacto; 1.4 identidade de pessoas |
+| 1 | O livro e as contas | 1.1 contas com contrapartida e o extrato do ano (feita em 12/10); 1.2 dívida como contrato (feita em 12/10); 1.3 o ano em etapas declaradas (feita em 18/10; o livro compacto foi reavaliado e adiado, com números); 1.4 identidade de pessoas |
 | 2 | Patrimônio e agentes | 2.1 gestor de patrimônio com mandato; 2.2 caixa da empresa; 2.3 holding, fundação e family office; 2.4 concierge |
 | 3 | Países reais e geografia | 3.1 dados de referência e nível de detalhe; 3.2 morar em outra cidade e em outro país; 3.3 mapa |
 | 4 | Bancos, crédito, moedas e dívida | banco e tesouro como entidades; banco central; dívida soberana |

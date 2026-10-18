@@ -74,7 +74,7 @@ conteudo/              dados, nunca código
   marcas.json          efeitos passivos e epitáfios de qualidades
   mundo.json           nomes, cidades, classes, tipos de família, traços, setores, fases, políticas, governos, acontecimentos
 src/motor/             motor puro, sem UI: roda em Node e no navegador
-  vida.ts              nascer → (fichas do ano) → +1 ano → regras → personagens → diretor → escolha
+  vida.ts              nascer → (fichas do ano) → +1 ano (as etapas do ano, na ordem do manifesto) → escolha
   tipos.ts             estado: entidades, livro-razão (entradas e mudanças), agenda
   campos.ts            campos de cada entidade e leitura de caminhos ("mae.saude")
   livro.ts             as únicas funções que mudam o estado (cada uma anota a mudança, e o dinheiro com a contraparte)
@@ -109,10 +109,10 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   leitura.ts           valida as fontes com o esquema e indexa
   conteudo.ts          indexa o conteúdo já lido, sem Zod (o navegador usa direto)
   validacao.ts         checagens além do esquema (leitores, sistemas, personagens, cadeias)
-  manifesto.ts         o que as regras do motor leem e escrevem (para o validador)
+  manifesto.ts         o que as regras do motor leem e escrevem (para o validador) e as etapas do ano, cada uma com o que lê e escreve
   regras.ts            números de equilíbrio (ritmo, mortalidade, juros, família, amor…)
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
-src/jogo/salvar.ts     save versionado no localStorage (zod/mini)
+src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
 src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida
 scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
@@ -196,3 +196,5 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Sanção e acordo nascem da relação e apontam a decisão que a levou até ali (o ato de quem governa, a posse ou a reeleição de um governo, a tarifa) | agente | o porquê vale lá fora também; sanção sorteada do nada seria ruído |
 | A sanção acaba quando a relação volta ou cansa (15% por ano) | agente | sem isso, um governo reeleito prendia o país numa sanção de 20 anos |
 | Quem governa faz um ato lá fora por ano (visita, acordo, romper), com a chance de sanção à vista antes | agente | como na reforma: custo de oportunidade e consequência à vista |
+| O ano é uma lista de etapas que declaram o que leem e escrevem (`manifesto.ts › ETAPAS_DO_ANO`); um teste falha se uma etapa sair da declaração | agente | a ordem do ano estava só no código, e uma etapa podia ler o que outra escreveu no mesmo ano sem ninguém saber (I-03) |
+| O save que abre bem vira a cópia de segurança; o principal estragado volta dela, com aviso; exportar e importar pelo menu | agente | um JSON corrompido apagava a vida e a memória entre vidas (D-12) |
