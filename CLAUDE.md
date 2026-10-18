@@ -6,11 +6,17 @@ A visão em uma troca: o jogador pensa "eu posso tentar qualquer coisa", e o jog
 
 ## Fluxo de cada sessão
 
-1. Leia este arquivo, `docs/roteiro.md`, `docs/metricas.md` e `docs/decisoes.md`. Para a missão "Universo de bolso", leia também `docs/arquitetura.md` (módulos, contratos e a ordem das fases) e `docs/ideias.md`: toda ideia nova entra no registro antes de entrar no código.
+1. Leia este arquivo e o começo de `docs/roteiro.md` (o estado e a próxima fatia). Os outros docs são consulta: busque com grep a seção que a tarefa pede, não leia inteiros (`decisoes.md`, `ideias.md`, `metricas.md`, `motor.md` e `arquitetura.md` somam mais de 250 KB). Toda ideia nova entra em `docs/ideias.md` antes de entrar no código.
 2. Escolha o incremento de maior impacto pelo método abaixo.
-3. Commits pequenos e descritivos. Antes de cada push: `npm run verificar` (tipos, testes, validador, túnel e build).
+3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, túnel inteiro e build).
 4. Push na `main` (o CI publica no GitHub Pages). Sem permissão, abra um PR e diga isso.
 5. Termine com: o que mudou, métricas antes e depois, o que foi decidido sozinho e por quê, link do jogo e o que jogar para testar.
+
+Armadilhas que já custaram caro:
+- `pkill -f "vite preview"` casa com o próprio shell que o roda e o mata (duas rodadas de `verificar` perdidas). Use `pkill -f "[v]ite preview"`, num comando separado.
+- O túnel inteiro reescreve `docs/metricas.md` no fim: commite o resto antes e as métricas depois.
+- Comando longo roda em segundo plano, e a notificação avisa quando acaba. Consultar o andamento repetidas vezes gasta contexto à toa.
+- Filtre as saídas (`| tail`, `grep`): cada resposta relê o contexto inteiro.
 
 ## Como pensar (nesta ordem; nunca inverta)
 
@@ -115,7 +121,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
 src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida
-scripts/               validar, tunel (+ medidas), uma-vida, icones (Node com TypeScript nativo)
+scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
 ```
@@ -129,7 +135,8 @@ Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteud
 | `npm run dev` | jogo local com recarga |
 | `npm run verificar` | tudo que o CI roda: tipos, testes, validador, túnel, build |
 | `npm run validar` | só o conteúdo (esquema, ids, caminhos, leitores, personagens, cadeias) |
-| `npm run tunel` | 10.000 vidas simuladas → `docs/metricas.md`; falha se uma meta quebrar |
+| `npm run tunel` | 10.000 vidas simuladas, um trabalhador por núcleo → `docs/metricas.md`; falha se uma meta quebrar |
+| `npm run tunel:rapido` | 2.000 vidas → `dist-tunel.md` (não toca nas métricas oficiais); `--paralelo=1` roda sem trabalhadores |
 | `npm run vida -- 42 cautelosa` | imprime uma vida inteira (semente e estratégia) |
 | `npm run icones` | redesenha os PNGs do PWA |
 | `npm run build:android` | monta o jogo para o app Android (`dist-android`) e copia para `android/`; o APK sai no CI (`.github/workflows/android.yml`) |

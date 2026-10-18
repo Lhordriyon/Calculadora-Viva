@@ -391,7 +391,7 @@ Tudo o que a missão pede para dinheiro (fases 2, 4, 5 e 6) começa aqui.
 
 | Recurso | Hoje | Regra |
 |---|---|---|
-| CPU por vida no túnel | 88 ms (meta antiga: 30 ms) | Cada fatia mede o seu custo; nenhuma passa de +10% sem decisão registrada. A fatia 1.3 é a hora de atacar o custo. |
-| Save | 275 KB na mediana, 447 KB no máximo por vida | Teto de 1 MB para o save inteiro (vida, memória e dinastia), com compactação do livro antigo |
+| CPU por vida no túnel | 48 ms numa amostra isolada (18/10; meta antiga: 30 ms). O túnel roda um trabalhador por núcleo: 199 s nas 10.000 vidas | Cada fatia mede o seu custo, por etapa do ano (`docs/metricas.md`); nenhuma passa de +10% sem decisão registrada. O maior custo é o conteúdo (o diretor e as iniciativas): indexar os storylets (I-08) |
+| Save | 277 KB na mediana, 479 KB no máximo por vida (18/10); o livro é 97% dele, e o mundo um terço do livro | Teto de 1 MB para o save inteiro (o túnel tem o portão); a compactação (I-04) entra quando o teto apertar |
 | Bundle | 1,09 MB de JS (311 KB comprimido) | Dados de países e mapas carregados sob demanda; nenhum arquivo acima de 2 MiB |
 | Toques por vida | 453 (teto 480) | Delegação e agentes devem baixar, não subir |

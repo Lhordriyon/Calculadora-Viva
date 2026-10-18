@@ -727,6 +727,71 @@ O dono pediu de novo: "Lance uma atualização nova". A fatia seguinte do roteir
 - **A dívida da empresa** continua no CPF de quem joga (fatia 2.2).
 - **O Spearman entre gerações piorou um pouco (0,81 para 0,85).** O portão já reprovava. As dinastias da arriscada e da aleatória ficaram mais curtas, porque o leilão e o nome sujo tiram fortuna de quem arrisca. Fica para quando a herança for instrumento (holding, I-13).
 
+## Universo de bolso: fatia 1.3, o ano em etapas declaradas, e o processo mais barato (18/10)
+
+O dono disse "Vá" para a fatia 1.3 (I-03, com o livro compacto, I-04). No meio dela, pediu uma missão de autoaperfeiçoamento: medir por que o trabalho custa tanto tempo e contexto, e melhorar o processo e o produto com números.
+
+**O que mudou na fatia:**
+- **O ano é uma lista de 19 etapas declaradas** (`manifesto.ts › ETAPAS_DO_ANO`). Cada uma diz o que lê e escreve do estado, a agenda e o que passa às seguintes (`ano.fase`, `ano.mercado`, `ano.economia`). `dependenciasDoAno` tira daí o que cada etapa lê deste ano e o que lê do ano passado.
+- **`test/ano.test.ts`** joga 30 vidas com um gravador (Proxy) e falha se uma etapa sair da declaração. A conferência numa amostra larga (660 vidas e os herdeiros delas, de 11 origens) também passou.
+- **O túnel mostra a CPU e o livro de cada etapa, e o tamanho do save** (I-83, parcial).
+- **O save tem cópia de segurança, exportar e importar** (D-12).
+- **O diretor calcula as causas só do storylet sorteado, e os robôs listam as ações uma vez:** −12% de CPU sem mudar nenhuma vida.
+
+**O que mudou no processo e no produto:**
+- **O túnel roda um trabalhador por núcleo:** 687 s → 199 s nas 10.000 vidas, com o relatório igual linha por linha, menos o tempo. `npm run verificar` caiu de 12 min 05 s para 3 min 54 s.
+- **`npm run tunel:rapido`** (2.000 vidas, cerca de 1 min) é o ciclo curto. Um túnel parcial escreve `dist-tunel.md` e não apaga mais as métricas oficiais; antes, escrevia por cima e era preciso desfazer à mão.
+- **O toque no celular ficou 2,8× mais rápido no fim da vida.** A cópia da vida divide o livro, o save grava depois da pintura e a linha do tempo só redesenha o que mudou.
+- **O CLAUDE.md manda ler só ele e o começo do roteiro;** o resto se busca com grep. Antes, o fluxo pedia seis documentos inteiros, 260 KB, perto de 75 mil tokens antes de qualquer trabalho. Ele também registra as armadilhas que custaram rodadas inteiras.
+
+**Diagnóstico do processo** (pela transcrição desta sessão, 2.977 respostas em 12 dias):
+- **Tempo:** 34 rodadas de `verificar` e 36 túneis avulsos. A 12 min cada, o túnel de um núcleo foi a maior espera, com 3 dos 4 núcleos parados.
+- **Tokens:**
+  - cada resposta relê o contexto inteiro (435 mil tokens em média);
+  - houve 13 compactações;
+  - o custo é o número de idas e voltas vezes o tamanho do contexto. Cortar consultas repetidas e saídas grandes rende mais que encurtar textos.
+- **Desperdício recorrente:**
+  - a lista de tarefas tinha 72 itens concluídos e voltava em cada lembrete do sistema (limpa: agora são os itens ativos);
+  - dois `verificar` perdidos com `pkill -f`, que casava com o próprio shell;
+  - túneis parciais que sobrescreviam as métricas.
+- **O que não foi medido:** o comando `/usage` não roda numa sessão na nuvem, então o consumo vem da transcrição, não da cobrança.
+
+**Decisões tomadas sozinho:**
+- **Declarar a ordem de hoje, sem mudá-la.** As vidas são as mesmas: mesma impressão digital do save em 160 vidas, e `docs/metricas.md` igual fora as linhas novas e o tempo.
+- **Caminhos genéricos, com `*` só onde o conteúdo decide.** `ctr.*` é o contrato inteiro (uma unidade). `eu.*` só nas leituras das marcas e das causas de morte, que são dados. `*` nas etapas do conteúdo, que o validador já cobre.
+- **O que passa entre as etapas sem gravar também é declarado** (`ano.*`). O primeiro teste mostrou que a economia recebia o mercado pelo argumento, fora do estado.
+- **O gravador fica no teste.** O Proxy custa 0,2 s por vida, e o túnel não o roda.
+- **O livro compacto (I-04) ficou para depois, com números.**
+  - O maior save de uma vida é 479 KB (mediana 277 KB, 97% dele o livro), e a vida de quem herda começa um livro novo.
+  - Um terço do livro é o mundo: o país, o exterior e o mercado anotam 98 KB por vida.
+  - Volta quando o save passar de 1 MB ou o mundo crescer.
+- **D-08 continua aberto.** Registrar o agendado que caiu pedia uma entrada nova no livro, e ela apareceria vazia na linha do tempo. A agenda inteira está fora do livro; corrigir isso é colocá-la lá.
+- **A cópia de segurança se renova quando o jogo abre, não a cada toque.** A cada toque, ela dobraria o custo da gravação.
+- **A CPU por vida vem de uma amostra isolada.** Com os núcleos ocupados, cada vida demora 34% mais; na thread principal, o heap com as outras vidas a atrasava 7%. A amostra de 240 vidas, num trabalhador novo e sozinho depois de um aquecimento, dá 46,8 ms contra 47,4 ms do túnel de um núcleo.
+- **A cópia que divide o livro depende de o livro só crescer.** Um teste congela o livro entre os toques em vidas inteiras e falha se o motor mexer numa entrada antiga.
+- **O save grava até meio segundo depois do toque.** Sair do app ou trocar de aba grava já. Recarregar logo depois de tocar não perdeu o ano (Playwright).
+
+**Medidas:**
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Etapas do ano com leitura e escrita declaradas | 0 | 19, conferidas por teste |
+| `npm run verificar` (tipos, testes, validador, túnel, build) | 12 min 05 s | 3 min 54 s |
+| `npm run tunel`: simulação das 10.000 vidas | 687 s (1 núcleo) | 197–199 s (4 trabalhadores) |
+| Túnel rápido para iterar | 400 vidas escrevendo por cima das métricas | `tunel:rapido`: 2.000 vidas em cerca de 1 min, sem tocar nas métricas |
+| CPU por vida (A/B, mesma máquina, 600 vidas) | 51,6 ms | 45,5 ms (−12%) |
+| Toque aos 60–79 anos, CPU 4× mais lenta: mediana / p90 | 82 / 107 ms | 29 / 46 ms |
+| Toque aos 75–83 anos: mediana / p90 | 99–115 / 185–199 ms | 35–41 / 72–128 ms |
+| Leitura pedida no início de cada sessão | 260 KB (6 docs inteiros) | CLAUDE.md e o começo do roteiro |
+| Lista de tarefas repetida nos lembretes | 72 itens | os ativos |
+| Save corrompido | apagava a vida e a memória | volta da cópia, com aviso |
+| Testes | 216 | 230 |
+| Bundle (precache) | 1.140 KB | 1.145 KB (`memo` do Preact) |
+
+**O que ficou de fora:**
+- **A CPU do motor por vida** (o portão antigo de 30 ms). O diretor e as iniciativas avaliam as condições de centenas de storylets por ano; indexá-los pelas qualidades que exigem é o próximo passo (I-08).
+- **O teto por fase do orçamento** (I-83).
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

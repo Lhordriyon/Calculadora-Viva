@@ -52,7 +52,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | proposta |
 | I-06 | Causa com contribuição e explicação incompleta | 1 | Média | proposta |
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
-| I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | parcial (fatia 1.3) |
+| I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | feita no critério (fatia 1.3); o próximo ganho é indexar os storylets |
 | I-10 | Gestor de patrimônio com mandato | 2 | Alta | proposta |
 | I-11 | Caixa da empresa e lucro com origem | 2 | Alta | proposta |
 | I-12 | Diretor executivo e conselho que propõem | 2 | Média | proposta |
@@ -278,7 +278,10 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Riscos:** otimização que muda resultado. O `docs/metricas.md` tem de sair igual.
 - **Aceitação:** CPU por vida abaixo de 50 ms, com as mesmas métricas.
 - **Prioridade:** Alta · Fase 1.
-- **Estado:** parcial (fatia 1.3, 18/10). O diretor calcula as causas só do storylet sorteado, e os robôs listam as ações uma vez: −12% de CPU sem mudar nenhuma vida. O resto está na avaliação das condições de centenas de storylets por ano (o diretor e as iniciativas). Indexar os storylets pelas qualidades que exigem é o próximo passo.
+- **Estado:** feita no critério (fatia 1.3, 18/10).
+  - O diretor calcula as causas só do storylet sorteado, e os robôs listam as ações uma vez: −12% de CPU, sem mudar nenhuma vida (48 ms por vida na amostra isolada do túnel).
+  - O túnel roda um trabalhador por núcleo: 687 s → 199 s nas 10.000 vidas, com o mesmo relatório.
+  - O resto está na avaliação das condições de centenas de storylets por ano (o diretor e as iniciativas, um terço da CPU). Indexar os storylets pelas qualidades que exigem é o próximo passo.
 
 ## Fase 2 — patrimônio, empresas e agentes
 
