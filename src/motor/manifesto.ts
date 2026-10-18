@@ -7,7 +7,7 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
-import { PARCEIROS, POLITICAS } from './constantes.ts';
+import { ATIVOS, PARCEIROS, POLITICAS } from './constantes.ts';
 
 export interface LeituraMotor {
   caminho: string;
@@ -262,3 +262,178 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['avo.mora_junto'], 'distância da família', false),
   ...ler(de(TODOS, 'faleceu'), 'cartão da vida', false),
 ];
+
+// ---------------------------------------------------------------- o ano em etapas (fatia 1.3)
+
+/**
+ * Uma etapa do ano: o que ela faz e o que lê e escreve do estado, em caminhos genéricos. `pessoa.saude` vale para
+ * qualquer personagem; `bem.valor`, `ctr.saldo`, `empresa.valor` e `fora.relacao`, para qualquer bem, contrato, empresa
+ * de quem joga e país de fora. Um `*` no fim cobre o resto do caminho (`ctr.*` é o contrato inteiro, `eu.*` são todos
+ * os campos e qualidades de quem joga, `*` é tudo); `agenda` é o que fica marcado para um ano que vem, e `ano.*` o que
+ * uma etapa passa para as seguintes sem gravar no estado (a fase do ciclo, o mercado e a economia do ano). As etapas
+ * do conteúdo (`iniciativas` e `diretor`) leem o que as condições pedirem e escrevem o que os efeitos mandarem: o
+ * validador cuida delas.
+ */
+export interface EtapaDoAno {
+  id: string;
+  nome: string;
+  le: readonly string[];
+  escreve: readonly string[];
+}
+
+/** O bolso de quem joga: o dinheiro, a dívida e as classes da carteira (quem paga saca delas, na ordem de liquidez). */
+const BOLSO = ['eu.dinheiro', 'eu.divida', ...ATIVOS.map((a) => `eu.${a}`)];
+/** O patrimônio (campos.ts › patrimonioTotal): o bolso, a parte nas empresas e os bens. */
+const PATRIMONIO = [...BOLSO, 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item'];
+const POLITICAS_DO_PAIS = POLITICAS.map((p) => `pais.pol_${p}`);
+const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
+/** A fase do ciclo, que as regras do ano leem pelo nome. */
+const FASE = ['pais.expansao', 'pais.recessao', 'pais.crise'];
+/** As estatísticas do país que anoDoPais faz andar. */
+const ESTATISTICAS = ['pais.aprovacao', 'pais.crescimento', 'pais.desemprego', 'pais.divida', 'pais.educacao', 'pais.impulso', 'pais.inflacao', 'pais.juros', 'pais.pobreza', 'pais.saude', 'pais.violencia'];
+
+/**
+ * As etapas do ano, na ordem em que vida.ts › avancarAno roda. test/ano.test.ts joga vidas com um gravador e falha se
+ * uma etapa lê ou escreve o que não declarou; o túnel mede o custo de cada uma.
+ */
+export const ETAPAS_DO_ANO = [
+  {
+    id: 'exterior',
+    nome: 'o mundo lá fora: a economia de cada país, a relação, sanções e acordos',
+    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.violencia', ...POLITICAS_DO_PAIS],
+    escreve: ['ano.exterior', 'fora.*', 'pais.cambio'],
+  },
+  {
+    id: 'pais',
+    nome: 'o país: as estatísticas, a eleição, quem governa e a fase do ciclo',
+    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*'],
+    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'eu.popularidade'],
+  },
+  {
+    id: 'mercado',
+    nome: 'o mercado do ano: quanto cada classe de investimento rendeu',
+    le: ['ano.fase', ...RETORNOS, 'pais.inflacao', 'pais.juros'],
+    escreve: ['ano.mercado', ...RETORNOS],
+  },
+  {
+    id: 'economia',
+    nome: 'a economia de quem joga: inflação, juros, salário, imposto, gastos',
+    le: ['ano.mercado', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.padrao', 'eu.aposentado', 'eu.servidor', 'eu.cargo', 'eu.nome_sujo', 'lugar.custo_vida', 'pais.inflacao', 'pais.juros', ...POLITICAS_DO_PAIS],
+    escreve: ['ano.economia', 'ano.inflacao', ...BOLSO, 'ctr.*'],
+  },
+  {
+    id: 'empresa',
+    nome: 'as empresas: crescimento, retirada, quebra',
+    le: ['ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'fora.acordo', 'fora.sancao', ...POLITICAS_DO_PAIS],
+    escreve: ['empresa.*', ...BOLSO, 'ctr.*', 'agenda'],
+  },
+  {
+    id: 'bens',
+    nome: 'os bens: valor, manutenção, aluguel e o financiamento',
+    le: ['bem.*', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.nome_sujo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', ...RETORNOS],
+    escreve: ['bem.*', ...BOLSO, 'ctr.*', 'eu.custo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao'],
+  },
+  {
+    id: 'dividas',
+    nome: 'as dívidas: a parcela do acordo, o limite, o que caduca e o nome',
+    le: ['ctr.*', ...BOLSO, 'bem.item', 'eu.renda', 'eu.nome_sujo'],
+    escreve: ['ctr.*', ...BOLSO, 'eu.nome_sujo', 'agenda'],
+  },
+  {
+    id: 'privacao',
+    nome: 'a privação: o buraco que nem o crédito cobriu',
+    le: ['ano.economia', 'eu.felicidade', 'eu.privacao'],
+    escreve: ['eu.felicidade', 'eu.privacao'],
+  },
+  {
+    id: 'corpo',
+    nome: 'o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto',
+    // As marcas (marcas.json) leem as qualidades de quem joga, todas.
+    le: ['eu.*', ...PATRIMONIO, 'bem.moradia', 'pais.educacao', 'pessoa.ausente', 'pessoa.vinculo', 'pessoa.vivo'],
+    escreve: ['eu.saude', 'eu.felicidade', 'eu.inteligencia', 'eu.aparencia'],
+  },
+  {
+    id: 'personagens',
+    nome: 'a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte',
+    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
+    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar'],
+  },
+  {
+    id: 'trabalho',
+    nome: 'o trabalho de quem joga: salário e demissão',
+    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'lugar.desemprego', ...FASE],
+    escreve: ['eu.renda', 'agenda'],
+  },
+  {
+    id: 'carreira',
+    nome: 'a carreira: promoção, fama e o fim da carreira',
+    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia'],
+    escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar'],
+  },
+  {
+    id: 'poder',
+    nome: 'o poder: influência, popularidade, mandato e queda',
+    le: ['ano.fase', ...PATRIMONIO, 'empresa.subsidiarias', 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.fama', 'eu.renda', 'eu.ocupacao', 'eu.genero', 'eu.politico', 'eu.ex_politico', 'eu.filho_de_politico', 'eu.monarca', 'eu.principe', 'eu.ditador', 'eu.herdeiro_regime'],
+    escreve: ['eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.ex_politico', 'eu.ocupacao', 'eu.renda', 'agenda'],
+  },
+  {
+    id: 'padrao',
+    nome: 'o padrão de vida: a conta que chega quando a reserva acaba',
+    le: ['ano.economia', ...BOLSO, 'eu.padrao_alto'],
+    escreve: ['agenda'],
+  },
+  {
+    id: 'regras',
+    nome: 'fecha as regras do ano numa entrada invisível do livro',
+    le: ['eu.felicidade'],
+    escreve: [],
+  },
+  {
+    id: 'morte',
+    nome: 'a morte: a do corpo e a da violência',
+    // As causas de morte (mortes.json) leem as qualidades de quem joga; a empresa sente a falta de quem mandava.
+    le: ['eu.*', ...PATRIMONIO, 'empresa.dependencia', 'empresa.nome', 'empresa.genero', 'lugar.capital', 'pais.saude', 'pais.violencia', 'pessoa.nome'],
+    escreve: ['eu.vivo', 'eu.morte', 'empresa.valor'],
+  },
+  {
+    id: 'amor',
+    nome: 'o amor que aparece',
+    le: ['eu.paquera', 'eu.namoro', 'eu.aparencia', 'eu.traco'],
+    escreve: ['agenda'],
+  },
+  { id: 'iniciativas', nome: 'o que os personagens resolvem fazer (o conteúdo)', le: ['*'], escreve: ['*'] },
+  { id: 'diretor', nome: 'o storylet do ano, o agendado ou a linha curta (o conteúdo)', le: ['*'], escreve: ['*'] },
+] as const satisfies readonly EtapaDoAno[];
+
+export type IdEtapa = (typeof ETAPAS_DO_ANO)[number]['id'];
+
+/** Um caminho declarado cobre outro: iguais, ou um deles termina em `*` e o outro começa como ele. */
+export function cobre(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a.endsWith('*') && b.startsWith(a.slice(0, -1))) return true;
+  return b.endsWith('*') && a.startsWith(b.slice(0, -1));
+}
+
+export interface Dependencia {
+  /** A etapa que escreve. */
+  de: IdEtapa;
+  /** O que ela escreve e a outra lê. */
+  caminhos: string[];
+}
+
+/**
+ * A ordem como dado: para cada etapa, o que ela lê que outra escreve. Se quem escreve vem antes no ano, a etapa lê o
+ * valor deste ano (`doAno`); se vem depois (ou é ela mesma), lê o do ano passado (`doAnoPassado`).
+ */
+export function dependenciasDoAno(etapas: readonly EtapaDoAno[] = ETAPAS_DO_ANO): { etapa: IdEtapa; doAno: Dependencia[]; doAnoPassado: Dependencia[] }[] {
+  return etapas.map((x, i) => {
+    const doAno: Dependencia[] = [];
+    const doAnoPassado: Dependencia[] = [];
+    etapas.forEach((y, j) => {
+      const caminhos = y.escreve.filter((w) => x.le.some((r) => cobre(r, w)));
+      if (caminhos.length === 0) return;
+      (j < i ? doAno : doAnoPassado).push({ de: y.id as IdEtapa, caminhos });
+    });
+    return { etapa: x.id as IdEtapa, doAno, doAnoPassado };
+  });
+}
