@@ -24,7 +24,8 @@ import { ESTRATEGIAS, arriscarNaoCompensa, decidir, decidirAcao, decidirDinheiro
 import { aleatorio, criarRng, misturar, type Rng } from '../src/motor/rng.ts';
 import type { Entrada, EstadoVida, MemoriaJogador } from '../src/motor/tipos.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
-import { agir, avancarAno, escolher, nascer } from '../src/motor/vida.ts';
+import { agir, avancarAno, escolher, nascer, observarOAno } from '../src/motor/vida.ts';
+import { dependenciasDoAno, ETAPAS_DO_ANO, type IdEtapa } from '../src/motor/manifesto.ts';
 import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
 import { alvoDaTracao, cargaDaMesa, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { anoDoExterior, parceirosDe } from '../src/motor/diplomacia.ts';
@@ -687,14 +688,43 @@ const sequenciasPorEstrategia = new Map<Estrategia, string[][][]>(ESTRATEGIAS.ma
 const sequenciasSemMemoria: string[][][] = [];
 const textosPorK: number[][] = Array.from({ length: VIDAS_POR_JOGADOR }, () => []);
 
+// O custo de cada etapa do ano (fatia 1.3): a CPU nas 10.000 vidas, e o que cada uma deixa no livro numa amostra (1 jogador em 10).
+const cpuDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, 0]));
+const bytesDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, 0]));
+/** O save de cada vida da amostra (bytes) e quanto dele é o livro. */
+const saves: { total: number; livro: number }[] = [];
+let medirBytes = false;
+let relogio = 0;
+let regAntes = 0;
+let livroAntes = 0;
+const observador = {
+  antes(_etapa: IdEtapa, e: EstadoVida, reg: readonly unknown[]): void {
+    if (medirBytes) {
+      regAntes = reg.length;
+      livroAntes = e.historico.length;
+    }
+    relogio = performance.now();
+  },
+  depois(etapa: IdEtapa, e: EstadoVida, reg: readonly unknown[]): void {
+    cpuDaEtapa.set(etapa, cpuDaEtapa.get(etapa)! + performance.now() - relogio);
+    if (!medirBytes) return;
+    // As regras miúdas vão para a entrada invisível do ano, que já foi contada etapa por etapa pelo registro.
+    let bytes = reg.length > regAntes ? JSON.stringify(reg.slice(regAntes)).length : 0;
+    for (const h of e.historico.slice(livroAntes)) if (h.ref !== 'ano') bytes += JSON.stringify(h).length;
+    bytesDaEtapa.set(etapa, bytesDaEtapa.get(etapa)! + bytes);
+  },
+};
+
 function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: number, usarMemoria: boolean, guardar: boolean): void {
   let memoria = novaMemoria();
+  medirBytes = guardar && jogador % 10 === 0;
   const seq: string[][] = [];
   const seqRegras: string[][] = [];
   const textosVistos = new Set<string>();
   for (let k = 0; k < VIDAS_POR_JOGADOR; k++) {
     const semente = misturar(SEMENTE, idEstrategia, jogador, k);
     const j = jogar(c, estrategia, semente, usarMemoria ? memoria : undefined);
+    if (medirBytes) saves.push({ total: JSON.stringify(j.e).length, livro: JSON.stringify(j.e.historico).length });
     const vida = medir(c, j, estrategia);
     seq.push(vida.instancias);
     seqRegras.push(vida.comRegras);
@@ -714,9 +744,12 @@ function rodarJogador(estrategia: Estrategia, idEstrategia: number, jogador: num
   }
 }
 
+observarOAno(observador);
 ESTRATEGIAS.forEach((estrategia, s) => {
   for (let j = 0; j < JOGADORES; j++) rodarJogador(estrategia, s, j, true, true);
 });
+observarOAno(null);
+medirBytes = false;
 // Efeito da memória: as mesmas vidas (mesmas sementes) da estratégia aleatória, sem memória entre vidas.
 const idAleatoria = ESTRATEGIAS.indexOf('aleatoria');
 for (let j = 0; j < JOGADORES_BASE; j++) rodarJogador('aleatoria', idAleatoria, j, false, false);
@@ -1340,6 +1373,19 @@ const portoes12 = [
   ['Dívida atrasada caduca: acontece, e em no máximo metade das vidas com o nome sujo', sujas.length > 0 && comDivida((d) => d.caducou) > 0 && comDivida((d) => d.caducou, sujas) <= 0.5, `${pct(comDivida((d) => d.caducou))} das vidas; ${pct(comDivida((d) => d.caducou, sujas))} das sujas`],
 ] as const;
 
+// ---- o ano em etapas (fatia 1.3)
+const CPU_DA_FATIA_12 = 43.74;
+const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidas.length);
+const cpuDasEtapas = ETAPAS_DO_ANO.reduce((t, x) => t + cpuEtapa(x.id), 0);
+const kbEtapa = (id: IdEtapa): number => bytesDaEtapa.get(id)! / Math.max(1, saves.length) / 1024;
+const savesOrdenados = ordenar(saves.map((x) => x.total));
+const maiorSave = savesOrdenados.at(-1) ?? 0;
+const parteDoLivro = saves.reduce((t, x) => t + x.livro, 0) / Math.max(1, saves.reduce((t, x) => t + x.total, 0));
+const portoes13 = [
+  ['O save de uma vida cabe no orçamento: o maior da amostra ≤ 1 MB', maiorSave <= 1024 * 1024, `${num(maiorSave / 1024, 0)} KB (mediana ${num(percentil(savesOrdenados, 50) / 1024, 0)} KB, ${saves.length} vidas)`],
+  ['A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada', msPorVida <= CPU_DA_FATIA_12 * 1.1, `${num(msPorVida, 2)} ms (base ${num(CPU_DA_FATIA_12, 2)} ms, teto ${num(CPU_DA_FATIA_12 * 1.1, 2)} ms)`],
+] as const;
+
 const portoes = [
   ['Saturação V5 ≤ 80%', satV(sat, 5) <= 0.8, `${pct(satV(sat, 5))} (base ${pct(BASE.saturacaoV5)})`],
   ['Assinaturas ≥ 1,5× a linha de base', assinaturas >= 1.5 * BASE.assinaturas, `${num(assinaturas, 0)} (base ${BASE.assinaturas}, alvo ${num(1.5 * BASE.assinaturas, 0)})`],
@@ -1450,6 +1496,36 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes12) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O ano em etapas (fatia 1.3)');
+l();
+l(
+  `O ano é uma lista de ${ETAPAS_DO_ANO.length} etapas, cada uma com o que lê e escreve declarado (\`manifesto.ts › ETAPAS_DO_ANO\`); \`test/ano.test.ts\` joga vidas com um gravador e falha se uma etapa lê ou escreve o que não declarou. ` +
+    'Pelas declarações, cada etapa lê o valor deste ano do que uma etapa anterior escreveu, e o do ano passado do que vem depois dela. A CPU é a das vidas sorteadas; o livro, o que cada etapa deixa no save, numa amostra de 1 jogador em 10.',
+);
+l();
+l('| Etapa | CPU por vida | Da CPU | Livro por vida | Lê deste ano, de | Lê do ano passado, de |');
+l('|---|---|---|---|---|---|');
+{
+  const deps = new Map(dependenciasDoAno().map((d) => [d.etapa, d]));
+  const conteudo = new Set(ETAPAS_DO_ANO.filter((x) => (x.le as readonly string[]).includes('*')).map((x) => x.id));
+  for (const x of ETAPAS_DO_ANO) {
+    const d = deps.get(x.id)!;
+    const doAno = conteudo.has(x.id) ? 'tudo o que veio antes' : d.doAno.map((y) => y.de).join(', ') || '—';
+    const passado = d.doAnoPassado.filter((y) => y.de !== x.id).map((y) => y.de).join(', ') || '—';
+    l(`| ${x.id} (${x.nome}) | ${num(cpuEtapa(x.id), 2)} ms | ${pct(cpuEtapa(x.id) / Math.max(1e-9, msPorVida))} | ${num(kbEtapa(x.id), 1)} KB | ${doAno} | ${passado} |`);
+  }
+  l(`| fora das etapas (nascer, escolher, agir, operar e os robôs) | ${num(msPorVida - cpuDasEtapas, 2)} ms | ${pct((msPorVida - cpuDasEtapas) / Math.max(1e-9, msPorVida))} | — | — | — |`);
+}
+l();
+l(
+  `O save de uma vida (amostra de ${saves.length}): mediana ${num(percentil(savesOrdenados, 50) / 1024, 0)} KB, p90 ${num(percentil(savesOrdenados, 90) / 1024, 0)} KB, máximo ${num(maiorSave / 1024, 0)} KB; o livro é ${pct(parteDoLivro)} dele. ` +
+    'A vida de quem herda começa um livro novo, então o save de uma dinastia é o da geração que está viva.',
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes13) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## Portões do incremento 1');
 l();
