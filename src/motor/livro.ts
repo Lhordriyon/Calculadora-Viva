@@ -135,3 +135,16 @@ export function lancar(e: EstadoVida, entrada: Entrada, reg: Mudanca[]): Entrada
   e.historico.push(entrada);
   return entrada;
 }
+
+/**
+ * Uma cópia da vida para o motor mexer sem tocar na anterior (a interface guarda a anterior até a nova aparecer). O
+ * livro só cresce: uma entrada lançada não muda mais (test/livro.test.ts congela o livro entre os toques e confere).
+ * Então a cópia divide as entradas antigas com a anterior e copia só o resto (entidades, vistos, agenda), que o motor
+ * altera no lugar. No fim de uma vida longa, o livro é quase todo o estado: a cópia inteira custava um quarto do toque.
+ */
+export function copiarVida(e: EstadoVida): EstadoVida {
+  // O livro vazio no lugar dele mantém a ordem das chaves (o save sai igual ao da cópia inteira).
+  const copia: EstadoVida = structuredClone({ ...e, historico: [] });
+  copia.historico = e.historico.slice();
+  return copia;
+}

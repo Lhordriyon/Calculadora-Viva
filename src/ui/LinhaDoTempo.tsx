@@ -1,3 +1,4 @@
+import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { NOMES_VERBO } from '../motor/acoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -31,7 +32,7 @@ interface PropsItem {
   porque: { idade: number; texto: string } | null;
 }
 
-function Item({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
+function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
   chips.push(...balanco);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
@@ -68,6 +69,44 @@ function Item({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
   );
 }
 
+const mesmosChips = (a: Chip[], b: Chip[]): boolean => a.length === b.length && a.every((x, i) => x.texto === b[i]!.texto && x.ruim === b[i]!.ruim);
+
+/**
+ * Uma entrada lançada não muda mais (o livro só cresce, e a cópia da vida a cada toque divide as antigas): só
+ * redesenha a que ficou nova, ganhou o aviso da inflação, o balanço do ano ou o porquê.
+ */
+const Item = memo(
+  ItemDoLivro,
+  (a, b) =>
+    a.h === b.h &&
+    a.nova === b.nova &&
+    a.inflacao === b.inflacao &&
+    mesmosChips(a.balanco, b.balanco) &&
+    a.porque?.idade === b.porque?.idade &&
+    a.porque?.texto === b.porque?.texto,
+);
+
+/** O porquê de cada entrada, calculado uma vez: ele só olha as causas, que são entradas mais antigas. */
+const porques = new WeakMap<Entrada, { idade: number; texto: string } | null>();
+function porqueGuardado(h: Entrada, porId: ReadonlyMap<number, Entrada>): { idade: number; texto: string } | null {
+  let p = porques.get(h);
+  if (p === undefined) {
+    p = porqueDe(h, porId);
+    porques.set(h, p);
+  }
+  return p;
+}
+
+/** O balanço de cada ano, calculado uma vez para cada parte nas empresas (o chip mostra a parte de quem joga). */
+const balancosGuardados = new WeakMap<Entrada, { partes: string; chips: Chip[] }>();
+function balancoGuardado(regra: Entrada, partes: string, participacao: Record<string, number>): Chip[] {
+  const x = balancosGuardados.get(regra);
+  if (x && x.partes === partes) return x.chips;
+  const chips = [chipDoBalanco(regra, participacao), chipDosAlugueis(regra)].filter((c): c is Chip => c !== null);
+  balancosGuardados.set(regra, { partes, chips });
+  return chips;
+}
+
 export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesde: number }) {
   const historico = vida.historico;
   const inflacao = useMemo(() => avisosDeInflacao(historico), [historico]);
@@ -86,13 +125,13 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
     for (const h of historico) {
       if (!visivel(h)) regra = h;
       else if (regra && h.idade === regra.idade) {
-        const chips = [chipDoBalanco(regra, participacao), chipDosAlugueis(regra)].filter((x): x is Chip => x !== null);
+        const chips = balancoGuardado(regra, partes, participacao);
         if (chips.length > 0) m.set(h.id, chips);
         regra = undefined;
       }
     }
     return m;
-  }, [historico, participacao]);
+  }, [historico, partes, participacao]);
   return (
     <ol class="linha-do-tempo" aria-label="Linha do tempo da vida">
       {historico.map((h, i) =>
@@ -103,7 +142,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
             inflacao={inflacao.has(h.id)}
             nomeDe={nomeDe}
             balanco={balancos.get(h.id) ?? []}
-            porque={porqueDe(h, porId)}
+            porque={porqueGuardado(h, porId)}
             key={h.id}
           />
         ),

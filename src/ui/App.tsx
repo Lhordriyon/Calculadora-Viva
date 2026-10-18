@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
-import { carregar, salvar, type Save } from '../jogo/salvar.ts';
+import { carregar, gravarJa, salvarDepois, type Save } from '../jogo/salvar.ts';
+import { copiarVida } from '../motor/livro.ts';
 import type { Verbo } from '../motor/constantes.ts';
 import { operar, type Operacao } from '../motor/carteira.ts';
 import { lembrarVida } from '../motor/memoria.ts';
@@ -90,8 +91,19 @@ export function App() {
   const resumo = useMemo(() => (vida && !vida.vivo ? resumirVida(vida, conteudo) : null), [vida]);
   const acoes = useMemo(() => (vida?.vivo && !vida.pendente ? acoesDisponiveis(vida, conteudo, save.memoria) : []), [vida, save.memoria]);
 
+  // O save grava depois que a tela responde (o toque não espera ~250 KB de JSON); sair do app ou trocar de aba grava já.
+  useEffect(() => {
+    const aoEsconder = () => document.visibilityState === 'hidden' && gravarJa();
+    document.addEventListener('visibilitychange', aoEsconder);
+    window.addEventListener('pagehide', gravarJa);
+    return () => {
+      document.removeEventListener('visibilitychange', aoEsconder);
+      window.removeEventListener('pagehide', gravarJa);
+    };
+  }, []);
+
   function guardar(novo: Save) {
-    salvar(novo);
+    salvarDepois(novo);
     setSave(novo);
   }
 
@@ -141,7 +153,7 @@ export function App() {
 
   function maisUmAno() {
     if (!vida?.vivo || vida.pendente) return;
-    const nova = structuredClone(vida);
+    const nova = copiarVida(vida);
     avancarAno(nova, conteudo, save.memoria);
     concluir(nova);
   }
@@ -149,7 +161,7 @@ export function App() {
   /** Gasta uma ficha do ano na ação escolhida; quando as fichas acabam, o ano passa. */
   function agirNoAno(verbo: Verbo, escolha?: { id: string; ator?: string | undefined }) {
     if (!vida?.vivo || vida.pendente) return;
-    const nova = structuredClone(vida);
+    const nova = copiarVida(vida);
     agir(nova, conteudo, verbo, escolha);
     if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
     concluir(nova);
@@ -158,7 +170,7 @@ export function App() {
   /** Mexer no dinheiro, comprar, tentar vaga e se candidatar não gastam a ficha do ano nem passam o tempo. */
   function operarDinheiro(op: Operacao) {
     if (!vida?.vivo) return;
-    const nova = structuredClone(vida);
+    const nova = copiarVida(vida);
     try {
       operar(nova, conteudo, op);
     } catch {
@@ -171,7 +183,7 @@ export function App() {
 
   function responder(indice: number) {
     if (!vida?.pendente) return;
-    const nova = structuredClone(vida);
+    const nova = copiarVida(vida);
     escolher(nova, conteudo, indice);
     concluir(nova);
   }

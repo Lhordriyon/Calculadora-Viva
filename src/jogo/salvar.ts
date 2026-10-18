@@ -242,6 +242,33 @@ function guardarCopia(texto: string): void {
   }
 }
 
+let aGravar: Save | null = null;
+let marcado = false;
+
+/**
+ * Grava quando o navegador tiver folga (no máximo meio segundo depois), para o toque responder antes: no fim de uma
+ * vida longa, escrever o save custava um quinto do toque. Toques seguidos gravam uma vez só, o último.
+ */
+export function salvarDepois(save: Save): void {
+  aGravar = save;
+  if (marcado) return;
+  marcado = true;
+  const gravar = (): void => {
+    marcado = false;
+    gravarJa();
+  };
+  if (typeof globalThis.requestIdleCallback === 'function') globalThis.requestIdleCallback(gravar, { timeout: 500 });
+  else setTimeout(gravar, 50);
+}
+
+/** Grava já o que estiver esperando (ao sair do app ou trocar de aba). */
+export function gravarJa(): void {
+  if (!aGravar) return;
+  const save = aGravar;
+  aGravar = null;
+  salvar(save);
+}
+
 export function salvar(save: Save): void {
   try {
     globalThis.localStorage?.setItem(CHAVE_SAVE, escreverSave(save));

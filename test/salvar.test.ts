@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, escreverSave, importarSave, lerComCopia, lerSave, saveVazio, VERSAO_SAVE } from '../src/jogo/salvar.ts';
+import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, escreverSave, gravarJa, importarSave, salvarDepois, lerComCopia, lerSave, saveVazio, VERSAO_SAVE } from '../src/jogo/salvar.ts';
 import { lembrarVida } from '../src/motor/memoria.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { avancarAno, nascer } from '../src/motor/vida.ts';
@@ -111,6 +111,33 @@ describe('a cópia do save e a exportação', () => {
       expect(volta.aviso).toBe(AVISO_COPIA);
       // A cópia não é trocada pelo estragado.
       expect(guardado.get(CHAVE_COPIA)).toBe(bom);
+    } finally {
+      globalThis.localStorage = antes;
+    }
+  });
+});
+
+describe('a gravação depois do toque', () => {
+  it('grava só o último save, uma vez, quando sobra tempo ou quando o app sai', async () => {
+    const guardado = new Map<string, string>();
+    let gravacoes = 0;
+    const antes = globalThis.localStorage;
+    globalThis.localStorage = { getItem: (k: string) => guardado.get(k) ?? null, setItem: (k: string, v: string) => void (gravacoes++, guardado.set(k, v)) } as Storage;
+    try {
+      const a = { ...saveVazio(), vidas: 1 };
+      const b = { ...saveVazio(), vidas: 2 };
+      salvarDepois(a);
+      salvarDepois(b);
+      expect(gravacoes).toBe(0);
+      gravarJa();
+      expect(gravacoes).toBe(1);
+      expect(guardado.get(CHAVE_SAVE)).toBe(escreverSave(b));
+      // Sem nada esperando, o temporizador não grava de novo.
+      await new Promise((ok) => setTimeout(ok, 80));
+      expect(gravacoes).toBe(1);
+      salvarDepois(a);
+      await new Promise((ok) => setTimeout(ok, 80));
+      expect(guardado.get(CHAVE_SAVE)).toBe(escreverSave(a));
     } finally {
       globalThis.localStorage = antes;
     }
