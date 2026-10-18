@@ -55,6 +55,40 @@ Toda dívida de quem joga é um contrato com o banco: o cheque especial, o empr�
 | Financiar tem risco, não sentença: de quem financiou, entre 1% e 25% perde o imóvel em leilão | ✅ | 20,9% de 3544 vidas que financiaram |
 | Dívida atrasada caduca: acontece, e em no máximo metade das vidas com o nome sujo | ✅ | 1,3% das vidas; 11,3% das sujas |
 
+## O ano em etapas (fatia 1.3)
+
+O ano é uma lista de 19 etapas, cada uma com o que lê e escreve declarado (`manifesto.ts › ETAPAS_DO_ANO`); `test/ano.test.ts` joga vidas com um gravador e falha se uma etapa lê ou escreve o que não declarou. Pelas declarações, cada etapa lê o valor deste ano do que uma etapa anterior escreveu, e o do ano passado do que vem depois dela. A CPU é a de uma amostra de 240 vidas rodada sozinha, depois das outras (que rodam em 4 trabalhadores); o livro, o que cada etapa deixa no save, em 1 jogador de cada 10.
+
+| Etapa | CPU por vida | Da CPU | Livro por vida | Lê deste ano, de | Lê do ano passado, de |
+|---|---|---|---|---|---|
+| exterior (o mundo lá fora: a economia de cada país, a relação, sanções e acordos) | 1,38 ms | 3,0% | 33,0 KB | — | pais, poder, iniciativas, diretor |
+| pais (o país: as estatísticas, a eleição, quem governa e a fase do ciclo) | 2,52 ms | 5,4% | 46,3 KB | exterior | poder, iniciativas, diretor |
+| mercado (o mercado do ano: quanto cada classe de investimento rendeu) | 0,50 ms | 1,1% | 18,7 KB | pais | iniciativas, diretor |
+| economia (a economia de quem joga: inflação, juros, salário, imposto, gastos) | 1,17 ms | 2,5% | 30,6 KB | pais, mercado | empresa, bens, dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
+| empresa (as empresas: crescimento, retirada, quebra) | 0,27 ms | 0,6% | 3,5 KB | exterior, pais, mercado, economia | bens, dividas, corpo, personagens, poder, morte, iniciativas, diretor |
+| bens (os bens: valor, manutenção, aluguel e o financiamento) | 0,73 ms | 1,6% | 16,0 KB | mercado, economia, empresa | dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
+| dividas (as dívidas: a parcela do acordo, o limite, o que caduca e o nome) | 0,25 ms | 0,5% | 0,2 KB | economia, empresa, bens | personagens, trabalho, carreira, poder, iniciativas, diretor |
+| privacao (a privação: o buraco que nem o crédito cobriu) | 0,05 ms | 0,1% | 0,0 KB | economia | corpo, personagens, iniciativas, diretor |
+| corpo (o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto) | 1,34 ms | 2,9% | 22,1 KB | pais, economia, empresa, bens, dividas, privacao | personagens, trabalho, carreira, poder, morte, iniciativas, diretor |
+| personagens (a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte) | 1,07 ms | 2,3% | 33,9 KB | pais, economia, empresa, bens, dividas, privacao, corpo | iniciativas, diretor |
+| trabalho (o trabalho de quem joga: salário e demissão) | 0,14 ms | 0,3% | 2,0 KB | pais | carreira, poder, iniciativas, diretor |
+| carreira (a carreira: promoção, fama e o fim da carreira) | 0,20 ms | 0,4% | 1,9 KB | corpo, trabalho | poder, iniciativas, diretor |
+| poder (o poder: influência, popularidade, mandato e queda) | 0,48 ms | 1,0% | 4,0 KB | pais, economia, empresa, bens, dividas, personagens, trabalho, carreira | morte, iniciativas, diretor |
+| padrao (o padrão de vida: a conta que chega quando a reserva acaba) | 0,05 ms | 0,1% | 0,0 KB | economia, empresa, bens, dividas, personagens | iniciativas, diretor |
+| regras (fecha as regras do ano numa entrada invisível do livro) | 0,63 ms | 1,4% | 0,0 KB | privacao, corpo, personagens | iniciativas, diretor |
+| morte (a morte: a do corpo e a da violência) | 0,26 ms | 0,6% | 0,3 KB | pais, economia, empresa, bens, dividas, privacao, corpo, personagens, trabalho, carreira, poder | iniciativas, diretor |
+| amor (o amor que aparece) | 0,06 ms | 0,1% | 0,0 KB | corpo, personagens | iniciativas, diretor |
+| iniciativas (o que os personagens resolvem fazer (o conteúdo)) | 4,48 ms | 9,7% | 1,3 KB | tudo o que veio antes | diretor |
+| diretor (o storylet do ano, o agendado ou a linha curta (o conteúdo)) | 11,55 ms | 24,9% | 1,8 KB | tudo o que veio antes | — |
+| fora das etapas (nascer, escolher, agir, operar e os robôs) | 19,23 ms | 41,4% | — | — | — |
+
+O save de uma vida (amostra de 1040): mediana 277 KB, p90 401 KB, máximo 479 KB; o livro é 97,1% dele. A vida de quem herda começa um livro novo, então o save de uma dinastia é o da geração que está viva.
+
+| Portão | Situação | Valor |
+|---|---|---|
+| O save de uma vida cabe no orçamento: o maior da amostra ≤ 1 MB | ✅ | 479 KB (mediana 277 KB, 1040 vidas) |
+| A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada | ✅ | 46,39 ms (base 43,74 ms, teto 48,11 ms) |
+
 ## Portões do incremento 1
 
 | Portão | Situação | Valor |
@@ -74,7 +108,7 @@ Toda dívida de quem joga é um contrato com o banco: o cheque especial, o empr�
 | Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7) | ✅ | 0,32 |
 | Saturação V20 ≤ 95% | ✅ | 90,6% (base 95,9%) |
 | Assinaturas sem regressão | ✅ | 906 (base 893) |
-| CPU por vida ≤ 30 ms | ❌ | 43,74 ms (base 14,5 ms) |
+| CPU por vida ≤ 30 ms | ❌ | 46,39 ms (base 14,5 ms) |
 
 ## Portões do incremento 3
 
@@ -91,7 +125,7 @@ Toda dívida de quem joga é um contrato com o banco: o cheque especial, o empr�
 | Saturação V20 sem regressão (≤ 95%) | ✅ | 90,6% |
 | Assinaturas sem regressão (≥ 918) | ❌ | 906 |
 | Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques) | ✅ | 450,5 |
-| CPU por vida ≤ 30 ms | ❌ | 43,74 ms |
+| CPU por vida ≤ 30 ms | ❌ | 46,39 ms |
 
 ## Portões do incremento 5 (brincar de deus)
 
@@ -196,7 +230,7 @@ Toda dívida de quem joga é um contrato com o banco: o cheque especial, o empr�
 | Vidas com patrimônio negativo ao morrer | 0,6% |
 | Mudanças de estado causadas pelo jogador | 44,8% |
 | Toques por vida | 450,5 |
-| Tempo de CPU por vida | 43,74 ms |
+| Tempo de CPU por vida | 46,39 ms |
 | Ações (fichas usadas) por vida | 159,4 |
 | Mortes na família por vida | 3,8 |
 | Pontos de virada que vêm do mundo (não do jogador) | 9,5% |
@@ -1146,4 +1180,5 @@ Nenhuma estratégia fixa vence nos três critérios.
 - **Assinatura da vida:** origem (classe e tipo de família), classe final (6 faixas de patrimônio), carreira, estado civil, marca principal (a que mais causou eventos depois) e categoria da causa da morte. Contamos as distintas em blocos intercalados de 1.000 vidas; entre parênteses, a mesma conta sem a origem.
 - **Mobilidade:** quintis da riqueza da família ao nascer × quintis do patrimônio ao morrer. Nem determinista (tudo na diagonal) nem aleatória (correlação perto de zero).
 - **Mudança de estado:** atributo de quem joga que andou 0,5 ponto ou mais, patrimônio R$ 500 ou mais, renda R$ 600 por ano ou mais, qualidade ganha ou perdida, contada por entrada do livro-razão. É do jogador quando a entrada é uma escolha ou uma ação dele.
+- **CPU por vida:** o tempo de uma vida (nascer, os robôs decidindo e o motor), medido numa amostra de 240 vidas rodada sozinha depois das outras. As outras rodam em 4 trabalhadores, um por núcleo, e cada vida demora mais quando elas dividem a máquina. O relatório sai igual com qualquer número de trabalhadores, menos o tempo.
 - **Toques:** nascer + um por verbo da ficha (dos 18 aos 40, até dois por ano) ou pelo +1 ano + um por escolha + três por operação na folha Dinheiro (abrir, escolher, confirmar).
