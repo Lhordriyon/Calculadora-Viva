@@ -2,7 +2,9 @@
  * Save no localStorage com versão de esquema. Se o formato mudar, VERSAO_SAVE
  * sobe; um save antigo ou corrompido nunca trava o jogo: a vida em andamento
  * recomeça (com um aviso na tela) e a memória entre vidas é preservada quando
- * ainda for legível.
+ * ainda for legível. Cada vez que o jogo abre com um save bom, ele vira a cópia
+ * de segurança (CHAVE_COPIA): se o principal estragar, o jogo volta para ela.
+ * O mesmo texto sai e entra pelo menu (exportar e importar).
  */
 import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -16,6 +18,8 @@ import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
 
 export const CHAVE_SAVE = 'trajetoria';
+/** A cópia do último save que abriu bem. */
+export const CHAVE_COPIA = 'trajetoria:copia';
 export const VERSAO_SAVE = 2;
 
 export interface Save {
@@ -30,6 +34,9 @@ export interface Save {
 
 export const AVISO_SAVE_ANTIGO =
   'O jogo mudou bastante desde a sua última visita e a vida em andamento não coube no formato novo. Ela recomeça do zero; a memória das vidas anteriores ficou.';
+
+export const AVISO_COPIA =
+  'O save deste aparelho estava estragado. O jogo voltou para a cópia da última vez que abriu; o que veio depois dela se perdeu.';
 
 const Genero = z.enum(['f', 'm']);
 const Numeros = z.record(z.string(), z.number());
@@ -137,24 +144,34 @@ export function saveVazio(): Save {
   return { versao: VERSAO_SAVE, vida: null, memoria: novaMemoria(), vidas: 0 };
 }
 
-/** Lê o save; qualquer problema vira um save vazio (mantendo o que der para manter). */
-export function lerSave(texto: string | null, conteudo: Conteudo): Save {
-  if (!texto) return saveVazio();
+/** A casca do save (JSON com versão, vida e memória, de qualquer versão), ou null: só um save assim vira cópia ou é importado. */
+function cascaDe(texto: string | null): z.infer<typeof EsquemaSave> | null {
+  if (!texto) return null;
   let bruto: unknown;
   try {
     bruto = JSON.parse(texto);
   } catch {
-    return saveVazio();
+    return null;
   }
-  const casca = EsquemaSave.safeParse(bruto);
-  if (!casca.success) return saveVazio();
-  const lida = Memoria.safeParse(casca.data.memoria);
+  const lida = EsquemaSave.safeParse(bruto);
+  return lida.success ? lida.data : null;
+}
+
+/** Lê o save; qualquer problema vira um save vazio (mantendo o que der para manter). */
+export function lerSave(texto: string | null, conteudo: Conteudo): Save {
+  const lida = cascaDe(texto);
+  if (!lida) return saveVazio();
+  return lerCasca(lida, conteudo);
+}
+
+function lerCasca(casca: z.infer<typeof EsquemaSave>, conteudo: Conteudo): Save {
+  const lida = Memoria.safeParse(casca.memoria);
   const memoria: MemoriaJogador = lida.success ? { vidas: lida.data.vidas, recencia: lida.data.recencia, acoes: lida.data.acoes ?? {} } : novaMemoria();
-  const base: Save = { ...saveVazio(), memoria, vidas: casca.data.vidas ?? 0 };
-  const tinhaVida = casca.data.vida !== null && casca.data.vida !== undefined;
-  if (casca.data.versao !== VERSAO_SAVE) return tinhaVida ? { ...base, aviso: AVISO_SAVE_ANTIGO } : base;
+  const base: Save = { ...saveVazio(), memoria, vidas: casca.vidas ?? 0 };
+  const tinhaVida = casca.vida !== null && casca.vida !== undefined;
+  if (casca.versao !== VERSAO_SAVE) return tinhaVida ? { ...base, aviso: AVISO_SAVE_ANTIGO } : base;
   if (!tinhaVida) return base;
-  const vida = Vida.safeParse(casca.data.vida);
+  const vida = Vida.safeParse(casca.vida);
   if (!vida.success) return { ...base, aviso: AVISO_SAVE_ANTIGO };
   const v = vida.data as EstadoVida;
   // Antes da carteira, o investido era um número só: vira renda fixa (o jogador rebalanceia se quiser).
@@ -182,12 +199,46 @@ export function escreverSave(save: Save): string {
   return JSON.stringify({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas });
 }
 
+/**
+ * O save do aparelho: o principal, se abrir bem; se ele estiver estragado (ou sumiu) e a cópia não, a cópia, com
+ * aviso. Também volta para a cópia quando só ela ainda tem a vida em andamento (a do principal não coube no esquema,
+ * na mesma versão do jogo). `bom` diz se o principal abriu bem: aí ele vira a cópia nova.
+ */
+export function lerComCopia(principal: string | null, copia: string | null, conteudo: Conteudo): { save: Save; bom: boolean } {
+  const doPrincipal = cascaDe(principal);
+  const lido = doPrincipal ? lerCasca(doPrincipal, conteudo) : saveVazio();
+  if (doPrincipal && !lido.aviso) return { save: lido, bom: true };
+  const daCopia = cascaDe(copia);
+  if (!daCopia) return { save: lido, bom: false };
+  const reserva = lerCasca(daCopia, conteudo);
+  if (!doPrincipal) return { save: { ...reserva, aviso: reserva.aviso ?? AVISO_COPIA }, bom: false };
+  if (!lido.vida && reserva.vida && !reserva.aviso && daCopia.versao === doPrincipal.versao) return { save: { ...reserva, aviso: AVISO_COPIA }, bom: false };
+  return { save: lido, bom: false };
+}
+
+/** Um save trazido de fora (o arquivo exportado): null se o texto não for um save do jogo, e nada muda. */
+export function importarSave(texto: string, conteudo: Conteudo): Save | null {
+  const lida = cascaDe(texto.trim());
+  return lida ? lerCasca(lida, conteudo) : null;
+}
+
 /** localStorage pode não existir ou lançar (janela privada, armazenamento bloqueado). */
 export function carregar(conteudo: Conteudo): Save {
   try {
-    return lerSave(globalThis.localStorage?.getItem(CHAVE_SAVE) ?? null, conteudo);
+    const principal = globalThis.localStorage?.getItem(CHAVE_SAVE) ?? null;
+    const { save, bom } = lerComCopia(principal, globalThis.localStorage?.getItem(CHAVE_COPIA) ?? null, conteudo);
+    if (bom && principal) guardarCopia(principal);
+    return save;
   } catch {
     return saveVazio();
+  }
+}
+
+function guardarCopia(texto: string): void {
+  try {
+    globalThis.localStorage?.setItem(CHAVE_COPIA, texto);
+  } catch {
+    // Sem espaço para a cópia: o principal continua valendo.
   }
 }
 

@@ -103,6 +103,14 @@ export function App() {
     setFolha(null);
   }
 
+  /** O save que veio de fora (o menu confirma antes): a vida e a memória dele passam a ser as deste aparelho. */
+  function importar(novo: Save) {
+    vistas.current = novo.vida?.historico.length ?? 0;
+    setEscolhendoVida(false);
+    setFolha(null);
+    guardar(novo);
+  }
+
   function pedirNovaVida() {
     setFolha(null);
     setEscolhendoVida(true);
@@ -213,7 +221,20 @@ export function App() {
       {folha === 'dinheiro' && <Dinheiro vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'carreira' && <Carreira vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'pais' && <Pais vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
-      {folha === 'menu' && <Menu viva={vida.vivo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} />}
+      {folha === 'menu' && <Menu viva={vida.vivo} save={save} conteudo={conteudo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoImportar={importar} />}
+      {save.aviso && folha === null && (
+        <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-aviso">
+          <div class="folha">
+            <h2 id="titulo-aviso">Aviso</h2>
+            <p class="meta">{save.aviso}</p>
+            <div class="acoes">
+              <button class="botao" type="button" autoFocus onClick={() => setSave({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas })}>
+                Entendi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

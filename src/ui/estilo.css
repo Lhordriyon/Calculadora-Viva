@@ -1113,6 +1113,35 @@ a.botao {
   border: 1px solid var(--borda);
 }
 
+.menu-save {
+  margin: 24px 0 4px;
+  font-size: 19px;
+}
+
+.save-colado {
+  width: 100%;
+  min-height: 88px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  background: var(--superficie-2);
+  color: var(--texto);
+  font: inherit;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.save-trazido {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--destaque-suave);
+}
+
+.save-trazido p {
+  margin: 0 0 6px;
+}
+
 .aviso {
   margin: 8px 0 0;
   font-size: 14px;
