@@ -1,4 +1,11 @@
-# Trajetória
+# 🎲 Trajetória
+
+[![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
+[![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-bloco%20A%3A%20o%20pa%C3%ADs%20em%20n%C3%BAmeros-8A2BE2)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-743-2EA043)
+![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
+![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
 ## 📱 [Baixar o app para Android (APK)](https://github.com/Lhordriyon/Calculadora-Viva/releases/download/android/Trajetoria.apk)
 
@@ -8,9 +15,114 @@
 
 ---
 
+## 🆕 Novidades: Bloco A · O país em números (19/10/2026)
+
+> [!TIP]
+> **Para ver:** abra a folha **País** (no topo, toque na linha com a idade, a cidade e o ano, que termina em "Brasil ›"). A seção nova, **Em números**, mostra o PIB, a população, o PIB per capita, a desigualdade e o IDH, cada um com a seta do ano. Viva até os 40 ou 50 anos e repare nas notícias: o PIB recorde, o país que começa a encolher, o IDH que entra no clube dos "muito altos".
+
+| ✅ O que esta atualização trouxe | ⏳ O que ela ainda não trouxe |
+|---|---|
+| 📈 **PIB** em reais de hoje, que cresce exatamente o crescimento do ano (R$ 11,7 trilhões em 2026) | 🏛️ O **Tesouro** com orçamento em reais (receita, gasto e quem empresta ao governo) |
+| 👥 **População** que cresce devagar, para por volta de 2045 e depois encolhe; a saúde pública e a pobreza mudam o ritmo | 📜 **Títulos públicos** que pagam juros direto na sua conta ou no caixa da empresa |
+| 💰 **PIB per capita** (o PIB dividido por todo mundo) | 👑 **Renda para o soberano**: dotação da coroa, imposto da micronação |
+| ⚖️ **Gini** (desigualdade): sobe com a pobreza, cai com a educação, e agora pesa na violência | 🔬 O Estado pagando **pesquisa e desenvolvimento** |
+| 🎓 **IDH** (saúde, educação e renda), com a faixa da ONU | 🛡️ **Forças armadas e guerra** |
+| 📰 5 histórias novas que leem esses números, cada uma com escolhas | 🗳️ O IDH e o Gini ainda não mudam o voto do eleitor |
+| 💾 O save antigo ganha os números do ano em que está, sem perder nada | 👷 A população ainda não muda o mercado de trabalho |
+
+**Medido no túnel de vento** (10.000 vidas simuladas a cada atualização), no fim de cada vida:
+
+| Indicador | Mediana | Varia entre (p10 a p90) |
+|---|---|---|
+| IDH | 0,83 | 0,80 a 0,87 |
+| Desigualdade (Gini) | 0,53 | 0,48 a 0,56 |
+| População | 194 milhões | depende de quando a vida acaba |
+
+As cinco histórias novas aparecem em 9% a 23% das vidas. O histórico completo de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
+
+## 🗺️ Os próximos blocos
+
+Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro:
+
+```mermaid
+flowchart LR
+  A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>orçamento e títulos com juros"]:::proximo
+  B --> C["👑 C · A coroa recebe<br/>dotação e imposto da ilha"]:::depois
+  B --> D["🔬 D · O Estado pesquisa<br/>pesquisa paga pelo Tesouro"]:::depois
+  B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::depois
+  classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
+  classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
+  classDef depois fill:#8250df,stroke:#6639ba,color:#fff
+```
+
+| Bloco | O que entra | Por que nesta ordem |
+|---|---|---|
+| 🟢 **A** · O país em números | PIB, população, PIB per capita, Gini, IDH | ✅ feito |
+| 🟡 **B** · O Tesouro | o orçamento do governo em reais; comprar títulos que pagam cupom na conta ou no caixa da empresa | quem paga a coroa, a pesquisa e o exército é o Tesouro |
+| 🟣 **C** · A coroa recebe | dotação da Casa Real que sai do Tesouro; a ilha soberana com população, PIB e imposto | precisa do Tesouro (B) e do país em números (A) |
+| 🟣 **D** · O Estado pesquisa | quem governa decide quanto do orçamento vai para P&D; a pesquisa vira cura, satélite, patente | precisa do orçamento (B) |
+| 🟣 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
+
+## 🎮 O que o jogo tem
+
+<details open>
+<summary><b>👶 A vida</b></summary>
+
+- Nascer numa cidade brasileira, em 8 classes sociais (do barraco ao trilionário), 4 tipos de família e 9 linhagens (família real, Regime, futebol, circo, agro, políticos…), ou criar o personagem escolhendo tudo
+- Primeira infância com causa e efeito: o que acontece até os 4 anos volta dos 5 aos 12
+- ENEM, curso, 49 profissões com cargos e promoção, concurso, aposentadoria
+- Família viva: mãe, pai, avó, amigo, amor e até quatro filhos, cada um com saúde, dinheiro, jeito e vínculo, que envelhecem, adoecem, ajudam ou atrapalham
+- Fichas de ação por ano: estudar, trabalhar, cuidar da saúde, ver a família, sair, poupar
+</details>
+
+<details>
+<summary><b>💸 O dinheiro</b></summary>
+
+- Carteira em cinco classes (renda fixa, ações, fundos imobiliários, dólar, cripto), três perfis de investidor e o padrão de vida escolhido
+- Toda dívida é um contrato com o banco: cheque especial, empréstimo, financiamento com garantia e acordo. Atrasar suja o nome, e o imóvel financiado vai a leilão
+- 30 bens: morar, alugar, financiar, imóveis de renda, carros, iate, jatinho, emissora de TV
+- Até cinco empresas, com subsidiárias, fusões, bolsa e a mesa de quem manda
+- Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte
+- Todo real tem contraparte: o extrato do ano e o da vida fecham entrada por entrada
+</details>
+
+<details>
+<summary><b>🏛️ O país e o mundo</b></summary>
+
+- O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, aprovação, e agora PIB, população, PIB per capita, Gini e IDH
+- Quatro blocos políticos fictícios e o Regime; eleições a cada quatro anos; o seu voto pesa
+- Ser vereador, prefeito, deputado, governador, senador, presidente, monarca ou chefe do Regime; quem governa muda as políticas do país
+- Quatro países fictícios lá fora, com o dólar, sanções, acordos e atos de quem governa
+</details>
+
+<details>
+<summary><b>🏰 A dinastia</b></summary>
+
+- Ao morrer, o cartão mostra os três pontos de virada da vida, para compartilhar
+- A história continua com quem herda: filho, sobrinho, o par ou um amigo, pelo testamento escolhido em vida
+- Sem testamento, os filhos dividem a herança
+</details>
+
+## 🚧 O que o jogo ainda não tem
+
+- 🏛️ Tesouro com orçamento em reais e títulos públicos (bloco B)
+- 👑 Renda para quem é soberano de uma ilha, e a coroa paga pelo Estado (bloco C)
+- 🔬 Pesquisa e desenvolvimento pagos pelo Estado (bloco D)
+- 🛡️ Forças armadas e guerra (bloco E)
+- 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens
+- ✈️ Morar em outro país
+- 🚔 Crime com consequência
+- 🗺️ Setores da economia por estado
+
+Todas as ideias, com o que cada uma precisa antes, estão em [`docs/ideias.md`](docs/ideias.md). A ordem está em [`docs/roteiro.md`](docs/roteiro.md).
+
+---
+
+## 📖 Sobre o jogo
+
 Uma vida inteira em poucos minutos, no celular. Você nasce numa cidade brasileira (ou num palácio, num Brasil onde a monarquia venceu o plebiscito), aperta **+1 ano** e responde ao que a vida joga na sua frente: ENEM, primeiro emprego, cartão de crédito, concurso, Pix suspeito, aposentadoria. A cada ano você escolhe o que fazer, tenta a profissão que quiser, compra imóveis, carros, iate ou uma emissora de TV, abre empresa e compra concorrentes, disputa eleições e escolhe quem herda tudo. Cada escolha deixa uma marca, e algumas voltam décadas depois. Ao morrer, o jogo mostra os três pontos de virada da sua vida num cartão que dá para compartilhar, e a história pode continuar com quem herdou.
 
-## Rodar
+## 🛠️ Rodar
 
 Precisa de Node 22.18 ou mais novo.
 

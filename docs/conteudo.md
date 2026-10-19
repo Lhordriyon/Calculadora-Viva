@@ -100,6 +100,8 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "pais.governo": ["frente_popular", "centrao"], "pais.governo": "voce", // quem governa (mundo.json › governos, 'regime' ou 'voce')
   "pais.pol_social": { "min": 2 }, "pais.pol_impostos": { "max": 0 },  // políticas em vigor (0 baixo, 1 médio, 2 alto; pol_comercio 2 é a fronteira fechada)
   "pais.cambio": { "min": 6 },                                   // o dólar, em reais de hoje (anda em volta de R$ 5)
+  "pais.pib": { "min": 2.0e13 }, "pais.populacao": { "max": 2.08e8 }, // o PIB por ano em reais de hoje (R$ 11,7 tri em 2026) e a população (213 milhões em 2026)
+  "pais.pib_per_capita": { "min": 100000 }, "pais.gini": { "min": 0.55 }, "pais.idh": { "min": 0.8 }, // derivados: PIB por pessoa, desigualdade (0 a 1) e IDH (0 a 1); o texto mostra 0,55 e "205 milhões"
   "ator.relacao": { "max": 32 }, "ator.crescimento": { "min": 6 }, // com ator país de fora: a relação com o Brasil (0 a 100) e a economia dele (%)
   "marcas": ["ator.sancao"], "marcas": ["celeste.acordo"], "marcas": ["federacao.crise"], // sanção contra o Brasil, acordo comercial, crise lá
   "marcas": ["salario_em_dolar"],                                // o salário de quem joga anda com o dólar

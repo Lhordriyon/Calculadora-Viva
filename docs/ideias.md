@@ -41,6 +41,18 @@ Cada ideia tem um bloco com estes campos:
 
 Ideia nova vai no fim da fase dela, com o próximo número livre.
 
+## A ordem do dono (19/10/2026)
+
+O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A ordem de execução segue as dependências: o Tesouro vem antes de quem recebe dele.
+
+| Bloco | O que o dono pediu | Ideias | Estado |
+|---|---|---|---|
+| A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
+| B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | o próximo |
+| C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | depois do B |
+| D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
+| E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -69,28 +81,28 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | I-24 | Reconhecimento limitado e territórios disputados | 3 | Baixa | proposta |
 | I-25 | Mudar de cidade no Brasil | 3 | Média | proposta |
 | I-30 | Banco como entidade (crédito e criação de dinheiro) | 4 | Alta | proposta |
-| I-31 | Tesouro: o orçamento do Estado em reais | 4 | Alta | proposta |
+| I-31 | Tesouro: o orçamento do Estado em reais | 4 | Alta | proposta (bloco B do dono) |
 | I-32 | Banco central e política monetária | 4 | Média | proposta |
 | I-33 | Moedas por país, regime cambial e moeda de reserva | 4 | Média | proposta |
-| I-34 | Dívida soberana com credores, calote e contágio | 4 | Média | proposta |
+| I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | proposta (bloco B do dono) |
 | I-35 | Falência, reestruturação e intervenção | 4 | Média | proposta |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
-| I-41 | Monarquia institucional e Casa Real | 5 | Alta | proposta |
+| I-41 | Monarquia institucional e Casa Real | 5 | Alta | proposta (bloco C do dono) |
 | I-42 | Indicadores separados de poder, riqueza, prestígio e legitimidade | 5 | Média | proposta |
-| I-43 | Criar um Estado | 5 | Média | proposta |
+| I-43 | Criar um Estado | 5 | Média | proposta (bloco C do dono: a ilha com população, PIB e imposto) |
 | I-44 | Formas de Estado e de governo | 5 | Média | proposta |
 | I-50 | Tratados como objetos | 6 | Média | proposta |
 | I-51 | Alianças e blocos econômicos | 6 | Média | proposta |
 | I-52 | Instituições multilaterais | 6 | Média | proposta |
 | I-53 | Poder nacional por dimensões | 6 | Média | proposta |
-| I-54 | Pesquisa e tecnologia como estoque | 6 | Baixa | proposta |
-| I-60 | Forças armadas como capacidade | 7 | Média | proposta |
-| I-61 | Guerra como processo com custos | 7 | Média | proposta |
+| I-54 | Pesquisa e tecnologia como estoque | 6 | Média | proposta (bloco D do dono) |
+| I-60 | Forças armadas como capacidade | 7 | Média | proposta (bloco E do dono) |
+| I-61 | Guerra como processo com custos | 7 | Média | proposta (bloco E do dono) |
 | I-62 | Coerção econômica além da sanção | 7 | Baixa | proposta |
 | I-63 | Espionagem, influência, ciber e guerra híbrida | 7 | Baixa | proposta |
 | I-64 | Mudança de fronteira e suas consequências | 7 | Baixa | proposta |
-| I-70 | Demografia por coortes | 8 | Média | proposta |
+| I-70 | Demografia por coortes | 8 | Média | parcial: a população como número (bloco A); faltam as coortes |
 | I-71 | Religião e cultura como distribuições que mudam | 8 | Baixa | proposta |
 | I-72 | Movimentos sociais e ideologias | 8 | Baixa | proposta |
 | I-73 | Projetos de sociedade (utopia, distopia, ultrarquia, distrarquia) | 8 | Baixa | proposta |
@@ -105,6 +117,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | I-93 | Famílias artística e com doença hereditária | — | Baixa | proposta (roteiro) |
 | I-94 | Narradores | — | Baixa | proposta (roteiro) |
 | I-95 | A imagem pública esmaece sem cargo | — | Baixa | proposta (auditoria de 11/10) |
+| I-96 | O país em números: PIB, população, PIB per capita, Gini e IDH | — | Alta | feita (bloco A, 19/10) |
 
 (os blocos de cada ideia vêm na versão final)
 
@@ -624,7 +637,8 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Efeitos causais:** o calote atinge quem tem títulos (inclusive quem joga), o câmbio e o crédito.
 - **Riscos:** os portões do país.
 - **Aceitação:** quem perde no calote é quem tinha a dívida.
-- **Prioridade:** Média · Fase 4.
+- **Pedido do dono (19/10):** o título comprado do Tesouro entra no balanço como ativo financeiro e paga cupom no caixa de quem comprou: a conta pessoal ou o caixa da empresa.
+- **Prioridade:** Alta · bloco B do dono.
 - **Estado:** proposta.
 
 ### I-35 · Falência, reestruturação e intervenção
@@ -776,7 +790,8 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Efeitos causais:** o estoque de tecnologia muda a produtividade, com atraso.
 - **Riscos:** nenhum além do escopo.
 - **Aceitação:** o investimento leva ao estoque e o estoque à produtividade, com causa no livro.
-- **Prioridade:** Baixa · Fase 6.
+- **Pedido do dono (19/10):** usar o Tesouro do Estado para pagar pesquisa e desenvolvimento. Depende do orçamento em reais (I-31).
+- **Prioridade:** Média · bloco D do dono.
 - **Estado:** proposta.
 
 ## Fase 7 — defesa e conflito
@@ -844,7 +859,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 ## Fase 8 — sociedade e civilização
 
 ### I-70 · Demografia por coortes
-- **Problema:** a população não existe como número.
+- **Problema:** a população não existe como número. (Bloco A, 19/10: agora existe, como um número só, com a transição demográfica, a saúde e a pobreza; faltam as coortes e o efeito no trabalho e na previdência.)
 - **Módulos:** 10, 7.
 - **Depende de:** I-21.
 - **Custo:** G de implementação; médio de simulação.
@@ -1026,6 +1041,18 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 - **Aceitação:** o túnel decide a velocidade.
 - **Prioridade:** Baixa.
 - **Estado:** proposta (auditoria de 11/10).
+
+### I-96 · O país em números
+- **Problema:** o dono perguntou por que o país não tem PIB, PIB per capita, Gini, IDH nem população (19/10). As dez estatísticas eram taxas e notas, sem tamanho.
+- **Módulos:** 6, 10, 13.
+- **Depende de:** nada (o país vivo do incremento 8).
+- **Custo:** P de implementação; nenhum de simulação.
+- **Consome:** nada.
+- **Efeitos causais:** o PIB anda com o crescimento; a população, com a demografia, a saúde e a pobreza; o Gini lê a pobreza e a educação, e a violência lê o Gini; cinco storylets leem os números.
+- **Riscos:** os portões do país vivo (a violência passou a ler a educação pelo Gini).
+- **Aceitação:** números plausíveis no fim da vida, diferentes de vida para vida, e as cinco histórias vivas (portões do bloco A).
+- **Prioridade:** Alta · bloco A do dono.
+- **Estado:** feita (19/10).
 
 ## Defeitos conhecidos
 

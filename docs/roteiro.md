@@ -29,6 +29,14 @@ Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra 
 - [x] Fatia 1.4a: vários filhos. Um filho novo não apaga o outro: cada um tem id próprio, vive o ano, e o conteúdo escrito para "filho" vale para qualquer um. Sem testamento, os filhos dividem a herança, e o testamento escolhe quem continua. Conteúdo novo: mais um filho, o ciúme do irmão, a briga e a mesa cheia. O cabeçalho deixou de esconder a linha do dinheiro
 - [ ] Fatia 1.4b: identidade de pessoas (o ex que continua existindo, o papel que aponta para a pessoa)
 
+**Os blocos do dono (19/10).** O dono pediu atualizações em blocos pequenos, cada uma com o que trouxe e o que não trouxe na página de abertura do repositório (README). A ordem e as ideias de cada bloco estão em `docs/ideias.md › A ordem do dono`. A fatia 1.4b espera os blocos.
+
+- [x] Bloco A: o país em números. O país ganhou PIB (em reais de hoje, que cresce o crescimento do ano), população (que para de crescer por volta de 2045 e encolhe depois), PIB per capita, Gini (a violência passou a ler a desigualdade) e IDH. A folha País mostra os cinco na seção "Em números", e cinco histórias novas os leem
+- [ ] Bloco B: o Tesouro. O orçamento do governo em reais (I-31) e o título público como contrato: comprado por quem joga ou pela empresa, entra no balanço e paga cupom no caixa de quem comprou (I-34)
+- [ ] Bloco C: a coroa recebe. A dotação da Casa Real sai do Tesouro (I-41); a ilha soberana ganha população, PIB e imposto (o começo da I-43)
+- [ ] Bloco D: o Estado pesquisa. Quem governa põe parte do orçamento em pesquisa, e o estoque de tecnologia volta como produtividade, cura ou patente (I-54)
+- [ ] Bloco E: defesa. Forças armadas com custo e capacidade (I-60), e a guerra como processo (I-61)
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
@@ -43,7 +51,7 @@ O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele
 |---|---|---|
 | 1. Fundamentos | livro-razão causal; entidades com qualidades; storylets por saliência; validador (≥2 sistemas lendo cada campo, ações em ≥2 sistemas) | **feito** (incremento 1) |
 | 2. Agência | fichas de ação por ano; origem procedural | feito: fichas por ano (1 criança, 2 adolescente, 3 adulto, 2 depois dos 65), cada verbo abre todas as ações possíveis, 8 classes × 4 tipos de família × traços × linhagens, criar o personagem escolhendo tudo. Falta: famílias artística e com doença hereditária |
-| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, a fase como o nome do crescimento, governos fictícios, eleição, políticas), quatro países de fora com economia e relação próprias, o dólar, 12 setores com sensibilidade ao ciclo, ao dólar e à tarifa, lugar com região, desemprego e custo de vida. Falta: setores por UF, morar em outro país |
+| 3. Mundo | balanço por entidade, setores por UF, jurisdição em dados | feito: o país vivo (dez estatísticas que se causam, o PIB, a população, o Gini e o IDH, a fase como o nome do crescimento, governos fictícios, eleição, políticas), quatro países de fora com economia e relação próprias, o dólar, 12 setores com sensibilidade ao ciclo, ao dólar e à tarifa, lugar com região, desemprego e custo de vida. Falta: setores por UF, morar em outro país |
 | 4. Pessoas | relações como arestas, NPCs com nível de detalhe, regras anuais, herdeiro | feito: família viva (regras anuais, traços, iniciativas, herança, viuvez), amor por regra, herdeiro e dinastia (filho, sobrinho, testamento). Falta: arestas entre NPCs, vários filhos, confiança e dívida |
 | 5. Riqueza e poder | empresas, ativos, status, cargos | feito: carreiras, carteira em cinco classes, o grupo de empresas (até cinco, subsidiárias, fusão, bolsa, a mesa de quem manda), bens, cargos e eleições, truste, brincar de deus. Falta: holding familiar como instrumento de herança |
 | 6. Sandbox | política, países, narradores, vida do dia | começo: política (o país vivo, o voto, governar pelas políticas) e diplomacia (alinhamento, tarifa, sanções, acordos, o ato de quem governa lá fora). Falta: morar em outro país, narradores |

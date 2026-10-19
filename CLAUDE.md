@@ -10,7 +10,7 @@ A visão em uma troca: o jogador pensa "eu posso tentar qualquer coisa", e o jog
 2. Escolha o incremento de maior impacto pelo método abaixo.
 3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, túnel inteiro e build).
 4. Push na `main` (o CI publica no GitHub Pages). Sem permissão, abra um PR e diga isso.
-5. Termine com: o que mudou, métricas antes e depois, o que foi decidido sozinho e por quê, link do jogo e o que jogar para testar.
+5. Atualize as Novidades do README (o que a atualização trouxe e o que não trouxe) e o `CHANGELOG.md`. Termine com: o que mudou, métricas antes e depois, o que foi decidido sozinho e por quê, link do jogo e o que jogar para testar.
 
 Armadilhas que já custaram caro:
 - `pkill -f "vite preview"` casa com o próprio shell que o roda e o mata (duas rodadas de `verificar` perdidas). Use `pkill -f "[v]ite preview"`, num comando separado.
@@ -200,6 +200,8 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem governa faz uma reforma por ano (a folha País mostra o efeito antes) | agente | sem limite, bastava acertar as políticas uma vez; com ele, cada reforma tem custo de oportunidade |
 | O primeiro voto é marco aos 18–21 e os outros aparecem por saliência (uns 2 por vida) | agente | votar a cada 4 anos repetia o mesmo cartão 15 vezes por vida; aos 16, o marco roubava um ano da adolescência |
 | Nenhum bloco é o melhor em tudo: cada um ganha numa estatística e perde em outra | agente | política fictícia e genérica; o jogo mostra trocas, não toma partido |
+| O país em números: PIB (que anda com o crescimento), população, PIB per capita, Gini e IDH, na folha País e no conteúdo | dono | o país vivo precisava de tamanho, não só de taxas; o dono pediu em 19/10 |
+| Atualizações em blocos pequenos; o README diz o que a última trouxe e o que não trouxe, e o `CHANGELOG.md` guarda o histórico | dono | saber o que mudou sem ler o código |
 | O mundo lá fora: quatro países fictícios com economia e relação próprias; alinhamento, tarifa, sanção, acordo e o dólar mudam o crescimento, a inflação e os setores daqui | agente (o dono pediu a próxima do roteiro) | o que o país decide lá fora precisa voltar para a vida de quem joga, como o resto do mundo |
 | Sanção e acordo nascem da relação e apontam a decisão que a levou até ali (o ato de quem governa, a posse ou a reeleição de um governo, a tarifa) | agente | o porquê vale lá fora também; sanção sorteada do nada seria ruído |
 | A sanção acaba quando a relação volta ou cansa (15% por ano) | agente | sem isso, um governo reeleito prendia o país numa sanção de 20 anos |
