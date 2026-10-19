@@ -976,6 +976,44 @@ A tela de hoje já tinha todos os elementos do mockup, sem identidade visual. O 
 
 O motor e o conteúdo não mudaram, e o túnel deu as mesmas vidas. Os números de `docs/metricas.md` saíram iguais, menos a CPU, que varia de máquina.
 
+**O pacote do dono, comparado com o código antes de integrar** (o pedido dele: comparar, integrar, testar e compilar):
+
+| Arquivo do pacote | Comparado com | Resultado | O que entrou |
+|---|---|---|---|
+| `assets/index-h91VxHY7.js` | o build Android de 7a0bd85 (bloco A) | idêntico byte a byte | nada: é o código de antes do V1, compilado |
+| `assets/index-RaeWEfWG.css`, primeira linha | o CSS compilado de 7a0bd85 | idêntico | nada |
+| `assets/index-RaeWEfWG.css`, a camada acrescentada | `src/ui/estilo.css` atual | ver a lista abaixo | regra por regra |
+| `index.html` | `index.html` da fonte | só as duas cores da barra do sistema (neutras, do tema terracota) | nada: as cores são as do tema noite e ouro |
+| `favicon.svg`, `icon-*.png`, `apple-touch-icon.png` | `public/` de 7a0bd85 e de agora | iguais aos antigos (terracota) | nada: os novos são em ouro |
+| `capacitor.config.json` | o da raiz | igual | nada |
+| `cordova.js`, `cordova_plugins.js` | — | vazios, gerados pelo Capacitor no `cap sync` | nada |
+
+Da camada de CSS, regra por regra:
+- **Entrou (no código-fonte, na paleta do ouro):**
+  - o fio de cor no topo do cartão do evento e o fundo em degradê;
+  - as opções com borda fina, peso 650, o afundar no toque e o desbotado das indisponíveis;
+  - o véu com desfoque, a folha com borda, sombra e alça;
+  - o botão principal com o brilho da cor e o secundário com borda;
+  - o ícone que afunda no toque, os botões sem seleção de texto e a palavra comprida que quebra;
+  - telas baixas (até 700 px) mais justas e a moldura em tela larga;
+  - o fundo no `html`, a seleção de texto na cor, a fonte herdada nos campos e as barras de rolagem finas;
+  - o cartão da morte com borda e sombra, os cartões das folhas com sombra leve e raio de 15 px, os avisos com a borda da cor;
+  - a rolagem sem animação para quem pede menos movimento.
+- **Já estava resolvido de outro jeito no V1:** os atributos em cartões (viraram os cartões com ícone) e o dinheiro em pílulas (viraram os três cartões).
+- **Não entrou:**
+  - a paleta terracota (o mockup pediu noite e ouro);
+  - a fonte Inter (o jogo não carrega fonte de fora, e ela só valeria onde já estivesse instalada);
+  - o degradê no fundo da página e o espaçamento negativo das letras (mudam a largura do texto que o arranjo para letra grande mede);
+  - a borda nas bolhas de idade (elas já têm cor por tipo de acontecimento);
+  - o fundo dourado no verbo ao passar o mouse (o verbo tem a cor dele).
+
+**Testado e compilado:**
+- `npm run verificar`;
+- as telas no navegador nos dois temas, com a letra normal e em 145%, sem rolagem lateral e sem alvo de toque abaixo de 44 px;
+- `npm run build:android` aqui: o jogo montado e copiado para o projeto Android.
+
+O APK assinado sai do workflow `App Android` a cada push na `main`. O passo do Gradle precisa do SDK do Android, que a rede desta sessão não deixa baixar. A chave de assinatura é a do repositório, então o APK novo instala por cima do antigo.
+
 **O que ficou de fora:**
 - **A rosca do patrimônio** (I-98).
 - **Escolher o tema dentro do jogo** (I-99).

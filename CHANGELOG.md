@@ -19,12 +19,15 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 🧭 **Suas escolhas:** os verbos com ícone e cor, e o botão dourado **Viver mais 1 ano**.
 - 👑 **Marco da trajetória:** o primeiro dia de escola, o ENEM, o primeiro emprego, a aposentadoria e os outros marcos ganham um cartão dourado na linha do tempo.
 - 🔠 **Letra grande:** o jogo mede a fonte do celular. Quando ela está grande, troca o arranjo: indicadores numa linha, dinheiro em pílulas e verbos sem ícone, com o nome inteiro.
-- ✨ **Acabamento:**
+- ✨ **Acabamento,** comparado regra por regra com o pacote de CSS que o dono mandou:
   - o fio de ouro no cartão do evento;
   - opções mais táteis;
   - folhas com alça e fundo desfocado;
+  - cartões com sombra leve;
+  - avisos com borda dourada;
   - telas baixas mais justas;
   - moldura em tela larga.
+- 🔧 **Correção:** os chips no cartão da morte agora são legíveis (estavam verde-claro sobre creme).
 
 **Ainda não tem:** foto no retrato, a rosca do patrimônio, um botão para escolher o tema e o ícone novo no app Android instalado.
 

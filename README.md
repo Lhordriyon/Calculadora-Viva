@@ -40,7 +40,7 @@ Inspirada no mockup que o dono mandou: fundo azul-noite com ouro, os indicadores
 | 👑 **Marco da trajetória:** o primeiro dia de escola, o ENEM, o primeiro emprego, a aposentadoria… ganham o cartão dourado na própria história | |
 | ⏩ **Viver mais 1 ano** em ouro, sempre no polegar | |
 | 🔠 **Letra grande:** com a fonte do celular aumentada, os indicadores vão para uma linha e os nomes aparecem inteiros | |
-| ✨ O acabamento do pacote visual que o dono mandou: fio de ouro no evento, opções mais táteis, folhas com alça, telas baixas mais justas | |
+| ✨ O acabamento do pacote visual que o dono mandou, comparado regra por regra com o código: fio de ouro no evento, opções mais táteis, folhas com alça, cartões com sombra, telas baixas mais justas | |
 
 **Medido no navegador** (a altura que sobra para a linha do tempo, a história):
 
