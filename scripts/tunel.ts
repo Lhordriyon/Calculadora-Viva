@@ -736,6 +736,17 @@ const portoes = [
   ['Toques por vida ≤ 480 (subiu no incremento 4: três ações escolhidas por ano)', toques <= TETO_TOQUES, `${num(toques)} (base ${num(BASE.toques)}, teto ${TETO_TOQUES})`],
 ] as const;
 
+// ---- os filhos (fatia 1.4a)
+const filhosApagados = todasAsVidas.filter((v) => v.filhos !== v.filhosNoEstado).map((v) => `teve ${v.filhos}, ficaram ${v.filhosNoEstado}`);
+const comFilhos = vidas.filter((v) => v.filhos > 0);
+const parteCom = (n: number): number => vidas.filter((v) => v.filhos === n).length / Math.max(1, vidas.length);
+const doisOuMais = vidas.filter((v) => v.filhos >= 2).length / Math.max(1, vidas.length);
+const herdeirosComIrmaos = vidas.filter((v) => v.herdeiroComIrmaos).length / Math.max(1, vidas.filter((v) => v.herdeiro).length);
+const portoes14 = [
+  ['Família de mais de um filho acontece, sem virar regra: entre 5% e 40% das vidas', doisOuMais >= 0.05 && doisOuMais <= 0.4, pct(doisOuMais)],
+  ['Herança dividida entre irmãos acontece: de quem tem filho para continuar, entre 5% e 50% tem irmãos', herdeirosComIrmaos >= 0.05 && herdeirosComIrmaos <= 0.5, pct(herdeirosComIrmaos)],
+] as const;
+
 const contasErradas = vidas.reduce((s, v) => s + v.contasErradas, 0);
 const entradasConferidas = vidas.reduce((s, v) => s + v.entradasConferidas, 0);
 const dividasErradas = todasAsVidas.reduce((s, v) => s + v.dividasErradas, 0) + dividasNasDinastias;
@@ -755,6 +766,11 @@ const metas = [
     dividasErradas === 0
       ? `0 problemas em ${num(entradasDasDividas, 0)} entradas (as vidas sorteadas, as de origem escolhida e as gerações das dinastias)`
       : `${dividasErradas} problemas; ex.: ${todasAsVidas.find((v) => v.exemploDeDivida)?.exemploDeDivida ?? exemploNasDinastias}`,
+  ],
+  [
+    'Nenhum filho apaga outro: os filhos que a vida teve estão todos no estado (fatia 1.4a)',
+    filhosApagados.length === 0,
+    filhosApagados.length === 0 ? `0 em ${num(todasAsVidas.length, 0)} vidas` : `${filhosApagados.length} vidas; ex.: ${filhosApagados[0]}`,
   ],
   ['Nenhum storylet não-repetível repetido na mesma vida', duplicados.length === 0, `${duplicados.length} repetições`],
   ['Nenhuma estratégia fixa domina', dominantes.length === 0, dominantes.length ? `domina: ${dominantes.join(', ')}` : 'nenhuma domina'],
@@ -869,6 +885,20 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes13) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Os filhos (fatia 1.4a)');
+l();
+l('Um filho novo não toma o lugar de outro: cada um tem id próprio (`filho`, `filho2`…), vive o ano, e o conteúdo escrito para "filho" vale para qualquer um. Sem testamento, a herança se divide entre os filhos vivos.');
+l();
+l('| Filhos por vida | Nenhum | 1 | 2 | 3 | 4 |');
+l('|---|---|---|---|---|---|');
+l(`| Vidas | ${[0, 1, 2, 3, 4].map((n) => pct(parteCom(n))).join(' | ')} |`);
+l();
+l(`Entre as vidas com filhos (${pct(comFilhos.length / Math.max(1, vidas.length))}), a média é de ${num(media(comFilhos.map((v) => v.filhos)), 2)} filhos.`);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes14) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## Portões do incremento 1');
 l();

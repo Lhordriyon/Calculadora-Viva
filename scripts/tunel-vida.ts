@@ -3,7 +3,7 @@
  * seguidas, a vida de origem escolhida e a dinastia. Cada tarefa depende só da semente: o resultado é o mesmo rodando
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
-import { classeDoPatrimonio, empresasDe, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
+import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
@@ -278,6 +278,11 @@ export interface Vida {
   ms: number;
   classeOrigem: number;
   mortesNaFamilia: number;
+  /** Filhos que a vida teve (eu.filhos) e os que estão no estado: iguais quando nenhum filho apagou outro (fatia 1.4a). */
+  filhos: number;
+  filhosNoEstado: number;
+  /** Quem herdaria tem irmãos vivos (a herança se divide entre eles). */
+  herdeiroComIrmaos: boolean;
   anosPorFase: Record<Fase, number>;
   noticias: number;
   demissoes: number;
@@ -531,6 +536,9 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     ms: j.ms,
     classeOrigem,
     mortesNaFamilia: e.historico.filter((h) => h.ref === 'regra:faleceu').length,
+    filhos: e.entidades['eu']!.n['filhos'] ?? 0,
+    filhosNoEstado: filhosDe(e).length,
+    herdeiroComIrmaos: herdeiroPossivel(e, c)?.parentesco === 'filho' && filhosVivos(e).length > 1,
     anosPorFase: j.anosPorFase,
     noticias: e.historico.filter((h) => h.tipo === 'mundo').length,
     demissoes: demissoes.length,
