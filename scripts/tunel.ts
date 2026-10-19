@@ -1027,6 +1027,7 @@ l(`| IDH | ${num(idhFim[0], 3)} | ${num(idhFim[1], 3)} | ${num(idhFim[2], 3)} |`
 l(`| Desigualdade (Gini) | ${num(giniFim[0], 3)} | ${num(giniFim[1], 3)} | ${num(giniFim[2], 3)} |`);
 l(`| População (milhões) | ${num(populacaoFim[0], 0)} | ${num(populacaoFim[1], 0)} | ${num(populacaoFim[2], 0)} |`);
 l(`| PIB per capita | ${formatarDinheiro(perCapitaFim[0])} | ${formatarDinheiro(perCapitaFim[1])} | ${formatarDinheiro(perCapitaFim[2])} |`);
+l();
 l('## Life simulator');
 l();
 l('| Métrica | Valor |');
