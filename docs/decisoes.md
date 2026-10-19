@@ -919,6 +919,68 @@ O `tudo_pela_sua_mesa` (quem centralizou tudo na empresa) aparecia em menos de 0
 - **Não há gráfico da história dos indicadores** (I-80).
 - **Os blocos B a E**, na ordem de `docs/ideias.md › A ordem do dono`.
 
+## Os blocos do dono: bloco V1, a cara nova (19/10)
+
+Depois do bloco A, o dono mandou duas coisas:
+- **um mockup da tela principal**, "a inspiração": fundo azul-noite com ouro, a marca no topo, um retrato, os quatro indicadores em cartões, o dinheiro em cartões com uma rosca, um destaque para o "marco da trajetória", os seis verbos com ícone e um botão dourado "viver mais 1 ano";
+- **um pacote zip** com o bundle do APK e uma camada de CSS por cima: paleta terracota refinada, cartões nos atributos, folhas com alça, o evento com um fio de cor no topo e ajustes para telas baixas.
+
+A tela de hoje já tinha todos os elementos do mockup, sem identidade visual. O bloco V1 é a repaginada.
+
+**O que mudou:**
+- **Tema noite e ouro** (`estilo.css`, os dois modos):
+  - o escuro em azul-noite (`#0b0f17`) com ouro (`#e8b84a`);
+  - o claro em papel creme com ouro velho;
+  - o ouro tem dois papéis: `--destaque` pinta fundos (botão, ponto) e `--destaque-forte` é o ouro de texto, com contraste AA na superfície;
+  - o símbolo do jogo, o favicon, os ícones do PWA, a cor da barra do sistema e o cartão compartilhável seguiram a paleta.
+- **O cabeçalho** (`Cabecalho.tsx`):
+  - a barra da marca com as folhas à direita;
+  - o retrato com as iniciais, o aro de ouro e a coroa (título de nobreza, trono, Regime ou patrimônio de R$ 1 bilhão);
+  - o selo da economia (a fase, o país e o ano), que abre a folha País;
+  - os indicadores em cartões com ícone, cor e barra;
+  - o dinheiro, o patrimônio e a renda em três cartões. O cargo é o rótulo da renda, e a dívida aparece em vermelho no cartão do dinheiro.
+- **O palco** (`Palco.tsx`): "Suas escolhas" em ouro, os verbos com ícone e cor (o ponto dourado marca o que é novo) e o botão dourado "Viver mais 1 ano", sempre no polegar.
+- **O marco da trajetória** (`LinhaDoTempo.tsx`): os storylets com `marco: true` ganham um cartão dourado com a coroa na própria linha do tempo. Entre eles estão o primeiro dia de escola, o ENEM, o primeiro emprego, a formatura e a aposentadoria.
+- **Ícones** (`Icones.tsx`): 22 ícones de traço em SVG, sem biblioteca nova.
+- **Letra grande** (`letra.ts`):
+  - o jogo mede a fonte do sistema com uma sonda de 100 px e altura de linha 1;
+  - a partir de 1,2×, o html ganha `letra-grande`;
+  - nesse modo os indicadores vão para uma linha só, sem o rótulo (o ícone e a cor dizem qual é), o dinheiro vira pílulas que quebram linha, os verbos perdem o ícone e mostram o nome inteiro, e o botão perde os ícones e a caixa alta.
+- **Do pacote do dono:**
+  - o fio de ouro no topo do cartão do evento;
+  - as opções com borda fina, um leve afundar no toque e o desbotado das indisponíveis;
+  - as folhas com alça e o fundo desfocado;
+  - a palavra comprida que quebra em vez de empurrar a tela;
+  - telas baixas (até 700 px) mais justas;
+  - a moldura em tela larga.
+
+**Decisões tomadas sozinho:**
+- **A linha do tempo fica.** O mockup não mostra a história, mas ela é o produto. O teto era a linha do tempo ocupar pelo menos um terço da tela num celular comum.
+  - A primeira versão deixava 298 px, de 419.
+  - O cargo foi para o cartão da renda, o ano para o selo do país, os cartões ficaram mais justos e os verbos passaram a 48 px de altura. Assim ficaram 342 px.
+- **A rosca do patrimônio não entrou no cabeçalho.** Ela custaria mais 60 px de história. Vai para a folha Dinheiro (I-98).
+- **Iniciais no lugar da foto.** O jogo não tem imagens de pessoas, e um rosto sorteado seria um personagem que o conteúdo não conhece.
+- **O pacote não substituiu o código.** O JS dele é o bundle compilado de um APK anterior às últimas atualizações. Trocar a pasta web apagaria o bloco A e as fatias recentes, e o próprio README do pacote avisa do risco de reassinar o APK. As ideias de CSS dele entraram no código-fonte, na paleta do mockup (ouro, não terracota).
+- **O botão dourado sempre.** Antes, o "+1 ano" ficava cinza enquanto havia ação no ano, para puxar o jogador para os verbos. O mockup o põe sempre em ouro. A contagem "aos 30, 3 este ano" passa esse recado no título das escolhas.
+- **Detectar a letra grande em vez de adivinhar.** O app Android herda a fonte do celular, que aumenta o texto e não as caixas. Com a sonda, o arranjo estreito só aparece para quem precisa.
+
+**Medidas** (navegador, a altura da linha do tempo; antes = a versão do bloco A):
+
+| Tela | Antes | Depois |
+|---|---|---|
+| 390 × 844, 4 verbos | 419 px | 342 px |
+| 390 × 844, 6 verbos | 352 px | 288 px |
+| 360 × 760, letra 145%, 4 verbos | 229 px | 220 px |
+| 360 × 760, letra 145%, 6 verbos | 152 px | 166 px |
+| Rolagem para o lado / alvos de toque abaixo de 44 px / erros no console | 0 / 0 / 0 | 0 / 0 / 0 |
+
+O motor e o conteúdo não mudaram, e o túnel deu as mesmas vidas. Os números de `docs/metricas.md` saíram iguais, menos a CPU, que varia de máquina.
+
+**O que ficou de fora:**
+- **A rosca do patrimônio** (I-98).
+- **Escolher o tema dentro do jogo** (I-99).
+- **O ícone do app Android instalado** (I-100). Os ícones do navegador mudaram; os do APK são outros arquivos.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

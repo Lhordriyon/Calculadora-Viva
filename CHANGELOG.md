@@ -4,6 +4,30 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌙 Bloco V1 · A cara nova · 19/10/2026
+
+> [!NOTE]
+> Inspirada no mockup que o dono mandou, com o acabamento do pacote visual que ele mandou depois. O motor não mudou.
+
+- 🌙 **Tema noite e ouro:** azul-noite com ouro no escuro e papel creme com ouro velho no claro. O símbolo, os ícones do navegador e o cartão compartilhável também mudaram.
+- 🏷️ **Cabeçalho novo:**
+  - a barra da marca;
+  - o retrato com as iniciais e a coroa (realeza, Regime, trono, bilhão);
+  - o selo da economia com o ano;
+  - os quatro indicadores em cartões com ícone e cor;
+  - o dinheiro, o patrimônio e a renda em três cartões, com o cargo.
+- 🧭 **Suas escolhas:** os verbos com ícone e cor, e o botão dourado **Viver mais 1 ano**.
+- 👑 **Marco da trajetória:** o primeiro dia de escola, o ENEM, o primeiro emprego, a aposentadoria e os outros marcos ganham um cartão dourado na linha do tempo.
+- 🔠 **Letra grande:** o jogo mede a fonte do celular. Quando ela está grande, troca o arranjo: indicadores numa linha, dinheiro em pílulas e verbos sem ícone, com o nome inteiro.
+- ✨ **Acabamento:**
+  - o fio de ouro no cartão do evento;
+  - opções mais táteis;
+  - folhas com alça e fundo desfocado;
+  - telas baixas mais justas;
+  - moldura em tela larga.
+
+**Ainda não tem:** foto no retrato, a rosca do patrimônio, um botão para escolher o tema e o ícone novo no app Android instalado.
+
 ## 🇧🇷 Bloco A · O país em números · 19/10/2026
 
 > [!NOTE]

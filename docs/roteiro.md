@@ -32,6 +32,7 @@ Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra 
 **Os blocos do dono (19/10).** O dono pediu atualizações em blocos pequenos, cada uma com o que trouxe e o que não trouxe na página de abertura do repositório (README). A ordem e as ideias de cada bloco estão em `docs/ideias.md › A ordem do dono`. A fatia 1.4b espera os blocos.
 
 - [x] Bloco A: o país em números. O país ganhou PIB (em reais de hoje, que cresce o crescimento do ano), população (que para de crescer por volta de 2045 e encolhe depois), PIB per capita, Gini (a violência passou a ler a desigualdade) e IDH. A folha País mostra os cinco na seção "Em números", e cinco histórias novas os leem
+- [x] Bloco V1: a cara nova (pedido do dono no meio dos blocos, com um mockup e depois um pacote de CSS). Tema noite e ouro, cabeçalho com a marca, o retrato, o selo da economia, os indicadores e o dinheiro em cartões, os verbos com ícone, o botão dourado, os marcos em dourado na linha do tempo e o arranjo para a letra grande
 - [ ] Bloco B: o Tesouro. O orçamento do governo em reais (I-31) e o título público como contrato: comprado por quem joga ou pela empresa, entra no balanço e paga cupom no caixa de quem comprou (I-34)
 - [ ] Bloco C: a coroa recebe. A dotação da Casa Real sai do Tesouro (I-41); a ilha soberana ganha população, PIB e imposto (o começo da I-43)
 - [ ] Bloco D: o Estado pesquisa. Quem governa põe parte do orçamento em pesquisa, e o estoque de tecnologia volta como produtividade, cura ou patente (I-54)

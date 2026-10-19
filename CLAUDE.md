@@ -121,7 +121,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida; Icones (SVG), letra.ts (letra grande), estilo.css (tema noite e ouro)
 scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
@@ -209,4 +209,8 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | O ano é uma lista de etapas que declaram o que leem e escrevem (`manifesto.ts › ETAPAS_DO_ANO`); um teste falha se uma etapa sair da declaração | agente | a ordem do ano estava só no código, e uma etapa podia ler o que outra escreveu no mesmo ano sem ninguém saber (I-03) |
 | O save que abre bem vira a cópia de segurança; o principal estragado volta dela, com aviso; exportar e importar pelo menu | agente | um JSON corrompido apagava a vida e a memória entre vidas (D-12) |
 | Até quatro filhos com id estável (`filho`, `filho2`…); o conteúdo de "filho" vale para cada um; sem testamento, os filhos dividem a herança, e o testamento pode escolher um | agente (fatia 1.4a da missão) | um segundo filho apagava o primeiro (I-05); dividir e escolher quem herda vira decisão de dinastia |
-| O cabeçalho mostra dinheiro, dívida, patrimônio e renda, e quebra linha; o detalhe fica nas folhas | agente | seis itens numa linha que rolava escondida: o dono via a linha cortada no meio de uma palavra |
+| O cabeçalho: a barra da marca, o retrato, o selo da economia, os indicadores em cartões e o dinheiro, o patrimônio e a renda em três cartões; o detalhe fica nas folhas | agente (o mockup do dono, 19/10) | a cara que o dono pediu, sem tirar a linha do tempo do meio |
+| Tema noite e ouro nos dois modos; `--destaque` pinta fundos e `--destaque-forte` é o ouro de texto | dono (o mockup) | o ouro claro não tem contraste para texto no papel creme |
+| A linha do tempo fica com pelo menos um terço da tela num celular comum (390 × 844) | agente | a história é o produto; o mockup não a mostrava |
+| Com a letra do sistema grande (`letra.ts` mede), o cabeçalho e o palco trocam para o arranjo estreito | agente | o APK herda a fonte do celular, que cresce o texto e não as caixas |
+| Os marcos da vida (`marco: true`) aparecem em dourado na linha do tempo | agente (o mockup do dono) | o destaque do mockup vira história, não painel |

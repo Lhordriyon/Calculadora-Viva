@@ -118,6 +118,10 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-94 | Narradores | — | Baixa | proposta (roteiro) |
 | I-95 | A imagem pública esmaece sem cargo | — | Baixa | proposta (auditoria de 11/10) |
 | I-96 | O país em números: PIB, população, PIB per capita, Gini e IDH | — | Alta | feita (bloco A, 19/10) |
+| I-97 | A cara nova: tema noite e ouro, retrato, cartões de indicadores e de dinheiro, verbos com ícone, botão dourado, marcos em destaque | — | Alta | feita (bloco V1, 19/10) |
+| I-98 | De que é feito o patrimônio: a rosca na folha Dinheiro | — | Média | proposta (bloco V1) |
+| I-99 | Escolher o tema (claro, escuro, o do celular) dentro do jogo | — | Baixa | proposta (bloco V1) |
+| I-100 | O ícone do app Android na cor nova | — | Baixa | proposta (bloco V1) |
 
 (os blocos de cada ideia vêm na versão final)
 
@@ -1053,6 +1057,61 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Aceitação:** números plausíveis no fim da vida, diferentes de vida para vida, e as cinco histórias vivas (portões do bloco A).
 - **Prioridade:** Alta · bloco A do dono.
 - **Estado:** feita (19/10).
+
+### I-97 · A cara nova
+- **Problema:** o dono mandou um mockup da tela principal como inspiração (19/10): fundo noite com dourado, retrato, os quatro indicadores em cartões com ícone, o dinheiro em cartões, um destaque para o marco da trajetória, os verbos com ícone e cor e um botão dourado para viver mais um ano. A tela de hoje tem os mesmos elementos, sem identidade visual.
+- **Módulos:** 13.
+- **Depende de:** nada.
+- **Custo:** M de implementação; nenhum de simulação.
+- **Consome:** altura da tela. A linha do tempo é a história e não pode virar uma fresta.
+- **Efeitos causais:** nenhum no motor. O marco da trajetória aparece na própria linha do tempo, para o destaque ser história e não painel.
+- **Riscos:**
+  - o cabeçalho maior espremer a linha do tempo;
+  - a letra grande do APK;
+  - o tema claro (o mockup só tem o escuro).
+- **Aceitação:**
+  - os dois temas com contraste AA;
+  - nenhuma rolagem lateral a 360 px com a letra em 145%;
+  - a linha do tempo com pelo menos um terço da tela num celular comum (390 × 844);
+  - alvos de toque ≥ 44 px.
+- **Prioridade:** Alta · pedido do dono.
+- **Estado:** feita (bloco V1, 19/10). A linha do tempo ficou com 342 px num celular comum, de 844 (era 419). Com a letra em 145%, ficou com 166 px (era 152).
+
+### I-98 · De que é feito o patrimônio
+- **Problema:** o mockup do dono tem uma rosca com a composição do patrimônio (empresas, investimentos, bens, dinheiro). No cabeçalho, ela custaria a altura da linha do tempo.
+- **Módulos:** 13, 5.
+- **Depende de:** nada.
+- **Custo:** P.
+- **Consome:** nada.
+- **Efeitos causais:** nenhum; é leitura do balanço.
+- **Riscos:** cores que não se distinguem. É uma paleta categórica de no máximo quatro fatias, validada para daltonismo, com a legenda e os valores.
+- **Aceitação:** a folha Dinheiro abre com a rosca e a legenda; tocar numa fatia leva à seção dela.
+- **Prioridade:** Média.
+- **Estado:** proposta (bloco V1).
+
+### I-99 · Escolher o tema dentro do jogo
+- **Problema:** o tema segue o do celular; quem quer o escuro de dia não tem como.
+- **Módulos:** 13.
+- **Depende de:** nada.
+- **Custo:** P.
+- **Consome:** nada.
+- **Efeitos causais:** nenhum.
+- **Riscos:** o save (a escolha fica no aparelho, fora do save da vida).
+- **Aceitação:** o menu tem claro, escuro e o do celular, e a escolha volta ao abrir.
+- **Prioridade:** Baixa.
+- **Estado:** proposta (bloco V1).
+
+### I-100 · O ícone do app Android na cor nova
+- **Problema:** os ícones do PWA mudaram para o ouro, mas o ícone do app Android instalado (`android/app/src/main/res/mipmap-*`) é outro arquivo e continua o antigo.
+- **Módulos:** 13.
+- **Depende de:** nada.
+- **Custo:** P.
+- **Consome:** nada.
+- **Efeitos causais:** nenhum.
+- **Riscos:** o build do APK no CI.
+- **Aceitação:** `npm run icones` desenha também os ícones do Android, e o APK sai com o ícone novo.
+- **Prioridade:** Baixa.
+- **Estado:** proposta (bloco V1).
 
 ## Defeitos conhecidos
 

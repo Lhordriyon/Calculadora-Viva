@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-bloco%20A%3A%20o%20pa%C3%ADs%20em%20n%C3%BAmeros-8A2BE2)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-V1%3A%20a%20cara%20nova-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-743-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,35 +15,46 @@
 
 ---
 
-## 🆕 Novidades: Bloco A · O país em números (19/10/2026)
+## 🆕 Novidades: Bloco V1 · A cara nova (19/10/2026)
+
+<p align="center">
+  <img src="docs/imagens/tela-escura.png" alt="A tela principal no tema escuro: a marca Trajetória em ouro, o retrato com as iniciais e uma coroa, a economia aquecida, os quatro indicadores em cartões coloridos, o dinheiro em três cartões, a história do ano e os seis verbos com ícone, e o botão dourado Viver mais 1 ano" width="290" />
+  &nbsp;
+  <img src="docs/imagens/tela-clara.png" alt="A mesma tela no tema claro, em papel creme com ouro velho" width="290" />
+</p>
 
 > [!TIP]
-> **Para ver:** abra a folha **País** (no topo, toque na linha com a idade, a cidade e o ano, que termina em "Brasil ›"). A seção nova, **Em números**, mostra o PIB, a população, o PIB per capita, a desigualdade e o IDH, cada um com a seta do ano. Viva até os 40 ou 50 anos e repare nas notícias: o PIB recorde, o país que começa a encolher, o IDH que entra no clube dos "muito altos".
+> **Para ver:** é só abrir o jogo. O tema segue o do celular (escuro ou claro). O primeiro dia de escola, aos 5 ou 6 anos, já aparece como **marco da trajetória**, no cartão dourado da linha do tempo; depois vêm o ENEM, o primeiro emprego, a formatura e a aposentadoria. Quem nasce na família real ou no Regime, chega ao trono ou passa de R$ 1 bilhão ganha a coroa no retrato.
+
+Inspirada no mockup que o dono mandou: fundo azul-noite com ouro, os indicadores em cartões, o dinheiro em cartões, os verbos com ícone e o botão dourado. A linha do tempo continua no meio da tela, porque ela é a história.
 
 | ✅ O que esta atualização trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 📈 **PIB** em reais de hoje, que cresce exatamente o crescimento do ano (R$ 11,7 trilhões em 2026) | 🏛️ O **Tesouro** com orçamento em reais (receita, gasto e quem empresta ao governo) |
-| 👥 **População** que cresce devagar, para por volta de 2045 e depois encolhe; a saúde pública e a pobreza mudam o ritmo | 📜 **Títulos públicos** que pagam juros direto na sua conta ou no caixa da empresa |
-| 💰 **PIB per capita** (o PIB dividido por todo mundo) | 👑 **Renda para o soberano**: dotação da coroa, imposto da micronação |
-| ⚖️ **Gini** (desigualdade): sobe com a pobreza, cai com a educação, e agora pesa na violência | 🔬 O Estado pagando **pesquisa e desenvolvimento** |
-| 🎓 **IDH** (saúde, educação e renda), com a faixa da ONU | 🛡️ **Forças armadas e guerra** |
-| 📰 5 histórias novas que leem esses números, cada uma com escolhas | 🗳️ O IDH e o Gini ainda não mudam o voto do eleitor |
-| 💾 O save antigo ganha os números do ano em que está, sem perder nada | 👷 A população ainda não muda o mercado de trabalho |
+| 🌙 **Tema noite e ouro** nos dois modos: azul-noite com ouro no escuro, papel creme com ouro velho no claro | 📷 **Foto no retrato:** o retrato mostra as iniciais (o jogo não tem imagens de pessoas) |
+| 🏷️ **Barra da marca** com o símbolo e "sua vida, suas escolhas"; símbolo e ícones do app em ouro | 🍩 **A rosca do patrimônio** (de que é feito o dinheiro): fica para a folha Dinheiro |
+| 👤 **Retrato** com as iniciais e o aro dourado; **coroa** para a realeza, o Regime, o trono e quem tem bilhão | ⚙️ Um botão para **escolher o tema** dentro do jogo (hoje segue o celular) |
+| 📈 **Selo da economia** (aquecida, normal, recessão, crise) com o ano; tocar abre o país | 📱 O **ícone do app Android** instalado continua o antigo (só o do navegador mudou) |
+| ❤️ **Saúde, felicidade, inteligência e aparência** em cartões com ícone, cor e barra | |
+| 💰 **Dinheiro, patrimônio e renda** em três cartões; o cargo aparece no cartão da renda; a dívida, em vermelho | |
+| 🧭 **Suas escolhas:** os seis verbos com ícone e cor, e o ponto dourado no que é novo | |
+| 👑 **Marco da trajetória:** o primeiro dia de escola, o ENEM, o primeiro emprego, a aposentadoria… ganham o cartão dourado na própria história | |
+| ⏩ **Viver mais 1 ano** em ouro, sempre no polegar | |
+| 🔠 **Letra grande:** com a fonte do celular aumentada, os indicadores vão para uma linha e os nomes aparecem inteiros | |
+| ✨ O acabamento do pacote visual que o dono mandou: fio de ouro no evento, opções mais táteis, folhas com alça, telas baixas mais justas | |
 
-**Medido no túnel de vento** (10.000 vidas simuladas a cada atualização), no fim de cada vida:
+**Medido no navegador** (a altura que sobra para a linha do tempo, a história):
 
-| Indicador | Mediana | Varia entre (p10 a p90) |
+| Tela | Antes | Agora |
 |---|---|---|
-| 🎓 IDH | 0,83 | 0,80 a 0,87 |
-| ⚖️ Desigualdade (Gini) | 0,53 | 0,48 a 0,56 |
-| 👥 População | 193 milhões | 177 a 208 milhões |
-| 💰 PIB per capita | R$ 252 mil | R$ 117 mil a R$ 650 mil |
+| 📱 Celular comum (390 × 844), 4 verbos | 419 px | 342 px |
+| 📱 Celular comum, 6 verbos | 352 px | 288 px |
+| 🔠 Celular pequeno (360 × 760) com a letra em 145%, 6 verbos | 152 px | 166 px |
 
-As cinco histórias novas aparecem em 6% a 16% das vidas cada. O resto ficou como estava: nenhuma história morta, nenhuma estratégia que vence todas, a mesma CPU por vida, e as vidas com filho em 32,6% (eram 33,3%). O histórico completo de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
+Nenhuma rolagem para o lado, nenhum alvo de toque abaixo de 44 px e nenhum erro no console, nos dois temas. O motor não mudou: o túnel de vento dá as mesmas vidas. O histórico de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
 
 ## 🗺️ Os próximos blocos
 
-Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro:
+Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro (a cara nova, V1, entrou no meio, a pedido dele):
 
 ```mermaid
 flowchart LR
