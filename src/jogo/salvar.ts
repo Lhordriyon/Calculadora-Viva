@@ -13,7 +13,7 @@ import { migrarFinanciamentos } from '../motor/bens.ts';
 import { migrarExterior } from '../motor/diplomacia.ts';
 import { migrarDividaSemContrato } from '../motor/dividas.ts';
 import { generoDoNome } from '../motor/empresa.ts';
-import { migrarPais } from '../motor/pais.ts';
+import { iniciarNumeros, migrarPais } from '../motor/pais.ts';
 import { FILHOS, ehFilho } from '../motor/constantes.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
@@ -184,6 +184,8 @@ function lerCasca(casca: z.infer<typeof EsquemaSave>, conteudo: Conteudo): Save 
   }
   // Antes do país vivo, o país só tinha a fase: ganha as estatísticas típicas dela e um governo.
   migrarPais(v, conteudo);
+  // Save de antes do país em números: o PIB e a população do ano, projetados sem sorteio.
+  iniciarNumeros(v);
   // Antes do mundo lá fora, não havia países de fora nem dólar: eles chegam como os dados os descrevem.
   migrarExterior(v, conteudo);
   // Antes dos contratos, a dívida era um número em quem joga e no bem: vira o cheque especial e o financiamento de cada imóvel.

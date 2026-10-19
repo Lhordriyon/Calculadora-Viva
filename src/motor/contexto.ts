@@ -28,6 +28,8 @@ function formatar(ent: string, campo: string, v: number | string | boolean | und
   const def = defCampo(ent, campo);
   if (def?.centavos) return `R$ ${v.toFixed(2).replace('.', ',')}`;
   if (def?.reais) return formatarDinheiro(v);
+  if (def?.casas !== undefined) return v.toFixed(def.casas).replace('.', ',');
+  if (def?.milhoes) return `${Math.round(v / 1e6)} milhões`;
   return String(Math.round(v));
 }
 

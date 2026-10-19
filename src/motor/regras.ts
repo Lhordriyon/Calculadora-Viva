@@ -349,6 +349,15 @@ export const SUBSIDIARIAS_DO_CONGLOMERADO = 20;
 
 /** O crescimento (% do PIB ao ano) para onde a economia volta, com as políticas médias e as contas em ordem. */
 export const CRESCIMENTO_POTENCIAL = 2;
+
+/**
+ * O país em números (bloco A, 19/10): o Brasil de 2026 tem PIB de R$ 11,7 trilhões e 213 milhões de pessoas. O PIB
+ * anda com o crescimento real de cada ano. A população cresce 0,45% ao ano em 2026 e desacelera 0,022 ponto por ano
+ * (a transição demográfica: começa a encolher perto de 2046), até −0,35% ao ano; a saúde pública acima de 50 soma 0,01
+ * ponto por ponto (vive-se mais), e a pobreza acima de 25 soma 0,006 (famílias maiores).
+ */
+export const PAIS_EM_2026 = { pib: 1.17e13, populacao: 2.13e8 } as const;
+export const DEMOGRAFIA = { taxa2026: 0.45, porAno: 0.022, piso: -0.35, porSaude: 0.01, porPobreza: 0.006 } as const;
 /** Quanto do desvio do crescimento fica para o ano seguinte, e a sorte do ano (pontos percentuais). */
 export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
 export const DESVIO_DO_CRESCIMENTO = 1.05;

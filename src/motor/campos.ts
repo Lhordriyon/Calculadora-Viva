@@ -19,6 +19,10 @@ export interface DefCampo {
   reais?: boolean;
   /** Com centavos no texto (o dólar: R$ 6,80). */
   centavos?: boolean;
+  /** Com casas decimais no texto (o IDH: 0,81). */
+  casas?: number;
+  /** Em milhões no texto (a população: 205 milhões). */
+  milhoes?: boolean;
   limites?: readonly [number, number];
 }
 
@@ -129,7 +133,34 @@ const PAIS: Record<string, DefCampo> = {
   eleicao: { tipo: 'bool', sistema: 'poder', derivado: true },
   /** O dólar em reais de hoje: anda com o mundo lá fora, a dívida e os juros daqui; pesa na inflação, no investimento em dólar e nas empresas que exportam ou importam. */
   cambio: { tipo: 'num', sistema: 'mundo', reais: true, centavos: true, limites: [1.5, 20] },
+  /** O tamanho do país (pais.ts): o PIB em reais de hoje, que anda com o crescimento, e a população, que anda com a transição demográfica, a saúde e a pobreza. */
+  pib: { tipo: 'num', sistema: 'mundo', reais: true },
+  populacao: { tipo: 'num', sistema: 'mundo', milhoes: true },
+  /** Derivados do resto (campos.ts › indicadoresDoPais): o PIB por habitante, a desigualdade (Gini, 0 a 1) e o desenvolvimento humano (IDH, 0 a 1, como o da ONU). */
+  pib_per_capita: { tipo: 'num', sistema: 'mundo', derivado: true, reais: true },
+  gini: { tipo: 'num', sistema: 'mundo', derivado: true, casas: 2 },
+  idh: { tipo: 'num', sistema: 'mundo', derivado: true, casas: 2 },
 };
+
+/** Paridade de poder de compra: um real compra mais aqui do que o câmbio diz (o IDH usa a renda em dólares PPC). */
+const PPC = 1.6;
+
+/**
+ * Os indicadores do país, derivados das estatísticas: o PIB per capita (PIB ÷ população); o Gini, que sobe com a
+ * pobreza e cai com a escola (0,52 com as estatísticas de hoje); e o IDH, a média geométrica da saúde (a expectativa
+ * de vida), da educação e da renda (PIB per capita em dólares PPC, na escala da ONU): 0,77 com as de hoje.
+ */
+export function indicadoresDoPais(pais: Entidade): { pibPerCapita: number; gini: number; idh: number } {
+  const n = pais.n;
+  const pibPerCapita = (n['pib'] ?? 0) / Math.max(1, n['populacao'] ?? 1);
+  const gini = Math.max(0.25, Math.min(0.75, 0.52 + 0.005 * ((n['pobreza'] ?? 25) - 25) - 0.0015 * ((n['educacao'] ?? 50) - 50)));
+  const expectativa = 62 + 0.3 * (n['saude'] ?? 50);
+  const saude = Math.max(0.01, Math.min(1, (expectativa - 20) / 65));
+  const educacao = Math.max(0.01, Math.min(1, 0.4 + 0.0056 * (n['educacao'] ?? 50)));
+  const dolares = Math.max(100, (pibPerCapita / Math.max(1, n['cambio'] ?? 5)) * PPC);
+  const renda = Math.max(0.01, Math.min(1, (Math.log(dolares) - Math.log(100)) / (Math.log(75000) - Math.log(100))));
+  return { pibPerCapita, gini, idh: Math.cbrt(saude * educacao * renda) };
+}
 
 /** Um país de fora (mundo.json › estrangeiros): a economia dele e a relação com o Brasil. */
 const ESTRANGEIRO: Record<string, DefCampo> = {
@@ -389,6 +420,12 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return e.ano % 4 === 2;
       case 'empresas':
         return ent === 'eu' ? empresasDe(e).length : 0;
+      case 'pib_per_capita':
+        return indicadoresDoPais(en).pibPerCapita;
+      case 'gini':
+        return indicadoresDoPais(en).gini;
+      case 'idh':
+        return indicadoresDoPais(en).idh;
     }
     return undefined;
   }

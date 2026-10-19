@@ -14,7 +14,7 @@
  * com a causa: o voto, a eleição, a reforma, o decreto, o choque de fora.
  */
 import { POLITICAS, type Fase, type Politica } from './constantes.ts';
-import { classeDoPatrimonio, patrimonioTotal } from './campos.ts';
+import { classeDoPatrimonio, indicadoresDoPais, patrimonioTotal } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefFase, DefGoverno, EfeitoDePolitica } from './esquema.ts';
@@ -23,6 +23,7 @@ import type { Exterior } from './diplomacia.ts';
 import {
   CHOQUE_DA_CRISE,
   CRESCIMENTO_POTENCIAL,
+  DEMOGRAFIA,
   DESEMPREGO_NATURAL,
   DESVIO_DO_CRESCIMENTO,
   DIVIDA_DE_EQUILIBRIO,
@@ -39,6 +40,7 @@ import {
   MEMORIA_DO_IMPULSO,
   META_DE_INFLACAO,
   PERFIL_DA_VIOLENCIA,
+  PAIS_EM_2026,
   PERSISTENCIA_DO_CRESCIMENTO,
   PESO_DA_ESCOLA_PUBLICA,
   PESO_DA_SAUDE_PUBLICA,
@@ -249,6 +251,32 @@ export function paisInicial(e: EstadoVida, c: Conteudo): void {
   });
   const fase = faseDoCrescimento(n['crescimento']!);
   if (fase !== 'normal') pais.q[fase] = { v: 1, ano: e.ano, idade: 0, causa: null };
+  iniciarNumeros(e);
+}
+
+/** Quanto a população cresce no ano (% ao ano): a transição demográfica, a saúde pública e a pobreza. */
+export function taxaDaPopulacao(ano: number, saude = 50, pobreza = 25): number {
+  const base = Math.max(DEMOGRAFIA.piso, DEMOGRAFIA.taxa2026 - DEMOGRAFIA.porAno * (ano - 2026));
+  return base + DEMOGRAFIA.porSaude * (saude - 50) + DEMOGRAFIA.porPobreza * (pobreza - 25);
+}
+
+/**
+ * O PIB e a população de quem nasce (e do save de antes deles): os de 2026, levados ao ano de agora com o crescimento
+ * potencial e a transição demográfica. Sem sorteio: o save antigo não muda de sorte.
+ */
+export function iniciarNumeros(e: EstadoVida): void {
+  const n = e.entidades['pais']?.n;
+  if (!n || n['pib'] !== undefined) return;
+  let pib: number = PAIS_EM_2026.pib;
+  let populacao: number = PAIS_EM_2026.populacao;
+  const passo = e.ano >= 2026 ? 1 : -1;
+  for (let ano = 2026; ano !== e.ano; ano += passo) {
+    pib = passo > 0 ? pib * (1 + CRESCIMENTO_POTENCIAL / 100) : pib / (1 + CRESCIMENTO_POTENCIAL / 100);
+    const taxa = taxaDaPopulacao(passo > 0 ? ano + 1 : ano) / 100;
+    populacao = passo > 0 ? populacao * (1 + taxa) : populacao / (1 + taxa);
+  }
+  n['pib'] = Math.round(pib);
+  n['populacao'] = Math.round(populacao);
 }
 
 /** Um país de antes do país vivo (save antigo): as estatísticas típicas da fase que ele tinha, com o centrão no governo. */
@@ -418,7 +446,8 @@ export function alvosDoPais(
   const efeito = (k: EfeitoDePolitica): number => efeitoDasPoliticas(e, c, k);
   return {
     pobreza: 25 + efeito('pobreza') + 1.2 * (desemprego - DESEMPREGO_NATURAL),
-    violencia: 22 + 0.3 * (pobreza - 25) + efeito('violencia') - 0.1 * (educacao - 50),
+    // A violência anda com a desigualdade (o Gini resume a pobreza e a escola).
+    violencia: 22 + 60 * (indicadoresDoPais({ id: 'pais', tipo: 'jurisdicao', nome: '', n: { pobreza, educacao }, t: {}, q: {} }).gini - 0.52) + efeito('violencia'),
     saude: 50 + efeito('saude') - 0.2 * Math.max(0, divida - 100),
     educacao: 50 + efeito('educacao'),
   };
@@ -579,6 +608,11 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     aprovacao,
   };
   for (const k of ESTATISTICAS) definirNumero(e, reg, 'pais', k, arred(valores[k]), 'pais');
+  // O tamanho do país: o PIB anda com o crescimento real do ano; a população, com a demografia, a saúde e a pobreza.
+  if (n['pib'] === undefined) iniciarNumeros(e);
+  // Com os números já arredondados: o PIB cresce o mesmo que a folha País mostra.
+  definirNumero(e, reg, 'pais', 'pib', Math.round(n['pib']! * (1 + n['crescimento']! / 100)), 'pais');
+  definirNumero(e, reg, 'pais', 'populacao', Math.round(n['populacao']! * (1 + taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) / 100)), 'pais');
   if (voce) definirNumero(e, reg, 'eu', 'popularidade', aprovacao, 'pais');
   // O empurrão de quem governa se desfaz aos poucos.
   const sobra = n['impulso'] ?? 0;

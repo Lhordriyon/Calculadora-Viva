@@ -148,6 +148,9 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...de(PARCEIROS, 'sancao'),
   ...de(PARCEIROS, 'acordo'),
   'pais.cambio',
+  // o país em números: o PIB anda com o crescimento, a população com a saúde, a pobreza e o tempo
+  'pais.pib',
+  'pais.populacao',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país, o nome do crescimento)
   'pais.expansao',
   'pais.recessao',
@@ -230,6 +233,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(PARCEIROS, 'sancao'), 'mundo lá fora: a sanção tira crescimento, sobe o dólar e pesa nas empresas de quem vendia para lá', true),
   ...ler(de(PARCEIROS, 'acordo'), 'mundo lá fora: o acordo soma crescimento e ajuda as empresas de quem vende para lá', true),
   ...ler(de(PARCEIROS, 'crise'), 'mundo lá fora: a crise de lá acaba quando a economia deles volta a crescer', false),
+  ...ler(['pais.pib', 'pais.populacao'], 'país: o PIB e a população do ano seguinte partem dos deste; PIB per capita e IDH', true),
   ...ler(['pais.cambio'], 'dólar: a inflação, o investimento em dólar e as empresas que exportam ou importam', true),
   ...ler(['eu.salario_em_dolar'], 'trabalho: o salário em dólar anda com o dólar, e a crise daqui não demite', true),
   ...ler(['eu.classe_origem'], 'escola pública: quem estuda nela sente a educação do país', true),
@@ -313,8 +317,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'pais',
     nome: 'o país: as estatísticas, a eleição, quem governa e a fase do ciclo',
-    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*'],
-    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'eu.popularidade'],
+    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*'],
+    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'eu.popularidade'],
   },
   {
     id: 'mercado',
