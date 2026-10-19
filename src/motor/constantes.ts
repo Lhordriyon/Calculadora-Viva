@@ -10,6 +10,23 @@ export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
 
+/**
+ * Os filhos de quem joga, em ordem de chegada: o primeiro é `filho` (o papel do conteúdo) e os seguintes, `filho2` a
+ * `filho4`. O id não muda de pessoa: o livro, as condições (`filho.idade`) e o texto antigo continuam valendo. O
+ * conteúdo com `ator: ["filho"]` vale para qualquer um deles.
+ */
+export const FILHOS = ['filho', 'filho2', 'filho3', 'filho4'] as const;
+export const MAX_FILHOS = FILHOS.length;
+
+export function ehFilho(id: string): boolean {
+  return (FILHOS as readonly string[]).includes(id);
+}
+
+/** O papel do conteúdo que a pessoa ocupa: `filho2` é um filho. */
+export function papelBase(id: string): string {
+  return ehFilho(id) ? 'filho' : id;
+}
+
 /** Os países de fora com quem o Brasil negocia (mundo.json › estrangeiros): entidades que nascem com a vida. */
 export const PARCEIROS = ['federacao', 'celeste', 'liga', 'pacto'] as const;
 export type Parceiro = (typeof PARCEIROS)[number];

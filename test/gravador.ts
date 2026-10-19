@@ -4,7 +4,7 @@
  * que mudou vira a escrita `agenda`, e o que uma etapa passa para outra (a fase, o mercado, a economia do ano) vira
  * `ano.fase`, `ano.mercado`… Só para testes: a vida jogada com ele é a mesma de sem ele.
  */
-import { PAPEIS, PARCEIROS } from '../src/motor/constantes.ts';
+import { PAPEIS, PARCEIROS, ehFilho } from '../src/motor/constantes.ts';
 import type { IdEtapa } from '../src/motor/manifesto.ts';
 import type { Entidade, EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { observarOAno } from '../src/motor/vida.ts';
@@ -25,7 +25,7 @@ const DO_ANO = new Set(['e', 'c', 'memoria', 'reg', 'inicio', 'idRegras', 'fim']
 
 /** "mae" → "pessoa", "empresa3" → "empresa", "bem12" → "bem", "ctr0" → "ctr", "celeste" → "fora". */
 export function generico(id: string): string {
-  if (PESSOAS.has(id)) return 'pessoa';
+  if (PESSOAS.has(id) || ehFilho(id)) return 'pessoa';
   if (FORA.has(id)) return 'fora';
   if (/^empresa\d*$/.test(id)) return 'empresa';
   if (/^bem\d/.test(id)) return 'bem';

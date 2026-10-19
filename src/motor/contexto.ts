@@ -17,6 +17,8 @@ export interface OpcoesContexto {
   textos?: Record<string, string> | undefined;
   /** Trechos do storylet, escolhidos pelo estado na hora de renderizar. */
   trechos?: Storylet['trechos'];
+  /** Quem o storylet acabou de criar, pelo papel ({filho} é o filho que nasceu agora, mesmo que seja `filho2`). */
+  apelidos?: Record<string, string> | undefined;
 }
 
 function formatar(ent: string, campo: string, v: number | string | boolean | undefined): string | undefined {
@@ -31,12 +33,13 @@ function formatar(ent: string, campo: string, v: number | string | boolean | und
 
 export function contexto(e: EstadoVida, op: OpcoesContexto = {}): ContextoTexto {
   const eu = e.entidades['eu']!;
+  const quem = (ent: string): string => op.apelidos?.[ent] ?? entidadeDe(ent, op.ator);
   const ctx: ContextoTexto = {
     rng: e.rng,
     genero: eu.genero ?? 'm',
     // A empresa sem gênero (de antes do grupo) é "a" empresa.
     generoDe: (papel) => {
-      const en = e.entidades[entidadeDe(papel, op.ator)];
+      const en = e.entidades[quem(papel)];
       return (en?.genero ?? (en?.tipo === 'empresa' ? 'f' : undefined)) as Genero | undefined;
     },
     variavel: (nome) => {
@@ -75,10 +78,10 @@ export function contexto(e: EstadoVida, op: OpcoesContexto = {}): ContextoTexto 
       }
       if (nome.includes('.')) {
         const { ent, campo } = separar(nome);
-        const id = entidadeDe(ent, op.ator);
+        const id = quem(ent);
         return formatar(id, campo, ler(e, id, campo));
       }
-      return e.entidades[entidadeDe(nome, op.ator)]?.nome;
+      return e.entidades[quem(nome)]?.nome;
     },
   };
   return ctx;

@@ -9,6 +9,7 @@
 import { idadeDe } from './campos.ts';
 import { causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
+import { FILHOS, ehFilho, papelBase } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho } from './esquema.ts';
@@ -40,8 +41,8 @@ import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
 
-/** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes). */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', 'filho', 'amigo', 'pet'] as const;
+/** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada. */
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet'] as const;
 
 /** Uma mudança notável vira entrada visível na linha do tempo, com a regra como causa. */
 function acontecer(
@@ -77,7 +78,7 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   const traco = c.tracos.get(en.t['traco'] ?? '');
   if (papel === 'amigo') return 50 + (traco?.vinculo ?? 0);
   if (papel === 'amor') return 62 + (traco?.vinculo ?? 0);
-  if (papel === 'filho') return 68 + (traco?.vinculo ?? 0);
+  if (ehFilho(papel)) return 68 + (traco?.vinculo ?? 0);
   if (papel === 'paixao') return 30;
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
@@ -202,7 +203,7 @@ export function regrasDosPersonagens(
     }
     // A rotina gasta o namoro; filho adulto cria a própria vida.
     if (papel === 'amor') dv -= DESGASTE_CASAL;
-    if (papel === 'filho' && idade >= 18) dv -= DISTANCIA_ADULTO * DISTANCIA_FILHO;
+    if (ehFilho(papel) && idade >= 18) dv -= DISTANCIA_ADULTO * DISTANCIA_FILHO;
     somar(e, regAno, papel, 'vinculo', dv, 'vinculo');
   }
 }
@@ -233,7 +234,7 @@ export function regraDoAmor(e: EstadoVida, c: Conteudo): void {
 export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJogador | undefined): Candidato[] {
   const comEscolha: Candidato[] = [];
   for (const papel of PAPEIS_COM_REGRAS) {
-    const lista = c.npcPorPapel.get(papel);
+    const lista = c.npcPorPapel.get(papelBase(papel));
     const en = e.entidades[papel];
     if (!lista || !en || !e.vivo) continue;
     const vivo = en.vivo !== false;

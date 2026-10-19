@@ -22,6 +22,8 @@ export interface ContextoEfeito {
   reg: Mudanca[];
   /** Valores calculados na hora (ex.: {transferido}) para o texto. */
   valores: Record<string, number>;
+  /** Quem os efeitos criaram, pelo papel: o segundo filho é `filho2`, e o texto que diz {filho} fala dele. */
+  criados?: Record<string, string>;
 }
 
 function ajustar(atual: number, ajuste: number | { definir: number }): number {
@@ -149,11 +151,16 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     const q = qualidade(caminho, ator);
     somarQualidade(e, reg, q.ent, q.nome, delta, origem);
   }
-  for (const papel of ef.personagens ?? []) criarPersonagem(e, c, papel as PapelNovo, reg);
+  for (const papel of ef.personagens ?? []) {
+    const id = criarPersonagem(e, c, papel as PapelNovo, reg);
+    if (id) (ctx.criados ??= {})[papel] = id;
+  }
   if (ef.promover) promover(e, c, ef.promover.de, ef.promover.para, reg);
+  // O que se agenda junto com o nascimento de um filho (a adolescência, a formatura) é sobre esse filho.
+  const sobre = ctx.criados?.['filho'] ?? ator;
   for (const ag of ef.agendar ?? []) {
     const anos = typeof ag.em === 'number' ? ag.em : inteiro(e.rng, ag.em[0], ag.em[1]);
-    e.agenda.push(ator ? { evento: ag.evento, ano: e.ano + anos, origem, ator } : { evento: ag.evento, ano: e.ano + anos, origem });
+    e.agenda.push(sobre ? { evento: ag.evento, ano: e.ano + anos, origem, ator: sobre } : { evento: ag.evento, ano: e.ano + anos, origem });
   }
   if (ef.matar) {
     const papel = entidadeDe(ef.matar, ator);

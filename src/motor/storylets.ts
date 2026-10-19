@@ -13,6 +13,7 @@ import { reorganizarGrupo } from './empresa.ts';
 import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
 import { lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
+import { FILHOS } from './constantes.ts';
 import { aleatorio } from './rng.ts';
 import { capitalizar, formatarDinheiro, renderizar } from './texto.ts';
 import type { Causa, Entrada, EstadoVida, Mudanca, OpcaoPendente, TipoEntrada } from './tipos.ts';
@@ -41,7 +42,9 @@ function aceitaMorto(s: Storylet): boolean {
 export function atoresPossiveis(s: Storylet, e: EstadoVida): (string | undefined)[] {
   if (!s.ator) return [undefined];
   const mortos = aceitaMorto(s);
-  return s.ator.filter((p) => {
+  // O conteúdo escreve "filho"; com mais de um, o storylet vale para cada um (instâncias diferentes).
+  const papeis = s.ator.includes('filho') ? s.ator.flatMap((p): readonly string[] => (p === 'filho' ? FILHOS : [p])) : s.ator;
+  return papeis.filter((p) => {
     const en = e.entidades[p];
     return en !== undefined && (mortos || en.vivo !== false);
   });
@@ -103,7 +106,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   const reg: Mudanca[] = [];
   const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
   aplicarEfeitos(e, c, s.efeitos, ef);
-  const op = { ator, valores: ef.valores, trechos: s.trechos };
+  const op = { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados };
   entrada.texto = extras.repeticao
     ? `${capitalizar(renderizar(s.resumo, contexto(e, op)))}, mais um ano.`
     : capitalizar(renderizar(s.texto, contexto(e, op)));
@@ -212,7 +215,7 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
     ? (aleatorio(e.rng) < chanceDeSucesso(esc.teste, e, ator) ? esc.sucesso : esc.fracasso)!
     : esc.resultado!;
   aplicarEfeitos(e, c, resultado.efeitos, ef);
-  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos });
+  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados });
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = capitalizar(renderizar(resultado.texto, ctx));

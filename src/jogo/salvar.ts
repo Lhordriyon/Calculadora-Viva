@@ -14,6 +14,7 @@ import { migrarExterior } from '../motor/diplomacia.ts';
 import { migrarDividaSemContrato } from '../motor/dividas.ts';
 import { generoDoNome } from '../motor/empresa.ts';
 import { migrarPais } from '../motor/pais.ts';
+import { FILHOS, ehFilho } from '../motor/constantes.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
 
@@ -190,6 +191,13 @@ function lerCasca(casca: z.infer<typeof EsquemaSave>, conteudo: Conteudo): Save 
   migrarFinanciamentos(v, conteudo);
   // Antes do grupo, a empresa não tinha gênero: ganha o do nome ("o Instituto", "a Clínica").
   for (const en of Object.values(v.entidades)) if (en.tipo === 'empresa' && en.vivo !== false && !en.genero) en.genero = generoDoNome(v, en.nome);
+  // Antes dos vários filhos, não havia a conta deles, e a adolescência e a formatura agendadas falavam do único filho.
+  const eu = v.entidades['eu'];
+  if (eu && eu.n['filhos'] === undefined) {
+    const filhos = FILHOS.filter((id) => v.entidades[id]).length;
+    if (filhos > 0) eu.n['filhos'] = filhos;
+  }
+  for (const a of v.agenda) if ((a.evento === 'filho_adolescente' || a.evento === 'filho_formatura') && !(a.ator && ehFilho(a.ator)) && v.entidades['filho']) a.ator = 'filho';
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.
   if (v.pendente && conteudo.porId.get(v.pendente.storylet)?.escolhas?.length !== v.pendente.opcoes.length) v.pendente = null;
   return { ...base, vida: v };

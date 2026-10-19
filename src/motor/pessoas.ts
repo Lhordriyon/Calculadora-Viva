@@ -3,7 +3,7 @@
  * luto e herança). Usado pelos efeitos de storylets e pelas regras anuais.
  */
 import type { Conteudo } from './conteudo.ts';
-import type { PapelNovo } from './constantes.ts';
+import { FILHOS, ehFilho, type PapelNovo } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
@@ -47,24 +47,32 @@ function ocuparPapel(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[])
   for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: v, ...(campo === 'vinculo' ? {} : { r: 'nascimento' }) });
 }
 
-/** Cria um personagem novo (amor, filho, paixão, bicho) com um começo de vínculo. */
-export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, reg: Mudanca[]): void {
+/**
+ * Cria um personagem novo (amor, filho, paixão, bicho) com um começo de vínculo e devolve o id dele. Um filho novo
+ * não toma o lugar de outro: vai para o próximo lugar livre (`filho2`…), e `eu.filhos` conta. Com os quatro lugares
+ * ocupados, não nasce ninguém (devolve undefined).
+ */
+export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, reg: Mudanca[]): string | undefined {
   const idadeEu = e.idade;
+  const id = papel === 'filho' ? FILHOS.find((f) => !e.entidades[f]) : papel;
+  if (!id) return undefined;
   let en: Entidade;
   if (papel === 'pet') {
     const pet = sortear(e.rng, c.mundo.pets);
-    en = novaEntidade({ id: 'pet', tipo: 'animal', nome: pet.nome, genero: pet.genero, nascimento: e.ano, vivo: true });
+    en = novaEntidade({ id, tipo: 'animal', nome: pet.nome, genero: pet.genero, nascimento: e.ano, vivo: true });
     en.n['saude'] = 85;
   } else {
     const genero: Genero = aleatorio(e.rng) < 0.5 ? 'f' : 'm';
     const nascimento = papel === 'filho' ? e.ano : e.ano - Math.max(16, idadeEu + inteiro(e.rng, -4, 4));
-    en = novaEntidade({ id: papel, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo: true });
+    en = novaEntidade({ id, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo: true });
     en.n['saude'] = papel === 'filho' ? 85 : 75;
     en.n['vinculo'] = papel === 'filho' ? 80 : papel === 'amor' ? 70 : 55;
     if (papel !== 'filho') en.n['dinheiro'] = 0;
     if (COM_TRACO.has(papel)) darTraco(e, c, en);
   }
-  ocuparPapel(e, papel, en, reg);
+  ocuparPapel(e, id, en, reg);
+  if (papel === 'filho') somar(e, reg, 'eu', 'filhos', 1);
+  return id;
 }
 
 /** Copia um personagem para outro papel (o primeiro amor vira o amor atual). */
@@ -111,7 +119,7 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   if (dinheiro <= 0 || !para) return 0;
   if (para === 'eu') {
     // Dos pais e da avó, cada irmão leva a sua parte (os irmãos não são personagens: a parte deles vai para os parentes).
-    const irmaos = papel === 'amor' || papel === 'filho' ? 0 : (e.entidades['eu']!.n['irmaos'] ?? 0);
+    const irmaos = papel === 'amor' || ehFilho(papel) ? 0 : (e.entidades['eu']!.n['irmaos'] ?? 0);
     const parte = dinheiro / (1 + irmaos);
     somarRepartido(e, reg, papel, 'dinheiro', -dinheiro, [
       { d: -parte, p: 'eu' },

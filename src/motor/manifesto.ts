@@ -39,6 +39,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.divida',
   'eu.privacao',
   'eu.herdou',
+  // os filhos que quem joga teve (o segundo não apaga o primeiro)
+  'eu.filhos',
   // a dinastia: quem herda começa com a geração, a família que já tinha e o que a vida dela deixou
   'eu.dinastia',
   'eu.independente',
@@ -113,6 +115,11 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // o ano dos bens: o valor anda com o mercado e o financiamento é pago
   'bem.valor',
   'bem.financiado',
+  // quem perde a casa no leilão sai dela: a economia de morar no que é seu volta para o custo de vida
+  'bem.moradia',
+  'bem.economia',
+  'eu.custo',
+  'eu.imovel',
   // as dívidas como contratos com o banco (contratos.ts, dividas.ts): o saldo, a parcela, o atraso e o nome sujo
   'ctr.saldo',
   'ctr.parcela',

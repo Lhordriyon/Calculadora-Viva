@@ -3,7 +3,7 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { ATIVOS, CLASSES, ENTIDADES, PARCEIROS, POLITICAS } from './constantes.ts';
+import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
@@ -72,6 +72,8 @@ const PESSOA: Record<string, DefCampo> = {
   familia: { tipo: 'texto', sistema: 'origem' },
   /** Irmãos de quem joga: dividem a herança dos pais. */
   irmaos: { tipo: 'num', sistema: 'origem', limites: [0, 8] },
+  /** Filhos que quem joga teve ou adotou (até 4): o conteúdo lê, e a herança se divide entre os vivos. */
+  filhos: { tipo: 'num', sistema: 'relacoes', limites: [0, 4] },
   idade: { tipo: 'num', sistema: 'corpo', derivado: true },
   vivo: { tipo: 'bool', sistema: 'corpo', derivado: true },
   patrimonio: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
@@ -235,6 +237,18 @@ export function defCampo(ent: string, campo: string): DefCampo | undefined {
 /** Resolve `ator` para o papel ligado ao storylet. */
 export function entidadeDe(ent: string, ator: string | undefined): string {
   return ent === 'ator' ? (ator ?? 'ator') : ent;
+}
+
+/** Os filhos que existem (vivos ou não), na ordem de chegada. */
+export function filhosDe(e: EstadoVida): Entidade[] {
+  return FILHOS.map((id) => e.entidades[id]).filter((x): x is Entidade => x !== undefined);
+}
+
+/** Os filhos vivos, do mais velho para o mais novo (quem herda primeiro). */
+export function filhosVivos(e: EstadoVida): Entidade[] {
+  return filhosDe(e)
+    .filter((x) => x.vivo !== false && !x.q['ausente'] && x.nascimento !== undefined && e.ano - x.nascimento >= 0)
+    .sort((a, b) => a.nascimento! - b.nascimento!);
 }
 
 export function idadeDe(e: EstadoVida, en: Entidade): number {
