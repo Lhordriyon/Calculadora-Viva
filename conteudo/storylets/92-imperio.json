@@ -439,7 +439,7 @@
   {
     "id": "tudo_pela_sua_mesa",
     "idade": [35, 90],
-    "condicoes": { "empresa.dependencia": { "min": 85 }, "empresa.valor": { "min": 5000000 } },
+    "condicoes": { "empresa.dependencia": { "min": 82 }, "empresa.valor": { "min": 5000000 } },
     "texto": "N{empresa:o|a} {empresa}, tudo passa pela sua mesa: a compra de clipes, a cor do logotipo, o nome do cachorro da recepção. O médico pediu um exame, e a sua agenda não tem espaço até março.",
     "resumo": "percebeu que tudo na própria empresa passava pela sua mesa",
     "escolhas": [
