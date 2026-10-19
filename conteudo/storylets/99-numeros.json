@@ -5,7 +5,6 @@
     "condicoes": { "pais.pib": { "min": 2.0e13 }, "pais.crescimento": { "min": 3 }, "renda": { "min": 1 }, "semMarcas": ["aposentado"] },
     "repetivel": true,
     "intervalo": 15,
-    "peso": 2,
     "texto": "A economia cresceu {pais.crescimento}% e o PIB chegou a {pais.pib}, recorde da série. Dá {pais.pib_per_capita} por brasileiro, [o que ninguém conhece pessoalmente.|em média, que é onde mora a pegadinha.|segundo o telejornal, que estava animado.]",
     "resumo": "viu o PIB bater recorde",
     "escolhas": [
@@ -48,7 +47,6 @@
     "condicoes": { "pais.gini": { "min": 0.55 } },
     "repetivel": true,
     "intervalo": 12,
-    "peso": 2,
     "texto": "O Brasil voltou ao pódio da desigualdade: índice de Gini de {pais.gini}. [Na mesma avenida, um prédio com heliponto e uma calçada com colchão.|O 1% mais rico ganha em um mês o que metade do país ganha num ano.|O repórter fez a matéria de um bairro e atravessou a rua para a outra.]",
     "resumo": "viu a desigualdade virar manchete",
     "escolhas": [
@@ -79,7 +77,6 @@
     "id": "idh_muito_alto",
     "idade": [20, 95],
     "condicoes": { "pais.idh": { "min": 0.82 } },
-    "peso": 2,
     "texto": "Saiu o relatório da ONU: o Brasil tem IDH de {pais.idh} e entrou no clube dos países de desenvolvimento humano muito alto. O posto do bairro tem médico, e a escola, professor de física.",
     "resumo": "viu o Brasil entrar no clube do IDH muito alto",
     "escolhas": [
@@ -115,7 +112,6 @@
     "condicoes": { "pais.idh": { "max": 0.77 } },
     "repetivel": true,
     "intervalo": 15,
-    "peso": 2,
     "texto": "O IDH do país está em {pais.idh}. Traduzindo: [falta médico no posto e professor na escola.|a fila do SUS dobrou o quarteirão.|a escola pública perdeu três professores e a merenda.]",
     "resumo": "sentiu na fila o IDH em queda",
     "escolhas": [
@@ -146,7 +142,6 @@
     "id": "pais_envelhece",
     "idade": [40, 95],
     "condicoes": { "pais.populacao": { "max": 2.08e8 } },
-    "peso": 2,
     "texto": "O censo confirmou: o Brasil encolheu para {pais.populacao} de habitantes. Nasce menos gente do que morre, a escola do bairro fechou e no lugar abriu uma clínica de fisioterapia.",
     "resumo": "viu o Brasil começar a encolher",
     "escolhas": [
