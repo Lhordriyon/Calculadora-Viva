@@ -906,13 +906,14 @@
   {
     "id": "filho_adolescente",
     "apenasAgendado": true,
+    "ator": ["filho"],
     "condicoes": { "marcas": ["pai_mae"] },
-    "texto": "{filho} fez catorze anos e agora se comunica com você por monossílabos e figurinhas.",
-    "resumo": "sobreviveu à adolescência de {filho}",
+    "texto": "{ator} fez catorze anos e agora se comunica com você por monossílabos e figurinhas.",
+    "resumo": "sobreviveu à adolescência de {ator}",
     "escolhas": [
       {
         "texto": "Dar espaço",
-        "resumo": "deu espaço para {filho} adolescente",
+        "resumo": "deu espaço para {ator} adolescente",
         "resultado": {
           "texto": "Vocês combinaram um jantar por semana sem celular. Às vezes, até acontece.",
           "efeitos": { "felicidade": 2 }
@@ -920,17 +921,17 @@
       },
       {
         "texto": "Confiscar o celular",
-        "resumo": "confiscou o celular de {filho}",
+        "resumo": "confiscou o celular de {ator}",
         "resultado": {
-          "texto": "{filho} passou três dias sem falar com você. Depois, mais três por esporte.",
+          "texto": "{ator} passou três dias sem falar com você. Depois, mais três por esporte.",
           "efeitos": { "felicidade": -3, "inteligencia": 1 }
         }
       },
       {
         "texto": "Tentar ser legal usando gíria",
-        "resumo": "tentou usar gíria com {filho}",
+        "resumo": "tentou usar gíria com {ator}",
         "resultado": {
-          "texto": "{filho} morreu de vergonha. Vocês riram juntos depois. Bem depois.",
+          "texto": "{ator} morreu de vergonha. Vocês riram juntos depois. Bem depois.",
           "efeitos": { "aparencia": -2, "felicidade": 3 }
         }
       }
@@ -939,24 +940,25 @@
   {
     "id": "filho_formatura",
     "apenasAgendado": true,
+    "ator": ["filho"],
     "condicoes": { "marcas": ["pai_mae"] },
     "valores": { "festa": 6000 },
-    "texto": "{filho} se formou! Na foto, você está chorando mais que {filho:o formando|a formanda}.",
-    "resumo": "viu {filho} se formar",
+    "texto": "{ator} se formou! Na foto, você está chorando mais que {ator:o formando|a formanda}.",
+    "resumo": "viu {ator} se formar",
     "escolhas": [
       {
         "texto": "Pagar a festa ({festa})",
-        "resumo": "pagou a festa de formatura de {filho}",
+        "resumo": "pagou a festa de formatura de {ator}",
         "resultado": {
-          "texto": "Você dançou a valsa com {filho} e pisou no pé três vezes. Foi perfeito.",
+          "texto": "Você dançou a valsa com {ator} e pisou no pé três vezes. Foi perfeito.",
           "efeitos": { "dinheiro": -6000, "felicidade": 8, "custo": -12000 }
         }
       },
       {
         "texto": "Dar um abraço demorado",
-        "resumo": "abraçou {filho} na formatura até amassar a beca",
+        "resumo": "abraçou {ator} na formatura até amassar a beca",
         "resultado": {
-          "texto": "Um abraço de um minuto inteiro. {filho} fingiu que achou exagero.",
+          "texto": "Um abraço de um minuto inteiro. {ator} fingiu que achou exagero.",
           "efeitos": { "felicidade": 6, "custo": -12000 }
         }
       }

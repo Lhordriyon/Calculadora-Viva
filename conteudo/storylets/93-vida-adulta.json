@@ -1164,7 +1164,7 @@
     "tipo": "npc",
     "ator": ["amor"],
     "idade": [18, 44],
-    "condicoes": { "marcas": ["namoro"], "semMarcas": ["pai_mae", "sem_filhos"] },
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["sem_filhos", "familia_completa"], "filhos": { "max": 3 } },
     "tensao": 1.5,
     "texto": "Dois risquinhos no teste de farmácia, numa terça-feira qualquer. {ator} olha para você; você olha para o teste; o teste não muda de ideia.",
     "resumo": "descobriu que ia ter um filho com {ator}",

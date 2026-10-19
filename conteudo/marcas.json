@@ -3,6 +3,7 @@
     "porAno": { "saude": -0.5 },
     "epitafio": "Prometeu parar de fumar [em todas as viradas de ano|em todo aniversário|toda segunda-feira]."
   },
+  "familia_completa": { "epitafio": "Decidiu que a família estava completa e nunca jogou o macacão fora." },
   "ex_fumante": { "epitafio": "Largou o cigarro e ganhou fôlego para reclamar de tudo." },
   "sedentario": { "porAno": { "saude": -0.3 } },
   "ativo": { "porAno": { "saude": 0.25, "felicidade": 0.3 }, "epitafio": "Correu de tudo, menos da vida." },

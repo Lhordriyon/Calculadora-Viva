@@ -1,0 +1,155 @@
+[
+  {
+    "id": "mais_um_filho",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [24, 45],
+    "condicoes": { "marcas": ["namoro", "pai_mae"], "semMarcas": ["sem_filhos", "familia_completa"], "filhos": { "max": 3 } },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "{ator} achou o macacão de recém-nascido de {filho} numa caixa e ficou segurando um tempo. Depois perguntou, como quem não quer nada, se vocês dariam conta de mais um.",
+    "resumo": "pensou em ter mais um filho com {ator}",
+    "escolhas": [
+      {
+        "texto": "Ter mais um",
+        "resumo": "teve {filho}",
+        "resultado": {
+          "texto": "Nasceu {filho}. A casa ficou menor, o carro ficou menor e o coração, por algum motivo, ficou maior.",
+          "efeitos": {
+            "felicidade": 5,
+            "saude": -2,
+            "custo": 12000,
+            "personagens": ["filho"],
+            "agendar": [
+              { "evento": "ciumes_do_irmao", "em": 2 },
+              { "evento": "filho_adolescente", "em": 14 },
+              { "evento": "filho_formatura", "em": [21, 24] }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "A família está completa",
+        "resumo": "decidiu que a família estava completa",
+        "resultado": {
+          "texto": "Vocês doaram o berço para a vizinha e guardaram só o macacão. Por via das dúvidas, ninguém joga nada fora.",
+          "efeitos": { "felicidade": 1, "marcas": ["familia_completa"] }
+        }
+      },
+      {
+        "texto": "Esperar um pouco",
+        "resumo": "adiou a decisão de ter mais um filho",
+        "resultado": {
+          "texto": "Ficou para depois do próximo aniversário de {filho}. E do outro.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ciumes_do_irmao",
+    "apenasAgendado": true,
+    "ator": ["filho"],
+    "condicoes": { "marcas": ["pai_mae"], "filhos": { "min": 2 }, "filho.vivo": true },
+    "texto": "{filho} descobriu que {ator} ganha mais colo e passou a fazer birra em horário comercial. Ontem, guardou o bebê-conforto no armário \"para arrumar a sala\".",
+    "resumo": "lidou com o ciúme de {filho} {ator:pelo irmão novo|pela irmã nova}",
+    "escolhas": [
+      {
+        "texto": "Reservar os sábados para {filho}",
+        "resumo": "reservou os sábados para {filho}",
+        "resultado": {
+          "texto": "Sábado virou o dia de {filho}: sorvete, praça e nenhum bebê. A birra diminuiu; o sorvete, não.",
+          "efeitos": { "felicidade": 3, "filho.vinculo": 6, "dinheiro": -300 }
+        }
+      },
+      {
+        "texto": "Pôr {filho} para ajudar com o bebê",
+        "resumo": "pôs {filho} para ajudar com {ator}",
+        "resultado": {
+          "texto": "{filho} aprendeu a trocar fralda e a negociar: agora cobra um real por troca.",
+          "efeitos": { "felicidade": 2, "filho.vinculo": 2, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Esperar passar",
+        "resumo": "esperou o ciúme de {filho} passar",
+        "resultado": {
+          "texto": "Passou. Levou um ano e dois desenhos em que o bebê saía de cena, mas passou.",
+          "efeitos": { "felicidade": -1, "filho.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmaos_brigam",
+    "ator": ["filho"],
+    "idade": [28, 62],
+    "condicoes": { "filhos": { "min": 2 }, "ator.idade": { "min": 6, "max": 17 } },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Guerra em casa: {ator} jura que a culpa foi de quem começou, e quem começou jura que foi {ator}. Os dois esperam que você decida quem tem razão.",
+    "resumo": "apartou mais uma briga de {ator} com os irmãos",
+    "escolhas": [
+      {
+        "texto": "Dar razão a {ator}",
+        "resumo": "deu razão a {ator} numa briga de irmãos",
+        "resultado": {
+          "texto": "{ator} comemorou como final de campeonato. O outro lado prometeu vingança e cumpriu no jantar.",
+          "efeitos": { "ator.vinculo": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Castigar todo mundo",
+        "resumo": "pôs os filhos todos de castigo",
+        "resultado": {
+          "texto": "Sem tela para ninguém por uma semana. Em dois dias eles se uniram contra você, o que conta como paz.",
+          "efeitos": { "ator.vinculo": -2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Deixar que resolvam",
+        "resumo": "deixou os filhos resolverem a briga sozinhos",
+        "resultado": {
+          "texto": "Eles resolveram. Ninguém sabe como, e a sala nunca mais foi a mesma.",
+          "efeitos": { "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mesa_cheia",
+    "idade": [55, 90],
+    "condicoes": { "marcas": ["pai_mae"], "filhos": { "min": 2 }, "filho.vivo": true },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Natal com todo mundo: {filho} chegou primeiro, como sempre, e os outros vieram com cônjuges, netos e opiniões sobre o peru. A mesa já não cabe na sala.",
+    "resumo": "reuniu os filhos todos no Natal",
+    "escolhas": [
+      {
+        "texto": "Fazer um brinde aos filhos",
+        "resumo": "fez um brinde que fez os filhos chorarem",
+        "resultado": {
+          "texto": "Você falou dois minutos. Ninguém lembra das palavras, só que até {filho} chorou.",
+          "efeitos": { "felicidade": 6, "filho.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Falar da herança na sobremesa",
+        "resumo": "falou de herança na sobremesa do Natal",
+        "resultado": {
+          "texto": "O pudim esfriou. Cada filho saiu com uma ideia diferente do que é justo, e todos com o telefone de um advogado.",
+          "efeitos": { "felicidade": -3, "filho.vinculo": -4 }
+        }
+      },
+      {
+        "texto": "Só aproveitar o barulho",
+        "resumo": "aproveitou o Natal de casa cheia",
+        "resultado": {
+          "texto": "O barulho, a louça, a briga pela última rabanada: você não trocaria por nada.",
+          "efeitos": { "felicidade": 4 }
+        }
+      }
+    ]
+  }
+]
