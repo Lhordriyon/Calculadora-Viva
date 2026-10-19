@@ -1,0 +1,176 @@
+[
+  {
+    "id": "pib_recorde",
+    "idade": [20, 70],
+    "condicoes": { "pais.pib": { "min": 2.0e13 }, "pais.crescimento": { "min": 3 }, "renda": { "min": 1 }, "semMarcas": ["aposentado"] },
+    "repetivel": true,
+    "intervalo": 15,
+    "peso": 2,
+    "texto": "A economia cresceu {pais.crescimento}% e o PIB chegou a {pais.pib}, recorde da série. Dá {pais.pib_per_capita} por brasileiro, [o que ninguém conhece pessoalmente.|em média, que é onde mora a pegadinha.|segundo o telejornal, que estava animado.]",
+    "resumo": "viu o PIB bater recorde",
+    "escolhas": [
+      {
+        "texto": "Pedir aumento no embalo",
+        "resumo": "pediu aumento no ano do PIB recorde",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "\"Com o país crescendo assim, como dizer não?\", disse o chefe, que disse sim.",
+          "resumo": "ganhou aumento no ano do PIB recorde",
+          "efeitos": { "rendaFator": 1.1, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O chefe concordou que o país cresceu. A empresa, segundo ele, ainda não ficou sabendo.",
+          "resumo": "ouviu um não no ano do PIB recorde",
+          "efeitos": { "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Pôr a sobra na bolsa",
+        "resumo": "pôs dinheiro na bolsa no ano do PIB recorde",
+        "resultado": {
+          "texto": "Todo mundo teve a mesma ideia ao mesmo tempo, que é como a bolsa costuma funcionar.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "acoes", "fracao": 0.15 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Comemorar com um churrasco",
+        "resumo": "comemorou o PIB recorde com churrasco",
+        "resultado": {
+          "texto": "Ninguém na laje sabia o que é PIB, mas a picanha estava em promoção, e isso todo mundo entendeu.",
+          "efeitos": { "dinheiro": -400, "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "desigualdade_no_jornal",
+    "idade": [16, 95],
+    "condicoes": { "pais.gini": { "min": 0.55 } },
+    "repetivel": true,
+    "intervalo": 12,
+    "peso": 2,
+    "texto": "O Brasil voltou ao pódio da desigualdade: índice de Gini de {pais.gini}. [Na mesma avenida, um prédio com heliponto e uma calçada com colchão.|O 1% mais rico ganha em um mês o que metade do país ganha num ano.|O repórter fez a matéria de um bairro e atravessou a rua para a outra.]",
+    "resumo": "viu a desigualdade virar manchete",
+    "escolhas": [
+      {
+        "texto": "Pagar a mensalidade de um cursinho popular",
+        "resumo": "bancou um aluno num cursinho popular",
+        "resultado": {
+          "texto": "O aluno passou no ENEM no ano seguinte e mandou foto da lista. Você imprimiu.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 3, "eu.popularidade": 1 }
+        }
+      },
+      {
+        "texto": "Postar um textão sobre imposto de fortuna",
+        "resumo": "postou um textão sobre imposto de fortuna",
+        "resultado": {
+          "texto": "Cem curtidas, quarenta brigas e um tio que nunca mais mandou bom-dia. A desigualdade continua, mas agora engajada.",
+          "efeitos": { "eu.influencia": 1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Mudar de canal",
+        "resumo": "mudou de canal na reportagem da desigualdade",
+        "resultado": { "texto": "No outro canal, um programa de reforma de mansão. Você assistiu inteiro.", "efeitos": { "felicidade": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "idh_muito_alto",
+    "idade": [20, 95],
+    "condicoes": { "pais.idh": { "min": 0.82 } },
+    "peso": 2,
+    "texto": "Saiu o relatório da ONU: o Brasil tem IDH de {pais.idh} e entrou no clube dos países de desenvolvimento humano muito alto. O posto do bairro tem médico, e a escola, professor de física.",
+    "resumo": "viu o Brasil entrar no clube do IDH muito alto",
+    "escolhas": [
+      {
+        "texto": "Cancelar o plano de saúde e usar o SUS",
+        "resumo": "trocou o plano de saúde pelo SUS",
+        "resultado": {
+          "texto": "A consulta saiu em uma semana e de graça. A mensalidade do plano virou viagem; a fila, às vezes, ainda vira sermão.",
+          "efeitos": { "custo": -3000, "saude": -1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Viajar para comemorar",
+        "resumo": "viajou para comemorar o IDH muito alto",
+        "resultado": {
+          "texto": "Você foi conhecer o Nordeste que aparecia no relatório. Voltou com rede, ímã de geladeira e saudade.",
+          "efeitos": { "dinheiro": -2500, "felicidade": 4 }
+        }
+      },
+      {
+        "texto": "Desconfiar do relatório",
+        "resumo": "desconfiou do relatório do IDH",
+        "resultado": {
+          "texto": "Leu a metodologia inteira para provar que era mentira. Não era, mas você aprendeu estatística.",
+          "efeitos": { "inteligencia": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "idh_em_queda",
+    "idade": [14, 95],
+    "condicoes": { "pais.idh": { "max": 0.77 } },
+    "repetivel": true,
+    "intervalo": 15,
+    "peso": 2,
+    "texto": "O IDH do país está em {pais.idh}. Traduzindo: [falta médico no posto e professor na escola.|a fila do SUS dobrou o quarteirão.|a escola pública perdeu três professores e a merenda.]",
+    "resumo": "sentiu na fila o IDH em queda",
+    "escolhas": [
+      {
+        "texto": "Pagar um plano de saúde",
+        "resumo": "pagou um plano de saúde para fugir da fila",
+        "resultado": {
+          "texto": "Mais uma mensalidade, mas o médico atende em dez dias, o que hoje em dia é luxo.",
+          "efeitos": { "custo": 3000, "saude": 3 }
+        }
+      },
+      {
+        "texto": "Cobrar o vereador na rede social",
+        "resumo": "cobrou o vereador pelo posto sem médico",
+        "resultado": {
+          "texto": "O vereador respondeu com um vídeo de meio minuto e uma promessa. O posto ganhou um médico às terças.",
+          "efeitos": { "eu.popularidade": 2, "eu.influencia": 1, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Se virar com chá e paciência",
+        "resumo": "se virou sem posto e sem plano",
+        "resultado": { "texto": "Chá de boldo para tudo e a fé de que dá para esperar. Quase sempre dá.", "efeitos": { "saude": -2 } }
+      }
+    ]
+  },
+  {
+    "id": "pais_envelhece",
+    "idade": [40, 95],
+    "condicoes": { "pais.populacao": { "max": 2.08e8 } },
+    "peso": 2,
+    "texto": "O censo confirmou: o Brasil encolheu para {pais.populacao} de habitantes. Nasce menos gente do que morre, a escola do bairro fechou e no lugar abriu uma clínica de fisioterapia.",
+    "resumo": "viu o Brasil começar a encolher",
+    "escolhas": [
+      {
+        "texto": "Investir em fundos de clínicas e farmácias",
+        "resumo": "apostou em fundos do país que envelhece",
+        "resultado": {
+          "texto": "Se o futuro é de cabelo branco, você comprou um pedaço da farmácia. Pareceu frio; pareceu esperto.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "fii", "fracao": 0.15 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Dar aula de reforço de graça na escola que sobrou",
+        "resumo": "deu aula de reforço na escola que sobrou",
+        "resultado": {
+          "texto": "Sobraram poucas crianças, e cada uma ganhou atenção de sobra. Uma delas agora quer ser você quando crescer.",
+          "efeitos": { "felicidade": 4, "eu.popularidade": 1, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Achar o bairro mais silencioso",
+        "resumo": "achou o país menor mais silencioso",
+        "resultado": { "texto": "Menos trânsito, menos fila e menos festa junina. Você não sabe se gostou.", "efeitos": { "felicidade": 1 } }
+      }
+    ]
+  }
+]
