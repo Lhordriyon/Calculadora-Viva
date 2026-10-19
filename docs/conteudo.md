@@ -31,7 +31,7 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 |---|---|
 | `id` | único, `minusculas_com_sublinhado` |
 | `tipo` | `evento`, `npc`, `acao` ou `jogada` |
-| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente |
+| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente. `filho` vale para cada filho de quem joga (até quatro): escreva `{ator}`, não `{filho}`, quando o texto é sobre qualquer um deles. `{filho}` e `filho.x` são o primeiro filho, salvo no storylet que cria um filho, em que `{filho}` é o recém-nascido |
 | `preferir` | entre vários atores possíveis, o de menor (`-ator.vinculo`) ou maior (`+ator.dinheiro`) valor |
 | `idade` | faixa `[min, max]` de quem joga (obrigatória, exceto em `apenasAgendado`) |
 | `apenasAgendado` | só acontece quando outro efeito o agenda |

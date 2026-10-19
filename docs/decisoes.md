@@ -792,6 +792,59 @@ O dono disse "Vá" para a fatia 1.3 (I-03, com o livro compacto, I-04). No meio 
 - **A CPU do motor por vida** (o portão antigo de 30 ms). O diretor e as iniciativas avaliam as condições de centenas de storylets por ano; indexá-los pelas qualidades que exigem é o próximo passo (I-08).
 - **O teto por fase do orçamento** (I-83).
 
+## Universo de bolso: fatia 1.4a, vários filhos (19/10)
+
+O dono mandou três telas do APK (uma soberana bilionária aos 50 anos) e pediu a próxima atualização. A fatia seguinte do roteiro era a 1.4 (I-05, identidade de pessoas). Pelo método, ela foi cortada em duas, e esta é a parte de maior valor para quem joga: vários filhos. As telas também mostravam o cabeçalho cortado.
+
+**O que mudou:**
+- **Um filho novo não apaga o outro.** Antes, um segundo filho tomava o papel `filho`, e a adoção depois de um filho apagava o primeiro. Agora:
+  - cada filho tem um id estável, na ordem de chegada (`filho`, `filho2`… até 4), e `eu.filhos` conta quantos a vida teve;
+  - todos vivem o ano (saúde, doença, morte, vínculo e iniciativas);
+  - o conteúdo escrito para o papel `filho` vale para cada um (instâncias diferentes, mais combinações sem texto novo).
+- **O storylet que cria um filho fala do recém-nascido**, e o que ele agenda (adolescência, formatura) é sobre esse filho.
+- **A herança:**
+  - continua o filho mais velho vivo;
+  - sem testamento, os filhos dividem, e os outros viram irmãos de quem herda na vida nova (o caminho do sobrinho na geração seguinte);
+  - o testamento tem um botão por filho: tudo para ele, sem dividir;
+  - se o primeiro filho morreu, o segundo herda.
+- **Conteúdo:**
+  - quatro storylets: mais um filho, o ciúme do irmão mais velho, os irmãos que brigam e o Natal com os filhos todos;
+  - a gravidez surpresa vale também para quem já tem filho.
+- **O cabeçalho:** a linha do dinheiro rolava escondida com seis itens, e na tela do dono aparecia cortada no meio. Agora mostra dinheiro, dívida, patrimônio e renda, e quebra linha quando não cabe.
+- **Um defeito antigo das dinastias, achado pelo túnel:**
+  - o imóvel e o financiamento herdados mantinham os ids da vida anterior, enquanto o livro novo recomeça a numeração;
+  - uma entrada de mesmo número comprava outro imóvel por cima do herdado, ou reusava o id de um contrato quitado;
+  - agora os dois ganham ids da abertura da vida nova.
+
+**Decisões tomadas sozinho:**
+- **Ids estáveis em vez de "o papel aponta para a pessoa".** O ponteiro mexeria no livro, no save, no validador e na interface de uma vez (a 1.4 inteira, custo G). Com ids estáveis, o livro, as condições (`filho.idade`) e o texto antigo continuam valendo, e o save antigo só ganha a conta dos filhos. O ponteiro fica para a 1.4b, com o ex que continua existindo.
+- **`{filho}` é o primeiro filho, salvo no storylet que cria um filho,** em que é o recém-nascido. O conteúdo que fala de qualquer filho usa `{ator}`.
+- **Sem testamento, a lei divide; o testamento concentra.** A divisão sai como a metade do cônjuge: do dinheiro primeiro, e só depois das empresas e dos bens. Escolher um filho no testamento vira a decisão de dinastia: dividir com justiça ou manter a fortuna inteira.
+- **Até quatro filhos.** É o que cabe na folha Família sem virar tela de gestão.
+- **A frequência do segundo filho.** A iniciativa do par com tensão 1,5 dava 4% das vidas com dois ou mais filhos. Com tensão 2 (a mesma do primeiro filho), dá 13,6%, ou 41% de quem tem filho, perto do Brasil real (1,6 filho por mulher). Os pedidos têm intervalo de 5 anos, e "a família está completa" encerra o assunto.
+
+**Medidas** (túnel de 10.000 vidas; a CPU em A/B na mesma máquina, porque a VM do reinício é mais lenta):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Vidas com 2 ou mais filhos | 0% (o segundo apagava o primeiro) | 13,6% (1,47 filho em média entre quem tem) |
+| Filhos apagados por outro | possível (adoção depois de um filho) | 0 em 11.056 vidas (meta que trava o CI) |
+| Herdeiro com irmãos (a herança se divide) | 0% | 15,5% |
+| Dinastias: gerações em média / chegam à 3ª / chegam à 5ª | 2,9 / 55,4% / 20,2% | 3,3 / 62,5% / 32,7% |
+| Spearman entre gerações (o portão já reprovava) | 0,85 | 0,86 |
+| Mobilidade (Spearman origem × fim) | 0,32 | 0,31 |
+| Saturação V5 / V20 | 57,9% / 90,6% | 57,4% / 90,6% |
+| Assinaturas por 1.000 vidas (sem a origem) | 906 (580) | 906 (591) |
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| CPU por vida (A/B, 400 vidas, duas rodadas) | 61,9–64,2 ms | 64,2–65,6 ms (+3%) |
+| Testes | 230 | 238 |
+| Conteúdo | 557 eventos | 560 eventos e 85 de personagens |
+
+**O que ficou de fora:**
+- **A 1.4b:** o ex que continua existindo (o papel `amor` ainda troca de pessoa) e as relações entre os personagens.
+- **Gêmeos e irmãos que se relacionam entre si.** Os irmãos aparecem pelo texto, não como laços próprios.
+- **O Spearman entre gerações continua acima do portão (0,86).** A divisão entre irmãos baixa a fortuna de quem herda, mas os 85% de vidas com um filho só, ou nenhum, seguem herdando tudo.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

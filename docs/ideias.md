@@ -49,7 +49,7 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
 | I-02 | Dívida e financiamento como contrato | 1 | Alta | feita (fatia 1.2, 12/10) |
 | I-03 | O ano em etapas declaradas | 1 | Alta | feita (fatia 1.3) |
 | I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | reavaliada: adiada com números (fatia 1.3) |
-| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | proposta |
+| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | parcial: vários filhos (fatia 1.4a) |
 | I-06 | Causa com contribuição e explicação incompleta | 1 | Média | proposta |
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
 | I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | feita no critério (fatia 1.3); o próximo ganho é indexar os storylets |
@@ -233,7 +233,9 @@ Ideia nova vai no fim da fase dela, com o próximo número livre.
   - o livro fecha para toda pessoa;
   - o save antigo migra.
 - **Prioridade:** Alta · Fase 1 (fatia 1.4).
-- **Estado:** proposta.
+- **Estado:** parcial (fatia 1.4a, 19/10).
+  - Feito: até quatro filhos com id estável (`filho`, `filho2`…); o conteúdo de "filho" vale para cada um; a herança se divide entre os filhos vivos, e o testamento escolhe quem continua; o save antigo migra.
+  - Falta (1.4b): o ex que continua existindo (o papel `amor` ainda troca de pessoa) e as relações entre os personagens.
 
 ### I-06 · Causa com contribuição e explicação incompleta
 - **Problema:**

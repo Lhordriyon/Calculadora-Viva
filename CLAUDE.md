@@ -17,6 +17,7 @@ Armadilhas que já custaram caro:
 - O túnel inteiro reescreve `docs/metricas.md` no fim: commite o resto antes e as métricas depois.
 - Comando longo roda em segundo plano, e a notificação avisa quando acaba. Consultar o andamento repetidas vezes gasta contexto à toa.
 - Filtre as saídas (`| tail`, `grep`): cada resposta relê o contexto inteiro.
+- A CPU absoluta muda de máquina para máquina (depois de um reinício, a mesma versão mediu 46 e 63 ms por vida). Para saber se o código ficou mais caro, compare em A/B na mesma máquina: uma worktree da versão anterior e as duas rodadas alternadas.
 
 ## Como pensar (nesta ordem; nunca inverta)
 
@@ -205,3 +206,5 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem governa faz um ato lá fora por ano (visita, acordo, romper), com a chance de sanção à vista antes | agente | como na reforma: custo de oportunidade e consequência à vista |
 | O ano é uma lista de etapas que declaram o que leem e escrevem (`manifesto.ts › ETAPAS_DO_ANO`); um teste falha se uma etapa sair da declaração | agente | a ordem do ano estava só no código, e uma etapa podia ler o que outra escreveu no mesmo ano sem ninguém saber (I-03) |
 | O save que abre bem vira a cópia de segurança; o principal estragado volta dela, com aviso; exportar e importar pelo menu | agente | um JSON corrompido apagava a vida e a memória entre vidas (D-12) |
+| Até quatro filhos com id estável (`filho`, `filho2`…); o conteúdo de "filho" vale para cada um; sem testamento, os filhos dividem a herança, e o testamento pode escolher um | agente (fatia 1.4a da missão) | um segundo filho apagava o primeiro (I-05); dividir e escolher quem herda vira decisão de dinastia |
+| O cabeçalho mostra dinheiro, dívida, patrimônio e renda, e quebra linha; o detalhe fica nas folhas | agente | seis itens numa linha que rolava escondida: o dono via a linha cortada no meio de uma palavra |
