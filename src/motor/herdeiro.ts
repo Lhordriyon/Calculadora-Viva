@@ -12,7 +12,7 @@
 import { ATIVOS, FILHOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, valorDosBens } from './campos.ts';
 import { defDoBem } from './bens.ts';
-import { financiamentoDe } from './contratos.ts';
+import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
 import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -444,16 +444,24 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
       eu.n['dinheiro'] = (eu.n['dinheiro'] ?? 0) + liquido - usa;
       continue;
     }
-    const copia = recausar(structuredClone(b), abertura.id);
+    // No livro novo, o bem e o financiamento ganham ids da abertura: com os da vida anterior (bem102, ctr102), uma
+    // entrada 102 da vida nova compraria outro bem por cima deste, ou reusaria o id de um contrato já quitado.
+    const idBem = idLivre(e, `bem${abertura.id}`);
+    const copia = recausar(structuredClone({ ...b, id: idBem }), abertura.id);
     delete copia.q['moradia'];
     copia.n['economia'] = 0;
-    e.entidades[b.id] = copia;
+    e.entidades[idBem] = copia;
     // O financiamento vem junto com o imóvel: o herdeiro continua pagando as parcelas ao banco. A abertura anota de qual
     // imóvel ele é (o livro novo não tem a compra), para a conferência das dívidas (contas.ts).
     const financiamento = financiamentoDe(antiga, b.id);
     if (financiamento) {
-      e.entidades[financiamento.id] = recausar(structuredClone(financiamento), abertura.id);
-      daAbertura.push({ c: `${financiamento.id}.garantia`, t: b.id });
+      const idCtr = idLivre(e, `ctr${abertura.id}`);
+      const herdado = recausar(structuredClone({ ...financiamento, id: idCtr }), abertura.id);
+      herdado.t['garantia'] = idBem;
+      // A dívida, no livro novo, vem da herança.
+      herdado.t['origem'] = String(abertura.id);
+      e.entidades[idCtr] = herdado;
+      daAbertura.push({ c: `${idCtr}.garantia`, t: idBem });
     }
     const def = defDoBem(c, b);
     if (def) eu.q[def.marca] = { v: 1, ano: e.ano, idade, causa: abertura.id };

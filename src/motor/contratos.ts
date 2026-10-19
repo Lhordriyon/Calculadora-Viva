@@ -90,7 +90,8 @@ export function creditoNovo(e: EstadoVida): number {
   return Math.max(0, limiteDeCredito(eu.n['renda'] ?? 0) - saldoDe(rotativos(e)));
 }
 
-function idLivre(e: EstadoVida, base: string): string {
+/** Um id que ninguém usa agora: a base, ou com uma letra no fim (ctr57, ctr57b…). */
+export function idLivre(e: EstadoVida, base: string): string {
   if (!e.entidades[base]) return base;
   for (const letra of 'bcdefghijklmnopqrstuvwxyz') if (!e.entidades[`${base}${letra}`]) return `${base}${letra}`;
   return `${base}_${e.proximoId}`;

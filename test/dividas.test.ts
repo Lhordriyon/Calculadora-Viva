@@ -259,6 +259,12 @@ describe('a dívida como contrato', () => {
     expect(nova.entidades['eu']!.n['divida']).toBe(0);
     expect(contratosDe(nova).filter((x) => x.t['modalidade'] !== 'financiamento')).toHaveLength(0);
     expect(conferirDividas(nova)).toEqual([]);
+    // No livro novo, o imóvel e o financiamento têm ids da abertura: a entrada de mesmo número da vida nova não compra
+    // outro bem por cima deste nem reusa o contrato depois de quitado.
+    const abertura = nova.historico[0]!.id;
+    expect(casa!.id.startsWith(`bem${abertura}`)).toBe(true);
+    expect(ct!.id.startsWith(`ctr${abertura}`)).toBe(true);
+    expect(ct!.t['origem']).toBe(String(abertura));
   });
 
   it('save: os contratos vão e voltam iguais; o save de antes dos contratos migra a dívida e o financiamento', () => {
