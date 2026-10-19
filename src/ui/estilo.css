@@ -61,6 +61,17 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   overscroll-behavior: none;
+  background: var(--fundo);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--destaque) 30%, transparent);
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 body {
@@ -133,6 +144,10 @@ a.botao {
 .icone:focus-visible {
   outline: 3px solid var(--inteligencia);
   outline-offset: 2px;
+}
+
+.botao:not(.secundario) {
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--destaque) 22%, transparent);
 }
 
 .botao.secundario {
@@ -243,6 +258,7 @@ button {
 
 .abertura .aviso-save {
   padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--destaque) 30%, var(--borda));
   border-radius: 14px;
   background: var(--destaque-suave);
   color: var(--texto);
@@ -295,6 +311,8 @@ button {
 
 .cabecalho {
   flex: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borda) transparent;
   max-height: 50dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -644,6 +662,8 @@ button {
    do cartão) e esmaece nas bordas, para o corte de cima e de baixo não parecer coisa por baixo. */
 .vida {
   flex: 1 1 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borda) transparent;
   min-height: min(20dvh, 180px);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -829,13 +849,21 @@ button {
 
 .entrada.morte {
   padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--texto) 12%, transparent);
   border-radius: var(--raio);
   background: var(--texto);
   color: var(--fundo);
+  box-shadow: var(--sombra);
 }
 
 .entrada.morte p {
   color: inherit;
+}
+
+/* No cartão invertido da morte, os chips usam a cor do cartão (a cor de cada um não tem contraste no fundo claro). */
+.entrada.morte .chip {
+  color: var(--fundo);
+  background: color-mix(in srgb, var(--fundo) 12%, transparent);
 }
 
 .nova {
@@ -1214,9 +1242,10 @@ button {
 
 .viradas li {
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--superficie);
   border: 1px solid var(--borda);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.04);
 }
 
 .viradas .de {
@@ -1285,9 +1314,10 @@ button {
 
 .pessoa {
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--superficie);
   border: 1px solid var(--borda);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.04);
 }
 
 .pessoa .quem {
@@ -1359,9 +1389,10 @@ button {
 
 .empresa-cartao {
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--superficie);
   border: 1px solid var(--borda);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.04);
 }
 
 .empresa-cartao h3 {
@@ -1457,6 +1488,7 @@ button {
 .save-trazido {
   margin-top: 16px;
   padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--destaque) 30%, var(--borda));
   border-radius: 14px;
   background: var(--destaque-suave);
 }
@@ -1521,6 +1553,7 @@ button {
   *::after {
     animation: none !important;
     transition: none !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -1618,9 +1651,10 @@ button {
 
 .bem-meu {
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--superficie);
   border: 1px solid var(--borda);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.04);
 }
 
 .bem-meu p {
