@@ -4,6 +4,7 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import type { Politica } from '../motor/constantes.ts';
 import { ACOES_DIPLOMATICAS, chanceDeSancao, defEstrangeiro, oPais, parceirosDe, type AcaoDiplomatica } from '../motor/diplomacia.ts';
 import type { DefPolitica, EfeitoDePolitica } from '../motor/esquema.ts';
+import { indicadoresDoPais } from '../motor/campos.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
 import { ACORDO, ATO, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
@@ -111,6 +112,55 @@ function Estatisticas({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
           </div>
         );
       })}
+    </dl>
+  );
+}
+
+/** A faixa do IDH, como a ONU chama. */
+function faixaDoIdh(idh: number): string {
+  if (idh >= 0.8) return 'muito alto';
+  if (idh >= 0.7) return 'alto';
+  if (idh >= 0.55) return 'médio';
+  return 'baixo';
+}
+
+/** O tamanho do país: PIB e população (com a seta do ano em %), a renda por pessoa, a desigualdade e o IDH. */
+function Numeros({ vida }: Pick<Props, 'vida'>) {
+  const pais = vida.entidades['pais']!;
+  const n = pais.n;
+  const variou = variacoesDoAno(vida);
+  const { pibPerCapita, gini, idh } = indicadoresDoPais(pais);
+  const pct = (campo: string): { seta: string; tom: string; texto: string } | null => {
+    const d = variou.get(campo) ?? 0;
+    const antes = (n[campo] ?? 0) - d;
+    if (antes <= 0 || Math.abs(d / antes) < 0.0005) return null;
+    const p = (100 * d) / antes;
+    return { seta: p > 0 ? '▲' : '▼', tom: campo === 'pib' ? (p > 0 ? 'bom' : 'ruim') : '', texto: `${num(Math.abs(p))}%` };
+  };
+  const linhas: { nome: string; valor: string; seta?: ReturnType<typeof pct>; nota: string }[] = [
+    { nome: 'PIB', valor: `${formatarDinheiro(n['pib'] ?? 0)} por ano`, seta: pct('pib'), nota: 'tudo o que o país produz; anda com o crescimento' },
+    { nome: 'População', valor: `${num((n['populacao'] ?? 0) / 1e6)} milhões`, seta: pct('populacao'), nota: 'nasce mais quando a saúde melhora; a pobreza também enche a casa' },
+    { nome: 'PIB per capita', valor: `${formatarDinheiro(pibPerCapita)} por pessoa`, nota: 'o PIB dividido por todo mundo, que é a média e não o seu salário' },
+    { nome: 'Desigualdade (Gini)', valor: gini.toFixed(2).replace('.', ','), nota: '0 é todo mundo igual; 1, um só tem tudo. Sobe com a pobreza, cai com a educação' },
+    { nome: 'IDH', valor: `${idh.toFixed(2).replace('.', ',')} (${faixaDoIdh(idh)})`, nota: 'saúde, educação e renda numa nota de 0 a 1' },
+  ];
+  return (
+    <dl class="estatisticas">
+      {linhas.map((l) => (
+        <div class="estatistica" key={l.nome}>
+          <dt>{l.nome}</dt>
+          <dd>
+            <b>{l.valor}</b>
+            {l.seta && (
+              <span class={`seta ${l.seta.tom}`} aria-label={`${l.seta.seta === '▲' ? 'subiu' : 'caiu'} ${l.seta.texto} no ano`}>
+                {' '}
+                {l.seta.seta} {l.seta.texto}
+              </span>
+            )}
+            <small>{l.nota}</small>
+          </dd>
+        </div>
+      ))}
     </dl>
   );
 }
@@ -350,6 +400,10 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
             Seu último voto: {votouEm.nome}, em {voto[1].ano}.
           </p>
         )}
+        <fieldset class="grupo">
+          <legend>Em números</legend>
+          <Numeros vida={vida} />
+        </fieldset>
         <fieldset class="grupo">
           <legend>Como está</legend>
           <Estatisticas vida={vida} conteudo={conteudo} />
