@@ -8,8 +8,8 @@ import { deflateSync } from 'node:zlib';
 import { RAIZ } from './disco.ts';
 
 type Ponto = [number, number];
-const FUNDO: [number, number, number] = [0xc2, 0x46, 0x2a];
-const TRACO: [number, number, number] = [0xff, 0xf4, 0xe6];
+const FUNDO: [number, number, number] = [0x0e, 0x14, 0x20];
+const TRACO: [number, number, number] = [0xe8, 0xb8, 0x4a];
 
 function bezier(p0: Ponto, p1: Ponto, p2: Ponto, p3: Ponto, n: number): Ponto[] {
   const pts: Ponto[] = [];

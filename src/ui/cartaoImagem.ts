@@ -11,15 +11,17 @@ const MARGEM = 84;
 const UTIL = LARGURA - MARGEM * 2;
 const FONTE = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 
+/** Noite e ouro, como o jogo: a faixa azul-noite com a marca em ouro, o resto em papel creme. */
 const COR = {
-  fundo: '#f6f1e9',
-  faixa: '#c2462a',
-  creme: '#fff4e6',
-  texto: '#221d17',
-  suave: '#6b6155',
-  cartao: '#fffdf9',
-  borda: '#e2d8ca',
-  destaque: '#a33a21',
+  fundo: '#f6f2ea',
+  faixa: '#0e1420',
+  creme: '#e8b84a',
+  ouro: '#d9a321',
+  texto: '#1d1b17',
+  suave: '#665d4f',
+  cartao: '#fffdf8',
+  borda: '#e2d7c3',
+  destaque: '#855a00',
 };
 
 function quebrar(ctx: CanvasRenderingContext2D, texto: string, largura: number): string[] {
@@ -167,7 +169,7 @@ function compor(p: Pincel, r: ResumoVida, endereco: string): number {
       ctx.strokeStyle = COR.borda;
       ctx.lineWidth = 2;
       ctx.stroke();
-      ctx.fillStyle = COR.faixa;
+      ctx.fillStyle = COR.ouro;
       ctx.fillRect(MARGEM, topo + 18, 6, altura - 36);
     }
     let yy = y + 6;
