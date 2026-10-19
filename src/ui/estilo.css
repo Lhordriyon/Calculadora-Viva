@@ -372,38 +372,28 @@ a.botao {
 /* Uma linha só, que rola de lado quando há mais do que cabe (a borda direita esmaece). */
 .saldo {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 2px 12px;
   width: 100%;
   min-height: 44px;
   margin-top: 2px;
   padding: 4px 0;
-  overflow-x: auto;
   border: 0;
   background: none;
   font: inherit;
   font-size: 14px;
   text-align: left;
-  white-space: nowrap;
   color: var(--texto-suave);
   cursor: pointer;
   touch-action: manipulation;
-  scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
-  mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
-}
-
-.saldo::-webkit-scrollbar {
-  display: none;
 }
 
 .saldo > span {
-  flex: none;
-}
-
-.saldo > span:last-child {
-  padding-right: 20px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .saldo:focus-visible {

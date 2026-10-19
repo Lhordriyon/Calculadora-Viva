@@ -1,6 +1,7 @@
 import { useEffect } from 'preact/hooks';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
+import { FILHOS, ehFilho } from '../motor/constantes.ts';
 import { idadeDe, patrimonioDe } from '../motor/campos.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
@@ -13,18 +14,24 @@ function Testamento({ vida, conteudo, aoOperar }: { vida: EstadoVida; conteudo: 
   const eu = vida.entidades['eu']!;
   const atual = (eu.t['testamento'] ?? '') as Destino;
   const nome = (id: string): string => vida.entidades[id]?.nome ?? '';
+  // Um botão por filho que existe (o primeiro aparece mesmo antes de nascer, desabilitado com o motivo).
+  const filhos = FILHOS.filter((id, i) => i === 0 || vida.entidades[id]);
   const opcoes: { para: Destino; rotulo: string }[] = [
-    { para: '', rotulo: 'A lei (filho, senão sobrinho)' },
-    { para: 'filho', rotulo: nome('filho') ? `${nome('filho')} (filho)` : 'Filho' },
+    { para: '', rotulo: 'A lei (os filhos dividem)' },
+    ...filhos.map((id) => ({ para: id, rotulo: nome(id) ? `${nome(id)} (${vida.entidades[id]?.genero === 'f' ? 'filha' : 'filho'})` : 'Filho' })),
     { para: 'amor', rotulo: nome('amor') ? `${nome('amor')} (par)` : 'Par' },
     { para: 'amigo', rotulo: nome('amigo') ? `${nome('amigo')} (amizade)` : 'Melhor amigo' },
     { para: 'sobrinho', rotulo: 'Os sobrinhos' },
     { para: 'causa', rotulo: 'Uma causa' },
     { para: 'pet', rotulo: nome('pet') ? `${nome('pet')} (o bicho)` : 'O bicho' },
   ];
+  const umFilho = 'Tudo para este filho, sem dividir com os irmãos: a história continua com ele.';
   const explica: Record<Destino, string> = {
-    '': 'Sem testamento, vale a lei: o filho herda; sem filho, um sobrinho. A história continua com quem herda.',
-    filho: 'Tudo para o filho, que continua a história.',
+    '': 'Sem testamento, vale a lei: os filhos dividem a herança, e o mais velho continua a história; sem filho, um sobrinho.',
+    filho: umFilho,
+    filho2: umFilho,
+    filho3: umFilho,
+    filho4: umFilho,
     amor: 'Tudo para o par, sem dividir: a história continua com quem dividiu a vida com você.',
     amigo: 'Tudo para o melhor amigo. A família vai estranhar; a história continua com ele.',
     sobrinho: 'Tudo para os sobrinhos: um deles continua a história.',
@@ -51,10 +58,11 @@ function Testamento({ vida, conteudo, aoOperar }: { vida: EstadoVida; conteudo: 
 }
 
 /** Ordem do painel: quem veio antes, quem chegou depois. */
-const ORDEM = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet'] as const;
+const ORDEM = ['mae', 'pai', 'avo', 'amigo', 'amor', ...FILHOS, 'pet'] as const;
 
 function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
   const f = en.genero === 'f';
+  if (ehFilho(id)) return f ? 'Filha' : 'Filho';
   switch (id) {
     case 'mae':
     case 'pai':
@@ -70,8 +78,6 @@ function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
       if (en.vivo !== false && q['namoro']) return f ? 'Namorada' : 'Namorado';
       return 'Amor';
     }
-    case 'filho':
-      return f ? 'Filha' : 'Filho';
     default:
       return 'Bicho';
   }

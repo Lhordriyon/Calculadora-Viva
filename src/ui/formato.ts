@@ -1,4 +1,4 @@
-import { ATIVOS } from '../motor/constantes.ts';
+import { ATIVOS, FILHOS } from '../motor/constantes.ts';
 import type { Parentesco } from '../motor/herdeiro.ts';
 import type { Atributo } from '../motor/esquema.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
@@ -36,7 +36,7 @@ const INFLACAO_MINIMA = 300;
 const INFLACAO_INTERVALO = 5;
 /** Vínculo que mexe menos que isso não vira chip (o ano a ano das regras fica escondido). */
 const VINCULO_MINIMO = 3;
-const PAPEIS_COM_VINCULO = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'];
+const PAPEIS_COM_VINCULO: readonly string[] = ['mae', 'pai', 'avo', 'amigo', 'amor', ...FILHOS];
 
 /** Ids das entradas que mostram a inflação: uma a cada INFLACAO_INTERVALO anos, no máximo. */
 export function avisosDeInflacao(historico: Entrada[]): Set<number> {

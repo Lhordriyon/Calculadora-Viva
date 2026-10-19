@@ -1,6 +1,6 @@
 import { conteudo } from '../conteudo.ts';
 import { defFase, faseDe } from '../motor/pais.ts';
-import { empresasDe, investidoDe, parteNasEmpresas, valorDosBens } from '../motor/campos.ts';
+import { patrimonioTotal } from '../motor/campos.ts';
 import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
 import { cargoDe } from '../motor/poder.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
@@ -25,9 +25,8 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
   const lugar = vida.entidades['lugar'];
   const n = eu.n;
   const dinheiro = n['dinheiro'] ?? 0;
-  const investido = investidoDe(eu);
-  const empresa = parteNasEmpresas(vida);
-  const empresas = empresasDe(vida).length;
+  // O resto do dinheiro (investido, empresas, bens) entra no patrimônio; o detalhe fica na folha Dinheiro.
+  const patrimonio = patrimonioTotal(vida);
   const divida = n['divida'] ?? 0;
   const renda = n['renda'] ?? 0;
   const fase = faseDe(vida);
@@ -42,9 +41,6 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         : carreira
           ? nomeDoCargo(carreira, n['nivel'] ?? 0, eu.genero)
           : conteudo.setores.get(eu.t['setor'] ?? '')?.nome;
-  const bens = valorDosBens(vida);
-  const influencia = Math.round(n['influencia'] ?? 0);
-  const fama = Math.round(n['fama'] ?? 0);
   const titulo = cargo?.esfera === 'vitalicio' ? noGenero(cargo.nome, eu.genero) : eu.q['principe'] ? (eu.genero === 'f' ? 'princesa' : 'príncipe') : eu.q['herdeiro_regime'] ? 'herdeiro do Regime' : '';
   return (
     <header class={`cabecalho${compacto ? ' compacto' : ''}`}>
@@ -122,35 +118,14 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
             Dívida <b>{formatarDinheiro(divida)}</b>
           </span>
         )}
-        {investido >= 1 && (
+        {Math.abs(patrimonio - dinheiro) >= 1 && (
           <span>
-            Investido <b>{formatarDinheiro(investido)}</b>
-          </span>
-        )}
-        {bens >= 1 && (
-          <span>
-            Bens <b>{formatarDinheiro(bens)}</b>
-          </span>
-        )}
-        {(influencia >= 5 || fama >= 5) && (
-          <span>
-            Influência <b>{influencia}</b>
-            {fama >= 5 ? (
-              <>
-                {' '}
-                · Fama <b>{fama}</b>
-              </>
-            ) : null}
-          </span>
-        )}
-        {empresa >= 1 && (
-          <span>
-            {empresas > 1 ? `${empresas} empresas` : 'Empresa'} <b>{formatarDinheiro(empresa)}</b>
+            Patrimônio <b>{formatarDinheiro(patrimonio)}</b>
           </span>
         )}
         {renda >= 1 && (
           <span>
-            Renda <b>{formatarDinheiro(renda / 12)}</b>/mês{setor ? ` · ${setor}` : ''}
+            Renda <b>{formatarDinheiro(renda / 12)}</b>/mês{setor && setor !== titulo ? ` · ${setor}` : ''}
           </span>
         )}
       </button>
