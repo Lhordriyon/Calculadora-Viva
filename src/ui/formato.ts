@@ -17,6 +17,29 @@ export const NOMES: Record<Atributo, string> = {
   aparencia: 'Aparência',
 };
 
+/** Dinheiro curto para os cartões do cabeçalho: "R$ 958 mil", "R$ 13 mi", "R$ 1,2 bi", "R$ 11 tri". */
+export function dinheiroCurto(valor: number): string {
+  const sinal = valor < 0 ? '−' : '';
+  const v = Math.abs(valor);
+  for (const [base, nome] of [
+    [1e12, 'tri'],
+    [1e9, 'bi'],
+    [1e6, 'mi'],
+    [1e3, 'mil'],
+  ] as const) {
+    if (v < base * 0.9995) continue;
+    const x = v / base;
+    const texto = x < 9.95 ? x.toFixed(1).replace('.', ',').replace(/,0$/, '') : String(Math.round(x));
+    return `${sinal}R$ ${texto} ${nome}`;
+  }
+  return `${sinal}R$ ${Math.round(v)}`;
+}
+
+/** As iniciais do retrato: a do nome e a do sobrenome. */
+export function iniciais(nome: string, sobrenome: string): string {
+  return `${nome.trim()[0] ?? ''}${sobrenome.trim()[0] ?? ''}`.toLocaleUpperCase('pt-BR');
+}
+
 export const CORES: Record<Atributo, string> = {
   saude: 'var(--saude)',
   felicidade: 'var(--felicidade)',

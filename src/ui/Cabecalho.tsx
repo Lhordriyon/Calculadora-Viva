@@ -4,9 +4,11 @@ import { patrimonioTotal } from '../motor/campos.ts';
 import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
 import { cargoDe } from '../motor/poder.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
-import { formatarDinheiro } from '../motor/texto.ts';
+import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
-import { anos, CORES, NOMES } from './formato.ts';
+import { anos, CORES, dinheiroCurto, iniciais, NOMES } from './formato.ts';
+import { Icone, ICONE_DO_ATRIBUTO } from './Icones.tsx';
+import { Marca } from './Marca.tsx';
 
 interface Props {
   vida: EstadoVida;
@@ -42,92 +44,115 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
           ? nomeDoCargo(carreira, n['nivel'] ?? 0, eu.genero)
           : conteudo.setores.get(eu.t['setor'] ?? '')?.nome;
   const titulo = cargo?.esfera === 'vitalicio' ? noGenero(cargo.nome, eu.genero) : eu.q['principe'] ? (eu.genero === 'f' ? 'princesa' : 'príncipe') : eu.q['herdeiro_regime'] ? 'herdeiro do Regime' : '';
+  // A coroa no retrato: quem nasceu ou chegou ao topo (a coroa, o Regime, a ilha) e quem tem bilhão.
+  const coroa = Boolean(titulo) || patrimonio >= 1e9;
+  const icoFase = fase === 'expansao' ? 'sobe' : fase === 'normal' ? 'estavel' : 'desce';
+  const pais = vida.entidades['pais']?.nome ?? 'país';
   return (
     <header class={`cabecalho${compacto ? ' compacto' : ''}`}>
-      <div class="topo">
-        <h1>
-          {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>
-        </h1>
+      <div class="barra-marca">
+        <div class="marca-topo" aria-hidden="true">
+          <Marca classe="marca-mini" />
+          <span class="nome-jogo">
+            Trajetória
+            <small>sua vida, suas escolhas</small>
+          </span>
+        </div>
         <div class="botoes-topo">
           <button class="icone" type="button" aria-label="Família" onClick={aoAbrirFamilia}>
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <circle cx="9" cy="8" r="3.2" />
-              <path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6" />
-              <circle cx="17" cy="9.5" r="2.6" />
-              <path d="M15.8 14.3c2.9-.4 5.2 1.7 5.2 5.2" />
-            </svg>
+            <Icone nome="familia" />
           </button>
           <button class="icone" type="button" aria-label="Carreira e poder" onClick={aoAbrirCarreira}>
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="7.5" width="18" height="12" rx="2" />
-              <path d="M9 7.5V5.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5.5v2" />
-              <path d="M3 12.5h18" />
-            </svg>
+            <Icone nome="trabalhar" />
           </button>
           <button class="icone" type="button" aria-label="Dinheiro e investimentos" onClick={aoAbrirDinheiro}>
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7z" />
-              <path d="M4 7l11-3v3" />
-              <circle cx="16" cy="13.5" r="1.3" />
-            </svg>
+            <Icone nome="carteira" />
           </button>
           <button class="icone" type="button" aria-label="Menu" onClick={aoAbrirMenu}>
-            ⋯
+            <Icone nome="menu" />
           </button>
         </div>
       </div>
-      <button class="sub" type="button" aria-label={`${anos(vida.idade)}, ${lugar?.nome}, ${vida.ano}${nomeFase ? `, ${nomeFase}` : ''}: ver o país`} onClick={aoAbrirPais}>
-        {titulo && <b class="titulo-nobre">{titulo} · </b>}
-        {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']} · {vida.ano}
-        {nomeFase && <span class={`fase ${fase}`}> · {nomeFase}</span>}
-        <span class="ver-pais" aria-hidden="true">
-          {' '}
-          · {vida.entidades['pais']?.nome ?? 'país'} ›
-        </span>
-      </button>
-      <div class="atributos">
+      <div class="identidade">
+        <div class="retrato" aria-hidden="true">
+          <span>{iniciais(eu.nome, vida.sobrenome)}</span>
+          {coroa && (
+            <span class="selo">
+              <Icone nome="coroa" tamanho={13} />
+            </span>
+          )}
+        </div>
+        <div class="quem">
+          <h1>
+            {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>
+          </h1>
+          <p class="sub">
+            {titulo && <b class="titulo-nobre">{titulo} · </b>}
+            {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']}
+          </p>
+          <button class={`chip-pais ${fase}`} type="button" aria-label={`${nomeFase ? capitalizar(nomeFase) : 'Economia normal'}, ${vida.ano}: ver o país`} onClick={aoAbrirPais}>
+            <span class="pilula">
+              <Icone nome={icoFase} tamanho={16} />
+              <span class="nome-fase">{nomeFase ? capitalizar(nomeFase) : 'Economia normal'}</span>
+              <span class="pais">
+                · {pais} {vida.ano} <span aria-hidden="true">🇧🇷 ›</span>
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="indicadores">
         {ATRIBUTOS.map((a) => {
           const valor = Math.round(n[a] ?? 0);
           return (
-            <div class="atributo" key={a}>
-              <div class="rotulo">
-                <span>{NOMES[a]}</span>
-                <b>{valor}</b>
-              </div>
-              <div
-                class="barra"
-                role="meter"
-                aria-label={NOMES[a]}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={valor}
-                style={{ '--cor': CORES[a] }}
-              >
+            <div class="indicador" key={a} style={{ '--cor': CORES[a] }}>
+              <Icone nome={ICONE_DO_ATRIBUTO[a]} tamanho={20} classe="ico" />
+              <span class="rotulo">{NOMES[a]}</span>
+              <b>{valor}</b>
+              <div class="barra" role="meter" aria-label={NOMES[a]} aria-valuemin={0} aria-valuemax={100} aria-valuenow={valor}>
                 <span style={{ width: `${valor}%` }} />
               </div>
             </div>
           );
         })}
       </div>
-      <button class="saldo" type="button" onClick={aoAbrirDinheiro}>
-        <span>
-          Dinheiro <b>{formatarDinheiro(dinheiro)}</b>
+      <button
+        class="financas"
+        type="button"
+        onClick={aoAbrirDinheiro}
+        aria-label={`Dinheiro ${formatarDinheiro(dinheiro)}${divida >= 1 ? `, dívida ${formatarDinheiro(divida)}` : ''}; patrimônio ${formatarDinheiro(patrimonio)}; renda ${formatarDinheiro(renda / 12)} por mês${setor ? `, ${setor}` : ''}. Abrir dinheiro e investimentos`}
+      >
+        <span class="kpi">
+          <small>
+            <Icone nome="carteira" tamanho={16} classe="ico" />
+            <span class="rotulo">Dinheiro</span>
+          </small>
+          <b>{dinheiroCurto(dinheiro)}</b>
+          {divida >= 1 && <em class="divida">dívida {dinheiroCurto(divida)}</em>}
         </span>
-        {divida >= 1 && (
-          <span class="divida">
-            Dívida <b>{formatarDinheiro(divida)}</b>
-          </span>
-        )}
-        {Math.abs(patrimonio - dinheiro) >= 1 && (
-          <span>
-            Patrimônio <b>{formatarDinheiro(patrimonio)}</b>
-          </span>
-        )}
-        {renda >= 1 && (
-          <span>
-            Renda <b>{formatarDinheiro(renda / 12)}</b>/mês{setor && setor !== titulo ? ` · ${setor}` : ''}
-          </span>
-        )}
+        <span class="kpi">
+          <small>
+            <Icone nome="patrimonio" tamanho={16} classe="ico" />
+            <span class="rotulo">Patrimônio</span>
+          </small>
+          <b>{dinheiroCurto(patrimonio)}</b>
+        </span>
+        <span class="kpi">
+          <small>
+            <Icone nome="renda" tamanho={16} classe="ico" />
+            <span class="rotulo">{setor && setor !== titulo ? capitalizar(setor) : 'Renda'}</span>
+          </small>
+          <b>
+            {renda >= 1 ? (
+              <>
+                {dinheiroCurto(renda / 12)}
+                <small>/mês</small>
+              </>
+            ) : (
+              'sem renda'
+            )}
+          </b>
+        </span>
       </button>
     </header>
   );

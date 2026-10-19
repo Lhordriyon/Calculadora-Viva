@@ -5,6 +5,7 @@ import { fichasDoAno } from '../motor/regras.ts';
 import type { Verbo } from '../motor/constantes.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { anos, parentesco } from './formato.ts';
+import { COR_DO_VERBO, Icone, ICONE_DO_VERBO } from './Icones.tsx';
 
 /** Tempo em que as opções ignoram toques logo depois de aparecer (evita escolher sem querer num toque duplo). */
 const CARENCIA_MS = 450;
@@ -107,30 +108,38 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
       <div class="palco">
         {acoes.length > 0 && (
           <section class="ficha" aria-labelledby="titulo-ficha">
-            <p class="quando" id="titulo-ficha">
-              {fichasUsadas(vida) > 0
-                ? `Ainda dá para ${restantes === 1 ? 'mais uma' : `mais ${restantes}`}:`
-                : restantes === 1
-                  ? `Aos ${vida.idade}, o que fazer este ano?`
-                  : `Aos ${vida.idade}, ${restantes} coisas este ano:`}
+            <p class="quando titulo-escolhas" id="titulo-ficha">
+              <Icone nome="bussola" tamanho={18} />
+              <b>Suas escolhas</b>
+              <span>
+                {fichasUsadas(vida) > 0
+                  ? `· ainda dá para ${restantes === 1 ? 'mais uma' : `mais ${restantes}`}`
+                  : restantes === 1
+                    ? `· aos ${vida.idade}, uma este ano`
+                    : `· aos ${vida.idade}, ${restantes} este ano`}
+              </span>
             </p>
             {/* O verbo é um botão curto; tocar abre a lista das ações dele (o ponto marca o que é novo). */}
             <div class="verbos">
               {acoes.map((a) => (
-                <button class="verbo" type="button" key={a.verbo} onClick={() => setAberto(a.verbo)}>
+                <button class="verbo" type="button" key={a.verbo} style={{ '--cor': COR_DO_VERBO[a.verbo] }} onClick={() => setAberto(a.verbo)}>
+                  <Icone nome={ICONE_DO_VERBO[a.verbo]} tamanho={22} classe="ico" />
                   <b>{NOMES_VERBO[a.verbo]}</b>
                   {a.opcoes.some((o) => o.novo) && (
                     <span class="ponto-novo">
                       <span class="so-leitor">, tem novidade</span>
                     </span>
                   )}
+                  <Icone nome="chevron" tamanho={18} classe="chevron" />
                 </button>
               ))}
             </div>
           </section>
         )}
-        <button class={`botao grande${acoes.length > 0 ? ' secundario' : ''}`} type="button" onClick={aoAvancar}>
-          +1 ano <small>{acoes.length > 0 ? 'só viver' : `fazer ${vida.idade + 1}`}</small>
+        <button class="botao grande viver" type="button" onClick={aoAvancar} aria-label={acoes.length > 0 ? 'Viver mais 1 ano, sem fazer mais nada' : `Viver mais 1 ano: fazer ${vida.idade + 1}`}>
+          <Icone nome="avancar" tamanho={22} />
+          <span>Viver mais 1 ano</span>
+          <Icone nome="seta" tamanho={22} classe="seta" />
         </button>
       </div>
     );

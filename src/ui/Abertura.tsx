@@ -122,7 +122,10 @@ export function Abertura({ conteudo, vidas, aviso, aoNascer, escolherDeInicio = 
   return (
     <main class="abertura">
       <Marca />
-      <h1>Trajetória</h1>
+      <h1>
+        Trajetória
+        <small>sua vida, suas escolhas</small>
+      </h1>
       <p>Uma vida inteira em poucos minutos. Você pode tentar quase tudo; o mundo vai reagir.</p>
       {aviso && (
         <p class="aviso-save" role="status">

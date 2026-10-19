@@ -6,6 +6,7 @@ import type { Entrada, EstadoVida } from '../motor/tipos.ts';
 import { porqueDe } from '../motor/virada.ts';
 import { conteudo } from '../conteudo.ts';
 import { avisosDeInflacao, chipDoBalanco, chipDosAlugueis, chipsDe, visivel, type Chip } from './formato.ts';
+import { Icone } from './Icones.tsx';
 
 /** O verbo de uma ação ("Estudar"), para a etiqueta da entrada. */
 function verboDe(h: Entrada, c: Conteudo): string | undefined {
@@ -36,13 +37,21 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) 
   const chips = chipsDe(h, nomeDe, inflacao);
   chips.push(...balanco);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
+  // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
+  const marco = (h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true;
   return (
-    <li class={`ano ${h.tipo}`}>
+    <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`}>
       <span class="idade" aria-label={`${h.idade} anos`}>
         {h.idade}
       </span>
-      <div class={`entrada ${h.tipo}${nova ? ' nova' : ''}`}>
-        {verbo && <span class="etiqueta">{verbo}</span>}
+      <div class={`entrada ${h.tipo}${marco ? ' marco' : ''}${nova ? ' nova' : ''}`}>
+        {marco ? (
+          <span class="etiqueta etiqueta-marco">
+            <Icone nome="coroa" tamanho={15} /> Marco da trajetória{verbo ? ` · ${verbo}` : ''}
+          </span>
+        ) : (
+          verbo && <span class="etiqueta">{verbo}</span>
+        )}
         <p>{h.texto}</p>
         {h.escolha && <p class="escolhida">→ {h.escolha.texto}</p>}
         {h.resultado && <p class="resultado">{h.resultado}</p>}
