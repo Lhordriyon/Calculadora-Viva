@@ -692,6 +692,34 @@ const portoes10 = [
     `${pct(fizeramAto)} de ${governantes.length} governos; sanção depois de romper ${pct(sancaoDepoisDeRomper)}, depois da visita ${pct(sancaoDepoisDaVisita)} (laboratório de ${LAB_DIPLOMATICO} governos)`,
   ],
 ] as const;
+/** Bloco A: o país em números no fim de cada vida (as vidas do jogador, sem as dinastias). */
+const faixa = (f: (n: Vida['numeros']) => number): [number, number, number] => {
+  const xs = ordenar(vidas.map((v) => f(v.numeros)));
+  return [percentil(xs, 10), percentil(xs, 50), percentil(xs, 90)];
+};
+const idhFim = faixa((n) => n.idh);
+const giniFim = faixa((n) => n.gini);
+const populacaoFim = faixa((n) => n.populacao / 1e6);
+const perCapitaFim = faixa((n) => n.pibPerCapita);
+const HISTORIAS_DOS_NUMEROS = ['pib_recorde', 'desigualdade_no_jornal', 'idh_muito_alto', 'idh_em_queda', 'pais_envelhece'];
+const vidasComHistoria = HISTORIAS_DOS_NUMEROS.map((id) => [id, vidas.filter((v) => v.eventos.includes(id)).length / Math.max(1, vidas.length)] as const);
+const portoes11 = [
+  [
+    'Os números do país são plausíveis no fim da vida: IDH mediano entre 0,75 e 0,95, Gini mediano entre 0,42 e 0,6 e população mediana entre 150 e 230 milhões',
+    idhFim[1] >= 0.75 && idhFim[1] <= 0.95 && giniFim[1] >= 0.42 && giniFim[1] <= 0.6 && populacaoFim[1] >= 150 && populacaoFim[1] <= 230,
+    `IDH ${num(idhFim[1], 3)}, Gini ${num(giniFim[1], 3)}, população ${num(populacaoFim[1], 0)} milhões`,
+  ],
+  [
+    'O país termina diferente de vida para vida: p90 − p10 ≥ 0,03 no IDH e no Gini',
+    idhFim[2] - idhFim[0] >= 0.03 && giniFim[2] - giniFim[0] >= 0.03,
+    `IDH ${num(idhFim[0], 3)}–${num(idhFim[2], 3)}, Gini ${num(giniFim[0], 3)}–${num(giniFim[2], 3)}`,
+  ],
+  [
+    'Os números viram história: cada uma das 5 histórias do país em números aparece em ≥ 2% das vidas',
+    vidasComHistoria.every(([, x]) => x >= 0.02),
+    vidasComHistoria.map(([id, x]) => `${id} ${pct(x)}`).join(' · '),
+  ],
+] as const;
 /** Fatia 1.2 do universo de bolso: a dívida como contrato (atraso, nome sujo, acordo, caducar, leilão). */
 const comDivida = (f: (d: HistoriaDasDividas) => boolean, vs: readonly Vida[] = vidas): number => vs.filter((v) => f(v.dividas)).length / Math.max(1, vs.length);
 const sujas = vidas.filter((v) => v.dividas.sujo);
@@ -987,6 +1015,18 @@ for (const [g, x] of [...foraPorGoverno].sort((a, b) => b[1].anos - a[1].anos)) 
   l(`| ${nome} | ${x.anos.toLocaleString('pt-BR')} | ${pct(x.sancoes / Math.max(1, x.anos), 2)} | ${pct(x.acordos / Math.max(1, x.anos), 2)} |`);
 }
 l();
+l('## Portões do bloco A (o país em números)');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoes11) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('| No fim da vida | p10 | mediana | p90 |');
+l('|---|---|---|---|');
+l(`| IDH | ${num(idhFim[0], 3)} | ${num(idhFim[1], 3)} | ${num(idhFim[2], 3)} |`);
+l(`| Desigualdade (Gini) | ${num(giniFim[0], 3)} | ${num(giniFim[1], 3)} | ${num(giniFim[2], 3)} |`);
+l(`| População (milhões) | ${num(populacaoFim[0], 0)} | ${num(populacaoFim[1], 0)} | ${num(populacaoFim[2], 0)} |`);
+l(`| PIB per capita | ${formatarDinheiro(perCapitaFim[0])} | ${formatarDinheiro(perCapitaFim[1])} | ${formatarDinheiro(perCapitaFim[2])} |`);
 l('## Life simulator');
 l();
 l('| Métrica | Valor |');
@@ -1215,6 +1255,7 @@ for (const [nome, ok, detalhe] of portoes7) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes8) console.log(`${ok ? '✓' : '·'} portão 8: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes9) console.log(`${ok ? '✓' : '·'} portão 9: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes10) console.log(`${ok ? '✓' : '·'} portão 10: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoes11) console.log(`${ok ? '✓' : '·'} portão A: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

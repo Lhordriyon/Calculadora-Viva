@@ -3,7 +3,7 @@
  * seguidas, a vida de origem escolhida e a dinastia. Cada tarefa depende só da semente: o resultado é o mesmo rodando
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
-import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
+import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
@@ -330,6 +330,8 @@ export interface Vida {
   sancoes: { anos: number | null; vistos: number; comCausa: boolean }[];
   acordos: number;
   atos: number;
+  /** O país em números no fim da vida: IDH, desigualdade, população e PIB per capita (reais de hoje). */
+  numeros: { idh: number; gini: number; populacao: number; pibPerCapita: number };
   /** A primeira infância: a sequência de histórias até os 6 anos (com a escolha), as decisões antes dos 5 e se algo dos 5 aos 12 teve causa nos anos até os 4. */
   comeco: string;
   decisoesAntesDos5: number;
@@ -568,6 +570,11 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     sancoes: sancoesDaVida(e),
     acordos: e.historico.filter((h) => h.ref?.startsWith('exterior:acordo:') || (h.ref === 'pais:diplomacia' && h.mudancas?.some((m) => m.c.endsWith('.acordo') && m.q === 1))).length,
     atos: e.historico.filter((h) => h.ref === 'pais:diplomacia').length,
+    numeros: (() => {
+      const p = e.entidades['pais']!;
+      const i = indicadoresDoPais(p);
+      return { idh: i.idh, gini: i.gini, populacao: p.n['populacao'] ?? 0, pibPerCapita: i.pibPerCapita };
+    })(),
     trabalho: (() => {
       const demitido = new Set(e.historico.filter((h) => h.ref === 'demissao').map((h) => h.ano));
       const t = { alto: 0, demitidoAlto: 0, baixo: 0, demitidoBaixo: 0 };
