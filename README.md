@@ -34,11 +34,12 @@
 
 | Indicador | Mediana | Varia entre (p10 a p90) |
 |---|---|---|
-| IDH | 0,83 | 0,80 a 0,87 |
-| Desigualdade (Gini) | 0,53 | 0,48 a 0,56 |
-| População | 194 milhões | depende de quando a vida acaba |
+| 🎓 IDH | 0,83 | 0,80 a 0,87 |
+| ⚖️ Desigualdade (Gini) | 0,53 | 0,48 a 0,56 |
+| 👥 População | 193 milhões | 177 a 208 milhões |
+| 💰 PIB per capita | R$ 252 mil | R$ 117 mil a R$ 650 mil |
 
-As cinco histórias novas aparecem em 9% a 23% das vidas. O histórico completo de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
+As cinco histórias novas aparecem em 6% a 16% das vidas cada. O resto ficou como estava: nenhuma história morta, nenhuma estratégia que vence todas, a mesma CPU por vida, e as vidas com filho em 32,6% (eram 33,3%). O histórico completo de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
 
 ## 🗺️ Os próximos blocos
 

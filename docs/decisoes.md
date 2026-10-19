@@ -845,6 +845,80 @@ O dono mandou três telas do APK (uma soberana bilionária aos 50 anos) e pediu 
 - **Gêmeos e irmãos que se relacionam entre si.** Os irmãos aparecem pelo texto, não como laços próprios.
 - **O Spearman entre gerações continua acima do portão (0,86).** A divisão entre irmãos baixa a fortuna de quem herda, mas os 85% de vidas com um filho só, ou nenhum, seguem herdando tudo.
 
+## Os blocos do dono: bloco A, o país em números (19/10)
+
+O dono fez seis perguntas de uma vez (19/10):
+- por que o soberano não recebe salário, parte dos impostos ou taxa da coroa;
+- por que o país não tem PIB, PIB per capita, Gini, IDH nem população;
+- por que o título do Tesouro comprado não entra no balanço como ativo, pagando no caixa pessoal ou no da empresa;
+- por que o Estado não paga pesquisa;
+- por que não há armas nem guerra;
+- por que as ideias dele não estavam sendo aplicadas.
+
+Ele pediu atualizações em blocos pequenos, cada uma descrita, colorida, na página de abertura do repositório.
+
+**Por que as ideias esperavam:**
+- todas estavam no registro (`docs/ideias.md`): o Tesouro é a I-31, o título é a I-34, a coroa é a I-41, a ilha é a I-43, a pesquisa é a I-54, as forças armadas são a I-60 e a guerra é a I-61;
+- elas ficavam nas fases 4 a 7 da arquitetura, ordenadas por dependência, e o trabalho vinha fatia a fatia pela fase 1 (contas, contratos, o ano em etapas, os filhos).
+
+A ordem agora é a do dono, respeitando só as dependências (`docs/ideias.md › A ordem do dono`).
+
+**O que mudou:**
+- **O PIB** (`pais.pib`), em reais de hoje: começa em R$ 11,7 trilhões e cresce exatamente o crescimento do ano, o mesmo número que a folha País mostra.
+- **A população** (`pais.populacao`): começa em 213 milhões.
+  - Cresce 0,45% ao ano em 2026, menos 0,022 ponto por ano depois (a transição demográfica), com piso de −0,35%.
+  - Soma 0,01 ponto por ponto de saúde pública acima de 50, e 0,006 por ponto de pobreza acima de 25.
+  - Para de crescer por volta de 2045 e depois encolhe.
+- **Três números derivados**, sem estado nem save (`campos.ts › indicadoresDoPais`):
+  - o PIB per capita;
+  - o Gini, que sobe com a pobreza e cai com a educação;
+  - o IDH, a média geométrica de saúde, educação e renda (o log do PIB per capita em dólar).
+- **A violência passa a ler o Gini:** o mesmo peso de antes por ponto de pobreza, mais o efeito da educação.
+- **A folha País ganha a seção "Em números":** os cinco indicadores, a seta do ano e uma linha sobre o que cada um quer dizer.
+- **Cinco histórias leem os números:** o PIB recorde (pedir aumento, pôr a sobra na bolsa, churrasco), a desigualdade no jornal, o IDH muito alto (trocar o plano de saúde pelo SUS), o IDH em queda (pagar plano, cobrar o vereador) e o país que encolhe.
+- **O texto do conteúdo** mostra o IDH e o Gini com vírgula ("0,83") e a população em milhões ("205 milhões"): os campos ganharam `casas` e `milhoes`.
+- **O save antigo** ganha o PIB e a população projetados de 2026 até o ano dele, sem sorteio.
+- **O README** abre com as novidades: o que a atualização trouxe, o que não trouxe e os próximos blocos. O `CHANGELOG.md` guarda o histórico.
+
+**Decisões tomadas sozinho:**
+- **O bloco A primeiro.** É o único dos cinco sem dependência.
+  - O Tesouro (B) é a base dos outros três: quem paga a coroa, a pesquisa e o exército é o orçamento.
+  - Mas ele mexe na dívida do país, nas contrapartes do livro (hoje `tesouro` é um nome de contraparte, não uma entidade) e nos contratos. É uma atualização inteira.
+- **Os números de partida** são os do Brasil real, arredondados:
+  - o PIB de 2024 (R$ 11,7 trilhões);
+  - a população estimada de 2025 (213 milhões);
+  - Gini perto de 0,52 e IDH perto de 0,77 com as estatísticas típicas.
+- **Gini e IDH derivados, não guardados.** Eles são funções do que o país já tem (pobreza, educação, saúde, PIB per capita). Guardar seria estado duplicado, e o validador exigiria leitores para uma cópia.
+- **O PIB cresce o crescimento já arredondado.** Com o valor sem arredondar, o PIB crescia um pouco diferente do número que a folha mostra (o teste pegou 4,24% contra 4,2%).
+- **Peso 1 nas cinco histórias.**
+  - Com peso 2, elas tiravam anos das histórias de família: nas mesmas 600 vidas, as vidas com filho caíam de 28,8% para 25,7%.
+  - Com peso 1, ficam em 28,2%. O país é pano de fundo; a família é o centro.
+
+**Medidas** (túnel de 10.000 vidas; a CPU na mesma máquina):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| PIB, população, PIB per capita, Gini e IDH | não existiam | no fim da vida: IDH 0,80 a 0,87 (mediana 0,83), Gini 0,48 a 0,56 (0,53), população 177 a 208 milhões (193), PIB per capita R$ 117 mil a R$ 650 mil (R$ 252 mil) |
+| As cinco histórias do país em números | — | em 6% a 16% das vidas cada (o IDH em queda 6,0%, a desigualdade 9,7%, o PIB recorde 11,7%, o país que encolhe 15,4%, o IDH muito alto 16,0%) |
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Saturação V5 / V20 | 57,4% / 90,6% | 57,1% / 90,3% |
+| Assinaturas por 1.000 vidas (sem a origem) | 906 (591) | 909 (585) |
+| Mobilidade (Spearman origem × fim) | 0,31 | 0,31 |
+| Vidas com filho / com 2 ou mais | 33,3% / 13,6% | 32,6% / 13,3% |
+| Mortes pela violência do país | 4,5% | 3,9% (variação de amostra: nas mesmas 3.000 vidas, 3,8% sem as histórias novas e 4,6% com elas) |
+| Mudanças de estado causadas pelo jogador | 44,8% | 44,8% |
+| CPU por vida (A/B, 400 vidas, duas rodadas) | 62,8–65,1 ms | 63,0–63,1 ms |
+| Testes | 238 | 244 |
+| Conteúdo | 560 eventos | 565 eventos |
+
+O `tudo_pela_sua_mesa` (quem centralizou tudo na empresa) aparecia em menos de 0,05% das vidas e morreu nesta rodada, com os caminhos novos. A condição desceu de 85 para 82 de dependência: quem funda sozinho começa em 80, e agora basta uma decisão de centralizar (antes, duas) para a consequência poder aparecer.
+
+**O que ficou de fora:**
+- **O IDH e o Gini ainda não mudam o voto.** O eleitor continua lendo crescimento, desemprego, inflação, violência e saúde.
+- **A população não muda o mercado de trabalho nem a previdência.** São as coortes da I-70.
+- **Não há gráfico da história dos indicadores** (I-80).
+- **Os blocos B a E**, na ordem de `docs/ideias.md › A ordem do dono`.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
