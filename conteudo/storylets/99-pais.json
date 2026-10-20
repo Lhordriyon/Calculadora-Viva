@@ -783,6 +783,12 @@
     "peso": 3,
     "texto": "Terceiro mês de greve dos professores. A escola virou uma quadra com cadeado, e o ano letivo, um conceito.",
     "resumo": "ficou sem aula na greve dos professores",
+    "trechos": {
+      "negociar": [
+        { "se": { "irmaos": { "min": 1 } }, "texto": "negociar com o irmão menor" },
+        { "texto": "negociar fiado na padaria" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Estudar sozinh{o|a} pelo celular",
@@ -804,7 +810,7 @@
         "texto": "Ajudar em casa",
         "resumo": "ajudou em casa durante a greve",
         "resultado": {
-          "texto": "Você aprendeu a cozinhar arroz, consertar chuveiro e negociar com o irmão menor. Matemática, nem tanto.",
+          "texto": "Você aprendeu a cozinhar arroz, consertar chuveiro e {negociar}. Matemática, nem tanto.",
           "efeitos": { "felicidade": 1, "inteligencia": -1, "saude": 1 }
         }
       }

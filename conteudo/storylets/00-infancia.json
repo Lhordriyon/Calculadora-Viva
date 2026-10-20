@@ -189,16 +189,29 @@
         },
         { "se": { "classe_origem": { "min": 2 } }, "texto": "escolinha do bairro" },
         { "texto": "escola municipal, com fila no portão" }
+      ],
+      "encontro": [
+        { "se": { "marcas": ["amigo_de_infancia"] }, "texto": "Na carteira do lado, {amigo}, {amigo:o mesmo|a mesma} do balde da pracinha," },
+        { "se": { "marcas": ["pre_escola"], "classe_origem": { "max": 2 } }, "texto": "Na carteira do lado, {amigo}, da sua turma da pré-escola," },
+        { "se": { "classe_origem": { "min": 4 } }, "texto": "Na carteira do lado, {amigo}, que mora no seu condomínio," },
+        { "texto": "Na carteira do lado, {amigo}, que mora na sua rua," }
+      ],
+      "laco": [
+        {
+          "se": { "marcaHa": [{ "marca": "amigo_de_infancia", "min": 1 }] },
+          "texto": "No recreio, a parceria do balde virou um aperto de mão secreto de sete passos. {amigo} continua {amigo:seu melhor amigo|sua melhor amiga}."
+        },
+        { "texto": "No recreio vocês já tinham um aperto de mão secreto. {amigo} virou {amigo:seu melhor amigo|sua melhor amiga}." }
       ]
     },
-    "texto": "Primeiro dia na {escola}, [mochila maior que você|uniforme dois números acima|lancheira nova em folha]. {amigo:Um menino|Uma menina} chamad{amigo:o|a} {amigo} oferece metade do biscoito recheado. A metade com mais recheio.",
-    "resumo": "conheceu {amigo} no primeiro dia de escola",
+    "texto": "Primeiro dia na {escola}, [mochila maior que você|uniforme dois números acima|lancheira nova em folha]. {encontro} oferece metade do biscoito recheado. A metade com mais recheio.",
+    "resumo": "sentou ao lado de {amigo} no primeiro dia de escola",
     "escolhas": [
       {
         "texto": "Aceitar o biscoito",
         "resumo": "aceitou metade do biscoito de {amigo}",
         "resultado": {
-          "texto": "No recreio vocês já tinham um aperto de mão secreto. {amigo} virou {amigo:seu melhor amigo|sua melhor amiga}.",
+          "texto": "{laco}",
           "efeitos": { "felicidade": 4, "marcas": ["amigo_de_infancia"] }
         }
       },

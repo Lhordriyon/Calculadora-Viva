@@ -273,7 +273,7 @@
         "resumo": "dividiu o balde com {amigo} e ganhou um amigo para a vida",
         "resultado": {
           "texto": "Vocês constroem juntos um castelo que dura até a primeira chuva. A amizade dura mais.",
-          "efeitos": { "amigo.vinculo": 10, "felicidade": 2 }
+          "efeitos": { "amigo.vinculo": 10, "felicidade": 2, "marcas": ["amigo_de_infancia"] }
         }
       },
       {

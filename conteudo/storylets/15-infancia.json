@@ -331,7 +331,13 @@
     "id": "briga_na_cozinha",
     "idade": [5, 12],
     "condicoes": { "familia": "conflituosa" },
-    "texto": "Os pais brigam alto na cozinha, de novo. Seu irmão menor chora no quarto, ou é você que está com vontade.",
+    "trechos": {
+      "no_quarto": [
+        { "se": { "irmaos": { "min": 1 } }, "texto": "Seu irmão menor chora no quarto, ou é você que está com vontade." },
+        { "texto": "Filh{o|a} únic{o|a} não tem com quem dividir o susto: no quarto, é só você e a vontade de chorar." }
+      ]
+    },
+    "texto": "Os pais brigam alto na cozinha, de novo. {no_quarto}",
     "resumo": "ouviu os pais brigarem",
     "escolhas": [
       {

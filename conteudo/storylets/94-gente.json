@@ -210,7 +210,7 @@
         "teste": { "chance": 0.6 },
         "sucesso": {
           "texto": "Vocês se encontraram numa padaria. Mesma risada, mesmo nariz. Em uma hora pareciam irmãos de vida inteira.",
-          "resumo": "encontrou um meio-irmão perdido e ganhou um irmão",
+          "resumo": "encontrou a parte da família que não conhecia",
           "efeitos": { "felicidade": 5, "marcas": ["meio_irmao"] }
         },
         "fracasso": {

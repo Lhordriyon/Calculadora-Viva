@@ -13,12 +13,19 @@
     "condicoes": { "classe_origem": { "max": 0 }, "mae.vivo": true },
     "texto": "{mae} trabalha como {mae.ocupacao} e chega tarde. Com você ajudando depois da aula, [sobra um dinheirinho para o gás|a casa não para|dá para pagar a conta de luz em dia].",
     "resumo": "ajudou a família no trabalho desde criança",
+    "trechos": {
+      "bico": [
+        { "se": { "irmaos": { "min": 2 } }, "texto": "[vendeu bala no sinal|cuidou dos irmãos menores|separou recicláveis com a vizinha]" },
+        { "se": { "irmaos": { "min": 1 } }, "texto": "[vendeu bala no sinal|cuidou do irmão menor|separou recicláveis com a vizinha]" },
+        { "texto": "[vendeu bala no sinal|catou latinha na feira|separou recicláveis com a vizinha]" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Ajudar depois da aula",
         "resumo": "ajudou a família no trabalho desde criança",
         "resultado": {
-          "texto": "Você [vendeu bala no sinal|cuidou dos irmãos menores|separou recicláveis com a vizinha] e aprendeu a contar dinheiro rápido. A lição de casa ficou para a madrugada.",
+          "texto": "Você {bico} e aprendeu a contar dinheiro rápido. A lição de casa ficou para a madrugada.",
           "efeitos": { "dinheiro": 300, "inteligencia": -2, "mae.vinculo": 8, "marcas": ["trabalhou_cedo"] }
         }
       },
