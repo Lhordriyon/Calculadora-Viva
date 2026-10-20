@@ -456,11 +456,13 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     verificarModelo(m.causa, onde, new Set(), exigidas(m.condicoes), marcasDoPapel, erro, undefined);
     if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(m.causa)) aviso(onde, 'a causa completa "morreu aos N anos, ..."; comece com minúscula');
   });
+  // Quando você nasce, a família inteira está viva; o epitáfio olha para trás e pode lembrar de quem já se foi.
+  const todosVivos = PAPEIS_QUE_MORREM.map(sabeSeVivo);
   for (const [m, info] of Object.entries(c.marcas)) {
-    if (info.epitafio) verificarModelo(info.epitafio, `marcas.json › ${m}`, new Set(), new Set([m]), marcasDoPapel, erro, undefined);
+    if (info.epitafio) verificarModelo(info.epitafio, `marcas.json › ${m}`, new Set(), new Set([m, ...todosVivos]), marcasDoPapel, erro, undefined);
   }
-  c.mundo.nascimento.forEach((n, i) => verificarModelo(n.texto, `mundo.json › nascimento[${i}]`, new Set(), new Set(), marcasDoPapel, erro, undefined));
-  c.mundo.epitafios.forEach((t, i) => verificarModelo(t, `mundo.json › epitafios[${i}]`, new Set(), new Set(), marcasDoPapel, erro, undefined));
+  c.mundo.nascimento.forEach((n, i) => verificarModelo(n.texto, `mundo.json › nascimento[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
+  c.mundo.epitafios.forEach((t, i) => verificarModelo(t, `mundo.json › epitafios[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
     for (const t of [...ac.textos, ac.resumo]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, new Set(['como']), new Set(), marcasDoPapel, erro, PAPEIS);
   }
@@ -492,12 +494,26 @@ function textosDe(s: Storylet): string[] {
 /** Marca de mentira que diz "a condição garante que existe empresa" (para o texto poder usar {empresa}). */
 const COM_EMPRESA = '@empresa';
 
-/** Qualidades que a condição garante que existem (as exigidas e as de marcaHa), mais a empresa, se ela é exigida. */
+/** Personagens que morrem no meio da vida e que o texto chama pelo nome: o texto precisa saber se estão vivos. */
+export const PAPEIS_QUE_MORREM = ['mae', 'pai', 'avo', 'amigo', 'amor'] as const;
+
+/** Marca de mentira que diz "a condição sabe se esse personagem está vivo" (`<papel>.vivo`, ou a qualidade `<papel>.faleceu`). */
+const sabeSeVivo = (papel: string): string => `@vivo:${papel}`;
+
+/** Qualidades de quem joga que o motor tira quando o personagem morre (pessoas.ts › morrerPersonagem): exigir uma delas é exigir que ele esteja vivo. */
+const VIVO_PELA_QUALIDADE: Record<string, readonly string[]> = { amor: ['namoro', 'casado'] };
+
+/** Qualidades que a condição garante que existem (as exigidas e as de marcaHa), mais a empresa, se ela é exigida, e quem ela sabe se está vivo. */
 function qualidadesGarantidas(cond: Condicoes | undefined): string[] {
   const marcas = [...(cond?.marcas ?? []), ...(cond?.marcaHa ?? []).map((m) => m.marca)];
   // Qualquer condição sobre a empresa (menos "false") falha sem empresa: então ela garante a empresa.
   const exige = marcas.some((m) => m.startsWith('empresa.')) || Object.entries(cond ?? {}).some(([k, v]) => k.startsWith('empresa.') && v !== false && v !== undefined);
-  return exige ? [...marcas, COM_EMPRESA] : marcas;
+  // Vivo ou morto, tanto faz: o texto escrito para um dos dois casos é o que importa (vivo: a fala; morto: a lembrança).
+  const lidas = new Set([...marcas, ...(cond?.semMarcas ?? [])]);
+  const vivos = PAPEIS_QUE_MORREM.filter(
+    (p) => (cond !== undefined && `${p}.vivo` in cond) || lidas.has(`${p}.faleceu`) || (VIVO_PELA_QUALIDADE[p] ?? []).some((m) => marcas.includes(m)),
+  ).map(sabeSeVivo);
+  return [...marcas, ...(exige ? [COM_EMPRESA] : []), ...vivos];
 }
 
 function criadosPor(ef: Efeitos | undefined): Set<string> {
@@ -544,8 +560,10 @@ function verificarTextos(
   s.escolhas?.forEach((esc, i) => {
     const o = `${onde} › escolha ${i + 1}`;
     const exigidas = new Set([...exigidasStorylet, ...qualidadesGarantidas(esc.condicoes)]);
-    ver(esc.texto, `${o} › texto`, new Set(), exigidas);
-    if (esc.bloqueio) ver(esc.bloqueio, `${o} › bloqueio`, new Set(), exigidas);
+    // O botão aparece mesmo bloqueado: a condição da escolha não diz se quem ele cita está vivo.
+    const doBotao = new Set([...exigidas].filter((m) => !m.startsWith('@vivo:') || exigidasStorylet.has(m)));
+    ver(esc.texto, `${o} › texto`, new Set(), doBotao);
+    if (esc.bloqueio) ver(esc.bloqueio, `${o} › bloqueio`, new Set(), doBotao);
     if (comprimentoMaximo(esc.texto) > LIMITE_TEXTO_ESCOLHA) aviso(o, `texto do botão longo (${comprimentoMaximo(esc.texto)} caracteres)`);
     if (comprimentoMaximo(esc.resumo) > LIMITE_RESUMO) aviso(o, `resumo longo (${comprimentoMaximo(esc.resumo)} caracteres)`);
     if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(esc.resumo)) aviso(o, 'resumo completa "aos N você ..."; comece com minúscula');
@@ -610,6 +628,14 @@ function verificarModelo(
     if (![...marcasExigidas].some((m) => garantidoras.has(m))) {
       erro(onde, `usa {${p}} sem exigir uma qualidade que garanta esse personagem (${[...garantidoras].join(', ') || 'nenhuma'})`);
     }
+  }
+
+  // Morto não fala: quem pode ter morrido só aparece em texto que sabe se ele está vivo. O ator único já vem vivo
+  // (o motor só escolhe ator morto quando a condição lê "ator.vivo"); com dois atores possíveis, o outro pode ter morrido.
+  const peloNome = new Set([...a.variaveis.filter((v) => v !== 'ator').map((v) => separar(v.includes('.') ? v : `${v}.nome`).ent), ...a.concordancias]);
+  for (const p of PAPEIS_QUE_MORREM) {
+    if (!peloNome.has(p) || criadosAqui.has(p) || (atores?.length === 1 && atores[0] === p) || marcasExigidas.has(sabeSeVivo(p))) continue;
+    erro(onde, `usa {${p}} sem saber se a pessoa está viva: ponha "${p}.vivo" na condição ou num trecho (viva: a fala; morta: a lembrança)`);
   }
   return a.variaveis;
 }

@@ -130,6 +130,51 @@ describe('validador', () => {
     ]);
     expect(erros).toMatch(/escolha sem condições/);
   });
+
+  it('morto não fala: quem pode ter morrido só aparece em texto que sabe se está vivo', () => {
+    const base = { idade: [30, 50], resumo: 'ouviu o pai', efeitos: { felicidade: 1 } };
+    const SEM_SABER = /usa \{pai\} sem saber se a pessoa está viva/;
+    // Sem "pai.vivo": o pai morto perguntaria da pós.
+    expect(errosCom([{ ...base, id: 'pai_fantasma', texto: '{pai} perguntou se agora você é doutor.' }])).toMatch(SEM_SABER);
+    // Na condição, ou num trecho (vivo: a fala; morto: a lembrança), passa.
+    expect(errosCom([{ ...base, id: 'pai_vivo', condicoes: { 'pai.vivo': true }, texto: '{pai} perguntou se agora você é doutor.' }])).not.toMatch(SEM_SABER);
+    const trecho = {
+      ...base,
+      id: 'pai_lembrado',
+      texto: 'Você fez uma pós. {pergunta}',
+      trechos: {
+        pergunta: [
+          { se: { 'pai.vivo': true }, texto: '{pai} perguntou se agora você é doutor.' },
+          { se: { 'pai.vivo': false }, texto: 'Você lembrou de {pai}, que ia perguntar.' },
+          { texto: 'Ninguém perguntou nada.' },
+        ],
+      },
+    };
+    expect(errosCom([trecho])).not.toMatch(/pai_lembrado/);
+    // O trecho padrão não sabe: citar o pai nele também é fantasma.
+    const padrao = { ...trecho, id: 'pai_no_padrao', trechos: { pergunta: [{ se: { 'pai.vivo': true }, texto: '{pai} perguntou.' }, { texto: '{pai} não perguntou.' }] } };
+    expect(errosCom([padrao])).toMatch(/pai_no_padrao.*trechos\.pergunta\[1\].*usa \{pai\} sem saber/);
+    // O botão aparece mesmo bloqueado: a condição da escolha não basta para o texto dele.
+    const botao = errosCom([
+      {
+        id: 'botao_da_mae',
+        idade: [20, 40],
+        texto: 'Despejo.',
+        resumo: 'foi despejado',
+        escolhas: [
+          { texto: 'Ir para a casa de {mae}', resumo: 'foi para a casa da mãe', condicoes: { 'mae.vivo': true }, resultado: { texto: '{mae} arrumou o quarto.', efeitos: { felicidade: 1 } } },
+          escolha('Alugar um quarto', { felicidade: -1 }),
+        ],
+      },
+    ]);
+    expect(botao).toMatch(/botao_da_mae › escolha 1 › texto: usa \{mae\} sem saber/);
+    expect(botao).not.toMatch(/botao_da_mae › escolha 1 › resultado/);
+    // Linhas e causas de morte também.
+    const reais = lerFontes();
+    const linha = { idade: [20, 60], texto: 'Você e {amigo} falaram bobagem a tarde inteira.' };
+    const { problemas } = validarConteudo({ ...reais, linhas: [...(reais.linhas as unknown[]), linha] });
+    expect(problemas.some((p) => p.nivel === 'erro' && /usa \{amigo\} sem saber/.test(p.mensagem))).toBe(true);
+  });
 });
 
 function escolha(texto: string, efeitos: Record<string, unknown>) {
