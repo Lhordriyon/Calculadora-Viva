@@ -8,10 +8,8 @@ const TRACOS = {
   inteligencia:
     'M11 4.5a3 3 0 0 0-5.6 1.2A3.2 3.2 0 0 0 3.7 11a3.4 3.4 0 0 0 2 5.6A3.2 3.2 0 0 0 11 18.5z M13 4.5a3 3 0 0 1 5.6 1.2 3.2 3.2 0 0 1 1.7 5.3 3.4 3.4 0 0 1-2 5.6 3.2 3.2 0 0 1-5.3 1.9z M11 4.5v15 M13 4.5v15 M7.5 9.5c1 0 1.8.6 2.2 1.4 M16.5 9.5c-1 0-1.8.6-2.2 1.4',
   aparencia: 'M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9z M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z',
-  // dinheiro
+  // as folhas
   carteira: 'M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1V7z M4 7l11-3v3 M16 13.5h.01',
-  patrimonio: 'M4 20h16 M5 15.5l4.5-4.5 3.5 3.5 6-6 M15 8.5h4v4',
-  renda: 'M9.5 3.5h5l-1.3 3h-2.4z M9 7c-3 2.3-5 5.4-5 8.3 0 3.2 2.6 4.7 8 4.7s8-1.5 8-4.7c0-2.9-2-6-5-8.3z M13.8 11.6c-.4-.6-1-.9-1.8-.9-1 0-1.7.5-1.7 1.3 0 1.8 3.6 1 3.6 2.8 0 .8-.8 1.4-1.9 1.4-.9 0-1.6-.4-2-1 M12 9.5v1.2 M12 16.2v1.2',
   // verbos
   estudar: 'M2.5 9.5L12 5l9.5 4.5L12 14z M6.5 11.5v4.3c0 1.4 2.5 2.7 5.5 2.7s5.5-1.3 5.5-2.7v-4.3 M21.5 9.5v5',
   trabalhar: 'M3 7.5h18v12H3z M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2 M3 12.5h18',
@@ -22,14 +20,11 @@ const TRACOS = {
     'M18 10.5c0-3-2.9-5-6.5-5-2 0-3.7.6-4.9 1.6L4.5 6v3.4C3.6 10.3 3 11.5 3 12.8c0 1.9 1.2 3.5 3 4.5V20h3v-1.8h4V20h3v-2.6c1.3-.8 2.2-1.9 2.6-3.1H20v-3.8z M9 5.8l1-2.3h3l1 2.3 M14.5 10.5h.01',
   // o resto
   coroa: 'M3.5 18h17 M4 16L3 7l5 4 4-6 4 6 5-4-1 9z',
-  bussola: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 5.5l2 6.5-2 6.5-2-6.5z',
   sobe: 'M3 17l6-6 4 4 8-8 M15 7h6v6',
   desce: 'M3 7l6 6 4-4 8 8 M15 17h6v-6',
   estavel: 'M3 12h18 M15 6l6 6-6 6',
-  seta: 'M5 12h14 M13 6l6 6-6 6',
-  avancar: 'M3.5 6.5l7.5 5.5-7.5 5.5z M12.5 6.5l7.5 5.5-7.5 5.5z',
-  chevron: 'M9.5 6l6 6-6 6',
   menu: 'M4 7h16 M4 12h16 M4 17h16',
+  fechar: 'M6 6l12 12 M18 6L6 18',
 } as const;
 
 export type NomeIcone = keyof typeof TRACOS;
@@ -60,7 +55,7 @@ export const ICONE_DO_VERBO: Record<Verbo, NomeIcone> = { estudar: 'estudar', tr
 /** A cor de cada verbo (o ícone e a borda do botão). */
 export const COR_DO_VERBO: Record<Verbo, string> = {
   estudar: 'var(--inteligencia)',
-  trabalhar: 'var(--destaque)',
+  trabalhar: 'var(--dinheiro)',
   saude: 'var(--saude)',
   familia: 'var(--vinculo)',
   sair: 'var(--violeta)',

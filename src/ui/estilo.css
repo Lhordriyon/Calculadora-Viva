@@ -12,9 +12,8 @@
   --destaque-forte: #855a00;
   --destaque-texto: #1f1604;
   --destaque-suave: #f7eac6;
-  --brilho: rgb(217 163 33 / 0.28);
   --saude: #2c8a56;
-  --felicidade: #a87800;
+  --felicidade: #b85414;
   --inteligencia: #3462c4;
   --aparencia: #b0407a;
   --dinheiro: #4f6b2a;
@@ -39,9 +38,8 @@
     --destaque-forte: #f4cd6c;
     --destaque-texto: #1a1204;
     --destaque-suave: #2e2612;
-    --brilho: rgb(232 184 74 / 0.32);
     --saude: #45d98e;
-    --felicidade: #f2c94c;
+    --felicidade: #ff9450;
     --inteligencia: #6aa2ff;
     --aparencia: #ff74b2;
     --dinheiro: #a9cf6a;
@@ -114,9 +112,10 @@ button {
 
 .botao {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0 8px;
   width: 100%;
   min-height: 52px;
   padding: 12px 18px;
@@ -144,10 +143,6 @@ a.botao {
 .icone:focus-visible {
   outline: 3px solid var(--inteligencia);
   outline-offset: 2px;
-}
-
-.botao:not(.secundario) {
-  box-shadow: 0 7px 18px color-mix(in srgb, var(--destaque) 22%, transparent);
 }
 
 .botao.secundario {
@@ -226,7 +221,6 @@ button {
   width: 72px;
   height: 72px;
   border-radius: 16px;
-  box-shadow: 0 0 28px var(--brilho);
 }
 
 /* O nome do jogo como na barra da marca: ouro, espaçado, com o lema embaixo. */
@@ -258,7 +252,6 @@ button {
 
 .abertura .aviso-save {
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--destaque) 30%, var(--borda));
   border-radius: 14px;
   background: var(--destaque-suave);
   color: var(--texto);
@@ -309,121 +302,40 @@ button {
 
 /* ---------------------------------------------------------------- cabeçalho */
 
+/* O estado é terciário: uma faixa de texto que quebra linha, sem caixas (só o que se toca tem alvo).
+   A história é o produto; o cabeçalho cede por quebra de linha, nunca cortando um número. */
 .cabecalho {
   flex: none;
+  container: cabecalho / inline-size;
   scrollbar-width: thin;
   scrollbar-color: var(--borda) transparent;
-  max-height: 50dvh;
+  max-height: 46dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: calc(2px + env(safe-area-inset-top)) 16px 10px;
+  padding: calc(2px + env(safe-area-inset-top)) 16px 2px;
   background: var(--fundo);
   border-bottom: 1px solid var(--borda);
 }
 
+/* Durante um evento: só o nome, os botões e o dinheiro, para o cartão do evento ter a tela. */
+.cabecalho.compacto .sub,
+.cabecalho.compacto .selo-pais,
 .cabecalho.compacto .indicadores,
-.cabecalho.compacto .financas,
-.cabecalho.compacto .chip-pais {
+.cabecalho.compacto .saldo .item:not(.dinheiro) {
   display: none;
 }
 
-.cabecalho.compacto {
-  padding-bottom: 6px;
-}
-
-/* A barra da marca: o símbolo e o nome do jogo à esquerda, as folhas à direita. */
-.barra-marca {
+.cabecalho .topo {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 4px;
 }
 
-.marca-topo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.marca-mini {
-  flex: none;
-  width: 26px;
-  height: 26px;
-}
-
-.nome-jogo {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  color: var(--destaque-forte);
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.nome-jogo small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--texto-suave);
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-}
-
-.botoes-topo .icone {
-  color: var(--texto);
-}
-
-/* Quem joga: o retrato com as iniciais, o nome, a idade e a cidade, e o selo do país. */
-.identidade {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.retrato {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid var(--destaque);
-  background: radial-gradient(circle at 35% 30%, var(--superficie-2), var(--superficie));
-  box-shadow: 0 0 0 3px var(--fundo), 0 0 18px var(--brilho);
-  color: var(--destaque-forte);
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-
-.retrato .selo {
-  position: absolute;
-  right: -4px;
-  bottom: -4px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--destaque);
-  background: var(--fundo);
-  color: var(--destaque-forte);
-}
-
-.quem {
+/* O nome numa linha só (o sobrenome menor): o que não couber vira reticências, e os botões ficam no lugar. */
+.cabecalho h1 {
   flex: 1;
   min-width: 0;
-}
-
-/* O nome numa linha só (o sobrenome menor): o que não couber vira reticências. */
-.cabecalho h1 {
   margin: 0;
   overflow: hidden;
   font-size: 20px;
@@ -433,126 +345,137 @@ button {
 }
 
 .cabecalho h1 .sobrenome {
-  font-weight: 700;
+  color: var(--texto-suave);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.botoes-topo .icone {
+  color: var(--texto);
 }
 
 .cabecalho .sub {
-  margin: 1px 0 0;
-  overflow: hidden;
+  margin: -2px 0 0;
   color: var(--texto-suave);
   font-size: 13px;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.3;
 }
 
-/* O selo da economia abre a folha do país: alvo de 44px sem empurrar o cabeçalho (as margens negativas devolvem a altura). */
-.chip-pais {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.titulo-nobre {
+  color: var(--texto);
+  font-weight: 700;
+}
+
+/* O selo da economia é um link de texto que abre a folha do país: quebra linha e nunca corta, e o "›"
+   diz que é tocável. Alvo de 44px sem empurrar o cabeçalho (as margens negativas devolvem a altura). */
+.selo-pais {
+  --cor-fase: var(--texto-suave);
+  display: block;
   max-width: 100%;
   min-height: 44px;
-  margin: -4px 0 -8px;
-  padding: 0;
+  margin: -9px 0 -11px;
+  padding: 9px 0 11px;
   border: 0;
-  background: transparent;
+  background: none;
   color: var(--texto-suave);
+  font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.chip-pais > * {
-  flex: none;
+.selo-pais .ico {
+  margin-right: 4px;
+  vertical-align: -3px;
+  color: var(--cor-fase);
 }
 
-/* A pílula fica por dentro do alvo de toque. */
-.chip-pais .pilula {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 3px 10px 3px 8px;
-  border: 1px solid color-mix(in srgb, var(--cor-fase, var(--texto-suave)) 45%, var(--borda));
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--cor-fase, var(--texto-suave)) 9%, var(--superficie));
+.selo-pais .nome-fase {
+  color: var(--cor-fase);
 }
 
-.chip-pais .nome-fase,
-.chip-pais svg {
-  color: var(--cor-fase, var(--texto-suave));
+.selo-pais .ano-pais {
+  color: var(--inteligencia);
 }
 
-.chip-pais.expansao {
+.selo-pais .seta-pais {
+  margin-left: 5px;
+  color: var(--inteligencia);
+  font-weight: 700;
+}
+
+.selo-pais.expansao {
   --cor-fase: var(--saude);
 }
 
-.chip-pais.recessao,
-.chip-pais.crise {
+.selo-pais.recessao,
+.selo-pais.crise {
   --cor-fase: var(--ruim);
 }
 
-.chip-pais .pais {
-  color: var(--inteligencia);
-  white-space: nowrap;
-}
-
-.chip-pais:focus-visible {
+.selo-pais:focus-visible {
   outline: 3px solid var(--inteligencia);
   outline-offset: -2px;
   border-radius: 8px;
 }
 
-/* Os quatro indicadores: um cartão com a cor de cada um, o ícone, o nome, o valor e a barra. */
+/* Os quatro indicadores em 2×2, sem caixa: o nome suave, o número e uma barra fina na cor de cada um.
+   Se o nome e o número não cabem lado a lado (letra grande), o número desce; nada é cortado. */
 .indicadores {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 4px 16px;
+  margin-top: 4px;
 }
 
 .indicador {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  column-gap: 6px;
   min-width: 0;
-  padding: 5px 10px 6px;
-  border: 1px solid color-mix(in srgb, var(--cor) 38%, var(--borda));
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--cor) 9%, var(--superficie));
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.2;
 }
 
-.indicador .ico {
+.nome-indicador {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--texto-suave);
+}
+
+/* O ícone só aparece quando cabe sem empurrar o número para baixo. */
+.nome-indicador .ico {
+  display: none;
+  flex: none;
   color: var(--cor);
 }
 
-.indicador .rotulo {
-  min-width: 0;
-  overflow: hidden;
-  color: var(--texto);
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+@container cabecalho (min-width: 19.5em) {
+  .nome-indicador .ico {
+    display: block;
+  }
 }
 
 .indicador b {
-  font-size: 16px;
+  color: var(--texto);
+  font-size: 15px;
   font-variant-numeric: tabular-nums;
 }
 
 .indicador .barra {
-  grid-column: 1 / -1;
+  flex: 1 0 100%;
 }
 
-/* O medidor: a trilha é a mesma cor, mais clara. */
+/* O medidor: a trilha é a mesma cor, mais clara; o valor é uma escala (anima sem refazer o layout). */
 .barra {
   height: 5px;
+  margin-top: 2px;
   border-radius: 99px;
   background: color-mix(in srgb, var(--cor, var(--texto-suave)) 20%, transparent);
   overflow: hidden;
@@ -561,99 +484,50 @@ button {
 .barra > span {
   display: block;
   height: 100%;
-  border-radius: 99px;
   background: var(--cor);
-  transition: width 0.5s ease;
+  transform: scaleX(var(--v, 0));
+  transform-origin: left;
+  transition: transform 0.5s ease;
 }
 
-/* O dinheiro em três cartões: um botão só, que abre a folha Dinheiro. */
-.financas {
-  display: grid;
-  /* A renda leva o cargo junto: um pouco mais de largura para ela. */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
-  gap: 6px;
+/* O dinheiro numa linha de texto que quebra: nenhum valor é cortado. Tocar abre a folha Dinheiro. */
+.saldo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: center;
+  gap: 0 10px;
   width: 100%;
-  margin-top: 6px;
-  padding: 0;
+  min-height: 44px;
+  margin-top: 2px;
+  padding: 3px 0;
   border: 0;
   background: none;
+  color: var(--texto-suave);
   font: inherit;
+  font-size: 13px;
+  line-height: 1.2;
   text-align: left;
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.financas .kpi {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-  min-height: 44px;
-  padding: 5px 9px 6px;
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  background: var(--superficie);
-}
-
-.financas .kpi > small {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.financas .rotulo {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.financas .ico {
-  flex: none;
-  color: var(--destaque-forte);
-}
-
-.financas small,
-.financas b,
-.financas em {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.saldo b {
+  color: var(--texto);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.financas small {
-  color: var(--texto-suave);
-  font-size: 11.5px;
-  font-weight: 600;
-}
-
-.financas b {
-  font-size: 15.5px;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-
-.financas b small {
-  color: var(--texto-suave);
-  font-size: 11.5px;
-  font-weight: 600;
-}
-
-.financas em {
-  color: var(--texto-suave);
-  font-size: 11.5px;
-  font-style: normal;
-}
-
-.financas em.divida {
+.saldo .divida,
+.saldo .divida b {
   color: var(--ruim);
-  font-weight: 700;
 }
 
-.financas:focus-visible {
-  outline: 3px solid var(--destaque);
+.saldo:focus-visible {
+  outline: 3px solid var(--inteligencia);
   outline-offset: 2px;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 /* ---------------------------------------------------------------- linha do tempo */
@@ -672,7 +546,7 @@ button {
 }
 
 .vida.com-evento {
-  min-height: 0;
+  min-height: 3lh;
 }
 
 .linha-do-tempo {
@@ -718,8 +592,8 @@ button {
 }
 
 .ano.evento .idade {
-  background: var(--destaque-suave);
-  color: var(--destaque-forte);
+  background: color-mix(in srgb, var(--texto) 10%, transparent);
+  color: var(--texto);
 }
 
 .ano.npc .idade {
@@ -782,7 +656,6 @@ button {
 .entrada .escolhida {
   margin-top: 6px;
   font-weight: 700;
-  color: var(--destaque-forte);
 }
 
 .entrada .resultado {
@@ -795,6 +668,19 @@ button {
   font-size: 14px;
   font-style: italic;
   color: var(--texto-suave);
+}
+
+/* O balanço do ano (o patrimônio, os aluguéis) é contexto, não acontecimento: uma linha pequena e neutra. */
+.entrada .balanco {
+  margin-top: 6px;
+  color: var(--texto-suave);
+  font-size: 13px;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.entrada .balanco .ruim {
+  color: var(--ruim);
 }
 
 .chips {
@@ -812,7 +698,7 @@ button {
   font-size: 13px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--cor, var(--texto-suave));
+  color: color-mix(in srgb, var(--cor, var(--texto-suave)) 65%, var(--texto));
   background: color-mix(in srgb, var(--cor, var(--texto-suave)) 14%, transparent);
 }
 
@@ -832,7 +718,6 @@ button {
   border: 1px solid color-mix(in srgb, var(--destaque) 55%, var(--borda));
   border-radius: 14px;
   background: linear-gradient(135deg, var(--destaque-suave), color-mix(in srgb, var(--destaque-suave) 30%, var(--superficie)));
-  box-shadow: 0 4px 18px var(--brilho);
 }
 
 .etiqueta-marco {
@@ -884,6 +769,7 @@ button {
 .palco {
   flex: 0 1 auto;
   min-height: 0;
+  container: palco / inline-size;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -937,32 +823,34 @@ button {
   grid-template-columns: 1fr 1fr;
 }
 
+/* A cor do verbo (a do atributo que ele mexe) fica só na borda; o nome nunca é cortado (quebra linha). */
 .verbos .verbo {
-  min-height: 48px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  min-height: 44px;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px 6px 12px;
-  border: 1px solid color-mix(in srgb, var(--cor) 40%, var(--borda));
-  background: color-mix(in srgb, var(--cor) 8%, var(--superficie));
+  padding: 6px 10px 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--cor) 55%, var(--borda));
 }
 
 .verbos .verbo b {
-  display: block;
+  flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   font-size: 16px;
+  line-height: 1.2;
 }
 
 .verbos .verbo .ico {
+  display: none;
+  flex: none;
   color: var(--cor);
 }
 
-.verbos .verbo .chevron {
-  color: var(--texto-suave);
+/* O ícone só aparece quando cabe sem apertar o nome. */
+@container palco (min-width: 19em) {
+  .verbos .verbo .ico {
+    display: block;
+  }
 }
 
 .ponto-novo {
@@ -970,8 +858,7 @@ button {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--destaque);
-  box-shadow: 0 0 8px var(--brilho);
+  background: var(--destaque-forte);
 }
 
 .verbo {
@@ -1003,8 +890,8 @@ button {
 }
 
 .verbo:active {
-  border-color: var(--destaque);
-  background: var(--destaque-suave);
+  border-color: var(--texto-suave);
+  background: var(--superficie-2);
 }
 
 .verbo:focus-visible {
@@ -1012,70 +899,67 @@ button {
   outline-offset: 2px;
 }
 
-/* "Suas escolhas": o título da ficha do ano, em ouro, com quantas cabem neste ano. */
+/* "Suas escolhas": o título da ficha do ano diz quantas cabem neste ano, e quebra linha. */
 .ficha .titulo-escolhas {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.titulo-escolhas svg {
-  flex: none;
-  color: var(--destaque-forte);
+  color: var(--texto-suave);
+  font-weight: 600;
 }
 
 .titulo-escolhas b {
-  flex: none;
-  color: var(--destaque-forte);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  color: var(--texto);
+  font-weight: 700;
 }
 
-.titulo-escolhas span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Viver mais 1 ano: em ouro só quando não há o que escolher (o bebê). Com escolhas sobrando, é o
+   secundário e diz quantas sobram, para o ano não passar sem querer. Sempre numa linha. */
+.botao.viver {
+  min-height: 52px;
+  padding: 8px 16px;
+  font-size: 18px;
+}
+
+.botao.viver.secundario {
+  border-color: var(--destaque-forte);
+  background: var(--superficie);
+}
+
+.rotulo-viver {
   white-space: nowrap;
 }
 
-/* Viver mais 1 ano: o botão de ouro, sempre no polegar. */
-.botao.viver {
-  min-height: 56px;
-  justify-content: space-between;
-  padding: 12px 20px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--destaque) 82%, #fff), var(--destaque));
-  color: var(--destaque-texto);
-  box-shadow: 0 6px 22px var(--brilho), inset 0 1px 0 rgb(255 255 255 / 0.35);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.botao.viver .sobram {
+  color: var(--texto-suave);
+  font-size: 15px;
+  opacity: 1;
 }
 
-.botao.viver span {
-  flex: 1;
-  text-align: center;
+@container palco (max-width: 16.5em) {
+  .botao.viver .sobram {
+    display: none;
+  }
 }
 
 .novo {
   flex: none;
   padding: 0 6px;
   border-radius: 99px;
-  background: var(--destaque);
-  color: var(--destaque-texto);
+  background: var(--destaque-forte);
+  color: var(--fundo);
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
+/* O cartão do evento é uma coluna: quando falta tela, o texto rola por dentro e as opções ficam à vista. */
 .cartao-evento {
   position: relative;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   overscroll-behavior: contain;
   padding: 18px 16px 16px;
   border-radius: 20px;
-  background: linear-gradient(145deg, var(--superficie), color-mix(in srgb, var(--destaque) 4%, var(--superficie)));
+  background: var(--superficie);
   box-shadow: var(--sombra);
   border: 1px solid var(--borda);
 }
@@ -1093,6 +977,7 @@ button {
 }
 
 .cartao-evento .quando {
+  flex: none;
   margin: 0 0 6px;
   color: var(--texto-suave);
   font-size: 14px;
@@ -1100,12 +985,23 @@ button {
 }
 
 .cartao-evento .texto {
+  flex: 0 1 auto;
+  min-height: 2lh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Quando o texto rola, uma sombra na borda diz que há mais (o fundo "local" a cobre nas pontas). */
+  background:
+    linear-gradient(var(--superficie) 40%, transparent) top / 100% 18px no-repeat local,
+    linear-gradient(transparent, var(--superficie) 60%) bottom / 100% 18px no-repeat local,
+    linear-gradient(color-mix(in srgb, var(--texto) 22%, transparent), transparent) top / 100% 8px no-repeat scroll,
+    linear-gradient(transparent, color-mix(in srgb, var(--texto) 22%, transparent)) bottom / 100% 8px no-repeat scroll;
   margin: 0 0 14px;
   font-size: 19px;
   line-height: 1.48;
 }
 
 .opcoes {
+  flex: none;
   display: grid;
   gap: 8px;
 }
@@ -1127,8 +1023,8 @@ button {
 }
 
 .opcao:active:not(:disabled) {
-  border-color: var(--destaque);
-  background: var(--destaque-suave);
+  border-color: var(--texto-suave);
+  background: var(--superficie-2);
   transform: scale(0.99);
 }
 
@@ -1150,7 +1046,7 @@ button {
   .opcao:hover:not(:disabled),
   .verbo:hover,
   .chip-origem:hover {
-    border-color: var(--destaque);
+    border-color: var(--texto-suave);
   }
 
   .botao:hover {
@@ -1167,9 +1063,7 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgb(5 7 10 / 0.6);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+  background: rgb(5 7 10 / 0.72);
   animation: aparecer 0.2s ease both;
 }
 
@@ -1180,11 +1074,12 @@ button {
 }
 
 .folha {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 560px;
   max-height: 94dvh;
-  overflow: auto;
-  padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+  overflow: hidden;
   border: 1px solid var(--borda);
   border-bottom: 0;
   border-radius: 22px 22px 0 0;
@@ -1193,27 +1088,46 @@ button {
   animation: subir 0.25s ease both;
 }
 
-/* A alça: a folha sobe de baixo, como um cartão que se puxa. */
-.folha::before {
-  content: '';
-  display: block;
-  width: 38px;
-  height: 4px;
-  margin: -8px auto 14px;
-  border-radius: 99px;
-  background: var(--borda);
-}
-
 @keyframes subir {
   from {
     transform: translateY(24px);
   }
 }
 
-.folha h2 {
-  margin: 0 0 4px;
-  font-size: 24px;
-  line-height: 1.15;
+/* O título e o Fechar ficam fora da parte que rola: fechar está sempre onde o dedo está. */
+.folha-topo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 6px 6px 16px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.folha-topo h2 {
+  min-width: 0;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.folha-topo .fechar {
+  flex: none;
+  color: var(--texto);
+}
+
+.folha-corpo {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 16px calc(16px + env(safe-area-inset-bottom));
+}
+
+.folha-corpo > :first-child {
+  margin-top: 0;
 }
 
 .folha .acoes {
@@ -1346,6 +1260,23 @@ button {
   margin-top: 8px;
 }
 
+/* Cada medidor da Família: o nome suave e o número nas pontas, a barra embaixo. */
+.atributo {
+  font-size: 13px;
+}
+
+.atributo .rotulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--texto-suave);
+}
+
+.atributo .rotulo b {
+  color: var(--texto);
+  font-variant-numeric: tabular-nums;
+}
+
 .pessoa.falecida {
   opacity: 0.6;
 }
@@ -1357,7 +1288,7 @@ button {
   color: var(--texto-suave);
 }
 
-.dinheiro-folha .grupo {
+.folha .grupo {
   margin: 16px 0 0;
   padding: 0;
   border: 0;
@@ -1365,7 +1296,12 @@ button {
   gap: 10px;
 }
 
-.dinheiro-folha legend {
+/* O testamento vem depois das pessoas: um respiro a mais. */
+.familia .testamento {
+  margin-top: 22px;
+}
+
+.folha legend {
   margin-bottom: 8px;
   font-weight: 700;
 }
@@ -1488,7 +1424,6 @@ button {
 .save-trazido {
   margin-top: 16px;
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--destaque) 30%, var(--borda));
   border-radius: 14px;
   background: var(--destaque-suave);
 }
@@ -1725,11 +1660,6 @@ button {
   cursor: default;
 }
 
-.titulo-nobre {
-  color: var(--destaque-forte);
-  font-weight: 700;
-}
-
 /* Brincar de deus: as opções da jogada abrem dentro da folha, como no cartão do evento. */
 .dinheiro-folha .confirmar .opcoes {
   margin-top: 10px;
@@ -1804,82 +1734,4 @@ button {
 
 .politica .escolhas-origem {
   margin-top: 6px;
-}
-
-/* ---------------------------------------------------------------- letra grande (src/ui/letra.ts) */
-
-/* A sonda que mede a letra do sistema: 100px de altura com a letra normal. */
-.sonda-letra {
-  position: absolute;
-  display: inline-block;
-  visibility: hidden;
-  font-size: 100px;
-  line-height: 1;
-}
-
-/* Com a letra do sistema grande, o texto cresce e as caixas não: os rótulos que o ícone já diz saem,
-   os indicadores vão para uma linha só e o dinheiro vira pílulas que quebram linha. */
-.letra-grande .nome-jogo {
-  display: none;
-}
-
-.letra-grande .retrato {
-  width: 44px;
-  height: 44px;
-  font-size: 16px;
-}
-
-.letra-grande .indicadores {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px;
-}
-
-.letra-grande .indicador {
-  grid-template-columns: auto 1fr;
-  gap: 2px 4px;
-  padding: 5px 6px 6px;
-}
-
-.letra-grande .indicador .rotulo,
-.letra-grande .financas .rotulo,
-.letra-grande .verbos .verbo .chevron,
-.letra-grande .verbos .verbo .ico,
-.letra-grande .botao.viver svg {
-  display: none;
-}
-
-.letra-grande .indicador b {
-  justify-self: end;
-}
-
-.letra-grande .financas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.letra-grande .financas .kpi {
-  flex: 1 1 auto;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2px 6px;
-  min-height: 40px;
-  padding: 4px 9px;
-}
-
-.letra-grande .verbos .verbo {
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px;
-  padding-left: 12px;
-}
-
-.letra-grande .botao.viver {
-  justify-content: center;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.letra-grande .titulo-escolhas b {
-  letter-spacing: 0.04em;
 }

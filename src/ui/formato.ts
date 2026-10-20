@@ -158,14 +158,14 @@ export function chipDoBalanco(regra: Entrada | undefined, participacao: Particip
   if (!regra || regra.idade < 18) return null;
   const v = balancoDoAno(regra, participacao);
   if (Math.abs(v) < 1000) return null;
-  return { texto: `no ano, ${sinal(v)}${dinheiro(v)} de patrimônio`, cor: 'var(--dinheiro)', ruim: v < 0 };
+  return { texto: `patrimônio ${sinal(v)}${dinheiroCurto(Math.abs(v))}`, cor: 'var(--dinheiro)', ruim: v < 0 };
 }
 
-/** O chip dos aluguéis do ano, ao lado do balanço. */
+/** Os aluguéis do ano, na linha do balanço. */
 export function chipDosAlugueis(regra: Entrada | undefined): Chip | null {
   if (!regra) return null;
   const v = alugueisDoAno(regra);
-  return v >= 1 ? { texto: `aluguéis, +${dinheiro(v)}`, cor: 'var(--dinheiro)' } : null;
+  return v >= 1 ? { texto: `aluguéis +${dinheiroCurto(v)}`, cor: 'var(--dinheiro)' } : null;
 }
 
 /** "seu filho", "sua sobrinha": quem continua a história, do ponto de vista de quem morreu. */

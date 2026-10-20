@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
+import { Folha } from './Folha.tsx';
 import { carreiraDe, chanceDeEntrar, faixaDeIdade, nomeDoCargo, noGenero, salarioDoCargo } from '../motor/carreira.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
+import type { DefCargo, DefCarreira } from '../motor/esquema.ts';
 import { cargoDe, chanceDeEleicao, ondeDoCargo, proximaEleicao } from '../motor/poder.ts';
 import { POPULARIDADE_CRITICA } from '../motor/regras.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
@@ -17,6 +19,14 @@ interface Props {
 const porMes = (anual: number): string => `${formatarDinheiro(anual / 12)}/mês`;
 const pct = (p: number): string => `${Math.round(p * 100)}%`;
 
+/** O motivo que agrupa as fechadas: a idade, a influência e o ano da eleição viram um motivo só (o número de cada uma está na lista inteira). */
+function motivoDoGrupo(m: string): string {
+  if (m.startsWith('só entre')) return 'só para outras idades';
+  if (m.startsWith('precisa de influência')) return 'falta influência';
+  if (m.startsWith('a próxima eleição')) return 'não é ano de eleição';
+  return m;
+}
+
 /** O trabalho de agora e as vagas: tentar uma por ano, com a chance de passar à vista. */
 function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const eu = vida.entidades['eu']!;
@@ -26,10 +36,14 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const renda = eu.n['renda'] ?? 0;
   const [escolhida, setEscolhida] = useState<string | null>(null);
   const [saindo, setSaindo] = useState(false);
+  const [verTodas, setVerTodas] = useState(false);
   const vagas = conteudo.mundo.carreiras
     .map((k) => ({ k, motivo: motivoParaNaoOperar(vida, conteudo, { tipo: 'candidatar', carreira: k.id }) }))
     .sort((a, b) => Number(a.motivo !== null) - Number(b.motivo !== null) || b.k.salario[1] - a.k.salario[1]);
   const sel = vagas.find((v) => v.k.id === escolhida);
+  // As fechadas pelo mesmo motivo viram uma linha só (o motivo à vista); "ver todas" abre a lista inteira.
+  const fechadas = new Map<string, typeof vagas>();
+  for (const v of vagas) if (v.motivo) fechadas.set(motivoDoGrupo(v.motivo), [...(fechadas.get(motivoDoGrupo(v.motivo)) ?? []), v]);
   const demitir: Operacao = { tipo: 'demitir' };
   const motivoDemissao = motivoParaNaoOperar(vida, conteudo, demitir);
 
@@ -71,7 +85,7 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
             Pedir demissão
           </button>
         ))}
-      <p class="nota">Uma tentativa por ano. Profissões de palco pagam pouco no começo e uma fortuna no topo.</p>
+      {vagas.some((v) => v.motivo === null) && <p class="nota">Uma tentativa por ano. Profissões de palco pagam pouco no começo e uma fortuna no topo.</p>}
       {sel && (
         <div class="confirmar">
           <p>
@@ -89,24 +103,48 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         </div>
       )}
       <ul class="vagas" aria-label="Profissões">
-        {vagas.map(({ k, motivo }) => {
-          const [min, max] = faixaDeIdade(k);
-          return (
-            <li key={k.id}>
-              <button type="button" class={`vaga${motivo ? ' fechada' : ''}`} aria-pressed={escolhida === k.id} onClick={() => setEscolhida(k.id)}>
-                <b>{noGenero(k.nome, g)}</b>
-                <small>
-                  {porMes(salarioDoCargo(k, 0))} → {porMes(k.salario[1])}
-                  {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEntrar(vida, k))} de chance`}
-                  {k.fama ? ' · fama' : ''}
-                  {min !== 18 || max !== 64 ? ` · ${min}–${max} anos` : ''}
-                </small>
+        {vagas
+          .filter((v) => v.motivo === null)
+          .map((v) => (
+            <Vaga key={v.k.id} {...v} vida={vida} escolhida={escolhida === v.k.id} aoEscolher={setEscolhida} />
+          ))}
+        {[...fechadas].map(([motivo, grupo]) =>
+          verTodas || grupo.length < 3 ? (
+            grupo.map((v) => <Vaga key={v.k.id} {...v} vida={vida} escolhida={escolhida === v.k.id} aoEscolher={setEscolhida} />)
+          ) : (
+            <li key={motivo}>
+              <button type="button" class="vaga fechada" onClick={() => setVerTodas(true)}>
+                <b>
+                  {grupo.length} profissões fechadas: {motivo}
+                </b>
+                <small>ver todas</small>
               </button>
             </li>
-          );
-        })}
+          ),
+        )}
       </ul>
     </fieldset>
+  );
+}
+
+/** Uma profissão da lista: o salário do começo ao topo e a chance (ou o motivo de não poder agora). */
+function Vaga({ k, motivo, vida, escolhida, aoEscolher }: { k: DefCarreira; motivo: string | null; vida: EstadoVida; escolhida: boolean; aoEscolher: (id: string) => void }) {
+  const g = vida.entidades['eu']!.genero;
+  const [min, max] = faixaDeIdade(k);
+  // A faixa de idade não se repete quando o motivo já é a idade.
+  const faixa = (min !== 18 || max !== 64) && !motivo?.startsWith('só entre') ? ` · ${min}–${max} anos` : '';
+  return (
+    <li>
+      <button type="button" class={`vaga${motivo ? ' fechada' : ''}`} aria-pressed={escolhida} onClick={() => aoEscolher(k.id)}>
+        <b>{noGenero(k.nome, g)}</b>
+        <small>
+          {porMes(salarioDoCargo(k, 0))} → {porMes(k.salario[1])}
+          {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEntrar(vida, k))} de chance`}
+          {k.fama ? ' · fama' : ''}
+          {faixa}
+        </small>
+      </button>
+    </li>
   );
 }
 
@@ -116,8 +154,13 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const g = eu.genero;
   const cargo = cargoDe(vida, conteudo);
   const [escolhido, setEscolhido] = useState<string | null>(null);
-  const cargos = conteudo.mundo.cargos.filter((k) => k.esfera !== 'vitalicio');
-  const sel = cargos.find((k) => k.id === escolhido);
+  const [verTodos, setVerTodos] = useState(false);
+  const cargos = conteudo.mundo.cargos
+    .filter((k) => k.esfera !== 'vitalicio')
+    .map((k) => ({ k, motivo: motivoParaNaoOperar(vida, conteudo, { tipo: 'candidatarCargo', cargo: k.id }) }));
+  const fechados = new Map<string, typeof cargos>();
+  for (const c of cargos) if (c.motivo) fechados.set(motivoDoGrupo(c.motivo), [...(fechados.get(motivoDoGrupo(c.motivo)) ?? []), c]);
+  const sel = cargos.find((c) => c.k.id === escolhido)?.k;
   const opSel: Operacao | null = sel ? { tipo: 'candidatarCargo', cargo: sel.id } : null;
   const motivoSel = opSel ? motivoParaNaoOperar(vida, conteudo, opSel) : null;
   const mandato = eu.n['mandato'] ?? 0;
@@ -148,8 +191,7 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         )}
       </dl>
       <p class="nota">
-        Influência vem do patrimônio, dos bens (jatinho, jornal, emissora), da fama, da empresa e do cargo. Ela decide eleições e abre portas. Eleição municipal nos anos múltiplos de 4; a
-        geral, dois anos depois.
+        A influência vem do patrimônio, dos bens, da fama, da empresa e do cargo, e decide eleições. Municipais nos anos múltiplos de 4; gerais, dois anos depois.
       </p>
       {sel && (
         <div class="confirmar">
@@ -171,44 +213,60 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         </div>
       )}
       <ul class="vagas" aria-label="Cargos eletivos">
-        {cargos.map((k) => {
-          const motivo = motivoParaNaoOperar(vida, conteudo, { tipo: 'candidatarCargo', cargo: k.id });
-          return (
-            <li key={k.id}>
-              <button type="button" class={`vaga${motivo ? ' fechada' : ''}`} aria-pressed={escolhido === k.id} onClick={() => setEscolhido(k.id)}>
+        {cargos
+          .filter((c) => c.motivo === null)
+          .map((c) => (
+            <Cargo key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />
+          ))}
+        {[...fechados].map(([motivo, grupo]) =>
+          verTodos || grupo.length < 3 ? (
+            grupo.map((c) => <Cargo key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />)
+          ) : (
+            <li key={motivo}>
+              <button type="button" class="vaga fechada" onClick={() => setVerTodos(true)}>
                 <b>
-                  {noGenero(k.nome, g)} {ondeDoCargo(vida, k)}
+                  {grupo.length} cargos fechados: {motivo}
                 </b>
-                <small>
-                  eleição em {proximaEleicao(vida.ano, k)} · influência {k.influencia}+ · campanha {formatarDinheiro(k.campanha)}
-                  {motivo ? '' : ` · ${pct(chanceDeEleicao(vida, k))}`}
-                </small>
+                <small>ver todos</small>
               </button>
             </li>
-          );
-        })}
+          ),
+        )}
       </ul>
     </fieldset>
   );
 }
 
-export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
-
+/** Um cargo eletivo da lista: a eleição, a influência e a campanha, e a chance (ou o motivo de não poder agora). */
+function Cargo({ k, motivo, vida, escolhido, aoEscolher }: { k: DefCargo; motivo: string | null; vida: EstadoVida; escolhido: boolean; aoEscolher: (id: string) => void }) {
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-carreira" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha dinheiro-folha">
-        <h2 id="titulo-carreira">Carreira e poder</h2>
+    <li>
+      <button type="button" class={`vaga${motivo ? ' fechada' : ''}`} aria-pressed={escolhido} onClick={() => aoEscolher(k.id)}>
+        <b>
+          {noGenero(k.nome, vida.entidades['eu']!.genero)} {ondeDoCargo(vida, k)}
+        </b>
+        <small>
+          eleição em {proximaEleicao(vida.ano, k)} · influência {k.influencia}+ · campanha {formatarDinheiro(k.campanha)}
+          {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEleicao(vida, k))}`}
+        </small>
+      </button>
+    </li>
+  );
+}
+
+export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
+  // Quem tem cargo de poder vê o Poder primeiro: as vagas estão fechadas para ele.
+  const comCargo = cargoDe(vida, conteudo) !== undefined;
+  const trabalho = <Trabalho vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
+  const poder = <Poder vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
+  return (
+    <Folha id="titulo-carreira" titulo="Carreira e poder" classe="dinheiro-folha" aoFechar={aoFechar}>
         {vida.idade < 16 ? (
           <p class="meta">Trabalho e eleição só a partir dos 16. Por enquanto, estude, brinque e junte histórias.</p>
         ) : (
           <>
-            <Trabalho vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
-            <Poder vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
+            {comCargo ? poder : trabalho}
+            {comCargo ? trabalho : poder}
           </>
         )}
         <div class="acoes">
@@ -216,7 +274,6 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
             Voltar
           </button>
         </div>
-      </div>
-    </div>
+    </Folha>
   );
 }

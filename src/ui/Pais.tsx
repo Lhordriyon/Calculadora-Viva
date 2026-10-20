@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
+import { Folha } from './Folha.tsx';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Politica } from '../motor/constantes.ts';
@@ -364,11 +365,6 @@ function Politicas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 
 /** A folha País: quem governa, como está o país, para onde ele vai e (para quem governa) as políticas. */
 export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
 
   const pais = vida.entidades['pais']!;
   const fase = faseDe(vida);
@@ -380,9 +376,7 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
   const votouEm = voto ? defGoverno(conteudo, voto[0].slice('voto_'.length)) : undefined;
 
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-pais" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha dinheiro-folha">
-        <h2 id="titulo-pais">{pais.nome}</h2>
+    <Folha id="titulo-pais" titulo={pais.nome} classe="dinheiro-folha" aoFechar={aoFechar}>
         <p class="meta">
           {fase === 'normal' ? 'Economia normal' : capitalizar(defFase(conteudo, fase).nome)} · governo: <b>{nomeDoGoverno(vida, conteudo)}</b>
           {bloco?.eleito !== false && !governa ? (eleicao === vida.ano ? ' · eleição para presidente neste ano' : ` · próxima eleição para presidente em ${eleicao}`) : ''}
@@ -421,7 +415,6 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
             Voltar
           </button>
         </div>
-      </div>
-    </div>
+    </Folha>
   );
 }

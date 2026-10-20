@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/hooks';
+import { Folha } from './Folha.tsx';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
 import { FILHOS, ehFilho } from '../motor/constantes.ts';
@@ -108,8 +108,8 @@ function Barra({ rotulo, valor, cor }: { rotulo: string; valor: number; cor: str
         <span>{rotulo}</span>
         <b>{v}</b>
       </div>
-      <div class="barra" role="meter" aria-label={rotulo} aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} style={{ '--cor': cor }}>
-        <span style={{ width: `${v}%` }} />
+      <div class="barra" role="meter" aria-label={rotulo} aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} style={{ '--cor': cor, '--v': v / 100 }}>
+        <span />
       </div>
     </div>
   );
@@ -123,11 +123,6 @@ interface Props {
 }
 
 export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
 
   const eu = vida.entidades['eu']!;
   const tipo = conteudo.mundo.familias.find((f) => f.id === eu.t['familia']);
@@ -139,9 +134,7 @@ export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
   });
 
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-familia" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha familia">
-        <h2 id="titulo-familia">Família</h2>
+    <Folha id="titulo-familia" titulo="Família" classe="familia" aoFechar={aoFechar}>
         <p class="meta">
           {capitalizar(descreverOrigem(classe?.nome, tipo?.nome))}
           {irmaos > 0 ? ` · ${irmaos === 1 ? '1 irmão' : `${irmaos} irmãos`}` : ' · filh' + (eu.genero === 'f' ? 'a' : 'o') + ' únic' + (eu.genero === 'f' ? 'a' : 'o')}
@@ -179,7 +172,6 @@ export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
             Voltar
           </button>
         </div>
-      </div>
-    </div>
+    </Folha>
   );
 }

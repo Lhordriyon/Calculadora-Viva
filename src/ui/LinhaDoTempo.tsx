@@ -27,7 +27,7 @@ interface PropsItem {
   nova: boolean;
   inflacao: boolean;
   nomeDe: (papel: string) => string | undefined;
-  /** O balanço do ano (e os aluguéis), na primeira entrada visível dele. */
+  /** O balanço do ano (e os aluguéis), numa linha discreta na primeira entrada visível dele. */
   balanco: Chip[];
   /** A causa de um ano anterior, no que aconteceu com quem joga (eventos, iniciativas dos outros, a morte). */
   porque: { idade: number; texto: string } | null;
@@ -35,12 +35,11 @@ interface PropsItem {
 
 function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
-  chips.push(...balanco);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
   const marco = (h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true;
   return (
-    <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`}>
+    <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`} data-id={h.id}>
       <span class="idade" aria-label={`${h.idade} anos`}>
         {h.idade}
       </span>
@@ -72,6 +71,17 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) 
               </li>
             ))}
           </ul>
+        )}
+        {/* O balanço do ano é contexto, não acontecimento: uma linha pequena, sem cor de destaque. */}
+        {balanco.length > 0 && (
+          <p class="balanco">
+            {balanco.map((c, i) => (
+              <span class={c.ruim ? 'ruim' : undefined} key={c.texto}>
+                {i > 0 ? ' · ' : ''}
+                {c.texto}
+              </span>
+            ))}
+          </p>
         )}
       </div>
     </li>

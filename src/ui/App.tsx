@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
 import { carregar, gravarJa, salvarDepois, type Save } from '../jogo/salvar.ts';
 import { copiarVida } from '../motor/livro.ts';
@@ -17,11 +17,22 @@ import { Carreira } from './Carreira.tsx';
 import { Dinheiro } from './Dinheiro.tsx';
 import { CartaoVida } from './CartaoVida.tsx';
 import { Familia } from './Familia.tsx';
+import { Folha } from './Folha.tsx';
 import { Pais } from './Pais.tsx';
 import { LinhaDoTempo } from './LinhaDoTempo.tsx';
 import { Menu } from './Menu.tsx';
 import { Palco } from './Palco.tsx';
-import { NO_APP } from './formato.ts';
+import { NO_APP, visivel } from './formato.ts';
+import { useVoltar } from './voltar.ts';
+
+/** Rola a linha do tempo até a entrada `id` (o começo da história do ano), ou até o fim se ela couber. */
+function rolar(linha: HTMLElement, id: number | null, suave: boolean): void {
+  const fim = linha.scrollHeight - linha.clientHeight;
+  let alvo = fim;
+  const el = id === null ? null : linha.querySelector<HTMLElement>(`[data-id="${id}"]`);
+  if (el) alvo = Math.min(fim, Math.max(0, el.getBoundingClientRect().top - linha.getBoundingClientRect().top + linha.scrollTop - 12));
+  linha.scrollTo({ top: alvo, behavior: suave ? 'smooth' : 'auto' });
+}
 
 function sementeNova(): number {
   try {
@@ -57,36 +68,29 @@ export function App() {
     vistas.current = vida?.historico.length ?? 0;
   });
 
-  // A linha do tempo rola por dentro, entre o cabeçalho e o palco. Ela desce até o fim quando
-  // cresce e quando o palco muda de altura (evento, lista de ações): o ano novo fica à vista.
+  // A linha do tempo rola por dentro, entre o cabeçalho e o palco. Quando cresce, ela mostra o começo da
+  // primeira entrada nova (a história do ano), e não o fim (o balanço); se o que é novo cabe, desce até o fim.
+  // Quando o palco muda de altura (evento, lista de ações), ela volta para o mesmo ponto.
   const [linha, setLinha] = useState<HTMLElement | null>(null);
   const tamanho = vida?.historico.length ?? 0;
+  const ancora = useRef<number | null>(null);
+  const contados = useRef(tamanho);
   useEffect(() => {
-    if (!linha || tamanho === 0) return;
-    const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    linha.scrollTo({ top: linha.scrollHeight, behavior: reduzido ? 'auto' : 'smooth' });
+    if (!linha || !vida) return;
+    const desde = Math.min(contados.current, tamanho);
+    contados.current = tamanho;
+    ancora.current = vida.historico.slice(desde).find(visivel)?.id ?? null;
+    rolar(linha, ancora.current, !matchMedia('(prefers-reduced-motion: reduce)').matches);
   }, [linha, tamanho, vida?.pendente?.instancia]);
   useEffect(() => {
     if (!linha || typeof ResizeObserver === 'undefined') return;
-    const observador = new ResizeObserver(() => {
-      linha.scrollTop = linha.scrollHeight;
-    });
+    const observador = new ResizeObserver(() => rolar(linha, ancora.current, false));
     observador.observe(linha);
     return () => observador.disconnect();
   }, [linha]);
 
-  // Com letra grande, o cartão do evento pode não caber: aí o cabeçalho esconde atributos e dinheiro
-  // até o evento (ou a sequência de eventos) acabar. Medido antes de pintar, sem piscar.
-  const [apertado, setApertado] = useState(false);
-  const evento = vida?.pendente ? `${vida.idade}:${vida.pendente.instancia}` : '';
-  useLayoutEffect(() => {
-    if (!evento) {
-      setApertado(false);
-      return;
-    }
-    const cartao = document.querySelector('.cartao-evento');
-    if (cartao && cartao.scrollHeight > cartao.clientHeight + 1) setApertado(true);
-  }, [evento]);
+  // O voltar do celular fecha a folha aberta (e só ela).
+  useVoltar(folha !== null, () => setFolha(null));
 
   const resumo = useMemo(() => (vida && !vida.vivo ? resumirVida(vida, conteudo) : null), [vida]);
   const acoes = useMemo(() => (vida?.vivo && !vida.pendente ? acoesDisponiveis(vida, conteudo, save.memoria) : []), [vida, save.memoria]);
@@ -121,6 +125,10 @@ export function App() {
     setEscolhendoVida(false);
     setFolha(null);
     guardar(novo);
+  }
+
+  function entendiAviso() {
+    setSave({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas });
   }
 
   function pedirNovaVida() {
@@ -210,7 +218,7 @@ export function App() {
         aoAbrirDinheiro={() => setFolha('dinheiro')}
         aoAbrirPais={() => setFolha('pais')}
         aoAbrirMenu={() => setFolha('menu')}
-        compacto={apertado}
+        compacto={Boolean(vida.pendente)}
       />
       <main class={`vida${vida.pendente ? ' com-evento' : ''}`} ref={setLinha}>
         <LinhaDoTempo vida={vida} novasDesde={novasDesde} />
@@ -235,17 +243,14 @@ export function App() {
       {folha === 'pais' && <Pais vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'menu' && <Menu viva={vida.vivo} save={save} conteudo={conteudo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoImportar={importar} />}
       {save.aviso && folha === null && (
-        <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-aviso">
-          <div class="folha">
-            <h2 id="titulo-aviso">Aviso</h2>
-            <p class="meta">{save.aviso}</p>
-            <div class="acoes">
-              <button class="botao" type="button" autoFocus onClick={() => setSave({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas })}>
-                Entendi
-              </button>
-            </div>
+        <Folha id="titulo-aviso" titulo="Aviso" aoFechar={entendiAviso}>
+          <p class="meta">{save.aviso}</p>
+          <div class="acoes">
+            <button class="botao" type="button" autoFocus onClick={entendiAviso}>
+              Entendi
+            </button>
           </div>
-        </div>
+        </Folha>
       )}
     </>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { Folha } from './Folha.tsx';
 import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
@@ -441,7 +442,7 @@ function Investimentos({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           const ret = pais.n[`ret_${a}`];
           return (
             <li key={a} class={tem >= 1 ? '' : 'vazio'}>
-              <span class="nome">{conteudo.mundo.ativos.find((x) => x.id === a)?.nome ?? a}</span>
+              <span>{conteudo.mundo.ativos.find((x) => x.id === a)?.nome ?? a}</span>
               <b>{formatarDinheiro(tem)}</b>
               {ret !== undefined && vida.idade > 0 && <span class={`ret ${ret < 0 ? 'ruim' : ''}`}>{porcento(ret)} no ano</span>}
             </li>
@@ -741,7 +742,7 @@ function Extrato({ vida }: { vida: EstadoVida }) {
         <ul class="carteira" aria-label="Extrato">
           {x.linhas.slice(0, 12).map((l) => (
             <li key={`${l.rotulo}|${l.contraparte}`}>
-              <span class="nome">{l.rotulo}</span>
+              <span>{l.rotulo}</span>
               <b>{sinalDinheiro(l.valor)}</b>
               <span class={`ret ${l.valor < 0 ? 'ruim' : ''}`}>
                 {l.contraparte === 'reavaliacao' ? 'preço que mudou: ninguém pagou' : comPreposicao(vida, l.contraparte, l.valor >= 0 ? 'de' : 'para')}
@@ -841,20 +842,13 @@ function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 }
 
 export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
 
   const eu = vida.entidades['eu']!;
   const conta = Math.max(0, eu.n['dinheiro'] ?? 0);
   const divida = eu.n['divida'] ?? 0;
 
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-dinheiro" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha dinheiro-folha">
-        <h2 id="titulo-dinheiro">Dinheiro</h2>
+    <Folha id="titulo-dinheiro" titulo="Dinheiro" classe="dinheiro-folha" aoFechar={aoFechar}>
         <p class="meta">
           Patrimônio <b>{formatarDinheiro(patrimonioTotal(vida))}</b> · na conta {formatarDinheiro(conta)}
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
@@ -872,7 +866,6 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
             Voltar
           </button>
         </div>
-      </div>
-    </div>
+    </Folha>
   );
 }

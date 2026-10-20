@@ -6,6 +6,7 @@ import type { Verbo } from '../motor/constantes.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { anos, parentesco } from './formato.ts';
 import { COR_DO_VERBO, Icone, ICONE_DO_VERBO } from './Icones.tsx';
+import { useVoltar } from './voltar.ts';
 
 /** Tempo em que as opções ignoram toques logo depois de aparecer (evita escolher sem querer num toque duplo). */
 const CARENCIA_MS = 450;
@@ -26,15 +27,26 @@ interface Props {
 
 export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida, herdeiro, aoContinuar }: Props) {
   const p = vida.pendente;
-  const apareceuEm = useRef(0);
+  // A carência: logo depois que um evento aparece ou fecha, ou que a lista de um verbo abre ou fecha, os toques
+  // são ignorados (o segundo toque de um toque duplo não pode escolher nem passar o ano por você). Um ano novo
+  // sem evento não tem carência, para quem avança rápido.
+  const mudouEm = useRef(-Infinity);
+  const cedo = () => performance.now() - mudouEm.current < CARENCIA_MS;
   const chave = p ? `${vida.idade}:${p.instancia}` : '';
-  useEffect(() => {
-    apareceuEm.current = performance.now();
-  }, [chave]);
+  const primeira = useRef(true);
   // O verbo aberto (a lista das ações dele); fecha quando o ano ou a ficha mudam.
   const [aberto, setAberto] = useState<Verbo | null>(null);
+  useEffect(() => {
+    if (primeira.current) {
+      primeira.current = false;
+      return;
+    }
+    mudouEm.current = performance.now();
+  }, [chave, aberto]);
   const momento = `${vida.idade}:${vida.historico.length}`;
   useEffect(() => setAberto(null), [momento]);
+  // O voltar do celular fecha a lista do verbo.
+  useVoltar(aberto !== null, () => setAberto(null));
 
   if (p) {
     return (
@@ -54,7 +66,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
                 key={`${chave}:${i}`}
                 disabled={!o.disponivel}
                 onClick={() => {
-                  if (performance.now() - apareceuEm.current < CARENCIA_MS) return;
+                  if (cedo()) return;
                   aoEscolher(i);
                 }}
               >
@@ -84,6 +96,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
                 type="button"
                 key={`${o.s.id}#${o.ator ?? ''}`}
                 onClick={() => {
+                  if (cedo()) return;
                   setAberto(null);
                   aoAgir(lista.verbo, { id: o.s.id, ator: o.ator });
                 }}
@@ -109,37 +122,50 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
         {acoes.length > 0 && (
           <section class="ficha" aria-labelledby="titulo-ficha">
             <p class="quando titulo-escolhas" id="titulo-ficha">
-              <Icone nome="bussola" tamanho={18} />
-              <b>Suas escolhas</b>
-              <span>
-                {fichasUsadas(vida) > 0
-                  ? `· ainda dá para ${restantes === 1 ? 'mais uma' : `mais ${restantes}`}`
-                  : restantes === 1
-                    ? `· aos ${vida.idade}, uma este ano`
-                    : `· aos ${vida.idade}, ${restantes} este ano`}
-              </span>
+              <b>Suas escolhas</b> ·{' '}
+              {fichasUsadas(vida) > 0 ? 'mais ' : ''}
+              {restantes === 1 ? 'uma' : restantes} este ano
             </p>
-            {/* O verbo é um botão curto; tocar abre a lista das ações dele (o ponto marca o que é novo). */}
+            {/* O verbo é um botão curto; tocar abre a lista das ações dele (o ponto marca o que é novo).
+                O ícone só aparece quando cabe sem cortar o nome. */}
             <div class="verbos">
               {acoes.map((a) => (
-                <button class="verbo" type="button" key={a.verbo} style={{ '--cor': COR_DO_VERBO[a.verbo] }} onClick={() => setAberto(a.verbo)}>
-                  <Icone nome={ICONE_DO_VERBO[a.verbo]} tamanho={22} classe="ico" />
+                <button
+                  class="verbo"
+                  type="button"
+                  key={a.verbo}
+                  style={{ '--cor': COR_DO_VERBO[a.verbo] }}
+                  onClick={() => {
+                    if (cedo()) return;
+                    setAberto(a.verbo);
+                  }}
+                >
+                  <Icone nome={ICONE_DO_VERBO[a.verbo]} tamanho={20} classe="ico" />
                   <b>{NOMES_VERBO[a.verbo]}</b>
                   {a.opcoes.some((o) => o.novo) && (
                     <span class="ponto-novo">
                       <span class="so-leitor">, tem novidade</span>
                     </span>
                   )}
-                  <Icone nome="chevron" tamanho={18} classe="chevron" />
                 </button>
               ))}
             </div>
           </section>
         )}
-        <button class="botao grande viver" type="button" onClick={aoAvancar} aria-label={acoes.length > 0 ? 'Viver mais 1 ano, sem fazer mais nada' : `Viver mais 1 ano: fazer ${vida.idade + 1}`}>
-          <Icone nome="avancar" tamanho={22} />
-          <span>Viver mais 1 ano</span>
-          <Icone nome="seta" tamanho={22} classe="seta" />
+        {/* Com escolhas sobrando, viver o ano é a opção secundária; sem nenhuma (o bebê), é a principal. */}
+        <button
+          class={`botao grande viver${acoes.length > 0 ? ' secundario' : ''}`}
+          type="button"
+          onClick={() => {
+            if (cedo()) return;
+            aoAvancar();
+          }}
+          aria-label={acoes.length > 0 ? `Viver mais 1 ano, sem as ${restantes === 1 ? 'uma escolha que sobra' : `${restantes} escolhas que sobram`}` : `Viver mais 1 ano: fazer ${vida.idade + 1}`}
+        >
+          <span class="rotulo-viver">
+            Viver mais 1 ano
+            {acoes.length > 0 && <small class="sobram"> · sobram {restantes}</small>}
+          </span>
         </button>
       </div>
     );

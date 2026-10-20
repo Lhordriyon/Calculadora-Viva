@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { Folha } from './Folha.tsx';
 import { escreverSave, importarSave, type Save } from '../jogo/salvar.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { baixar } from './cartaoImagem.ts';
@@ -35,11 +36,6 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
     if (trazido || mensagem) resposta.current?.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }, [trazido, mensagem]);
 
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
 
   /** O save sai como arquivo de texto: compartilhado (celular), copiado (no app) ou baixado. */
   async function exportar() {
@@ -82,17 +78,12 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
   }
 
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-menu" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha">
-        <h2 id="titulo-menu">{viva ? 'Começar outra vida?' : 'Menu'}</h2>
-        {viva && <p class="meta">Na próxima tela você escolhe como vai ser a nova vida. Esta só acaba quando a outra nascer.</p>}
+    <Folha id="titulo-menu" titulo="Menu" aoFechar={aoFechar}>
         <div class="acoes">
-          <button class="botao" type="button" onClick={aoFechar} autoFocus>
-            {viva ? 'Continuar esta vida' : 'Voltar'}
-          </button>
           <button class="botao secundario" type="button" onClick={aoNovaVida}>
             Começar outra vida
           </button>
+          {viva && <p class="meta">Na próxima tela você escolhe como vai ser a nova vida. Esta só acaba quando a outra nascer.</p>}
           {!NO_APP && (
             <a class="botao secundario" href={LINK_APK}>
               Baixar o app para Android
@@ -147,7 +138,6 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
             </p>
           )}
         </div>
-      </div>
-    </div>
+    </Folha>
   );
 }

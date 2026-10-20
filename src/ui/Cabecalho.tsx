@@ -4,11 +4,10 @@ import { patrimonioTotal } from '../motor/campos.ts';
 import { carreiraDe, noGenero, nomeDoCargo } from '../motor/carreira.ts';
 import { cargoDe } from '../motor/poder.ts';
 import { ATRIBUTOS } from '../motor/constantes.ts';
-import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
+import { capitalizar } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
-import { anos, CORES, dinheiroCurto, iniciais, NOMES } from './formato.ts';
+import { anos, CORES, dinheiroCurto, NOMES } from './formato.ts';
 import { Icone, ICONE_DO_ATRIBUTO } from './Icones.tsx';
-import { Marca } from './Marca.tsx';
 
 interface Props {
   vida: EstadoVida;
@@ -18,7 +17,7 @@ interface Props {
   /** A linha do lugar e do ano abre a folha do país. */
   aoAbrirPais: () => void;
   aoAbrirMenu: () => void;
-  /** Durante um evento que não cabe na tela: só nome e idade, para o cartão inteiro aparecer. */
+  /** Durante um evento: só o nome, os botões e o dinheiro, para o cartão do evento ter a tela. */
   compacto?: boolean;
 }
 
@@ -43,21 +42,27 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         : carreira
           ? nomeDoCargo(carreira, n['nivel'] ?? 0, eu.genero)
           : conteudo.setores.get(eu.t['setor'] ?? '')?.nome;
-  const titulo = cargo?.esfera === 'vitalicio' ? noGenero(cargo.nome, eu.genero) : eu.q['principe'] ? (eu.genero === 'f' ? 'princesa' : 'príncipe') : eu.q['herdeiro_regime'] ? 'herdeiro do Regime' : '';
-  // A coroa no retrato: quem nasceu ou chegou ao topo (a coroa, o Regime, a ilha) e quem tem bilhão.
-  const coroa = Boolean(titulo) || patrimonio >= 1e9;
+  const titulo =
+    cargo?.esfera === 'vitalicio'
+      ? noGenero(cargo.nome, eu.genero)
+      : eu.q['principe']
+        ? eu.genero === 'f'
+          ? 'princesa'
+          : 'príncipe'
+        : eu.q['herdeiro_regime']
+          ? eu.genero === 'f'
+            ? 'herdeira do Regime'
+            : 'herdeiro do Regime'
+          : '';
   const icoFase = fase === 'expansao' ? 'sobe' : fase === 'normal' ? 'estavel' : 'desce';
+  const nomeDaFase = nomeFase ? capitalizar(nomeFase) : 'Economia normal';
   const pais = vida.entidades['pais']?.nome ?? 'país';
   return (
     <header class={`cabecalho${compacto ? ' compacto' : ''}`}>
-      <div class="barra-marca">
-        <div class="marca-topo" aria-hidden="true">
-          <Marca classe="marca-mini" />
-          <span class="nome-jogo">
-            Trajetória
-            <small>sua vida, suas escolhas</small>
-          </span>
-        </div>
+      <div class="topo">
+        <h1>
+          {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>
+        </h1>
         <div class="botoes-topo">
           <button class="icone" type="button" aria-label="Família" onClick={aoAbrirFamilia}>
             <Icone nome="familia" />
@@ -73,86 +78,59 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
           </button>
         </div>
       </div>
-      <div class="identidade">
-        <div class="retrato" aria-hidden="true">
-          <span>{iniciais(eu.nome, vida.sobrenome)}</span>
-          {coroa && (
-            <span class="selo">
-              <Icone nome="coroa" tamanho={13} />
-            </span>
-          )}
-        </div>
-        <div class="quem">
-          <h1>
-            {eu.nome} <span class="sobrenome">{vida.sobrenome}</span>
-          </h1>
-          <p class="sub">
-            {titulo && <b class="titulo-nobre">{titulo} · </b>}
-            {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']}
-          </p>
-          <button class={`chip-pais ${fase}`} type="button" aria-label={`${nomeFase ? capitalizar(nomeFase) : 'Economia normal'}, ${vida.ano}: ver o país`} onClick={aoAbrirPais}>
-            <span class="pilula">
-              <Icone nome={icoFase} tamanho={16} />
-              <span class="nome-fase">{nomeFase ? capitalizar(nomeFase) : 'Economia normal'}</span>
-              <span class="pais">
-                · {pais} {vida.ano} <span aria-hidden="true">🇧🇷 ›</span>
-              </span>
-            </span>
-          </button>
-        </div>
-      </div>
+      <p class="sub">
+        {titulo && <b class="titulo-nobre">{titulo} · </b>}
+        {anos(vida.idade)} · {lugar?.nome}, {lugar?.t['uf']}
+      </p>
+      {/* O selo da economia abre a folha do país: texto que quebra linha, nunca cortado; o "›" diz que é tocável. */}
+      <button class={`selo-pais ${fase}`} type="button" aria-label={`${nomeDaFase}, ${pais}, ${vida.ano}: ver o país`} onClick={aoAbrirPais}>
+        <Icone nome={icoFase} tamanho={16} classe="ico" />
+        <span class="nome-fase">{nomeDaFase}</span>
+        <span class="ano-pais">{` · ${vida.ano}`}</span>
+        <span class="seta-pais" aria-hidden="true">
+          ›
+        </span>
+      </button>
+      {/* O estado é terciário: rótulo suave, número e uma barra fina na cor do atributo, sem caixa. */}
       <div class="indicadores">
         {ATRIBUTOS.map((a) => {
           const valor = Math.round(n[a] ?? 0);
           return (
             <div class="indicador" key={a} style={{ '--cor': CORES[a] }}>
-              <Icone nome={ICONE_DO_ATRIBUTO[a]} tamanho={20} classe="ico" />
-              <span class="rotulo">{NOMES[a]}</span>
+              <span class="nome-indicador">
+                <Icone nome={ICONE_DO_ATRIBUTO[a]} tamanho={16} classe="ico" />
+                <span class="rotulo">{NOMES[a]}</span>
+              </span>
               <b>{valor}</b>
-              <div class="barra" role="meter" aria-label={NOMES[a]} aria-valuemin={0} aria-valuemax={100} aria-valuenow={valor}>
-                <span style={{ width: `${valor}%` }} />
+              <div class="barra" role="meter" aria-label={NOMES[a]} aria-valuemin={0} aria-valuemax={100} aria-valuenow={valor} style={{ '--v': valor / 100 }}>
+                <span />
               </div>
             </div>
           );
         })}
       </div>
-      <button
-        class="financas"
-        type="button"
-        onClick={aoAbrirDinheiro}
-        aria-label={`Dinheiro ${formatarDinheiro(dinheiro)}${divida >= 1 ? `, dívida ${formatarDinheiro(divida)}` : ''}; patrimônio ${formatarDinheiro(patrimonio)}; renda ${formatarDinheiro(renda / 12)} por mês${setor ? `, ${setor}` : ''}. Abrir dinheiro e investimentos`}
-      >
-        <span class="kpi">
-          <small>
-            <Icone nome="carteira" tamanho={16} classe="ico" />
-            <span class="rotulo">Dinheiro</span>
-          </small>
-          <b>{dinheiroCurto(dinheiro)}</b>
-          {divida >= 1 && <em class="divida">dívida {dinheiroCurto(divida)}</em>}
+      {/* O dinheiro numa linha de texto que quebra: nenhum valor é cortado. Abre a folha Dinheiro. */}
+      <button class="saldo" type="button" onClick={aoAbrirDinheiro}>
+        <span class="item dinheiro">
+          Dinheiro <b>{dinheiroCurto(dinheiro)}</b>
+          {divida >= 1 && (
+            <span class="divida">
+              {' '}
+              · dívida <b>{dinheiroCurto(divida)}</b>
+            </span>
+          )}
         </span>
-        <span class="kpi">
-          <small>
-            <Icone nome="patrimonio" tamanho={16} classe="ico" />
-            <span class="rotulo">Patrimônio</span>
-          </small>
-          <b>{dinheiroCurto(patrimonio)}</b>
-        </span>
-        <span class="kpi">
-          <small>
-            <Icone nome="renda" tamanho={16} classe="ico" />
-            <span class="rotulo">{setor && setor !== titulo ? capitalizar(setor) : 'Renda'}</span>
-          </small>
-          <b>
-            {renda >= 1 ? (
-              <>
-                {dinheiroCurto(renda / 12)}
-                <small>/mês</small>
-              </>
-            ) : (
-              'sem renda'
-            )}
-          </b>
-        </span>
+        {Math.abs(patrimonio - dinheiro) >= 1 && (
+          <span class="item">
+            Patrimônio <b>{dinheiroCurto(patrimonio)}</b>
+          </span>
+        )}
+        {vida.vivo && (renda >= 1 || setor) && (
+          <span class="item">
+            Renda <b>{renda >= 1 ? `${dinheiroCurto(renda / 12)}/mês` : 'nenhuma'}</b>
+            {setor && setor !== titulo && ` · ${setor}`}
+          </span>
+        )}
       </button>
     </header>
   );

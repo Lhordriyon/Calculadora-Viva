@@ -3,6 +3,7 @@ import { formatarDinheiro } from '../motor/texto.ts';
 import type { ResumoVida } from '../motor/virada.ts';
 import { baixar, compartilhar, desenharCartao, nomeDoArquivo, podeCompartilharArquivo } from './cartaoImagem.ts';
 import { anos, parentesco } from './formato.ts';
+import { Folha } from './Folha.tsx';
 
 interface Props {
   resumo: ResumoVida;
@@ -35,12 +36,6 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
     };
   }, [resumo, endereco]);
 
-  useEffect(() => {
-    const fechar = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', fechar);
-    return () => window.removeEventListener('keydown', fechar);
-  }, [aoFechar]);
-
   async function aoCompartilhar() {
     if (!imagem) return;
     const r = await compartilhar(imagem.blob, resumo, endereco);
@@ -48,11 +43,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
   }
 
   return (
-    <div class="veu" role="dialog" aria-modal="true" aria-labelledby="titulo-cartao" onClick={(e) => e.target === e.currentTarget && aoFechar()}>
-      <div class="folha cartao-vida">
-        <h2 id="titulo-cartao" tabIndex={-1} ref={titulo}>
-          {resumo.nomeCompleto}
-        </h2>
+    <Folha id="titulo-cartao" titulo={resumo.nomeCompleto} classe="cartao-vida" aoFechar={aoFechar} tituloRef={titulo}>
         <p class="meta">
           {resumo.anoNascimento}–{resumo.anoFinal} · {anos(resumo.idade)} · {resumo.cidade}, {resumo.uf}
         </p>
@@ -123,7 +114,6 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
         <p class="aviso" role="status">
           {aviso}
         </p>
-      </div>
-    </div>
+    </Folha>
   );
 }
