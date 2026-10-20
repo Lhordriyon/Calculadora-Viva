@@ -48,6 +48,19 @@ export function nomeDoCargo(def: DefCarreira, nivel: number, genero: Genero | un
   return noGenero(def.cargos[Math.min(nivel, def.cargos.length - 1)]!, genero);
 }
 
+/**
+ * A profissão com o cargo entre parênteses só quando ele diz algo novo: "médica (residente)". Quando um começa pelo
+ * outro, fica o mais longo ("cantor de barzinho", "atendente de telemarketing"), em vez de "cantor (cantor de barzinho)";
+ * quando só a primeira palavra é a mesma, o cargo já diz a profissão ("professor adjunto", "jogador da segunda divisão").
+ */
+export function profissaoComCargo(nome: string, cargo: string): string {
+  const n = nome.toLocaleLowerCase('pt-BR');
+  const k = cargo.toLocaleLowerCase('pt-BR');
+  if (n === k || n.startsWith(`${k} `)) return nome;
+  if (k.startsWith(`${n} `) || n.split(' ')[0] === k.split(' ')[0]) return cargo;
+  return `${nome} (${cargo})`;
+}
+
 /** Chance de passar na seleção: a base da profissão, o talento e o desemprego da fase. */
 export function chanceDeEntrar(e: EstadoVida, def: DefCarreira): number {
   const talento = e.entidades['eu']!.n[def.talento] ?? 50;
@@ -112,7 +125,7 @@ export function operarCarreira(e: EstadoVida, c: Conteudo, op: OperacaoCarreira,
   if (def.estavel) ganhar(e, reg, 'eu', 'servidor', origem);
   const cargo = nomeDoCargo(def, 0, eu.genero);
   return {
-    texto: `Passou! Agora é ${nome} (${cargo}), com ${formatarDinheiro(salarioDoCargo(def, 0) / 12)} por mês.`,
+    texto: `Passou! Agora é ${profissaoComCargo(nome, cargo)}, com ${formatarDinheiro(salarioDoCargo(def, 0) / 12)} por mês.`,
     resumo: `virou ${nome}`,
   };
 }
