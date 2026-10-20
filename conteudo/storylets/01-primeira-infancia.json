@@ -5,6 +5,13 @@
     "peso": 4,
     "texto": "Campanha de vacinação no posto de saúde. A fila dá a volta no quarteirão, e o boneco da campanha acena para todo mundo, inclusive para quem chora.",
     "resumo": "foi {levado|levada} à campanha de vacinação",
+    "trechos": {
+      "quem_leu": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "A tia" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Vacinar, com direito a pirulito",
@@ -15,7 +22,7 @@
         }
       },
       {
-        "texto": "{mae} leu num grupo que vacina faz mal",
+        "texto": "{quem_leu} leu num grupo que vacina faz mal",
         "resumo": "ficou sem vacina porque a família leu um boato",
         "resultado": {
           "texto": "O áudio no grupo da família tinha seis minutos e nenhuma fonte. A caderneta fica em branco.",
@@ -64,6 +71,12 @@
     "peso": 5,
     "texto": "Hora de dormir, e você não quer. Em casa, cada um tem a sua técnica.",
     "resumo": "ganhou um jeito de dormir que ficou",
+    "trechos": {
+      "da_vo": [
+        { "se": { "avo.vivo": true }, "texto": "da vó {avo}" },
+        { "texto": "da vó" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Uma história lida em voz alta",
@@ -82,7 +95,7 @@
         }
       },
       {
-        "texto": "Cantiga de ninar da vó {avo}",
+        "texto": "Cantiga de ninar {da_vo}",
         "resumo": "dormia com as cantigas da avó",
         "condicoes": { "avo.vivo": true },
         "bloqueio": "a vó não está",
@@ -97,7 +110,7 @@
     "id": "birra_no_mercado",
     "idade": [2, 4],
     "peso": 5,
-    "condicoes": { "marcas": ["voluntarioso"] },
+    "condicoes": { "marcas": ["voluntarioso"], "mae.vivo": true },
     "texto": "Você se jogou no chão do supermercado por causa de um chocolate. A fila do caixa assiste em silêncio.",
     "resumo": "deu um show no supermercado por um chocolate",
     "escolhas": [
@@ -126,12 +139,18 @@
     "condicoes": { "familia": "conflituosa" },
     "texto": "As brigas em casa acordam você de madrugada. As paredes são finas e as vozes, altas.",
     "resumo": "acordava de madrugada com as brigas em casa",
+    "trechos": {
+      "quem_vem": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "Alguém" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Chorar até alguém vir",
         "resumo": "chorava até alguém vir quando havia briga em casa",
         "resultado": {
-          "texto": "{mae} vem, e a briga para. Você aprende que o choro funciona, e que a paz dura pouco.",
+          "texto": "{quem_vem} vem, e a briga para. Você aprende que o choro funciona, e que a paz dura pouco.",
           "efeitos": { "felicidade": -2, "mae.vinculo": 2 }
         }
       },
@@ -151,6 +170,12 @@
     "peso": 6,
     "texto": "Hora da pré-escola. Ou não: a família discute se você ainda é pequeno demais para isso.",
     "resumo": "teve decidido como seria a pré-escola",
+    "trechos": {
+      "colega": [
+        { "se": { "amigo.vivo": true }, "texto": "{amigo} senta do seu lado desde o primeiro dia." },
+        { "texto": "No primeiro dia, ninguém senta do seu lado; no segundo, já são três." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "A pública do bairro",
@@ -158,7 +183,7 @@
         "condicoes": { "classe_origem": { "max": 4 } },
         "bloqueio": "a família quer outra",
         "resultado": {
-          "texto": "Merenda, massinha e uma professora que sabe o nome de trinta crianças. {amigo} senta do seu lado desde o primeiro dia.",
+          "texto": "Merenda, massinha e uma professora que sabe o nome de trinta crianças. {colega}",
           "efeitos": { "inteligencia": 3, "felicidade": 1, "amigo.vinculo": 5, "marcas": ["pre_escola"] }
         }
       },
@@ -266,8 +291,15 @@
     "idade": [6, 7],
     "peso": 6,
     "condicoes": { "algumaMarca": ["leitura_na_infancia", "pre_escola", "creche"] },
-    "texto": "Na volta da escola, você lê a placa da padaria, o outdoor e a bula do remédio da vó. {mae} olha para {pai_ou_vo} sem acreditar.",
-    "trechos": { "pai_ou_vo": [{ "se": { "pai.ausente": true }, "texto": "a vizinha" }, { "texto": "{pai}" }] },
+    "texto": "Na volta da escola, você lê a placa da padaria, o outdoor e a bula do remédio da vó. {plateia}",
+    "trechos": {
+      "plateia": [
+        { "se": { "mae.vivo": true, "pai.ausente": false, "pai.vivo": true }, "texto": "{mae} olha para {pai} sem acreditar." },
+        { "se": { "mae.vivo": true }, "texto": "{mae} olha para a vizinha sem acreditar." },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} olha para a vizinha sem acreditar." },
+        { "texto": "A vizinha olha para o céu sem acreditar." }
+      ]
+    },
     "resumo": "aprendeu a ler antes dos colegas",
     "escolhas": [
       {
@@ -293,8 +325,15 @@
     "idade": [6, 8],
     "peso": 6,
     "condicoes": { "marcas": ["telas_cedo"], "semMarcas": ["leitura_na_infancia"] },
-    "texto": "A professora mandou um bilhete: você não para quieto e não acompanha a turma na leitura. {mae} lê o bilhete duas vezes.",
+    "texto": "A professora mandou um bilhete: você não para quieto e não acompanha a turma na leitura. {quem_le} lê o bilhete duas vezes.",
     "resumo": "teve a professora reclamando que não parava {quieto|quieta}",
+    "trechos": {
+      "quem_le": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "Em casa, alguém" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Reforço com a professora depois da aula",
@@ -321,12 +360,18 @@
     "condicoes": { "marcas": ["sem_vacina"] },
     "texto": "Surto de sarampo no bairro. A escola fecha, o posto lota, e a caderneta de vacinação continua em branco na gaveta.",
     "resumo": "viveu um surto de sarampo no bairro sem estar {vacinado|vacinada}",
+    "trechos": {
+      "quem_apaga": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "Alguém da família" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Vacinar correndo, mesmo atrasado",
         "resumo": "tomou a vacina atrasada durante o surto",
         "resultado": {
-          "texto": "Fila de três horas, picada, pirulito. {mae} apaga o grupo de mensagens do celular.",
+          "texto": "Fila de três horas, picada, pirulito. {quem_apaga} apaga o grupo de mensagens do celular.",
           "efeitos": { "saude": -1, "mae.vinculo": 1, "removerMarcas": ["sem_vacina"] }
         }
       },
@@ -459,10 +504,18 @@
     "condicoes": { "marcas": ["criado_pela_baba"] },
     "texto": "A babá que te criou desde bebê arrumou outro emprego. Ela chora na porta; você chora mais.",
     "resumo": "perdeu a babá que {o|a} criou desde bebê",
+    "trechos": {
+      "quem_fica": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "alguém" }
+      ]
+    },
     "escolhas": [
       {
-        "texto": "Pedir para {mae} ficar mais em casa",
+        "texto": "Pedir para {quem_fica} ficar mais em casa",
         "resumo": "pediu à mãe para ficar mais em casa depois que a babá foi embora",
+        "condicoes": { "mae.vivo": true },
+        "bloqueio": "não há quem fique",
         "resultado": {
           "texto": "{mae} reorganiza a agenda e passa a buscar você na escola às sextas. É pouco, mas é dela.",
           "efeitos": { "felicidade": -1, "mae.vinculo": 8 }

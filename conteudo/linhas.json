@@ -4,8 +4,8 @@
     "texto": "Aprendeu a [bater palma|fazer careta|dizer \"não\"] e ninguém em casa falou de outra coisa."
   },
   { "idade": [1, 2], "texto": "Descobriu os próprios pés. Um ano de grandes descobertas." },
-  { "idade": [1, 3], "texto": "Dormiu a noite inteira pela primeira vez. {mae} chorou de alívio." },
-  { "idade": [1, 3], "texto": "Mordeu o controle remoto até ele parar de funcionar. {pai} ainda procura as pilhas." },
+  { "idade": [1, 3], "texto": "Dormiu a noite inteira pela primeira vez. {mae} chorou de alívio.", "condicoes": { "mae.vivo": true } },
+  { "idade": [1, 3], "texto": "Mordeu o controle remoto até ele parar de funcionar. {pai} ainda procura as pilhas.", "condicoes": { "pai.ausente": false, "pai.vivo": true } },
   {
     "idade": [1, 3],
     "texto": "Passou o ano [babando em tudo|derrubando coisas da mesa|rindo da cara do cachorro do vizinho|escondendo chinelos]."
@@ -20,7 +20,8 @@
   },
   {
     "idade": [3, 5],
-    "texto": "Desenhou a família inteira na parede da sala. {mae} chamou de arte; {pai} chamou o pintor."
+    "texto": "Desenhou a família inteira na parede da sala. {mae} chamou de arte; {pai} chamou o pintor.",
+    "condicoes": { "mae.vivo": true, "pai.ausente": false, "pai.vivo": true }
   },
   {
     "idade": [3, 6],
@@ -37,14 +38,15 @@
     "idade": [6, 9],
     "texto": "Perdeu [dois|três] dentes e encontrou [uma moeda|uma nota amassada|um bilhete da fada] debaixo do travesseiro."
   },
-  { "idade": [6, 11], "texto": "Jogou bola na rua até {mae} gritar seu nome completo da janela." },
+  { "idade": [6, 11], "texto": "Jogou bola na rua até {mae} gritar seu nome completo da janela.", "condicoes": { "mae.vivo": true } },
   {
     "idade": [6, 11],
     "texto": "Tirou nota boa em [ciências|português|educação física] e se achou gênio por uma semana."
   },
   {
     "idade": [7, 11],
-    "texto": "Passou as férias na casa da vó {avo}, comendo [bolo|pão de queijo|cuscuz] e ouvindo as mesmas histórias de sempre."
+    "texto": "Passou as férias na casa da vó {avo}, comendo [bolo|pão de queijo|cuscuz] e ouvindo as mesmas histórias de sempre.",
+    "condicoes": { "avo.vivo": true }
   },
   {
     "idade": [7, 12],
@@ -58,7 +60,7 @@
     "idade": [12, 15],
     "texto": "Passou o ano inteiro com [fone de ouvido|a cara no celular|a mesma blusa de moletom]."
   },
-  { "idade": [12, 17], "texto": "Brigou com {mae} por causa do horário de chegar em casa. Perdeu." },
+  { "idade": [12, 17], "texto": "Brigou com {mae} por causa do horário de chegar em casa. Perdeu.", "condicoes": { "mae.vivo": true } },
   { "idade": [12, 17], "texto": "Descobriu que [ironia|sarcasmo|revirar os olhos] resolve muita coisa. Não resolve." },
   { "idade": [13, 17], "texto": "Teve uma crise existencial que durou até o lanche." },
   {
@@ -286,7 +288,27 @@
   {
     "idade": [12, 95],
     "texto": "Você e {amigo} passaram uma tarde inteira falando bobagem, como sempre.",
-    "condicoes": { "marcas": ["amigo_de_infancia"] }
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": true }
+  },
+  {
+    "idade": [12, 95],
+    "texto": "Passou uma tarde relembrando as bobagens que falava com {amigo}. [Riu sozinh{o|a}.|Ninguém mais ri das mesmas.]",
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": false }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "Achou uma receita de {mae}, escrita à mão no meio de um livro, e guardou de volta com cuidado.",
+    "condicoes": { "mae.vivo": false }
+  },
+  {
+    "idade": [18, 95],
+    "texto": "Usou uma ferramenta que {pai} deixou e, por um minuto, a casa cheirou a ele.",
+    "condicoes": { "pai.ausente": false, "pai.vivo": false }
+  },
+  {
+    "idade": [8, 95],
+    "texto": "Sentiu cheiro de [bolo|café passado|pão de queijo] numa padaria e lembrou da vó {avo}.",
+    "condicoes": { "avo.vivo": false }
   },
   {
     "idade": [18, 90],
@@ -683,7 +705,7 @@
   {
     "idade": [30, 90],
     "texto": "Viu {amigo} postando foto de viagem e lembrou do dinheiro que emprestou e nunca voltou.",
-    "condicoes": { "marcas": ["levou_calote"] }
+    "condicoes": { "marcas": ["levou_calote"], "amigo.vivo": true }
   },
   {
     "idade": [40, 95],
@@ -703,7 +725,7 @@
   {
     "idade": [24, 80],
     "texto": "Toda vez que {amigo} posta foto de churrasco, você lembra do empréstimo. E faz as contas.",
-    "condicoes": { "marcas": ["emprestou_ao_amigo"] }
+    "condicoes": { "marcas": ["emprestou_ao_amigo"], "amigo.vivo": true }
   },
   {
     "idade": [18, 70],

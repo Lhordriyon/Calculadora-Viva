@@ -34,12 +34,18 @@
     "condicoes": { "marcas": ["nome_sujo"], "semMarcas": ["casa_propria"] },
     "texto": "A imobiliária consultou o seu CPF. O apartamento que você queria \"acabou de ser alugado\", cinco minutos depois da consulta.",
     "resumo": "perdeu um aluguel por causa do nome sujo",
+    "trechos": {
+      "fiador": [
+        { "se": { "amigo.vivo": true }, "texto": "{amigo}" },
+        { "texto": "um colega de trabalho" }
+      ]
+    },
     "escolhas": [
       {
-        "texto": "Pedir para {amigo} ser fiador",
-        "resumo": "pediu para {amigo} ser fiador do aluguel",
+        "texto": "Pedir para {fiador} ser fiador",
+        "resumo": "pediu para {fiador} ser fiador do aluguel",
         "resultado": {
-          "texto": "{amigo} assinou, leu a cláusula da fiança duas vezes e passou a perguntar, todo mês, se o aluguel estava em dia.",
+          "texto": "{fiador} assinou, leu a cláusula da fiança duas vezes e passou a perguntar, todo mês, se o aluguel estava em dia.",
           "efeitos": { "amigo.vinculo": -6, "felicidade": 1 }
         }
       },

@@ -396,7 +396,7 @@
     "resumo": "recebeu uma ordem de despejo",
     "escolhas": [
       {
-        "texto": "Voltar para a casa de {mae}",
+        "texto": "Voltar para a casa da mãe",
         "resumo": "voltou a morar com {mae} depois do despejo",
         "condicoes": { "mae.vivo": true },
         "bloqueio": "não há para onde voltar",

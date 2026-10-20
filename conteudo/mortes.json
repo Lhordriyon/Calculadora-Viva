@@ -81,7 +81,14 @@
     "causa": "rindo de uma piada que só {amigo} entendeu",
     "categoria": "velhice",
     "idade": [65, 120],
-    "condicoes": { "marcas": ["amigo_de_infancia"] },
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": true },
+    "peso": 1.5
+  },
+  {
+    "causa": "lembrando de uma piada que só {amigo} entendia",
+    "categoria": "velhice",
+    "idade": [65, 120],
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": false },
     "peso": 1.5
   },
   {

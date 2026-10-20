@@ -5,8 +5,16 @@
     "verbo": "estudar",
     "rotulo": "fazer a lição de casa",
     "idade": [6, 10],
-    "texto": "Você [fez a lição sem ninguém mandar|decorou a tabuada do sete, a mais traiçoeira|leu um livro inteiro com figura e tudo]. {mae} [contou para a vizinha|colou a prova na geladeira|fingiu que não estava orgulhosa].",
+    "texto": "Você [fez a lição sem ninguém mandar|decorou a tabuada do sete, a mais traiçoeira|leu um livro inteiro com figura e tudo]. {orgulho}",
     "resumo": "fez a lição de casa",
+    "trechos": {
+      "orgulho": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} [contou para a vizinha|colou a prova na geladeira|fingiu que não estava orgulhosa]." },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} [contou para o vizinho|colou a prova na geladeira|fingiu que não estava orgulhoso]." },
+        { "se": { "avo.vivo": true }, "texto": "A vó {avo} [contou para a vizinha|colou a prova na geladeira|fingiu que não estava orgulhosa]." },
+        { "texto": "A professora [deu uma estrelinha|colou a prova no mural|fingiu que não estava orgulhosa]." }
+      ]
+    },
     "efeitos": { "inteligencia": 1.8, "felicidade": -0.3, "mae.vinculo": 1 }
   },
   {
@@ -93,8 +101,16 @@
     "idade": [23, 55],
     "condicoes": { "marcas": ["formado"], "dinheiro": { "min": 4000 } },
     "intervalo": 6,
-    "texto": "Você fez uma pós aos sábados. [O diploma veio com moldura.|O TCC foi escrito de madrugada.|A turma virou grupo de churrasco.] {pai} perguntou se agora você é doutor{|a}.",
+    "texto": "Você fez uma pós aos sábados. [O diploma veio com moldura.|O TCC foi escrito de madrugada.|A turma virou grupo de churrasco.] {pergunta}",
     "resumo": "fez uma pós-graduação",
+    "trechos": {
+      "pergunta": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} perguntou se agora você é doutor{|a}." },
+        { "se": { "mae.vivo": true }, "texto": "{mae} perguntou se agora você é doutor{|a}." },
+        { "se": { "pai.vivo": false }, "texto": "Você lembrou de {pai}, que ia perguntar se agora você é doutor{|a}." },
+        { "texto": "No almoço de domingo, perguntaram se agora você é doutor{|a}." }
+      ]
+    },
     "efeitos": { "inteligencia": 2.5, "dinheiro": -4000, "renda": 1500 }
   },
   {
@@ -124,8 +140,16 @@
     "verbo": "trabalhar",
     "rotulo": "ajudar em casa",
     "idade": [7, 13],
-    "texto": "Você [lavou a louça sem reclamar, o que assustou todo mundo|varreu o quintal|cuidou do irmão do vizinho por umas moedas]. {mae} ficou desconfiada e grata, nessa ordem.",
+    "texto": "Você [lavou a louça sem reclamar, o que assustou todo mundo|varreu o quintal|cuidou do irmão do vizinho por umas moedas]. {reacao}",
     "resumo": "ajudou em casa",
+    "trechos": {
+      "reacao": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} ficou desconfiada e grata, nessa ordem." },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} ficou desconfiado e grato, nessa ordem." },
+        { "se": { "avo.vivo": true }, "texto": "A vó {avo} ficou desconfiada e grata, nessa ordem." },
+        { "texto": "Em casa, todo mundo ficou desconfiado e grato, nessa ordem." }
+      ]
+    },
     "efeitos": { "felicidade": -0.25, "mae.vinculo": 3, "dinheiro": 50 }
   },
   {
@@ -167,8 +191,16 @@
     "rotulo": "ajudar no negócio da família",
     "idade": [10, 30],
     "condicoes": { "marcas": ["negocio_familiar"] },
-    "texto": "Você passou o ano no negócio da família: [no caixa|no estoque|no atendimento, sorrindo para cliente chato]. {pai} [ensinou os segredos do ofício|reclamou do seu jeito de dobrar sacola|disse que um dia tudo isso vai ser seu].",
+    "texto": "Você passou o ano no negócio da família: [no caixa|no estoque|no atendimento, sorrindo para cliente chato]. {quem_ensina}",
     "resumo": "ajudou no negócio da família",
+    "trechos": {
+      "quem_ensina": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} [ensinou os segredos do ofício|reclamou do seu jeito de dobrar sacola|disse que um dia tudo isso vai ser seu]." },
+        { "se": { "pai.vivo": false }, "texto": "[O caderno de contas que {pai} deixou ainda manda no caixa.|Os clientes antigos ainda perguntam por {pai}, com saudade.]" },
+        { "se": { "mae.vivo": true }, "texto": "{mae} [ensinou os segredos do ofício|reclamou do seu jeito de dobrar sacola|disse que um dia tudo isso vai ser seu]." },
+        { "texto": "O gerente [ensinou os segredos do ofício|reclamou do seu jeito de dobrar sacola]." }
+      ]
+    },
     "efeitos": {
       "dinheiro": 1800,
       "inteligencia": 0.5,
@@ -282,8 +314,15 @@
     "rotulo": "jogar a pelada",
     "idade": [12, 70],
     "condicoes": { "marcas": ["boleiro"], "semMarcas": ["joelho_ruim"] },
-    "texto": "A pelada de [sábado|quinta à noite|domingo de manhã] continuou firme: [dois times, uma bola murcha e muita reclamação|gol de canela vale|o dono da bola escolhe o time]. {amigo} [tocou de calcanhar|perdeu um gol feito|chegou atrasad{amigo:o|a} e ainda assim jogou].",
+    "texto": "A pelada de [sábado|quinta à noite|domingo de manhã] continuou firme: [dois times, uma bola murcha e muita reclamação|gol de canela vale|o dono da bola escolhe o time]. {craque}",
     "resumo": "jogou bola toda semana",
+    "trechos": {
+      "craque": [
+        { "se": { "amigo.vivo": true }, "texto": "{amigo} [tocou de calcanhar|perdeu um gol feito|chegou atrasad{amigo:o|a} e ainda assim jogou]." },
+        { "se": { "amigo.vivo": false }, "texto": "[A turma ainda lembra de {amigo} a cada gol de calcanhar.|Antes do jogo, um minuto de silêncio torto em memória de {amigo}.|A camisa de {amigo} ficou pendurada no vestiário, de lembrança.]" },
+        { "texto": "O goleiro [tocou de calcanhar|perdeu um gol feito|chegou atrasado e ainda assim jogou]." }
+      ]
+    },
     "efeitos": { "saude": 0.8, "felicidade": 0.5, "amigo.vinculo": 3 }
   },
   {
@@ -604,8 +643,14 @@
     "verbo": "poupar",
     "rotulo": "guardar no cofrinho",
     "idade": [6, 14],
-    "texto": "Você guardou [as moedas do troco|o dinheiro do aniversário|o que a vó {avo} deu escondido] num cofrinho de porquinho. Resistiu a quebrar ele [o ano inteiro|até dezembro|até o lançamento de um jogo novo].",
+    "texto": "Você guardou [as moedas do troco|o dinheiro do aniversário|{escondido}] num cofrinho de porquinho. Resistiu a quebrar ele [o ano inteiro|até dezembro|até o lançamento de um jogo novo].",
     "resumo": "guardou dinheiro no cofrinho",
+    "trechos": {
+      "escondido": [
+        { "se": { "avo.vivo": true }, "texto": "o que a vó {avo} deu escondido" },
+        { "texto": "o que a madrinha deu escondido" }
+      ]
+    },
     "efeitos": { "felicidade": -0.2, "qualidades": { "cofrinho": 1 } }
   },
   {
@@ -818,8 +863,15 @@
     "rotulo": "fazer terapia",
     "idade": [16, 90],
     "condicoes": { "dinheiro": { "min": 2400 }, "felicidade": { "max": 45 } },
-    "texto": "Toda [terça|quinta] às sete, cinquenta minutos falando de [{mae}|trabalho|um sonho esquisito com dentes caindo|coisas que você nunca tinha dito em voz alta]. A terapeuta [anotou bastante|disse \"e como você se sente com isso?\" duas vezes|deixou o silêncio trabalhar].",
+    "texto": "Toda [terça|quinta] às sete, cinquenta minutos falando de [{de_quem}|trabalho|um sonho esquisito com dentes caindo|coisas que você nunca tinha dito em voz alta]. A terapeuta [anotou bastante|disse \"e como você se sente com isso?\" duas vezes|deixou o silêncio trabalhar].",
     "resumo": "fez terapia",
+    "trechos": {
+      "de_quem": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "mae.vivo": false }, "texto": "{mae}, e do luto que ainda pesa" },
+        { "texto": "família" }
+      ]
+    },
     "efeitos": { "felicidade": 1.6, "dinheiro": -2400, "inteligencia": 0.3 }
   },
   {
@@ -867,8 +919,15 @@
     "verbo": "estudar",
     "rotulo": "ouvir uma história",
     "idade": [1, 5],
-    "texto": "{mae} leu [o livro do sapo|a história da girafa|o mesmo livro pela vigésima vez] antes de dormir. Você corrigiu quando ela pulou uma página.",
+    "texto": "{quem_le} leu [o livro do sapo|a história da girafa|o mesmo livro pela vigésima vez] antes de dormir. Você corrigiu quando ela pulou uma página.",
     "resumo": "ouviu histórias antes de dormir",
+    "trechos": {
+      "quem_le": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "avo.vivo": true }, "texto": "A vó {avo}" },
+        { "texto": "A tia" }
+      ]
+    },
     "efeitos": { "inteligencia": 1.5, "mae.vinculo": 1 }
   },
   {
@@ -877,8 +936,15 @@
     "verbo": "estudar",
     "rotulo": "rabiscar a parede",
     "idade": [2, 5],
-    "texto": "Você desenhou a família inteira na parede da sala, em escala real. {mae} tirou foto antes de pintar por cima.",
+    "texto": "Você desenhou a família inteira na parede da sala, em escala real. {quem_pinta} tirou foto antes de pintar por cima.",
     "resumo": "rabiscou a parede da sala",
+    "trechos": {
+      "quem_pinta": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "Alguém de casa" }
+      ]
+    },
     "efeitos": { "inteligencia": 1, "felicidade": 1, "mae.vinculo": -0.5 }
   },
   {
@@ -897,8 +963,15 @@
     "verbo": "saude",
     "rotulo": "comer tudo do prato",
     "idade": [1, 4],
-    "texto": "Você comeu a papinha inteira, inclusive a parte verde. {mae} comemorou como gol de final.",
+    "texto": "Você comeu a papinha inteira, inclusive a parte verde. {quem_comemora} comemorou como gol de final.",
     "resumo": "comeu de tudo, inclusive verdura",
+    "trechos": {
+      "quem_comemora": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "A família inteira" }
+      ]
+    },
     "efeitos": { "saude": 1.5, "felicidade": -0.5 }
   },
   {

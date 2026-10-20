@@ -402,8 +402,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'morte',
     nome: 'a morte: a do corpo e a da violência',
-    // As causas de morte (mortes.json) leem as qualidades de quem joga; a empresa sente a falta de quem mandava.
-    le: ['eu.*', ...PATRIMONIO, 'empresa.dependencia', 'empresa.nome', 'empresa.genero', 'lugar.capital', 'pais.saude', 'pais.violencia', 'pessoa.nome'],
+    // As causas de morte (mortes.json) leem as qualidades de quem joga e se quem elas citam ainda vive; a empresa sente a falta de quem mandava.
+    le: ['eu.*', ...PATRIMONIO, 'empresa.dependencia', 'empresa.nome', 'empresa.genero', 'lugar.capital', 'pais.saude', 'pais.violencia', 'pessoa.nome', 'pessoa.vivo'],
     escreve: ['eu.vivo', 'eu.morte', 'empresa.valor'],
   },
   {

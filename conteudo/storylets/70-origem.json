@@ -117,7 +117,7 @@
   {
     "id": "intercambio_pago",
     "idade": [15, 19],
-    "condicoes": { "classe_origem": { "min": 3 }, "mae.dinheiro": { "min": 80000 }, "semMarcas": ["fala_ingles"] },
+    "condicoes": { "classe_origem": { "min": 3 }, "mae.vivo": true, "mae.dinheiro": { "min": 80000 }, "semMarcas": ["fala_ingles"] },
     "texto": "{mae} acha que um ano fora vai te fazer bem. \"Inglês fluente, maturidade, currículo.\" O pacote de intercâmbio custa o preço de um carro.",
     "resumo": "teve a chance de fazer intercâmbio no ensino médio",
     "escolhas": [
@@ -142,7 +142,7 @@
   {
     "id": "carro_de_presente",
     "idade": [18, 19],
-    "condicoes": { "classe_origem": { "min": 4 }, "pai.dinheiro": { "min": 150000 }, "pai.ausente": false },
+    "condicoes": { "classe_origem": { "min": 4 }, "pai.dinheiro": { "min": 150000 }, "pai.ausente": false, "pai.vivo": true },
     "texto": "Dezoito anos. Na garagem, um carro com laço vermelho. Na porta, {pai} filmando sua reação para o grupo da família.",
     "resumo": "ganhou um carro de presente aos 18",
     "escolhas": [
@@ -186,6 +186,7 @@
         "investidor"
       ],
       "pai.ausente": false,
+      "pai.vivo": true,
       "semMarcas": ["clt"]
     },
     "texto": "{pai} conseguiu um estágio para você \"num lugar bom, com gente boa\". Por coincidência, o lugar é dele e a gente boa é a turma dele.",
@@ -295,7 +296,7 @@
   {
     "id": "grupo_de_jovens",
     "idade": [13, 17],
-    "condicoes": { "familia": "religiosa" },
+    "condicoes": { "familia": "religiosa", "mae.vivo": true },
     "texto": "O grupo de jovens da igreja vai fazer um retiro de fim de semana: violão, fogueira, testemunho e cachorro-quente.",
     "resumo": "foi chamado para o grupo de jovens da igreja",
     "escolhas": [
@@ -355,7 +356,14 @@
     "id": "dizimo",
     "idade": [22, 70],
     "condicoes": { "algumaMarca": ["grupo_da_igreja"], "renda": { "min": 15000 } },
-    "texto": "O pastor falou de dízimo três domingos seguidos olhando para você. {mae} acha que é sinal.",
+    "texto": "O pastor falou de dízimo três domingos seguidos olhando para você. {sinal}",
+    "trechos": {
+      "sinal": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} acha que é sinal." },
+        { "se": { "mae.vivo": false }, "texto": "Você lembrou de {mae}: ela ia dizer que é sinal." },
+        { "texto": "A vizinha de banco acha que é sinal." }
+      ]
+    },
     "resumo": "foi cobrado pelo dízimo",
     "escolhas": [
       {
@@ -590,6 +598,13 @@
     "condicoes": { "marcas": ["negocio_familiar"] },
     "texto": "No negócio da família, você ganhou um banquinho atrás do balcão. Os clientes mais antigos te chamam de \"patrãozinho\" ou \"patroazinha\".",
     "resumo": "cresceu atrás do balcão do negócio da família",
+    "trechos": {
+      "quem_suspira": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "O tio do estoque" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Aprender o ofício",
@@ -608,7 +623,7 @@
         "texto": "Preferir brincar",
         "resumo": "preferiu brincar a ficar no balcão",
         "resultado": {
-          "texto": "O banquinho ficou vazio. {pai} suspirou e disse que um dia você ia entender.",
+          "texto": "O banquinho ficou vazio. {quem_suspira} suspirou e disse que um dia você ia entender.",
           "efeitos": { "felicidade": 2, "pai.vinculo": -3 }
         }
       }
@@ -620,8 +635,14 @@
     "condicoes": { "familia": "acolhedora", "mae.vivo": true },
     "repetivel": true,
     "intervalo": 12,
-    "texto": "Você chegou em casa e acendeu a luz: \"SURPRESA!\" A família inteira, um bolo com o seu nome escrito errado e {avo} segurando o balão.",
+    "texto": "Você chegou em casa e acendeu a luz: \"SURPRESA!\" A família inteira, um bolo com o seu nome escrito errado e {balao} segurando o balão.",
     "resumo": "ganhou uma festa surpresa da família",
+    "trechos": {
+      "balao": [
+        { "se": { "avo.vivo": true }, "texto": "{avo}" },
+        { "texto": "{mae}" }
+      ]
+    },
     "efeitos": { "felicidade": 4, "mae.vinculo": 3 }
   },
   {
@@ -638,12 +659,19 @@
     "condicoes": { "cofrinho": { "min": 3 } },
     "texto": "O cofrinho de porquinho não fecha mais. Você chacoalha e ouve o barulho mais bonito do mundo.",
     "resumo": "encheu o primeiro cofrinho",
+    "trechos": {
+      "ao_banco": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} te levou ao banco." },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} te levou ao banco." },
+        { "texto": "Você foi ao banco com o porquinho debaixo do braço." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Abrir uma conta no banco",
         "resumo": "abriu a primeira conta no banco com o cofrinho",
         "resultado": {
-          "texto": "{mae} te levou ao banco. O gerente contou as moedas com cara de quem merecia aumento.",
+          "texto": "{ao_banco} O gerente contou as moedas com cara de quem merecia aumento.",
           "efeitos": { "dinheiro": 600, "marcas": ["poupador", "tino_financeiro"], "inteligencia": 1 }
         }
       },
@@ -964,12 +992,19 @@
     "peso": 3,
     "texto": "Com o histórico de ex-bolsista, apareceu a chance de uma bolsa integral pelo programa do governo numa faculdade que você só via da janela do ônibus.",
     "resumo": "conseguiu bolsa integral na faculdade",
+    "trechos": {
+      "geladeira": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} imprimiu e colou na geladeira." },
+        { "se": { "mae.vivo": false }, "texto": "Você imprimiu e colou na geladeira, do lado da foto de {mae}." },
+        { "texto": "Você imprimiu e colou na geladeira." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Aceitar a bolsa",
         "resumo": "entrou na faculdade com bolsa integral",
         "resultado": {
-          "texto": "Primeira pessoa da família com carteirinha de universitário. {mae} imprimiu e colou na geladeira.",
+          "texto": "Primeira pessoa da família com carteirinha de universitário. {geladeira}",
           "efeitos": { "marcas": ["cursando"], "felicidade": 6, "inteligencia": 1, "mae.vinculo": 4 }
         }
       },

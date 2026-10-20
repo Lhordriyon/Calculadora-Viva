@@ -4,8 +4,14 @@
     "idade": [20, 50],
     "condicoes": { "semMarcas": ["pelada"] },
     "peso": 2,
-    "texto": "O pessoal da [firma|rua|faculdade] tem uma pelada toda quinta e precisa de mais um. {amigo} jura que o nível é baixo, o que, no futebol amador, sempre é mentira.",
+    "texto": "O pessoal da [firma|rua|faculdade] tem uma pelada toda quinta e precisa de mais um. {quem_jura} jura que o nível é baixo, o que, no futebol amador, sempre é mentira.",
     "resumo": "foi chamad{o|a} para a pelada de quinta",
+    "trechos": {
+      "quem_jura": [
+        { "se": { "amigo.vivo": true }, "texto": "{amigo}" },
+        { "texto": "O organizador" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Ficar em casa",
@@ -226,7 +232,7 @@
   {
     "id": "emprestimo_de_volta",
     "apenasAgendado": true,
-    "condicoes": { "marcas": ["emprestou_ao_amigo"] },
+    "condicoes": { "marcas": ["emprestou_ao_amigo"], "amigo.vivo": true },
     "texto": "Faz tempo que você emprestou dinheiro para {amigo}. Hoje chegou uma mensagem dele{|a}... ",
     "resumo": "viu se {amigo} devolvia o dinheiro emprestado",
     "teste": { "chance": 0.55 },

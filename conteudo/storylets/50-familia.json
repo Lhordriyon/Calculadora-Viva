@@ -198,6 +198,12 @@
     "intervalo": 4,
     "texto": "{ator.quem} [reclamou do seu jeito de falar|implicou com a sua roupa, seus amigos e seu futuro|começou a briga pelo controle remoto e terminou falando da sua vida inteira].",
     "resumo": "{ator.quem} brigou com você",
+    "trechos": {
+      "refugio": [
+        { "se": { "amigo.vivo": true }, "texto": "Você foi para a casa de {amigo}." },
+        { "texto": "Você deu três voltas no quarteirão." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Bater de frente",
@@ -219,7 +225,7 @@
         "texto": "Sair para esfriar a cabeça",
         "resumo": "saiu de casa para esfriar a cabeça",
         "resultado": {
-          "texto": "Você foi para a casa de {amigo}. Voltou mais calm{o|a}, e {ator} também.",
+          "texto": "{refugio} Voltou mais calm{o|a}, e {ator} também.",
           "efeitos": { "felicidade": 1, "amigo.vinculo": 3, "ator.vinculo": -2 }
         }
       }

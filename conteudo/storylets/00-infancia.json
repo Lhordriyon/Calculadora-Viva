@@ -3,10 +3,13 @@
     "id": "primeira_palavra",
     "idade": [1, 1],
     "peso": 4,
+    "condicoes": { "mae.vivo": true },
     "trechos": {
       "apostas": [
-        { "se": { "pai.ausente": true }, "texto": "{mae} aposta em \"mamãe\" e a vó {avo}, em \"vó\"" },
-        { "texto": "{mae} aposta em \"mamãe\", {pai} em \"papai\" e a vó {avo}, em \"vó\"" }
+        { "se": { "pai.ausente": false, "pai.vivo": true, "avo.vivo": true }, "texto": "{mae} aposta em \"mamãe\", {pai} em \"papai\" e a vó {avo}, em \"vó\"" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{mae} aposta em \"mamãe\" e {pai}, em \"papai\"" },
+        { "se": { "avo.vivo": true }, "texto": "{mae} aposta em \"mamãe\" e a vó {avo}, em \"vó\"" },
+        { "texto": "{mae} aposta em \"mamãe\" e a vizinha, em \"água\"" }
       ]
     },
     "texto": "Você está a um passo da primeira palavra, e em casa já tem bolão: {apostas}. [Ninguém apostou no que vem.|O vizinho apostou em \"gol\".|A aposta vale um pudim.]",
@@ -54,10 +57,15 @@
     "id": "creche_ou_vo",
     "idade": [1, 2],
     "peso": 6,
+    "condicoes": { "mae.vivo": true },
     "trechos": {
       "quem_trabalha": [
-        { "se": { "pai.ausente": true }, "texto": "{mae} precisa voltar a trabalhar" },
-        { "texto": "{mae} e {pai} precisam trabalhar" }
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{mae} e {pai} precisam trabalhar" },
+        { "texto": "{mae} precisa voltar a trabalhar" }
+      ],
+      "a_vo": [
+        { "se": { "avo.vivo": true }, "texto": "A vó {avo}" },
+        { "texto": "A vó" }
       ]
     },
     "texto": "A licença acabou, {quem_trabalha} e alguém tem que ficar com você. A família se reúne na cozinha, como em toda decisão importante.",
@@ -72,7 +80,7 @@
         }
       },
       {
-        "texto": "A vó {avo}",
+        "texto": "{a_vo}",
         "resumo": "foi {criado|criada} pela avó enquanto os pais trabalhavam",
         "condicoes": { "avo.vivo": true },
         "bloqueio": "a vó não pode",
@@ -115,9 +123,24 @@
           "texto": "bolo da vizinha, refrigerante de dois litros e o quintal enfeitado"
         },
         { "texto": "festa no salão do prédio" }
+      ],
+      "quem_compra": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "a sua tia" }
+      ],
+      "do_pai": [
+        { "se": { "pai.vivo": true }, "texto": "de {pai}" },
+        { "se": { "pai.vivo": false }, "texto": "que era de {pai}" },
+        { "texto": "da família" }
+      ],
+      "festa_do_time": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} ficou tão emocionado que comprou um uniforme do seu tamanho." },
+        { "se": { "pai.vivo": false }, "texto": "A família inteira foi de camisa, e alguém lembrou que {pai} ia adorar ver." },
+        { "texto": "A família inteira foi de camisa, até quem torce para o rival." }
       ]
     },
-    "texto": "Seu aniversário vai ter {festa}, e você precisa escolher o tema antes que {mae} compre tudo de [dinossauro|unicórnio|fundo do mar] por conta própria.",
+    "texto": "Seu aniversário vai ter {festa}, e você precisa escolher o tema antes que {quem_compra} compre tudo de [dinossauro|unicórnio|fundo do mar] por conta própria.",
     "resumo": "escolheu o tema da festa de aniversário",
     "escolhas": [
       {
@@ -129,10 +152,10 @@
         }
       },
       {
-        "texto": "O time de futebol de {pai}",
-        "resumo": "fez festa com o tema do time de {pai}",
+        "texto": "O time de futebol {do_pai}",
+        "resumo": "fez festa com o tema do time {do_pai}",
         "resultado": {
-          "texto": "{pai} ficou tão emocionado que comprou um uniforme do seu tamanho. Você agora tem um time, para o bem e para o mal.",
+          "texto": "{festa_do_time} Você agora tem um time, para o bem e para o mal.",
           "efeitos": { "felicidade": 3, "marcas": ["torcedor"] }
         }
       },
@@ -157,6 +180,7 @@
     "id": "primeiro_dia_escola",
     "idade": [5, 6],
     "marco": true,
+    "condicoes": { "amigo.vivo": true },
     "trechos": {
       "escola": [
         {
@@ -194,6 +218,13 @@
     "peso": 2,
     "texto": "Um vira-lata caramelo te seguiu [da escola|da padaria|da pracinha] até o portão de casa. Agora está sentado ali, te olhando como quem já mora aqui.",
     "resumo": "foi seguid{o|a} por um vira-lata caramelo",
+    "trechos": {
+      "quem_cede": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "a família" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Dar comida e deixar ir",
@@ -208,12 +239,12 @@
         "resumo": "implorou para adotar um vira-lata",
         "teste": { "chance": 0.65 },
         "sucesso": {
-          "texto": "Depois de três dias de greve de fome (a sua), {mae} cedeu. O caramelo ganhou o nome de {pet} e o melhor lugar do sofá.",
+          "texto": "Depois de três dias de greve de fome (a sua), {quem_cede} cedeu. O caramelo ganhou o nome de {pet} e o melhor lugar do sofá.",
           "resumo": "adotou {pet}, um vira-lata caramelo",
           "efeitos": { "felicidade": 6, "personagens": ["pet"], "marcas": ["caramelo"] }
         },
         "fracasso": {
-          "texto": "{mae} disse que bicho dá trabalho. Quem deu trabalho foi você, chorando uma semana inteira.",
+          "texto": "{quem_cede} disse que bicho dá trabalho. Quem deu trabalho foi você, chorando uma semana inteira.",
           "resumo": "tentou adotar um vira-lata e perdeu a discussão",
           "efeitos": { "felicidade": -3 }
         }
@@ -226,6 +257,12 @@
     "peso": 3,
     "texto": "[Feira de ciências|Semana da ciência na escola]. Você pode fazer o vulcão de bicarbonato pela milésima vez na história da escola ou montar um robô com sucata e o motor de [um ventilador velho|um carrinho de controle remoto|uma batedeira aposentada].",
     "resumo": "participou da feira de ciências",
+    "trechos": {
+      "quem_ajuda": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "alguém de casa" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Vulcão de bicarbonato",
@@ -251,7 +288,7 @@
         }
       },
       {
-        "texto": "Pedir ajuda para {mae}",
+        "texto": "Pedir ajuda para {quem_ajuda}",
         "resumo": "montou o projeto da feira com {mae}",
         "condicoes": {
           "mae.ocupacao": [
@@ -288,9 +325,14 @@
         { "se": { "classe_origem": { "min": 4 } }, "texto": "R$ 200" },
         { "se": { "classe_origem": { "min": 2 } }, "texto": "R$ 50" },
         { "texto": "R$ 20, quando der" }
+      ],
+      "quem_propoe": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "A família" }
       ]
     },
-    "texto": "{pai} propõe uma mesada de {valor_mesada} por mês. Ou, se preferir, um videogame usado agora e nada de mesada pelo resto do ano.",
+    "texto": "{quem_propoe} propõe uma mesada de {valor_mesada} por mês. Ou, se preferir, um videogame usado agora e nada de mesada pelo resto do ano.",
     "resumo": "decidiu o destino da primeira mesada",
     "escolhas": [
       {
@@ -323,8 +365,15 @@
     "id": "esporte_depois_da_aula",
     "idade": [7, 10],
     "peso": 4,
-    "texto": "[Hora de escolher|{mae} quer que você escolha|A escola mandou um bilhete para você escolher] uma atividade para depois da aula. Tem escolinha de futebol no bairro, natação no clube e, claro, a tela do celular.",
+    "texto": "[Hora de escolher|{quem_quer} quer que você escolha|A escola mandou um bilhete para você escolher] uma atividade para depois da aula. Tem escolinha de futebol no bairro, natação no clube e, claro, a tela do celular.",
     "resumo": "escolheu o que fazer depois da aula",
+    "trechos": {
+      "quem_quer": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "A professora de educação física" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Tela do celular",
@@ -358,7 +407,7 @@
     "id": "vo_receita",
     "idade": [7, 12],
     "peso": 5,
-    "condicoes": { "marcas": ["criado_pela_vo"] },
+    "condicoes": { "marcas": ["criado_pela_vo"], "avo.vivo": true },
     "texto": "A vó {avo} decide que chegou a hora: vai te ensinar a receita do bolo de fubá que ninguém da família consegue acertar.",
     "resumo": "aprendeu com a vó {avo} a receita do bolo de fubá",
     "escolhas": [
@@ -428,7 +477,7 @@
     "id": "bullying_recreio",
     "idade": [8, 12],
     "peso": 5,
-    "condicoes": { "marcas": ["amigo_de_infancia"] },
+    "condicoes": { "marcas": ["amigo_de_infancia"], "amigo.vivo": true },
     "texto": "No recreio, uns garotos maiores estão zoando {amigo} por causa dos óculos novos. {amigo} olha para você.",
     "resumo": "viu {amigo} ser zoad{amigo:o|a} no recreio",
     "escolhas": [

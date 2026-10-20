@@ -5,12 +5,19 @@
     "peso": 4,
     "texto": "Você ganhou seu primeiro celular. Usado, com [a tela trincada no canto|a bateria que dura até o almoço|um adesivo de time que não sai] e a capinha de outra pessoa, mas é seu.",
     "resumo": "ganhou o primeiro celular",
+    "trechos": {
+      "comentou": [
+        { "se": { "avo.vivo": true }, "texto": "A vó {avo} comentou \"lindo\" em todos." },
+        { "se": { "mae.vivo": true }, "texto": "{mae} comentou \"lindo\" em todos." },
+        { "texto": "A tia comentou \"lindo\" em todos, com três corações." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Criar um canal de vídeos",
         "resumo": "criou um canal de vídeos aos {idade} anos",
         "resultado": {
-          "texto": "Primeiro vídeo: onze visualizações, nove da família. A vó {avo} comentou \"lindo\" em todos.",
+          "texto": "Primeiro vídeo: onze visualizações, nove da família. {comentou}",
           "efeitos": { "felicidade": 3, "marcas": ["criador_conteudo"] }
         }
       },
@@ -296,8 +303,21 @@
     "id": "festa_sem_pais",
     "idade": [15, 17],
     "peso": 3,
-    "texto": "{mae} e {pai} vão viajar no fim de semana. A casa vazia está te olhando.",
+    "texto": "{quem_viaja} no fim de semana. A casa vazia está te olhando.",
     "resumo": "ficou com a casa vazia no fim de semana",
+    "trechos": {
+      "quem_viaja": [
+        { "se": { "mae.vivo": true, "pai.ausente": false, "pai.vivo": true }, "texto": "{mae} e {pai} vão viajar" },
+        { "se": { "mae.vivo": true }, "texto": "{mae} vai viajar" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} vai viajar" },
+        { "texto": "Quem cuida de você vai viajar" }
+      ],
+      "ligou_para": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "a família inteira" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Maratonar séries",
@@ -317,7 +337,7 @@
           "efeitos": { "felicidade": 8, "aparencia": 2 }
         },
         "fracasso": {
-          "texto": "Alguém quebrou a TV e o vizinho ligou para {mae}. Você vai pagar essa TV até os trinta.",
+          "texto": "Alguém quebrou a TV e o vizinho ligou para {ligou_para}. Você vai pagar essa TV até os trinta.",
           "resumo": "deu uma festa que quebrou a TV da sala",
           "efeitos": { "felicidade": -3, "dinheiro": -1500 }
         }
@@ -338,6 +358,18 @@
     "marco": true,
     "texto": "Chegou o ENEM: [dois domingos, um cartão-resposta|dois domingos, uma caneta preta|cinco horas por dia, dois domingos seguidos] e uma redação sobre um tema que [ninguém previu|todo mundo previu errado|virou meme na mesma tarde].",
     "resumo": "fez o ENEM",
+    "trechos": {
+      "geladeira": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} imprimiu o resultado e colou na geladeira." },
+        { "se": { "mae.vivo": false }, "texto": "Você imprimiu o resultado e colou na geladeira, do lado da foto de {mae}." },
+        { "texto": "Você imprimiu o resultado e colou na geladeira." }
+      ],
+      "quem_assina": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "texto": "A família" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Estudar de madrugada por meses",
@@ -345,7 +377,7 @@
         "efeitos": { "inteligencia": 4, "saude": -2 },
         "teste": { "atributo": "inteligencia", "dificuldade": 52 },
         "sucesso": {
-          "texto": "Aprovad{o|a} na universidade federal! {mae} imprimiu o resultado e colou na geladeira.",
+          "texto": "Aprovad{o|a} na universidade federal! {geladeira}",
           "resumo": "estudou de madrugada e passou na federal",
           "efeitos": { "felicidade": 7, "marcas": ["cursando"] }
         },
@@ -384,7 +416,7 @@
         "condicoes": { "mae.renda": { "min": 90000 } },
         "bloqueio": "a mensalidade não cabe no orçamento de casa",
         "resultado": {
-          "texto": "{pai} fez as contas, suspirou e assinou o contrato. Você ganhou um campus com wi-fi e lanchonete cara.",
+          "texto": "{quem_assina} fez as contas, suspirou e assinou o contrato. Você ganhou um campus com wi-fi e lanchonete cara.",
           "efeitos": { "felicidade": 3, "marcas": ["cursando"] }
         }
       }

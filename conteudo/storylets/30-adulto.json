@@ -8,6 +8,12 @@
     "condicoes": { "algumaMarca": ["clt", "servidor"], "renda": { "min": 20000 } },
     "texto": "Abriu uma vaga de [coordenação|supervisão|gerência]. Seu chefe insinua que ela é sua, desde que você \"vista a camisa\". [A camisa parece apertada.|A camisa vem com crachá e plantão no fim de semana.|A camisa é tamanho único.]",
     "resumo": "foi sondad{o|a} para uma promoção",
+    "trechos": {
+      "ligar": [
+        { "se": { "mae.vivo": true }, "texto": "ligar para {mae}" },
+        { "texto": "ligar para alguém, qualquer pessoa" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Recusar e manter a sanidade",
@@ -30,7 +36,7 @@
         "resumo": "pediu aumento sem aceitar a promoção",
         "teste": { "atributo": "inteligencia", "dificuldade": 50 },
         "sucesso": {
-          "texto": "O chefe topou. Você saiu da sala sem acreditar e com vontade de ligar para {mae}.",
+          "texto": "O chefe topou. Você saiu da sala sem acreditar e com vontade de {ligar}.",
           "resumo": "negociou um aumento sem aceitar a promoção",
           "efeitos": { "renda": 6000, "felicidade": 2 }
         },
@@ -139,8 +145,14 @@
     "peso": 8,
     "repetivel": true,
     "intervalo": 2,
-    "texto": "Desemprego. O currículo foi para [quarenta|sessenta|cem] vagas e voltou de nenhuma. [O aplicativo de vagas insiste em oportunidades em outro estado.|Um recrutador visualizou seu perfil e sumiu.|{mae} manda vaga todo dia, inclusive as de estágio.]",
+    "texto": "Desemprego. O currículo foi para [quarenta|sessenta|cem] vagas e voltou de nenhuma. [O aplicativo de vagas insiste em oportunidades em outro estado.|Um recrutador visualizou seu perfil e sumiu.|{manda_vaga}]",
     "resumo": "ficou sem emprego",
+    "trechos": {
+      "manda_vaga": [
+        { "se": { "mae.vivo": true }, "texto": "{mae} manda vaga todo dia, inclusive as de estágio." },
+        { "texto": "O grupo da família manda vaga todo dia, inclusive as de estágio." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Aceitar qualquer coisa",
@@ -217,7 +229,7 @@
   {
     "id": "sociedade_amigo",
     "idade": [28, 45],
-    "condicoes": { "marcas": ["leal"] },
+    "condicoes": { "marcas": ["leal"], "amigo.vivo": true },
     "peso": 5,
     "texto": "{amigo} aparece com uma proposta: abrir juntos [uma hamburgueria artesanal|uma oficina mecânica|um pet shop]. \"Você foi a única pessoa que me defendeu no recreio\", diz.",
     "resumo": "recebeu uma proposta de sociedade de {amigo}",
@@ -257,7 +269,7 @@
     "id": "chefe_amigo",
     "idade": [28, 50],
     "peso": 6,
-    "condicoes": { "marcas": ["zoou_amigo"] },
+    "condicoes": { "marcas": ["zoou_amigo"], "amigo.vivo": true },
     "texto": "Primeiro dia no emprego novo. Entra na sala {amigo:o novo diretor|a nova diretora}: é {amigo}, de quem você riu no recreio.",
     "resumo": "descobriu que {amigo}, de quem riu no recreio, era {amigo:seu novo chefe|sua nova chefe}",
     "escolhas": [
@@ -426,8 +438,14 @@
     "idade": [28, 62],
     "peso": 3,
     "condicoes": { "algumaMarca": ["ativo", "boleiro", "nadador"] },
-    "texto": "[O grupo de corrida do bairro|Um colega de trabalho|{amigo}] te desafia para a meia maratona: vinte e um quilômetros de asfalto e autoestima.",
+    "texto": "[O grupo de corrida do bairro|Um colega de trabalho|{desafiante}] te desafia para a meia maratona: vinte e um quilômetros de asfalto e autoestima.",
     "resumo": "foi desafiad{o|a} para uma meia maratona",
+    "trechos": {
+      "desafiante": [
+        { "se": { "amigo.vivo": true }, "texto": "{amigo}" },
+        { "texto": "O vizinho maratonista" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Torcer na linha de chegada",
@@ -661,6 +679,13 @@
     "condicoes": { "marcas": ["torcedor"] },
     "texto": "Seu time foi rebaixado para a segunda divisão. O grupo dos torcedores está de luto; o dos rivais, em festa.",
     "resumo": "viu o time do coração ser rebaixado",
+    "trechos": {
+      "reacao_pai": [
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai} não fala com você desde então." },
+        { "se": { "pai.vivo": false }, "texto": "Você jura que ouviu {pai} se revirar no túmulo." },
+        { "texto": "O grupo da família não fala com você desde então." }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Sofrer junto, como manda a tradição",
@@ -682,7 +707,7 @@
         "texto": "Trocar de time",
         "resumo": "trocou de time depois do rebaixamento",
         "resultado": {
-          "texto": "{pai} não fala com você desde então. Mas o time novo ganha mais.",
+          "texto": "{reacao_pai} Mas o time novo ganha mais.",
           "efeitos": { "felicidade": 1, "removerMarcas": ["torcedor"] }
         }
       }

@@ -356,8 +356,15 @@
     "id": "balcao_da_familia",
     "idade": [6, 12],
     "condicoes": { "familia": "empreendedora" },
-    "texto": "No negócio da família, faltou alguém no caixa. {mae} olha para você: \"sabe contar troco?\".",
+    "texto": "No negócio da família, faltou alguém no caixa. {quem_chama} olha para você: \"sabe contar troco?\".",
     "resumo": "cuidou do caixa do negócio da família",
+    "trechos": {
+      "quem_chama": [
+        { "se": { "mae.vivo": true }, "texto": "{mae}" },
+        { "se": { "pai.ausente": false, "pai.vivo": true }, "texto": "{pai}" },
+        { "texto": "O tio do estoque" }
+      ]
+    },
     "escolhas": [
       {
         "texto": "Assumir o caixa",

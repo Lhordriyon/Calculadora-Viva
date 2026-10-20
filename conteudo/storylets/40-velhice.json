@@ -323,7 +323,7 @@
         }
       },
       {
-        "texto": "Chorar no colo de {mae}",
+        "texto": "Chorar no colo da mãe",
         "resumo": "chorou no colo de {mae} pela vó {avo}",
         "resultado": {
           "texto": "{mae} também chorou. Depois fizeram um café, que é o que se faz.",
