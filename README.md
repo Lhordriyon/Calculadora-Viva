@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-V1%3A%20a%20cara%20nova-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C1%3A%20a%20hist%C3%B3ria%20no%20centro-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-743-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,46 +15,47 @@
 
 ---
 
-## 🆕 Novidades: Bloco V1 · A cara nova (19/10/2026)
+## 🆕 Novidades: Correção C1 · A história de volta ao centro (20/10/2026)
 
 <p align="center">
-  <img src="docs/imagens/tela-escura.png" alt="A tela principal no tema escuro: a marca Trajetória em ouro, o retrato com as iniciais e uma coroa, a economia aquecida, os quatro indicadores em cartões coloridos, o dinheiro em três cartões, a história do ano e os seis verbos com ícone, e o botão dourado Viver mais 1 ano" width="290" />
+  <img src="docs/imagens/tela-escura.png" alt="A tela principal no tema escuro, num celular de 360 por 780 com a letra do sistema um pouco maior: no alto, o nome e os quatro botões das folhas; embaixo, o título, a idade e a cidade, o link da economia, os quatro indicadores com barra fina e o dinheiro numa linha; no meio, a história do ano; embaixo, as seis escolhas e o botão Viver mais 1 ano, que diz quantas escolhas sobram" width="290" />
   &nbsp;
-  <img src="docs/imagens/tela-clara.png" alt="A mesma tela no tema claro, em papel creme com ouro velho" width="290" />
+  <img src="docs/imagens/tela-clara.png" alt="A mesma tela no tema claro, em papel creme" width="290" />
 </p>
 
+> [!IMPORTANT]
+> **O que aconteceu:** a cara nova (V1) foi medida num celular comum, com a letra normal. No celular do dono, com a letra do sistema maior, os cartões do cabeçalho tomavam a tela, a história ficava com um quarto dela (e com 11 px durante um evento), o dinheiro saía cortado e o botão dourado fazia passar o ano sem as escolhas. Esta correção mediu tudo de novo, em sete tamanhos de tela e letra, nos dois temas. O tema noite e ouro ficou.
+
 > [!TIP]
-> **Para ver:** é só abrir o jogo. O tema segue o do celular (escuro ou claro). O primeiro dia de escola, aos 5 ou 6 anos, já aparece como **marco da trajetória**, no cartão dourado da linha do tempo; depois vêm o ENEM, o primeiro emprego, a formatura e a aposentadoria. Quem nasce na família real ou no Regime, chega ao trono ou passa de R$ 1 bilhão ganha a coroa no retrato.
+> **Para testar:** jogue com a letra do celular do jeito que você usa. Confira que a história do ano aparece do começo depois de "Viver mais 1 ano", que o dinheiro aparece inteiro, que o botão diz quantas escolhas sobram e que, num evento, as opções ficam sempre à vista. Abra uma folha (Família, Carreira, Dinheiro) e feche pelo **X** no topo ou pelo voltar do Android. Se puder, mande uma captura da tela principal: ela confirma o tamanho da letra do seu celular.
 
-Inspirada no mockup que o dono mandou: fundo azul-noite com ouro, os indicadores em cartões, o dinheiro em cartões, os verbos com ícone e o botão dourado. A linha do tempo continua no meio da tela, porque ela é a história.
-
-| ✅ O que esta atualização trouxe | ⏳ O que ela ainda não trouxe |
+| ✅ O que esta correção trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 🌙 **Tema noite e ouro** nos dois modos: azul-noite com ouro no escuro, papel creme com ouro velho no claro | 📷 **Foto no retrato:** o retrato mostra as iniciais (o jogo não tem imagens de pessoas) |
-| 🏷️ **Barra da marca** com o símbolo e "sua vida, suas escolhas"; símbolo e ícones do app em ouro | 🍩 **A rosca do patrimônio** (de que é feito o dinheiro): fica para a folha Dinheiro |
-| 👤 **Retrato** com as iniciais e o aro dourado; **coroa** para a realeza, o Regime, o trono e quem tem bilhão | ⚙️ Um botão para **escolher o tema** dentro do jogo (hoje segue o celular) |
-| 📈 **Selo da economia** (aquecida, normal, recessão, crise) com o ano; tocar abre o país | 📱 O **ícone do app Android** instalado continua o antigo (só o do navegador mudou) |
-| ❤️ **Saúde, felicidade, inteligência e aparência** em cartões com ícone, cor e barra | |
-| 💰 **Dinheiro, patrimônio e renda** em três cartões; o cargo aparece no cartão da renda; a dívida, em vermelho | |
-| 🧭 **Suas escolhas:** os seis verbos com ícone e cor, e o ponto dourado no que é novo | |
-| 👑 **Marco da trajetória:** o primeiro dia de escola, o ENEM, o primeiro emprego, a aposentadoria… ganham o cartão dourado na própria história | |
-| ⏩ **Viver mais 1 ano** em ouro, sempre no polegar | |
-| 🔠 **Letra grande:** com a fonte do celular aumentada, os indicadores vão para uma linha e os nomes aparecem inteiros | |
-| ✨ O acabamento do pacote visual que o dono mandou, comparado regra por regra com o código: fio de ouro no evento, opções mais táteis, folhas com alça, cartões com sombra, telas baixas mais justas | |
+| 📖 **A história no centro:** o cabeçalho virou uma faixa de texto (o nome, a idade, a economia, os indicadores e o dinheiro), sem cartões nem retrato | ✍️ **Correção C2**, o texto que contradiz a vida: pessoas que já morreram falando, irmãos trocados, concordância ("tioa") |
+| 💰 **Nenhum número cortado:** o dinheiro quebra linha em vez de virar "R$ 2,9…" | ⚙️ **Correção C3**, regras que se medem errado: a régua do dinheiro, os falsos dilemas, os mandatos sem fim |
+| ⏩ **O botão do ano diz quantas escolhas sobram** ("Viver mais 1 ano · sobram 3") e só fica dourado quando não há o que escolher | 📱 O ícone novo no app Android instalado |
+| 👆 **O toque duplo não passa mais o ano:** depois de um evento, o segundo toque é ignorado (passava o ano 12 vezes em 40) | 🍩 A rosca do patrimônio na folha Dinheiro |
+| 🎴 **No evento, as opções ficam sempre à vista**; o texto longo rola por dentro, e a história guarda três linhas | |
+| 📜 **A rolagem mostra o começo do ano**, não o fim; o balanço do ano virou uma linha pequena | |
+| ❌ **As folhas fecham no topo** (o X) e com o **voltar do Android**, que antes fechava o app | |
+| 👨‍👩‍👧 **Família** com os medidores certos de novo; **Carreira** com o Poder primeiro para quem tem cargo e as profissões fechadas numa linha só, com o motivo | |
+| 🌙 **O ouro só onde tem papel:** o marco da trajetória, o ponto de novidade, o fio do evento; a Felicidade virou laranja para não se confundir com ele | |
+| 🔠 **Um arranjo só** para qualquer tamanho de letra: o que precisa ceder quebra linha, sem trocar a tela de repente | |
 
-**Medido no navegador** (a altura que sobra para a linha do tempo, a história):
+**Medido no navegador**, no tamanho do celular do dono (360 × 780), com o save de uma vida cheia:
 
-| Tela | Antes | Agora |
+| Letra do sistema | História (linha do tempo) antes | Agora |
 |---|---|---|
-| 📱 Celular comum (390 × 844), 4 verbos | 419 px | 342 px |
-| 📱 Celular comum, 6 verbos | 352 px | 288 px |
-| 🔠 Celular pequeno (360 × 760) com a letra em 145%, 6 verbos | 152 px | 166 px |
+| 🔤 Normal (1,0) | 224 px · 29% da tela | 334 px · 43% |
+| 🔤 Um pouco maior (1,15) | 168 px · 22% | 320 px · 41% |
+| 🔠 Grande (1,45, a do dono) | 186 px · 24% | 234 px · 30% |
+| 🎴 Grande, com um evento na tela | 11 px | 107 px |
 
-Nenhuma rolagem para o lado, nenhum alvo de toque abaixo de 44 px e nenhum erro no console, nos dois temas. O motor não mudou: o túnel de vento dá as mesmas vidas. O histórico de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
+Nenhuma rolagem para o lado, nenhum alvo de toque abaixo de 44 px, nenhuma letra abaixo de 12 px e nenhum erro no console, nos dois temas. O motor não mudou: o túnel de vento dá as mesmas vidas. O histórico de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
 
 ## 🗺️ Os próximos blocos
 
-Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro (a cara nova, V1, entrou no meio, a pedido dele):
+Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro. A cara nova (V1) e a correção dela (C1 a C3) entraram no meio, a pedido dele:
 
 ```mermaid
 flowchart LR

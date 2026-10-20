@@ -961,8 +961,8 @@ A tela de hoje já tinha todos os elementos do mockup, sem identidade visual. O 
 - **A rosca do patrimônio não entrou no cabeçalho.** Ela custaria mais 60 px de história. Vai para a folha Dinheiro (I-98).
 - **Iniciais no lugar da foto.** O jogo não tem imagens de pessoas, e um rosto sorteado seria um personagem que o conteúdo não conhece.
 - **O pacote não substituiu o código.** O JS dele é o bundle compilado de um APK anterior às últimas atualizações. Trocar a pasta web apagaria o bloco A e as fatias recentes, e o próprio README do pacote avisa do risco de reassinar o APK. As ideias de CSS dele entraram no código-fonte, na paleta do mockup (ouro, não terracota).
-- **O botão dourado sempre.** Antes, o "+1 ano" ficava cinza enquanto havia ação no ano, para puxar o jogador para os verbos. O mockup o põe sempre em ouro. A contagem "aos 30, 3 este ano" passa esse recado no título das escolhas.
-- **Detectar a letra grande em vez de adivinhar.** O app Android herda a fonte do celular, que aumenta o texto e não as caixas. Com a sonda, o arranjo estreito só aparece para quem precisa.
+- **O botão dourado sempre.** Antes, o "+1 ano" ficava cinza enquanto havia ação no ano, para puxar o jogador para os verbos. O mockup o põe sempre em ouro. A contagem "aos 30, 3 este ano" passa esse recado no título das escolhas. *Desfeita na correção C1 (20/10): no aparelho do dono a contagem saía cortada, e o botão dourado fazia passar o ano sem as escolhas.*
+- **Detectar a letra grande em vez de adivinhar.** O app Android herda a fonte do celular, que aumenta o texto e não as caixas. Com a sonda, o arranjo estreito só aparece para quem precisa. *Desfeita na correção C1 (20/10): o limiar trocava o arranjo de uma vez, e na letra do dono (1,45) os dois arranjos cortavam texto.*
 
 **Medidas** (navegador, a altura da linha do tempo; antes = a versão do bloco A):
 
@@ -1018,6 +1018,86 @@ O APK assinado sai do workflow `App Android` a cada push na `main`. O passo do G
 - **A rosca do patrimônio** (I-98).
 - **Escolher o tema dentro do jogo** (I-99).
 - **O ícone do app Android instalado** (I-100). Os ícones do navegador mudaram; os do APK são outros arquivos.
+
+## Correção C1: a história de volta ao centro (20/10)
+
+O dono jogou o V1 e respondeu com uma lista: perdeu qualidade, originalidade, diversão, hierarquia de interface e de cores, dimensionamento de tela e de botões, inteligência mecânica e de funcionamento, propósito, otimização, capacidade, carinho, cuidado e perfeição. "Faça o que é preciso para salvar o jogo."
+
+**O erro foi de medida.** O V1 foi medido num celular comum (390 × 844) com a letra normal, e a 360 × 760 com a letra em 1,45. O aparelho do dono tem 360 × 780 e a letra do sistema por volta de 1,45. Nesse aparelho:
+- a linha do tempo, que é a história, ficava com 20–28% da tela;
+- durante um evento, ela ficava com 11 px;
+- o dinheiro saía cortado com reticências.
+
+Uma auditoria com sete lentes e um cético por lente separou o que se confirma do que não se confirma (29 achados rejeitados, entre eles trocar o ouro por terracota: o tema noite e ouro é pedido do dono). O plano de correção tem três blocos:
+- C1, a interface (este);
+- C2, o texto que contradiz a vida;
+- C3, regras do motor que se medem errado.
+
+**O que mudou:**
+- **O cabeçalho virou uma faixa de texto.**
+  - Saíram a barra da marca, o retrato de iniciais e os cartões; o nome do jogo fica na abertura, no ícone e no cartão.
+  - O nome divide a linha com as quatro folhas.
+  - Embaixo vêm o título, a idade e a cidade, e depois o selo da economia, que é um link de texto.
+  - Os indicadores ficam em 2×2, com a barra fina.
+  - O dinheiro fica numa linha que quebra, sem cortar número. Com um evento, o cabeçalho mostra só o nome e o dinheiro.
+- **Um arranjo só.** Saíram o `letra.ts` e o modo de letra grande. O que precisa ceder cede por quebra de linha e por container queries em `em`: o ícone dos indicadores e dos verbos só aparece quando cabe.
+- **O cartão do evento é uma coluna.** O texto rola por dentro, com uma sombra na borda quando há mais. As opções ficam sempre à vista, e a história guarda três linhas.
+- **A rolagem mostra o começo do ano.** Depois do "+1 ano", a linha do tempo para no topo da primeira entrada nova, não no fim. O balanço do ano (o patrimônio, os aluguéis) virou uma linha pequena e neutra, sem pílula.
+- **O botão do ano muda com o estado.**
+  - Com escolhas sobrando, "Viver mais 1 ano · sobram 3" é o botão secundário.
+  - Sem escolhas (o bebê), é o dourado.
+  - O título das escolhas diz "Suas escolhas · 3 este ano".
+- **O ouro só onde tem papel:** o botão do ano sem escolhas, o ponto de novidade, o foco, o fio do evento e o marco.
+  - Saíram o `--brilho` e todas as sombras de brilho.
+  - O verbo Trabalhar ficou verde-dinheiro.
+  - A Felicidade passou do amarelo para o laranja.
+- **A carência de 450 ms** vale também quando um evento fecha e quando a lista de um verbo abre ou fecha.
+- **As folhas fecham onde o dedo está.** Cada folha tem o título e o Fechar fora da parte que rola, e a alça saiu (ela prometia um arrasto que não existe).
+  - Abrir uma folha empilha uma entrada no histórico, e o voltar a fecha.
+  - No APK, o `MainActivity` passa o voltar para a página.
+  - O véu perdeu o desfoque.
+- **As folhas tortas.**
+  - A Família recuperou as regras dos medidores ("Saúde43" voltou a ser "Saúde 43").
+  - A Carreira mostra o Poder primeiro para quem tem cargo, e junta numa linha as profissões e os cargos fechados pelo mesmo motivo ("49 profissões fechadas: você tem um cargo de poder · ver todas").
+  - Os cargos fechados passaram a mostrar o motivo, que antes ficava escondido.
+  - O menu se chama "Menu", e "Começar outra vida" é um botão secundário.
+- **As barras animam com `transform`**, sem refazer o layout a cada ano.
+
+**Decisões tomadas sozinho:**
+- **O nome do país saiu do selo** ("Economia aquecida · 2056 ›"). Com a letra 1,45 ele quebrava a linha. O país está na folha que o selo abre e no rótulo de acessibilidade.
+- **"Suas escolhas · 3 este ano"** no lugar de "3 para fazer aos 30": a idade já está no cabeçalho, e a frase longa quebrava em duas linhas na letra do dono.
+- **O "sobram 3" some do botão quando não cabe numa linha** (por container query). O título das escolhas diz o mesmo.
+- **Os motivos de idade, de influência e de ano de eleição agrupam juntos** ("13 profissões fechadas: só para outras idades"), porque cada profissão tem a sua faixa. A faixa de cada uma aparece em "ver todas", e não se repete quando o motivo já é a idade.
+
+**Medidas** (navegador; antes = o V1 publicado, depois = a C1; o save do dono é o "real", um deputado de 30 anos com a vida cheia):
+
+| Tela | Cabeçalho | Linha do tempo | Textos cortados | "R$" cortado |
+|---|---|---|---|---|
+| 360 × 780, letra 1,0 | 287 → 193 px | 224 → 334 px (29% → 43%) | 5 → 1 | 0 → 0 |
+| 360 × 780, letra 1,15 | 305 → 203 px | 168 → 320 px (22% → 41%) | 11 → 1 | 3 → 0 |
+| 360 × 780, letra 1,45 (a do dono) | 306 → 280 px | 186 → 234 px (24% → 30%) | 3 → 1 | 0 → 0 |
+| 390 × 844, letra 1,0 | 287 → 196 px | 288 → 395 px (34% → 47%) | 1 → 1 | 0 → 0 |
+| 320 × 640, letra 1,0 | 269 → 193 px | 128 → 198 px (20% → 31%) | 16 → 1 | 3 → 0 |
+| Evento, 360 × 780, letra 1,0 | 287 → 95 px | 65 → 256 px | 5 → 1 | 2 → 0 |
+| Evento, 360 × 780, letra 1,45 | 114 → 95 px | 11 → 107 px | 1 → 1 | 0 → 0 |
+
+O único texto cortado que sobra é o sobrenome no nome.
+
+| Conferência | Antes | Depois |
+|---|---|---|
+| Toque duplo numa opção de evento: o ano passou (40 eventos, 360 × 780, letra 1,15) | 12 | 0 |
+| Toque duplo no verbo: agiu sem querer (6 verbos) | 5 | 0 |
+| O Fechar das folhas, distância do topo (Carreira) | 6.096 px (o Voltar no fim) | 56 px |
+| A folha Carreira, telas de rolagem (save do dono) | 8,4 | 2,0 |
+| Voltar com a folha aberta | sai do jogo | fecha a folha |
+| A primeira entrada nova do ano à vista depois do "+1 ano" (save do dono, letra 1,15) | começava 279 px acima, 0 px de texto | começa no topo, 255 px de texto |
+| Cor viva na tela principal | 14% | 2% |
+| Felicidade × ouro (matiz), escuro / claro | 3° / 0,5° | 18,5° / 19° |
+| `var(--destaque` no CSS / `var(--brilho` | 47 / 5 | 23 / 0 |
+| Varredura da letra de 1,00 a 1,50 em passos de 0,02: a linha do tempo cresce mais de 4 px entre dois passos | sim: 56 px no limiar da letra grande (189 px com evento) | nunca |
+| Letra abaixo de 12 px (letra 1,0) | 5 | 0 |
+
+O motor não mudou: o túnel dá as mesmas vidas.
 
 ## Próximos passos (núcleo)
 

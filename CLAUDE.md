@@ -17,6 +17,7 @@ Armadilhas que já custaram caro:
 - O túnel inteiro reescreve `docs/metricas.md` no fim: commite o resto antes e as métricas depois.
 - Comando longo roda em segundo plano, e a notificação avisa quando acaba. Consultar o andamento repetidas vezes gasta contexto à toa.
 - Filtre as saídas (`| tail`, `grep`): cada resposta relê o contexto inteiro.
+- Interface se mede na escala do dono: 360 × 780 com a letra do sistema em 1,0, 1,15 e 1,45, nos dois temas, além de 390 × 844. O V1 foi medido só num celular comum e quebrou no aparelho dele.
 - A CPU absoluta muda de máquina para máquina (depois de um reinício, a mesma versão mediu 46 e 63 ms por vida). Para saber se o código ficou mais caro, compare em A/B na mesma máquina: uma worktree da versão anterior e as duas rodadas alternadas.
 
 ## Como pensar (nesta ordem; nunca inverta)
@@ -121,7 +122,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida; Icones (SVG), letra.ts (letra grande), estilo.css (tema noite e ouro)
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), voltar.ts (o voltar fecha a folha), Icones (SVG), estilo.css (tema noite e ouro)
 scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
@@ -182,9 +183,9 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Personagem novo (`{amor}`, `{filho}`…) só em texto que exige a qualidade que o garante | agente | sem "alguém" no lugar de um nome |
 | Pelo menos uma escolha sem condição por storylet | agente | a vida nunca trava |
 | Opções somem? Não: aparecem desabilitadas com o motivo | agente | a pobreza também é história |
-| Toques ignorados por 450 ms quando um evento aparece | agente | toque duplo no +1 ano não pode escolher por você |
+| Toques ignorados por 450 ms quando um evento aparece ou fecha e quando a lista de um verbo abre ou fecha | agente | toque duplo não pode escolher por você nem passar o ano (depois de um evento, o segundo toque passava o ano 12 vezes em 40) |
 | Tela em três faixas (cabeçalho, linha do tempo, palco) que rolam por dentro; nada `sticky` | agente | com a letra do sistema grande, cabeçalho e palco grudados se cruzavam no APK |
-| O verbo é um botão curto de uma linha (um ponto marca o que é novo); tocar abre todas as ações possíveis dele | agente | liberdade de verdade, sem 500 botões na tela, e cabe com a letra grande |
+| O verbo é um botão curto (um ponto marca o que é novo); tocar abre todas as ações possíveis dele | agente | liberdade de verdade, sem 500 botões na tela; com a letra grande, o nome quebra linha em vez de ser cortado |
 | Fichas por ano: 1 criança, 2 adolescente, 3 adulto, 2 depois dos 65; a mesma ação não repete no ano | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
 | Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |
 | O empurrão de quem governa soma ao crescimento do país (aquecer ajuda a sair da crise) | agente | o estímulo prendia o país numa crise sem fim (o dono viveu uma) |
@@ -209,8 +210,11 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | O ano é uma lista de etapas que declaram o que leem e escrevem (`manifesto.ts › ETAPAS_DO_ANO`); um teste falha se uma etapa sair da declaração | agente | a ordem do ano estava só no código, e uma etapa podia ler o que outra escreveu no mesmo ano sem ninguém saber (I-03) |
 | O save que abre bem vira a cópia de segurança; o principal estragado volta dela, com aviso; exportar e importar pelo menu | agente | um JSON corrompido apagava a vida e a memória entre vidas (D-12) |
 | Até quatro filhos com id estável (`filho`, `filho2`…); o conteúdo de "filho" vale para cada um; sem testamento, os filhos dividem a herança, e o testamento pode escolher um | agente (fatia 1.4a da missão) | um segundo filho apagava o primeiro (I-05); dividir e escolher quem herda vira decisão de dinastia |
-| O cabeçalho: a barra da marca, o retrato, o selo da economia, os indicadores em cartões e o dinheiro, o patrimônio e a renda em três cartões; o detalhe fica nas folhas | agente (o mockup do dono, 19/10) | a cara que o dono pediu, sem tirar a linha do tempo do meio |
+| O cabeçalho é uma faixa de texto: o nome com as quatro folhas, a idade e a cidade, o selo da economia (um link), os indicadores em 2×2 com a barra fina e o dinheiro numa linha que quebra; nenhum número cortado; durante um evento, só o nome e o dinheiro | agente (correção C1, 20/10) | a história é o produto e só o que se toca tem caixa; no aparelho do dono (letra 1,45), os cartões do V1 tomavam 287 px e cortavam o dinheiro |
 | Tema noite e ouro nos dois modos; `--destaque` pinta fundos e `--destaque-forte` é o ouro de texto | dono (o mockup) | o ouro claro não tem contraste para texto no papel creme |
-| A linha do tempo fica com pelo menos um terço da tela num celular comum (390 × 844) | agente | a história é o produto; o mockup não a mostrava |
-| Com a letra do sistema grande (`letra.ts` mede), o cabeçalho e o palco trocam para o arranjo estreito | agente | o APK herda a fonte do celular, que cresce o texto e não as caixas |
+| A linha do tempo fica com pelo menos um terço da tela em 390 × 844 e em 360 × 780 com a letra 1,0 e 1,15, e um quarto com a letra 1,45 (a do dono) | agente | a história é o produto; o mockup não a mostrava, e o V1 foi medido só num celular comum |
+| Um arranjo só: com a letra do sistema grande, o que precisa ceder cede por quebra de linha e por container queries em `em` | agente | o modo de letra grande do V1 trocava o arranjo num limiar, e o dono (letra 1,45) via o pior dos dois |
+| O ouro só onde tem papel: o botão do ano sem escolhas, o ponto de novidade, o fio do evento e o marco | agente (correção C1) | ouro em tudo não aponta nada; com ele no título, no botão e nos ícones, o marco deixava de ser o destaque |
+| Com escolhas sobrando, "Viver mais 1 ano" é o botão secundário e diz quantas sobram | agente (correção C1) | o botão dourado sempre fazia passar o ano sem as escolhas, e a contagem que avisava saía cortada no aparelho do dono |
+| Toda folha tem o título e o Fechar fora da parte que rola, e o voltar do Android fecha a folha | agente (correção C1) | a Carreira pedia rolar 6.000 px para fechar, e o voltar fechava o app |
 | Os marcos da vida (`marco: true`) aparecem em dourado na linha do tempo | agente (o mockup do dono) | o destaque do mockup vira história, não painel |

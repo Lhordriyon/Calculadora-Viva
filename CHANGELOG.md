@@ -4,6 +4,41 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📖 Correção C1 · A história de volta ao centro · 20/10/2026
+
+> [!NOTE]
+> O dono jogou o V1 e disse que o jogo perdeu qualidade, hierarquia, dimensionamento e cuidado. Medido no celular dele (360 × 780, letra do sistema em 1,45), o cabeçalho de cartões tomava a tela, o dinheiro saía cortado, o botão dourado pulava as escolhas e o toque duplo passava o ano. O motor não mudou.
+
+- 📖 **O cabeçalho virou uma faixa de texto:**
+  - o nome divide a linha com as quatro folhas;
+  - embaixo, o título, a idade e a cidade;
+  - o selo da economia é um link;
+  - os indicadores ficam em 2×2 com a barra fina, e o dinheiro numa linha que quebra.
+  - Saíram a barra da marca, o retrato e os cartões. Com um evento na tela, ficam só o nome e o dinheiro.
+- 🔠 **Um arranjo só,** sem o modo de letra grande: o que precisa ceder quebra linha. O ícone dos indicadores e dos verbos só aparece quando cabe.
+- 🎴 **O cartão do evento:** o texto rola por dentro, com uma sombra quando há mais; as opções ficam sempre à vista, e a história guarda três linhas.
+- 📜 **A rolagem para no começo do ano** depois do "+1 ano". O balanço do ano virou uma linha pequena e neutra.
+- ⏩ **O botão do ano:**
+  - com escolhas sobrando, é o secundário e diz "sobram 3";
+  - sem escolhas, é o dourado;
+  - o título diz "Suas escolhas · 3 este ano".
+- 👆 **Toque duplo:** a carência de 450 ms vale também quando um evento fecha e quando a lista de um verbo abre ou fecha. Depois de um evento, o segundo toque passava o ano 12 vezes em 40; agora, nenhuma.
+- ❌ **Folhas:**
+  - o título e o X ficam fora da parte que rola;
+  - o voltar do navegador e o do Android fecham a folha (no APK, o voltar fechava o app);
+  - saíram a alça e o fundo desfocado.
+- 👨‍👩‍👧 **Família** com os medidores de volta ("Saúde43" → "Saúde 43").
+- 💼 **Carreira:**
+  - o Poder vem primeiro para quem tem cargo;
+  - as profissões e os cargos fechados pelo mesmo motivo viram uma linha só, com o motivo;
+  - os cargos fechados passaram a dizer por quê.
+- 🌙 **O ouro só onde tem papel:**
+  - o marco, o ponto de novidade, o fio do evento e o botão do ano sem escolhas;
+  - saiu o brilho dourado;
+  - o verbo Trabalhar ficou verde, e a Felicidade, laranja.
+
+**Ainda não tem:** as correções C2 (o texto que contradiz a vida) e C3 (regras do motor que se medem errado), o ícone novo no app Android e a rosca do patrimônio.
+
 ## 🌙 Bloco V1 · A cara nova · 19/10/2026
 
 > [!NOTE]

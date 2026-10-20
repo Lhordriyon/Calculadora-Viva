@@ -1075,7 +1075,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - a linha do tempo com pelo menos um terço da tela num celular comum (390 × 844);
   - alvos de toque ≥ 44 px.
 - **Prioridade:** Alta · pedido do dono.
-- **Estado:** feita (bloco V1, 19/10). A linha do tempo ficou com 342 px num celular comum, de 844 (era 419). Com a letra em 145%, ficou com 166 px (era 152).
+- **Estado:** feita (bloco V1, 19/10). A linha do tempo ficou com 342 px num celular comum, de 844 (era 419). Com a letra em 145%, ficou com 166 px (era 152). Corrigida em 20/10 (I-101): o cabeçalho de cartões, o retrato, a barra da marca e o modo de letra grande saíram.
 
 ### I-98 · De que é feito o patrimônio
 - **Problema:** o mockup do dono tem uma rosca com a composição do patrimônio (empresas, investimentos, bens, dinheiro). No cabeçalho, ela custaria a altura da linha do tempo.
@@ -1112,6 +1112,28 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Aceitação:** `npm run icones` desenha também os ícones do Android, e o APK sai com o ícone novo.
 - **Prioridade:** Baixa.
 - **Estado:** proposta (bloco V1).
+
+### I-101 · A história de volta ao centro (correção C1 da cara nova)
+- **Problema:** o dono jogou o V1 e disse que o jogo perdeu qualidade, hierarquia, dimensionamento, cuidado e diversão (19/10). A auditoria (`docs/decisoes.md`, correção) mediu no aparelho dele, com a letra do sistema em 1,45 numa tela de 360 × 780:
+  - a linha do tempo com 20–28% da tela e, durante um evento, 11 px;
+  - números do dinheiro cortados com reticências;
+  - o botão dourado do ano pulando as escolhas que sobravam;
+  - o segundo toque de um toque duplo passando o ano depois de um evento (12 em 40);
+  - folhas que só fecham rolando até o fim, e o voltar do Android fechando o app;
+  - a Família com o CSS quebrado ("Saúde43");
+  - a Carreira com 56 profissões antes do Poder.
+- **Módulos:** 13.
+- **Depende de:** I-97.
+- **Custo:** M de implementação; nenhum de simulação.
+- **Consome:** nada.
+- **Efeitos causais:** nenhum no motor.
+- **Riscos:**
+  - desfazer a identidade que o dono pediu (o tema noite e ouro fica);
+  - esconder rótulos para caber (proibido: o arranjo cede por quebra de linha);
+  - o voltar no APK, que não dá para testar sem o aparelho.
+- **Aceitação:** os critérios do plano de correção, item 1 a 10, medidos na matriz 360 × 780 (letra 1,0 a 1,45), 390 × 844, 412 × 915 e 320 × 640, nos dois temas.
+- **Prioridade:** Alta · pedido do dono.
+- **Estado:** feita (correção C1, 20/10).
 
 ## Defeitos conhecidos
 
