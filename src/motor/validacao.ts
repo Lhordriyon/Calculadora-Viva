@@ -14,6 +14,7 @@ import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
 import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
+import { verificarPortugues } from './portugues.ts';
 import { IDADE_MAXIMA } from './regras.ts';
 import { analisarModelo, comprimentoMaximo } from './texto.ts';
 
@@ -30,7 +31,10 @@ type Reporter = (onde: string, mensagem: string) => void;
 
 export function validarConteudo(fontes: FontesConteudo): { conteudo: Conteudo | null; problemas: Problema[] } {
   const { conteudo, problemas } = lerConteudo(fontes);
-  if (conteudo) verificarReferencias(conteudo, problemas);
+  if (conteudo) {
+    verificarReferencias(conteudo, problemas);
+    verificarPortugues(conteudo, problemas);
+  }
   verificarPolitica(fontes, problemas);
   return { conteudo, problemas };
 }
