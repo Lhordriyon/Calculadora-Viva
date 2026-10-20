@@ -62,33 +62,33 @@ O ano é uma lista de 19 etapas, cada uma com o que lê e escreve declarado (`ma
 
 | Etapa | CPU por vida | Da CPU | Livro por vida | Lê deste ano, de | Lê do ano passado, de |
 |---|---|---|---|---|---|
-| exterior (o mundo lá fora: a economia de cada país, a relação, sanções e acordos) | 1,99 ms | 3,0% | 32,8 KB | — | pais, poder, iniciativas, diretor |
-| pais (o país: as estatísticas, a eleição, quem governa e a fase do ciclo) | 3,72 ms | 5,5% | 52,3 KB | exterior | poder, iniciativas, diretor |
-| mercado (o mercado do ano: quanto cada classe de investimento rendeu) | 0,64 ms | 0,9% | 18,6 KB | pais | iniciativas, diretor |
-| economia (a economia de quem joga: inflação, juros, salário, imposto, gastos) | 1,43 ms | 2,1% | 30,5 KB | pais, mercado | empresa, bens, dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
-| empresa (as empresas: crescimento, retirada, quebra) | 0,36 ms | 0,5% | 3,4 KB | exterior, pais, mercado, economia | bens, dividas, corpo, personagens, poder, morte, iniciativas, diretor |
-| bens (os bens: valor, manutenção, aluguel e o financiamento) | 0,94 ms | 1,4% | 15,9 KB | mercado, economia, empresa | dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
-| dividas (as dívidas: a parcela do acordo, o limite, o que caduca e o nome) | 0,32 ms | 0,5% | 0,3 KB | economia, empresa, bens | personagens, trabalho, carreira, poder, iniciativas, diretor |
+| exterior (o mundo lá fora: a economia de cada país, a relação, sanções e acordos) | 1,66 ms | 3,2% | 32,8 KB | — | pais, poder, iniciativas, diretor |
+| pais (o país: as estatísticas, a eleição, quem governa e a fase do ciclo) | 2,88 ms | 5,6% | 52,3 KB | exterior | poder, iniciativas, diretor |
+| mercado (o mercado do ano: quanto cada classe de investimento rendeu) | 0,51 ms | 1,0% | 18,6 KB | pais | iniciativas, diretor |
+| economia (a economia de quem joga: inflação, juros, salário, imposto, gastos) | 1,17 ms | 2,3% | 30,5 KB | pais, mercado | empresa, bens, dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
+| empresa (as empresas: crescimento, retirada, quebra) | 0,35 ms | 0,7% | 3,4 KB | exterior, pais, mercado, economia | bens, dividas, corpo, personagens, poder, morte, iniciativas, diretor |
+| bens (os bens: valor, manutenção, aluguel e o financiamento) | 0,75 ms | 1,5% | 15,9 KB | mercado, economia, empresa | dividas, personagens, trabalho, carreira, poder, iniciativas, diretor |
+| dividas (as dívidas: a parcela do acordo, o limite, o que caduca e o nome) | 0,30 ms | 0,6% | 0,3 KB | economia, empresa, bens | personagens, trabalho, carreira, poder, iniciativas, diretor |
 | privacao (a privação: o buraco que nem o crédito cobriu) | 0,06 ms | 0,1% | 0,0 KB | economia | corpo, personagens, iniciativas, diretor |
-| corpo (o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto) | 1,64 ms | 2,4% | 22,0 KB | pais, economia, empresa, bens, dividas, privacao | personagens, trabalho, carreira, poder, morte, iniciativas, diretor |
-| personagens (a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte) | 1,57 ms | 2,3% | 34,5 KB | pais, economia, empresa, bens, dividas, privacao, corpo | iniciativas, diretor |
-| trabalho (o trabalho de quem joga: salário e demissão) | 0,18 ms | 0,3% | 2,0 KB | pais | carreira, poder, iniciativas, diretor |
-| carreira (a carreira: promoção, fama e o fim da carreira) | 0,30 ms | 0,5% | 1,9 KB | corpo, trabalho | poder, iniciativas, diretor |
-| poder (o poder: influência, popularidade, mandato e queda) | 0,62 ms | 0,9% | 3,9 KB | pais, economia, empresa, bens, dividas, personagens, trabalho, carreira | morte, iniciativas, diretor |
+| corpo (o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto) | 1,44 ms | 2,8% | 22,0 KB | pais, economia, empresa, bens, dividas, privacao | personagens, trabalho, carreira, poder, morte, iniciativas, diretor |
+| personagens (a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte) | 1,21 ms | 2,3% | 34,5 KB | pais, economia, empresa, bens, dividas, privacao, corpo | iniciativas, diretor |
+| trabalho (o trabalho de quem joga: salário e demissão) | 0,16 ms | 0,3% | 2,0 KB | pais | carreira, poder, iniciativas, diretor |
+| carreira (a carreira: promoção, fama e o fim da carreira) | 0,22 ms | 0,4% | 1,9 KB | corpo, trabalho | poder, iniciativas, diretor |
+| poder (o poder: influência, popularidade, mandato e queda) | 0,49 ms | 0,9% | 3,9 KB | pais, economia, empresa, bens, dividas, personagens, trabalho, carreira | morte, iniciativas, diretor |
 | padrao (o padrão de vida: a conta que chega quando a reserva acaba) | 0,04 ms | 0,1% | 0,0 KB | economia, empresa, bens, dividas, personagens | iniciativas, diretor |
-| regras (fecha as regras do ano numa entrada invisível do livro) | 0,85 ms | 1,3% | 0,0 KB | privacao, corpo, personagens | iniciativas, diretor |
-| morte (a morte: a do corpo e a da violência) | 0,45 ms | 0,7% | 0,3 KB | pais, economia, empresa, bens, dividas, privacao, corpo, personagens, trabalho, carreira, poder | iniciativas, diretor |
-| amor (o amor que aparece) | 0,09 ms | 0,1% | 0,0 KB | corpo, personagens | iniciativas, diretor |
-| iniciativas (o que os personagens resolvem fazer (o conteúdo)) | 6,62 ms | 9,8% | 1,3 KB | tudo o que veio antes | diretor |
-| diretor (o storylet do ano, o agendado ou a linha curta (o conteúdo)) | 18,54 ms | 27,4% | 1,8 KB | tudo o que veio antes | — |
-| fora das etapas (nascer, escolher, agir, operar e os robôs) | 27,19 ms | 40,3% | — | — | — |
+| regras (fecha as regras do ano numa entrada invisível do livro) | 0,63 ms | 1,2% | 0,0 KB | privacao, corpo, personagens | iniciativas, diretor |
+| morte (a morte: a do corpo e a da violência) | 0,37 ms | 0,7% | 0,3 KB | pais, economia, empresa, bens, dividas, privacao, corpo, personagens, trabalho, carreira, poder | iniciativas, diretor |
+| amor (o amor que aparece) | 0,08 ms | 0,1% | 0,0 KB | corpo, personagens | iniciativas, diretor |
+| iniciativas (o que os personagens resolvem fazer (o conteúdo)) | 5,46 ms | 10,6% | 1,3 KB | tudo o que veio antes | diretor |
+| diretor (o storylet do ano, o agendado ou a linha curta (o conteúdo)) | 13,16 ms | 25,5% | 1,8 KB | tudo o que veio antes | — |
+| fora das etapas (nascer, escolher, agir, operar e os robôs) | 20,71 ms | 40,1% | — | — | — |
 
 O save de uma vida (amostra de 1040): mediana 282 KB, p90 407 KB, máximo 506 KB; o livro é 97,1% dele. A vida de quem herda começa um livro novo, então o save de uma dinastia é o da geração que está viva.
 
 | Portão | Situação | Valor |
 |---|---|---|
 | O save de uma vida cabe no orçamento: o maior da amostra ≤ 1 MB | ✅ | 506 KB (mediana 282 KB, 1040 vidas) |
-| A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada | ❌ | 67,55 ms (base 43,74 ms, teto 48,11 ms) |
+| A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada | ❌ | 51,65 ms (base 43,74 ms, teto 48,11 ms) |
 
 ## Os filhos (fatia 1.4a)
 
@@ -124,7 +124,7 @@ Entre as vidas com filhos (32,6%), a média é de 1,47 filhos.
 | Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7) | ✅ | 0,31 |
 | Saturação V20 ≤ 95% | ✅ | 90,3% (base 95,9%) |
 | Assinaturas sem regressão | ✅ | 909 (base 893) |
-| CPU por vida ≤ 30 ms | ❌ | 67,55 ms (base 14,5 ms) |
+| CPU por vida ≤ 30 ms | ❌ | 51,65 ms (base 14,5 ms) |
 
 ## Portões do incremento 3
 
@@ -141,7 +141,7 @@ Entre as vidas com filhos (32,6%), a média é de 1,47 filhos.
 | Saturação V20 sem regressão (≤ 95%) | ✅ | 90,3% |
 | Assinaturas sem regressão (≥ 918) | ❌ | 909 |
 | Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques) | ✅ | 450,5 |
-| CPU por vida ≤ 30 ms | ❌ | 67,55 ms |
+| CPU por vida ≤ 30 ms | ❌ | 51,65 ms |
 
 ## Portões do incremento 5 (brincar de deus)
 
@@ -261,7 +261,7 @@ Entre as vidas com filhos (32,6%), a média é de 1,47 filhos.
 | Vidas com patrimônio negativo ao morrer | 0,8% |
 | Mudanças de estado causadas pelo jogador | 44,8% |
 | Toques por vida | 450,5 |
-| Tempo de CPU por vida | 67,55 ms |
+| Tempo de CPU por vida | 51,65 ms |
 | Ações (fichas usadas) por vida | 159,4 |
 | Mortes na família por vida | 3,8 |
 | Pontos de virada que vêm do mundo (não do jogador) | 9,6% |
