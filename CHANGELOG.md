@@ -4,6 +4,16 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📏 C0 e ajustes da C1 · A régua da tela · 20/10/2026
+
+- 📏 **`npm run telas`:** uma régua com 52 critérios de interface, medida em sete combinações de tela e letra (do celular pequeno com a letra normal ao do dono com a letra em 1,45), nos dois temas, com seis saves guardados no repositório e oito vidas jogadas pela interface. A versão anterior à correção reprovava em 46 critérios; esta passa em todos.
+- 🎴 **As opções do evento nunca saem da tela:**
+  - primeiro a história cede até três linhas;
+  - depois o texto do evento rola;
+  - se ainda faltar espaço, a história cede o resto, só naquele evento.
+- 💼 **Na tela estreita com a letra grande,** o cargo sai do cabeçalho (ele está na folha Carreira), e o dinheiro cabe.
+- 📜 **O balanço do ano fica numa linha:** quando não cabe, os aluguéis saem dela e ficam no extrato da folha Dinheiro.
+
 ## 📖 Correção C1 · A história de volta ao centro · 20/10/2026
 
 > [!NOTE]

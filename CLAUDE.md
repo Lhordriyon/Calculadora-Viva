@@ -8,7 +8,7 @@ A visão em uma troca: o jogador pensa "eu posso tentar qualquer coisa", e o jog
 
 1. Leia este arquivo e o começo de `docs/roteiro.md` (o estado e a próxima fatia). Os outros docs são consulta: busque com grep a seção que a tarefa pede, não leia inteiros (`decisoes.md`, `ideias.md`, `metricas.md`, `motor.md` e `arquitetura.md` somam mais de 250 KB). Toda ideia nova entra em `docs/ideias.md` antes de entrar no código.
 2. Escolha o incremento de maior impacto pelo método abaixo.
-3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, túnel inteiro e build).
+3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, túnel inteiro e build). Se mexeu na interface, também `npm run telas` contra a build.
 4. Push na `main` (o CI publica no GitHub Pages). Sem permissão, abra um PR e diga isso.
 5. Atualize as Novidades do README (o que a atualização trouxe e o que não trouxe) e o `CHANGELOG.md`. Termine com: o que mudou, métricas antes e depois, o que foi decidido sozinho e por quê, link do jogo e o que jogar para testar.
 
@@ -140,6 +140,7 @@ Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteud
 | `npm run tunel` | 10.000 vidas simuladas, um trabalhador por núcleo → `docs/metricas.md`; falha se uma meta quebrar |
 | `npm run tunel:rapido` | 2.000 vidas → `dist-tunel.md` (não toca nas métricas oficiais); `--paralelo=1` roda sem trabalhadores |
 | `npm run vida -- 42 cautelosa` | imprime uma vida inteira (semente e estratégia) |
+| `npm run telas -- URL` | a régua da tela: 52 critérios de interface na matriz de telas e letras, contra a build no ar (`npx vite build && npx vite preview`); Playwright fora do `package.json` |
 | `npm run icones` | redesenha os PNGs do PWA |
 | `npm run build:android` | monta o jogo para o app Android (`dist-android`) e copia para `android/`; o APK sai no CI (`.github/workflows/android.yml`) |
 

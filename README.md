@@ -41,6 +41,7 @@
 | 👨‍👩‍👧 **Família** com os medidores certos de novo; **Carreira** com o Poder primeiro para quem tem cargo e as profissões fechadas numa linha só, com o motivo | |
 | 🌙 **O ouro só onde tem papel:** o marco da trajetória, o ponto de novidade, o fio do evento; a Felicidade virou laranja para não se confundir com ele | |
 | 🔠 **Um arranjo só** para qualquer tamanho de letra: o que precisa ceder quebra linha, sem trocar a tela de repente | |
+| 📏 **A régua da tela** (`npm run telas`): 52 critérios medidos em sete tamanhos de tela e letra, nos dois temas; a versão anterior reprovava em 46, esta passa em todos | |
 
 **Medido no navegador**, no tamanho do celular do dono (360 × 780), com o save de uma vida cheia:
 
@@ -145,6 +146,6 @@ npm run dev        # jogo em http://localhost:5173
 npm run verificar  # tipos, testes, validador de conteúdo, túnel de vento e build
 ```
 
-Outros comandos: `npm run validar` (só o conteúdo), `npm run tunel` (10.000 vidas simuladas → `docs/metricas.md`), `npm run vida -- 42 aleatoria` (imprime uma vida inteira jogada por um robô).
+Outros comandos: `npm run validar` (só o conteúdo), `npm run tunel` (10.000 vidas simuladas → `docs/metricas.md`), `npm run vida -- 42 aleatoria` (imprime uma vida inteira jogada por um robô) e `npm run telas -- URL` (a régua da tela: 52 critérios de interface em sete tamanhos de tela e letra, contra a build no ar).
 
 Para escrever eventos, veja [`docs/conteudo.md`](docs/conteudo.md). O método de trabalho e as regras do projeto estão em [`CLAUDE.md`](CLAUDE.md).

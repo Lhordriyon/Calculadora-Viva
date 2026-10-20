@@ -1099,6 +1099,24 @@ O único texto cortado que sobra é o sobrenome no nome.
 
 O motor não mudou: o túnel dá as mesmas vidas.
 
+### C0 e os ajustes da C1: a régua da tela (20/10)
+
+`npm run telas` (`scripts/telas.cjs`) junta os scripts da auditoria numa régua só, com os critérios dos itens 1 a 9 do plano. Ela abre a build no ar num Chromium de celular, simula a letra do sistema multiplicando as letras do CSS, e sai com 1 se algum critério falha. O Playwright fica fora do `package.json` (pilha mínima): ela usa o que estiver instalado na máquina. Os seis saves da auditoria ficam em `test/telas/`.
+
+**Medidas.** Contra a versão anterior à correção, 46 dos 52 critérios reprovam. Contra a C1 publicada, 3 reprovavam, e foram corrigidos:
+- **Uma opção fora da tela** num evento de 4 opções longas, com a letra 1,45. A história guardava três linhas, e o cartão rolava. Agora, quando nem o texto no mínimo deixa as opções à vista, a história cede o que falta, só naquele evento (`Palco.tsx` mede e ajusta `--min-vida`).
+- **O balanço do ano em 2 linhas** com a letra 1,15. Quando a faixa é estreita, fica só o patrimônio; os aluguéis estão no extrato da folha Dinheiro.
+- **Patrimônio e Renda fora da vista** em 320 × 640 com a letra 1,45 e 1,5, porque o cabeçalho rolava.
+  - O cargo agora sai do cabeçalho estreito (continua na folha Carreira).
+  - Mesmo assim, o cabeçalho precisa de 283 px com 1,45 e de 313 px com 1,5, e cabem 268 (42% da altura). Essa tela, com essa letra, não comporta o cabeçalho inteiro e a história ao mesmo tempo. O cabeçalho rola por dentro, que é o recurso das três faixas; com 1,3, cabe inteiro.
+
+**Decisões tomadas sozinho:**
+- **O escopo do critério dos rótulos** voltou ao do plano: 320 × 640 só com letra 1,0 e 1,15. A régua o estendia à varredura de 320 até 1,5, que o plano usa só para os textos cortados.
+- **A régua passou a exigir só os rótulos que existem.** Quem não tem renda não tem a linha da renda, e a régua cobrava "Renda" de um rapaz de 17 anos. Um rótulo que existe e foi escondido pelo arranjo continua reprovando.
+- **Os padrões da régua** passaram a ser os saves de `test/telas/` e a porta do `vite preview`, para ela rodar em qualquer máquina.
+
+Com a máquina ocupada por outro túnel, uma das vidas jogadas parou numa lista de ações por demora. Com uma página por vez (`--paralelo=1`), as oito passaram. O motor não mudou.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
