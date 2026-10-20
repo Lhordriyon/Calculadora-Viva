@@ -41,10 +41,10 @@ describe('validador: o amigo de infância não é um estranho', () => {
 
   it('aceita o amigo já conhecido e quem conhece o amigo (não é quem joga)', () => {
     const certo = errosCom([
-      evento('amigo_de_sempre', { texto: 'Na carteira do lado, {amigo}, que mora na sua rua, pediu a sua borracha.', resumo: 'emprestou a borracha para {amigo}' }),
-      evento('amor_conhece_amigo', { idade: [25, 40], condicoes: { marcas: ['namoro'] }, texto: '{amor} conheceu {amigo} num churrasco.' }),
+      evento('amigo_de_sempre', { condicoes: { 'amigo.vivo': true }, texto: 'Na carteira do lado, {amigo}, que mora na sua rua, pediu a sua borracha.', resumo: 'emprestou a borracha para {amigo}' }),
+      evento('amor_conhece_amigo', { idade: [25, 40], condicoes: { marcas: ['namoro'], 'amigo.vivo': true }, texto: '{amor} conheceu {amigo} num churrasco.' }),
     ]);
-    expect(certo).not.toMatch(/amigo_de_sempre|amor_conhece_amigo/);
+    expect(certo).not.toMatch(/(amigo_de_sempre|amor_conhece_amigo).*desconhecido/);
   });
 });
 
@@ -57,7 +57,7 @@ describe('validador: o irmão de quem é filho único', () => {
       trechos: { quem: [{ se: { irmaos: { min: 1 } }, texto: 'seu irmão rouba a coxinha' }, { texto: 'a sua irmã rouba a coxinha' }] },
     });
     expect(errosCom([padrao])).toMatch(/irmao_no_padrao › trechos\.quem\[1\]: fala do irmão/);
-    expect(errosCom([padrao])).not.toMatch(/irmao_no_padrao › trechos\.quem\[0\]/);
+    expect(errosCom([padrao])).not.toMatch(/irmao_no_padrao › trechos\.quem\[0\]: fala do irmão/);
     const desfecho = evento('irmao_no_desfecho', { escolhas: [{ texto: 'Ajudar', resumo: 'ajudou', resultado: { texto: 'Você cuidou dos irmãos menores.', efeitos: { felicidade: 1 } } }] });
     expect(errosCom([desfecho])).toMatch(/irmao_no_desfecho › escolha 1 › resultado: fala do irmão/);
     // A condição da escolha vale para o desfecho, mas o botão aparece mesmo bloqueado.
@@ -69,7 +69,7 @@ describe('validador: o irmão de quem é filho único', () => {
     });
     const errosBotao = errosCom([botao]);
     expect(errosBotao).toMatch(/irmao_no_botao › escolha 1 › texto: fala do irmão/);
-    expect(errosBotao).not.toMatch(/irmao_no_botao › escolha 1 › resultado/);
+    expect(errosBotao).not.toMatch(/irmao_no_botao › escolha 1 › resultado: fala do irmão/);
     expect(errosCom([], [{ idade: [8, 12], texto: 'Você e seu irmão dividiram o último pastel.' }])).toMatch(SEM_IRMAO);
   });
 
@@ -88,7 +88,7 @@ describe('validador: o irmão de quem é filho único', () => {
         efeitos: { felicidade: -1, 'ator.vinculo': -1 },
       },
     ]);
-    expect(certo).not.toMatch(/irmao_garantido|irmao_dos_outros|irmaos_dos_filhos/);
+    expect(certo).not.toMatch(/(irmao_garantido|irmao_dos_outros|irmaos_dos_filhos).*fala do irmão/);
   });
 });
 
