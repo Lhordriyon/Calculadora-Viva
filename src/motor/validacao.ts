@@ -34,6 +34,7 @@ export function validarConteudo(fontes: FontesConteudo): { conteudo: Conteudo | 
   if (conteudo) {
     verificarReferencias(conteudo, problemas);
     verificarPortugues(conteudo, problemas);
+    verificarCoerencia(conteudo, problemas);
   }
   verificarPolitica(fontes, problemas);
   return { conteudo, problemas };
@@ -724,4 +725,84 @@ export function listarCadeias(c: Conteudo): Cadeia[] {
     }
   }
   return cadeias;
+}
+
+// ---------------------------------------------------------------- o texto combina com o que já aconteceu
+
+/**
+ * O amigo de infância nasce com você: tem vínculo desde o primeiro ano, adoece e se cura na linha do tempo ("seu amigo
+ * Pedro foi parar no hospital") e aparece na pracinha e na pré-escola. Texto que o apresenta como desconhecido
+ * ("um menino chamado {amigo}", "conheceu {amigo}") contradiz o que já pode ter acontecido.
+ */
+function reAmigoDesconhecido(quem: string): RegExp {
+  const papel = String.raw`\{${quem}(?:\.nome)?\}`;
+  return new RegExp(String.raw`chamad(?:[oa]|\{[^{}]*\})\s+${papel}|(?:^|[.,;:!?]\s*|\be\s+|[Vv]ocê\s+)conheceu\s+${papel}`, 'u');
+}
+const RE_AMIGO_DESCONHECIDO = reAmigoDesconhecido('amigo');
+/** Com o amigo entre os atores, {ator} também pode ser ele. */
+const RE_AMIGO_DESCONHECIDO_ATOR = reAmigoDesconhecido('(?:amigo|ator)');
+
+/**
+ * Os irmãos de quem joga (irmão, irmã, irmãos): fora o meio-irmão, o irmão de alguém ("irmão do vizinho"), a comparação
+ * ("como irmãos", "pareciam irmãos") e o campo ({irmaos}).
+ */
+const RE_IRMAO = /(?<![\p{L}{.-])(?<!(?:como|pareciam|feito|nem)\s+(?:uns?\s+|umas?\s+)?)irm[ãa]o?s?(?![\p{L}-])(?!\s+d[eoa]s?\s)/iu;
+
+/** A condição garante que quem joga tem irmão ("irmaos": { "min": 1 } ou true). */
+function sabeDosIrmaos(cond: Condicoes | undefined): boolean {
+  const v = cond?.['irmaos'];
+  return v === true || (typeof v === 'object' && !Array.isArray(v) && (v.min ?? 0) >= 1);
+}
+
+/**
+ * Texto que contradiz o que a vida já tem: o amigo de infância apresentado como estranho e o irmão de quem é filho
+ * único. O irmão só aparece quando a condição (do storylet, do trecho ou da escolha, para o desfecho) garante que ele
+ * existe; o botão da escolha aparece mesmo bloqueado, então ali só vale a condição do storylet. Com ator filho, os
+ * irmãos são os dos filhos.
+ */
+export function verificarCoerencia(c: Conteudo, problemas: Problema[]): void {
+  const erro: Reporter = (onde, mensagem) => void problemas.push({ nivel: 'erro', onde, mensagem });
+  const conferir = (texto: string, onde: string, temIrmao: boolean, atores: readonly string[] | undefined): void => {
+    if ((atores?.includes('amigo') ? RE_AMIGO_DESCONHECIDO_ATOR : RE_AMIGO_DESCONHECIDO).test(texto)) {
+      erro(onde, 'apresenta o amigo de infância como desconhecido ("chamado {amigo}", "conheceu {amigo}"), mas ele existe desde que você nasceu: use um trecho pela memória ou um jeito neutro');
+    }
+    if (!temIrmao && !atores?.includes('filho') && RE_IRMAO.test(texto)) {
+      erro(onde, 'fala do irmão de quem joga sem saber se ele existe: ponha "irmaos": { "min": 1 } na condição ou num trecho (e outro texto para filho único)');
+    }
+  };
+  for (const s of c.storylets) {
+    const onde = `${c.arquivoDe.get(s.id) ?? '?'} › ${s.id}`;
+    const base = sabeDosIrmaos(s.condicoes);
+    const at = s.ator;
+    conferir(s.texto, `${onde} › texto`, base, at);
+    conferir(s.resumo, `${onde} › resumo`, base, at);
+    if (s.rotulo) conferir(s.rotulo, `${onde} › rotulo`, base, at);
+    for (const [nome, r] of [['sucesso', s.sucesso], ['fracasso', s.fracasso]] as const) {
+      if (!r) continue;
+      conferir(r.texto, `${onde} › ${nome}`, base, at);
+      if (r.resumo) conferir(r.resumo, `${onde} › ${nome} › resumo`, base, at);
+    }
+    for (const [nome, trechos] of Object.entries(s.trechos ?? {})) {
+      trechos.forEach((t, i) => conferir(t.texto, `${onde} › trechos.${nome}[${i}]`, base || sabeDosIrmaos(t.se), at));
+    }
+    s.escolhas?.forEach((esc, i) => {
+      const o = `${onde} › escolha ${i + 1}`;
+      conferir(esc.texto, `${o} › texto`, base, at);
+      if (esc.bloqueio) conferir(esc.bloqueio, `${o} › bloqueio`, base, at);
+      const daEscolha = base || sabeDosIrmaos(esc.condicoes);
+      conferir(esc.resumo, `${o} › resumo`, daEscolha, at);
+      for (const [nome, r] of [['sucesso', esc.sucesso], ['fracasso', esc.fracasso], ['resultado', esc.resultado]] as const) {
+        if (!r) continue;
+        conferir(r.texto, `${o} › ${nome}`, daEscolha, at);
+        if (r.resumo) conferir(r.resumo, `${o} › ${nome} › resumo`, daEscolha, at);
+      }
+    });
+  }
+  c.linhas.forEach((l, i) => conferir(l.texto, `linhas.json[${i}]`, sabeDosIrmaos(l.condicoes), undefined));
+  c.mortes.forEach((m, i) => conferir(m.causa, `mortes.json[${i}]`, sabeDosIrmaos(m.condicoes), undefined));
+  c.mundo.nascimento.forEach((n, i) => conferir(n.texto, `mundo.json › nascimento[${i}]`, sabeDosIrmaos(n.se), undefined));
+  for (const [m, info] of Object.entries(c.marcas)) if (info.epitafio) conferir(info.epitafio, `marcas.json › ${m}`, false, undefined);
+  for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
+    for (const t of [...ac.textos, ac.resumo]) conferir(t, `mundo.json › acontecimentos.${g}`, false, PAPEIS);
+  }
 }
