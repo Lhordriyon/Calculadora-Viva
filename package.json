@@ -15,6 +15,7 @@
     "tunel:rapido": "node scripts/tunel.ts --vidas=2000",
     "vida": "node scripts/uma-vida.ts",
     "verificar": "npm run checar && npm test && npm run validar && npm run tunel && npm run build",
+    "telas": "node scripts/telas.cjs",
     "icones": "node scripts/icones.ts"
   },
   "dependencies": {
