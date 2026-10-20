@@ -5,7 +5,7 @@
     "condicoes": { "carreira": ["medico", "enfermeiro", "tecnico_enfermagem"] },
     "repetivel": true,
     "intervalo": 4,
-    "texto": "Plantão de vinte e quatro horas, corredor lotado. Chega um paciente grave bem na hora de ir embora, e quem rende você está preso no trânsito.",
+    "texto": "Plantão de vinte e quatro horas, corredor lotado. Chega um paciente grave bem na hora de ir embora, e quem vem te render está preso no trânsito.",
     "resumo": "encarou um plantão lotado",
     "escolhas": [
       {
@@ -280,7 +280,7 @@
           "efeitos": { "eu.fama": 30, "eu.nivel": 1, "felicidade": 6 }
         },
         "fracasso": {
-          "texto": "O pouso foi duro. Ninguém morreu, mas você foi afastado por um ano e não dorme bem até hoje.",
+          "texto": "O pouso foi duro. Ninguém morreu, mas você foi afastad{o|a} por um ano e não dorme bem até hoje.",
           "efeitos": { "saude": -15, "felicidade": -6 }
         }
       },
@@ -360,7 +360,7 @@
         "texto": "Cirurgia e um ano parado",
         "resumo": "parou um ano para operar o joelho",
         "resultado": {
-          "texto": "Um ano de fisioterapia. Você voltou mais lento e mais esperto.",
+          "texto": "Um ano de fisioterapia. Você voltou mais lent{o|a} e mais espert{o|a}.",
           "efeitos": { "saude": 4, "dinheiro": -200000, "felicidade": -3 }
         }
       },
@@ -643,7 +643,7 @@
     "repetivel": true,
     "intervalo": 4,
     "texto": "Fotógrafos na porta de casa desde as seis da manhã. Você só queria comprar pão.",
-    "resumo": "foi perseguido por fotógrafos",
+    "resumo": "foi perseguid{o|a} por fotógrafos",
     "escolhas": [
       {
         "texto": "Posar e sorrir",
@@ -693,7 +693,7 @@
     "idade": [16, 90],
     "condicoes": { "fama": { "min": 30 } },
     "texto": "Um post seu de doze anos atrás voltou do túmulo. Em uma hora, você é o assunto mais falado do país, e não do jeito bom.",
-    "resumo": "foi cancelado na internet",
+    "resumo": "foi cancelad{o|a} na internet",
     "escolhas": [
       {
         "texto": "Pedir desculpas de verdade",
@@ -705,7 +705,7 @@
       },
       {
         "texto": "Dobrar a aposta",
-        "resumo": "dobrou a aposta depois de ser cancelado",
+        "resumo": "dobrou a aposta depois de ser cancelad{o|a}",
         "resultado": {
           "texto": "Você brigou com metade da internet. A outra metade virou fã. A fama dobrou; a paz, não.",
           "efeitos": { "eu.fama": 10, "felicidade": -6, "eu.influencia": -3 }
@@ -713,9 +713,9 @@
       },
       {
         "texto": "Sumir das redes",
-        "resumo": "sumiu das redes depois de ser cancelado",
+        "resumo": "sumiu das redes depois de ser cancelad{o|a}",
         "resultado": {
-          "texto": "Três meses sem celular. Você aprendeu a fazer pão e descobriu que estava cansado.",
+          "texto": "Três meses sem celular. Você aprendeu a fazer pão e descobriu que estava cansad{o|a}.",
           "efeitos": { "eu.fama": -6, "felicidade": 3, "saude": 2 }
         }
       }

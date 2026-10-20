@@ -92,7 +92,7 @@
         "texto": "Viver como nobre",
         "resumo": "resolveu viver como nobre a fortuna da família",
         "resultado": {
-          "texto": "Viagens, festas e um carro para cada humor. Você é o filho nobre do ditado, com dois andares a mais.",
+          "texto": "Viagens, festas e um carro para cada humor. Você é {o filho|a filha} nobre do ditado, com dois andares a mais.",
           "efeitos": { "custoDoPatrimonio": 0.05, "felicidade": 5, "aparencia": 1, "marcas": ["padrao_alto"] }
         }
       },
@@ -156,7 +156,7 @@
         "texto": "Aceitar a escolta",
         "resumo": "aceitou andar com seguranças",
         "resultado": {
-          "texto": "Você nunca mais foi a pé à padaria. Está seguro; está sozinho.",
+          "texto": "Você nunca mais foi a pé à padaria. Está segur{o|a}; está sozinh{o|a}.",
           "efeitos": { "custoDoPatrimonio": 0.002, "felicidade": -2, "saude": 1 }
         }
       },
@@ -204,7 +204,7 @@
         "texto": "Pedir para sair da lista",
         "resumo": "pediu para sair da lista dos mais ricos",
         "resultado": {
-          "texto": "Seu advogado ligou para a revista. No ano seguinte, você apareceu como \"herdeiro discreto\", que é quase pior.",
+          "texto": "Seu advogado ligou para a revista. No ano seguinte, você apareceu como \"herdeir{o|a} discret{o|a}\", que é quase pior.",
           "efeitos": { "felicidade": 1 }
         }
       }
@@ -295,7 +295,7 @@
         },
         "fracasso": {
           "texto": "Rebaixado, vaiado e com a folha salarial atrasada. A torcida apagou seu nome do muro e escreveu outra coisa.",
-          "resumo": "comprou o time da cidade e foi rebaixado",
+          "resumo": "comprou o time da cidade e caiu de divisão",
           "efeitos": { "felicidade": -6, "patrimonioFator": 0.85 }
         }
       },

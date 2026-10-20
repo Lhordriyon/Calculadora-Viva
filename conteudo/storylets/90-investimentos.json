@@ -192,8 +192,8 @@
     "resumo": "viu a carteira arrojada despencar",
     "escolhas": [
       {
-        "texto": "Virar conservador e vender",
-        "resumo": "virou conservador e vendeu as ações no meio da queda",
+        "texto": "Virar conservador{|a} e vender",
+        "resumo": "virou conservador{|a} e vendeu as ações no meio da queda",
         "resultado": {
           "texto": "Você vendeu tudo e foi para a renda fixa. Dormiu bem; a bolsa voltou a subir sem você.",
           "efeitos": {
@@ -229,11 +229,11 @@
     "condicoes": { "perfil": "conservador", "pais.ret_acoes": { "min": 20 }, "patrimonio": { "min": 50000 } },
     "peso": 3,
     "texto": "A bolsa subiu {pais.ret_acoes}% no ano. Você, firme na renda fixa, ganhou o de sempre e ouviu o colega contar o lucro dele três vezes no mesmo almoço.",
-    "resumo": "viu a bolsa subir enquanto investia como conservador",
+    "resumo": "viu a bolsa subir enquanto investia como conservador{|a}",
     "escolhas": [
       {
-        "texto": "Virar moderado",
-        "resumo": "passou a investir como moderado depois de ver a bolsa subir",
+        "texto": "Virar moderad{o|a}",
+        "resumo": "passou a investir como moderad{o|a} depois de ver a bolsa subir",
         "resultado": {
           "texto": "Você pôs um terço em ações. Agora também tem um gráfico para olhar no almoço.",
           "efeitos": {
@@ -244,8 +244,8 @@
         }
       },
       {
-        "texto": "Continuar conservador",
-        "resumo": "continuou conservador mesmo com a bolsa subindo",
+        "texto": "Continuar conservador{|a}",
+        "resumo": "continuou conservador{|a} mesmo com a bolsa subindo",
         "resultado": {
           "texto": "Você ficou onde estava. A bolsa sobe de escada e desce de elevador, e você não tem pressa.",
           "efeitos": { "inteligencia": 1, "felicidade": -1 }

@@ -819,7 +819,7 @@
   },
   {
     "idade": [4, 18],
-    "texto": "Mais uma cidade, mais uma lona, mais uma estreia. A cidade nova sempre tem uma criança que pergunta se você é palhaço.",
+    "texto": "Mais uma cidade, mais uma lona, mais uma estreia. A cidade nova sempre tem uma criança que pergunta se você é palhaç{o|a}.",
     "condicoes": { "algumaMarca": ["mae.artista_de_circo", "pai.artista_de_circo"] }
   },
   {
@@ -888,7 +888,7 @@
   {
     "idade": [3, 9],
     "condicoes": { "marcas": ["desnutricao"] },
-    "texto": "É o menor da turma na fila do recreio. A merenda é a melhor refeição do dia."
+    "texto": "É {o|a} menor da turma na fila do recreio. A merenda é a melhor refeição do dia."
   },
   {
     "idade": [3, 9],

@@ -737,12 +737,12 @@
         }
       },
       {
-        "texto": "Virar investidor-anjo",
-        "resumo": "virou investidor-anjo",
+        "texto": "Virar investidor{|a}-anjo",
+        "resumo": "virou investidor{|a}-anjo",
         "teste": { "chance": 0.3 },
         "sucesso": {
           "texto": "Das dez empresas em que você pôs dinheiro, uma deu muito certo e pagou as outras nove.",
-          "resumo": "acertou uma em dez como investidor-anjo",
+          "resumo": "acertou uma em dez como investidor{|a}-anjo",
           "efeitos": { "patrimonioFator": 1.3, "felicidade": 3 }
         },
         "fracasso": {

@@ -4,7 +4,7 @@
     "idade": [25, 70],
     "condicoes": { "influencia": { "min": 18 }, "cargo": "", "semMarcas": ["politico", "filiado"] },
     "texto": "Um partido que ninguém sabe direito o que defende convida você para se candidatar. Dizem que você tem \"nome\", \"dinheiro\" e \"o perfil que o povo quer\".",
-    "resumo": "foi convidado a entrar para a política",
+    "resumo": "foi convidad{o|a} a entrar para a política",
     "escolhas": [
       {
         "texto": "Topar e se filiar",
@@ -239,7 +239,7 @@
     "idade": [25, 90],
     "condicoes": { "cargo": ["deputado_federal", "senador"] },
     "texto": "Abriram uma CPI sobre um escândalo bilionário e querem você na presidência. Holofote garantido; inimigos também.",
-    "resumo": "foi chamado a presidir uma CPI",
+    "resumo": "foi chamad{o|a} a presidir uma CPI",
     "escolhas": [
       {
         "texto": "Presidir a CPI",
@@ -354,7 +354,7 @@
         "resumo": "resistiu até o fim para manter o cargo",
         "teste": { "atributo": "influencia", "dificuldade": 55 },
         "sucesso": {
-          "texto": "Você virou o jogo com acordos, discursos e favores cobrados. Ficou no cargo, menor e mais esperto.",
+          "texto": "Você virou o jogo com acordos, discursos e favores cobrados. Ficou no cargo, menor e mais espert{o|a}.",
           "efeitos": { "eu.popularidade": 15, "eu.influencia": -5 }
         },
         "fracasso": {
@@ -373,7 +373,7 @@
         "texto": "Renunciar com dignidade",
         "resumo": "renunciou ao cargo",
         "resultado": {
-          "texto": "Uma carta curta, lida em rede nacional. Você saiu antes de ser tirado, e a história lembra disso.",
+          "texto": "Uma carta curta, lida em rede nacional. Você saiu antes de ser tirad{o|a}, e a história lembra disso.",
           "efeitos": {
             "eu.cargo": { "definir": "" },
             "renda": { "definir": 0 },

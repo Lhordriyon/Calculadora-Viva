@@ -241,7 +241,7 @@
     "resumo": "fez entregas extras",
     "efeitos": { "dinheiro": 4800, "saude": -0.3 },
     "teste": { "chance": 0.9 },
-    "sucesso": { "texto": "Chegou inteiro{|a} em todas, com nota cinco no aplicativo." },
+    "sucesso": { "texto": "Chegou inteir{o|a} em todas, com nota cinco no aplicativo." },
     "fracasso": {
       "texto": "Uma moto cortou sua frente. Você levantou, mas o joelho ficou de lembrança.",
       "resumo": "se machucou fazendo entregas",
@@ -788,7 +788,7 @@
     "rotulo": "ir a um show grande",
     "idade": [14, 70],
     "condicoes": { "lugar.capital": true },
-    "texto": "Você enfrentou [três horas de fila|um metrô lotado|um ingresso de meia que quase não passou] para ver um show num estádio. Voltou rouco{|a} e feliz.",
+    "texto": "Você enfrentou [três horas de fila|um metrô lotado|um ingresso de meia que quase não passou] para ver um show num estádio. Voltou rouc{o|a} e feliz.",
     "resumo": "foi a um show num estádio",
     "efeitos": { "felicidade": 0.75, "dinheiro": -600, "saude": -0.2 }
   },

@@ -316,8 +316,8 @@
     "idade": [28, 70],
     "condicoes": { "ator.vinculo": { "min": 30 } },
     "peso": 1,
-    "texto": "{amigo} ficou rico: [vendeu uma empresa de aplicativo|ganhou um processo antigo|acertou na cripto]. Agora tem casa com piscina e um grupo novo de amigos com nomes compostos.",
-    "resumo": "viu {amigo} ficar rico",
+    "texto": "{amigo} ficou ric{amigo:o|a}: [vendeu uma empresa de aplicativo|ganhou um processo antigo|acertou na cripto]. Agora tem casa com piscina e um grupo novo de amigos com nomes compostos.",
+    "resumo": "viu {amigo} ficar ric{amigo:o|a}",
     "escolhas": [
       {
         "texto": "Ficar feliz de verdade",
@@ -329,7 +329,7 @@
       },
       {
         "texto": "Pedir uma vaga na empresa nova",
-        "resumo": "pediu emprego para {amigo} que ficou rico",
+        "resumo": "pediu emprego para {amigo} que ficou ric{amigo:o|a}",
         "teste": { "chance": 0.5 },
         "sucesso": {
           "texto": "{amigo} te contratou para tocar um dos negócios. A amizade virou sociedade, e por enquanto as duas vão bem.",
@@ -342,7 +342,7 @@
       },
       {
         "texto": "Se afastar devagar",
-        "resumo": "se afastou de {amigo} depois que ficou rico",
+        "resumo": "se afastou de {amigo} depois que ficou ric{amigo:o|a}",
         "resultado": {
           "texto": "A piscina, os amigos novos, a conversa sobre vinho: não era mais o seu lugar. Vocês viraram curtida em foto.",
           "efeitos": { "ator.vinculo": -10 }
@@ -366,7 +366,7 @@
         "condicoes": { "dinheiro": { "min": 40000 } },
         "bloqueio": "o dinheiro não chega a tanto",
         "resultado": {
-          "texto": "Você pagou o curso e ganhou o melhor abraço da década. {ator} prometeu devolver \"quando ficar rico{ator:|a}\".",
+          "texto": "Você pagou o curso e ganhou o melhor abraço da década. {ator} prometeu devolver \"quando ficar ric{ator:o|a}\".",
           "efeitos": { "dinheiro": -40000, "ator.vinculo": 10 }
         }
       },

@@ -336,7 +336,7 @@
         "teste": { "atributo": "inteligencia", "dificuldade": 55 },
         "sucesso": {
           "texto": "Virou a pessoa que resolve tudo com os clientes de lá. Promoção e viagem paga no fim do ano.",
-          "resumo": "foi promovido cuidando dos clientes de fora",
+          "resumo": "foi promovid{o|a} cuidando dos clientes de fora",
           "efeitos": { "rendaFator": 1.15, "felicidade": 3 }
         },
         "fracasso": {
@@ -592,7 +592,7 @@
       },
       {
         "texto": "Não escolher lado",
-        "resumo": "ficou neutro na guerra comercial entre potências",
+        "resumo": "ficou neutr{o|a} na guerra comercial entre potências",
         "resultado": {
           "texto": "Vendeu para as duas e não agradou nenhuma. Na diplomacia, isso tem nome: tradição.",
           "efeitos": { "federacao.relacao": -3, "celeste.relacao": -3, "eu.popularidade": 1 }

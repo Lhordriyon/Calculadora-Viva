@@ -257,7 +257,7 @@
         "teste": { "chance": 0.25 },
         "sucesso": {
           "texto": "A startup foi comprada por um gigante. Suas ações viraram um apartamento à vista.",
-          "resumo": "ficou rico com as ações de uma startup",
+          "resumo": "ficou ric{o|a} com as ações de uma startup",
           "efeitos": {
             "dinheiro": 400000,
             "renda": { "definir": 80000 },

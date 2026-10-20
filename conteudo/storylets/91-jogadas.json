@@ -293,7 +293,7 @@
           ]
         },
         "resultado": {
-          "texto": "Por um mês, ninguém foi trabalhar e o preço do pão dobrou. Você virou santo de parede de padaria."
+          "texto": "Por um mês, ninguém foi trabalhar e o preço do pão dobrou. Você virou sant{o|a} de parede de padaria."
         }
       }
     ]
@@ -1165,7 +1165,7 @@
       "chance": 0.35
     },
     "sucesso": {
-      "texto": "Campeã! Você chorou de pé no carro alegórico, fantasiado de você mesmo.",
+      "texto": "Campeã! Você chorou de pé no carro alegórico, fantasiad{o|a} de você mesm{o|a}.",
       "resumo": "viu a escola que cantou a sua vida ser campeã do Carnaval",
       "efeitos": {
         "felicidade": 12,
@@ -1993,7 +1993,7 @@
         },
         "fracasso": {
           "texto": "Vazou, com áudio. A manchete é \"Fundação {sobrenome}: caridade com lancha\".",
-          "resumo": "foi pego abafando um desvio na fundação",
+          "resumo": "foi peg{o|a} abafando um desvio na fundação",
           "efeitos": {
             "eu.popularidade": -15,
             "eu.fama": 10
@@ -2163,7 +2163,7 @@
     },
     "peso": 2,
     "texto": "Uma CPI quer saber de onde saiu o dinheiro da última eleição presidencial. O seu nome está no primeiro slide.",
-    "resumo": "foi chamado a uma CPI sobre a campanha que bancou",
+    "resumo": "foi chamad{o|a} a uma CPI sobre a campanha que bancou",
     "escolhas": [
       {
         "texto": "Depor e mostrar tudo",
@@ -2293,7 +2293,7 @@
         "texto": "Acreditar e pagar de novo",
         "resumo": "pagou de novo a pesquisa que tinha dado errado",
         "resultado": {
-          "texto": "Mais cinco anos. Você pediu para ser o primeiro a saber, de dia.",
+          "texto": "Mais cinco anos. Você pediu para ser {o primeiro|a primeira} a saber, de dia.",
           "efeitos": {
             "dinheiro": -5000000000.0,
             "removerMarcas": [
@@ -2381,7 +2381,7 @@
         }
       },
       {
-        "texto": "Decretar emergência, como prefeito",
+        "texto": "Decretar emergência, como prefeit{o|a}",
         "resumo": "decretou emergência na cidade que fundou e comanda",
         "condicoes": {
           "marcas": [
@@ -2420,7 +2420,7 @@
         },
         "sucesso": {
           "texto": "Ganhou por pouco. A primeira lei foi proibir estátua sua na praça. Você vetou.",
-          "resumo": "virou prefeito da cidade que fundou",
+          "resumo": "virou prefeit{o|a} da cidade que fundou",
           "efeitos": {
             "felicidade": 6,
             "eu.popularidade": 8,
@@ -2657,7 +2657,7 @@
         "texto": "Convocar eleições e descer do trono",
         "resumo": "convocou eleições no país que fundou",
         "resultado": {
-          "texto": "O pescador ganhou. Você virou cidadão comum de um país que é seu, o que é confuso e bom.",
+          "texto": "O pescador ganhou. Você virou cidad{ão|ã} comum de um país que é seu, o que é confuso e bom.",
           "efeitos": {
             "eu.cargo": {
               "definir": ""
@@ -2683,8 +2683,8 @@
           }
         },
         "fracasso": {
-          "texto": "Comeram os mantimentos e continuaram a greve. Você foi deposto por aclamação.",
-          "resumo": "foi deposto pelo povo do país que fundou",
+          "texto": "Comeram os mantimentos e continuaram a greve. Você foi depost{o|a} por aclamação.",
+          "resumo": "foi depost{o|a} pelo povo do país que fundou",
           "efeitos": {
             "eu.cargo": {
               "definir": ""
@@ -2706,7 +2706,7 @@
     },
     "repetivel": true,
     "intervalo": 1,
-    "texto": "Sábado das Campeãs. A escola quer você de novo no alto do carro abre-alas, fantasiado de você mesmo.",
+    "texto": "Sábado das Campeãs. A escola quer você de novo no alto do carro abre-alas, fantasiad{o|a} de você mesm{o|a}.",
     "resumo": "voltou à avenida no desfile das campeãs",
     "escolhas": [
       {
@@ -2967,7 +2967,7 @@
         "texto": "Segurança de chefe de Estado",
         "resumo": "contratou segurança de chefe de Estado",
         "resultado": {
-          "texto": "Carro blindado, três seguranças e nenhuma ida à padaria sozinho, nunca mais.",
+          "texto": "Carro blindado, três seguranças e nenhuma ida à padaria sozinh{o|a}, nunca mais.",
           "efeitos": {
             "dinheiro": -50000000.0,
             "felicidade": -3
@@ -2988,7 +2988,7 @@
         },
         "fracasso": {
           "texto": "Doze horas num cativeiro até a polícia chegar. Você voltou outra pessoa.",
-          "resumo": "foi sequestrado e libertado pela polícia",
+          "resumo": "foi sequestrad{o|a} e libertad{o|a} pela polícia",
           "efeitos": {
             "felicidade": -15,
             "saude": -5,
@@ -3137,7 +3137,7 @@
     "escolhas": [
       {
         "texto": "Aceitar",
-        "resumo": "foi ministro da Economia",
+        "resumo": "foi ministr{o|a} da Economia",
         "resultado": {
           "texto": "Dois anos, três planos econômicos e uma foto sua de olheiras que virou meme. A economia melhorou; você envelheceu.",
           "efeitos": {
@@ -3153,7 +3153,7 @@
       },
       {
         "texto": "Recusar e indicar um amigo",
-        "resumo": "recusou ser ministro e indicou um amigo",
+        "resumo": "recusou ser ministr{o|a} e indicou um amigo",
         "resultado": {
           "texto": "O mesmo poder, sem o expediente.",
           "efeitos": {

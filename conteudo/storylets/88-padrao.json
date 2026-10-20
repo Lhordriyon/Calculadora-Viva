@@ -239,7 +239,7 @@
         "teste": { "chance": 0.5 },
         "sucesso": {
           "texto": "Duas safras boas, preço lá em cima e a terra valorizou. Você aprendeu a falar de chuva com autoridade.",
-          "resumo": "ficou rico{|a} com uma fazenda",
+          "resumo": "ficou ric{o|a} com uma fazenda",
           "efeitos": { "patrimonioFator": 1.7, "felicidade": 4, "saude": 1 }
         },
         "fracasso": {
@@ -274,7 +274,7 @@
         "efeitos": { "patrimonioFator": 0.55 },
         "teste": { "chance": 0.55 },
         "sucesso": {
-          "texto": "A loja encheu desde a inauguração. Você virou dono{|a} de um negócio que funciona até quando você dorme, e você quase não dorme.",
+          "texto": "A loja encheu desde a inauguração. Você virou don{o|a} de um negócio que funciona até quando você dorme, e você quase não dorme.",
           "resumo": "abriu uma franquia que deu certo",
           "efeitos": {
             "renda": 60000,

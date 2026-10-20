@@ -318,7 +318,7 @@
     "condicoes": { "ator.traco": "devoto" },
     "repetivel": true,
     "intervalo": 6,
-    "texto": "{ator.quem} [chamou você para o culto de domingo|quer que você seja padrinho de batismo do sobrinho|organizou uma novena e conta com a sua presença].",
+    "texto": "{ator.quem} [chamou você para o culto de domingo|quer que você seja {padrinho|madrinha} de batismo do sobrinho|organizou uma novena e conta com a sua presença].",
     "resumo": "{ator.quem} chamou você para a igreja",
     "escolhas": [
       {
@@ -499,12 +499,12 @@
     "ator": ["amigo"],
     "idade": [23, 42],
     "condicoes": { "amigo.vinculo": { "min": 45 } },
-    "texto": "{amigo} vai casar e quer você como padrinho{|/madrinha}. O traje é [esporte fino|temático anos 80|na praia, de pé descalço].",
-    "resumo": "{ator.quem} chamou você para padrinho de casamento",
+    "texto": "{amigo} vai casar e quer você como {padrinho|madrinha}. O traje é [esporte fino|temático anos 80|na praia, de pé descalço].",
+    "resumo": "{ator.quem} chamou você para {padrinho|madrinha} de casamento",
     "escolhas": [
       {
         "texto": "Aceitar e fazer discurso",
-        "resumo": "foi padrinho do casamento de {amigo}",
+        "resumo": "foi {padrinho|madrinha} do casamento de {amigo}",
         "resultado": {
           "texto": "Seu discurso fez metade da festa chorar e a outra metade rir. Ninguém sabe qual era a intenção.",
           "efeitos": { "dinheiro": -1500, "felicidade": 3, "amigo.vinculo": 10 }

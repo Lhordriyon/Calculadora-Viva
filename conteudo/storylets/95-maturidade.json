@@ -70,7 +70,7 @@
         "texto": "Ser voluntári{o|a}",
         "resumo": "virou voluntári{o|a} na aposentadoria",
         "resultado": {
-          "texto": "Toda terça você dá aula de reforço numa ONG. As crianças te chamam de \"tio{|a}\" e corrigem o seu jeito de mexer no celular.",
+          "texto": "Toda terça você dá aula de reforço numa ONG. As crianças te chamam de \"ti{o|a}\" e corrigem o seu jeito de mexer no celular.",
           "efeitos": { "felicidade": 4, "saude": 1, "marcas": ["aposentadoria_ativa"] }
         }
       },

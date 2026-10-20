@@ -149,7 +149,7 @@
         "texto": "Investir em fundos de clínicas e farmácias",
         "resumo": "apostou em fundos do país que envelhece",
         "resultado": {
-          "texto": "Se o futuro é de cabelo branco, você comprou um pedaço da farmácia. Pareceu frio; pareceu esperto.",
+          "texto": "Se o futuro é de cabelo branco, você comprou um pedaço da farmácia. Pareceu fri{o|a}; pareceu espert{o|a}.",
           "efeitos": { "realocar": { "de": "dinheiro", "para": "fii", "fracao": 0.15 }, "felicidade": 1 }
         }
       },

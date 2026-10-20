@@ -61,8 +61,8 @@
     "resumo": "sobreviveu a uma reunião de condomínio",
     "escolhas": [
       {
-        "texto": "Virar síndico",
-        "resumo": "virou síndico do prédio",
+        "texto": "Virar síndic{o|a}",
+        "resumo": "virou síndic{o|a} do prédio",
         "resultado": {
           "texto": "Você ganhou isenção da taxa e um grupo de mensagens que apita às duas da manhã.",
           "efeitos": { "dinheiro": 4000, "felicidade": -3, "inteligencia": 1 }
@@ -94,8 +94,8 @@
         }
       },
       {
-        "texto": "Ficar sozinho com a vista",
-        "resumo": "passou o sábado sozinho olhando a cidade da cobertura",
+        "texto": "Ficar sozinh{o|a} com a vista",
+        "resumo": "passou o sábado sozinh{o|a} olhando a cidade da cobertura",
         "resultado": {
           "texto": "Você viu o pôr do sol inteiro pela primeira vez em anos.",
           "efeitos": { "felicidade": 3, "saude": 1 }
@@ -107,7 +107,7 @@
     "id": "mansao_vazia",
     "idade": [25, 99],
     "condicoes": { "marcas": ["mansao"] },
-    "texto": "Doze quartos, sete banheiros e um eco no corredor. Os funcionários da mansão te chamam pelo sobrenome; os filhos dos funcionários, de \"tio\".",
+    "texto": "Doze quartos, sete banheiros e um eco no corredor. Os funcionários da mansão te chamam pelo sobrenome; os filhos dos funcionários, de \"ti{o|a}\".",
     "resumo": "sentiu o tamanho da mansão",
     "escolhas": [
       {
@@ -120,7 +120,7 @@
       },
       {
         "texto": "Transformar num museu de si",
-        "resumo": "decorou a mansão com retratos de si mesmo",
+        "resumo": "decorou a mansão com retratos de si mesm{o|a}",
         "resultado": {
           "texto": "Retratos a óleo em todas as paredes. As visitas elogiam e saem rápido.",
           "efeitos": { "felicidade": 1, "eu.fama": 3, "amigo.vinculo": -3 }
@@ -196,8 +196,8 @@
         }
       },
       {
-        "texto": "Ir sozinho para descansar",
-        "resumo": "foi sozinho ao sítio para descansar",
+        "texto": "Ir sozinh{o|a} para descansar",
+        "resumo": "foi sozinh{o|a} ao sítio para descansar",
         "resultado": {
           "texto": "Silêncio, rede e nenhum sinal de celular. Você dormiu onze horas.",
           "efeitos": { "saude": 3, "felicidade": 2 }
@@ -309,7 +309,7 @@
         "texto": "Parar num posto e esperar",
         "resumo": "esperou a chuva passar num posto",
         "resultado": {
-          "texto": "Café de posto e meia hora de atraso. Chegou seco e com desculpa pronta.",
+          "texto": "Café de posto e meia hora de atraso. Chegou sec{o|a} e com desculpa pronta.",
           "efeitos": { "felicidade": -1 }
         }
       }

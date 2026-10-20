@@ -25,12 +25,12 @@
         { "texto": "a economia" }
       ],
       "clima": [
-        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega favorito, com {pais.aprovacao}% de aprovação" },
-        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega desgastado, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega em alta, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega em baixa, com {pais.aprovacao}% de aprovação" },
         { "texto": "chega dividindo o país, com {pais.aprovacao}% de aprovação" }
       ]
     },
-    "texto": "Primeiro voto para presidente: obrigatório, como a convicção não é. Na TV, só se fala de {pauta}; {governo} {clima}. [O santinho voou pela janela do ônibus.|O grupo da turma virou campo de batalha.|O carro de som passou três vezes na sua rua antes das oito.]",
+    "texto": "Primeiro voto para presidente: obrigatório, como a convicção não é. Na TV, o assunto é {pauta}; {governo} {clima}. [O santinho voou pela janela do ônibus.|O grupo da turma virou campo de batalha.|O carro de som passou três vezes na sua rua antes das oito.]",
     "resumo": "votou para presidente pela primeira vez",
     "escolhas": [
       {
@@ -108,8 +108,8 @@
         { "texto": "a economia" }
       ],
       "clima": [
-        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega favorito, com {pais.aprovacao}% de aprovação" },
-        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega desgastado, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "min": 58 } }, "texto": "chega em alta, com {pais.aprovacao}% de aprovação" },
+        { "se": { "pais.aprovacao": { "max": 42 } }, "texto": "chega em baixa, com {pais.aprovacao}% de aprovação" },
         { "texto": "chega dividindo o país, com {pais.aprovacao}% de aprovação" }
       ]
     },
@@ -984,7 +984,7 @@
         { "texto": "o governo" }
       ]
     },
-    "texto": "A aprovação do governo caiu para {pais.aprovacao}% e a avenida encheu de gente com cartaz, apito e cachorro-quente. {governo} diz que a culpa é do governo anterior.",
+    "texto": "A aprovação do governo caiu para {pais.aprovacao}% e a avenida encheu de gente com cartaz, apito e cachorro-quente. No palácio, {governo} diz que a culpa é de quem veio antes.",
     "resumo": "viu a avenida tomada por um protesto contra o governo",
     "escolhas": [
       {

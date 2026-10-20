@@ -273,11 +273,11 @@
     "condicoes": { "classe_origem": { "min": 4 }, "patrimonio": { "min": 150000 } },
     "peso": 2,
     "texto": "Com o dinheiro da família por trás, a vida ficou fácil demais: [camarote toda semana|um carro esportivo por ano|uma lancha com o seu nome]. Um amigo de infância comenta que você está gastando como se não houvesse amanhã.",
-    "resumo": "gastou como herdeiro",
+    "resumo": "gastou como herdeir{o|a}",
     "escolhas": [
       {
         "texto": "Aproveitar enquanto dá",
-        "resumo": "torrou dinheiro como herdeiro",
+        "resumo": "torrou dinheiro como herdeir{o|a}",
         "resultado": {
           "texto": "Foi o melhor ano da sua vida, segundo as fotos. A conta veio no ano seguinte.",
           "efeitos": { "felicidade": 4, "patrimonioFator": 0.7, "saude": -1 }
@@ -298,7 +298,7 @@
     "idade": [13, 17],
     "condicoes": { "familia": "religiosa", "mae.vivo": true },
     "texto": "O grupo de jovens da igreja vai fazer um retiro de fim de semana: violão, fogueira, testemunho e cachorro-quente.",
-    "resumo": "foi chamado para o grupo de jovens da igreja",
+    "resumo": "foi chamad{o|a} para o grupo de jovens da igreja",
     "escolhas": [
       {
         "texto": "Entrar no grupo",
@@ -364,7 +364,7 @@
         { "texto": "A vizinha de banco acha que é sinal." }
       ]
     },
-    "resumo": "foi cobrado pelo dízimo",
+    "resumo": "foi cobrad{o|a} pelo dízimo",
     "escolhas": [
       {
         "texto": "Contribuir todo mês",
@@ -477,7 +477,7 @@
     "repetivel": true,
     "intervalo": 8,
     "texto": "Natal de pais separados: ceia com {mae} às dez, peru requentado com {pai} à meia-noite, e um tio perguntando com quem você gosta mais.",
-    "resumo": "passou o Natal dividido entre pai e mãe",
+    "resumo": "passou o Natal dividid{o|a} entre pai e mãe",
     "escolhas": [
       {
         "texto": "Ir às duas ceias",
@@ -1066,7 +1066,7 @@
         "teste": { "chance": 0.35 },
         "sucesso": {
           "texto": "Deu muito certo. Em três anos, vocês tinham filiais e você, um contador.",
-          "resumo": "ficou rico com um negócio",
+          "resumo": "ficou ric{o|a} com um negócio",
           "efeitos": {
             "renda": 60000,
             "patrimonioFator": 1.8,

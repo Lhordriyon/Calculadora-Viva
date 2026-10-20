@@ -289,7 +289,7 @@
         "texto": "Deixar o dente",
         "resumo": "deixou o dente para a fada",
         "resultado": {
-          "texto": "A fada pagou {pagamento}. Você ficou rico por um dia.",
+          "texto": "A fada pagou {pagamento}. Você ficou ric{o|a} por um dia.",
           "efeitos": { "dinheiro": 10, "felicidade": 2 }
         }
       },

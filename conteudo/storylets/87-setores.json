@@ -344,7 +344,7 @@
         "resumo": "abriu a própria equipe de obra no boom",
         "teste": { "chance": 0.5 },
         "sucesso": {
-          "texto": "Você juntou três conhecidos, comprou uma betoneira usada e virou \"empreiteiro\". O telefone não para.",
+          "texto": "Você juntou três conhecidos, comprou uma betoneira usada e virou \"empreiteir{o|a}\". O telefone não para.",
           "resumo": "abriu a própria equipe de obra no boom",
           "efeitos": {
             "rendaFator": 1.6,
@@ -565,7 +565,7 @@
         "teste": { "chance": 0.5 },
         "sucesso": {
           "texto": "O grupo estrangeiro abriu capital na bolsa e as suas ações triplicaram. Você comprou um apartamento sem financiamento, coisa que nem sabia que existia.",
-          "resumo": "ficou rico{|a} com as ações da empresa",
+          "resumo": "ficou ric{o|a} com as ações da empresa",
           "efeitos": { "dinheiro": 180000, "felicidade": 6 }
         },
         "fracasso": {

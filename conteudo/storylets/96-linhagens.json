@@ -275,7 +275,7 @@
     "idade": [4, 10],
     "condicoes": { "marcas": ["herdeiro_regime"] },
     "texto": "No palácio do Regime há mais guardas do que crianças. Seu aniversário vai ser feriado nacional, e a escola manda a turma inteira desenhar você.",
-    "resumo": "cresceu como herdeiro do Regime",
+    "resumo": "cresceu como herdeir{o|a} do Regime",
     "escolhas": [
       {
         "texto": "Gostar da festa",
@@ -314,7 +314,7 @@
         "texto": "Recusar",
         "resumo": "recusou a conta secreta do Regime",
         "resultado": {
-          "texto": "O tesoureiro guardou o extrato de volta e anotou alguma coisa. Você saiu da sala mais leve e mais vigiado.",
+          "texto": "O tesoureiro guardou o extrato de volta e anotou alguma coisa. Você saiu da sala mais leve e mais vigiad{o|a}.",
           "efeitos": { "marcas": ["herdeiro_humano"], "eu.influencia": -5, "felicidade": 2 }
         }
       }
@@ -650,12 +650,12 @@
     "id": "cargo_no_gabinete",
     "idade": [18, 30],
     "condicoes": { "marcas": ["filho_de_politico"] },
-    "texto": "Tem uma vaga de assessor no gabinete de um aliado da família. Salário bom, ponto flexível e ninguém pergunta o que você faz.",
+    "texto": "Tem uma vaga de assessor{|a} no gabinete de um aliado da família. Salário bom, ponto flexível e ninguém pergunta o que você faz.",
     "resumo": "decidiu sobre um cargo no gabinete",
     "escolhas": [
       {
         "texto": "Aceitar o cargo",
-        "resumo": "aceitou um cargo de assessor no gabinete",
+        "resumo": "aceitou um cargo de assessor{|a} no gabinete",
         "resultado": {
           "texto": "Você aparecia às terças. O contracheque aparecia todo mês.",
           "efeitos": {
@@ -681,14 +681,14 @@
     "id": "operacao_no_gabinete",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["nomeado"] },
-    "texto": "Seis da manhã, campainha, colete da polícia: operação no gabinete onde você é assessor. Querem saber por que tanta gente recebia sem trabalhar.",
+    "texto": "Seis da manhã, campainha, colete da polícia: operação no gabinete onde você é assessor{|a}. Querem saber por que tanta gente recebia sem trabalhar.",
     "resumo": "foi alvo de uma operação no gabinete",
     "escolhas": [
       {
         "texto": "Colaborar com a investigação",
         "resumo": "colaborou com a investigação do gabinete",
         "resultado": {
-          "texto": "Você contou o que sabia. Perdeu o cargo, ganhou um inimigo por andar e dormiu tranquilo.",
+          "texto": "Você contou o que sabia. Perdeu o cargo, ganhou um inimigo por andar e dormiu tranquil{o|a}.",
           "efeitos": { "renda": -96000, "eu.influencia": -6, "removerMarcas": ["nomeado"], "felicidade": -2 }
         }
       },
@@ -820,7 +820,7 @@
     "escolhas": [
       {
         "texto": "Traduzir tudo",
-        "resumo": "virou o tradutor da família aos oito anos",
+        "resumo": "virou {o tradutor|a tradutora} da família aos oito anos",
         "resultado": {
           "texto": "Você traduziu a consulta, a receita e a bula. Aprendeu palavras de adulto cedo demais.",
           "efeitos": { "inteligencia": 4, "ator.vinculo": 5, "felicidade": -1 }
@@ -951,13 +951,13 @@
     "idade": [25, 99],
     "condicoes": { "algumaMarca": ["repressor", "exilado", "ditador"] },
     "texto": "Um tribunal internacional abriu processo pelos anos do Regime: as prisões, os protestos dispersados à força, as contas lá fora. Seus advogados falam em extradição; os antigos aliados não atendem mais o telefone.",
-    "resumo": "foi processado por um tribunal internacional",
+    "resumo": "foi processad{o|a} por um tribunal internacional",
     "escolhas": [
       {
         "texto": "Pagar os melhores advogados",
         "resumo": "pagou advogados caros contra um tribunal internacional",
         "resultado": {
-          "texto": "O processo se arrastou por anos e milhões. Você não foi preso; também não foi esquecido.",
+          "texto": "O processo se arrastou por anos e milhões. Você não foi pres{o|a}; também não foi esquecid{o|a}.",
           "efeitos": { "dinheiro": -5000000, "felicidade": -3 }
         }
       },
@@ -1003,7 +1003,7 @@
     "idade": [18, 60],
     "condicoes": { "marcas": ["nepotismo"], "fama": { "min": 15 } },
     "texto": "Uma reportagem lista todos os papéis, vagas e contratos que você conseguiu por causa do sobrenome. A hashtag está em primeiro lugar.",
-    "resumo": "foi acusado de nepotismo",
+    "resumo": "foi acusad{o|a} de nepotismo",
     "escolhas": [
       {
         "texto": "Admitir e brincar",
@@ -1036,8 +1036,8 @@
         "resultado": { "texto": "Você desligou e foi buscar o pão. Estava quente.", "efeitos": { "felicidade": 4 } }
       },
       {
-        "texto": "Virar embaixador da Coroa",
-        "resumo": "aceitou ser embaixador da Coroa no exterior",
+        "texto": "Virar embaixador{|a} da Coroa",
+        "resumo": "aceitou ser embaixador{|a} da Coroa no exterior",
         "resultado": {
           "texto": "Jantares, viagens e um título novo, sem trono. É quase a mesma coisa, com menos culpa.",
           "efeitos": { "eu.influencia": 8, "dinheiro": 400000, "felicidade": -1 }

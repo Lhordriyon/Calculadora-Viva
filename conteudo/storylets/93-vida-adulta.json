@@ -51,7 +51,7 @@
         "texto": "Pendurar as chuteiras",
         "resumo": "pendurou as chuteiras da pelada",
         "resultado": {
-          "texto": "Você virou o técnico do time, que é o goleiro aposentado com prancheta. O joelho agradece; o ego, nem tanto.",
+          "texto": "Você virou {o técnico|a técnica} do time, que é {o goleiro aposentado|a goleira aposentada} com prancheta. O joelho agradece; o ego, nem tanto.",
           "efeitos": { "removerMarcas": ["pelada"], "saude": 1, "felicidade": -1 }
         }
       },
@@ -59,7 +59,7 @@
         "texto": "Fazer fisioterapia e voltar",
         "resumo": "fez fisioterapia para voltar à pelada",
         "resultado": {
-          "texto": "Seis meses de fisioterapia, elástico e gelo. Você voltou mais lento e mais cuidadoso, e ainda reclama de toda falta.",
+          "texto": "Seis meses de fisioterapia, elástico e gelo. Você voltou mais lent{o|a} e mais cuidados{o|a}, e ainda reclama de toda falta.",
           "efeitos": { "dinheiro": -3000, "saude": 0.5, "felicidade": 1 }
         }
       },
@@ -165,7 +165,7 @@
         "resumo": "contratou o primo do porteiro para a obra",
         "teste": { "chance": 0.5 },
         "sucesso": {
-          "texto": "Ficou bom e barato. O primo virou fornecedor oficial do prédio e você, o síndico mais amado da rua.",
+          "texto": "Ficou bom e barato. O primo virou fornecedor oficial do prédio e você, {o síndico mais amado|a síndica mais amada} da rua.",
           "efeitos": { "felicidade": 3 }
         },
         "fracasso": {
@@ -233,7 +233,7 @@
     "id": "emprestimo_de_volta",
     "apenasAgendado": true,
     "condicoes": { "marcas": ["emprestou_ao_amigo"], "amigo.vivo": true },
-    "texto": "Faz tempo que você emprestou dinheiro para {amigo}. Hoje chegou uma mensagem dele{|a}... ",
+    "texto": "Faz tempo que você emprestou dinheiro para {amigo}. Hoje chegou uma mensagem del{amigo:e|a}... ",
     "resumo": "viu se {amigo} devolvia o dinheiro emprestado",
     "teste": { "chance": 0.55 },
     "sucesso": {

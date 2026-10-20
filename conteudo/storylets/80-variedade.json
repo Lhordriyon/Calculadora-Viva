@@ -572,8 +572,8 @@
     "id": "convite_para_candidatura",
     "idade": [28, 60],
     "condicoes": { "traco": "carismatico", "semMarcas": ["politizado", "vereador"] },
-    "texto": "Um partido pequeno, de nome comprido e sigla de quatro letras, quer você como candidat{o|a} a vereador. \"Você conversa com todo mundo, isso é meio caminho\", diz o presidente municipal.",
-    "resumo": "foi convidad{o|a} a se candidatar a vereador",
+    "texto": "Um partido pequeno, de nome comprido e sigla de quatro letras, quer você como candidat{o|a} a vereador{|a}. \"Você conversa com todo mundo, isso é meio caminho\", diz o presidente municipal.",
+    "resumo": "foi convidad{o|a} a se candidatar a vereador{|a}",
     "escolhas": [
       {
         "texto": "Topar a campanha",
