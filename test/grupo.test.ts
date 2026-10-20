@@ -384,7 +384,9 @@ describe('o grupo na vida', () => {
     let grupos = 0;
     let fusoes = 0;
     let bolsas = 0;
-    for (let i = 0; i < 24; i++) {
+    // Fundir ou abrir o capital acontece em umas 8% dessas vidas: a amostra segue até achar, para não depender de
+    // uma semente de sorte (as alternâncias do texto também gastam o rng e mudam as vidas).
+    for (let i = 0; i < 96 && (grupos < 2 || fusoes + bolsas < 1); i++) {
       const e = nascer(c, { semente: misturar(909, i), ano: 2026, origem: { classe: 5 } });
       const robo = criarRng(i);
       let maior = 0;

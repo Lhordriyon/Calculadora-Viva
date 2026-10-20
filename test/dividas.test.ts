@@ -280,4 +280,14 @@ describe('a dívida como contrato', () => {
     expect(lido.entidades[CHEQUE_ESPECIAL]?.n['saldo']).toBeCloseTo(20_000, 6);
     expect(financiamentoDe(lido, bensDe(lido)[0]!.id)?.n['parcela']).toBeGreaterThan(0);
   });
+
+  it('save: a sobra de arredondamento do contrato que fechou não vira um cheque especial fantasma', () => {
+    const e = adulto(11, { dinheiro: 10_000 });
+    // O contrato fecha com menos de meio centavo (contratos.ts › fecharSePago); a dívida guarda a sobra da conta.
+    e.entidades['eu']!.n['divida'] = 2.4e-11;
+    const save = { ...saveVazio(), vida: e };
+    const lido = lerSave(escreverSave(save), c);
+    expect(lido.vida!.entidades[CHEQUE_ESPECIAL]).toBeUndefined();
+    expect(lido).toEqual(save);
+  });
 });

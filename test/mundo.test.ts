@@ -36,23 +36,27 @@ function adulto(setor: string, fase: 'normal' | 'recessao' | 'crise', semente = 
 
 describe('o ciclo da economia', () => {
   it('muda de fase com uma entrada do mundo, e a fase do país guarda essa entrada como causa', () => {
-    const e = adulto('comercio', 'normal');
     const vistas = new Set<string>();
-    for (let ano = 0; ano < 400; ano++) {
-      e.ano++;
-      const antes = faseDe(e);
-      anoDoPais(e, c, []);
-      const depois = faseDe(e);
-      vistas.add(depois);
-      // A fase é o nome do crescimento do ano (sair da fase de antes pede uma folga).
-      expect(depois).toBe(faseDoCrescimento(e.entidades['pais']!.n['crescimento']!, antes));
-      if (depois === antes) continue;
-      const anuncio = e.historico.at(-1)!;
-      expect(anuncio.tipo).toBe('mundo');
-      expect(anuncio.ref).toBe(`ciclo:${depois}`);
-      if (depois !== 'normal') expect(e.entidades['pais']!.q[depois]!.causa).toBe(anuncio.id);
-      // uma fase de cada vez
-      expect(['expansao', 'recessao', 'crise'].filter((f) => e.entidades['pais']!.q[f]).length).toBeLessThanOrEqual(1);
+    // A crise é rara (umas poucas a cada mil anos de país): as sementes seguem até o país passar pelas quatro fases,
+    // para não depender de uma semente de sorte (as alternâncias do texto também gastam o rng).
+    for (let semente = 5; semente < 65 && vistas.size < 4; semente++) {
+      const e = adulto('comercio', 'normal', semente);
+      for (let ano = 0; ano < 400; ano++) {
+        e.ano++;
+        const antes = faseDe(e);
+        anoDoPais(e, c, []);
+        const depois = faseDe(e);
+        vistas.add(depois);
+        // A fase é o nome do crescimento do ano (sair da fase de antes pede uma folga).
+        expect(depois).toBe(faseDoCrescimento(e.entidades['pais']!.n['crescimento']!, antes));
+        if (depois === antes) continue;
+        const anuncio = e.historico.at(-1)!;
+        expect(anuncio.tipo).toBe('mundo');
+        expect(anuncio.ref).toBe(`ciclo:${depois}`);
+        if (depois !== 'normal') expect(e.entidades['pais']!.q[depois]!.causa).toBe(anuncio.id);
+        // uma fase de cada vez
+        expect(['expansao', 'recessao', 'crise'].filter((f) => e.entidades['pais']!.q[f]).length).toBeLessThanOrEqual(1);
+      }
     }
     expect([...vistas].sort()).toEqual(['crise', 'expansao', 'normal', 'recessao']);
   });

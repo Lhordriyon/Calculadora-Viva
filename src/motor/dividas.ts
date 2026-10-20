@@ -357,7 +357,8 @@ export function operarDivida(e: EstadoVida, c: Conteudo, op: OperacaoDivida, reg
 export function migrarDividaSemContrato(e: EstadoVida): void {
   const eu = e.entidades['eu'];
   const divida = eu?.n['divida'] ?? 0;
-  if (!eu || divida <= 0 || semGarantia(e).length > 0) return;
+  // Menos de meio centavo é sobra de arredondamento do contrato que fechou (contratos.ts › fecharSePago), não dívida.
+  if (!eu || divida < 0.005 || semGarantia(e).length > 0) return;
   e.entidades[CHEQUE_ESPECIAL] = {
     id: CHEQUE_ESPECIAL,
     tipo: 'contrato',
