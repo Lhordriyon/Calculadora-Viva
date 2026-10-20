@@ -9,7 +9,7 @@
  * governa tem popularidade; abaixo do ponto crítico, o cargo balança (storylet
  * agendado). Decretos são storylets que mexem no país (`pais.impulso`).
  */
-import { empresasDe, patrimonioTotal } from './campos.ts';
+import { empresasDe, entradaQueDefiniu, patrimonioTotal } from './campos.ts';
 import { statusDosBens } from './bens.ts';
 import { noGenero, largarEmprego, tentouEsteAno } from './carreira.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -86,9 +86,23 @@ function assumir(e: EstadoVida, reg: Mudanca[], def: DefCargo, origem: number): 
   ganhar(e, reg, 'eu', 'politico', origem);
 }
 
-export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: Mudanca[], origem: number): { texto: string; resumo: string } {
+/** A candidatura nasce da anterior (a reeleição, a revanche da derrota, o degrau seguinte) ou, a primeira, da filiação. */
+function causasDaCandidatura(e: EstadoVida): number[] {
+  for (let i = e.historico.length - 1; i >= 0; i--) if (e.historico[i]!.ref === 'poder:candidatarCargo') return [e.historico[i]!.id];
+  const filiacao = e.entidades['eu']!.q['filiado']?.causa;
+  return filiacao !== undefined && filiacao !== null ? [filiacao] : [];
+}
+
+export function operarPoder(
+  e: EstadoVida,
+  c: Conteudo,
+  op: OperacaoPoder,
+  reg: Mudanca[],
+  origem: number,
+): { texto: string; resumo: string; causas: number[] } {
   const eu = e.entidades['eu']!;
   const def = defCargo(c, op.cargo)!;
+  const causas = causasDaCandidatura(e);
   const custo = tirarDeQuemJoga(e, reg, def.campanha, 'mercado');
   const chance = chanceDeEleicao(e, def);
   const ganhou = aleatorio(e.rng) < chance;
@@ -106,6 +120,7 @@ export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: 
     return {
       texto: `Eleições de ${e.ano}: você foi ${verbo} ${nome} ${onde}${qual}, com ${Math.max(51, votos)}% dos votos e uma campanha de ${formatarDinheiro(custo)}.`,
       resumo: `foi ${verbo} ${nome} ${onde}`,
+      causas,
     };
   }
   somar(e, reg, 'eu', 'influencia', 2);
@@ -117,6 +132,7 @@ export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: 
         ? `Eleições de ${e.ano}: ${Math.min(49, votos)}% dos votos para ${nome} ${onde} não bastaram. Foi a ${derrota}ª derrota, e a campanha custou ${formatarDinheiro(custo)}.`
         : `Eleições de ${e.ano}: ${Math.min(49, votos)}% dos votos para ${nome} ${onde} não bastaram. A campanha custou ${formatarDinheiro(custo)}, e o seu nome ficou mais conhecido.`,
     resumo,
+    causas,
   };
 }
 
@@ -159,7 +175,9 @@ export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mud
   }
   // O mandato acabou: sem reeleição, volta a ser só quem era (com o nome conhecido).
   const fim: Mudanca[] = [];
-  const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'poder:fim_do_mandato', texto: '' });
+  // O fim do mandato descende da eleição que o deu: o que vem depois do cargo (ex_politico) também.
+  const posse = entradaQueDefiniu(e, 'eu', 'cargo');
+  const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'poder:fim_do_mandato', texto: '', ...(posse !== null ? { causas: [posse] } : {}) });
   const nome = noGenero(def.nome, eu.genero);
   definirTexto(e, fim, 'eu', 'cargo', '');
   definirNumero(e, fim, 'eu', 'renda', 0);

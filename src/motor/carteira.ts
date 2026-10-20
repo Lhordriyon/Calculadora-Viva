@@ -148,11 +148,12 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   const n = eu.n;
   const reg: Mudanca[] = [];
   // A entrada nasce antes: o que a operação cria (a empresa, o imóvel, o cargo) aponta para ela como causa.
-  const lancarCom = (grupo: string, fazer: (origem: number) => { texto: string; resumo: string }): Entrada => {
+  const lancarCom = (grupo: string, fazer: (origem: number) => { texto: string; resumo: string; causas?: number[] }): Entrada => {
     const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref: `${grupo}:${op.tipo}`, texto: '' });
-    const { texto, resumo } = fazer(entrada.id);
+    const { texto, resumo, causas } = fazer(entrada.id);
     entrada.texto = texto;
     entrada.resumo = resumo;
+    if (causas && causas.length > 0) entrada.causas = causas;
     return lancar(e, entrada, reg);
   };
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));

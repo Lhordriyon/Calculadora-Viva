@@ -3,7 +3,7 @@
  * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
  * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
  */
-import { entidadeDe, ler, patrimonioTotal, separar } from './campos.ts';
+import { entidadeDe, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
 import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Qualidade } from './tipos.ts';
@@ -148,6 +148,12 @@ export function causasDe(cond: Condicoes | undefined, e: EstadoVida, ator?: stri
   for (const m of consultadas) {
     const causa = qualidadeDe(e, m, ator)?.causa;
     if (causa !== undefined && causa !== null) causas.push(causa);
+  }
+  // Ler o cargo é consultar a posse: o que acontece no mandato descende da eleição (ou da coroa) que o deu.
+  const cargo = cond.cargo ?? cond['eu.cargo'];
+  if (cargo === true || (typeof cargo === 'string' && cargo !== '') || (Array.isArray(cargo) && cargo.length > 0)) {
+    const posse = entradaQueDefiniu(e, 'eu', 'cargo');
+    if (posse !== null && !causas.includes(posse)) causas.push(posse);
   }
   return causas;
 }

@@ -437,6 +437,26 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
   return def.tipo === 'texto' ? (en.t[campo] ?? '') : (en.n[campo] ?? 0);
 }
 
+/**
+ * A entrada do livro que deu a um campo de texto o valor que ele tem agora (a eleição que pôs o cargo, a coroa), ou
+ * null se o campo está vazio ou o valor veio de antes do livro. Só lê: serve para o que acontece por causa do campo
+ * apontar a decisão que o pôs ali.
+ */
+export function entradaQueDefiniu(e: EstadoVida, ent: string, campo: string): number | null {
+  const valor = e.entidades[ent]?.t[campo];
+  if (!valor) return null;
+  const caminho = `${ent}.${campo}`;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    const mudancas = h.mudancas ?? [];
+    for (let j = mudancas.length - 1; j >= 0; j--) {
+      const m = mudancas[j]!;
+      if (m.c === caminho && m.t !== undefined) return m.t === valor ? h.id : null;
+    }
+  }
+  return null;
+}
+
 export function lerCaminho(e: EstadoVida, caminho: string, ator?: string): number | string | boolean | undefined {
   const { ent, campo } = separar(caminho);
   return ler(e, entidadeDe(ent, ator), campo);
