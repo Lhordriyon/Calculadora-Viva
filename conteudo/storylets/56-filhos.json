@@ -8,7 +8,7 @@
     "tensao": 2,
     "repetivel": true,
     "intervalo": 5,
-    "texto": "{ator} achou o macacão de recém-nascido de {filho} numa caixa e ficou segurando um tempo. Depois perguntou, como quem não quer nada, se vocês dariam conta de mais um.",
+    "texto": "{ator} achou o macacão de recém-nascido de {cacula} numa caixa e ficou segurando um tempo. Depois perguntou, como quem não quer nada, se vocês dariam conta de mais um.",
     "resumo": "pensou em ter mais um filho com {ator}",
     "escolhas": [
       {
@@ -41,7 +41,7 @@
         "texto": "Esperar um pouco",
         "resumo": "adiou a decisão de ter mais um filho",
         "resultado": {
-          "texto": "Ficou para depois do próximo aniversário de {filho}. E do outro.",
+          "texto": "Ficou para depois do próximo aniversário de {cacula}. E do outro.",
           "efeitos": { "felicidade": 1 }
         }
       }
@@ -51,7 +51,7 @@
     "id": "ciumes_do_irmao",
     "apenasAgendado": true,
     "ator": ["filho"],
-    "condicoes": { "marcas": ["pai_mae"], "filhos": { "min": 2 }, "filho.vivo": true },
+    "condicoes": { "marcas": ["pai_mae"], "filhos": { "min": 2 }, "filho.vivo": true, "filho.idade": { "max": 9 } },
     "texto": "{filho} descobriu que {ator} ganha mais colo e passou a fazer birra em horário comercial. Ontem, guardou o bebê-conforto no armário \"para arrumar a sala\".",
     "resumo": "lidou com o ciúme de {filho} {ator:pelo irmão novo|pela irmã nova}",
     "escolhas": [

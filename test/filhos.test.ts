@@ -5,7 +5,9 @@ import { filhosVivos } from '../src/motor/campos.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import { ganhar } from '../src/motor/livro.ts';
 import { criarPersonagem } from '../src/motor/pessoas.ts';
-import { aplicarStorylet, atoresPossiveis } from '../src/motor/storylets.ts';
+import { contexto } from '../src/motor/contexto.ts';
+import { aplicarStorylet, apresentarStorylet, atoresPossiveis, elegivel } from '../src/motor/storylets.ts';
+import { renderizar } from '../src/motor/texto.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
 import { avancarAno, morrer, nascer } from '../src/motor/vida.ts';
 import { conteudoCom } from './apoio.ts';
@@ -77,6 +79,36 @@ describe('vários filhos', () => {
     for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.c.startsWith('filho2.') && m.d !== undefined) soma[m.c.slice(7)] = (soma[m.c.slice(7)] ?? 0) + m.d;
     // A mesma tolerância do teste do livro (test/fundamentos.test.ts): centavos de arredondamento.
     for (const [campo, v] of Object.entries(agora.n)) expect(Math.abs((inicio[campo] ?? 0) + (soma[campo] ?? 0) - v), campo).toBeLessThan(2);
+  });
+});
+
+describe('cada filho com o próprio nome', () => {
+  it('o conteúdo de "filho" fala do filho de quem se trata, e o efeito vai para ele', () => {
+    const e = comFilhos(7, 40, [12, 8]);
+    const [primeiro, segundo] = [e.entidades['filho']!, e.entidades['filho2']!];
+    const antes = { primeiro: primeiro.n['vinculo'], segundo: segundo.n['vinculo'] };
+    const entrada = aplicarStorylet(e, c, c.porId.get('filho_desenho')!, 'filho2', 'npc');
+    expect(entrada.texto).toContain(segundo.nome);
+    expect(entrada.texto).not.toContain(primeiro.nome);
+    expect(segundo.n['vinculo']).toBeGreaterThan(antes.segundo!);
+    expect(primeiro.n['vinculo']).toBe(antes.primeiro);
+  });
+
+  it('o ciúme do irmão novo é do primogênito ainda criança (até 9 anos)', () => {
+    const ciume = c.porId.get('ciumes_do_irmao')!;
+    expect(elegivel(ciume, comFilhos(8, 34, [9, 2]), 'filho2')).toBe(true);
+    expect(elegivel(ciume, comFilhos(8, 40, [14, 2]), 'filho2')).toBe(false);
+  });
+
+  it('o "mais um filho" fala do caçula, não do primeiro', () => {
+    const e = comFilhos(9, 38, [11, 3]);
+    criarPersonagem(e, c, 'amor', []);
+    apresentarStorylet(e, c.porId.get('mais_um_filho')!, 'amor', 'npc', []);
+    expect(e.pendente!.texto).toContain(e.entidades['filho2']!.nome);
+    expect(e.pendente!.texto).not.toContain(e.entidades['filho']!.nome);
+    // Sem o caçula vivo, o caçula é o mais novo que ficou.
+    e.entidades['filho2']!.vivo = false;
+    expect(renderizar('{cacula}', contexto(e))).toBe(e.entidades['filho']!.nome);
   });
 });
 

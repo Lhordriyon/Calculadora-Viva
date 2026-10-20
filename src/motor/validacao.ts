@@ -7,7 +7,7 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, PADROES, PAPEIS, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
@@ -594,7 +594,7 @@ function verificarModelo(
 ): string[] {
   const a = analisarModelo(texto);
   for (const m of a.erros) erro(onde, m);
-  const papeis = new Set<string>([...PAPEIS, ...PARCEIROS, 'empresa']);
+  const papeis = new Set<string>([...PAPEIS, ...PARCEIROS, 'empresa', CACULA]);
   const globais = new Set<string>(VARIAVEIS_GLOBAIS);
   for (const v of a.variaveis) {
     if (v === 'ator') {
@@ -618,7 +618,9 @@ function verificarModelo(
   const novos = new Set<string>([...PAPEIS_NOVOS, 'empresa']);
   const usados = new Set([...a.variaveis.map((v) => separar(v.includes('.') ? v : `${v}.nome`).ent), ...a.concordancias]);
   if (usados.has('ator')) for (const p of atores ?? []) usados.add(p);
-  for (const p of usados) {
+  for (const usado of usados) {
+    // O caçula é um dos filhos: o que garante {filho} garante {cacula}.
+    const p = usado === CACULA ? 'filho' : usado;
     if (!novos.has(p) || criadosAqui.has(p) || atores?.includes(p)) continue;
     if (p === 'empresa') {
       if (!marcasExigidas.has(COM_EMPRESA)) erro(onde, 'usa {empresa} sem exigir a empresa (uma condição como "empresa.valor": true)');
@@ -626,7 +628,7 @@ function verificarModelo(
     }
     const garantidoras = marcasDoPapel.get(p) ?? new Set();
     if (![...marcasExigidas].some((m) => garantidoras.has(m))) {
-      erro(onde, `usa {${p}} sem exigir uma qualidade que garanta esse personagem (${[...garantidoras].join(', ') || 'nenhuma'})`);
+      erro(onde, `usa {${usado}} sem exigir uma qualidade que garanta esse personagem (${[...garantidoras].join(', ') || 'nenhuma'})`);
     }
   }
 

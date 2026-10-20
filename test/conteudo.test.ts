@@ -113,6 +113,12 @@ describe('validador', () => {
     expect(errosCom([{ id: 'eleicao_generica', idade: [20, 60], texto: 'O partido do seu tio ganhou a eleição.', resumo: 'viu uma eleição', efeitos: { felicidade: 1 } }])).not.toMatch(/partido/);
   });
 
+  it('{cacula} é um filho: exige a qualidade que garante os filhos', () => {
+    const cacula = (id: string, condicoes?: Record<string, unknown>) => ({ id, idade: [30, 40], ...(condicoes ? { condicoes } : {}), texto: '{cacula} dormiu no sofá.', resumo: 'viu {cacula} dormir no sofá', efeitos: { felicidade: 1 } });
+    expect(errosCom([cacula('cacula_sem_filho')])).toMatch(/cacula_sem_filho.*usa \{cacula\}/);
+    expect(errosCom([cacula('cacula_com_filho', { marcas: ['pai_mae'] })])).not.toMatch(/cacula_com_filho/);
+  });
+
   it('exige que uma ação mexa em pelo menos dois sistemas', () => {
     const erros = errosCom([{ id: 'acao_rasa', tipo: 'acao', verbo: 'sair', rotulo: 'dar uma volta', idade: [18, 60], texto: 'Deu uma volta.', resumo: 'deu uma volta', efeitos: { felicidade: 1 } }]);
     expect(erros).toMatch(/acao_rasa.*2 sistemas/);

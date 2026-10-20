@@ -17,6 +17,8 @@ export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
  */
 export const FILHOS = ['filho', 'filho2', 'filho3', 'filho4'] as const;
 export const MAX_FILHOS = FILHOS.length;
+/** No texto, {cacula} ({cacula:o|a}) é o filho mais novo; {filho} é sempre o primeiro, e {ator}, o filho de quem se trata. */
+export const CACULA = 'cacula';
 
 export function ehFilho(id: string): boolean {
   return (FILHOS as readonly string[]).includes(id);

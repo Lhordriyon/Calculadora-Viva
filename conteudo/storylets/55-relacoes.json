@@ -300,28 +300,28 @@
       "ator.traco": ["brigao", "rigido", "ambicioso"]
     },
     "afinidade": "briga",
-    "texto": "A escola ligou: {filho} brigou no recreio de novo. Desta vez, o outro estava com o lanche d{filho:ele|ela}.",
-    "resumo": "foi chamad{o|a} na escola por causa de uma briga de {filho}",
+    "texto": "A escola ligou: {ator} brigou no recreio de novo. Desta vez, o outro estava com o lanche d{ator:ele|ela}.",
+    "resumo": "foi chamad{o|a} na escola por causa de uma briga de {ator}",
     "escolhas": [
       {
-        "texto": "Defender {filho}",
-        "resumo": "defendeu {filho} na diretoria",
+        "texto": "Defender {ator}",
+        "resumo": "defendeu {ator} na diretoria",
         "resultado": {
-          "texto": "Você chegou na diretoria com o argumento pronto e o sangue quente. {filho} saiu de lá com uma advertência e a certeza de que você está do lado d{filho:ele|ela}.",
+          "texto": "Você chegou na diretoria com o argumento pronto e o sangue quente. {ator} saiu de lá com uma advertência e a certeza de que você está do lado d{ator:ele|ela}.",
           "efeitos": { "ator.vinculo": 7, "felicidade": -1 }
         }
       },
       {
         "texto": "Botar de castigo",
-        "resumo": "pôs {filho} de castigo pela briga",
+        "resumo": "pôs {ator} de castigo pela briga",
         "resultado": {
-          "texto": "Um mês sem videogame. {filho} chamou você de injust{o|a} e, dez anos depois, de razoável.",
+          "texto": "Um mês sem videogame. {ator} chamou você de injust{o|a} e, dez anos depois, de razoável.",
           "efeitos": { "ator.vinculo": -4, "felicidade": -0.5 }
         }
       },
       {
         "texto": "Procurar uma psicóloga",
-        "resumo": "levou {filho} a uma psicóloga",
+        "resumo": "levou {ator} a uma psicóloga",
         "resultado": {
           "texto": "Descobriram que o problema não era o lanche. Levou tempo, mas as brigas diminuíram.",
           "efeitos": { "dinheiro": -2400, "ator.vinculo": 4, "felicidade": 0.5 }
@@ -341,32 +341,32 @@
     },
     "tensao": 2,
     "valores": { "mesada": 1500 },
-    "texto": "{filho} passou numa universidade federal em outra cidade. Falta pagar a república, o mercado e a passagem para o Natal: uns {mesada} por mês.",
-    "resumo": "ajudou ou não {filho} a estudar em outra cidade",
+    "texto": "{ator} passou numa universidade federal em outra cidade. Falta pagar a república, o mercado e a passagem para o Natal: uns {mesada} por mês.",
+    "resumo": "ajudou ou não {ator} a estudar em outra cidade",
     "escolhas": [
       {
         "texto": "Bancar tudo",
-        "resumo": "bancou a faculdade de {filho} em outra cidade",
+        "resumo": "bancou a faculdade de {ator} em outra cidade",
         "condicoes": { "patrimonio": { "min": 20000 } },
         "bloqueio": "não sobra {mesada} por mês",
         "resultado": {
-          "texto": "Você mandou o Pix todo dia 5 por quatro anos. {filho} mandou foto da formatura com uma faixa escrita \"isso é seu também\".",
+          "texto": "Você mandou o Pix todo dia 5 por quatro anos. {ator} mandou foto da formatura com uma faixa escrita \"isso é seu também\".",
           "efeitos": { "dinheiro": -18000, "ator.vinculo": 10, "felicidade": 3 }
         }
       },
       {
         "texto": "Ajudar com metade",
-        "resumo": "ajudou {filho} com metade das despesas",
+        "resumo": "ajudou {ator} com metade das despesas",
         "resultado": {
-          "texto": "Metade você, metade um estágio. {filho} aprendeu a cozinhar arroz em panela de pressão e a negociar aluguel.",
+          "texto": "Metade você, metade um estágio. {ator} aprendeu a cozinhar arroz em panela de pressão e a negociar aluguel.",
           "efeitos": { "dinheiro": -9000, "ator.vinculo": 5, "felicidade": 1 }
         }
       },
       {
         "texto": "Não dá",
-        "resumo": "não conseguiu bancar a faculdade de {filho}",
+        "resumo": "não conseguiu bancar a faculdade de {ator}",
         "resultado": {
-          "texto": "{filho} arranjou dois estágios e um colchão emprestado, e nunca reclamou. Você reclamou por el{filho:e|a}.",
+          "texto": "{ator} arranjou dois estágios e um colchão emprestado, e nunca reclamou. Você reclamou por el{ator:e|a}.",
           "efeitos": { "ator.vinculo": -4, "felicidade": -2 }
         }
       }
@@ -383,32 +383,32 @@
       "ator.idade": { "min": 22, "max": 45 },
       "ator.traco": ["gastador", "ambicioso", "piadista"]
     },
-    "texto": "{filho} quer abrir uma hamburgueria artesanal com pão de fermentação natural e precisa de um investidor-anjo. O anjo é você.",
-    "resumo": "foi chamad{o|a} para investir no negócio de {filho}",
+    "texto": "{ator} quer abrir uma hamburgueria artesanal com pão de fermentação natural e precisa de um investidor-anjo. O anjo é você.",
+    "resumo": "foi chamad{o|a} para investir no negócio de {ator}",
     "escolhas": [
       {
         "texto": "Investir",
-        "resumo": "investiu na hamburgueria de {filho}",
+        "resumo": "investiu na hamburgueria de {ator}",
         "condicoes": { "patrimonio": { "min": 25000 } },
         "bloqueio": "não há R$ 20 mil para arriscar",
         "efeitos": { "dinheiro": -20000 },
         "teste": { "chance": 0.4 },
         "sucesso": {
-          "texto": "A fila dobrou a esquina no primeiro mês. {filho} devolveu o dinheiro com juros e um combo vitalício.",
-          "resumo": "investiu na hamburgueria de {filho}, que deu certo",
+          "texto": "A fila dobrou a esquina no primeiro mês. {ator} devolveu o dinheiro com juros e um combo vitalício.",
+          "resumo": "investiu na hamburgueria de {ator}, que deu certo",
           "efeitos": { "dinheiro": 32000, "ator.vinculo": 10, "felicidade": 3 }
         },
         "fracasso": {
-          "texto": "O pão era ótimo; o aluguel, maior. Fechou em oito meses. {filho} nunca esqueceu que você acreditou.",
-          "resumo": "perdeu dinheiro na hamburgueria de {filho}",
+          "texto": "O pão era ótimo; o aluguel, maior. Fechou em oito meses. {ator} nunca esqueceu que você acreditou.",
+          "resumo": "perdeu dinheiro na hamburgueria de {ator}",
           "efeitos": { "ator.vinculo": 8, "felicidade": -2 }
         }
       },
       {
         "texto": "Dizer não",
-        "resumo": "não investiu no negócio de {filho}",
+        "resumo": "não investiu no negócio de {ator}",
         "resultado": {
-          "texto": "{filho} disse que entendia. Abriu com o dinheiro de um amigo. Nas festas, ninguém toca no assunto.",
+          "texto": "{ator} disse que entendia. Abriu com o dinheiro de um amigo. Nas festas, ninguém toca no assunto.",
           "efeitos": { "ator.vinculo": -8 }
         }
       }
@@ -426,7 +426,7 @@
     },
     "repetivel": true,
     "intervalo": 12,
-    "texto": "No almoço de domingo, {filho} imitou você com uma precisão ofensiva: o jeito de atender o telefone, o \"[ô de casa|bença|pois não]\", tudo. A mesa inteira chorou de rir.",
+    "texto": "No almoço de domingo, {ator} imitou você com uma precisão ofensiva: o jeito de atender o telefone, o \"[ô de casa|bença|pois não]\", tudo. A mesa inteira chorou de rir.",
     "resumo": "{ator} imitou você no almoço de domingo",
     "efeitos": { "felicidade": 1.5, "ator.vinculo": 3 }
   },
@@ -446,7 +446,7 @@
         { "texto": "um sol de óculos escuros" }
       ]
     },
-    "texto": "{filho} fez um desenho da família para a escola. Você aparece maior que a casa, sorrindo, com {pet_ou_nada}.",
+    "texto": "{ator} fez um desenho da família para a escola. Você aparece maior que a casa, sorrindo, com {pet_ou_nada}.",
     "resumo": "{ator} desenhou você maior que a casa",
     "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
   },
@@ -457,12 +457,12 @@
     "idade": [20, 60],
     "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 1, "max": 10 }, "ator.traco": "fragil" },
     "tensao": 2,
-    "texto": "{filho} vive no pronto-socorro: bronquite, alergia, febre de madrugada. A pediatra já atende você pelo nome.",
-    "resumo": "cuidou da saúde frágil de {filho}",
+    "texto": "{ator} vive no pronto-socorro: bronquite, alergia, febre de madrugada. A pediatra já atende você pelo nome.",
+    "resumo": "cuidou da saúde frágil de {ator}",
     "escolhas": [
       {
         "texto": "Fazer um plano de saúde",
-        "resumo": "fez um plano de saúde para {filho}",
+        "resumo": "fez um plano de saúde para {ator}",
         "condicoes": { "renda": { "min": 30000 } },
         "bloqueio": "o plano não cabe na renda",
         "resultado": {
@@ -472,9 +472,9 @@
       },
       {
         "texto": "Contar com o posto e o SUS",
-        "resumo": "contou com o posto de saúde para cuidar de {filho}",
+        "resumo": "contou com o posto de saúde para cuidar de {ator}",
         "resultado": {
-          "texto": "A fila é longa, mas a pediatra do posto virou quase da família. {filho} cresceu e a bronquite foi junto, aos poucos.",
+          "texto": "A fila é longa, mas a pediatra do posto virou quase da família. {ator} cresceu e a bronquite foi junto, aos poucos.",
           "efeitos": { "ator.saude": 5, "felicidade": -1, "ator.vinculo": 3 }
         }
       }
@@ -486,12 +486,12 @@
     "ator": ["filho"],
     "idade": [45, 95],
     "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 21 }, "ator.traco": ["ausente", "ambicioso"] },
-    "texto": "{filho} se mudou para outro país e manda foto de neve, de mercado caro e de um apartamento do tamanho do seu banheiro.",
-    "resumo": "viu {filho} ir morar fora do país",
+    "texto": "{ator} se mudou para outro país e manda foto de neve, de mercado caro e de um apartamento do tamanho do seu banheiro.",
+    "resumo": "viu {ator} ir morar fora do país",
     "escolhas": [
       {
         "texto": "Juntar e ir visitar",
-        "resumo": "foi visitar {filho} no exterior",
+        "resumo": "foi visitar {ator} no exterior",
         "condicoes": { "dinheiro": { "min": 9000 } },
         "bloqueio": "a passagem custa uns R$ 9 mil",
         "resultado": {
@@ -501,9 +501,9 @@
       },
       {
         "texto": "Videochamada aos domingos",
-        "resumo": "manteve videochamadas de domingo com {filho}",
+        "resumo": "manteve videochamadas de domingo com {ator}",
         "resultado": {
-          "texto": "Domingo, onze da manhã, o celular apoiado na garrafa de café. {filho} mostra a neve; você mostra o almoço.",
+          "texto": "Domingo, onze da manhã, o celular apoiado na garrafa de café. {ator} mostra a neve; você mostra o almoço.",
           "efeitos": { "ator.vinculo": 3 }
         }
       }
@@ -515,12 +515,12 @@
     "ator": ["filho"],
     "idade": [42, 90],
     "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 18, "max": 30 }, "ator.traco": "devoto" },
-    "texto": "{filho} anunciou que vai passar dois anos numa missão da igreja no interior do Amazonas, sem internet e com muita fé.",
-    "resumo": "viu {filho} partir para uma missão",
+    "texto": "{ator} anunciou que vai passar dois anos numa missão da igreja no interior do Amazonas, sem internet e com muita fé.",
+    "resumo": "viu {ator} partir para uma missão",
     "escolhas": [
       {
         "texto": "Abençoar a viagem",
-        "resumo": "apoiou a missão de {filho}",
+        "resumo": "apoiou a missão de {ator}",
         "resultado": {
           "texto": "Você mandou um terço, protetor solar e uma lanterna. As cartas chegavam meses depois, cheias de rio e de gente.",
           "efeitos": { "ator.vinculo": 8, "felicidade": 1 }
@@ -528,9 +528,9 @@
       },
       {
         "texto": "Tentar convencer a ficar",
-        "resumo": "tentou convencer {filho} a desistir da missão",
+        "resumo": "tentou convencer {ator} a desistir da missão",
         "resultado": {
-          "texto": "{filho} foi mesmo assim. Voltou dois anos depois, mais magr{filho:o|a} e mais em paz, e demorou para perdoar.",
+          "texto": "{ator} foi mesmo assim. Voltou dois anos depois, mais magr{ator:o|a} e mais em paz, e demorou para perdoar.",
           "efeitos": { "ator.vinculo": -7 }
         }
       }
@@ -547,7 +547,7 @@
       "ator.idade": { "min": 18, "max": 26 },
       "ator.traco": ["trabalhador", "mao_fechada", "rigido", "ambicioso"]
     },
-    "texto": "{filho} recebeu o primeiro salário com carteira assinada e fez questão de pagar o almoço. Pediu a sobremesa mais cara só para mostrar que podia.",
+    "texto": "{ator} recebeu o primeiro salário com carteira assinada e fez questão de pagar o almoço. Pediu a sobremesa mais cara só para mostrar que podia.",
     "resumo": "{ator} pagou o almoço com o primeiro salário",
     "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
   },
@@ -563,22 +563,22 @@
       "semMarcas": ["investidor"]
     },
     "peso": 3,
-    "texto": "{filho} mandou uma planilha \"para a sua velhice\": quanto investir, onde, e uma aba chamada \"pare de comprar coisa na TV\".",
-    "resumo": "recebeu de {filho} um plano para a velhice",
+    "texto": "{ator} mandou uma planilha \"para a sua velhice\": quanto investir, onde, e uma aba chamada \"pare de comprar coisa na TV\".",
+    "resumo": "recebeu de {ator} um plano para a velhice",
     "escolhas": [
       {
         "texto": "Seguir a planilha",
-        "resumo": "seguiu o plano de investimentos de {filho}",
+        "resumo": "seguiu o plano de investimentos de {ator}",
         "condicoes": { "dinheiro": { "min": 15000 } },
         "bloqueio": "não há dinheiro parado para investir",
         "resultado": {
-          "texto": "Você moveu o dinheiro parado para onde {filho} mandou. Rende mais que a poupança e menos que a sua desconfiança.",
+          "texto": "Você moveu o dinheiro parado para onde {ator} mandou. Rende mais que a poupança e menos que a sua desconfiança.",
           "efeitos": { "investir": 15000, "ator.vinculo": 5, "marcas": ["investidor"] }
         }
       },
       {
         "texto": "Agradecer e guardar",
-        "resumo": "agradeceu a planilha de {filho} e fez do seu jeito",
+        "resumo": "agradeceu a planilha de {ator} e fez do seu jeito",
         "resultado": {
           "texto": "Você imprimiu a planilha, guardou numa pasta e continuou fazendo exatamente o que fazia.",
           "efeitos": { "ator.vinculo": -2, "felicidade": 0.5 }

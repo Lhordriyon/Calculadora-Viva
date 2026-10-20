@@ -282,6 +282,11 @@ export function filhosVivos(e: EstadoVida): Entidade[] {
     .sort((a, b) => a.nascimento! - b.nascimento!);
 }
 
+/** O filho mais novo (vivo, se houver): quem o texto chama de {cacula}. Sem filho nenhum, o papel "filho". */
+export function caculaDe(e: EstadoVida): string {
+  return filhosVivos(e).at(-1)?.id ?? filhosDe(e).at(-1)?.id ?? 'filho';
+}
+
 export function idadeDe(e: EstadoVida, en: Entidade): number {
   if (en.nascimento === undefined) return 0;
   return (en.vivo === false && en.morte !== undefined ? en.morte : e.ano) - en.nascimento;

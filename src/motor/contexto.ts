@@ -3,8 +3,9 @@
  * ({mae.ocupacao}, {ator.quem}, {lugar.nome}), nomes de personagens ({mae},
  * {ator}), valores do storylet ({preco}) e trechos escolhidos pelo estado.
  */
-import { defCampo, entidadeDe, ler, patrimonioTotal, separar } from './campos.ts';
+import { caculaDe, defCampo, entidadeDe, ler, patrimonioTotal, separar } from './campos.ts';
 import { atende } from './condicoes.ts';
+import { CACULA } from './constantes.ts';
 import type { Storylet } from './esquema.ts';
 import { formatarDinheiro, renderizar, type ContextoTexto } from './texto.ts';
 import type { EstadoVida, Genero } from './tipos.ts';
@@ -35,7 +36,7 @@ function formatar(ent: string, campo: string, v: number | string | boolean | und
 
 export function contexto(e: EstadoVida, op: OpcoesContexto = {}): ContextoTexto {
   const eu = e.entidades['eu']!;
-  const quem = (ent: string): string => op.apelidos?.[ent] ?? entidadeDe(ent, op.ator);
+  const quem = (ent: string): string => op.apelidos?.[ent] ?? (ent === CACULA ? caculaDe(e) : entidadeDe(ent, op.ator));
   const ctx: ContextoTexto = {
     rng: e.rng,
     genero: eu.genero ?? 'm',

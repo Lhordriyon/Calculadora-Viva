@@ -774,24 +774,24 @@
     "tipo": "npc",
     "ator": ["filho"],
     "idade": [28, 80],
-    "condicoes": { "marcas": ["pai_mae"], "filho.idade": { "min": 13, "max": 17 } },
-    "texto": "{filho} está na fase de bater porta. [Pintou o cabelo de verde.|Passa o dia trancad{filho:o|a} no quarto.|Quer largar a escola para virar gamer profissional.]",
-    "resumo": "teve uma fase difícil com {filho} adolescente",
+    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 13, "max": 17 } },
+    "texto": "{ator} está na fase de bater porta. [Pintou o cabelo de verde.|Passa o dia trancad{ator:o|a} no quarto.|Quer largar a escola para virar gamer profissional.]",
+    "resumo": "teve uma fase difícil com {ator} adolescente",
     "escolhas": [
       {
         "texto": "Conversar sem sermão",
-        "resumo": "conversou com {filho} sem dar sermão",
+        "resumo": "conversou com {ator} sem dar sermão",
         "resultado": {
-          "texto": "Você ouviu mais do que falou. {filho} contou coisas que você não sabia e algumas que preferia não saber.",
-          "efeitos": { "filho.vinculo": 10, "felicidade": 1 }
+          "texto": "Você ouviu mais do que falou. {ator} contou coisas que você não sabia e algumas que preferia não saber.",
+          "efeitos": { "ator.vinculo": 10, "felicidade": 1 }
         }
       },
       {
         "texto": "Botar de castigo",
-        "resumo": "pôs {filho} de castigo",
+        "resumo": "pôs {ator} de castigo",
         "resultado": {
           "texto": "O castigo funcionou por uma semana. A porta continuou batendo, só que mais baixo.",
-          "efeitos": { "filho.vinculo": -8, "felicidade": -1 }
+          "efeitos": { "ator.vinculo": -8, "felicidade": -1 }
         }
       }
     ]
@@ -803,31 +803,31 @@
     "idade": [40, 95],
     "condicoes": {
       "marcas": ["pai_mae"],
-      "filho.idade": { "min": 20 },
-      "filho.dinheiro": { "max": 60000 },
+      "ator.idade": { "min": 20 },
+      "ator.dinheiro": { "max": 60000 },
       "patrimonio": { "min": 20000 }
     },
-    "texto": "{filho} está tentando a vida e o dinheiro não fecha. Pediu ajuda [para a entrada de um apartamento|para pagar a faculdade|para abrir um pequeno negócio].",
+    "texto": "{ator} está tentando a vida e o dinheiro não fecha. Pediu ajuda [para a entrada de um apartamento|para pagar a faculdade|para abrir um pequeno negócio].",
     "resumo": "{ator.quem} pediu ajuda para começar a vida",
     "escolhas": [
       {
         "texto": "Ajudar com uma boa quantia",
-        "resumo": "ajudou {filho} a começar a vida",
+        "resumo": "ajudou {ator} a começar a vida",
         "resultado": {
-          "texto": "Você mandou {transferido}. {filho} chorou no telefone e prometeu nunca mais pedir. Vai pedir.",
+          "texto": "Você mandou {transferido}. {ator} chorou no telefone e prometeu nunca mais pedir. Vai pedir.",
           "efeitos": {
             "transferir": { "de": "eu", "para": "ator", "fracao": 0.2, "max": 80000 },
-            "filho.vinculo": 12,
+            "ator.vinculo": 12,
             "felicidade": 2
           }
         }
       },
       {
         "texto": "Ensinar a se virar",
-        "resumo": "disse para {filho} se virar sozinh{filho:o|a}",
+        "resumo": "disse para {ator} se virar sozinh{ator:o|a}",
         "resultado": {
-          "texto": "\"Eu comecei do zero\", você disse. {filho} ouviu, engoliu e foi à luta.",
-          "efeitos": { "filho.vinculo": -8, "felicidade": -1 }
+          "texto": "\"Eu comecei do zero\", você disse. {ator} ouviu, engoliu e foi à luta.",
+          "efeitos": { "ator.vinculo": -8, "felicidade": -1 }
         }
       }
     ]
@@ -837,35 +837,35 @@
     "tipo": "npc",
     "ator": ["filho"],
     "idade": [65, 115],
-    "condicoes": { "marcas": ["pai_mae"], "filho.vinculo": { "min": 55 } },
+    "condicoes": { "marcas": ["pai_mae"], "ator.vinculo": { "min": 55 } },
     "afinidade": "ajuda",
     "repetivel": true,
     "intervalo": 6,
-    "texto": "{filho} passou a [te levar às consultas|ligar todo dia às sete|organizar os remédios numa caixinha com os dias da semana]. Os papéis se inverteram sem ninguém avisar.",
+    "texto": "{ator} passou a [te levar às consultas|ligar todo dia às sete|organizar os remédios numa caixinha com os dias da semana]. Os papéis se inverteram sem ninguém avisar.",
     "resumo": "{ator.quem} passou a cuidar de você",
-    "efeitos": { "saude": 2, "felicidade": 2, "filho.vinculo": 3 }
+    "efeitos": { "saude": 2, "felicidade": 2, "ator.vinculo": 3 }
   },
   {
     "id": "filho_distante",
     "tipo": "npc",
     "ator": ["filho"],
     "idade": [50, 110],
-    "condicoes": { "marcas": ["pai_mae"], "filho.vinculo": { "max": 45 } },
+    "condicoes": { "marcas": ["pai_mae"], "ator.vinculo": { "max": 45 } },
     "peso": 3,
-    "texto": "{filho} quase não liga. As visitas viraram mensagens; as mensagens viraram figurinhas de bom-dia.",
-    "resumo": "ficou longe de {filho}",
+    "texto": "{ator} quase não liga. As visitas viraram mensagens; as mensagens viraram figurinhas de bom-dia.",
+    "resumo": "ficou longe de {ator}",
     "escolhas": [
       {
-        "texto": "Ir até {filho}",
-        "resumo": "foi visitar {filho} para reaproximar",
+        "texto": "Ir até {ator}",
+        "resumo": "foi visitar {ator} para reaproximar",
         "resultado": {
-          "texto": "Você apareceu sem avisar, com bolo. {filho} ficou sem graça e depois muito feliz.",
-          "efeitos": { "dinheiro": -800, "filho.vinculo": 15, "felicidade": 2 }
+          "texto": "Você apareceu sem avisar, com bolo. {ator} ficou sem graça e depois muito feliz.",
+          "efeitos": { "dinheiro": -800, "ator.vinculo": 15, "felicidade": 2 }
         }
       },
       {
         "texto": "Respeitar a distância",
-        "resumo": "respeitou a distância de {filho}",
+        "resumo": "respeitou a distância de {ator}",
         "resultado": {
           "texto": "Cada um com a sua vida. Você aprendeu a gostar das figurinhas.",
           "efeitos": { "felicidade": -2 }
