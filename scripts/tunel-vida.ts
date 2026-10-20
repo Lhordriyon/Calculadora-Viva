@@ -505,7 +505,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     mudancasTotal += n;
     if (h.causa === 'escolha' || h.causa === 'acao') mudancasJogador += n;
   }
-  const pontos = pontosDeVirada(e);
+  const pontos = pontosDeVirada(e, c);
   const demissoes = e.historico.filter((h) => h.ref === 'demissao');
   const daFortuna = jogadasDaVida(e);
   return {

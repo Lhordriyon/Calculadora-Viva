@@ -1,11 +1,13 @@
 /**
  * Pontos de virada saem do livro-razão: cada entrada guarda quais entradas
  * anteriores a tornaram possível (qualidades consultadas, agendamentos), o
- * que forma um grafo. A causa com mais consequências, pesadas pelo impacto,
- * é a que mais mudou a vida. Causas podem ser do jogador (escolha, ação) ou
- * do mundo (o pai que perdeu o emprego, a avó que morreu).
+ * que forma um grafo. A causa com mais consequências diferentes, pesadas pelo
+ * impacto e pelo que conta a vida (o marco, o cargo, a empresa, o filho, o
+ * casamento, a morte), é a que mais mudou a vida; a rotina conta uma vez.
+ * Causas podem ser do jogador (escolha, ação) ou do mundo (o pai que perdeu o
+ * emprego, a avó que morreu).
  */
-import { patrimonioTotal } from './campos.ts';
+import { defCampo, patrimonioTotal } from './campos.ts';
 import { herdeiroPossivel, type Parentesco } from './herdeiro.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
@@ -55,32 +57,94 @@ const PATRIMONIO = new Set(['eu.dinheiro', 'eu.renda_fixa', 'eu.acoes', 'eu.fii'
 /** O valor de qualquer empresa do grupo (trocar duas de lugar não mexe no patrimônio: as variações se anulam). */
 const VALOR_DE_EMPRESA = /^empresa\d*\.valor$/;
 
-/** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda, vínculos, morte. */
+/**
+ * O dinheiro pesa pelo logaritmo: no patrimônio, R$ 5 mil valem perto de 1 (como um ponto de saúde), R$ 1 milhão perto
+ * de 16 e R$ 1 bilhão perto de 43. Em linha reta, a campanha de R$ 5 milhões valia mil pontos de saúde, e o cartão de
+ * quem é rico contava só o dinheiro: o filho, o casamento e o marco não tinham como pesar.
+ */
+function pesoDoDinheiro(valor: number, porPonto: number, escala: number): number {
+  return (escala / porPonto) * Math.log(1 + Math.abs(valor) / escala);
+}
+
+/** Quanto uma entrada mexeu na vida: atributos, patrimônio, renda e custo do ano, vínculos, morte. */
 export function impacto(h: Entrada): number {
   let x = 0;
   let patrimonio = 0;
+  let fluxo = 0;
   for (const m of h.mudancas ?? []) {
     if (m.d === undefined || m.q !== undefined) {
       if (m.q !== undefined) x += 0.5;
       continue;
     }
     if (PATRIMONIO.has(m.c) || VALOR_DE_EMPRESA.test(m.c)) patrimonio += m.c === 'eu.divida' ? -m.d : m.d;
-    else if (m.c === 'eu.renda') x += Math.abs(m.d) / 6000;
-    else if (m.c.startsWith('eu.')) x += Math.abs(m.d);
-    else if (m.c.endsWith('.vinculo')) x += Math.abs(m.d) / 3;
+    else if (m.c.startsWith('eu.')) {
+      // A renda e o custo do ano (os outros campos em reais de quem joga) são dinheiro também, não pontos de atributo.
+      if (defCampo('eu', m.c.slice(3))?.reais) fluxo += Math.abs(m.d);
+      else x += Math.abs(m.d);
+    } else if (m.c.endsWith('.vinculo')) x += Math.abs(m.d) / 3;
   }
-  x += Math.abs(patrimonio) / 5000;
+  // R$ 6 mil a mais (ou a menos) por ano valem perto de 1.
+  x += pesoDoDinheiro(patrimonio, 5000, 20_000) + pesoDoDinheiro(fluxo, 6000, 12_000);
   if (h.tipo === 'morte') x += 30;
   if (h.ref === 'regra:faleceu') x += 10;
   return x;
 }
 
-/** A consequência que melhor conta a história: pesa o impacto e a distância no tempo. */
-function melhorConsequencia(origem: Entrada, descendentes: Entrada[]): Entrada {
+/** Ganhar ou perder uma eleição, o fim do mandato e o que muda a empresa (abrir, vender, juntar, abrir o capital). */
+const REFS_QUE_CONTAM = new Set(['poder:candidatarCargo', 'poder:fim_do_mandato', 'empresa:abrir', 'empresa:vender', 'empresa:fundir', 'empresa:abrirCapital']);
+/** Qualidades que, quando chegam, mudam a vida: o casamento, o cargo, a coroa, o regime. */
+const QUALIDADES_QUE_CONTAM = new Set(['eu.casado', 'eu.politico', 'eu.monarca', 'eu.ditador']);
+const EMPRESA_FUNDADA = /^empresa\d*\.fundada$/;
+const DA_EMPRESA = /^empresa\d*\./;
+
+/**
+ * O que conta a vida, e não a rotina: o marco (o ENEM, o primeiro emprego), o cargo (a eleição ganha ou perdida, a
+ * posse, a coroa), a empresa, o filho que nasce, o casamento, a morte de alguém próximo e a de quem joga. Sem o
+ * conteúdo, o marco não se reconhece; o resto se lê na própria entrada.
+ */
+export function contaAVida(h: Entrada, c?: Conteudo): boolean {
+  if (h.tipo === 'morte') return true;
+  if (h.ref === undefined) return false;
+  if (h.ref === 'regra:faleceu' || REFS_QUE_CONTAM.has(h.ref)) return true;
+  if (c && (h.tipo === 'evento' || h.tipo === 'acao') && c.porId.get(h.ref)?.marco === true) return true;
+  // O que acontece com a empresa (o produto que viraliza, o concorrente, a crise) é a história dela; tocá-la todo ano, não.
+  const historiaDaEmpresa = h.tipo === 'evento' || h.tipo === 'npc';
+  for (const m of h.mudancas ?? []) {
+    if (m.q === 1 && (QUALIDADES_QUE_CONTAM.has(m.c) || EMPRESA_FUNDADA.test(m.c))) return true;
+    if (m.c === 'eu.filhos' && (m.d ?? 0) > 0) return true;
+    if (m.c === 'eu.cargo' && m.t) return true;
+    if (historiaDaEmpresa && DA_EMPRESA.test(m.c) && (m.d ?? 0) !== 0) return true;
+  }
+  return false;
+}
+
+/** Quanto a mais pesa, no cartão, uma consequência que conta a vida (como um impacto de 20, no peso da causa). */
+const PESO_DO_QUE_CONTA = 4;
+/** Uma causa que já é, ela mesma, um desses momentos (o marco, a eleição, o casamento) pesa esta vez mais. */
+const CAUSA_QUE_CONTA = 1.5;
+
+/**
+ * O mesmo acontecimento que se repete (a pelada de toda semana, o aporte de todo ano, a reeleição para o mesmo cargo)
+ * é uma chave só: storylet e papel (ou a operação), mais a escolha ou o resumo sem números.
+ */
+function chaveDe(h: Entrada): string {
+  return `${h.instancia ?? h.ref ?? `#${h.id}`}|${(h.escolha?.resumo ?? h.resumo ?? '').replace(/\d[\d.,]*/g, '#')}`;
+}
+
+/** O que o cartão lê de cada entrada, calculado uma vez por vida (uma entrada descende de muitas causas). */
+interface Leitura {
+  impacto: number;
+  conta: boolean;
+  chave: string;
+}
+
+/** A consequência que melhor conta a história: pesa o impacto, o que conta a vida e a distância no tempo. */
+function melhorConsequencia(origem: Entrada, descendentes: Entrada[], ler: (h: Entrada) => Leitura): Entrada {
   let melhor = descendentes[0]!;
   let nota = -Infinity;
   for (const d of descendentes) {
-    const n = (1 + impacto(d) / 3) * (1 + (d.idade - origem.idade) / 25);
+    const l = ler(d);
+    const n = (1 + l.impacto / 3 + (l.conta ? PESO_DO_QUE_CONTA : 0)) * (1 + (d.idade - origem.idade) / 25);
     if (n > nota || (n === nota && d.idade > melhor.idade)) {
       melhor = d;
       nota = n;
@@ -130,9 +194,54 @@ function consequenciaDe(h: Entrada): string {
   return h.resumo ?? h.texto;
 }
 
-export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
+/**
+ * O peso de uma causa: cada consequência diferente soma uma vez (a ação que se repete todo ano conta uma vez só, pela
+ * vez que mais mexeu), e o que conta a vida (contaAVida) soma mais. A causa que mais alimentou um hábito do que mudou
+ * coisas diferentes pesa menos: o peso vai vezes a raiz quarta da variedade (consequências diferentes / todas). A pelada
+ * de 30 anos com duas histórias fica com 0,55 do peso; o ENEM com quatro anos de faculdade e três histórias, com 0,87.
+ */
+function pesoDasConsequencias(lista: Entrada[], ler: (h: Entrada) => Leitura): number {
+  const porChave = new Map<string, number>();
+  for (const d of lista) {
+    const l = ler(d);
+    const p = 1 + l.impacto / 5 + (l.conta ? PESO_DO_QUE_CONTA : 0);
+    if (p > (porChave.get(l.chave) ?? 0)) porChave.set(l.chave, p);
+  }
+  let soma = 0;
+  for (const p of porChave.values()) soma += p;
+  return soma * Math.pow(porChave.size / lista.length, 0.25);
+}
+
+/** Três vezes a mesma coisa (a pelada, o aporte, a hora extra) já é hábito: a rotina não é a consequência que conta a história. */
+const VEZES_DO_HABITO = 3;
+
+/** O que descende da causa, sem a rotina: o que se repetiu VEZES_DO_HABITO vezes ou mais e não conta a vida sai. */
+function semARotina(lista: Entrada[], ler: (h: Entrada) => Leitura): Entrada[] {
+  const vezes = new Map<string, number>();
+  for (const d of lista) {
+    const l = ler(d);
+    if (!l.conta) vezes.set(l.chave, (vezes.get(l.chave) ?? 0) + 1);
+  }
+  return lista.filter((d) => {
+    const l = ler(d);
+    return l.conta || vezes.get(l.chave)! < VEZES_DO_HABITO;
+  });
+}
+
+/**
+ * Os pontos de virada da vida. Com o conteúdo, os marcos pesam como marcos (resumirVida e o túnel passam). A
+ * consequência mostrada é a que conta a história, não a rotina: a pelada de toda semana só aparece se a causa não
+ * deixou mais nada.
+ */
+export function pontosDeVirada(e: EstadoVida, c?: Conteudo, limite = 3): PontoDeVirada[] {
   const porId = new Map(e.historico.map((h) => [h.id, h]));
   const desc = descendentes(e.historico);
+  const leituras = new Map<number, Leitura>();
+  const ler = (h: Entrada): Leitura => {
+    let l = leituras.get(h.id);
+    if (!l) leituras.set(h.id, (l = { impacto: impacto(h), conta: contaAVida(h, c), chave: chaveDe(h) }));
+    return l;
+  };
   const candidatos: { origem: Entrada; frase: { texto: string; doJogador: boolean }; ultima: Entrada; total: number; peso: number; alcance: number }[] = [];
   for (const en of e.historico) {
     const f = frase(en);
@@ -142,26 +251,37 @@ export function pontosDeVirada(e: EstadoVida, limite = 3): PontoDeVirada[] {
     const lista = [...ids].map((id) => porId.get(id)).filter((d): d is Entrada => d !== undefined && d.tipo !== 'regra');
     if (lista.length === 0) continue;
     const alcance = Math.max(...lista.map((d) => d.idade)) - en.idade;
-    // Causas do jogador pesam um pouco mais: o cartão conta a vida que ele causou.
-    const peso = lista.reduce((s, d) => s + 1 + impacto(d) / 5, 0) * (f.doJogador ? 1.25 : 1);
-    candidatos.push({ origem: en, frase: f, ultima: melhorConsequencia(en, lista), total: lista.length, peso, alcance });
+    // Causas do jogador pesam um pouco mais: o cartão conta a vida que ele causou; e a causa que já é um momento da vida, mais ainda.
+    const peso = pesoDasConsequencias(lista, ler) * (f.doJogador ? 1.25 : 1) * (ler(en).conta ? CAUSA_QUE_CONTA : 1);
+    const historia = semARotina(lista, ler);
+    candidatos.push({ origem: en, frase: f, ultima: melhorConsequencia(en, historia.length > 0 ? historia : lista, ler), total: lista.length, peso, alcance });
   }
   // Mais peso primeiro; empate, a que alcançou mais longe.
   candidatos.sort((a, b) => b.peso - a.peso || b.alcance - a.alcance || a.origem.idade - b.origem.idade);
 
   const escolhidos: PontoDeVirada[] = [];
-  const consequenciasUsadas = new Set<number>();
-  for (const c of candidatos) {
-    if (consequenciasUsadas.has(c.ultima.id)) continue;
-    consequenciasUsadas.add(c.ultima.id);
+  const origens: Entrada[] = [];
+  const usadas = new Set<number>();
+  const causasUsadas = new Set<string>();
+  // Um ponto por história: a mesma escolha feita de novo (o voto de cada eleição), o mesmo passo da mesma cadeia (a
+  // reeleição, que descende da eleição) ou o elo seguinte de um ponto já contado (a faculdade que deu a formatura, a
+  // formatura que deu o emprego) não toma o lugar de outra parte da vida.
+  const repete = (o: Entrada): boolean =>
+    origens.some((x) => ler(x).chave === ler(o).chave || (x.ref !== undefined && x.ref === o.ref && (desc.get(x.id)?.has(o.id) || desc.get(o.id)?.has(x.id))));
+  for (const cand of candidatos) {
+    if (usadas.has(cand.ultima.id) || usadas.has(cand.origem.id) || causasUsadas.has(cand.frase.texto) || repete(cand.origem)) continue;
+    usadas.add(cand.ultima.id);
+    usadas.add(cand.origem.id);
+    causasUsadas.add(cand.frase.texto);
+    origens.push(cand.origem);
     escolhidos.push({
-      origemId: c.origem.id,
-      idade: c.origem.idade,
-      causa: c.frase.texto,
-      doJogador: c.frase.doJogador,
-      consequenciaIdade: c.ultima.idade,
-      consequencia: consequenciaDe(c.ultima),
-      total: c.total,
+      origemId: cand.origem.id,
+      idade: cand.origem.idade,
+      causa: cand.frase.texto,
+      doJogador: cand.frase.doJogador,
+      consequenciaIdade: cand.ultima.idade,
+      consequencia: consequenciaDe(cand.ultima),
+      total: cand.total,
     });
     if (escolhidos.length >= limite) break;
   }
@@ -203,7 +323,7 @@ export function descreverOrigem(classe: string | undefined, familia: string | un
 }
 
 export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
-  const pontos = pontosDeVirada(e);
+  const pontos = pontosDeVirada(e, c);
   const ctx = { ...contexto(e), rng: criarRng(misturar(e.semente, 0x5eed)) };
   const eu = e.entidades['eu']!;
 
