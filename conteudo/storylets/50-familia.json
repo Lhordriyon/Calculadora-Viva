@@ -108,7 +108,7 @@
     "tensao": 3,
     "repetivel": true,
     "intervalo": 4,
-    "texto": "{ator.quem} está internad{ator:o|a}. [O médico falou em tratamento longo.|A fila do exame no SUS é de quatro meses.|A família inteira se revezou no hospital.] Todo mundo olha para você.",
+    "texto": "{ator.quem} está internad{ator:o|a}. [O médico falou em tratamento longo.|A fila do exame no SUS é de quatro meses.|A família inteira se revezou no hospital.] [Todo mundo olha para você.|O grupo da família pede notícia de hora em hora.|Alguém tem de decidir, e todo mundo olha para você.]",
     "resumo": "{ator.quem} ficou doente",
     "escolhas": [
       {
@@ -648,7 +648,7 @@
     "idade": [10, 110],
     "condicoes": { "marcaHa": [{ "marca": "ator.faleceu", "max": 0 }] },
     "tensao": 3,
-    "texto": "O velório de {ator} [encheu a casa|teve mais gente do que cadeira|teve a música que {ator:ele|ela} pediu]. Depois, ficou o silêncio e um monte de coisas para decidir.",
+    "texto": "O velório de {ator} [encheu a casa|teve mais gente do que cadeira|teve a música que {ator:ele|ela} pediu]. [Depois, ficou o silêncio e um monte de coisas para decidir.|Depois, ficaram os papéis, as plantas e um telefone que ninguém mais atende.|Na volta, a casa parecia maior.]",
     "resumo": "perdeu {ator.quem}",
     "escolhas": [
       {
@@ -656,6 +656,7 @@
         "resumo": "tirou uns dias para viver o luto",
         "resultado": {
           "texto": "Você chorou tudo, arrumou as coisas devagar e guardou {ator:um casaco dele|um lenço dela} no armário.",
+          "repete": "Chorou de novo, e o armário ganhou mais uma lembrança.",
           "efeitos": { "felicidade": 1.5, "dinheiro": -800 }
         }
       },
@@ -664,6 +665,7 @@
         "resumo": "se jogou no trabalho para não pensar no luto",
         "resultado": {
           "texto": "Você não parou um dia. O luto esperou, paciente, e voltou num domingo qualquer.",
+          "repete": "De novo, o trabalho no lugar do luto. Ele espera.",
           "efeitos": { "felicidade": -0.5, "dinheiro": 3000, "saude": -0.5 }
         }
       },
@@ -674,6 +676,7 @@
         "bloqueio": "terapia não cabe no orçamento agora",
         "resultado": {
           "texto": "Toda quinta, cinquenta minutos. Você aprendeu que saudade não se resolve, se carrega melhor.",
+          "repete": "De volta à terapia de quinta, com outro nome na conversa.",
           "efeitos": { "felicidade": 2.5, "dinheiro": -2400 }
         }
       }

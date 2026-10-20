@@ -121,6 +121,7 @@
         "resumo": "votou na frente popular",
         "resultado": {
           "texto": "Você votou na frente popular, pela comida no prato e pelo posto de saúde. O tio do churrasco já sabe e já reclamou.",
+          "repete": "[De novo na frente popular. O tio do churrasco já nem reclama.|Frente popular outra vez, pela comida e pelo posto.|Mais uma vez na frente popular.]",
           "efeitos": {
             "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
             "marcas": ["voto_frente_popular"]
@@ -132,6 +133,7 @@
         "resumo": "votou no bloco liberal",
         "resultado": {
           "texto": "Você votou no bloco liberal, pelo imposto menor e por um Estado do tamanho de uma quitinete. A prima mandou um áudio de dez minutos no grupo da família.",
+          "repete": "[De novo no bloco liberal. A prima já nem manda áudio.|Bloco liberal outra vez, pelo imposto menor.|Mais uma vez no bloco liberal.]",
           "efeitos": {
             "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
             "marcas": ["voto_bloco_liberal"]
@@ -143,6 +145,7 @@
         "resumo": "votou na aliança da ordem",
         "resultado": {
           "texto": "Você votou na aliança da ordem, pela polícia na rua e pelas contas em dia. Saiu da seção eleitoral olhando para os lados, por via das dúvidas.",
+          "repete": "[De novo na aliança da ordem, e de novo olhando para os lados.|Aliança da ordem outra vez, pela polícia na rua.|Mais uma vez na aliança da ordem.]",
           "efeitos": {
             "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
             "marcas": ["voto_alianca_da_ordem"]
@@ -154,6 +157,7 @@
         "resumo": "votou no centrão",
         "resultado": {
           "texto": "Você votou no centrão, que promete um pouco de tudo para todo mundo. Eles sempre ganham alguma coisa; agora você também, talvez.",
+          "repete": "[De novo no centrão. Eles ganham alguma coisa; você, talvez.|Centrão outra vez: um pouco de tudo.|Mais uma vez no centrão.]",
           "efeitos": {
             "removerMarcas": ["voto_frente_popular", "voto_bloco_liberal", "voto_alianca_da_ordem", "voto_centrao"],
             "marcas": ["voto_centrao"]

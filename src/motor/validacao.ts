@@ -10,7 +10,7 @@ import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './cam
 import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
-import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Storylet } from './esquema.ts';
+import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
 import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
@@ -469,6 +469,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       if (citados.length > 0) erro(onde, `com ator filho, "filho" é o primeiro filho, não o ator (${citados.slice(0, 3).join(', ')}): use {ator} e "ator.x"`);
     }
     verificarTextos(c, s, onde, marcasDoPapel, erro, aviso);
+    verificarRepete(s, onde, erro);
   }
 
   // ---- linhas, mortes, mundo, epitáfios
@@ -524,13 +525,51 @@ function citacoesDoFilho(s: Storylet): string[] {
   return [...achados];
 }
 
+function textosDoDesfecho(r: Resultado): string[] {
+  return [r.texto, ...(r.resumo ? [r.resumo] : []), ...(r.repete ? [r.repete] : [])];
+}
+
+/**
+ * O `repete` é o desfecho contado de novo: mais curto que o texto inteiro. E
+ * toda ação com teste o tem nos dois desfechos, porque a ação volta ano após
+ * ano e o mesmo desfecho, palavra por palavra, vira a repetição que se vê.
+ */
+function verificarRepete(s: Storylet, onde: string, erro: Reporter): void {
+  const conferir = (r: Resultado | undefined, o: string): void => {
+    if (r?.repete !== undefined && comprimentoComTrechos(r.repete, s) >= comprimentoComTrechos(r.texto, s)) erro(o, 'o repete conta o desfecho de novo: precisa ser mais curto que o texto');
+  };
+  conferir(s.sucesso, `${onde} › sucesso`);
+  conferir(s.fracasso, `${onde} › fracasso`);
+  s.escolhas?.forEach((esc, i) => {
+    for (const [nome, r] of [['sucesso', esc.sucesso], ['fracasso', esc.fracasso], ['resultado', esc.resultado]] as const) conferir(r, `${onde} › escolha ${i + 1} › ${nome}`);
+  });
+  if (tipoDe(s) === 'acao' && s.teste) {
+    for (const [nome, r] of [['sucesso', s.sucesso], ['fracasso', s.fracasso]] as const) {
+      if (r && r.repete === undefined) erro(`${onde} › ${nome}`, 'ação com teste volta todo ano: o desfecho precisa de "repete" (a versão curta de quando ele já apareceu)');
+    }
+  }
+}
+
+/** O comprimento máximo com cada trecho do storylet aberto no mais longo dele ("{de_novo}" não vale 12 letras). */
+function comprimentoComTrechos(modelo: string, s: Storylet): number {
+  const mais = (a: number, t: { texto: string }): number => Math.max(a, comprimentoMaximo(t.texto));
+  let extra = 0;
+  const sem = modelo.replace(/\{([a-z_0-9]+)\}/g, (m: string, nome: string) => {
+    const trechos = s.trechos?.[nome];
+    if (!trechos) return m;
+    extra += trechos.reduce(mais, 0);
+    return '';
+  });
+  return comprimentoMaximo(sem) + extra;
+}
+
 function textosDe(s: Storylet): string[] {
   const t = [s.texto, s.resumo, ...(s.rotulo ? [s.rotulo] : [])];
-  for (const r of [s.sucesso, s.fracasso]) if (r) t.push(r.texto, ...(r.resumo ? [r.resumo] : []));
+  for (const r of [s.sucesso, s.fracasso]) if (r) t.push(...textosDoDesfecho(r));
   for (const trechos of Object.values(s.trechos ?? {})) for (const x of trechos) t.push(x.texto);
   for (const esc of s.escolhas ?? []) {
     t.push(esc.texto, esc.resumo, ...(esc.bloqueio ? [esc.bloqueio] : []));
-    for (const r of [esc.sucesso, esc.fracasso, esc.resultado]) if (r) t.push(r.texto, ...(r.resumo ? [r.resumo] : []));
+    for (const r of [esc.sucesso, esc.fracasso, esc.resultado]) if (r) t.push(...textosDoDesfecho(r));
   }
   return t;
 }
@@ -594,7 +633,10 @@ function verificarTextos(
     trechos.forEach((t, i) => ver(t.texto, `${onde} › trechos.${nome}[${i}]`, new Set(), new Set([...exigidasStorylet, ...qualidadesGarantidas(t.se)])));
   }
   for (const [nome, r] of [['sucesso', s.sucesso], ['fracasso', s.fracasso]] as const) {
-    if (r) ver(r.texto, `${onde} › ${nome}`, new Set([...criadosPor(s.efeitos), ...criadosPor(r.efeitos)]));
+    if (!r) continue;
+    const criados = new Set([...criadosPor(s.efeitos), ...criadosPor(r.efeitos)]);
+    ver(r.texto, `${onde} › ${nome}`, criados);
+    if (r.repete) ver(r.repete, `${onde} › ${nome} › repete`, criados);
   }
   const tamanho = comprimentoMaximo(s.texto);
   if (tamanho > LIMITE_TEXTO) aviso(onde, `texto pode chegar a ${tamanho} caracteres (limite ${LIMITE_TEXTO})`);
@@ -616,6 +658,7 @@ function verificarTextos(
       if (!r) continue;
       const criados = new Set([...daEscolha, ...criadosPor(r.efeitos)]);
       ver(r.texto, `${o} › ${nome}`, criados, exigidas);
+      if (r.repete) ver(r.repete, `${o} › ${nome} › repete`, criados, exigidas);
       if (r.resumo) ver(r.resumo, `${o} › ${nome} › resumo`, criados, exigidas);
       else ver(esc.resumo, `${o} › resumo`, criados, exigidas);
     }

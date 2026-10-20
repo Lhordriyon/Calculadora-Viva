@@ -15,11 +15,22 @@ import { lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
 import { FILHOS } from './constantes.ts';
 import { aleatorio } from './rng.ts';
-import { capitalizar, formatarDinheiro, renderizar } from './texto.ts';
+import { capitalizar, formatarDinheiro, renderizar, type ContextoTexto } from './texto.ts';
 import type { Causa, Entrada, EstadoVida, Mudanca, OpcaoPendente, TipoEntrada } from './tipos.ts';
 
 /** Anos mínimos entre repetições de um storylet repetível sem intervalo próprio. */
 export const INTERVALO_PADRAO = 5;
+
+/**
+ * O texto do desfecho. Se esse mesmo texto já apareceu nesta vida e o desfecho
+ * tem `repete`, sai a versão curta ("Deu certo de novo.", "Calote outra vez."):
+ * a linha do tempo não conta duas vezes, palavra por palavra, o que já contou.
+ */
+export function textoDoDesfecho(e: EstadoVida, r: Resultado, ctx: ContextoTexto): string {
+  const inteiro = capitalizar(renderizar(r.texto, ctx));
+  if (r.repete === undefined || !e.historico.some((h) => h.resultado === inteiro)) return inteiro;
+  return capitalizar(renderizar(r.repete, ctx));
+}
 
 export function instanciaDe(s: Storylet, ator?: string): string {
   return ator ? `${s.id}#${ator}` : s.id;
@@ -115,7 +126,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   if (s.teste) {
     const r: Resultado = (aleatorio(e.rng) < chanceDeSucesso(s.teste, e, ator) ? s.sucesso : s.fracasso)!;
     aplicarEfeitos(e, c, r.efeitos, ef);
-    entrada.resultado = capitalizar(renderizar(r.texto, contexto(e, op)));
+    entrada.resultado = textoDoDesfecho(e, r, contexto(e, op));
     if (r.resumo) resumo = r.resumo;
     morte ??= r.efeitos?.morte;
   }
@@ -218,7 +229,7 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados });
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
-  entrada.resultado = capitalizar(renderizar(resultado.texto, ctx));
+  entrada.resultado = textoDoDesfecho(e, resultado, ctx);
   reorganizarGrupo(e, reg);
   lancar(e, entrada, reg);
   morrerSePreciso(e, c, resultado.efeitos?.morte ?? esc.efeitos?.morte, entrada.id);

@@ -726,14 +726,14 @@
   "acontecimentos": {
     "adoeceu": {
       "textos": [
-        "{ator.quem} [foi parar no hospital|recebeu um diagnóstico que ninguém queria ouvir|começou um tratamento longo e caro]. [A família inteira virou especialista em bula.|O grupo da família só fala disso.|Ninguém dormiu direito naquela semana.]"
+        "{ator.quem} [foi parar no hospital|recebeu um diagnóstico que ninguém queria ouvir|começou um tratamento longo e caro]. [A família inteira virou especialista em bula.|O grupo da família só fala disso.|Ninguém dormiu direito naquela semana.|A geladeira virou mural de horário de remédio.|Cada visita trouxe uma sopa e um palpite.]"
       ],
       "resumo": "{ator.quem} adoeceu"
     },
     "curou": {
       "textos": [
         "{ator.quem} [teve alta|terminou o tratamento|voltou a reclamar do tempo], sinal de que melhorou.",
-        "{ator.quem} [ficou bo{ator:m|a}|recebeu os exames de volta sem susto]. A família comemorou com bolo."
+        "{ator.quem} [ficou bo{ator:m|a}|recebeu os exames de volta sem susto]. [A família comemorou com bolo.|O médico disse \"pode comer de tudo\", e a família levou a sério.|Teve churrasco para comemorar, contra a orientação médica.]"
       ],
       "resumo": "{ator.quem} se recuperou"
     },
@@ -965,14 +965,14 @@
   "noticias": {
     "crise": {
       "textos": [
-        "{ator:O|A} {ator} entrou em crise: [bancos quebrando|a bolsa derretendo|fila no seguro-desemprego de lá]. Aqui, o dólar acordou nervoso e o noticiário aprendeu a pronunciar o nome do ministro de lá.",
+        "{ator:O|A} {ator} entrou em crise: [bancos quebrando|a bolsa derretendo|fila no seguro-desemprego de lá]. Aqui, [o dólar acordou nervoso e o noticiário aprendeu a pronunciar o nome do ministro de lá|a bolsa caiu antes do café e o dólar subiu antes do almoço|quem tem dívida em dólar parou de dormir].",
         "A crise começou n{ator:o|a} {ator} e atravessou o oceano em uma semana: [quem vendia para lá parou de vender|o dólar subiu antes do café|a bolsa daqui caiu por solidariedade]."
       ],
       "resumo": "{ator:o|a} {ator} entrou em crise"
     },
     "boom": {
       "textos": [
-        "{ator:O|A} {ator} está comprando o mundo: [soja a preço de ouro|navio na fila do porto|minério que não para de subir]. Quem vende {ator.produtos} para lá anda sorrindo à toa."
+        "{ator:O|A} {ator} está comprando o mundo: [soja a preço de ouro|navio na fila do porto|minério que não para de subir]. [Quem vende {ator.produtos} para lá anda sorrindo à toa.|O porto não dá conta, e quem vende {ator.produtos} trocou de caminhonete.|O interior que vende {ator.produtos} para lá virou canteiro de obras.]"
       ],
       "resumo": "{ator:o|a} {ator} saiu comprando o mundo"
     },
@@ -1025,9 +1025,9 @@
       "id": "normal",
       "nome": "",
       "textos": [
-        "A economia voltou ao normal, seja lá o que isso signifique. [O jornal parou de usar a palavra \"crise\".|O desemprego caiu um pouco; o preço do café, nada.|Os economistas já discordam sobre o ano que vem.]",
-        "A economia esfriou. [Os anúncios de vaga ficaram mais modestos.|O shopping voltou a ter vaga no estacionamento.|Ninguém mais fala em \"oportunidade imperdível\".]",
-        "O país saiu do sufoco. [A padaria voltou a fazer o pão de sempre, do tamanho de sempre.|As placas de \"aluga-se\" no centro começaram a sumir.|O noticiário trocou o gráfico vermelho pela previsão do tempo.]"
+        "[A economia voltou ao normal, seja lá o que isso signifique.|O noticiário chamou a economia de \"estável\", que é o nome educado de morna.|Os números do país voltaram para o meio da tabela.] [O jornal parou de usar a palavra \"crise\".|O desemprego caiu um pouco; o preço do café, nada.|Os economistas já discordam sobre o ano que vem.]",
+        "A economia esfriou. [Os anúncios de vaga ficaram mais modestos.|O shopping voltou a ter vaga no estacionamento.|Ninguém mais fala em \"oportunidade imperdível\".|A fila do restaurante da moda encolheu pela metade.]",
+        "[O país saiu do sufoco.|O pior passou, dizem.|A economia voltou a respirar.] [A padaria voltou a fazer o pão de sempre, do tamanho de sempre.|As placas de \"aluga-se\" no centro começaram a sumir.|O noticiário trocou o gráfico vermelho pela previsão do tempo.]"
       ],
       "resumo": "a economia do país voltou ao normal"
     },
@@ -1035,7 +1035,7 @@
       "id": "expansao",
       "nome": "economia aquecida",
       "textos": [
-        "O país entrou num ciclo de crescimento. [Tem placa de \"contrata-se\" em toda esquina.|O shopping abriu outra ala e a fila do restaurante dobrou.|Todo mundo que você conhece trocou de emprego, para melhor.]",
+        "[O país entrou num ciclo de crescimento.|A economia engatou a quinta marcha.|O país voltou a crescer, e o jornal achou isso notícia.] [Tem placa de \"contrata-se\" em toda esquina.|O shopping abriu outra ala e a fila do restaurante dobrou.|Todo mundo que você conhece trocou de emprego, para melhor.]",
         "A economia acelerou. [Guindaste no horizonte virou paisagem.|O crédito ficou fácil e as concessionárias, cheias.|Até o tio pessimista admitiu que \"as coisas melhoraram\".]"
       ],
       "choque": [
@@ -1047,8 +1047,8 @@
       "id": "recessao",
       "nome": "recessão",
       "textos": [
-        "O país entrou em recessão. [As lojas do centro começaram a fechar mais cedo.|A palavra \"corte\" apareceu em todas as reuniões.|O jornal da noite agora tem um gráfico vermelho fixo.]",
-        "A economia encolheu dois trimestres seguidos, e os economistas finalmente concordaram em alguma coisa: recessão. [Vaga de emprego virou notícia.|O mercado do bairro trocou a marca do arroz.|O grupo da família começou a mandar dica de economia doméstica.]"
+        "[O país entrou em recessão.|A economia andou de ré.|Recessão: a palavra voltou ao noticiário.] [As lojas do centro começaram a fechar mais cedo.|A palavra \"corte\" apareceu em todas as reuniões.|O jornal da noite agora tem um gráfico vermelho fixo.]",
+        "A economia encolheu dois trimestres seguidos, e os economistas finalmente concordaram em alguma coisa: recessão. [Vaga de emprego virou notícia.|O mercado do bairro trocou a marca do arroz.|O grupo da família começou a mandar dica de economia doméstica.|A promoção do supermercado virou assunto de almoço.]"
       ],
       "choque": [
         "A crise lá fora chegou aqui: [as encomendas do exterior sumiram e a economia encolheu.|o dólar subiu, o crédito secou e o país entrou em recessão.]"

@@ -95,19 +95,28 @@ export function operarPoder(e: EstadoVida, c: Conteudo, op: OperacaoPoder, reg: 
   const votos = Math.round(Math.min(78, Math.max(4, 50 + (chance - 0.5) * 36 + normal(e.rng, 0, 4) + (ganhou ? 4 : -4))));
   const nome = noGenero(def.nome, eu.genero);
   const onde = ondeDoCargo(e, def);
+  const o = eu.genero === 'f' ? 'a' : 'o';
   if (ganhou) {
     const reeleito = eu.t['cargo'] === def.id;
+    // Os mandatos que o livro já conta para o mesmo cargo, no mesmo lugar: a reeleição diz qual é.
+    const mandato = 1 + e.historico.filter((h) => h.resumo === `foi eleit${o} ${nome} ${onde}` || h.resumo === `foi reeleit${o} ${nome} ${onde}`).length;
     assumir(e, reg, def, origem);
-    const verbo = reeleito ? `reeleit${eu.genero === 'f' ? 'a' : 'o'}` : `eleit${eu.genero === 'f' ? 'a' : 'o'}`;
+    const verbo = reeleito ? `reeleit${o}` : `eleit${o}`;
+    const qual = mandato > 1 ? ` para o ${mandato}º mandato` : '';
     return {
-      texto: `Eleições de ${e.ano}: você foi ${verbo} ${nome} ${onde} com ${Math.max(51, votos)}% dos votos. A campanha custou ${formatarDinheiro(custo)}.`,
+      texto: `Eleições de ${e.ano}: você foi ${verbo} ${nome} ${onde}${qual}, com ${Math.max(51, votos)}% dos votos e uma campanha de ${formatarDinheiro(custo)}.`,
       resumo: `foi ${verbo} ${nome} ${onde}`,
     };
   }
   somar(e, reg, 'eu', 'influencia', 2);
+  const resumo = `perdeu a eleição para ${nome}`;
+  const derrota = 1 + e.historico.filter((h) => h.resumo === resumo).length;
   return {
-    texto: `Eleições de ${e.ano}: ${Math.min(49, votos)}% dos votos para ${nome} ${onde} não bastaram. A campanha custou ${formatarDinheiro(custo)}, e o seu nome ficou mais conhecido.`,
-    resumo: `perdeu a eleição para ${nome}`,
+    texto:
+      derrota > 1
+        ? `Eleições de ${e.ano}: ${Math.min(49, votos)}% dos votos para ${nome} ${onde} não bastaram. Foi a ${derrota}ª derrota, e a campanha custou ${formatarDinheiro(custo)}.`
+        : `Eleições de ${e.ano}: ${Math.min(49, votos)}% dos votos para ${nome} ${onde} não bastaram. A campanha custou ${formatarDinheiro(custo)}, e o seu nome ficou mais conhecido.`,
+    resumo,
   };
 }
 

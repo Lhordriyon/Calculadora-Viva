@@ -115,7 +115,16 @@ export function operarCarreira(e: EstadoVida, c: Conteudo, op: OperacaoCarreira,
   const def = defCarreira(c, op.carreira)!;
   const nome = noGenero(def.nome, eu.genero);
   if (aleatorio(e.rng) >= chanceDeEntrar(e, def)) {
-    return { texto: `Tentou uma vaga de ${nome} e não passou. Ano que vem tem outra seleção.`, resumo: `tentou ser ${nome} e não passou` };
+    // Quem insiste vê as tentativas contadas, não a mesma frase de novo.
+    const resumo = `tentou ser ${nome} e não passou`;
+    const vez = e.historico.filter((h) => h.resumo === resumo).length + 1;
+    const texto =
+      vez === 1
+        ? `Tentou uma vaga de ${nome} e não passou. Ano que vem tem outra seleção.`
+        : vez === 2
+          ? `Tentou de novo uma vaga de ${nome}, e de novo não passou.`
+          : `Tentou pela ${vez}ª vez uma vaga de ${nome}, e não foi desta vez.`;
+    return { texto, resumo };
   }
   largarEmprego(e, reg);
   definirTexto(e, reg, 'eu', 'ocupacao', nome);

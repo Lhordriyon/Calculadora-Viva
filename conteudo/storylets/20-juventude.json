@@ -475,7 +475,7 @@
         }
       ]
     },
-    "texto": "Você conhece alguém {onde}. [A conversa flui como se vocês já se conhecessem.|Vocês riem das mesmas coisas, o que é raro.|Três horas passam como dez minutos.]",
+    "texto": "Você conhece alguém {onde}. [A conversa flui como se vocês já se conhecessem.|Vocês riem das mesmas coisas, o que é raro.|Três horas passam como dez minutos.|Vocês discordam de tudo, e é divertido.|Tem gosto de música boa e de sotaque de outro lugar.]",
     "resumo": "conheceu alguém especial",
     "escolhas": [
       {
@@ -498,6 +498,7 @@
         "resumo": "deixou um flerte morrer na conversa",
         "resultado": {
           "texto": "Você respondeu com \"haha\" e a conversa morreu ali, como a maioria das conversas.",
+          "repete": "[Outro \"haha\", outra conversa morta.|De novo, o \"haha\" encerrou o assunto.]",
           "efeitos": {}
         }
       }

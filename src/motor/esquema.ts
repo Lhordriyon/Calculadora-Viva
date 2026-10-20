@@ -233,6 +233,8 @@ export const Resultado = z.strictObject({
   texto: z.string().min(1),
   /** Substitui o resumo da escolha no cartão da vida quando o desfecho é o que importa. */
   resumo: z.string().min(3).optional(),
+  /** O desfecho contado de novo, curto, quando o mesmo texto já apareceu nesta vida ("Deu certo de novo."). */
+  repete: z.string().min(1).optional(),
   efeitos: Efeitos.optional(),
 });
 export type Resultado = z.infer<typeof Resultado>;

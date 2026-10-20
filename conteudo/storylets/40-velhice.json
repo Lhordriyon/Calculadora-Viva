@@ -94,6 +94,7 @@
         "resumo": "adiou a aposentadoria para continuar trabalhando",
         "resultado": {
           "texto": "Você disse que vai parar \"daqui a pouco\". Os colegas já fizeram um bolão.",
+          "repete": "[Adiou de novo. O bolão segue aberto.|De novo, \"daqui a pouco\".]",
           "efeitos": { "felicidade": -1, "inteligencia": 1 }
         }
       }

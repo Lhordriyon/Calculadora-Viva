@@ -226,7 +226,18 @@
     "verbo": "trabalhar",
     "rotulo": "fazer um bico",
     "idade": [18, 72],
-    "texto": "Você fez bico de [garçom em evento|motorista de aplicativo|pintura de parede|revenda de roupa pela internet] nos fins de semana. Cansa, mas o Pix cai.",
+    "trechos": {
+      "bico": [
+        { "se": { "idade": { "min": 55 } }, "texto": "[montagem de móveis|conserto de eletrodoméstico|bolo por encomenda|motorista de aplicativo, com o rádio na estação de sempre]" },
+        { "texto": "[garç{om|onete} em evento|motorista de aplicativo|pintura de parede|revenda de roupa pela internet|montagem de móveis|fotógraf{o|a} de festa infantil]" }
+      ],
+      "fecho": [
+        { "se": { "dinheiro": { "max": 1000 } }, "texto": "[Deu para tapar o buraco do mês.|O Pix caiu e saiu no mesmo dia.|Pagou o gás e sobrou para o pão.]" },
+        { "se": { "idade": { "min": 55 } }, "texto": "[As costas reclamaram; o bolso agradeceu.|Na sua idade, ainda dá. Por enquanto.|Os clientes elogiaram a paciência, que é o que a idade dá.]" },
+        { "texto": "[Cansa, mas o Pix cai.|O corpo reclamou na segunda; a conta, não.|Deu para respirar até o fim do mês.|O domingo virou segunda, e a segunda também.|Um cliente pediu seu número, e o bico virou freguesia.|Sobrou para um pastel na feira, e isso já é lucro.]" }
+      ]
+    },
+    "texto": "Você fez bico de {bico} nos fins de semana. {fecho}",
     "resumo": "fez bicos nos fins de semana",
     "efeitos": { "dinheiro": 3800, "saude": -0.25, "felicidade": -0.35 }
   },
@@ -241,9 +252,21 @@
     "resumo": "fez entregas extras",
     "efeitos": { "dinheiro": 4800, "saude": -0.3 },
     "teste": { "chance": 0.9 },
-    "sucesso": { "texto": "Chegou inteir{o|a} em todas, com nota cinco no aplicativo." },
+    "trechos": {
+      "inteiro": [
+        { "se": { "idade": { "max": 29 } }, "texto": "[Inteir{o|a} em todas, de novo.|Mais um ano sem arranhão.|Nota cinco outra vez.]" },
+        { "se": { "idade": { "max": 39 } }, "texto": "[De novo, nenhum atraso.|Mais um ano rodando inteir{o|a}.|O aplicativo te deu selo de veteran{o|a}.]" },
+        { "se": { "idade": { "max": 49 } }, "texto": "[Inteir{o|a} de novo, conhecendo cada buraco da cidade.|Outra vez nota cinco, e as costas pedindo trégua.|Mais um ano sem queda.]" },
+        { "texto": "[Inteir{o|a} outra vez, no ritmo de quem já viu de tudo.|De novo sem arranhão, e os clientes já te chamam pelo nome.|Mais um ano de entrega, e a moto aguentou junto.]" }
+      ]
+    },
+    "sucesso": {
+      "texto": "[Chegou inteir{o|a} em todas, com nota cinco no aplicativo.|Nenhum pedido atrasado, nenhum arranhão e uma gorjeta em dinheiro vivo.|Chegou em todas, e uma cliente ainda ofereceu água gelada no portão.]",
+      "repete": "{inteiro}"
+    },
     "fracasso": {
       "texto": "Uma moto cortou sua frente. Você levantou, mas o joelho ficou de lembrança.",
+      "repete": "Caiu de novo; o joelho anotou.",
       "resumo": "se machucou fazendo entregas",
       "efeitos": { "saude": -6, "marcas": ["joelho_ruim"] }
     }
@@ -259,9 +282,26 @@
     "resumo": "postou conteúdo todo dia",
     "efeitos": { "felicidade": -0.25 },
     "teste": { "atributo": "aparencia", "dificuldade": 55 },
-    "sucesso": { "texto": "Um vídeo viralizou e trouxe publi paga.", "efeitos": { "dinheiro": 5000, "felicidade": 1 } },
+    "trechos": {
+      "viral": [
+        { "se": { "idade": { "max": 29 } }, "texto": "[Viralizou de novo.|Mais uma publi paga.|O algoritmo gostou outra vez.]" },
+        { "se": { "idade": { "max": 44 } }, "texto": "[Viralizou de novo, agora com público que paga boleto.|Mais uma publi, e uma marca que já te chama pelo nome.|Outro vídeo rodou, e a publi pagou as contas do trimestre.]" },
+        { "texto": "[Viralizou de novo, para espanto dos sobrinhos dos outros.|Mais uma publi: a experiência também dá clique.|A internet descobriu você outra vez.]" }
+      ],
+      "ignorado": [
+        { "se": { "idade": { "max": 29 } }, "texto": "[O algoritmo te ignorou de novo.|Mais um ano falando sozinh{o|a}.|Os seguidores sumiram outra vez.]" },
+        { "se": { "idade": { "max": 44 } }, "texto": "[O algoritmo te ignorou de novo; a geração nova dança melhor.|Mais um ano de vídeo para os mesmos de sempre.|Os vídeos bons ficaram de novo para os quarenta seguidores fiéis.]" },
+        { "texto": "[O algoritmo não gosta de gente da sua idade, de novo.|Outro ano postando para os amigos de sempre.|Mais um ano de vídeo que só a família assistiu.]" }
+      ]
+    },
+    "sucesso": {
+      "texto": "[Um vídeo viralizou e trouxe publi paga.|Um corte de dez segundos rodou o país e virou contrato de publi.|Uma marca de protetor solar mandou caixa, contrato e um roteiro que você ignorou.]",
+      "repete": "{viral}",
+      "efeitos": { "dinheiro": 5000, "felicidade": 1 }
+    },
     "fracasso": {
-      "texto": "O algoritmo te ignorou o ano inteiro. Os seguidores também.",
+      "texto": "[O algoritmo te ignorou o ano inteiro. Os seguidores também.|Você postou todo dia para as mesmas trezentas pessoas, e duas eram da família.|O vídeo bom saiu no dia em que o país inteiro só falava de outra coisa.]",
+      "repete": "{ignorado}",
       "efeitos": { "dinheiro": 300, "felicidade": -0.75 }
     }
   },
@@ -272,7 +312,13 @@
     "rotulo": "tocar a empresa até tarde",
     "idade": [22, 75],
     "condicoes": { "empresa.valor": true },
-    "texto": "Você virou noites n{empresa:o|a} {empresa}, [refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente]. [O mês fechou no azul.|O mês fechou, e é isso que importa.]",
+    "trechos": {
+      "tarefa": [
+        { "se": { "empresa.funcionarios": { "min": 100 } }, "texto": "[reuniu a diretoria às sete da manhã|leu relatório até a vista embaçar|visitou uma filial sem avisar|negociou com um banco que fingia não precisar de você]" },
+        { "texto": "[refez o fluxo de caixa|negociou com fornecedor chato|apagou incêndio de cliente|cobriu o funcionário que faltou|refez o preço de tudo depois da inflação]" }
+      ]
+    },
+    "texto": "Você virou noites n{empresa:o|a} {empresa}: {tarefa}. [O mês fechou no azul.|O mês fechou, e é isso que importa.|O contador elogiou, o que nunca acontece.|Dormiu pouco, mas a folha de pagamento saiu em dia.]",
     "resumo": "tocou a empresa até tarde",
     "efeitos": { "empresa.tracao": 1.5, "saude": -0.4, "felicidade": -0.5 }
   },
@@ -342,7 +388,7 @@
     "verbo": "saude",
     "rotulo": "caminhar todo dia",
     "idade": [18, 95],
-    "texto": "Você caminhou todo dia [na praça|no calçadão|em volta do quarteirão, contando as voltas]. [Os vizinhos começaram a te cumprimentar.|O podcast acabou antes da caminhada.|A pressão agradeceu.]",
+    "texto": "Você caminhou todo dia [na praça|no calçadão|em volta do quarteirão, contando as voltas|na pista do parque, antes de o sol esquentar|pela rua de cima, que é a mais íngreme]. [Os vizinhos começaram a te cumprimentar.|O podcast acabou antes da caminhada.|A pressão agradeceu.|O tênis durou menos que a promessa.|Descobriu uma padaria nova no caminho, o que atrapalhou um pouco.]",
     "resumo": "caminhou todo dia",
     "efeitos": { "saude": 0.6, "felicidade": -0.15, "aparencia": 0.3 }
   },
@@ -353,7 +399,13 @@
     "rotulo": "treinar para uma corrida",
     "idade": [20, 65],
     "condicoes": { "saude": { "min": 55 }, "semMarcas": ["fumante", "joelho_ruim"] },
-    "texto": "Você treinou e correu uma prova de [5|10|21] quilômetros. [Chegou andando, mas chegou.|Chorou na linha de chegada.|Comprou um relógio que mede tudo, inclusive a sua paciência.]",
+    "trechos": {
+      "treino": [
+        { "se": { "idade": { "min": 45 } }, "texto": "[com um grupo de corrida que se chama Joelhos Unidos|no parque, antes do sol|com a bênção do cardiologista e contra a do ortopedista]" },
+        { "texto": "[no parque, antes do sol|com um aplicativo que grita com você|com a assessoria do bairro|sozinh{o|a}, de fone de ouvido]" }
+      ]
+    },
+    "texto": "Você treinou {treino} e correu uma prova de [5|10|21] quilômetros. [Chegou andando, mas chegou.|Chorou na linha de chegada.|Comprou um relógio que mede tudo, inclusive a sua paciência.|Bateu o próprio tempo por onze segundos.|Ganhou uma medalha igual à de todo mundo, e ela foi para a parede.]",
     "resumo": "correu uma prova de rua",
     "efeitos": { "saude": 1, "felicidade": 0.3, "dinheiro": -500 }
   },
@@ -370,10 +422,15 @@
     "teste": { "chance": 0.35 },
     "sucesso": {
       "texto": "Deu certo. O cheiro do café voltou a ter gosto.",
+      "repete": "Largou de novo. Desta vez, jura.",
       "resumo": "largou o cigarro",
       "efeitos": { "saude": 3, "removerMarcas": ["fumante"], "marcas": ["ex_fumante"] }
     },
-    "fracasso": { "texto": "Durou até a primeira briga no trabalho.", "efeitos": { "felicidade": -0.5 } }
+    "fracasso": {
+      "texto": "[Durou até a primeira briga no trabalho.|Durou três semanas e um churrasco.|Durou até o primeiro boleto atrasado.]",
+      "repete": "[Recaiu de novo.|De novo, não durou.]",
+      "efeitos": { "felicidade": -0.5 }
+    }
   },
   {
     "id": "check_up",
@@ -404,7 +461,13 @@
     "preferir": "-ator.vinculo",
     "idade": [12, 110],
     "condicoes": { "semMarcas": ["ator.ausente"] },
-    "texto": "Você passou um fim de semana com {ator}. [Teve café com bolo e conversa até tarde.|Ouviu as mesmas histórias de sempre, e riu de todas.|Consertou o chuveiro e ganhou marmita para a semana.]",
+    "trechos": {
+      "visita": [
+        { "se": { "ator.idade": { "min": 78 } }, "texto": "[{ator} contou a mesma história duas vezes, e você riu nas duas.|Você organizou os remédios da semana e ficou para o café.|{ator} te chamou pelo nome de um primo, e você respondeu assim mesmo.]" },
+        { "texto": "[Teve café com bolo e conversa até tarde.|Ouviu as mesmas histórias de sempre, e riu de todas.|Consertou o chuveiro e ganhou marmita para a semana.|Viram fotos antigas e discutiram quem era quem.|Saiu de lá com um pote de doce e três conselhos.]" }
+      ]
+    },
+    "texto": "Você passou [um fim de semana|um feriado prolongado|um domingo de almoço demorado|uns dias] com {ator}. {visita}",
     "resumo": "passou um tempo com a família",
     "efeitos": { "ator.vinculo": 7, "felicidade": 0.4, "dinheiro": -150 }
   },
@@ -429,7 +492,7 @@
     "ator": ["mae", "pai", "avo", "amor", "filho", "amigo"],
     "idade": [12, 110],
     "condicoes": { "ator.doente": true },
-    "texto": "Você [dormiu no hospital numa cadeira dura|levou {ator} em todas as consultas|aprendeu o nome de cada remédio e a hora de cada um]. Cuidar cansa, e ninguém dá medalha por isso.",
+    "texto": "Você [dormiu no hospital numa cadeira dura|levou {ator} em todas as consultas|aprendeu o nome de cada remédio e a hora de cada um]. [Cuidar cansa, e ninguém dá medalha por isso.|O corredor do hospital virou caminho de casa.|{ator} reclamou da comida e agradeceu a companhia.]",
     "resumo": "cuidou de {ator.quem} doente",
     "efeitos": { "ator.saude": 5, "ator.vinculo": 10, "felicidade": -0.75, "saude": -0.5 }
   },
@@ -463,7 +526,22 @@
     "idade": [13, 110],
     "condicoes": { "amigo.vivo": true },
     "intervalo": 2,
-    "texto": "Você ligou para {amigo} [só para saber como estava|e ficaram duas horas no telefone|numa terça à noite, sem motivo nenhum]. [Marcaram um café que vai acontecer em algum ano.|Riram de coisas que só vocês entendem.]",
+    "trechos": {
+      "ligacao": [
+        { "se": { "idade": { "max": 17 } }, "texto": "Você e {amigo} passaram [a noite trocando áudio de dez minutos|horas no telefone, até alguém da casa mandar desligar|o fim de semana numa conversa que começou na escola e não acabou]." },
+        { "se": { "idade": { "max": 29 } }, "texto": "Você ligou para {amigo} [depois do trabalho|num domingo de ressaca|para contar uma fofoca que não podia esperar|só para saber como estava]." },
+        { "se": { "idade": { "max": 59 } }, "texto": "Você ligou para {amigo} [no caminho do trabalho, no viva-voz|numa terça à noite, sem motivo nenhum|só para saber como estava|e ficaram duas horas no telefone]." },
+        { "texto": "Você ligou para {amigo} [para saber do joelho, da pressão e dos netos dos outros|e ficaram duas horas no telefone, como antigamente|só para ouvir a voz|no aniversário, e depois em mais três domingos]." }
+      ],
+      "conversa": [
+        { "se": { "amigo.vinculo": { "max": 35 } }, "texto": "[Fazia tempo, e a conversa demorou a esquentar.|Teve um silêncio no meio, mas ninguém desligou.|Prometeram não sumir de novo.]" },
+        { "se": { "amigo.doente": true }, "texto": "[{amigo} falou do tratamento como quem fala do tempo.|Você ouviu mais do que falou, e foi o certo.|Combinaram uma visita assim que os exames deixarem.]" },
+        { "se": { "idade": { "min": 60 } }, "texto": "[Falaram de remédio, de quem casou e de quem já se foi.|Contaram as mesmas histórias da juventude, cada um com uma versão.|{amigo} reclamou do joelho; você, das costas. Empate.|Riram de coisas que só vocês entendem, e já são muitas.]" },
+        { "se": { "amigo.vinculo": { "min": 80 } }, "texto": "[Não precisaram de assunto: o silêncio também conversa.|{amigo} sabia o que você ia dizer antes de você.|Riram de coisas que só vocês entendem.|Terminaram falando de um plano que não vai acontecer, e foi ótimo.]" },
+        { "texto": "[Marcaram um café que vai acontecer em algum ano.|Riram de coisas que só vocês entendem.|{amigo} contou um segredo e pediu para você esquecer.|Falaram mal de todo mundo, com carinho.|Desligaram combinando de não sumir.|{amigo} pediu um conselho e não seguiu nenhum.]" }
+      ]
+    },
+    "texto": "{ligacao} {conversa}",
     "resumo": "manteve contato com {amigo}",
     "efeitos": { "amigo.vinculo": 5, "felicidade": 0.2 }
   },
@@ -533,11 +611,13 @@
     "efeitos": { "dinheiro": -400, "felicidade": 0.25 },
     "teste": { "atributo": "aparencia", "dificuldade": 50 },
     "sucesso": {
-      "texto": "Trocou contato com alguém interessante. A conversa continuou no dia seguinte.",
+      "texto": "[Trocou contato com alguém interessante. A conversa continuou no dia seguinte.|Dançou com alguém que pisava no pé e ria disso. Marcaram de se ver de novo.|Uma conversa na fila do banheiro virou a melhor parte da noite, e um número novo no celular.]",
+      "repete": "[Mais um número novo no celular.|De novo, a conversa rendeu.]",
       "efeitos": { "felicidade": 1.2, "qualidades": { "paquera": 1 } }
     },
     "fracasso": {
-      "texto": "Voltou para casa sozinh{o|a}, com o pé doendo e uma história boa para contar.",
+      "texto": "[Voltou para casa sozinh{o|a}, com o pé doendo e uma história boa para contar.|Ninguém interessante, mas a música estava boa.|A conversa mais longa da noite foi com o segurança.]",
+      "repete": "[Sozinh{o|a} de novo, com outra história.|Voltou sozinh{o|a} outra vez.|Outra noite sem par, mas com música boa.]",
       "efeitos": { "felicidade": -0.25 }
     }
   },
@@ -554,10 +634,12 @@
     "teste": { "atributo": "felicidade", "dificuldade": 62 },
     "sucesso": {
       "texto": "No meio da noite, a timidez cansou e foi embora. Você conversou com alguém por horas.",
+      "repete": "A timidez cedeu de novo.",
       "efeitos": { "felicidade": 1, "qualidades": { "paquera": 1 } }
     },
     "fracasso": {
-      "texto": "Você ficou no canto, mexendo no celular, e saiu mais cedo.",
+      "texto": "[Você ficou no canto, mexendo no celular, e saiu mais cedo.|Você ensaiou três frases e não usou nenhuma.]",
+      "repete": "[O canto da festa, de novo.|Saiu cedo outra vez.]",
       "efeitos": { "felicidade": -0.75 }
     }
   },
@@ -590,7 +672,7 @@
     "rotulo": "tocar no bar",
     "idade": [16, 80],
     "condicoes": { "marcas": ["musico"] },
-    "texto": "Você tocou no bar todo fim de semana, [com repertório pedido pelo dono|com uma música autoral escondida no meio|para três pessoas e um cachorro]. O cachê pagou as cordas e o lanche.",
+    "texto": "Você tocou no bar todo fim de semana, [com repertório pedido pelo dono|com uma música autoral escondida no meio|para três pessoas e um cachorro|com um baterista que sempre atrasa|num bar que trocou de nome duas vezes]. [O cachê pagou as cordas e o lanche.|Alguém filmou, e você saiu desafinad{o|a} na internet.|O dono pediu para tocar mais baixo e mais alto na mesma noite.|Um casal dançou a sua música, e isso pagou o ano.]",
     "resumo": "tocou em bar todo fim de semana",
     "efeitos": { "felicidade": 0.9, "dinheiro": 600, "saude": -0.3 }
   },
@@ -601,7 +683,7 @@
     "rotulo": "ir à praia",
     "idade": [6, 100],
     "condicoes": { "lugar.litoral": true },
-    "texto": "Você foi à praia [todo fim de semana|sempre que deu|e voltou com areia até no ouvido]. [Milho, mate e picolé.|O sol foi generoso; o protetor, nem tanto.]",
+    "texto": "Você foi à praia [todo fim de semana|sempre que deu|e voltou com areia até no ouvido|com cadeira, isopor e o guarda-sol que não fecha|cedo, antes de a areia virar brasa]. [Milho, mate e picolé.|O sol foi generoso; o protetor, nem tanto.|O guarda-sol voou duas vezes; o isopor, nenhuma.|Entrou no mar até a cintura, como manda a prudência.|Ficou com a marca da camiseta até o Natal.]",
     "resumo": "aproveitou a praia",
     "efeitos": { "felicidade": 0.6, "saude": 0.4, "aparencia": 0.2 }
   },
@@ -612,7 +694,14 @@
     "rotulo": "ir à festa da cidade",
     "idade": [8, 100],
     "condicoes": { "lugar.interior": true },
-    "texto": "A festa da cidade teve [rodeio|quermesse|show de dupla sertaneja] e você foi em todas as noites. Encontrou metade da escola e um ex que fingiu não te ver.",
+    "trechos": {
+      "noite": [
+        { "se": { "idade": { "max": 13 } }, "texto": "[Comeu algodão-doce até enjoar.|Gastou a mesada inteira na pescaria.|Ganhou um peixinho que durou uma semana.]" },
+        { "se": { "idade": { "max": 59 } }, "texto": "[Encontrou metade da escola e um ex que fingiu não te ver.|Dançou com a cidade inteira olhando.|Gastou mais em pastel do que pretendia.|Não brigou com ninguém, o que é um recorde.]" },
+        { "texto": "[Encontrou os filhos de quem estudou com você.|Sentou na mesma barraca de sempre, que tem o mesmo dono de sempre.|Reclamou do som alto e ficou até o fim.]" }
+      ]
+    },
+    "texto": "A festa da cidade teve [rodeio|quermesse|show de dupla sertaneja|parque de diversões com a mesma roda-gigante de sempre] e você foi em todas as noites. {noite}",
     "resumo": "não perdeu a festa da cidade",
     "efeitos": { "felicidade": 0.6, "amigo.vinculo": 2, "dinheiro": -200 }
   },
@@ -682,7 +771,7 @@
     "rotulo": "investir com método",
     "idade": [18, 90],
     "condicoes": { "algumaMarca": ["tino_financeiro", "poupador", "investidor"], "dinheiro": { "min": 5000 } },
-    "texto": "Você leu, comparou taxas e investiu [no Tesouro|num CDB de banco grande|num fundo de índice], com a calma de quem já guardava moeda no cofrinho.",
+    "texto": "Você leu, comparou taxas e investiu [no Tesouro|num CDB de banco grande|num fundo de índice|em títulos que vencem daqui a vinte anos], [com a calma de quem já guardava moeda no cofrinho|e não olhou o extrato por um mês inteiro|e resistiu à dica quente do grupo do primo|com uma planilha de três abas].",
     "resumo": "investiu com método",
     "efeitos": { "investir": 5000, "inteligencia": 0.5 }
   },
@@ -709,10 +798,15 @@
     "efeitos": { "dinheiro": -2000, "felicidade": 0.25 },
     "teste": { "chance": 0.45 },
     "sucesso": {
-      "texto": "Ela subiu, e você vendeu na hora certa, por pura sorte.",
+      "texto": "[Ela subiu, e você vendeu na hora certa, por pura sorte.|Ela dobrou numa semana. Você vendeu e virou consultor{|a} do grupo do primo.]",
+      "repete": "[Subiu de novo. Você jura que é método.|Subiu outra vez.|De novo no verde, e você já fala em \"ciclo\".]",
       "efeitos": { "dinheiro": 4500, "felicidade": 0.75 }
     },
-    "fracasso": { "texto": "Ela despencou. Você vai segurar até voltar, diz você.", "efeitos": { "felicidade": -1 } }
+    "fracasso": {
+      "texto": "[Ela despencou. Você vai segurar até voltar, diz você.|O site da corretora saiu do ar no dia da queda. Voltou; a moeda, não.]",
+      "repete": "[Despencou de novo.|Caiu outra vez. Você segue segurando.|De novo no vermelho. O grupo do primo ficou em silêncio.]",
+      "efeitos": { "felicidade": -1 }
+    }
   },
   {
     "id": "renegociar_cartao",
@@ -849,10 +943,12 @@
     "teste": { "atributo": "felicidade", "dificuldade": 55 },
     "sucesso": {
       "texto": "Conheceu alguém que ri das mesmas coisas. Sem pressa, desta vez.",
+      "repete": "Conheceu mais alguém, sem pressa.",
       "efeitos": { "felicidade": 1, "qualidades": { "paquera": 1 } }
     },
     "fracasso": {
       "texto": "Cada encontro lembrava por que você estava sozinh{o|a}. Melhor assim, por enquanto.",
+      "repete": "Ainda não era a hora.",
       "efeitos": { "felicidade": -0.5 }
     }
   },
@@ -880,16 +976,33 @@
     "verbo": "trabalhar",
     "rotulo": "pegar um trabalho grande",
     "idade": [20, 68],
-    "texto": "Você pegou [um projeto que ninguém queria|uma obra com prazo impossível|uma consultoria para um cliente famoso por não pagar] e mergulhou nele o ano inteiro.",
+    "texto": "Você pegou [um projeto que ninguém queria|uma obra com prazo impossível|uma consultoria para um cliente famoso por não pagar|um cliente de fora que só fala por e-mail|uma reforma que já tinha dado errado com outro|um contrato com o governo, com o prazo do governo] e [mergulhou de cabeça o ano inteiro|não viu o sol até dezembro|virou noites até entregar].",
     "resumo": "pegou um trabalho grande e arriscado",
     "efeitos": { "saude": -0.3 },
     "teste": { "chance": 0.55 },
+    "trechos": {
+      "de_novo": [
+        { "se": { "idade": { "max": 29 } }, "texto": "[Deu certo de novo, e o seu nome começou a circular.|De novo, o Pix caiu no prazo.|Outra vez, deu certo; o portfólio agradece.]" },
+        { "se": { "idade": { "max": 39 } }, "texto": "[Deu certo de novo.|Outra vez, deu certo, e veio indicação junto.|De novo, entregue e pago.]" },
+        { "se": { "idade": { "max": 49 } }, "texto": "[Deu certo de novo; a essa altura, o cliente já te procura.|Mais um trabalho grande entregue.|De novo, o pagamento caiu sem cobrança.]" },
+        { "se": { "idade": { "max": 59 } }, "texto": "[Deu certo outra vez, com a experiência fazendo metade do serviço.|De novo, cliente satisfeito e conta paga.|Mais um, com a calma de quem já viu de tudo.]" },
+        { "texto": "[Ainda dá conta: deu certo outra vez.|Deu certo de novo, e o cliente pediu para você não se aposentar.|Mais um entregue, no seu ritmo.]" }
+      ],
+      "calote": [
+        { "se": { "idade": { "max": 29 } }, "texto": "[Calote outra vez.|De novo, o cliente sumiu.|Calote de novo, e sem adiantamento.]" },
+        { "se": { "idade": { "max": 44 } }, "texto": "[Calote de novo; o contrato devia ter sido mais claro.|Outra vez, o pagamento não veio inteiro.|De novo, metade do dinheiro ficou pelo caminho.]" },
+        { "se": { "idade": { "max": 59 } }, "texto": "[Calote outra vez, e na sua idade isso já não surpreende.|De novo, o cliente sumiu, e o advogado custa mais que a dívida.|Mais um calote para a coleção.]" },
+        { "texto": "[Calote de novo. Você já conta com isso.|Outra vez, o cliente sumiu; a experiência não protege de tudo.]" }
+      ]
+    },
     "sucesso": {
-      "texto": "Deu certo: o cliente pagou, elogiou e indicou para mais dois.",
+      "texto": "[Deu certo: o cliente pagou, elogiou e indicou para mais dois.|Entregou no prazo, e o pagamento caiu no mesmo dia, o que é quase milagre.|Deu certo, e o cliente difícil virou o que mais te indica.]",
+      "repete": "{de_novo}",
       "efeitos": { "dinheiro": 9000, "felicidade": 0.3 }
     },
     "fracasso": {
-      "texto": "O cliente sumiu com metade do pagamento. Você aprendeu a pedir adiantamento.",
+      "texto": "[O cliente sumiu com metade do pagamento. Você aprendeu a pedir adiantamento.|O projeto foi cancelado no último mês, e a última parcela foi junto.|O cliente pagou com um cheque sem fundo, que ainda existe só para isso.]",
+      "repete": "{calote}",
       "efeitos": { "dinheiro": 1000, "felicidade": -0.5 }
     }
   },
@@ -900,16 +1013,25 @@
     "rotulo": "viajar de mochila",
     "idade": [17, 55],
     "intervalo": 2,
-    "texto": "Você juntou o que deu e saiu [pela América do Sul de ônibus|pelo Nordeste de carona|por cidades históricas de Minas com uma mochila e um mapa] sem roteiro fechado.",
+    "texto": "Você juntou o que deu, [enfiou tudo numa mochila|pegou a mochila emprestada do primo|comprou uma mochila na promoção e um mapa de papel] e saiu [sem roteiro fechado|com um roteiro que durou dois dias|avisando a família só da rodoviária].",
     "resumo": "viajou de mochila sem roteiro",
     "efeitos": { "dinheiro": -3000 },
     "teste": { "chance": 0.7 },
+    "trechos": {
+      "volta": [
+        { "se": { "idade": { "max": 25 } }, "texto": "[Repetiu o roteiro da outra vez, e ele ainda era bom.|O mesmo caminho, outra vez, e com mais amigos.]" },
+        { "se": { "idade": { "max": 39 } }, "texto": "[Voltou ao mesmo lugar, que fingiu lembrar de você.|O roteiro de sempre, agora com protetor solar e seguro-viagem.|Repetiu o destino, e dessa vez sobrou dinheiro para a volta.]" },
+        { "texto": "[O mesmo caminho da juventude, mais devagar e com mais histórias.|Repetiu a viagem antiga e descobriu que quem mudou foi você.|Refez a viagem de antigamente, com seguro e remédio de pressão na mochila.]" }
+      ]
+    },
     "sucesso": {
-      "texto": "Voltou com amigos em três países, histórias para uma década e uma cicatriz de praia que você mostra para todo mundo.",
+      "texto": "[Rodou a América do Sul de ônibus e voltou com amigos em três países e um espanhol que se vira.|Rodou o Nordeste de carona e voltou com o caderno cheio de endereço e uma cicatriz de praia para mostrar.|Rodou as cidades históricas de Minas e voltou com queijo na mochila e foto de toda igreja barroca.|Desceu a Amazônia de barco, de rede em rede, e voltou com outra ideia do tamanho do Brasil.]",
+      "repete": "{volta}",
       "efeitos": { "felicidade": 2.5, "inteligencia": 1 }
     },
     "fracasso": {
-      "texto": "Uma intoxicação alimentar, uma mala perdida e um pronto-socorro de fronteira. Mesmo assim, valeu a história.",
+      "texto": "[Na fronteira com a Bolívia, uma intoxicação alimentar e um pronto-socorro de plantão.|No meio da Chapada, uma mala perdida e um tornozelo torcido.|Num ônibus quebrado na serra, dois dias de espera e uma gripe.] Mesmo assim, valeu a história.",
+      "repete": "[Deu errado de novo, e rendeu outra história.|Outra viagem torta, outra história.]",
       "efeitos": { "saude": -4, "felicidade": 0.5 }
     }
   },

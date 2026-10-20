@@ -337,6 +337,68 @@ function posse(e: EstadoVida, gov: DefGoverno, texto: string, resumo: string, ca
   lancar(e, entrada, reg);
 }
 
+const ORDINAIS = ['primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sexta', 'sétima', 'oitava', 'nona', 'décima'];
+
+/**
+ * O bloco no livro desta vida: quantas posses seguidas dele vêm logo antes
+ * desta e, se ele saiu do governo, há quantos anos (a posse de quem o
+ * sucedeu). A vida não sabe o que veio antes do nascimento.
+ */
+function mandatosDe(e: EstadoVida, id: string): { seguidos: number; jaGovernou: boolean; foraHa: number | null } {
+  const ref = `governo:${id}`;
+  let seguidos = 0;
+  let depois: number | null = null;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (!h.ref?.startsWith('governo:')) continue;
+    if (h.ref !== ref) {
+      depois = h.ano;
+      continue;
+    }
+    if (depois === null) seguidos++;
+    else return { seguidos, jaGovernou: true, foraHa: e.ano - depois };
+  }
+  return { seguidos, jaGovernou: seguidos > 0, foraHa: null };
+}
+
+/** "a frente popular" → "na frente popular" e "frente popular"; "o centrão" → "no centrão" e "centrão". */
+const emBloco = (g: DefGoverno): string => g.nome.replace(/^(o|a) /, 'n$1 ');
+const semArtigo = (g: DefGoverno): string => g.nome.replace(/^(o|a) /, '');
+
+/** O placar em palavras: a eleição apertada (a maioria) e a folgada. A eleição seguinte usa a palavra seguinte. */
+export const PLACAR_APERTADO = ['por pouco', 'por um fio', 'numa apuração apertada', 'no voto a voto'] as const;
+export const PLACAR_FOLGADO = ['com folga', 'sem susto', 'com sobra'] as const;
+
+/**
+ * O resultado da eleição em palavras. O placar vira "por pouco" (a maioria das
+ * eleições sai coladinha) ou "com folga"; o número só aparece no meio do
+ * caminho. Quem continua conta as eleições seguidas; quem volta diz há quanto
+ * tempo estava fora. Nada aqui sorteia: o texto sai do placar, do ano e do livro.
+ */
+function anuncioDaEleicao(e: EstadoVida, vencedor: DefGoverno, ficou: boolean, votos: number, noSeuLugar: boolean): string {
+  // Uma eleição a cada quatro anos: o quociente do ano troca a palavra de uma eleição para a seguinte.
+  const rodada = Math.floor(e.ano / 4);
+  const placar =
+    votos <= 52 ? PLACAR_APERTADO[rodada % PLACAR_APERTADO.length]! : votos >= 60 ? PLACAR_FOLGADO[rodada % PLACAR_FOLGADO.length]! : `com ${votos}% dos votos válidos`;
+  const { seguidos, jaGovernou, foraHa } = mandatosDe(e, vencedor.id);
+  if (ficou) {
+    // A eleição de agora é a (seguidos + 1)ª que o bloco ganha em seguida nesta vida.
+    const vez = ORDINAIS[seguidos];
+    return seguidos >= 2 && vez ? `${vencedor.nome} ganha a ${vez} eleição seguida, ${placar}.` : `${vencedor.nome} continua no governo, ${placar}.`;
+  }
+  if (jaGovernou) {
+    const fora = foraHa !== null && foraHa > 0 ? ` depois de ${foraHa} anos fora` : '';
+    return `${vencedor.nome} volta ao governo${fora}, ${placar}${noSeuLugar ? ', e assume no seu lugar' : ''}.`;
+  }
+  return `${vencedor.nome} venceu ${placar}${noSeuLugar ? ' e assume no seu lugar' : ''}, prometendo ${vencedor.promessa}.`;
+}
+
+/** O voto de quem joga, lido contra o resultado: em quem votou, quem ganhou e se quem governava ficou. */
+function fraseDoVoto(voto: DefGoverno, vencedor: DefGoverno, ficou: boolean): string {
+  if (voto === vencedor) return ficou ? `Seu voto ajudou a manter ${vencedor.nome}, e agora você cobra.` : `Você votou ${emBloco(voto)} e agora vai cobrar.`;
+  return ficou ? `Você votou ${emBloco(voto)} e vai aguentar mais quatro anos de ${semArtigo(vencedor)}.` : `Você votou ${emBloco(voto)} e já ensaia o "eu avisei".`;
+}
+
 /**
  * A eleição geral, contada na posse (o ano seguinte ao da votação). Quem
  * governa fica com a chance da aprovação; os outros dividem o resto pelo
@@ -359,12 +421,8 @@ function eleicao(e: EstadoVida, c: Conteudo, incumbente: DefGoverno | undefined,
   const vencedor = eleitos[sortearIndice(e.rng, partes)]!;
   const parte = partes[eleitos.indexOf(vencedor)]!;
   const votos = Math.round(limitar(50 + 30 * (parte - 0.5) + normal(e.rng, 0, 3), 50.6, 72));
-  const nome = capitalizar(vencedor.nome);
   const ficou = vencedor === incumbente;
-  let texto = ficou
-    ? `Eleições gerais: ${nome} continua no governo, com ${votos}% dos votos válidos.`
-    : `Eleições gerais: ${nome} venceu com ${votos}% dos votos válidos${saiu !== null ? ' e assume no seu lugar' : ''}, prometendo ${vencedor.promessa}.`;
-  if (voto) texto += voto.governo === vencedor ? ' Você votou neles e agora vai cobrar.' : ' Você votou em outro e já ensaia o "eu avisei".';
+  const texto = `Eleições gerais: ${anuncioDaEleicao(e, vencedor, ficou, votos, saiu !== null)}${voto ? ` ${fraseDoVoto(voto.governo, vencedor, ficou)}` : ''}`;
   const causas: number[] = [];
   if (voto?.governo === vencedor && voto.entrada !== null) causas.push(voto.entrada);
   // Quem governava e perdeu numa recessão ou numa crise: a fase pesou no voto.

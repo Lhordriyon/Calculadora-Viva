@@ -164,8 +164,10 @@ export function operarBem(e: EstadoVida, c: Conteudo, op: OperacaoBem, reg: Muda
     if (def.categoria === 'moradia' && !moradiaDe(e)) morarEm(e, reg, b, origem);
     acertarSenhorio(e, reg, origem);
     const como = financiar ? `, com ${formatarDinheiro(entrada)} de entrada e o resto financiado` : '';
+    // A descrição do item já foi contada na primeira compra: a segunda conta quantos são.
+    const iguais = bensDe(e).filter((x) => x.t['item'] === def.id).length;
     return {
-      texto: `Comprou ${comArtigo(def)} por ${formatarDinheiro(def.preco)}${como}. ${def.descricao}`,
+      texto: iguais > 1 ? `Comprou mais ${comArtigo(def)} por ${formatarDinheiro(def.preco)}${como}; agora são ${iguais}.` : `Comprou ${comArtigo(def)} por ${formatarDinheiro(def.preco)}${como}. ${def.descricao}`,
       resumo: `comprou ${comArtigo(def)}${financiar ? ' financiado' : ''}`,
     };
   }
