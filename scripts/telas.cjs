@@ -10,13 +10,12 @@
  *
  * Uso:
  *   npm run telas -- [URL] [DIR_DOS_SAVES] [opções]
- *     URL            a build no ar (padrão http://localhost:4175/Calculadora-Viva/). Para medir a sua, suba-a numa
- *                    porta própria, em segundo plano:  npx vite build && npx vite preview --port 4176 --strictPort
+ *     URL            a build no ar (padrão http://localhost:4173/Calculadora-Viva/, a porta do vite preview). Suba-a
+ *                    em segundo plano:  npx vite build && npx vite preview --strictPort
  *                    e, para parar, num comando separado:  pkill -f "[v]ite preview"
  *     DIR_DOS_SAVES  onde procurar save-real.json, save-marco.json, save-evento.json, save75.json, save-filhos.json e
  *                    save-real-novos.json (na pasta ou em visual/, ux/ e auditoria/interface-cores/; .json.gz também
- *                    vale). Padrão: o scratchpad da auditoria. O save que faltar vem de test/telas/*.json.gz, as cópias
- *                    guardadas no repositório (as mesmas da auditoria, para comparar antes e depois): real, um príncipe
+ *                    vale). Padrão: test/telas/, as cópias guardadas no repositório (as mesmas da auditoria, para comparar antes e depois): real, um príncipe
  *                    de 30 anos, deputado, R$ 233 milhões e seis verbos; marco, aos 17, logo depois do ENEM; evento, aos
  *                    25, com um evento esperando a escolha; s75, um deputado federal de 75 anos; filhos, uma vida com
  *                    vários filhos; novos, o real com novidade nos verbos (o ponto de novidade).
@@ -24,13 +23,14 @@
  *     --so=grupos    só estes grupos (vírgulas): matriz, varredura, avanco, vidas, toques, folhas, cores, estatico
  *     --sem=grupos   todos menos estes (ex.: --sem=toques,vidas, os mais lentos, para iterar)
  *     --fonte=DIR    o repositório cujo src/ui/ os critérios de código leem (padrão: o deste arquivo)
- *     --paralelo=N   páginas abertas ao mesmo tempo (padrão: os núcleos da máquina, no mínimo 2)
+ *     --paralelo=N   páginas abertas ao mesmo tempo (padrão: os núcleos da máquina, no mínimo 2). Com a máquina
+ *                    ocupada (outro túnel rodando), uma vida jogada pode parecer travada por demora: use --paralelo=1
  *     --json=ARQ     grava todas as medidas e os critérios em JSON
  *     --md=ARQ       grava a tabela dos critérios em Markdown
  *     --detalhe      imprime também a matriz (uma linha por save, tela e letra, no tema escuro)
  *   Exemplos:
- *     npm run telas                                     a versão no ar em 4175 com os saves da auditoria
- *     npm run telas -- http://localhost:4176/Calculadora-Viva/ test/telas --json=telas.json
+ *     npm run telas                                     a build no ar em 4173 com os saves de test/telas
+ *     npm run telas -- http://localhost:4176/Calculadora-Viva/ --json=telas.json
  *     npm run telas -- --so=estatico                    só o código (classes órfãs, letra-grande, ouro), sem navegador
  *
  * A letra do sistema: toda font-size em px do CSS é multiplicada por k antes de o jogo montar (a folha é reescrita na
@@ -56,7 +56,6 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 
 const RAIZ = path.resolve(__dirname, '..');
-const SCRATCHPAD = '/tmp/claude-0/-home-user-Calculadora-Viva/2acc050b-6718-5500-826e-a556f05d9742/scratchpad';
 
 // ---------------------------------------------------------------------------------------------------------------
 // Argumentos
@@ -69,8 +68,8 @@ function opcao(nome, padrao) {
   const i = a.indexOf('=');
   return i < 0 ? true : a.slice(i + 1);
 }
-const URL_BASE = String(posicionais[0] || opcao('url', 'http://localhost:4175/Calculadora-Viva/'));
-const DIR_SAVES = path.resolve(String(posicionais[1] || opcao('saves', SCRATCHPAD)));
+const URL_BASE = String(posicionais[0] || opcao('url', 'http://localhost:4173/Calculadora-Viva/'));
+const DIR_SAVES = path.resolve(String(posicionais[1] || opcao('saves', path.join(RAIZ, 'test', 'telas'))));
 const PARALELO = Math.max(1, Number(opcao('paralelo', Math.max(2, os.cpus().length))) || 2);
 const FONTE = path.resolve(String(opcao('fonte', RAIZ)));
 const GRUPOS = ['matriz', 'varredura', 'avanco', 'vidas', 'toques', 'folhas', 'cores', 'estatico'];
@@ -406,7 +405,10 @@ function medirTela(op) {
   letras.sort((a, b) => a[0] - b[0]);
 
   // Os rótulos do cabeçalho.
-  const rotulos = Object.fromEntries((op.rotulos || []).map((p) => [p, cab ? palavraAVista(cab, p) : false]));
+  // Um rótulo que não está no cabeçalho por falta de dado (quem não tem renda não tem a linha da renda) não conta;
+  // o que está lá e o arranjo escondeu (display: none, cortado, fora da rolagem) conta como faltando.
+  const noCab = (p) => (cab?.textContent ?? '').toLocaleLowerCase('pt-BR').includes(p.toLocaleLowerCase('pt-BR'));
+  const rotulos = Object.fromEntries((op.rotulos || []).map((p) => [p, cab ? !noCab(p) || palavraAVista(cab, p) : false]));
 
   // A última entrada da linha do tempo: quanto do texto aparece (a medida de interface-cores/hierarquia.cjs). O balanço
   // do ano e os aluguéis não são história, seja pílula ou linha.
@@ -1345,7 +1347,9 @@ function avaliar(res) {
     criterio(2, '"R$" com reticências ou recortado (todas as telas)', telas, (m) => m.cortados.filter((c) => c.texto.includes('R$')).length, '≤', 0, {
       porque: (m) => m.cortados.filter((c) => c.texto.includes('R$')).map((c) => `"${c.texto}"`).slice(0, 3).join(', '),
     });
-    criterio(2, `rótulos à vista no cabeçalho (${ROTULOS.join(', ')}), faltando`, princ, (m) => ROTULOS.filter((r) => !m.rotulos[r]).length, '≤', 0, {
+    // O escopo do plano: 320 × 640 só com 1,0 e 1,15. Com letra maior, essa tela não comporta o cabeçalho inteiro e a
+    // história; o cabeçalho rola por dentro, que é o recurso das três faixas (a varredura de 320 serve aos cortados).
+    criterio(2, `rótulos à vista no cabeçalho (${ROTULOS.join(', ')}), faltando`, princ.filter((m) => !(m.w === 320 && m.k > 1.15)), (m) => ROTULOS.filter((r) => !m.rotulos[r]).length, '≤', 0, {
       porque: (m) => ROTULOS.filter((r) => !m.rotulos[r]).join(', '),
     });
     criterio(2, 'textos abaixo de 12 px com letra 1,0', telas.filter((m) => k(m, 1)), (m) => m.letras12, '≤', 0, { porque: (m) => m.menoresLetras.join(', ') });
@@ -1510,7 +1514,7 @@ async function main() {
       const r = await fetch(URL_BASE);
       if (!r.ok) sair(2, `${URL_BASE} respondeu ${r.status}`);
     } catch (e) {
-      sair(2, `${URL_BASE} fora do ar (${e.cause?.code || e.message}). Suba a build: npx vite build && npx vite preview --port 4176 --strictPort`);
+      sair(2, `${URL_BASE} fora do ar (${e.cause?.code || e.message}). Suba a build: npx vite build && npx vite preview --strictPort`);
     }
     try {
       for (const s of usados) lerSave(s);
