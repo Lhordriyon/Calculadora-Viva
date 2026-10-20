@@ -113,6 +113,34 @@ describe('validador', () => {
     expect(errosCom([{ id: 'eleicao_generica', idade: [20, 60], texto: 'O partido do seu tio ganhou a eleição.', resumo: 'viu uma eleição', efeitos: { felicidade: 1 } }])).not.toMatch(/partido/);
   });
 
+  it('com ator filho, recusa "filho" no lugar do ator (o storylet vale para cada filho, e {filho} é o primeiro)', () => {
+    const base = { tipo: 'npc', ator: ['filho'], idade: [30, 60], condicoes: { marcas: ['pai_mae'], 'ator.idade': { min: 5 } } };
+    const noTexto = errosCom([{ ...base, id: 'desenho_do_primeiro', texto: '{filho} fez um desenho.', resumo: '{ator} fez um desenho', efeitos: { felicidade: 1, 'ator.vinculo': 2 } }]);
+    expect(noTexto).toMatch(/desenho_do_primeiro: com ator filho.*\{filho\}/);
+    const noEfeito = errosCom([{ ...base, id: 'colo_do_primeiro', texto: '{ator} pediu colo.', resumo: '{ator} pediu colo', efeitos: { felicidade: 1, 'filho.vinculo': 2 } }]);
+    expect(noEfeito).toMatch(/colo_do_primeiro: com ator filho.*"filho\.vinculo"/);
+    const certo = errosCom([{ ...base, id: 'colo_de_cada_um', texto: '{ator} pediu colo.', resumo: '{ator} pediu colo', efeitos: { felicidade: 1, 'ator.vinculo': 2 } }]);
+    expect(certo).not.toMatch(/colo_de_cada_um/);
+  });
+
+  it('só o storylet que o nascimento de um irmão agenda fala dos dois filhos ({filho} e {ator})', () => {
+    const ciume = { tipo: 'npc', ator: ['filho'], apenasAgendado: true, condicoes: { marcas: ['pai_mae'] }, resumo: '{ator} chegou', efeitos: { felicidade: 1 } };
+    const nascimento = (id: string, condicoes: Record<string, unknown>, evento: string) => ({
+      id,
+      idade: [20, 45],
+      condicoes,
+      texto: 'Nasceu {filho}.',
+      resumo: 'teve {filho}',
+      efeitos: { felicidade: 1, personagens: ['filho'], marcas: ['pai_mae'], agendar: [{ evento, em: 2 }] },
+    });
+    // Agendado pelo segundo nascimento (quem agenda exige pai_mae): o ator é o irmão novo, e {filho} é o mais velho.
+    const doIrmao = errosCom([nascimento('nasce_o_irmao', { marcas: ['pai_mae'] }, 'ciume_do_irmao_novo'), { ...ciume, id: 'ciume_do_irmao_novo', texto: '{filho} tem ciúme de {ator}.' }]);
+    expect(doIrmao).not.toMatch(/com ator filho/);
+    // Agendado pelo primeiro nascimento: o ator pode ser o próprio primeiro filho.
+    const doPrimeiro = errosCom([nascimento('nasce_o_primeiro', {}, 'ciume_do_primeiro'), { ...ciume, id: 'ciume_do_primeiro', texto: '{filho} tem ciúme de {ator}.' }]);
+    expect(doPrimeiro).toMatch(/ciume_do_primeiro: com ator filho/);
+  });
+
   it('{cacula} é um filho: exige a qualidade que garante os filhos', () => {
     const cacula = (id: string, condicoes?: Record<string, unknown>) => ({ id, idade: [30, 40], ...(condicoes ? { condicoes } : {}), texto: '{cacula} dormiu no sofá.', resumo: 'viu {cacula} dormir no sofá', efeitos: { felicidade: 1 } });
     expect(errosCom([cacula('cacula_sem_filho')])).toMatch(/cacula_sem_filho.*usa \{cacula\}/);

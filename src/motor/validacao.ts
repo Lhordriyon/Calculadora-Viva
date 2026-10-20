@@ -288,6 +288,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   // ---- personagens que um efeito cria e as qualidades que os garantem
   const marcasDoPapel = new Map<string, Set<string>>();
   const agendados = new Set<string>(AGENDADOS_PELO_MOTOR);
+  /** Quem agenda cada storylet: o storylet e o bloco de efeitos do agendamento. */
+  const agendadoPor = new Map<string, { s: Storylet; ef: Efeitos }[]>();
   for (const s of c.storylets) {
     const atores = s.ator;
     for (const b of blocosDe(s, nomeDe(s))) {
@@ -330,6 +332,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       }
       for (const ag of ef.agendar ?? []) {
         agendados.add(ag.evento);
+        agendadoPor.set(ag.evento, [...(agendadoPor.get(ag.evento) ?? []), { s, ef }]);
         if (!c.porId.has(ag.evento)) erro(b.onde, `agenda storylet inexistente "${ag.evento}"`);
         if (Array.isArray(ag.em) && ag.em[0] > ag.em[1]) erro(b.onde, `faixa de agendamento invertida para "${ag.evento}"`);
       }
@@ -419,6 +422,16 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   }
 
   // ---- storylets
+  /**
+   * Só o storylet que o nascimento de um irmão agenda pode falar dos dois filhos: o agendamento é sobre quem nasceu (o
+   * ator), e quem agendou já exigia uma qualidade que garante o primeiro filho, então {filho} é outra pessoa.
+   */
+  const doPrimeiro = marcasDoPapel.get('filho') ?? new Set<string>();
+  const doIrmaoNovo = (s: Storylet): boolean => {
+    const quem = agendadoPor.get(s.id) ?? [];
+    if (!s.apenasAgendado || AGENDADOS_PELO_MOTOR.includes(s.id) || quem.length === 0) return false;
+    return quem.every(({ s: t, ef }) => (ef.personagens ?? []).includes('filho') && qualidadesGarantidas(t.condicoes).some((m) => doPrimeiro.has(m)));
+  };
   for (const s of c.storylets) {
     const onde = nomeDe(s);
     const tipo = tipoDe(s);
@@ -444,6 +457,11 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     }
     if (tipo === 'npc' && !s.escolhas && !/^\{ator(\.quem)?\}/.test(s.resumo)) {
       aviso(onde, 'storylet de personagem sem escolha: o resumo começa pelo sujeito ({ator.quem} ...)');
+    }
+    // Com ator filho, o storylet vale para cada filho, e "filho" é sempre o primeiro: o texto e os efeitos falam do ator.
+    if (s.ator?.includes('filho') && !doIrmaoNovo(s)) {
+      const citados = citacoesDoFilho(s);
+      if (citados.length > 0) erro(onde, `com ator filho, "filho" é o primeiro filho, não o ator (${citados.slice(0, 3).join(', ')}): use {ator} e "ator.x"`);
     }
     verificarTextos(c, s, onde, marcasDoPapel, erro, aviso);
   }
@@ -478,6 +496,27 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (let idade = 1; idade <= 100; idade++) {
     if (!c.linhas.some((l) => !l.condicoes && l.idade[0] <= idade && idade <= l.idade[1])) aviso('linhas.json', `nenhuma linha sem condição cobre a idade ${idade}`);
   }
+}
+
+/** Onde o storylet cita o papel "filho" ({filho}, {filho:o|a}, "filho.vinculo", "para": "filho"), fora o ator e quem ele cria. */
+function citacoesDoFilho(s: Storylet): string[] {
+  const achados = new Set<string>();
+  const ver = (x: unknown): void => {
+    if (typeof x === 'string') {
+      if (/^filho(\.|$)/.test(x)) achados.add(`"${x}"`);
+      for (const m of x.matchAll(/\{filho(?:[.:][^{}]*)?\}/g)) achados.add(m[0]);
+    } else if (Array.isArray(x)) {
+      for (const y of x) ver(y);
+    } else if (x !== null && typeof x === 'object') {
+      for (const [k, v] of Object.entries(x)) {
+        if (k === 'ator' || k === 'personagens') continue;
+        if (/^filho\./.test(k)) achados.add(`"${k}"`);
+        ver(v);
+      }
+    }
+  };
+  ver(s);
+  return [...achados];
 }
 
 function textosDe(s: Storylet): string[] {
