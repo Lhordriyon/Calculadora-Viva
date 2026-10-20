@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { fichasUsadas, NOMES_VERBO, type AcaoDisponivel } from '../motor/acoes.ts';
 import type { Parentesco } from '../motor/herdeiro.ts';
 import { fichasDoAno } from '../motor/regras.ts';
@@ -47,11 +47,30 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
   useEffect(() => setAberto(null), [momento]);
   // O voltar do celular fecha a lista do verbo.
   useVoltar(aberto !== null, () => setAberto(null));
+  // As opções do evento nunca saem da tela: primeiro a história cede até três linhas, depois o texto do evento
+  // rola (até duas); se ainda faltar, a história cede o resto (só neste evento).
+  const cartao = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const c = cartao.current;
+    const linha = c?.closest('#app')?.querySelector<HTMLElement>('main.vida');
+    if (!c || !linha) return;
+    const ceder = () => {
+      const falta = c.scrollHeight - c.clientHeight;
+      if (falta > 1) linha.style.setProperty('--min-vida', `${Math.max(0, linha.clientHeight - falta)}px`);
+    };
+    ceder();
+    const olho = new ResizeObserver(ceder);
+    olho.observe(c);
+    return () => {
+      olho.disconnect();
+      linha.style.removeProperty('--min-vida');
+    };
+  }, [chave]);
 
   if (p) {
     return (
       <div class="palco com-evento">
-        <section class="cartao-evento" key={chave} aria-live="polite" aria-labelledby="texto-evento">
+        <section class="cartao-evento" key={chave} ref={cartao} aria-live="polite" aria-labelledby="texto-evento">
           <p class="quando">
             {anos(vida.idade)} · {vida.ano}
           </p>

@@ -524,6 +524,13 @@ button {
   color: var(--ruim);
 }
 
+/* Na tela estreita com a letra grande, o cargo sai do cabeçalho (ele está na folha Carreira) e o dinheiro cabe. */
+@container cabecalho (max-width: 12em) {
+  .saldo .cargo {
+    display: none;
+  }
+}
+
 .saldo:focus-visible {
   outline: 3px solid var(--inteligencia);
   outline-offset: 2px;
@@ -536,6 +543,7 @@ button {
    do cartão) e esmaece nas bordas, para o corte de cima e de baixo não parecer coisa por baixo. */
 .vida {
   flex: 1 1 0;
+  container: vida / inline-size;
   scrollbar-width: thin;
   scrollbar-color: var(--borda) transparent;
   min-height: min(20dvh, 180px);
@@ -546,7 +554,7 @@ button {
 }
 
 .vida.com-evento {
-  min-height: 3lh;
+  min-height: var(--min-vida, 3lh);
 }
 
 .linha-do-tempo {
@@ -681,6 +689,13 @@ button {
 
 .entrada .balanco .ruim {
   color: var(--ruim);
+}
+
+/* Uma linha só: na faixa estreita, fica o patrimônio, e o resto (os aluguéis) está no extrato da folha Dinheiro. */
+@container vida (max-width: 24em) {
+  .entrada .balanco .extra {
+    display: none;
+  }
 }
 
 .chips {

@@ -128,7 +128,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         {vida.vivo && (renda >= 1 || setor) && (
           <span class="item">
             Renda <b>{renda >= 1 ? `${dinheiroCurto(renda / 12)}/mês` : 'nenhuma'}</b>
-            {setor && setor !== titulo && ` · ${setor}`}
+            {setor && setor !== titulo && <span class="cargo"> · {setor}</span>}
           </span>
         )}
       </button>

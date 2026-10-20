@@ -76,7 +76,7 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) 
         {balanco.length > 0 && (
           <p class="balanco">
             {balanco.map((c, i) => (
-              <span class={c.ruim ? 'ruim' : undefined} key={c.texto}>
+              <span class={[c.ruim && 'ruim', i > 0 && 'extra'].filter(Boolean).join(' ') || undefined} key={c.texto}>
                 {i > 0 ? ' · ' : ''}
                 {c.texto}
               </span>
