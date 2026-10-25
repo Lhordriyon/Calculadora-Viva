@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Folha } from './Folha.tsx';
-import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal } from '../motor/campos.ts';
+import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -11,6 +11,7 @@ import { padraoDe } from '../motor/economia.ts';
 import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
 import { ehDaEmpresa, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
+import { anosParaVencer, chanceDeCalote, cupomDe, precoDoTitulo, taxaDoTitulo, type Prazo } from '../motor/tesouro.ts';
 import {
   ANOS_PARA_CADUCAR,
   ANOS_PARA_LEILAO,
@@ -20,6 +21,7 @@ import {
   MAX_EMPRESAS,
   PATRIMONIO_SEM_GASTO,
   PRAZO_ACORDO,
+  PRAZOS_DO_TITULO,
 } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
@@ -484,6 +486,93 @@ function Investimentos({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/** "4,7%": a taxa do título, com vírgula. */
+function taxaTexto(t: number): string {
+  return `${String(t).replace('.', ',')}%`;
+}
+
+/** "aos 35, emprestou R$ 100 mil ao governo por 20 anos", ou "veio de herança": de onde veio o título. */
+function deOndeVeioOTitulo(vida: EstadoVida, tit: Entidade): string {
+  const origem = Number(tit.t['origem']);
+  const h = Number.isFinite(origem) ? vida.historico.find((x) => x.id === origem) : undefined;
+  if (!h) return '';
+  return h.ref === 'tesouro:comprarTitulo' ? `aos ${h.idade}, ${h.resumo ?? 'comprou'}` : 'veio de herança';
+}
+
+/**
+ * O Tesouro: emprestar ao governo por 5, 10 ou 20 anos, com a taxa de cada prazo à vista; os títulos que você tem (o
+ * cupom, o vencimento, o preço de hoje) e vender antes; o risco de calote quando a dívida passa do ponto.
+ */
+function Tesouro({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [fracao, setFracao] = useState(0.25);
+  const [prazo, setPrazo] = useState<Prazo>(10);
+  const eu = vida.entidades['eu']!;
+  const conta = Math.max(0, eu.n['dinheiro'] ?? 0);
+  const valor = Math.floor(conta * fracao);
+  const op: Operacao = { tipo: 'comprarTitulo', valor, prazo };
+  const motivo = motivoParaNaoOperar(vida, conteudo, op);
+  const titulos = titulosDe(vida);
+  const divida = vida.entidades['pais']?.n['divida'] ?? 0;
+  const calote = chanceDeCalote(vida);
+  return (
+    <fieldset class="grupo">
+      <legend>Tesouro</legend>
+      <p class="nota">
+        Emprestar ao governo: o cupom cai na conta todo ano e o dinheiro volta no vencimento. A taxa (acima da inflação, já sem o imposto) fica travada na compra; vender antes é
+        pelo preço do dia.
+      </p>
+      {vida.idade >= 18 ? (
+        <>
+          <Quanto fracao={fracao} aoMudar={setFracao} rotulo="Quanto emprestar" />
+          <div class="escolhas-origem" role="group" aria-label="Por quanto tempo">
+            {PRAZOS_DO_TITULO.map((p) => (
+              <button type="button" class="chip-origem" key={p} aria-pressed={prazo === p} onClick={() => setPrazo(p)}>
+                {p} anos · {taxaTexto(taxaDoTitulo(vida, p))}
+              </button>
+            ))}
+          </div>
+          <button class="botao grande" type="button" disabled={motivo !== null} onClick={() => aoOperar(op)}>
+            Emprestar {formatarDinheiro(valor)} por {prazo} anos
+          </button>
+          {motivo && <p class="nota">Agora não: {motivo}.</p>}
+        </>
+      ) : (
+        <p class="nota">Os títulos que vieram de herança ficam com a família até os 18: o cupom cai na sua conta, e vender é decisão de adulto.</p>
+      )}
+      {calote > 0 ? (
+        <p class="nota">
+          <span class="atrasada">Risco de calote: {Math.round(calote * 100)}% neste ano.</span> Com a dívida em {Math.round(divida)}% do PIB e a economia mal, o governo pode não pagar tudo: quem
+          tem título perde parte do que emprestou.
+        </p>
+      ) : divida > 90 ? (
+        <p class="nota">A dívida passou de 90% do PIB: a taxa já cobra o risco. Acima de 100%, numa recessão, o governo pode dar calote.</p>
+      ) : null}
+      {titulos.map((tit) => {
+        const preco = precoDoTitulo(vida, tit);
+        const faltam = anosParaVencer(vida, tit);
+        const veio = deOndeVeioOTitulo(vida, tit);
+        const vender: Operacao = { tipo: 'venderTitulo', id: tit.id };
+        return (
+          <div class="bem-meu" key={tit.id}>
+            <p>
+              <b>{tit.nome}</b> · {formatarDinheiro(tit.n['valor'] ?? 0)} · IPCA + {taxaTexto(tit.n['taxa'] ?? 0)} · cupom de {formatarDinheiro(cupomDe(tit))} por ano
+            </p>
+            <p class="nota">
+              Vence {faltam === 0 ? 'neste ano' : faltam === 1 ? 'no ano que vem' : `daqui a ${faltam} anos`} · hoje vale {formatarDinheiro(preco)}
+              {veio ? ` · ${veio}` : ''}
+            </p>
+            <div class="escolhas-origem">
+              <button type="button" class="chip-origem" disabled={motivoParaNaoOperar(vida, conteudo, vender) !== null} onClick={() => aoOperar(vender)}>
+                Vender por {formatarDinheiro(preco)}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </fieldset>
+  );
+}
+
 const DESCRICAO_PADRAO = (p: Padrao): string => {
   const guarda = Math.round((1 - GASTO_DA_SOBRA[p]) * 100);
   const humor = FELICIDADE_DO_PADRAO[p];
@@ -860,6 +949,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
         {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <Investimentos vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
+        {(vida.idade >= 18 || titulosDe(vida).length > 0) && <Tesouro vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <PadraoDeVida vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         <div class="acoes">
           <button class="botao secundario" type="button" onClick={aoFechar}>

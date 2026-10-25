@@ -5,7 +5,8 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import type { Politica } from '../motor/constantes.ts';
 import { ACOES_DIPLOMATICAS, chanceDeSancao, defEstrangeiro, oPais, parceirosDe, type AcaoDiplomatica } from '../motor/diplomacia.ts';
 import type { DefPolitica, EfeitoDePolitica } from '../motor/esquema.ts';
-import { indicadoresDoPais } from '../motor/campos.ts';
+import { indicadoresDoPais, valorDosTitulos } from '../motor/campos.ts';
+import { chanceDeCalote, dividaEmReais } from '../motor/tesouro.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
 import { ACORDO, ATO, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
@@ -125,7 +126,16 @@ function faixaDoIdh(idh: number): string {
   return 'baixo';
 }
 
-/** O tamanho do país: PIB e população (com a seta do ano em %), a renda por pessoa, a desigualdade e o IDH. */
+/** Quem empresta ao governo (bancos, fundos, gente de fora e quem compra título, você inclusive) e o risco de calote. */
+function quemEmpresta(vida: EstadoVida): string {
+  const seus = valorDosTitulos(vida);
+  const divida = dividaEmReais(vida) ?? 0;
+  const parte = seus >= 1 ? `você empresta ${formatarDinheiro(seus)}${divida > 0 && seus / divida >= 0.001 ? `, ${num((100 * seus) / divida)}% dela` : ''}` : 'quem compra título do Tesouro empresta a ele';
+  const calote = chanceDeCalote(vida);
+  return `o que o governo deve a bancos, fundos e gente de fora; ${parte}${calote > 0 ? `. Risco de calote neste ano: ${Math.round(calote * 100)}%` : ''}`;
+}
+
+/** O tamanho do país: PIB e população (com a seta do ano em %), a renda por pessoa, a desigualdade, o IDH e a dívida em reais. */
 function Numeros({ vida }: Pick<Props, 'vida'>) {
   const pais = vida.entidades['pais']!;
   const n = pais.n;
@@ -144,6 +154,8 @@ function Numeros({ vida }: Pick<Props, 'vida'>) {
     { nome: 'PIB per capita', valor: `${formatarDinheiro(pibPerCapita)} por pessoa`, nota: 'o PIB dividido por todo mundo, que é a média e não o seu salário' },
     { nome: 'Desigualdade (Gini)', valor: gini.toFixed(2).replace('.', ','), nota: '0 é todo mundo igual; 1, um só tem tudo. Sobe com a pobreza, cai com a educação' },
     { nome: 'IDH', valor: `${idh.toFixed(2).replace('.', ',')} (${faixaDoIdh(idh)})`, nota: 'saúde, educação e renda numa nota de 0 a 1' },
+    // Num save de antes do país ter tamanho, o PIB nasce no primeiro ano: até lá, a dívida em reais não aparece.
+    ...(dividaEmReais(vida) !== undefined ? [{ nome: 'Dívida pública', valor: formatarDinheiro(dividaEmReais(vida)!), nota: quemEmpresta(vida) }] : []),
   ];
   return (
     <dl class="estatisticas">

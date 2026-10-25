@@ -1701,8 +1701,9 @@ button {
   gap: 6px;
 }
 
-/* A dívida atrasada (folha Dinheiro › Dívidas). */
-.bem-meu .atrasada {
+/* A dívida atrasada (folha Dinheiro › Dívidas) e o risco de calote (folha Dinheiro › Tesouro). */
+.bem-meu .atrasada,
+.nota .atrasada {
   color: var(--ruim);
   font-weight: 600;
 }
