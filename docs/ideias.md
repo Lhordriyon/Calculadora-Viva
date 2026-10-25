@@ -48,7 +48,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | Bloco | O que o dono pediu | Ideias | Estado |
 |---|---|---|---|
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
-| B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | em andamento (25/10): o título na conta pessoal e o calote; a empresa espera o caixa (I-11) |
+| B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
 | C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | depois do B |
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
@@ -84,7 +84,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-31 | Tesouro: o orçamento do Estado em reais | 4 | Alta | parcial (bloco B): a dívida em reais e quem empresta |
 | I-32 | Banco central e política monetária | 4 | Média | proposta |
 | I-33 | Moedas por país, regime cambial e moeda de reserva | 4 | Média | proposta |
-| I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | em andamento (bloco B): o título de quem joga e o calote |
+| I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | feita em parte (bloco B, 25/10): o título de quem joga e o calote; faltam a empresa e o contágio |
 | I-35 | Falência, reestruturação e intervenção | 4 | Média | proposta |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
@@ -651,6 +651,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - **O mundo tem tamanho:** até 5 títulos ao mesmo tempo, a partir de R$ 100, e nunca mais de 30% da dívida do país nas mãos de quem joga.
   - **A herança:** o título passa a quem herda (dividido como o resto do espólio) e vence na vida dele, com a herança como causa.
   - **A dívida em reais** (PIB × dívida) aparece na folha País, com o que quem joga empresta ao governo e o risco de calote à vista.
+  - **As histórias também compram:** o efeito `comprarTitulo` (o "Investir no Tesouro Direto" do primeiro investimento) empresta uma fração da conta, com a história de causa; sem como comprar, vai para a renda fixa.
 - **Fica para depois, com o motivo:**
   - o título comprado pela empresa: a empresa não tem caixa (é um valor que cresce), e o cupom não teria onde cair; vem com a I-11;
   - o orçamento item por item (receita, gasto e juros em reais): muda a conta da dívida, que hoje é uma reação fiscal em pontos do PIB, e os portões do país vivo (a I-31 inteira);
@@ -663,7 +664,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - sem calote, o país vivo não muda (as fases e as estatísticas dentro das faixas atuais);
   - nenhuma estratégia domina.
 - **Prioridade:** Alta · bloco B do dono.
-- **Estado:** em andamento (bloco B, 25/10).
+- **Estado:** feita em parte (bloco B, 25/10): o título de quem joga, o cupom, o vencimento, a venda, o calote e a herança. Faltam o título da empresa (depois da I-11) e o contágio no crédito (com a I-30).
 
 ### I-35 · Falência, reestruturação e intervenção
 - **Problema:** a empresa quebra (`empresa_quebrou`), mas não há credores, recuperação nem intervenção.

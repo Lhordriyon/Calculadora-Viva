@@ -179,6 +179,7 @@ Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`
 - **`eu.titulos`** (ou `"titulos"` nas condições) é quanto quem joga emprestou ao governo, em reais: `"titulos": { "min": 5000 }` pede alguém com título, e `{eu.titulos}` no texto sai como dinheiro ("R$ 731 mil"). A régua dos dilemas mede o storylet que pede título com um título típico (R$ 20 mil a 5%, com 15 anos pela frente).
 - **`pais.calote`** é a qualidade do país que deu calote, com o ano: `"marcaHa": [{ "marca": "pais.calote", "max": 2 }]` é "até dois anos depois do calote". O calote é do motor (a dívida acima de 100% do PIB numa recessão ou numa crise); o conteúdo lê.
 - **`venderTitulos`** (efeito) vende uma fração de cada título pelo preço do dia: o medo do calote no noticiário (`58-tesouro.json`), a conta que apertou.
+- **`comprarTitulo`** (efeito) empresta ao governo uma fração da conta num título de 5, 10 ou 20 anos, com a taxa do dia e a história de causa (o vencimento diz "que você comprou aos 19"). Sem como comprar (antes dos 18, cinco títulos, menos de R$ 100), o dinheiro vai para a renda fixa. Texto que diz "Tesouro Direto" usa este efeito; o que investe pelo perfil (`investir`) não fala em Tesouro, porque o perfil pode ser metade em ações.
 - O storylet `depois_do_calote` é agendado pelo motor no ano seguinte ao calote, com ele de causa.
 
 ## Efeitos
@@ -208,6 +209,7 @@ Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`
 | `morte` | `"num acidente de moto"` | quem joga morre; completa "morreu aos N anos, …" |
 | `realocar` | `{ "de": "acoes", "para": "renda_fixa", "fracao": 1 }` | move dinheiro entre a conta e as classes investidas |
 | `venderTitulos` | `1` ou `0.5` | vende essa fração de cada título do Tesouro pelo preço do dia (o juro que caiu dá lucro, o que subiu dá prejuízo) |
+| `comprarTitulo` | `{ "fracao": 0.6, "prazo": 10 }` | empresta ao governo essa fração da conta num título do Tesouro (5, 10 ou 20 anos); sem como comprar, vai para a renda fixa |
 | `abrirEmpresa` | `{ "setor": "comercio", "valor": 30000 }` | abre a empresa de quem joga (uma por vez): `setor` ou `copiarSetor` (`"ator.setor"`); `valor` (o trabalho criou, ninguém paga), `capital` (quem joga põe) ou `fracao` do dinheiro de `de` (o negócio da família: `"de": "ator"`); `participacao` e `tracao` opcionais; `{capital}` no texto |
 | `empresaFator` | `0.7` | multiplica o valor da empresa (o contrato grande, a crise do setor) |
 | `rodada` | `{ "parte": 0.2 }` | investidores compram 20% pelo valor de agora: o dinheiro entra na empresa e a parte de quem joga encolhe; `{rodada}` no texto |

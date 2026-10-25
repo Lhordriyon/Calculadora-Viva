@@ -41,8 +41,9 @@
 | 👪 **O título passa a quem herda** e vence na vida dele | |
 | 🇧🇷 **A dívida pública em reais** na folha País, com a parte que é sua e o risco de calote | |
 | 📖 **Três histórias novas:** o primeiro cupom, o calote no noticiário (vender ou segurar?) e o dia seguinte ao calote | |
+| 🔗 **O Tesouro Direto das histórias é de verdade:** "Investir no Tesouro Direto" no primeiro investimento compra um título que aparece na folha e vence dez anos depois, lembrando a idade em que você comprou | |
 
-No túnel de vento, a estratégia cautelosa compra título em 99,6% das vidas e a arriscada em nenhuma. O calote aparece em 1% das vidas e só leva de quem tinha título ou renda fixa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com a correção anterior (C3).
+No túnel de vento (10.000 vidas), a estratégia cautelosa compra título pela folha em 99,6% das vidas e a arriscada em nenhuma; pelas histórias, de 19% a 58% das vidas ganham um. O calote aparece em 0,9% das vidas e só leva de quem tinha título ou renda fixa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com a correção anterior (C3).
 
 ## 🗺️ Os próximos blocos
 

@@ -27,7 +27,8 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 🇧🇷 **A folha País** mostra a dívida pública em reais, quanto dela é sua e o risco de calote do ano.
 - 📖 **Conteúdo:**
   - três histórias novas: o primeiro cupom, o calote no noticiário e o dia seguinte ao calote;
-  - o efeito `venderTitulos` deixa uma escolha vender os títulos pelo preço do dia.
+  - o efeito `venderTitulos` deixa uma escolha vender os títulos pelo preço do dia, e o `comprarTitulo`, comprar um;
+  - "Investir no Tesouro Direto" (o primeiro investimento, a moeda do cachorrinho) compra um título de verdade, que aparece na folha e vence anos depois; a ação "investir com método", que investe pelo perfil, deixou de falar em Tesouro.
 - 🤖 **Os robôs:**
   - a cautelosa empresta ao governo quando o título longo paga bem;
   - a aleatória compra e vende de vez em quando;
