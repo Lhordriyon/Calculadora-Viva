@@ -35,7 +35,7 @@
 | ✅ O que esta correção trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
 | 📏 **A régua do túnel mede direito:** os dilemas se medem em três bolsos (R$ 1 mil, R$ 10 mil e R$ 50 milhões), com a empresa quando o storylet pede uma. O "arriscar nunca compensa" passou a dividir pelos 286 storylets que a conta olha, não pelos 641 | 💰 **O dinheiro do conteúdo que não acompanha a fortuna** (o próximo trabalho grande da auditoria: entra antes em `ideias.md`, com os números alvo) |
-| 🎲 **O robô sorteia no empate:** a cautelosa e a arriscada votavam 100% num bloco só; agora cada bloco recebe de 21% a 29% dos votos da cautelosa | ⚖️ O risco que compensa (rebalancear o que não é armadilha) |
+| 🎲 **O robô sorteia no empate:** a cautelosa e a arriscada votavam 100% num bloco só; agora cada bloco recebe de 20% a 27% dos votos da cautelosa e de 15% a 35% dos da arriscada | ⚖️ O risco que compensa (rebalancear o que não é armadilha) |
 | ⚖️ **Zero falsos dilemas** (eram 7): o acordo com o inquilino e o Pix da batida viraram aposta, a cirurgia tem 92% de chance, o clube de ciências custa as tardes de futebol, e negar tudo pode render alívio e o maior contrato do ano. Um teste confere com o conteúdo de verdade | 🧠 Conversa livre com as pessoas e as relações entre os personagens |
 | 🏛️ **Dois mandatos seguidos no Executivo:** prefeito, governador e presidente não disputam o terceiro seguido; a opção aparece desabilitada com o motivo. As cautelosas com mais de dois mandatos seguidos caíram de 42,5% para 0% | 📱 O ícone novo no app Android instalado |
 | 🚫 **Quem tem cargo não faz bico:** político, rei e regime não fazem mais bico nem entrega (eram 1.427 em ano de mandato a cada 120 vidas arriscadas) | |

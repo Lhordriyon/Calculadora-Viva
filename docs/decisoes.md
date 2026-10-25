@@ -1218,6 +1218,52 @@ Nenhum portão novo falha.
   A meta de 30 ms já falhava antes (69,8 ms na C2); esta decisão fica registrada. O próximo corte é guardar, dentro do ano, o que cada pessoa pode fazer (o robô monta a lista de todos os verbos a cada ficha).
 - **Os três agentes de conteúdo não chegaram a escrever nada** (o limite de uso parou todos no começo). O conteúdo novo foi escrito direto: 14 storylets de relação e 34 de quem sabe quem você é.
 
+## Correção C3: regras que se medem direito (25/10)
+
+O plano de correção de 20/10 tinha um quarto bloco, a C3: quatro regras do motor, de custo pequeno, que mediam ou funcionavam errado. Ela ficou para depois duas vezes. Primeiro, o limite de uso parou os agentes; depois, o dono pediu o bloco R. Parte do item 17 já estava escrita numa worktree do workflow, sem commit. Ela foi trazida para cima da `main` de agora e terminada.
+
+| Item | Medida | Antes | Depois |
+|---|---|---|---|
+| 17. A régua do túnel | último voto da cautelosa e da arriscada (120 vidas cada) | 100% num bloco | de 20% a 27% e de 15% a 35% em cada |
+| | denominador do "arriscar nunca compensa" | 641 storylets com escolha | 286 que a conta olha |
+| 18. Falsos dilemas | opções melhores em tudo, nos três bolsos | 7 | 0 |
+| 19. O Executivo | cautelosas com mais de dois mandatos seguidos no mesmo cargo (120 vidas) | 42,5% | 0% |
+| | bicos e entregas em ano de mandato (120 vidas arriscadas) | 1.427 | 0 |
+| 20. A herdeira | vidas de família muito rica com pai ou mãe "demitido" (400 vidas até os 40) | 81% (59 de 73) | 8% (6 de 73) |
+| | demissões de quem vive de patrimônio (120 vidas por estratégia) | de 26 a 36 | 0 |
+
+**O túnel** (10.000 vidas; antes = o bloco R publicado, depois = a C3):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma (a arriscada continua a mais feliz: 80,8 × 77,7 da cautelosa) |
+| Falsos dilemas | 7, num bolso só | 0, nos três bolsos |
+| Arriscar nunca compensa | 134 "de 641" | 129 de 286 no típico, 130 no pobre, 143 no rico |
+| Saturação V5 / V20 | 55,4% / 90,1% | 56,0% / 89,9% |
+| Assinaturas por 1.000 vidas (sem a origem) | 910 (589) | 903 (583) |
+| Mobilidade: mesmo quintil / Spearman | 27,2% / 0,34 | 26,7% / 0,34 |
+| Patrimônio p90/p10 | 595,9× | 621,3× |
+| Desvio da felicidade média | 8,74 | 8,73 |
+| Patrimônio negativo ao morrer | 0,8% | 0,6% |
+| Mudanças causadas pelo jogador | 44,3% | 44,2% |
+| Toques por vida | 446,4 | 448,5 |
+| CPU por vida (túnel) | 83,9 ms | 88,9 ms; no A/B na mesma máquina, 92,4 → 88,4 ms: a C3 não custa nada a mais |
+
+Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,83 → 0,84), o bilionário feito (1,27% → 1,46%, com teto de 1%) e as assinaturas sem regressão (910 → 903, para ≥ 918). Nenhum portão novo falha. O primeiro `verificar` falhou com um storylet morto (a mensalidade da escola); o conserto está nas decisões abaixo.
+
+**Decisões tomadas sozinho:**
+- **A medida dos mandatos conta mandatos, não anos.** O ano da eleição entra nos dois mandatos, então dois mandatos seguidos dão 9 anos no cargo. A meta do plano, "mais de 8 anos seguidos", contaria quem cumpriu só os dois mandatos permitidos.
+- **O bico pede "sem cargo agora", não "sem a marca de político".** A qualidade `politico` fica para sempre depois do primeiro mandato, porque o fim do mandato só soma `ex_politico`. A condição `"cargo": false` também cobre o rei e o regime.
+- **Quem vive de patrimônio:**
+  - são 18 ocupações das classes e dois papéis de linhagem: o dono de fazenda e o ex-jogador da seleção, que apareceram como demitidos na medida;
+  - o diretor de multinacional continua demissível;
+  - o sorteio do desemprego no nascimento acontece do mesmo jeito, para as outras vidas não mudarem por causa disso;
+  - na crise, a perda é de 20% do patrimônio e da renda, com chance de 12% × (o desemprego da fase − 1) × o ciclo do setor. Para quem está em finanças, isso dá uns 19% ao ano na crise. Para comparar: a falência do negócio da família tem 8% e leva 60%.
+- **Os falsos dilemas sem qualidade nova.** O plano falava em "o Pix sem seguro: teste e agenda" e "o clube de ciências: um custo e uma qualidade que o ENEM lê". Ficaram o teste e o custo (as tardes de futebol), sem qualidade nova: cada qualidade nova pede dois leitores, e a troca já desfaz a dominância.
+- **O cliente preso.** O plano não o listava. Com a régua dos três bolsos, ele virou falso dilema no típico e no rico: perder o registro pesa mais com renda alta. A troca que sobrou é emocional: escapar dá alívio (+6 de felicidade) e o maior contrato do ano. Colaborar continua mais seguro e mais barato.
+- **A mensalidade da escola na crise ganhou tensão 2.** Era o storylet mais raro (menos de 0,05% das vidas) e sumiu nas 10.000 vidas, porque passou a disputar a vez com as iniciativas novas do filho.
+- **O fechamento do plano é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
