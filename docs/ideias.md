@@ -1237,6 +1237,34 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Média.
 - **Estado:** ideia (25/10).
 
+### I-105 · Correção C3: regras que se medem direito
+- **Problema:** a auditoria de 20/10 achou regras do motor que medem ou funcionam errado. Os quatro casos:
+  - **a régua do túnel:** o "arriscar nunca compensa" divide pelo total de storylets com escolha, não pelos que a conta olha. Os dilemas se medem num bolso só, e os storylets da empresa, sem empresa. No empate, o robô leva a primeira opção e vota 100% num bloco só;
+  - **os falsos dilemas:** há opções melhores ou iguais em tudo;
+  - **os mandatos sem fim:** 51% das cautelosas ficam mais de 8 anos seguidos no mesmo cargo executivo, e o político faz bico;
+  - **a herdeira demitida:** 81% das vidas de família muito rica têm pai ou mãe "demitido", até herdeira e banqueiro, com cesta básica de despedida.
+- **Módulos:** 1, 6, 9, 11.
+- **Depende de:** nada.
+- **Custo:**
+  - implementação: P (cada item);
+  - simulação: nenhum.
+- **Consome:** nada.
+- **Efeitos causais:**
+  - a régua mede em três bolsos (R$ 1 mil, R$ 10 mil e R$ 50 milhões), com a empresa típica quando o storylet pede uma, e o robô sorteia no empate;
+  - toda opção dominada ganha um motivo (custo, teste, consequência lida depois);
+  - prefeito, governador e presidente não disputam o terceiro mandato seguido, que aparece desabilitado com o motivo;
+  - quem tem cargo, coroa ou regime não faz bico nem entrega;
+  - quem vive de patrimônio não é demitido: perde dinheiro na crise, com texto próprio. A demissão de quem é rico não vem com cesta básica.
+- **Riscos:** os votos e os dilemas mudam o sorteio das vidas (o túnel inteiro muda), e uma estratégia pode passar a dominar.
+- **Aceitação:**
+  - cada bloco recebe de 15% a 35% dos últimos votos da cautelosa e da arriscada;
+  - 0 falsos dilemas nos três bolsos;
+  - 0% das vidas com mais de 8 anos seguidos no mesmo cargo executivo, e 0 bicos em ano de mandato;
+  - 0 demissões de quem vive de patrimônio, e no máximo 30% das vidas de família muito rica com pai ou mãe demitido;
+  - nenhuma estratégia dominante.
+- **Prioridade:** Alta · fecha o plano de correção do dono.
+- **Estado:** em andamento (25/10).
+
 ## Defeitos conhecidos
 
 Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num commit com teste, quando a fatia que mexe naquela parte passar por lá, ou antes se ficar barato.
