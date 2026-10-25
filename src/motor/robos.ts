@@ -270,9 +270,10 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
   );
-  // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência).
-  if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < 0.03) {
-    const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
+  // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência,
+  // e com bicho vivo ela pensa nisso mais vezes: o bicho morre cedo, e o storylet da herança dele precisa de vez).
+  const temBicho = e.entidades['pet'] !== undefined && e.entidades['pet']!.vivo !== false;
+  if (estrategia === 'aleatoria' && e.idade >= 30 && e.idade <= 75 && aleatorio(rng) < (temBicho ? 0.08 : 0.03)) {
     const para = temBicho && aleatorio(rng) < 0.6 ? 'pet' : sortear(rng, ['', 'amor', 'amigo', 'causa', 'sobrinho'] as const);
     if (pode(e, c, { tipo: 'testamento', para })) ops.push({ tipo: 'testamento', para });
   }

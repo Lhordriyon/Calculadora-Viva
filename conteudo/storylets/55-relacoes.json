@@ -485,7 +485,7 @@
     "tipo": "npc",
     "ator": ["filho"],
     "idade": [45, 95],
-    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 21 }, "ator.traco": ["ausente", "ambicioso"] },
+    "condicoes": { "marcas": ["pai_mae"], "ator.idade": { "min": 21 }, "ator.traco": ["ausente", "ambicioso", "trabalhador"] },
     "texto": "{ator} se mudou para outro país e manda foto de neve, de mercado caro e de um apartamento do tamanho do seu banheiro.",
     "resumo": "viu {ator} ir morar fora do país",
     "escolhas": [
