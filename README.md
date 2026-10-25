@@ -15,33 +15,33 @@
 
 ---
 
-## 🆕 Novidades: Bloco R · As pessoas da sua vida (25/10/2026)
+## 🆕 Novidades: Correção C3 · Regras que se medem direito (25/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** cada pessoa da sua vida passou a ter uma relação de verdade com você: a mãe, o pai, a avó, o amigo, o par e cada filho.
-> - Ela guarda mágoa, confia ou desconfia, sente saudade e lembra da melhor e da pior coisa que você fez com ela.
-> - Ela tem uma opinião sobre você, com o porquê ("Acha você generosa, mas sumida").
-> - Ela quer coisas da vida, cobra, desiste e age pelo que sabe de você.
-> - Quando ela morre, a morte conta o que foi a relação e o que faltou.
+> **O que mudou:** a última parte do plano de correção de 20/10. Quatro regras do motor mediam ou funcionavam errado:
+> - o túnel media os dilemas com a régua torta;
+> - havia escolhas em que uma opção era melhor em tudo;
+> - quem chegava ao Executivo ficava lá para sempre;
+> - a herdeira era "demitida", com cesta básica de despedida.
+>
+> Cada conserto foi medido antes e depois.
 
 > [!TIP]
-> **Para testar:** jogue duas vidas.
-> 1. Na primeira, cuide das pessoas. Abra a folha **Família**, toque **Fazer algo com…** e converse, dê o presente certo, peça desculpas. Quando sua mãe disser que nunca viu o mar, leve ela.
-> 2. Na segunda, suma: não visite ninguém, peça dinheiro e não devolva.
->
-> Depois compare o que a folha Família diz de você, quem aparece no seu aniversário de 70 anos e o texto das mortes.
+> **Para testar:**
+> - Chegue a prefeito ou prefeita pela folha Carreira e se reeleja. No fim do segundo mandato seguido, a candidatura aparece desabilitada com o motivo, e no cargo não tem mais bico.
+> - Nasça numa família muito rica pela escolha da origem: o pai herdeiro não é demitido, mas perde parte do patrimônio numa crise.
+> - Numa batida de carro, resolver no Pix agora tem risco.
 
-| ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
+| ✅ O que esta correção trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 💞 **Relação de verdade com cada pessoa:** afeto, confiança, mágoa e anos sem contato. A mágoa passa no ritmo de cada um (o generoso perdoa mais rápido que o rígido). Magoada, a pessoa briga mais e ajuda menos; com mágoa demais, rompe, e o par faz as malas | 🧠 **Consciência de verdade:** as pessoas seguem regras e textos escritos; elas não pensam nem conversam livremente. O jogo não tem servidor nem texto gerado. O que existe é o comportamento de quem conhece você: a opinião, a memória, as vontades e a reação |
-| 🪞 **O que cada um acha de você:** são 14 opiniões, de "um orgulho", "carinhoso" e "de palavra" a "sumido", "metido", "interesseiro" e "cabeça-quente". Elas saem do que a pessoa viu você fazer, do que todo mundo sabe (formatura, fama, fortuna) e do que só quem está perto sabe (o nome sujo), e cada uma mostra o porquê | 💬 Conversar com as pessoas com as suas palavras |
-| 🫥 **O que você deixou de fazer:** quem passa um ano doente sem ver você guarda a falta, e ela vira a pior lembrança ("de quando você não apareceu quando ela estava doente, aos 41") | 👥 As relações entre os personagens (a mãe com o pai, o amigo com o par) e o ex que continua existindo |
-| 🌊 **Vontades:** ver o mar, voltar à terra natal, ver o neto de perto, casar, ter um filho, um bicho, a entrada da casa, a viagem com o amigo e a festa de 80 anos. Realizar é uma escolha com a pessoa. A vontade que espera vira cobrança, e a que passa da hora vira falta | ⚙️ **Correção C3**, regras que se medem errado: a régua do dinheiro, os falsos dilemas, os mandatos sem fim, a herdeira |
-| 🕯️ **A morte conta a relação:** quem morre magoado, longe ou com uma vontade guardada deixa remorso. Quem estava perto e em paz deixa a despedida. E a morte diz o que faltou ("Ela nunca viu o mar.") | 📱 O ícone novo no app Android instalado |
-| 👴 **Os filhos aprendem com você:** na sua velhice, quem foi presente é cuidado. Quem sumiu recebe um "parabéns, muita saúde" às 23h47 | |
-| 🤝 **Fazer algo com cada pessoa:** a folha Família abre as ações com cada um, e cada ação gasta uma escolha do ano. Dá para conversar de verdade, dar o presente certo pelo gosto dela, pedir desculpas, pedir um Pix e realizar a vontade dela | |
+| 📏 **A régua do túnel mede direito:** os dilemas se medem em três bolsos (R$ 1 mil, R$ 10 mil e R$ 50 milhões), com a empresa quando o storylet pede uma. O "arriscar nunca compensa" passou a dividir pelos 286 storylets que a conta olha, não pelos 641 | 💰 **O dinheiro do conteúdo que não acompanha a fortuna** (o próximo trabalho grande da auditoria: entra antes em `ideias.md`, com os números alvo) |
+| 🎲 **O robô sorteia no empate:** a cautelosa e a arriscada votavam 100% num bloco só; agora cada bloco recebe de 21% a 29% dos votos da cautelosa | ⚖️ O risco que compensa (rebalancear o que não é armadilha) |
+| ⚖️ **Zero falsos dilemas** (eram 7): o acordo com o inquilino e o Pix da batida viraram aposta, a cirurgia tem 92% de chance, o clube de ciências custa as tardes de futebol, e negar tudo pode render alívio e o maior contrato do ano. Um teste confere com o conteúdo de verdade | 🧠 Conversa livre com as pessoas e as relações entre os personagens |
+| 🏛️ **Dois mandatos seguidos no Executivo:** prefeito, governador e presidente não disputam o terceiro seguido; a opção aparece desabilitada com o motivo. As cautelosas com mais de dois mandatos seguidos caíram de 42,5% para 0% | 📱 O ícone novo no app Android instalado |
+| 🚫 **Quem tem cargo não faz bico:** político, rei e regime não fazem mais bico nem entrega (eram 1.427 em ano de mandato a cada 120 vidas arriscadas) | |
+| 💼 **A herdeira não é demitida:** quem vive de patrimônio (herdeiro, investidor, banqueiro, acionista, dono, fazendeiro, o ex-jogador da seleção) não perde "o emprego": na crise, perde parte do que tem. A demissão de quem é rico vem com rescisão e bônus, não com cesta básica. Das vidas de família muito rica, as com pai ou mãe "demitido" caíram de 81% para 8% | |
 
-Em 200 vidas jogadas pelos robôs, quem cuida das pessoas (o robô cauteloso) se despede de alguém em todas as vidas e sente remorso em 8% delas. Quem negligencia (o robô arriscado) sente remorso em 60%, e em 56% alguém morre com uma vontade guardada. O túnel de vento joga as 10.000 vidas com as metas cumpridas. O histórico está no [📜 CHANGELOG](CHANGELOG.md).
+O túnel de vento joga as 10.000 vidas com as metas cumpridas. O histórico está no [📜 CHANGELOG](CHANGELOG.md), e o bloco anterior, as pessoas da sua vida, também.
 
 ## 🗺️ Os próximos blocos
 

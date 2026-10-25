@@ -1263,7 +1263,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - 0 demissões de quem vive de patrimônio, e no máximo 30% das vidas de família muito rica com pai ou mãe demitido;
   - nenhuma estratégia dominante.
 - **Prioridade:** Alta · fecha o plano de correção do dono.
-- **Estado:** em andamento (25/10).
+- **Estado:** feito (25/10, correção C3).
 
 ## Defeitos conhecidos
 

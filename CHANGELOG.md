@@ -4,6 +4,28 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📏 Correção C3 · Regras que se medem direito · 25/10/2026
+
+> [!NOTE]
+> O fim do plano de correção de 20/10: quatro regras do motor de custo pequeno, cada uma medida antes e depois.
+
+- 📏 **A régua do túnel:**
+  - os dilemas se medem em três bolsos de adulto (R$ 1 mil, R$ 10 mil e R$ 50 milhões na conta);
+  - o storylet que pede empresa se mede com uma empresa típica;
+  - o "arriscar nunca compensa" divide pelos storylets que a conta olha (286), não por todos os que têm escolha (641);
+  - no empate em tudo, o robô sorteia (a cautelosa votava 100% num bloco só).
+- ⚖️ **Zero falsos dilemas** nos três bolsos (eram 7), com um teste que confere o conteúdo de verdade.
+- 🏛️ **O Executivo:**
+  - prefeito, governador e presidente: dois mandatos seguidos, e o terceiro aparece desabilitado com o motivo;
+  - quem tem cargo, coroa ou regime não faz bico, entrega nem trabalho grande.
+- 💼 **Quem vive de patrimônio:**
+  - não é demitido nem nasce desempregado, e na crise perde parte do que tem;
+  - a demissão de quem é rico vem com rescisão e bônus, sem cesta básica;
+  - os textos das regras agora escolhem trechos pelo estado, como os storylets.
+- 🔧 **A mensalidade da escola na crise** ganhou tensão: era o storylet mais raro e sumia nas 10.000 vidas.
+
+**Ainda não tem:** o dinheiro do conteúdo que acompanha a fortuna, o risco que compensa, a conversa livre com as pessoas e o ícone novo no app Android.
+
 ## 💞 Bloco R · As pessoas da sua vida · 25/10/2026
 
 > [!NOTE]
