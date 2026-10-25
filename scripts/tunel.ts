@@ -745,6 +745,21 @@ const portoes12 = [
   ['Dívida atrasada caduca: acontece, e em no máximo metade das vidas com o nome sujo', sujas.length > 0 && comDivida((d) => d.caducou) > 0 && comDivida((d) => d.caducou, sujas) <= 0.5, `${pct(comDivida((d) => d.caducou))} das vidas; ${pct(comDivida((d) => d.caducou, sujas))} das sujas`],
 ] as const;
 
+// ---- o Tesouro (bloco B)
+const comTitulo = (vs: Vida[]): Vida[] => vs.filter((v) => v.tesouro.compras > 0);
+const parteQueCompra = ESTRATEGIAS.map((x) => comTitulo(vidas.filter((v) => v.estrategia === x)).length / Math.max(1, vidas.filter((v) => v.estrategia === x).length));
+const comCalote = vidas.filter((v) => v.tesouro.calotes > 0);
+const perderamSemTer = todasAsVidas.filter((v) => v.tesouro.perdeuSemTer).length;
+const portoesB = [
+  [
+    'Emprestar ao governo é escolha: alguma estratégia compra título em pelo menos 30% das vidas, e outra em menos de 5%',
+    Math.max(...parteQueCompra) >= 0.3 && Math.min(...parteQueCompra) < 0.05,
+    ESTRATEGIAS.map((x, i) => `${x} ${pct(parteQueCompra[i]!)}`).join(', '),
+  ],
+  ['O calote é raro: entre 0,2% e 5% das vidas veem um', comCalote.length / Math.max(1, vidas.length) >= 0.002 && comCalote.length / Math.max(1, vidas.length) <= 0.05, `${pct(comCalote.length / Math.max(1, vidas.length))} (${comCalote.length} vidas)`],
+  ['Quem perde no calote é quem tinha a dívida: nada sai de quem joga fora dos títulos e da renda fixa', perderamSemTer === 0, `${perderamSemTer} vidas`],
+] as const;
+
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
 const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
@@ -884,6 +899,32 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoes12) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O Tesouro (bloco B)');
+l();
+l(
+  'Quem joga empresta ao governo comprando título: a taxa fica travada na compra, o cupom cai na conta todo ano (o tesouro paga), o valor volta no vencimento e vender antes é pelo preço do dia. ' +
+    'Com a dívida acima de 100% do PIB, numa recessão ou numa crise, o governo pode dar calote: quem tinha título e renda fixa perde. Por estratégia, nas vidas sorteadas:',
+);
+l();
+l('| Estratégia | Comprou título | Compras (média de quem comprou) | Cupons na vida (mediana de quem comprou) | Venceram | Vendeu antes (com lucro) | Viu um calote | Perdeu no calote (mediana de quem perdeu) |');
+l('|---|---|---|---|---|---|---|---|');
+for (const estrategia of ESTRATEGIAS) {
+  const vs = vidas.filter((v) => v.estrategia === estrategia);
+  const compraram = comTitulo(vs);
+  const soma = (f: (v: Vida) => number, lista: Vida[]): number => lista.reduce((t, v) => t + f(v), 0);
+  const perderam = ordenar(vs.filter((v) => v.tesouro.perdaNoCalote >= 1).map((v) => v.tesouro.perdaNoCalote));
+  l(
+    `| ${estrategia} | ${pct(compraram.length / Math.max(1, vs.length))} | ${compraram.length ? num(soma((v) => v.tesouro.compras, compraram) / compraram.length, 1) : '—'} | ` +
+      `${compraram.length ? formatarDinheiro(percentil(ordenar(compraram.map((v) => v.tesouro.cupons)), 50)) : '—'} | ${num(soma((v) => v.tesouro.vencimentos, vs), 0)} | ` +
+      `${num(soma((v) => v.tesouro.vendas, vs), 0)} (${num(soma((v) => v.tesouro.vendasComLucro, vs), 0)}) | ${pct(vs.filter((v) => v.tesouro.calotes > 0).length / Math.max(1, vs.length))} | ` +
+      `${perderam.length ? `${formatarDinheiro(percentil(perderam, 50))} (${perderam.length} vidas)` : '—'} |`,
+  );
+}
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesB) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();

@@ -345,6 +345,42 @@ export interface Vida {
   dividasErradas: number;
   exemploDeDivida: string;
   dividas: HistoriaDasDividas;
+  /** O Tesouro (bloco B): os títulos de quem joga e os calotes que a vida viu. */
+  tesouro: HistoriaDoTesouro;
+}
+
+export interface HistoriaDoTesouro {
+  compras: number;
+  vendas: number;
+  vendasComLucro: number;
+  vencimentos: number;
+  /** O que o cupom pôs na conta na vida inteira (reais de hoje). */
+  cupons: number;
+  /** Os calotes que a vida viu, quanto quem joga perdeu neles e se perdeu algo fora dos títulos e da renda fixa (nunca). */
+  calotes: number;
+  perdaNoCalote: number;
+  perdeuSemTer: boolean;
+}
+
+/** O Tesouro pelo livro: compras, vendas (com lucro), vencimentos, cupons e o que cada calote levou de quem joga. */
+function tesouroDaVida(e: EstadoVida): HistoriaDoTesouro {
+  const t: HistoriaDoTesouro = { compras: 0, vendas: 0, vendasComLucro: 0, vencimentos: 0, cupons: 0, calotes: 0, perdaNoCalote: 0, perdeuSemTer: false };
+  for (const h of e.historico) {
+    if (h.ref === 'tesouro:comprarTitulo') t.compras++;
+    if (h.ref === 'tesouro:venderTitulo') {
+      t.vendas++;
+      if (h.resumo?.endsWith('com lucro')) t.vendasComLucro++;
+    }
+    if (h.ref === 'tesouro:vencimento') t.vencimentos++;
+    if (h.ref === 'tesouro:calote') t.calotes++;
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'eu.dinheiro' && m.r === 'cupom') t.cupons += m.d ?? 0;
+      if (h.ref !== 'tesouro:calote' || m.d === undefined) continue;
+      if (/^tit\w*\.valor$/.test(m.c) || m.c === 'eu.renda_fixa') t.perdaNoCalote -= m.d;
+      else if (m.c.startsWith('eu.')) t.perdeuSemTer = true;
+    }
+  }
+  return t;
 }
 
 export interface HistoriaDasDividas {
@@ -620,6 +656,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     bolsas: e.historico.filter((h) => h.ref === 'empresa:abrirCapital' || (h.ref === 'abrir_capital' && h.escolha?.indice === 0)).length,
     quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
     vendeu: 'vendeu_empresa' in q,
+    tesouro: tesouroDaVida(e),
     ...contasDaVida(e),
   };
 }
