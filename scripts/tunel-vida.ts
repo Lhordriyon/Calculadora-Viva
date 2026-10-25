@@ -350,7 +350,9 @@ export interface Vida {
 }
 
 export interface HistoriaDoTesouro {
+  /** Títulos comprados pela folha Dinheiro (a decisão de quem joga) e pelas histórias (o efeito comprarTitulo). */
   compras: number;
+  deHistorias: number;
   vendas: number;
   vendasComLucro: number;
   vencimentos: number;
@@ -364,9 +366,10 @@ export interface HistoriaDoTesouro {
 
 /** O Tesouro pelo livro: compras, vendas (com lucro), vencimentos, cupons e o que cada calote levou de quem joga. */
 function tesouroDaVida(e: EstadoVida): HistoriaDoTesouro {
-  const t: HistoriaDoTesouro = { compras: 0, vendas: 0, vendasComLucro: 0, vencimentos: 0, cupons: 0, calotes: 0, perdaNoCalote: 0, perdeuSemTer: false };
+  const t: HistoriaDoTesouro = { compras: 0, deHistorias: 0, vendas: 0, vendasComLucro: 0, vencimentos: 0, cupons: 0, calotes: 0, perdaNoCalote: 0, perdeuSemTer: false };
   for (const h of e.historico) {
     if (h.ref === 'tesouro:comprarTitulo') t.compras++;
+    else if (h.mudancas?.some((m) => /^tit\w*\.vencimento$/.test(m.c) && (m.d ?? 0) > 0)) t.deHistorias++;
     if (h.ref === 'tesouro:venderTitulo') {
       t.vendas++;
       if (h.resumo?.endsWith('com lucro')) t.vendasComLucro++;

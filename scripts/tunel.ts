@@ -752,7 +752,7 @@ const comCalote = vidas.filter((v) => v.tesouro.calotes > 0);
 const perderamSemTer = todasAsVidas.filter((v) => v.tesouro.perdeuSemTer).length;
 const portoesB = [
   [
-    'Emprestar ao governo é escolha: alguma estratégia compra título em pelo menos 30% das vidas, e outra em menos de 5%',
+    'Emprestar ao governo é escolha: alguma estratégia compra título pela folha em pelo menos 30% das vidas, e outra em menos de 5%',
     Math.max(...parteQueCompra) >= 0.3 && Math.min(...parteQueCompra) < 0.05,
     ESTRATEGIAS.map((x, i) => `${x} ${pct(parteQueCompra[i]!)}`).join(', '),
   ],
@@ -907,16 +907,18 @@ l(
     'Com a dívida acima de 100% do PIB, numa recessão ou numa crise, o governo pode dar calote: quem tinha título e renda fixa perde. Por estratégia, nas vidas sorteadas:',
 );
 l();
-l('| Estratégia | Comprou título | Compras (média de quem comprou) | Cupons na vida (mediana de quem comprou) | Venceram | Vendeu antes (com lucro) | Viu um calote | Perdeu no calote (mediana de quem perdeu) |');
-l('|---|---|---|---|---|---|---|---|');
+l('| Estratégia | Comprou pela folha | Compras (média de quem comprou) | Ganhou título numa história | Cupons na vida (mediana de quem teve título) | Venceram | Vendeu antes (com lucro) | Viu um calote | Perdeu no calote (mediana de quem perdeu) |');
+l('|---|---|---|---|---|---|---|---|---|');
 for (const estrategia of ESTRATEGIAS) {
   const vs = vidas.filter((v) => v.estrategia === estrategia);
   const compraram = comTitulo(vs);
+  const tiveram = vs.filter((v) => v.tesouro.compras + v.tesouro.deHistorias > 0);
   const soma = (f: (v: Vida) => number, lista: Vida[]): number => lista.reduce((t, v) => t + f(v), 0);
   const perderam = ordenar(vs.filter((v) => v.tesouro.perdaNoCalote >= 1).map((v) => v.tesouro.perdaNoCalote));
   l(
     `| ${estrategia} | ${pct(compraram.length / Math.max(1, vs.length))} | ${compraram.length ? num(soma((v) => v.tesouro.compras, compraram) / compraram.length, 1) : '—'} | ` +
-      `${compraram.length ? formatarDinheiro(percentil(ordenar(compraram.map((v) => v.tesouro.cupons)), 50)) : '—'} | ${num(soma((v) => v.tesouro.vencimentos, vs), 0)} | ` +
+      `${pct(vs.filter((v) => v.tesouro.deHistorias > 0).length / Math.max(1, vs.length))} | ` +
+      `${tiveram.length ? formatarDinheiro(percentil(ordenar(tiveram.map((v) => v.tesouro.cupons)), 50)) : '—'} | ${num(soma((v) => v.tesouro.vencimentos, vs), 0)} | ` +
       `${num(soma((v) => v.tesouro.vendas, vs), 0)} (${num(soma((v) => v.tesouro.vendasComLucro, vs), 0)}) | ${pct(vs.filter((v) => v.tesouro.calotes > 0).length / Math.max(1, vs.length))} | ` +
       `${perderam.length ? `${formatarDinheiro(percentil(perderam, 50))} (${perderam.length} vidas)` : '—'} |`,
   );
