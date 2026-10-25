@@ -335,6 +335,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (!conferirCaminho(m, b.onde, atores)) continue;
         const { ent, campo } = separar(m);
         if (defCampo(modeloDe(ent, atores), campo)) erro(b.onde, `"${m}" é campo, não qualidade`);
+        // A morte e as regras do ano leem toda qualidade "quer_…" como vontade: ela tem de estar declarada.
+        if (campo.startsWith('quer_') && !c.mundo.vontades.some((v) => v.id === campo)) erro(b.onde, `"${m}" parece vontade, mas não está em mundo.json › vontades`);
       }
       for (const w of escritasDe(ef, atores)) {
         if (w.caminho) escrever(w.caminho, b.onde);
