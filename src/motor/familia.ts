@@ -50,7 +50,7 @@ import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
 import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
-import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
+import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca, Qualidade } from './tipos.ts';
 
 /** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada. */
 export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet'] as const;
@@ -133,8 +133,7 @@ function fechoDaMorte(e: EstadoVida, c: Conteudo, papel: string, en: Entidade): 
  * vocês não moram juntos). Vira entrada visível, com a doença como causa: a mágoa sobe (quem ama mais, espera mais),
  * a confiança cai, e a pessoa guarda a falta (`nao_apareceu`), que vira a lembrança ruim. Uma vez por doença.
  */
-function faltaNoAno(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, longe: number): void {
-  const doente = en.q['doente'];
+function faltaNoAno(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, longe: number, doente: Qualidade | undefined): void {
   if (!doente || doente.v <= 0 || doente.idade >= e.idade || longe === 0 || convivem(e, papel, en)) return;
   if ((en.n['vinculo'] ?? 0) < VINCULO_DA_FALTA || en.q['ausente'] || en.q['rompido']) return;
   const ja = en.q['nao_apareceu'];
@@ -244,6 +243,8 @@ export function regrasDosPersonagens(
     const traco = c.tracos.get(en.t['traco'] ?? '');
     const setor = c.setores.get(en.t['setor'] ?? '');
     const fatorDoenca = traco?.doenca ?? 1;
+    // A doença do ano que passou (a cura deste ano não apaga a falta de quem não apareceu).
+    const doenteNoAno = en.q['doente'];
 
     // ---- saúde, doença, morte
     const deriva = derivaSaude(papel === 'pet' ? idade * 6 : idade, en.n['saude'] ?? 70);
@@ -341,7 +342,7 @@ export function regrasDosPersonagens(
     // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar.
     vontadesNoAno(e, c, papel, en, regAno);
     const longe = relacaoNoAno(e, papel, en, traco?.perdao ?? PERDAO_BASE, regAno);
-    faltaNoAno(e, c, papel, en, longe);
+    faltaNoAno(e, c, papel, en, longe, doenteNoAno);
 
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
