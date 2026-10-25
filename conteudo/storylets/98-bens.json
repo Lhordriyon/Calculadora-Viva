@@ -19,9 +19,15 @@
       {
         "texto": "Negociar um acordo",
         "resumo": "fez acordo com um inquilino caloteiro",
-        "resultado": {
+        "teste": { "chance": 0.6 },
+        "sucesso": {
           "texto": "Ele pagou metade em seis parcelas e saiu agradecendo. Você perdeu dinheiro e ganhou um elogio no grupo do prédio.",
           "efeitos": { "dinheiro": -5000, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Ele assinou o acordo, pagou a primeira parcela e sumiu de novo, dessa vez levando a geladeira.",
+          "resumo": "fez acordo com um inquilino caloteiro, que sumiu de novo",
+          "efeitos": { "dinheiro": -15000, "felicidade": -3 }
         }
       }
     ]
@@ -335,9 +341,15 @@
       {
         "texto": "Resolver no Pix, ali mesmo",
         "resumo": "resolveu uma batida no Pix, na hora",
-        "resultado": {
+        "teste": { "chance": 0.7 },
+        "sucesso": {
           "texto": "Vocês dividiram o prejuízo em dez minutos e se despediram quase amigos.",
           "efeitos": { "dinheiro": -1500, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "Dois dias depois, o outro motorista mandou um áudio: o orçamento da oficina dele tinha dobrado. Sem seguro e sem recibo, você pagou.",
+          "resumo": "pagou caro por resolver a batida no Pix",
+          "efeitos": { "dinheiro": -6000, "felicidade": -3 }
         }
       }
     ]

@@ -739,9 +739,15 @@
       {
         "texto": "Operar",
         "resumo": "operou no mutirão de cirurgias",
-        "resultado": {
+        "teste": { "chance": 0.92 },
+        "sucesso": {
           "texto": "Três dias de hospital, comida sem sal e uma melhora que você não lembrava que era possível.",
           "efeitos": { "saude": 9, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "Teve complicação: mais uma semana de hospital e uma recuperação que demorou o ano inteiro.",
+          "resumo": "teve complicação na cirurgia do mutirão",
+          "efeitos": { "saude": -6, "felicidade": -3 }
         }
       },
       {
@@ -766,8 +772,8 @@
         "texto": "Entrar no clube de ciências",
         "resumo": "entrou no clube de ciências da escola",
         "resultado": {
-          "texto": "Você lançou um foguete que subiu quarenta metros e caiu no telhado da diretoria. Foi o melhor dia do ano.",
-          "efeitos": { "inteligencia": 5, "felicidade": 2 }
+          "texto": "Você lançou um foguete que subiu quarenta metros e caiu no telhado da diretoria. Foi o melhor dia do ano, e o fim das tardes de futebol.",
+          "efeitos": { "inteligencia": 5, "felicidade": 1 }
         }
       },
       {
@@ -907,9 +913,9 @@
         "resumo": "contratou um contador criativo",
         "teste": { "chance": 0.7 },
         "sucesso": {
-          "texto": "O contador achou deduções que nem a Receita sabia que existiam. Sobrou um dinheiro.",
+          "texto": "O contador achou deduções que nem a Receita sabia que existiam. Sobrou um dinheiro bom.",
           "resumo": "pagou menos imposto com um contador criativo",
-          "efeitos": { "dinheiro": 5000 }
+          "efeitos": { "dinheiro": 12000 }
         },
         "fracasso": {
           "texto": "A Receita achou o contador antes de você achar outro. Veio a multa, com juros e com sermão.",
@@ -1071,7 +1077,7 @@
         "resumo": "passou a ir de aplicativo para fugir da blitz",
         "resultado": {
           "texto": "Você gastou mais e dormiu melhor. O motorista contou a vida inteira dele no caminho.",
-          "efeitos": { "dinheiro": -600, "saude": 1 }
+          "efeitos": { "dinheiro": -1200, "saude": 1 }
         }
       },
       {
@@ -1085,7 +1091,7 @@
         "fracasso": {
           "texto": "O documento estava vencido havia dois meses. Carro guinchado, multa e uma noite de pátio.",
           "resumo": "teve o carro guinchado numa blitz",
-          "efeitos": { "dinheiro": -3500, "felicidade": -4 }
+          "efeitos": { "dinheiro": -2500, "felicidade": -4 }
         }
       }
     ]

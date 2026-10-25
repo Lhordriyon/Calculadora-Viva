@@ -105,8 +105,8 @@
         "resumo": "negou envolvimento com o cliente preso",
         "teste": { "chance": 0.55 },
         "sucesso": {
-          "texto": "A investigação mudou de foco. Seu nome sumiu das manchetes.",
-          "efeitos": { "felicidade": 1 }
+          "texto": "A investigação mudou de foco. Seu nome sumiu das manchetes, e o cliente, solto, agradeceu o silêncio com o maior contrato do ano.",
+          "efeitos": { "felicidade": 6, "dinheiro": 300000 }
         },
         "fracasso": {
           "texto": "Chegou até você. Multa, registro suspenso e um ano explicando aos vizinhos.",

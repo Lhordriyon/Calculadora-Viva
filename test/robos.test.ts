@@ -143,3 +143,12 @@ describe('a régua dos dilemas', () => {
     for (const b of NOMES_DOS_BOLSOS) expect(falsosDilemas(c, base, b)).toContainEqual({ evento: 'um_melhor', escolha: 1 });
   });
 });
+
+describe('o conteúdo de verdade', () => {
+  it('nenhum falso dilema nos três bolsos (a opção melhor em tudo vira escolha sem escolha)', async () => {
+    const { carregarConteudo } = await import('../scripts/disco.ts');
+    const real = carregarConteudo();
+    const base = nascer(real, { semente: 1, ano: 2026 });
+    for (const bolso of NOMES_DOS_BOLSOS) expect(falsosDilemas(real, base, bolso), bolso).toEqual([]);
+  });
+});
