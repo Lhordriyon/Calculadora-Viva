@@ -658,6 +658,8 @@ export const DefCargo = z.strictObject({
   onde: z.string(),
   /** Quem ocupa governa o país: escolhe as políticas (folha País) e a aprovação do governo é a sua popularidade. */
   governa: z.boolean().optional(),
+  /** Mandatos seguidos no máximo (o Executivo: dois); depois, só voltando depois de um mandato fora. */
+  seguidos: z.number().int().min(1).optional(),
 });
 export type DefCargo = z.infer<typeof DefCargo>;
 

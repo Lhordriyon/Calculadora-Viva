@@ -226,6 +226,7 @@
     "verbo": "trabalhar",
     "rotulo": "fazer um bico",
     "idade": [18, 72],
+    "condicoes": { "cargo": false },
     "trechos": {
       "bico": [
         { "se": { "idade": { "min": 55 } }, "texto": "[montagem de móveis|conserto de eletrodoméstico|bolo por encomenda|motorista de aplicativo, com o rádio na estação de sempre]" },
@@ -247,7 +248,7 @@
     "verbo": "trabalhar",
     "rotulo": "fazer entregas extras",
     "idade": [18, 60],
-    "condicoes": { "algumaMarca": ["entregador", "motoqueiro"] },
+    "condicoes": { "algumaMarca": ["entregador", "motoqueiro"], "cargo": false },
     "texto": "Você rodou entregando até tarde da noite, [na chuva|no sol de meio-dia|com o celular em 3% de bateria].",
     "resumo": "fez entregas extras",
     "efeitos": { "dinheiro": 4800, "saude": -0.3 },
@@ -976,6 +977,7 @@
     "verbo": "trabalhar",
     "rotulo": "pegar um trabalho grande",
     "idade": [20, 68],
+    "condicoes": { "cargo": false },
     "texto": "Você pegou [um projeto que ninguém queria|uma obra com prazo impossível|uma consultoria para um cliente famoso por não pagar|um cliente de fora que só fala por e-mail|uma reforma que já tinha dado errado com outro|um contrato com o governo, com o prazo do governo] e [mergulhou de cabeça o ano inteiro|não viu o sol até dezembro|virou noites até entregar].",
     "resumo": "pegou um trabalho grande e arriscado",
     "efeitos": { "saude": -0.3 },

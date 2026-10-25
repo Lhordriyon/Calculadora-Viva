@@ -9,7 +9,7 @@ import type { Efeitos } from '../src/motor/esquema.ts';
 import { continuarComoHerdeiro, herdeiroPossivel, IMPOSTO_HERANCA } from '../src/motor/herdeiro.ts';
 import { ganhar } from '../src/motor/livro.ts';
 import { criarPersonagem } from '../src/motor/pessoas.ts';
-import { proximaEleicao, regraDoPoder } from '../src/motor/poder.ts';
+import { mandatosSeguidos, proximaEleicao, regraDoPoder } from '../src/motor/poder.ts';
 import { elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
@@ -120,6 +120,53 @@ describe('poder', () => {
     for (let i = 0; i < 6 && eu.t['cargo']; i++) regraDoPoder(e, c, fase, []);
     expect(eu.t['cargo']).toBe('');
     expect(eu.q['ex_politico']).toBeTruthy();
+  });
+
+  it('no Executivo, dois mandatos seguidos: o terceiro aparece desabilitado com o motivo, e um mandato fora libera', () => {
+    const e = adulto(11, { dinheiro: 50_000_000, influencia: 95, aparencia: 90, popularidade: 90 });
+    const prefeito = c.mundo.cargos.find((k) => k.id === 'prefeito')!;
+    const eu = e.entidades['eu']!;
+    const fase = momentoTipico('normal');
+    /** Vai até o ano da eleição e se candidata (com essa influência, quase sempre ganha). */
+    const candidatar = (): void => {
+      e.ano = proximaEleicao(e.ano, prefeito);
+      operar(e, c, { tipo: 'candidatarCargo', cargo: 'prefeito' });
+    };
+    /** O mandato corre até o ano da eleição seguinte. */
+    const cumprir = (): void => {
+      for (let i = 0; i < 4 && eu.t['cargo']; i++) {
+        regraDoPoder(e, c, fase, []);
+        e.ano++;
+        e.idade++;
+      }
+    };
+    let tentativas = 0;
+    while (mandatosSeguidos(e, prefeito) < 2 && tentativas++ < 12) {
+      if (!eu.t['cargo']) candidatar();
+      else {
+        cumprir();
+        if (eu.t['cargo']) candidatar();
+      }
+    }
+    expect(mandatosSeguidos(e, prefeito)).toBe(2);
+    cumprir();
+    e.ano = proximaEleicao(e.ano, prefeito);
+    // No último ano do segundo mandato, ainda no cargo, a reeleição não está mais na mesa.
+    expect(eu.t['cargo']).toBe('prefeito');
+    expect(motivoParaNaoOperar(e, c, { tipo: 'candidatarCargo', cargo: 'prefeito' })).toBe('já foram 2 mandatos seguidos');
+    // Fora do cargo, a contagem volta a zero, e a candidatura é liberada.
+    eu.t['cargo'] = '';
+    expect(mandatosSeguidos(e, prefeito)).toBe(0);
+    expect(motivoParaNaoOperar(e, c, { tipo: 'candidatarCargo', cargo: 'prefeito' }) ?? '').not.toMatch(/seguidos/);
+  });
+
+  it('quem tem cargo não faz bico nem pega trabalho grande', () => {
+    const e = adulto(12, { dinheiro: 10_000 });
+    const bico = c.porId.get('bico_adulto')!;
+    expect(elegivel(bico, e, undefined)).toBe(true);
+    e.entidades['eu']!.t['cargo'] = 'vereador';
+    expect(elegivel(bico, e, undefined)).toBe(false);
+    expect(elegivel(c.porId.get('trabalho_grande')!, e, undefined)).toBe(false);
   });
 
   it('a influência anda para o alvo: mais patrimônio, mais influência', () => {

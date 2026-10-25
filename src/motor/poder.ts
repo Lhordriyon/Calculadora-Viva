@@ -66,10 +66,31 @@ export function motivoParaNaoOperarPoder(e: EstadoVida, c: Conteudo, op: Operaca
   const ano = proximaEleicao(e.ano, def);
   if (ano !== e.ano) return `a próxima eleição é em ${ano}`;
   if (atual && atual.id !== def.id && (eu.n['mandato'] ?? 0) > 1) return 'termine o mandato antes';
+  if (def.seguidos !== undefined && mandatosSeguidos(e, def) >= def.seguidos) return `já foram ${def.seguidos} mandatos seguidos`;
   if ((eu.n['influencia'] ?? 0) < def.influencia) return `precisa de influência ${def.influencia}`;
   if (tentouEsteAno(e, 'poder:candidatarCargo')) return 'uma candidatura por eleição';
   if (def.campanha > liquidoDe(e) + 0.5) return `a campanha custa ${formatarDinheiro(def.campanha)}`;
   return null;
+}
+
+/**
+ * Os mandatos seguidos no cargo que quem joga ocupa agora: a eleição que o deu e as reeleições depois dela, contadas
+ * do livro (a mesma frase que diz "para o 2º mandato"). Fora do cargo, zero: quem ficou um mandato fora volta do um.
+ */
+export function mandatosSeguidos(e: EstadoVida, def: DefCargo): number {
+  const eu = e.entidades['eu']!;
+  if (eu.t['cargo'] !== def.id) return 0;
+  const o = eu.genero === 'f' ? 'a' : 'o';
+  const nome = noGenero(def.nome, eu.genero);
+  const onde = ondeDoCargo(e, def);
+  let n = 0;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.ref !== 'poder:candidatarCargo') continue;
+    if (h.resumo === `foi reeleit${o} ${nome} ${onde}`) n++;
+    else if (h.resumo === `foi eleit${o} ${nome} ${onde}`) return n + 1;
+  }
+  return n;
 }
 
 /** Assume um cargo eletivo: vira o trabalho de quem joga, com salário, mandato e popularidade inicial. */

@@ -2425,6 +2425,7 @@
       "campanha": 600000,
       "salario": 300000,
       "mandato": 4,
+      "seguidos": 2,
       "poder": 18,
       "onde": "de {cidade}"
     },
@@ -2464,6 +2465,7 @@
       "campanha": 12000000,
       "salario": 420000,
       "mandato": 4,
+      "seguidos": 2,
       "poder": 32,
       "onde": "de {uf}"
     },
@@ -2490,6 +2492,7 @@
       "campanha": 80000000,
       "salario": 550000,
       "mandato": 4,
+      "seguidos": 2,
       "poder": 50,
       "onde": "do Brasil",
       "governa": true
