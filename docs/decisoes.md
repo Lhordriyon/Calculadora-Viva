@@ -1148,6 +1148,76 @@ Seis itens do plano de correção, feitos por agentes em paralelo (um por item, 
 
 O túnel joga vidas diferentes da C1: o amigo de infância gravado no balde da pracinha muda a infância. As metas passam, sem storylet morto e sem estratégia dominante.
 
+## Bloco R: as pessoas da sua vida (25/10)
+
+O dono pediu, no meio dos blocos, relacionamento de verdade: progressão, causa e consequência, pessoas únicas que parecem vivas, a morte que dói pela história, e o peso de cada decisão. Depois pediu mais: que as pessoas decidam sozinhas, tenham vontades, percebam o jeito de quem joga, lembrem do que ele fez e do que deixou de fazer, e ajam pelo que sabem dele (I-102 e I-103).
+
+**O limite, dito ao dono:** não há consciência nem texto gerado. O jogo não tem servidor, e o motor tem de ser puro e determinístico. O que se simula é o comportamento de quem conhece você:
+- a opinião, tirada do que a pessoa viu;
+- a memória do que você fez e do que deixou de fazer;
+- as vontades, a cobrança e a desistência;
+- a reação, pelo que ela sabe.
+O texto é escrito, com variações e trechos que mudam com o estado.
+
+**O que mediu** (200 vidas, 50 por robô, na versão final):
+
+| Robô | Falta (alguém doente sem visita) | Alguma vontade nasceu | Realizada por você | Perdida com a idade | Alguém morreu com a vontade | Remorso | Despedida | Com opinião aos 50 |
+|---|---|---|---|---|---|---|---|---|
+| cautelosa (cuida) | 18% | 88% | 88% | 0% | 6% | 8% | 100% | 100% |
+| arriscada | 58% | 90% | 0% | 36% | 56% | 60% | 42% | 69% |
+| aleatória | 76% | 98% | 60% | 26% | 54% | 72% | 80% | 91% |
+| primeira (só o botão) | 68% | 80% | 0% | 60% | 52% | 74% | 38% | 62% |
+
+Antes do bloco, nada disso existia: a relação era um número só (o vínculo) que voltava sozinho para o equilíbrio. Cuidar é decisão: o robô que cuida se despede em todas as vidas e tem remorso em 8%; o que só aperta o botão tem remorso em 74%.
+
+**O túnel** (10.000 vidas; antes = a C2 publicada, depois = este bloco):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos | 0 | 0 |
+| Estratégia dominante | nenhuma | nenhuma (a arriscada continua a mais feliz: 80,5 × 77,8 da cautelosa) |
+| Saturação V5 / V20 | 57,3% / 90,3% | 55,4% / 90,1% |
+| Assinaturas por 1.000 vidas (sem a origem) | 904 (583) | 910 (589) |
+| Mobilidade: mesmo quintil / Spearman | 26,7% / 0,31 | 27,2% / 0,34 |
+| Patrimônio p90/p10 | 777,8× | 595,9× |
+| Desvio da felicidade média | 8,38 | 8,74 |
+| Patrimônio negativo ao morrer | 0,6% | 0,8% |
+| Mudanças causadas pelo jogador | 44,8% | 44,3% |
+| Toques por vida | 450,5 | 446,4 |
+| Cautelosa: idade de morte / patrimônio / felicidade | 91,9 / R$ 81 milhões / 75,1 | 86,2 / R$ 59 milhões / 77,8 |
+
+Os portões que já falhavam continuam falhando:
+- a CPU;
+- a herança entre gerações, que melhorou (Spearman 0,85 → 0,83);
+- o bilionário feito, que melhorou (1,87% → 1,27%, com teto de 1%);
+- as assinaturas sem regressão (904 → 910, para ≥ 918).
+
+Nenhum portão novo falha.
+
+**O robô cauteloso troca a academia pela família.** Ele gasta 59% das fichas com a família (eram 36%), e a saúde cai de 25% para 16%. Por isso vive 5,7 anos a menos e junta menos. É o custo de oportunidade que as fichas pedem, e a meta de nenhuma estratégia dominante continua valendo. Na vida real, porém, a convivência protege a saúde; isso ficou registrado como ideia (I-104), para não mexer no equilíbrio sem medir.
+
+**Decisões tomadas sozinho:**
+- **A opinião sai do livro, não do estado.** São 14 opiniões, as duas mais fortes com o porquê. O que dói pesa 15% a mais, e o antigo pesa metade a cada 12 anos. A soma do livro fica guardada por entrada, fora do estado: o livro só cresce e a entrada lançada não muda. Assim não há save novo, a opinião é a mesma numa cópia salva e lida (há teste), e o custo não cresce com a vida.
+- **Ninguém sabe o que não tem como saber:**
+  - todo mundo sabe da formatura, da fama, da fortuna nova, do cargo e da condenação;
+  - só quem convive, quem é próximo (vínculo 55+) e o par sabem do nome sujo e da aposta;
+  - quem morreu não forma opinião nova. Numa vida jogada, a avó morta "sabia" do nome que sujou anos depois.
+- **A falta conta só como falta.** A primeira versão fazia a mágoa da falta virar "cabeça-quente" e a vontade perdida virar "sumido". Agora a falta é sumiço, e a vontade perdida fica na lembrança e na mágoa. A falta vale mesmo que a doença tenha sarado no ano: a cura deste ano não apaga quem não apareceu.
+- **Os limiares vieram do túnel.** Em 160 vidas, a mágoa máxima de uma vida ficou em p50 22, p90 31 e p99 46, então romper com 60 nunca acontecia. Os limiares novos:
+  - a pessoa rompe a partir de 42, e o par faz as malas a partir de 45;
+  - a fúria aparece a partir de 45 e a mágoa, a partir de 25;
+  - "sem palavra" vale a partir de −7 de confiança.
+- **Pedir dinheiro virou escolha com preço.** Quem joga quase nunca pedia dinheiro por conta própria: só aceitava quando ofereciam. Por isso "interesseiro" aparecia em 1 vida de 160. A ação "pedir um Pix a…" dá o dinheiro com custo no afeto e na confiança, e pedir sem dar nada em troca vira a opinião (27% das vidas dos robôs, que pedem muito).
+- **O par não rompe: vai embora.** Um par "rompido" que continuava casado era incoerente. Com mágoa de 45 ou mais, ele faz as malas. Quem joga deixa ir ou pede uma última chance, um teste no vínculo.
+- **As vontades são qualidades `quer_…`.** Elas são declaradas em `mundo.json`, com a condição que as realiza, a idade em que passam, a pressa e a frase da morte. O validador recusa uma `quer_…` sem declaração. As que a vida realiza (casar, ter o filho, o bicho, ver o neto) dão a entrada `regra:vontade_realizada`, que aponta de onde a vontade veio.
+- **A CPU subiu, e fica registrado.** Em A/B na mesma máquina (três rodadas alternadas de 80 vidas), a versão publicada (C2) mede 64 ms por vida; esta, 92 ms (+44%). No túnel, a CPU foi de 69,8 para 83,9 ms (+20%). A primeira versão do bloco media 106 ms no A/B. O que sobrou é proporcional ao conteúdo: ações de família com cada pessoa e iniciativas novas, que os robôs avaliam a cada ficha. Três otimizações baixaram o resto:
+  - as condições em campos calculados (o patrimônio, a opinião, a lembrança) rodam por último;
+  - as expressões dos nomes são montadas uma vez;
+  - a ação escolhida é conferida direto, sem montar a lista do verbo.
+
+  A meta de 30 ms já falhava antes (69,8 ms na C2); esta decisão fica registrada. O próximo corte é guardar, dentro do ano, o que cada pessoa pode fazer (o robô monta a lista de todos os verbos a cada ficha).
+- **Os três agentes de conteúdo não chegaram a escrever nada** (o limite de uso parou todos no começo). O conteúdo novo foi escrito direto: 14 storylets de relação e 34 de quem sabe quem você é.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

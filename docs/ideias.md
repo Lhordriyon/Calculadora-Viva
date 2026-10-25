@@ -1221,6 +1221,22 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Alta · pedido do dono.
 - **Estado:** feito (25/10, bloco R).
 
+### I-104 · A convivência faz bem à saúde
+- **Problema:** depois do bloco R, cuidar das pessoas custa fichas, e o robô cauteloso troca academia e investimento por família: 36% → 59% das fichas. Ele vive 5,7 anos a menos (91,9 → 86,2) e junta menos (R$ 81 → 59 milhões). É o custo de oportunidade que as fichas pedem. Mas, na vida real, a convivência protege a saúde, e a solidão adoece; o jogo ainda não sabe disso.
+- **Módulos:** 11, 12.
+- **Depende de:** I-102, I-103.
+- **Custo:**
+  - implementação: P;
+  - simulação: quase zero (o vínculo de quem convive já é lido todo ano).
+- **Consome:** nada novo.
+- **Efeitos causais:** vínculo alto com quem está perto reduz um pouco a deriva da saúde; anos sem contato com todo mundo e o luto sem despedida aumentam.
+- **Riscos:**
+  - a cautelosa voltar a dominar idade, patrimônio e felicidade ao mesmo tempo (o túnel mede);
+  - a família virar remédio, e não relação.
+- **Aceitação:** nenhuma estratégia dominante; a diferença de idade de morte entre quem cuida e quem some fica à vista no túnel.
+- **Prioridade:** Média.
+- **Estado:** ideia (25/10).
+
 ## Defeitos conhecidos
 
 Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num commit com teste, quando a fatia que mexe naquela parte passar por lá, ou antes se ficar barato.
