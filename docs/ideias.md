@@ -48,7 +48,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | Bloco | O que o dono pediu | Ideias | Estado |
 |---|---|---|---|
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
-| B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | o próximo |
+| B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | em andamento (25/10): o título na conta pessoal e o calote; a empresa espera o caixa (I-11) |
 | C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | depois do B |
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
@@ -81,10 +81,10 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-24 | Reconhecimento limitado e territórios disputados | 3 | Baixa | proposta |
 | I-25 | Mudar de cidade no Brasil | 3 | Média | proposta |
 | I-30 | Banco como entidade (crédito e criação de dinheiro) | 4 | Alta | proposta |
-| I-31 | Tesouro: o orçamento do Estado em reais | 4 | Alta | proposta (bloco B do dono) |
+| I-31 | Tesouro: o orçamento do Estado em reais | 4 | Alta | parcial (bloco B): a dívida em reais e quem empresta |
 | I-32 | Banco central e política monetária | 4 | Média | proposta |
 | I-33 | Moedas por país, regime cambial e moeda de reserva | 4 | Média | proposta |
-| I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | proposta (bloco B do dono) |
+| I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | em andamento (bloco B): o título de quem joga e o calote |
 | I-35 | Falência, reestruturação e intervenção | 4 | Média | proposta |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
@@ -604,7 +604,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - a dívida em reais tem credores;
   - as fases do ciclo dentro das faixas atuais.
 - **Prioridade:** Alta · Fase 4.
-- **Estado:** proposta.
+- **Estado:** parcial (bloco B, 25/10): a dívida em reais na folha País, com quem joga entre os credores (o título da I-34). O orçamento item por item fica para depois: muda a conta da dívida e os portões do país.
 
 ### I-32 · Banco central e política monetária
 - **Problema:** os juros são uma regra do país, e ninguém decide.
@@ -642,8 +642,28 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Riscos:** os portões do país.
 - **Aceitação:** quem perde no calote é quem tinha a dívida.
 - **Pedido do dono (19/10):** o título comprado do Tesouro entra no balanço como ativo financeiro e paga cupom no caixa de quem comprou: a conta pessoal ou o caixa da empresa.
+- **Desenho do bloco B (25/10):**
+  - **O título é um contrato com o governo** (`tit<entrada>`, tipo `titulo`): quem joga empresta ao Tesouro pela folha Dinheiro, por 5, 10 ou 20 anos, a partir dos 18. Campos: o valor (o que volta no vencimento), a taxa (travada na compra), o vencimento (o ano) e a origem (a entrada que comprou). O nome é o do papel: "Tesouro IPCA+ 2045".
+  - **A taxa** é o juro real do ano, mais o prêmio do prazo (0,05 ponto por ano de prazo) e o risco da dívida (0,05 ponto por ponto acima de 90% do PIB, até 3), já sem o imposto de renda (15%). Fica travada: a renda fixa anda com o juro de cada ano, o título não.
+  - **O cupom** cai na conta todo ano (o tesouro paga: as contas fecham com ele de contraparte). **No vencimento**, o valor volta, numa entrada visível que aponta a compra (ou a herança).
+  - **Vender antes** é pelo preço de mercado: o valor descontado pela taxa de hoje para o prazo que falta. O juro que caiu depois da compra dá lucro; o que subiu, prejuízo. Comprar longo na crise (juro alto) é a aposta.
+  - **O calote:** com a dívida acima de 100% do PIB, numa recessão ou numa crise, o governo pode não pagar (1% de chance por ponto acima de 100, até 25% ao ano). Quem tem título perde 30% do valor, a renda fixa perde 15%, a dívida do país cai um quarto, a economia afunda mais no ano e o juro fica mais alto por seis anos (a confiança). A notícia aponta quem levou a dívida até ali (a posse do governo, a reforma, o decreto). Quem governa e gasta demais leva o calote para os próprios títulos.
+  - **O mundo tem tamanho:** até 5 títulos ao mesmo tempo, a partir de R$ 100, e nunca mais de 30% da dívida do país nas mãos de quem joga.
+  - **A herança:** o título passa a quem herda (dividido como o resto do espólio) e vence na vida dele, com a herança como causa.
+  - **A dívida em reais** (PIB × dívida) aparece na folha País, com o que quem joga empresta ao governo e o risco de calote à vista.
+- **Fica para depois, com o motivo:**
+  - o título comprado pela empresa: a empresa não tem caixa (é um valor que cresce), e o cupom não teria onde cair; vem com a I-11;
+  - o orçamento item por item (receita, gasto e juros em reais): muda a conta da dívida, que hoje é uma reação fiscal em pontos do PIB, e os portões do país vivo (a I-31 inteira);
+  - os outros credores como entidades (bancos, fundos, gente de fora) e o contágio no crédito: a I-30 e o resto desta.
+- **Aceitação do bloco B:**
+  - o cupom, o resgate, a venda e o calote têm o tesouro como contraparte (as contas fecham entrada por entrada);
+  - quem perde no calote é quem tinha a dívida: sem título e sem renda fixa, nada se perde (teste);
+  - o título passa ao herdeiro e vence na vida dele;
+  - mesma semente e mesmas decisões, a mesma vida, salvando no meio com títulos;
+  - sem calote, o país vivo não muda (as fases e as estatísticas dentro das faixas atuais);
+  - nenhuma estratégia domina.
 - **Prioridade:** Alta · bloco B do dono.
-- **Estado:** proposta.
+- **Estado:** em andamento (bloco B, 25/10).
 
 ### I-35 · Falência, reestruturação e intervenção
 - **Problema:** a empresa quebra (`empresa_quebrou`), mas não há credores, recuperação nem intervenção.
