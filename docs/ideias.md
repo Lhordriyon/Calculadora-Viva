@@ -1169,6 +1169,58 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Alta · pedido do dono.
 - **Estado:** em andamento (25/10).
 
+### I-103 · Pessoas que sabem quem você é (pedido do dono, 25/10)
+- **Problema:** depois do I-102, cada pessoa tem mágoa, confiança, saudade e lembranças. O dono pediu mais: que as pessoas decidam sozinhas, tenham vontades, percebam o jeito de quem joga, lembrem do que ele fez e do que deixou de fazer, e ajam pelo que sabem dele. Hoje ninguém tem opinião sobre quem joga, ninguém quer nada da vida, e faltar quando alguém precisou não deixa rastro.
+- **O que dá para fazer, e o que não dá:**
+  - não há consciência de verdade, nem texto gerado: o jogo não tem servidor, e o motor tem de ser puro e determinístico;
+  - o que dá é o comportamento de quem conhece você: a pessoa tira do que viu uma opinião sobre o seu jeito, guarda o que você fez e o que deixou de fazer, quer coisas, cobra e reage;
+  - tudo sai do livro-razão, então a pessoa sabe o que viu ou soube, e ninguém sabe o que não tem como saber.
+- **Módulos:** 11, 12, 13.
+- **Depende de:** I-102.
+- **Custo:**
+  - implementação: G;
+  - simulação: quase zero. A opinião sai do livro, com o que já foi somado guardado fora do estado; as vontades são qualidades.
+- **Consome:** fichas do ano. Realizar a vontade de alguém é uma ação da folha Família.
+- **Efeitos causais:**
+  - **O que a pessoa acha de você** (`ator.visao`) sai do que ela viu:
+    - o que você fez com ela: o afeto, a mágoa, a confiança, o dinheiro dado e o pedido;
+    - os anos longe e as vezes em que você faltou;
+    - o que é público: a formatura, a fama, a fortuna e o cargo;
+    - o que só quem está perto sabe: o nome sujo e a encrenca;
+    - o amor e os avós também veem como você trata os filhos.
+  - **As opiniões possíveis:**
+    - orgulho da família, presente, carinhoso, de palavra, generoso;
+    - sumido, metido, interesseiro, cabeça-quente, sem palavra, casado com o trabalho.
+  - **O que a opinião muda:**
+    - as iniciativas: quem acha você sumido procura menos, e quem acha você generoso pede mais;
+    - o texto: a opinião vem com o porquê ("acha você generosa: você pagou o conserto do carro dela, aos 31");
+    - o que os filhos fazem quando você envelhecer: eles aprenderam com você.
+  - **Omissão:**
+    - alguém próximo adoece, e você passa o ano sem aparecer;
+    - isso vira entrada na linha do tempo ("você não apareceu"), com mágoa e confiança a menos;
+    - vira também a pior lembrança, a que a pessoa cita depois.
+  - **Vontades:**
+    - cada pessoa pode querer uma coisa da vida: ver o mar, voltar à terra onde nasceu, conhecer o neto, casar, ter um filho, um cachorro, uma ajuda para a casa própria;
+    - a vontade nasce de uma iniciativa da pessoa e fica gravada com o ano;
+    - na folha Família, aparece como "quer…", e realizá-la é uma ação com a pessoa;
+    - algumas se realizam pela vida (casar, ter o filho);
+    - vontade antiga que pede pressa (casar, ter um filho) vira mágoa a cada ano;
+    - quem morre sem ver a vontade realizada deixa remorso, e a morte diz o que faltou ("ela nunca viu o mar").
+- **Riscos:**
+  - CPU: a opinião varre o livro. A soma do que já foi visto fica guardada por entrada, e o livro só cresce;
+  - opinião injusta ou sem porquê: cada opinião aponta a entrada que mais pesou;
+  - vontade que nunca se realiza por falta de dinheiro: o custo segue a classe, e há sempre a escolha barata;
+  - storylets novos mortos no túnel.
+- **Aceitação:**
+  - a opinião é determinística e igual com ou sem save no meio;
+  - o livro fecha;
+  - nenhum storylet morto;
+  - nenhuma estratégia dominante;
+  - a folha Família mostra a opinião com o porquê e a vontade de cada pessoa;
+  - numa vida jogada, uma pessoa cita o que você deixou de fazer, e uma morte diz a vontade que faltou.
+- **Prioridade:** Alta · pedido do dono.
+- **Estado:** em andamento (25/10).
+
 ## Defeitos conhecidos
 
 Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num commit com teste, quando a fatia que mexe naquela parte passar por lá, ou antes se ficar barato.
