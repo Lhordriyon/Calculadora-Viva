@@ -48,8 +48,8 @@ export function humorDe(e: EstadoVida, id: string, en: Entidade): Humor | '' {
   if (!temRelacao(id, en) || en.vivo === false) return '';
   const magoa = en.n['magoa'] ?? 0;
   const vinculo = en.n['vinculo'] ?? 50;
-  if (magoa >= 60) return 'furia';
-  if (magoa >= 30) return 'magoa';
+  if (magoa >= 45) return 'furia';
+  if (magoa >= 25) return 'magoa';
   if (tem(en, 'doente')) return 'abatimento';
   if ((en.n['sem_contato'] ?? 0) >= 3 && vinculo >= 40 && !convivem(e, id, en)) return 'saudade';
   if (vinculo >= 72) return 'alegria';
@@ -338,11 +338,12 @@ export function visoesDe(e: EstadoVida, id: string, en: Entidade): Opiniao[] {
   if (sumico >= 2) dar((familia || papel === 'amigo') && (subiu || famoso) ? 'metido' : 'sumido', sumico, por('faltou'));
   const pediu = s('pediu');
   const deu = s('deu');
-  if (pediu >= 1.5 && deu < 0.5) dar('interesseiro', 1 + pediu, por('pediu'));
+  // Pediu e não deu nada, nem afeto: "só aparece por dinheiro".
+  if (pediu >= 0.9 && deu < 0.3 && s('afeto') < 10) dar('interesseiro', 1.5 + pediu, por('pediu'));
   const ferida = s('ferida');
   if (ferida >= 2.5) dar('cabeca_quente', ferida, por('ferida'));
   const palavra = s('palavraBem') - s('palavraMal');
-  if (palavra <= -10) dar('sem_palavra', -palavra / 5, por('palavraMal'));
+  if (palavra <= -7) dar('sem_palavra', 1 - palavra / 5, por('palavraMal'));
   else if (palavra >= 10) dar('de_palavra', palavra / 5, por('palavraBem'));
   if ((eu.n['filhos'] ?? 0) > 0 && (familia || papel === 'amor')) {
     const f = somas.get(OS_FILHOS);

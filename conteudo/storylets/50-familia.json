@@ -586,6 +586,7 @@
     "ator": ["amigo"],
     "idade": [15, 40],
     "condicoes": { "marcas": ["zoou_amigo"] },
+    "tensao": 2,
     "texto": "{amigo} tocou no assunto daquele dia no recreio, quando você riu junto com os outros. Disse que ainda lembra.",
     "resumo": "{ator.quem} lembrou da zoeira do recreio",
     "escolhas": [

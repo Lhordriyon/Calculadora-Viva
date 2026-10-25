@@ -276,6 +276,30 @@
     "efeitos": { "dinheiro": -2500, "ator.vinculo": 14, "ator.magoa": -8, "felicidade": 3, "removerMarcas": ["ator.quer_a_festa"] }
   },
   {
+    "id": "pedir_um_pix",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "pedir um Pix a {ator}",
+    "ator": ["mae", "pai", "avo", "amigo"],
+    "idade": [16, 75],
+    "condicoes": { "ator.dinheiro": { "min": 5000 }, "semMarcas": ["ator.rompido", "ator.ausente"] },
+    "intervalo": 2,
+    "texto": "Você pediu dinheiro a {ator}. [Disse que era uma emergência.|Prometeu devolver no mês que vem.|Explicou a situação com detalhes demais, o que nunca é bom sinal.]",
+    "resumo": "pediu dinheiro a {ator}",
+    "teste": { "atributo": "ator.vinculo", "dificuldade": 40 },
+    "sucesso": {
+      "texto": "{ator} mandou {transferido} na hora, com um \"juízo, hein\" na mensagem.",
+      "repete": "{ator} mandou de novo. O \"juízo, hein\" veio mais comprido.",
+      "resumo": "pediu dinheiro a {ator} e recebeu",
+      "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.15, "max": 20000 }, "ator.vinculo": -2, "ator.confianca": -2 }
+    },
+    "fracasso": {
+      "texto": "{ator} disse que não tem, do jeito de quem tem mas cansou.",
+      "repete": "{ator} disse que não, de novo.",
+      "efeitos": { "ator.vinculo": -1, "felicidade": -1 }
+    }
+  },
+  {
     "id": "falando_bem_de_voce",
     "tipo": "npc",
     "ator": ["mae", "pai", "avo"],
@@ -802,7 +826,7 @@
     "tipo": "npc",
     "ator": ["amor"],
     "idade": [18, 95],
-    "condicoes": { "marcas": ["namoro"], "ator.magoa": { "min": 60 } },
+    "condicoes": { "marcas": ["namoro"], "ator.magoa": { "min": 45 } },
     "tensao": 3,
     "repetivel": true,
     "intervalo": 4,
