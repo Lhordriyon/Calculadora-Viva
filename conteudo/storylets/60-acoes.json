@@ -772,7 +772,7 @@
     "rotulo": "investir com método",
     "idade": [18, 90],
     "condicoes": { "algumaMarca": ["tino_financeiro", "poupador", "investidor"], "dinheiro": { "min": 5000 } },
-    "texto": "Você leu, comparou taxas e investiu [no Tesouro|num CDB de banco grande|num fundo de índice|em títulos que vencem daqui a vinte anos], [com a calma de quem já guardava moeda no cofrinho|e não olhou o extrato por um mês inteiro|e resistiu à dica quente do grupo do primo|com uma planilha de três abas].",
+    "texto": "Você leu, comparou taxas e investiu [num CDB de banco grande|num fundo de índice|na renda fixa do banco|num fundo que segue a bolsa], [com a calma de quem já guardava moeda no cofrinho|e não olhou o extrato por um mês inteiro|e resistiu à dica quente do grupo do primo|com uma planilha de três abas].",
     "resumo": "investiu com método",
     "efeitos": { "investir": 5000, "inteligencia": 0.5 }
   },

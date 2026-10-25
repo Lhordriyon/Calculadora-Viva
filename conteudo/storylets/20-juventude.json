@@ -662,11 +662,11 @@
       },
       {
         "texto": "Investir no Tesouro Direto",
-        "resumo": "trocou a moeda do cachorrinho pelo Tesouro Direto",
+        "resumo": "trocou a moeda do cachorrinho por um título do Tesouro",
         "condicoes": { "dinheiro": { "min": 3000 } },
         "resultado": {
-          "texto": "Rende devagar, não late e não viraliza. Exatamente como deve ser.",
-          "efeitos": { "investir": 3000, "inteligencia": 1, "marcas": ["investidor"] }
+          "texto": "Um título do Tesouro de cinco anos. Rende devagar, não late e não viraliza. Exatamente como deve ser.",
+          "efeitos": { "comprarTitulo": { "fracao": 0.5, "prazo": 5 }, "inteligencia": 1, "marcas": ["investidor"] }
         }
       }
     ]
@@ -689,10 +689,10 @@
     "escolhas": [
       {
         "texto": "Investir no Tesouro Direto",
-        "resumo": "fez o primeiro investimento da vida",
+        "resumo": "fez o primeiro investimento da vida, um título do Tesouro",
         "resultado": {
-          "texto": "Você leu três artigos, viu dois vídeos e investiu. Rende devagar, mas rende acima da inflação.",
-          "efeitos": { "investir": 1000000, "inteligencia": 1, "marcas": ["investidor"] }
+          "texto": "Você leu três artigos, viu dois vídeos e emprestou ao governo por dez anos. Rende devagar, mas rende acima da inflação, e o cupom cai todo ano.",
+          "efeitos": { "comprarTitulo": { "fracao": 0.6, "prazo": 10 }, "inteligencia": 1, "marcas": ["investidor"] }
         }
       },
       {

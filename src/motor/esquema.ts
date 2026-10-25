@@ -175,6 +175,12 @@ const EFEITOS_FIXOS = {
     .optional(),
   /** Vende essa fração de cada título do Tesouro de quem joga pelo preço do dia (o medo do calote, a conta que apertou): 1 vende todos. */
   venderTitulos: z.number().gt(0).max(1).optional(),
+  /**
+   * Empresta ao governo essa fração da conta num título do Tesouro de `prazo` anos, com a taxa do dia (o primeiro
+   * investimento, a moeda trocada pelo Tesouro Direto). Sem como comprar (antes dos 18, cinco títulos, pouco dinheiro),
+   * o dinheiro vai para a renda fixa, que é Tesouro também.
+   */
+  comprarTitulo: z.strictObject({ fracao: z.number().gt(0).max(1), prazo: z.union([z.literal(5), z.literal(10), z.literal(20)]) }).optional(),
   /** Move uma fração de onde o dinheiro está para outro lugar ("de": "acoes", "para": "renda_fixa", "fracao": 1 vende todas as ações). */
   realocar: z
     .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })

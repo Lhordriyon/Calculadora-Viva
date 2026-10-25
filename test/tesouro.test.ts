@@ -10,6 +10,8 @@ import { patrimonioTotal, titulosDe, valorDosTitulos } from '../src/motor/campos
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { POLITICAS } from '../src/motor/constantes.ts';
 import { conferirContas } from '../src/motor/contas.ts';
+import { aplicarEfeitos } from '../src/motor/efeitos.ts';
+import type { Efeitos } from '../src/motor/esquema.ts';
 import { continuarComoHerdeiro } from '../src/motor/herdeiro.ts';
 import { lancar, novaEntrada } from '../src/motor/livro.ts';
 import { defGoverno } from '../src/motor/pais.ts';
@@ -139,6 +141,30 @@ describe('o título do Tesouro', () => {
     rico.entidades['eu']!.n['dinheiro'] = 1e13;
     const divida = (rico.entidades['pais']!.n['pib']! * 75) / 100;
     expect(motivoParaNaoOperar(rico, c, { tipo: 'comprarTitulo', valor: divida * 0.31, prazo: 5 })).toMatch(/não vende tanto/);
+  });
+});
+
+describe('o Tesouro das histórias', () => {
+  it('o efeito comprarTitulo empresta ao governo pela entrada da história; antes dos 18, vai para a renda fixa', () => {
+    const e = adulto(30);
+    const entrada = novaEntrada(e, { tipo: 'evento', causa: 'escolha', ref: 'primeiro_investimento', texto: 'Investiu.' });
+    const reg: Mudanca[] = [];
+    aplicarEfeitos(e, c, { comprarTitulo: { fracao: 0.5, prazo: 10 } } as Efeitos, { origem: entrada.id, reg, valores: {} });
+    lancar(e, entrada, reg);
+    const tit = oTitulo(e);
+    expect(tit.id).toBe(`tit${entrada.id}`);
+    expect(tit.n['valor']).toBe(250_000);
+    expect(tit.n['vencimento']).toBe(e.ano + 10);
+    expect(conferirContas(e, entrada)).toEqual([]);
+    const jovem = adulto(31);
+    jovem.idade = 17;
+    const outra = novaEntrada(jovem, { tipo: 'evento', causa: 'escolha', ref: 'moeda', texto: 'Investiu.' });
+    const reg2: Mudanca[] = [];
+    aplicarEfeitos(jovem, c, { comprarTitulo: { fracao: 0.5, prazo: 5 } } as Efeitos, { origem: outra.id, reg: reg2, valores: {} });
+    lancar(jovem, outra, reg2);
+    expect(titulosDe(jovem)).toEqual([]);
+    expect(jovem.entidades['eu']!.n['renda_fixa']).toBe(250_000);
+    expect(conferirContas(jovem, outra)).toEqual([]);
   });
 });
 

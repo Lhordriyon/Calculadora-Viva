@@ -496,7 +496,9 @@ function deOndeVeioOTitulo(vida: EstadoVida, tit: Entidade): string {
   const origem = Number(tit.t['origem']);
   const h = Number.isFinite(origem) ? vida.historico.find((x) => x.id === origem) : undefined;
   if (!h) return '';
-  return h.ref === 'tesouro:comprarTitulo' ? `aos ${h.idade}, ${h.resumo ?? 'comprou'}` : 'veio de herança';
+  if (h.tipo === 'nascimento') return 'veio de herança';
+  const resumo = h.escolha?.resumo ?? h.resumo;
+  return resumo ? `aos ${h.idade}, ${resumo}` : `comprado aos ${h.idade}`;
 }
 
 /**

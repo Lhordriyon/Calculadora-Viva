@@ -101,8 +101,9 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
   if (ef.realocar) {
     for (const lado of [ef.realocar.de, ef.realocar.para]) out.push({ caminho: `eu.${lado}`, sistema: 'dinheiro' });
   }
-  // Vender os títulos do Tesouro põe o preço do dia na conta.
-  if (ef.venderTitulos !== undefined) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
+  // Vender os títulos do Tesouro põe o preço do dia na conta; comprar tira da conta (ou põe na renda fixa).
+  if (ef.venderTitulos !== undefined || ef.comprarTitulo) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
+  if (ef.comprarTitulo) out.push({ caminho: 'eu.renda_fixa', sistema: 'dinheiro' });
   if (ef.dinheiro || ef.divida || ef.dividaFator !== undefined || ef.investir) {
     if (ef.dinheiro || ef.investir) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
     if (ef.investir) out.push(...ATIVOS.map((a) => ({ caminho: `eu.${a}`, sistema: 'dinheiro' as Sistema })));

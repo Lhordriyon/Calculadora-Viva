@@ -87,6 +87,11 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
       v += (preco - valor + (rendimentoEsperado(c, 'dinheiro') - (tit.n['taxa'] ?? 0) / 100) * 10 * preco) / REAIS_POR_PONTO;
     }
   }
+  // Comprar o título troca dinheiro parado (que encolhe) pelo cupom do dia, nos anos de horizonte.
+  if (ef.comprarTitulo) {
+    const valor = Math.max(0, eu.n['dinheiro'] ?? 0) * ef.comprarTitulo.fracao;
+    v += ((taxaDoTitulo(e, ef.comprarTitulo.prazo) / 100 - rendimentoEsperado(c, 'dinheiro')) * 10 * valor) / REAIS_POR_PONTO;
+  }
   const renda = eu.n['renda'] ?? 0;
   if (ef.renda !== undefined) {
     const nova = typeof ef.renda === 'number' ? renda + ef.renda : ef.renda.definir;
@@ -641,7 +646,7 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       v.inteligencia += p * (ef.inteligencia ?? 0);
       v.aparencia += p * (ef.aparencia ?? 0);
       const so: Record<string, unknown> = {};
-      for (const k of ['dinheiro', 'investir', 'realocar', 'venderTitulos', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator', 'abrirEmpresa', 'empresaFator', 'venderEmpresa', 'fecharEmpresa', 'rodada'] as const) {
+      for (const k of ['dinheiro', 'investir', 'realocar', 'venderTitulos', 'comprarTitulo', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator', 'abrirEmpresa', 'empresaFator', 'venderEmpresa', 'fecharEmpresa', 'rodada'] as const) {
         if (ef[k] !== undefined) so[k] = ef[k];
       }
       v.dinheiro += p * valorEfeitos(so as Efeitos, e, c);

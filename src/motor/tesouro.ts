@@ -131,12 +131,22 @@ export function operarTesouro(e: EstadoVida, op: OperacaoTesouro, reg: Mudanca[]
       resumo: `vendeu um título do Tesouro${diferenca > valor * 0.005 ? ' com lucro' : diferenca < -valor * 0.005 ? ' com prejuízo' : ''}`,
     };
   }
-  const taxa = taxaDoTitulo(e, op.prazo);
-  const vencimento = e.ano + op.prazo;
+  const tit = abrirTitulo(e, reg, op.valor, op.prazo, origem);
+  const pct = String(tit.n['taxa'] ?? 0).replace('.', ',');
+  return {
+    texto: `Emprestou ${formatarDinheiro(tit.n['valor'] ?? 0)} ao governo num ${tit.nome}: IPCA + ${pct}% ao ano, já sem o imposto. O cupom de ${formatarDinheiro(cupomDe(tit))} cai na conta todo ano, e o dinheiro volta em ${tit.n['vencimento']}.`,
+    resumo: `emprestou ${formatarDinheiro(tit.n['valor'] ?? 0)} ao governo por ${op.prazo} anos`,
+  };
+}
+
+/** O título nasce da entrada `origem`: o valor sai da conta (para o tesouro), com a taxa do dia travada. */
+function abrirTitulo(e: EstadoVida, reg: Mudanca[], quanto: number, prazo: Prazo, origem: number): Entidade {
+  const taxa = taxaDoTitulo(e, prazo);
+  const vencimento = e.ano + prazo;
   const id = idLivre(e, `tit${origem}`);
   const eu = e.entidades['eu']!.n;
   const antes = caixaDe(eu);
-  const valor = Math.min(op.valor, Math.max(0, eu['dinheiro'] ?? 0));
+  const valor = Math.min(quanto, Math.max(0, eu['dinheiro'] ?? 0));
   eu['dinheiro'] = (eu['dinheiro'] ?? 0) - valor;
   anotarCaixa(reg, 'eu', antes, eu, 'compra_de_titulo', [{ campo: 'dinheiro', d: -valor, p: 'tesouro' }]);
   const tit = novaEntidade({ id, tipo: 'titulo', nome: nomeDoTitulo(vencimento), nascimento: e.ano, vivo: true });
@@ -145,11 +155,26 @@ export function operarTesouro(e: EstadoVida, op: OperacaoTesouro, reg: Mudanca[]
   somar(e, reg, id, 'taxa', taxa);
   somar(e, reg, id, 'vencimento', vencimento);
   definirTexto(e, reg, id, 'origem', String(origem));
-  const pct = String(taxa).replace('.', ',');
-  return {
-    texto: `Emprestou ${formatarDinheiro(valor)} ao governo num ${tit.nome}: IPCA + ${pct}% ao ano, já sem o imposto. O cupom de ${formatarDinheiro(cupomDe(tit))} cai na conta todo ano, e o dinheiro volta em ${vencimento}.`,
-    resumo: `emprestou ${formatarDinheiro(valor)} ao governo por ${op.prazo} anos`,
-  };
+  return tit;
+}
+
+/**
+ * O efeito `comprarTitulo` do conteúdo: empresta ao governo uma fração da conta, se a folha deixaria (a idade, os cinco
+ * títulos, a compra mínima, a fatia da dívida); senão, o dinheiro vai para a renda fixa, que também é Tesouro.
+ */
+export function comprarPorEfeito(e: EstadoVida, reg: Mudanca[], fracao: number, prazo: Prazo, origem: number | null): void {
+  const eu = e.entidades['eu']!.n;
+  const valor = Math.floor(Math.max(0, eu['dinheiro'] ?? 0) * Math.min(1, Math.max(0, fracao)));
+  if (valor < 1) return;
+  const op: OperacaoTesouro = { tipo: 'comprarTitulo', valor, prazo };
+  if (origem !== null && motivoParaNaoOperarTesouro(e, op) === null) {
+    abrirTitulo(e, reg, valor, prazo, origem);
+    return;
+  }
+  const antes = caixaDe(eu);
+  eu['dinheiro'] = (eu['dinheiro'] ?? 0) - valor;
+  eu['renda_fixa'] = (eu['renda_fixa'] ?? 0) + valor;
+  anotarCaixa(reg, 'eu', antes, eu);
 }
 
 /**
@@ -185,7 +210,7 @@ function vencer(e: EstadoVida, tit: Entidade): void {
   const valor = tit.n['valor'] ?? 0;
   const origem = origemDoTitulo(tit);
   const compra = origem === null ? undefined : e.historico.find((h) => h.id === origem);
-  const deQuando = compra === undefined ? '' : compra.ref === 'tesouro:comprarTitulo' ? ` que você comprou aos ${compra.idade}` : ' que você herdou';
+  const deQuando = compra === undefined ? '' : compra.tipo === 'nascimento' ? ' que você herdou' : ` que você comprou aos ${compra.idade}`;
   const entrada = novaEntrada(e, {
     tipo: 'regra',
     causa: 'regra',
