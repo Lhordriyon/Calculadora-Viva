@@ -126,6 +126,10 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'bem.economia',
   'eu.custo',
   'eu.imovel',
+  // e perde a marca do imóvel leiloado (os financiáveis de mundo.json › bens)
+  'eu.cobertura',
+  'eu.mansao',
+  'eu.imovel_comercial',
   // as dívidas como contratos com o banco (contratos.ts, dividas.ts): o saldo, a parcela, o atraso e o nome sujo
   'ctr.saldo',
   'ctr.parcela',
