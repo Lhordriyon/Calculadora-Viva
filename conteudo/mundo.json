@@ -362,7 +362,7 @@
         { "m": "engenheiro", "f": "engenheira", "setor": "industria" },
         { "m": "juiz", "f": "juíza", "setor": "publico" },
         { "m": "diretor de empresa", "f": "diretora de empresa", "setor": "industria" },
-        { "m": "fazendeiro", "f": "fazendeira", "setor": "agro" },
+        { "m": "fazendeiro", "f": "fazendeira", "setor": "agro", "patrimonio": true },
         { "m": "cirurgião plástico", "f": "cirurgiã-dentista", "setor": "saude" },
         { "m": "gerente de banco", "f": "gerente de banco", "setor": "financas" },
         { "m": "arquiteto", "f": "arquiteta", "setor": "construcao" }
@@ -378,13 +378,13 @@
       "poupanca": 0.15,
       "saude": 5,
       "ocupacoes": [
-        { "m": "herdeiro", "f": "herdeira", "setor": "financas" },
-        { "m": "investidor", "f": "investidora", "setor": "financas" },
-        { "m": "dono de construtora", "f": "dona de construtora", "setor": "construcao" },
-        { "m": "banqueiro", "f": "banqueira", "setor": "financas" },
+        { "m": "herdeiro", "f": "herdeira", "setor": "financas", "patrimonio": true },
+        { "m": "investidor", "f": "investidora", "setor": "financas", "patrimonio": true },
+        { "m": "dono de construtora", "f": "dona de construtora", "setor": "construcao", "patrimonio": true },
+        { "m": "banqueiro", "f": "banqueira", "setor": "financas", "patrimonio": true },
         { "m": "diretor de multinacional", "f": "diretora de multinacional", "setor": "industria" },
-        { "m": "fazendeiro do agronegócio", "f": "fazendeira do agronegócio", "setor": "agro" },
-        { "m": "sócio de escritório de advocacia", "f": "sócia de escritório de advocacia", "setor": "servicos" }
+        { "m": "fazendeiro do agronegócio", "f": "fazendeira do agronegócio", "setor": "agro", "patrimonio": true },
+        { "m": "sócio de escritório de advocacia", "f": "sócia de escritório de advocacia", "setor": "servicos", "patrimonio": true }
       ],
       "negocio": {
         "m": "dono de um grupo de supermercados",
@@ -401,20 +401,22 @@
       "poupanca": 0.3,
       "saude": 6,
       "ocupacoes": [
-        { "m": "acionista de um banco", "f": "acionista de um banco", "setor": "financas" },
-        { "m": "dono de uma rede nacional de varejo", "f": "dona de uma rede nacional de varejo", "setor": "comercio" },
+        { "m": "acionista de um banco", "f": "acionista de um banco", "setor": "financas", "patrimonio": true },
+        { "m": "dono de uma rede nacional de varejo", "f": "dona de uma rede nacional de varejo", "setor": "comercio", "patrimonio": true },
         {
           "m": "fundador de uma empresa de tecnologia",
           "f": "fundadora de uma empresa de tecnologia",
-          "setor": "tecnologia"
+          "setor": "tecnologia",
+          "patrimonio": true
         },
-        { "m": "magnata do agronegócio", "f": "magnata do agronegócio", "setor": "agro" },
-        { "m": "controlador de uma mineradora", "f": "controladora de uma mineradora", "setor": "industria" },
-        { "m": "dono de uma construtora gigante", "f": "dona de uma construtora gigante", "setor": "construcao" },
+        { "m": "magnata do agronegócio", "f": "magnata do agronegócio", "setor": "agro", "patrimonio": true },
+        { "m": "controlador de uma mineradora", "f": "controladora de uma mineradora", "setor": "industria", "patrimonio": true },
+        { "m": "dono de uma construtora gigante", "f": "dona de uma construtora gigante", "setor": "construcao", "patrimonio": true },
         {
           "m": "herdeiro de um império de comunicação",
           "f": "herdeira de um império de comunicação",
-          "setor": "cultura"
+          "setor": "cultura",
+          "patrimonio": true
         }
       ],
       "negocio": { "m": "dono de um conglomerado", "f": "dona de um conglomerado", "setor": "industria" }
@@ -431,18 +433,21 @@
         {
           "m": "controlador de um conglomerado global",
           "f": "controladora de um conglomerado global",
-          "setor": "industria"
+          "setor": "industria",
+          "patrimonio": true
         },
         {
           "m": "fundador de uma gigante mundial de tecnologia",
           "f": "fundadora de uma gigante mundial de tecnologia",
-          "setor": "tecnologia"
+          "setor": "tecnologia",
+          "patrimonio": true
         },
-        { "m": "dono de um banco global", "f": "dona de um banco global", "setor": "financas" },
+        { "m": "dono de um banco global", "f": "dona de um banco global", "setor": "financas", "patrimonio": true },
         {
           "m": "dono de metade dos portos do continente",
           "f": "dona de metade dos portos do continente",
-          "setor": "transporte"
+          "setor": "transporte",
+          "patrimonio": true
         }
       ],
       "negocio": { "m": "dono de um império global", "f": "dona de um império global", "setor": "industria" }
@@ -738,10 +743,14 @@
       "resumo": "{ator.quem} se recuperou"
     },
     "demitido": {
-      "textos": [
-        "{ator.quem} perdeu o emprego de {ator.ocupacao}. [A empresa chamou de reestruturação.|A notícia veio por mensagem, numa sexta-feira.|Foram doze anos e uma cesta básica de despedida.]"
-      ],
-      "resumo": "{ator.quem} perdeu o emprego"
+      "textos": ["{ator.quem} perdeu o emprego de {ator.ocupacao}. {despedida}"],
+      "resumo": "{ator.quem} perdeu o emprego",
+      "trechos": {
+        "despedida": [
+          { "se": { "classe_origem": { "min": 4 } }, "texto": "[Saiu com um pacote de rescisão e uma carta de recomendação em papel timbrado.|O conselho chamou de reestruturação, num e-mail com três anexos.|Foram doze anos, uma festa de despedida no bufê e um bônus de saída.]" },
+          { "texto": "[A empresa chamou de reestruturação.|A notícia veio por mensagem, numa sexta-feira.|Foram doze anos e uma cesta básica de despedida.]" }
+        ]
+      }
     },
     "empregado": {
       "textos": [
@@ -768,6 +777,12 @@
         "{ator.quem} fechou as portas do negócio de uma vida inteira. [A placa foi a leilão.|O estoque virou bazar no quintal.|Os clientes antigos ainda perguntam quando reabre.]"
       ],
       "resumo": "{ator.quem} faliu na crise"
+    },
+    "perdeu_patrimonio": {
+      "textos": [
+        "{ator.quem} perdeu um bom pedaço do patrimônio na crise: [as ações da família caíram pela metade|o fundo em que estava quase tudo derreteu|a terra perdeu valor, e o banco cobrou o que tinha emprestado|os aluguéis atrasaram, e dois inquilinos sumiram]. [Ninguém passou necessidade, mas o clima no jantar mudou.|O motorista foi dispensado, e o almoço de domingo ficou mais curto.|Pela primeira vez, a família falou de dinheiro na frente das crianças.]"
+      ],
+      "resumo": "{ator.quem} perdeu parte do patrimônio na crise"
     },
     "nao_apareceu": {
       "textos": [
@@ -2582,7 +2597,7 @@
       "peso": 3,
       "classe": 5,
       "marcas": ["filho_de_craque"],
-      "papel": { "ocupacao": "ex-jogador da seleção|ex-jogadora da seleção", "setor": "cultura", "marca": "craque" },
+      "papel": { "ocupacao": "ex-jogador da seleção|ex-jogadora da seleção", "setor": "cultura", "marca": "craque", "patrimonio": true },
       "influencia": 8,
       "fama": 15
     },
@@ -2604,7 +2619,7 @@
       "peso": 4,
       "classe": 5,
       "marcas": ["filho_do_agro"],
-      "papel": { "ocupacao": "dono de fazenda|dona de fazenda", "setor": "agro", "marca": "fazendeiro" },
+      "papel": { "ocupacao": "dono de fazenda|dona de fazenda", "setor": "agro", "marca": "fazendeiro", "patrimonio": true },
       "influencia": 8
     },
     {

@@ -6,6 +6,8 @@ import { atoresPossiveis, elegivel } from '../src/motor/storylets.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { nascer } from '../src/motor/vida.ts';
+import { regrasDosPersonagens } from '../src/motor/familia.ts';
+import { momentoTipico } from '../src/motor/pais.ts';
 import { passo, viverAteOFim } from './apoio.ts';
 
 const c = carregarConteudo();
@@ -111,5 +113,56 @@ describe('herança e viuvez', () => {
     ganhar(namoro, [], 'eu', 'namoro', null);
     morrerPersonagem(namoro, 'amor', [], 1);
     expect(namoro.entidades['eu']!.q['viuvo']).toBeUndefined();
+  });
+});
+
+describe('quem vive de patrimônio', () => {
+  it('a herdeira não é demitida: na crise, perde parte do que tem, com a fase como causa', () => {
+    const e = nascer(c, { semente: 41, ano: 2026, origem: { classe: 5 } });
+    const mae = e.entidades['mae']!;
+    mae.t['ocupacao'] = 'herdeira';
+    mae.t['setor'] = 'financas';
+    mae.n['dinheiro'] = 5_000_000;
+    delete mae.q['aposentado'];
+    mae.nascimento = e.ano - 40;
+    const crise = momentoTipico('crise');
+    const antes = mae.n['dinheiro'];
+    for (let i = 0; i < 20 && mae.vivo !== false; i++) {
+      regrasDosPersonagens(e, c, [], crise);
+      e.ano++;
+    }
+    expect(e.historico.some((h) => h.ref === 'regra:demitido' && h.ator === 'mae')).toBe(false);
+    expect(e.historico.some((h) => h.ref === 'regra:perdeu_patrimonio' && h.ator === 'mae')).toBe(true);
+    expect(mae.n['dinheiro'] ?? 0).toBeLessThan(antes);
+  });
+
+  it('ninguém nasce "herdeira desempregada", e a demissão de família rica não vem com cesta básica', () => {
+    let deRenda = 0;
+    for (let s = 1; s <= 80; s++) {
+      const e = nascer(c, { semente: s, ano: 2026, origem: { classe: 6 } });
+      for (const p of ['mae', 'pai']) {
+        const en = e.entidades[p]!;
+        if (c.mundo.classes[6]!.ocupacoes.some((o) => o.patrimonio && (o.m === en.t['ocupacao'] || o.f === en.t['ocupacao']))) {
+          deRenda++;
+          expect(en.q['desempregado'], `${s} ${p}`).toBeUndefined();
+        }
+      }
+    }
+    expect(deRenda).toBeGreaterThan(100);
+    const rica = nascer(c, { semente: 5, ano: 2026, origem: { classe: 5 } });
+    const pai = rica.entidades['pai']!;
+    pai.t['ocupacao'] = 'diretor de multinacional';
+    pai.t['setor'] = 'industria';
+    pai.nascimento = rica.ano - 45;
+    delete pai.q['desempregado'];
+    delete pai.q['aposentado'];
+    const crise = momentoTipico('crise');
+    for (let i = 0; i < 40 && !rica.historico.some((h) => h.ref === 'regra:demitido' && h.ator === 'pai') && pai.vivo !== false; i++) {
+      delete pai.q['desempregado'];
+      regrasDosPersonagens(rica, c, [], crise);
+    }
+    const demissao = rica.historico.find((h) => h.ref === 'regra:demitido' && h.ator === 'pai');
+    expect(demissao).toBeDefined();
+    expect(demissao!.texto).not.toMatch(/cesta básica/);
   });
 });

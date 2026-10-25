@@ -293,6 +293,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(TODOS, 'dinheiro'), 'herança', false),
   ...ler(de(DOENTES, 'doente'), 'saúde dos personagens', true),
   ...ler(de(['mae', 'pai'], 'desempregado'), 'recolocação', true),
+  ...ler(de(['mae', 'pai'], 'ocupacao'), 'quem vive de patrimônio não é demitido: na crise, perde parte do que tem', true),
   ...ler(de(['mae', 'pai'], 'aposentado'), 'aposentadoria', true),
   ...ler(de(['mae', 'pai'], 'dono_do_negocio'), 'demissão (dono não é demitido)', true),
   ...ler(de(['mae', 'pai'], 'setor'), 'demissão dos pais (o setor sente o ciclo)', true),

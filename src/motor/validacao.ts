@@ -393,6 +393,12 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   c.linhas.forEach((l, i) => conferirCondicao(l.condicoes, `linhas.json[${i}]`, undefined, { sistema: 'linha', decide: false }));
   c.mortes.forEach((m, i) => conferirCondicao(m.condicoes, `mortes.json[${i}]`, undefined, { sistema: 'morte', decide: false }));
   c.mundo.nascimento.forEach((n, i) => conferirCondicao(n.se, `mundo.json › nascimento[${i}]`, undefined, { sistema: 'texto', decide: false }));
+  for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
+    for (const [nome, trechos] of Object.entries(ac.trechos ?? {})) {
+      trechos.forEach((t, i) => conferirCondicao(t.se, `mundo.json › acontecimentos.${g} › trechos.${nome}[${i}]`, PAPEIS, { sistema: 'texto', decide: false }));
+      if (trechos[trechos.length - 1]!.se) erro(`mundo.json › acontecimentos.${g}`, `trechos.${nome}: o último trecho não pode ter condição (é o padrão)`);
+    }
+  }
   for (const [m, info] of Object.entries(c.marcas)) {
     if (info.porAno) ler(`eu.${m}`, { sistema: 'passivo', decide: false, onde: `marcas.json › ${m}` });
     if (info.epitafio) ler(`eu.${m}`, { sistema: 'cartao', decide: false, onde: `marcas.json › ${m}` });
@@ -502,7 +508,9 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   c.mundo.nascimento.forEach((n, i) => verificarModelo(n.texto, `mundo.json › nascimento[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   c.mundo.epitafios.forEach((t, i) => verificarModelo(t, `mundo.json › epitafios[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
-    for (const t of [...ac.textos, ac.resumo]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, new Set(['como', 'fecho']), new Set(), marcasDoPapel, erro, PAPEIS);
+    const extras = new Set(['como', 'fecho', ...Object.keys(ac.trechos ?? {})]);
+    const trechos = Object.values(ac.trechos ?? {}).flatMap((l) => l.map((t) => t.texto));
+    for (const t of [...ac.textos, ac.resumo, ...trechos]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, extras, new Set(), marcasDoPapel, erro, PAPEIS);
   }
   // A despedida fala de quem morreu (o ator, ainda vivo quando o texto é escrito) e da relação com ele.
   for (const [qual, textos] of Object.entries(c.mundo.despedidas)) {

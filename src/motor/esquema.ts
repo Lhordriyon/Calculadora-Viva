@@ -407,7 +407,8 @@ export const ArquivoMarcas = z.record(id, InfoMarca);
 
 /** Setor de uma ocupação: um só, ou um para cada gênero quando as duas formas são trabalhos diferentes. */
 const SetorDaOcupacao = z.union([id, z.strictObject({ m: id, f: id })]);
-const Profissao = z.strictObject({ m: z.string(), f: z.string(), setor: SetorDaOcupacao });
+/** A ocupação dos pais; `patrimonio`: vive do que tem (herdeiro, investidor, dono), não é demitido e sente a crise no patrimônio. */
+const Profissao = z.strictObject({ m: z.string(), f: z.string(), setor: SetorDaOcupacao, patrimonio: z.boolean().optional() });
 
 /** Setor da economia: quanto sente o ciclo e quanto os salários crescem por ano (real). */
 export const DefSetor = z.strictObject({
@@ -432,7 +433,7 @@ export const DefSetor = z.strictObject({
 export type DefSetor = z.infer<typeof DefSetor>;
 
 /** Mudanças que as regras dos personagens produzem sozinhas. */
-export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu', 'nao_apareceu'] as const;
+export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu', 'nao_apareceu', 'perdeu_patrimonio'] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 
 /**
@@ -720,7 +721,8 @@ export const DefLinhagem = z.strictObject({
   /** Qualidades de quem joga ao nascer. */
   marcas: z.array(id).min(1),
   /** O pai ou a mãe que faz a linhagem. */
-  papel: z.strictObject({ ocupacao: TextoGenero, setor: id, marca: id }),
+  /** O papel do pai ou da mãe na linhagem; `patrimonio`: vive do que tem (não é demitido; a crise leva parte). */
+  papel: z.strictObject({ ocupacao: TextoGenero, setor: id, marca: id, patrimonio: z.boolean().optional() }),
   /** Qualidades do país neste mundo (monarquia, regime). */
   pais: z.array(id).optional(),
   influencia: z.number().min(0).max(100).optional(),
@@ -744,7 +746,8 @@ export const Mundo = z.strictObject({
   /** O que as regras anuais dos personagens contam na linha do tempo (adoeceu, perdeu o emprego...). */
   acontecimentos: z.record(
     z.enum(GATILHOS),
-    z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string().min(3) }),
+    // Os trechos escolhem pelo estado, como nos storylets (a demissão de quem é rico não vem com cesta básica).
+    z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string().min(3), trechos: z.record(z.string().regex(/^[a-z_]+$/), z.array(Trecho).min(2)).optional() }),
   ),
   /** Setores da economia (o emprego de quem joga e dos pais pertence a um). */
   setores: z.array(DefSetor).min(6),

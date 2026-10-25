@@ -221,6 +221,12 @@ export const IDADE_APOSENTADORIA = 65;
 export const ANOS_DE_RESERVA = 5;
 /** Chance anual de o negócio de um personagem quebrar, por ponto de piora do ciclo (vezes quanto o setor sente). */
 export const CHANCE_FALENCIA = 0.08;
+/**
+ * Quem vive de patrimônio (herdeiro, investidor, dono): chance por ano, por ponto de desemprego acima do normal e pelo
+ * ciclo do setor, de perder uma fração do que tem e do que rende, em vez de ser demitido.
+ */
+export const CHANCE_PERDA_PATRIMONIO = 0.12;
+export const PERDA_DO_PATRIMONIO = 0.2;
 /** O vínculo volta devagar para o ponto de equilíbrio da família. */
 export const RETORNO_VINCULO = 0.06;
 /** Vínculo perdido por ano depois dos 20 de quem joga, sem contato (amigos perdem mais). */

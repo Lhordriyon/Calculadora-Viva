@@ -20,6 +20,7 @@ import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_FALENCIA,
   CHANCE_CURA,
+  CHANCE_PERDA_PATRIMONIO,
   DEMISSAO_BASE,
   ANOS_REMORSO,
   CONFIANCA_DA_FALTA,
@@ -38,6 +39,7 @@ import {
   VOLTA_CONFIANCA,
   RETORNO_VINCULO,
   PAQUERA_AMOR,
+  PERDA_DO_PATRIMONIO,
   VINCULO_DA_FALTA,
   VINCULO_DA_VONTADE,
   chanceDeAmor,
@@ -55,6 +57,21 @@ import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca, Qualidade 
 /** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada. */
 export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet'] as const;
 
+const DE_PATRIMONIO = new WeakMap<Conteudo, ReadonlySet<string>>();
+/** A ocupação é de quem vive do que tem (mundo.json › classes › ocupacoes e linhagens › papel, com `patrimonio`): herdeiro, investidor, dono. */
+function vivePatrimonio(c: Conteudo, en: Entidade): boolean {
+  let nomes = DE_PATRIMONIO.get(c);
+  if (!nomes) {
+    nomes = new Set([
+      ...c.mundo.classes.flatMap((k) => k.ocupacoes.filter((o) => o.patrimonio).flatMap((o) => [o.m, o.f])),
+      // As linhagens escrevem a ocupação "do pai|da mãe" (o dono de fazenda, o ex-jogador da seleção).
+      ...c.mundo.linhagens.filter((l) => l.papel.patrimonio).flatMap((l) => l.papel.ocupacao.split('|')),
+    ]);
+    DE_PATRIMONIO.set(c, nomes);
+  }
+  return nomes.has(en.t['ocupacao'] ?? '');
+}
+
 /** Uma mudança notável vira entrada visível na linha do tempo, com a regra como causa. */
 function acontecer(
   e: EstadoVida,
@@ -70,7 +87,7 @@ function acontecer(
   if (causas.length > 0) entrada.causas = causas;
   const reg: Mudanca[] = [];
   aplicar(reg, entrada.id);
-  const ctx = contexto(e, { ator: papel, textos });
+  const ctx = contexto(e, { ator: papel, textos, trechos: ac?.trechos });
   entrada.texto = capitalizar(renderizar(ac ? sortear(e.rng, ac.textos) : gatilho, ctx)).trim();
   entrada.resumo = renderizar(ac?.resumo ?? gatilho, ctx);
   return lancar(e, entrada, reg);
@@ -299,6 +316,24 @@ export function regrasDosPersonagens(
           {},
           pelaFase === null ? [] : [pelaFase],
         );
+      } else if (vivePatrimonio(c, en)) {
+        // Quem vive do que tem não é demitido: na recessão e na crise, o patrimônio encolhe (as ações, a terra, o banco).
+        if (en.q['desempregado']) perder(e, regAno, papel, 'desempregado', 'trabalho');
+        if (fase.desemprego > 1 && aleatorio(e.rng) < CHANCE_PERDA_PATRIMONIO * (fase.desemprego - 1) * (setor?.ciclo ?? 1)) {
+          const pelaFase = causaDaFase(e);
+          acontecer(
+            e,
+            c,
+            papel,
+            'perdeu_patrimonio',
+            (reg) => {
+              somar(e, reg, papel, 'dinheiro', -Math.max(0, en.n['dinheiro'] ?? 0) * PERDA_DO_PATRIMONIO, undefined, 'mercado');
+              somar(e, reg, papel, 'renda', -(en.n['renda'] ?? 0) * PERDA_DO_PATRIMONIO);
+            },
+            {},
+            pelaFase === null ? [] : [pelaFase],
+          );
+        }
       } else if (!en.q['ausente'] && !en.q['dono_do_negocio'] && !setor?.estavel && idade >= 18) {
         // Desemprego do lugar (relativo a 8%) vezes o momento do país, conforme o setor sente o ciclo.
         const desemprego = ((lugar?.n['desemprego'] ?? 0.08) / 0.08) * (1 + (fase.desemprego - 1) * (setor?.ciclo ?? 1));

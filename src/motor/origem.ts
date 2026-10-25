@@ -146,10 +146,11 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
     return en;
   };
   const setorDe = (en: Entidade, setor: string | { m: string; f: string }): string => (typeof setor === 'string' ? setor : en.genero === 'f' ? setor.f : setor.m);
-  const ocupar = (en: Entidade, ocupacao: { m: string; f: string; setor: string | { m: string; f: string } }): void => {
+  const ocupar = (en: Entidade, ocupacao: { m: string; f: string; setor: string | { m: string; f: string }; patrimonio?: boolean | undefined }): void => {
     en.t['ocupacao'] = en.genero === 'f' ? ocupacao.f : ocupacao.m;
     en.t['setor'] = setorDe(en, ocupacao.setor);
-    if (aleatorio(rng) < chanceDesemprego) {
+    // Quem vive de patrimônio não nasce desempregado (o sorteio acontece do mesmo jeito: as outras vidas não mudam).
+    if (aleatorio(rng) < chanceDesemprego && !ocupacao.patrimonio) {
       en.q['desempregado'] = { v: 1, ano: e.ano, idade: 0, causa: null };
       en.n['renda'] = Math.round(rendaAdulto() * 0.3);
     } else {
