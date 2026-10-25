@@ -4,9 +4,9 @@ import { acoesComPessoa, fichasUsadas } from '../motor/acoes.ts';
 import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
-import { FILHOS, ehFilho, type Humor, type Verbo } from '../motor/constantes.ts';
+import { FILHOS, VISOES_RUINS, ehFilho, type Humor, type Verbo, type Visao } from '../motor/constantes.ts';
 import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
-import { convivem, gostoDe, humorDe, lembrancasDe, semONome } from '../motor/relacoes.ts';
+import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, semONome, visoesDe } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
@@ -98,11 +98,71 @@ const HUMOR: Record<Humor, { m: string; f: string; tom: 'ruim' | 'bom' | 'saudad
   distancia: { m: 'distante', f: 'distante', tom: 'neutro' },
 };
 
+/** O que a pessoa acha de quem joga, no gênero de quem joga ("acha você generosa"). */
+const VISAO: Record<Visao, { m: string; f: string }> = {
+  orgulho: { m: 'um orgulho', f: 'um orgulho' },
+  presente: { m: 'presente', f: 'presente' },
+  carinhoso: { m: 'carinhoso', f: 'carinhosa' },
+  de_palavra: { m: 'de palavra', f: 'de palavra' },
+  generoso: { m: 'generoso', f: 'generosa' },
+  cuida_dos_filhos: { m: 'um pai presente', f: 'uma mãe presente' },
+  sumido: { m: 'sumido', f: 'sumida' },
+  metido: { m: 'metido', f: 'metida' },
+  interesseiro: { m: 'interesseiro', f: 'interesseira' },
+  cabeca_quente: { m: 'cabeça-quente', f: 'cabeça-quente' },
+  sem_palavra: { m: 'sem palavra', f: 'sem palavra' },
+  longe_dos_filhos: { m: 'um pai ausente', f: 'uma mãe ausente' },
+  casado_com_o_trabalho: { m: 'casado com o trabalho', f: 'casada com o trabalho' },
+  perdido: { m: 'perdido', f: 'perdida' },
+};
+const DOI: ReadonlySet<string> = new Set(VISOES_RUINS);
+
+/** "Acha você generosa, mas sumida", e o porquê da primeira opinião que tem um. */
+function Opiniao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade }) {
+  const ops = visoesDe(vida, id, en);
+  if (ops.length === 0) return null;
+  const g = vida.entidades['eu']!.genero === 'f' ? 'f' : 'm';
+  const [a, b] = ops;
+  const liga = b && DOI.has(a!.visao) !== DOI.has(b.visao) ? ', mas ' : ' e ';
+  const porque = ops.map((o) => porqueDe(vida, id, en, o)).find(Boolean);
+  const viva = en.vivo !== false;
+  return (
+    <>
+      <p class={`visao ${DOI.has(a!.visao) ? 'ruim' : 'bom'}`}>
+        {viva ? 'Acha você ' : 'Achava você '}
+        <b>{VISAO[a!.visao][g]}</b>
+        {b && (
+          <>
+            {liga}
+            <b>{VISAO[b.visao][g]}</b>
+          </>
+        )}
+        .
+      </p>
+      {porque && <p class="porque">Por quê: {porque}.</p>}
+    </>
+  );
+}
+
+/** A vontade que a pessoa guarda (mundo.json › vontades), com o tempo que ela espera. */
+function Vontade({ vida, conteudo, en }: { vida: EstadoVida; conteudo: Conteudo; en: Entidade }) {
+  const v = conteudo.mundo.vontades.find((x) => (en.q[x.id]?.v ?? 0) > 0);
+  if (!v) return null;
+  const desde = vida.idade - en.q[v.id]!.idade;
+  if (en.vivo === false) return <p class="vontade">Queria {v.quer}.</p>;
+  return (
+    <p class="vontade">
+      Quer {v.quer}.{desde >= 2 ? ` Fala disso há ${desde} anos.` : ''}
+    </p>
+  );
+}
+
 /**
- * O que a relação é agora e o que ficou dela: o humor (e o rompimento), os anos sem notícia e as lembranças que a
- * pessoa tem de quem joga, do livro-razão (a melhor e, se ainda dói, a pior). De quem morreu, fica a lembrança.
+ * O que a relação é agora e o que ficou dela: o humor (e o rompimento), os anos sem notícia, o que a pessoa acha de
+ * quem joga (com o porquê), o que ela quer e as lembranças que ela tem de quem joga, do livro-razão (a melhor e, se
+ * ainda dói, a pior). De quem morreu, fica a lembrança, a opinião e a vontade que faltou.
  */
-function Relacao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade }) {
+function Relacao({ vida, conteudo, id, en }: { vida: EstadoVida; conteudo: Conteudo; id: string; en: Entidade }) {
   const f = en.genero === 'f';
   const viva = en.vivo !== false;
   const { boa, ruim } = lembrancasDe(vida, id);
@@ -111,7 +171,15 @@ function Relacao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
   const longe = en.n['sem_contato'] ?? 0;
   const lembra = boa ? `de quando você ${semONome(boa.texto, id, en)}, aos ${boa.idade}` : '';
   const doi = ruim && (en.n['magoa'] ?? 0) >= 10 ? `de quando você ${semONome(ruim.texto, id, en)}, aos ${ruim.idade}` : '';
-  if (!viva) return lembra ? <p class="lembranca">Você lembra {lembra}.</p> : null;
+  if (!viva) {
+    return (
+      <>
+        {lembra && <p class="lembranca">Fica a lembrança {lembra}.</p>}
+        <Opiniao vida={vida} id={id} en={en} />
+        <Vontade vida={vida} conteudo={conteudo} en={en} />
+      </>
+    );
+  }
   // Quem rompeu, rompeu: o resto do humor não importa até as pazes.
   const como = rompeu ? 'rompeu com você' : humor ? HUMOR[humor][f ? 'f' : 'm'] : '';
   const tom = rompeu ? 'ruim' : humor ? HUMOR[humor].tom : 'neutro';
@@ -119,6 +187,8 @@ function Relacao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
   return (
     <>
       {(como || distancia) && <p class={`humor ${tom}`}>{[como, distancia].filter(Boolean).join(' · ')}</p>}
+      <Opiniao vida={vida} id={id} en={en} />
+      <Vontade vida={vida} conteudo={conteudo} en={en} />
       {lembra && <p class="lembranca">Lembra {lembra}.</p>}
       {doi && <p class="lembranca doi">Guarda a mágoa {doi}.</p>}
     </>
@@ -234,7 +304,7 @@ export function Familia({ vida, conteudo, aoOperar, aoAgir, aoFechar }: Props) {
                     {papelDe(id, en, vida)} · {viva ? anos(idade) : `faleceu aos ${idade}`}
                   </span>
                 </div>
-                {id !== 'pet' && <Relacao vida={vida} id={id} en={en} />}
+                {id !== 'pet' && <Relacao vida={vida} conteudo={conteudo} id={id} en={en} />}
                 {viva && itens.length > 0 && <p class="situacao">{itens.join(' · ')}</p>}
                 {viva && (
                   <div class="barras">

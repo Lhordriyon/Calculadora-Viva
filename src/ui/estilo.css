@@ -1324,6 +1324,40 @@ button {
   color: color-mix(in srgb, var(--ruim) 70%, var(--texto));
 }
 
+/* O que a pessoa acha de você (com o porquê) e o que ela quer da vida. */
+.pessoa .visao {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.pessoa .visao b {
+  font-weight: 700;
+}
+
+.pessoa .visao.bom b {
+  color: var(--saude);
+}
+
+.pessoa .visao.ruim b {
+  color: var(--ruim);
+}
+
+.pessoa .porque {
+  margin: 2px 0 0;
+  color: var(--texto-suave);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.pessoa .vontade {
+  margin: 6px 0 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--turquesa);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
 .juntos {
   margin-top: 10px;
 }
