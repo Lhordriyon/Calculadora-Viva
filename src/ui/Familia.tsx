@@ -1,7 +1,10 @@
+import { useState } from 'preact/hooks';
 import { Folha } from './Folha.tsx';
+import { acoesComPessoa, fichasUsadas } from '../motor/acoes.ts';
+import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
-import { FILHOS, ehFilho, type Humor } from '../motor/constantes.ts';
+import { FILHOS, ehFilho, type Humor, type Verbo } from '../motor/constantes.ts';
 import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
 import { convivem, gostoDe, humorDe, lembrancasDe, semONome } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -122,6 +125,13 @@ function Relacao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
   );
 }
 
+/** Quantas coisas ainda cabem no ano: cada uma com alguém gasta uma escolha, como no palco. */
+function escolhasDoAno(vida: EstadoVida): string {
+  const restam = fichasDoAno(vida.idade) - fichasUsadas(vida);
+  if (restam <= 0) return 'As escolhas deste ano acabaram: no ano que vem dá para fazer algo com cada um.';
+  return restam === 1 ? 'Você ainda tem uma escolha este ano: fazer algo com alguém gasta ela.' : `Você ainda tem ${restam} escolhas este ano: cada coisa com alguém gasta uma.`;
+}
+
 /** O que está acontecendo com a pessoa agora, em poucas palavras. */
 function situacao(id: string, en: Entidade, c: Conteudo): string[] {
   const f = en.genero === 'f';
@@ -163,10 +173,35 @@ interface Props {
   vida: EstadoVida;
   conteudo: Conteudo;
   aoOperar: (op: Operacao) => void;
+  /** Fazer algo com uma pessoa: gasta uma ficha do ano, como o verbo (e a folha fecha para a história contar). */
+  aoAgir: (verbo: Verbo, escolha: { id: string; ator: string }) => void;
   aoFechar: () => void;
 }
 
-export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
+/** O que dá para fazer com a pessoa neste ano (as ações de "Em família" com ela), aberto por um botão. */
+function Juntos({ vida, conteudo, id, nome, aoAgir }: { vida: EstadoVida; conteudo: Conteudo; id: string; nome: string; aoAgir: Props['aoAgir'] }) {
+  const [aberto, setAberto] = useState(false);
+  const opcoes = acoesComPessoa(vida, conteudo, id);
+  if (opcoes.length === 0) return null;
+  return (
+    <div class="juntos">
+      <button class="botao secundario juntos-abrir" type="button" aria-expanded={aberto} onClick={() => setAberto(!aberto)}>
+        {aberto ? 'Agora não' : `Fazer algo com ${nome}`}
+      </button>
+      {aberto && (
+        <div class="juntos-lista">
+          {opcoes.map((o) => (
+            <button class="opcao" type="button" key={o.s.id} onClick={() => aoAgir('familia', { id: o.s.id, ator: id })}>
+              {o.rotulo}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function Familia({ vida, conteudo, aoOperar, aoAgir, aoFechar }: Props) {
 
   const eu = vida.entidades['eu']!;
   const tipo = conteudo.mundo.familias.find((f) => f.id === eu.t['familia']);
@@ -184,6 +219,7 @@ export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
           {irmaos > 0 ? ` · ${irmaos === 1 ? '1 irmão' : `${irmaos} irmãos`}` : ' · filh' + (eu.genero === 'f' ? 'a' : 'o') + ' únic' + (eu.genero === 'f' ? 'a' : 'o')}
           {vida.dinastia ? ` · geração ${vida.dinastia.geracao} da família` : ''}
         </p>
+        {vida.vivo && !vida.pendente && <p class="meta escolhas-do-ano">{escolhasDoAno(vida)}</p>}
         <ul class="pessoas">
           {pessoas.map(([id, en]) => {
             const viva = en.vivo !== false;
@@ -209,6 +245,7 @@ export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
                   </div>
                 )}
                 {viva && dinheiro !== null && dinheiro >= 1 && <p class="situacao">Guardado: {formatarDinheiro(dinheiro)}</p>}
+                {viva && id !== 'pet' && <Juntos vida={vida} conteudo={conteudo} id={id} nome={en.nome} aoAgir={aoAgir} />}
               </li>
             );
           })}

@@ -148,12 +148,39 @@ export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJo
   return saida;
 }
 
+/**
+ * A ação de "Em família" com uma pessoa escolhida (não a que o verbo escolheria): o storylet existe, a idade dá, a
+ * pessoa pode ser o ator, a condição vale para ela e ela ainda não foi feita no ano.
+ */
+function acaoComPessoa(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha: { id: string; ator?: string | undefined }): AcaoPossivel | undefined {
+  const s = c.porId.get(escolha.id);
+  const ator = escolha.ator;
+  if (!s || s.verbo !== verbo || !ator) return undefined;
+  if (s.idade && (e.idade < s.idade[0] || e.idade > s.idade[1])) return undefined;
+  if (!atoresPossiveis(s, e).includes(ator) || !elegivel(s, e, ator) || feitasNoAno(e).has(instanciaDe(s, ator))) return undefined;
+  return { verbo, s, ator };
+}
+
+/**
+ * O que dá para fazer com uma pessoa agora (a folha Família): as ações de "Em família" em que ela pode ser o ator.
+ * Cada uma gasta uma ficha, como no verbo; a lista do verbo continua com uma ação por storylet.
+ */
+export function acoesComPessoa(e: EstadoVida, c: Conteudo, ator: string, memoria?: MemoriaJogador): OpcaoDeAcao[] {
+  if (!e.vivo || e.pendente || jaAgiu(e)) return [];
+  const saida: OpcaoDeAcao[] = [];
+  for (const s of c.acoes.get('familia') ?? []) {
+    const a = acaoComPessoa(e, c, 'familia', { id: s.id, ator });
+    if (a) saida.push(opcao(e, a, memoria));
+  }
+  return saida;
+}
+
 /** Gasta uma ficha do ano no verbo: na ação escolhida (id do storylet e ator) ou, sem escolha, na do botão. */
 export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha?: { id: string; ator?: string | undefined }): Entrada {
   if (!e.vivo || e.pendente) throw new Error('Agora não dá para agir.');
   if (jaAgiu(e)) throw new Error('As fichas deste ano já foram usadas.');
   const todas = acoesDoVerbo(e, c, verbo);
-  const a = escolha ? todas.find((x) => x.s.id === escolha.id && x.ator === escolha.ator) : todas[0];
+  const a = escolha ? (todas.find((x) => x.s.id === escolha.id && x.ator === escolha.ator) ?? acaoComPessoa(e, c, verbo, escolha)) : todas[0];
   if (!a) throw new Error(`Não dá para ${verbo} agora.`);
   const repeticao = e.vistos[instanciaDe(a.s, a.ator)]?.at(-1) === e.idade - 1;
   return aplicarStorylet(e, c, a.s, a.ator, 'acao', { causas: causasDe(a.s.condicoes, e, a.ator), repeticao });

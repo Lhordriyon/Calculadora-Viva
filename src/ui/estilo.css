@@ -1324,6 +1324,26 @@ button {
   color: color-mix(in srgb, var(--ruim) 70%, var(--texto));
 }
 
+.juntos {
+  margin-top: 10px;
+}
+
+.juntos-abrir {
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.juntos-lista {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.familia .escolhas-do-ano {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
 .pessoa.falecida {
   opacity: 0.6;
 }

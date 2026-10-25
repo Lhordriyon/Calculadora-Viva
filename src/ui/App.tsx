@@ -237,7 +237,18 @@ export function App() {
       {folha === 'cartao' && resumo && (
         <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoContinuar={continuar} />
       )}
-      {folha === 'familia' && <Familia vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
+      {folha === 'familia' && (
+        <Familia
+          vida={vida}
+          conteudo={conteudo}
+          aoOperar={operarDinheiro}
+          aoAgir={(verbo, escolha) => {
+            setFolha(null);
+            agirNoAno(verbo, escolha);
+          }}
+          aoFechar={() => setFolha(null)}
+        />
+      )}
       {folha === 'dinheiro' && <Dinheiro vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'carreira' && <Carreira vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'pais' && <Pais vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}

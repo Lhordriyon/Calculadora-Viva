@@ -6,9 +6,11 @@ import { lancar, novaEntrada, somar } from '../src/motor/livro.ts';
 import { morrerPersonagem } from '../src/motor/pessoas.ts';
 import { convivem, deQuando, gostoDe, humorDe, lembrancasDe, semONome } from '../src/motor/relacoes.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
+import { acoesComPessoa, agir, fichasUsadas } from '../src/motor/acoes.ts';
+import { criarRng } from '../src/motor/rng.ts';
 import { aplicarStorylet } from '../src/motor/storylets.ts';
 import { nascer } from '../src/motor/vida.ts';
-import { viverAteOFim } from './apoio.ts';
+import { passo, viverAteOFim } from './apoio.ts';
 
 const c = conteudo;
 /** Um adulto de 30 anos que já não mora com os pais (a família toda viva). */
@@ -130,6 +132,22 @@ describe('a relação com cada pessoa', () => {
       gostos.add(gostoDe(mae));
     }
     expect(gostos.size).toBeGreaterThan(4);
+  });
+
+  it('dá para fazer algo com cada pessoa, não só com a que o verbo escolheria (e gasta a ficha)', () => {
+    const e = nascer(c, { semente: 12, ano: 2026 });
+    const robo = criarRng(12);
+    while (e.vivo && (e.idade < 30 || e.pendente)) passo(e, c, robo, 'cautelosa');
+    const pessoas = ['mae', 'pai', 'amigo'].filter((p) => acoesComPessoa(e, c, p).length > 0);
+    expect(pessoas.length).toBeGreaterThan(1);
+    const quem = pessoas.at(-1)!;
+    const acao = acoesComPessoa(e, c, quem)[0]!;
+    const antes = fichasUsadas(e);
+    const entrada = agir(e, c, 'familia', { id: acao.s.id, ator: quem });
+    expect(entrada.ator).toBe(quem);
+    expect(fichasUsadas(e)).toBe(antes + 1);
+    // A mesma ação com a mesma pessoa não se repete no ano.
+    expect(acoesComPessoa(e, c, quem).some((o) => o.s.id === acao.s.id)).toBe(false);
   });
 
   it('numa vida inteira, a relação anda: mágoa, confiança e anos sem contato mudam, e o livro fecha', () => {

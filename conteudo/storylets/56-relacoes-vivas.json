@@ -8,7 +8,7 @@
     "preferir": "+ator.magoa",
     "idade": [14, 110],
     "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.idade": { "min": 12 } },
-    "intervalo": 3,
+    "intervalo": 4,
     "trechos": {
       "conversa": [
         { "se": { "ator.magoa": { "min": 30 } }, "texto": "Uma hora a conversa chegou onde precisava: a mágoa {ator.magoa_de}. [{ator} chorou um pouco, você também.|Ninguém gritou, o que na família de vocês é novidade.|Não resolveu tudo, mas destravou alguma coisa.]" },
@@ -19,7 +19,7 @@
     },
     "texto": "Você sentou para conversar com {ator} sem celular na mesa. {conversa}",
     "resumo": "conversou de verdade com {ator}",
-    "efeitos": { "ator.vinculo": 5, "ator.confianca": 6, "ator.magoa": -12, "dinheiro": -40 }
+    "efeitos": { "ator.vinculo": 5, "ator.confianca": 6, "ator.magoa": -12, "felicidade": 1 }
   },
   {
     "id": "pedir_desculpas",
