@@ -102,10 +102,6 @@ export interface Extras {
 }
 
 /**
- * Storylet sem escolha: aplica os efeitos (e o teste, se houver) e lança a
- * entrada no livro com a causa dada (diretor, personagem ou ação).
- */
-/**
  * Contato é chegar perto: quem ganhou vínculo com o que aconteceu (a visita, a ligação, o almoço de domingo, o pedido de
  * desculpas aceito). Os anos sem se falar zeram, na mesma entrada. Ignorar a ligação não é contato; a briga, se for,
  * diz no conteúdo ("ator.sem_contato": { "definir": 0 }).
@@ -119,6 +115,10 @@ function contato(e: EstadoVida, reg: Mudanca[]): void {
   }
 }
 
+/**
+ * Storylet sem escolha: aplica os efeitos (e o teste, se houver) e lança a
+ * entrada no livro com a causa dada (diretor, personagem ou ação).
+ */
 export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: string | undefined, causa: Causa, extras: Extras = {}): Entrada {
   marcarVisto(e, s, ator);
   const entrada = novaEntrada(e, {

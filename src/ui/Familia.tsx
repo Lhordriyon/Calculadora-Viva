@@ -125,12 +125,10 @@ function Opiniao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
   const [a, b] = ops;
   const liga = b && DOI.has(a!.visao) !== DOI.has(b.visao) ? ', mas ' : ' e ';
   const porque = ops.map((o) => porqueDe(vida, id, en, o)).find(Boolean);
-  const viva = en.vivo !== false;
   return (
     <>
       <p class={`visao ${DOI.has(a!.visao) ? 'ruim' : 'bom'}`}>
-        {viva ? 'Acha você ' : 'Achava você '}
-        <b>{VISAO[a!.visao][g]}</b>
+        Acha você <b>{VISAO[a!.visao][g]}</b>
         {b && (
           <>
             {liga}
@@ -160,7 +158,7 @@ function Vontade({ vida, conteudo, en }: { vida: EstadoVida; conteudo: Conteudo;
 /**
  * O que a relação é agora e o que ficou dela: o humor (e o rompimento), os anos sem notícia, o que a pessoa acha de
  * quem joga (com o porquê), o que ela quer e as lembranças que ela tem de quem joga, do livro-razão (a melhor e, se
- * ainda dói, a pior). De quem morreu, fica a lembrança, a opinião e a vontade que faltou.
+ * ainda dói, a pior). De quem morreu, fica a lembrança e a vontade que faltou.
  */
 function Relacao({ vida, conteudo, id, en }: { vida: EstadoVida; conteudo: Conteudo; id: string; en: Entidade }) {
   const f = en.genero === 'f';
@@ -175,7 +173,6 @@ function Relacao({ vida, conteudo, id, en }: { vida: EstadoVida; conteudo: Conte
     return (
       <>
         {lembra && <p class="lembranca">Fica a lembrança {lembra}.</p>}
-        <Opiniao vida={vida} id={id} en={en} />
         <Vontade vida={vida} conteudo={conteudo} en={en} />
       </>
     );
