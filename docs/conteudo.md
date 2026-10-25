@@ -121,6 +121,22 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
 
 Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condições; os outros exigem o ator vivo.
 
+**A relação com cada pessoa** (bloco R, `relacoes.ts`):
+
+```jsonc
+{
+  "ator.vinculo": { "min": 50 },      // o afeto (0 a 100)
+  "ator.magoa": { "min": 40 },        // a mágoa com quem joga (0 a 100); passa com o tempo no ritmo do perdão do traço
+  "ator.confianca": { "min": 70 },    // a confiança (0 a 100, começa em 60)
+  "ator.sem_contato": { "min": 3 },   // anos sem se falar (ganhar vínculo zera)
+  "ator.gosto": "pescaria",           // o que a pessoa ama: futebol, novela, pescaria, cozinha, musica, fe, plantas, jogos, livros, carros, viagem, danca, bichos, politica, artesanato
+  "marcas": ["ator.rompido"],         // a pessoa rompeu (o storylet "rompimento", com mágoa de 75+); "fazer_as_pazes" tira
+  "marcas": ["remorso"], "marcas": ["despediu"] // de quem joga: alguém morreu magoado ou longe; alguém morreu perto e em paz
+}
+```
+
+Nos efeitos, `"ator.magoa": 15` machuca e `-20` repara; `"ator.confianca": -10` quebra a confiança; `"ator.sem_contato": { "definir": 0 }` é o contato que não dá vínculo (a briga). No texto, `{ator.lembranca}` e `{ator.magoa_de}` viram "de quando você …, aos 34" (a melhor e a pior coisa que quem joga fez com a pessoa, do livro; sem lembrança forte, o que toda relação tem): escreva "{ator:Ele|Ela} lembrou {ator.lembranca}" e "A mágoa vinha {ator.magoa_de}". Use `"preferir": "+ator.magoa"` para a ação ir primeiro a quem está mais magoado.
+
 O validador confere os campos de texto de vocabulário fechado: `lugar.regiao` (norte, nordeste, centro_oeste, sudeste, sul), `setor` (os 12 de `mundo.json`), `padrao`, `perfil`, `familia` e `traco` (de quem joga ou de personagem).
 
 A fase da economia é uma qualidade do país (`pais.expansao`, `pais.recessao`, `pais.crise`; no normal, nenhuma). Storylet que a consulta tem a entrada que anunciou a fase como causa: o cartão da vida pode contar "o país entrou em crise → você perdeu o emprego".

@@ -90,7 +90,8 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   contratos.ts         a dívida como contrato com o banco (cheque especial, empréstimo, financiamento, acordo): juros, saque, pagamento, limite
   dividas.ts           o ano das dívidas: parcela, atraso, nome sujo, caducar; renegociar e quitar
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
-  familia.ts           regras anuais dos personagens, regra do amor, iniciativas
+  familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor, iniciativas
+  relacoes.ts          a relação com cada pessoa: o gosto, o humor, convivência e as lembranças (do livro), sem estado novo
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -219,3 +220,6 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Com escolhas sobrando, "Viver mais 1 ano" é o botão secundário e diz quantas sobram | agente (correção C1) | o botão dourado sempre fazia passar o ano sem as escolhas, e a contagem que avisava saía cortada no aparelho do dono |
 | Toda folha tem o título e o Fechar fora da parte que rola, e o voltar do Android fecha a folha | agente (correção C1) | a Carreira pedia rolar 6.000 px para fechar, e o voltar fechava o app |
 | Os marcos da vida (`marco: true`) aparecem em dourado na linha do tempo | agente (o mockup do dono) | o destaque do mockup vira história, não painel |
+| Relação de verdade com cada pessoa: afeto, confiança, mágoa (que passa no ritmo do perdão do traço e rompe acima de 75) e anos sem contato; a pessoa lembra da melhor e da pior coisa que você fez (do livro), magoada briga mais e ajuda menos; morrer magoado ou longe deixa remorso, perto deixa a despedida | dono (25/10) | "relacionamento de fato, inteligente, com progressão real e causalidade"; NPCs vivos e únicos, a morte que dói pela história, o peso de cada decisão |
+| A confiança guarda a diferença para 60 (campo com base); o gosto, o humor e as lembranças saem do estado e do livro | agente | o save antigo vale sem migrar e o livro fecha; estado novo só onde a relação precisa lembrar sozinha |
+| Contato é chegar perto: ganhar vínculo zera os anos sem contato; ignorar a ligação não | agente | a distância precisa de uma decisão para acabar; aparecer num storylet não é estar perto |
