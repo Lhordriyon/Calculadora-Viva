@@ -20,9 +20,9 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 ## Um ano (`avancarAno`)
 
-**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 19 etapas e o que cada uma lê e escreve, em caminhos genéricos:
-- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
-- os caminhos: `pessoa.saude` vale para qualquer personagem; `bem.*`, `ctr.*`, `empresa.*` e `fora.*` valem para qualquer bem, contrato, empresa e país de fora; `agenda` é o que fica marcado para um ano que vem; `ano.fase`, `ano.mercado` e `ano.economia` são o que uma etapa passa às seguintes sem gravar no estado; `*` é o conteúdo.
+**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 20 etapas e o que cada uma lê e escreve, em caminhos genéricos:
+- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `tesouro`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
+- os caminhos: `pessoa.saude` vale para qualquer personagem; `bem.*`, `ctr.*`, `tit.*`, `empresa.*` e `fora.*` valem para qualquer bem, contrato, título do Tesouro, empresa e país de fora; `agenda` é o que fica marcado para um ano que vem; `ano.fase`, `ano.mercado` e `ano.economia` são o que uma etapa passa às seguintes sem gravar no estado; `*` é o conteúdo.
 
 `vida.ts › ETAPAS` roda as etapas nessa ordem, e o ano para quando a vida acaba ou o storylet do ano acontece.
 
@@ -44,7 +44,7 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
    - **desemprego**: volta para o natural (8,5%, menos com escola boa) e cai 0,45 ponto por ponto de crescimento acima do potencial;
    - **inflação**: metade da do ano passado e metade da meta (4,5%), mais a economia quente, o decreto, a dívida alta, a alta do dólar (0,08 ponto por ponto percentual de alta no ano) e a tarifa (com o tempo, −0,5 ponto com a fronteira aberta e +0,8 com ela fechada);
    - **juros** (Selic): juro real neutro de 4% mais a inflação, mais metade do que ela passa da meta, mais a economia quente e o prêmio da dívida alta;
-   - **dívida pública**: sobe com o que o governo gasta acima do que arrecada (políticas, emendas, decretos) e com a recessão, que derruba a arrecadação; acima de 75% do PIB, quem governa corta 5% do excesso por ano;
+   - **dívida pública**: sobe com o que o governo gasta acima do que arrecada (políticas, emendas, decretos) e com a recessão, que derruba a arrecadação; acima de 75% do PIB, quem governa corta 5% do excesso por ano. Com ela acima de 100% do PIB, numa recessão ou numa crise (as do ano passado), vem o **calote** com 1% de chance por ponto acima de 100 (até 25%): a economia perde 2 pontos de crescimento e ganha 2 de inflação no ano, a dívida cai um quarto, e a Selic paga 2 pontos a mais, que somem em seis anos (`pais.calote` guarda o ano). Quem perde está em `tesouro.ts`;
    - **pobreza, violência, saúde e educação públicas**: andam 30%, 20%, 15% e 8% por ano para onde as políticas, o desemprego, a pobreza e a dívida levam (a escola leva uma geração);
    - **aprovação do governo**: anda 35% por ano para um alvo feito de crescimento, desemprego, inflação, violência, saúde pública e do que as políticas agradam.
    - **o país em números** (bloco A): o PIB (`pais.pib`, em reais de hoje, R$ 11,7 trilhões em 2026) cresce exatamente o crescimento do ano, já arredondado; a população (`pais.populacao`, 213 milhões em 2026) cresce `0,45% − 0,022 por ano depois de 2026` (com piso de −0,35%), mais 0,01 por ponto de saúde pública acima de 50 e 0,006 por ponto de pobreza acima de 25 (`regras.ts › DEMOGRAFIA`). Três números são derivados, sem estado (`campos.ts › indicadoresDoPais`): o PIB per capita; o Gini, `0,52 + 0,005 × (pobreza − 25) − 0,0015 × (educação − 50)`, entre 0,25 e 0,75; e o IDH, a média geométrica de saúde (expectativa de vida `62 + 0,3 × saúde`), educação (`0,4 + 0,0056 × educação`) e renda (log do PIB per capita em dólar, com paridade de poder de compra de 1,6, entre US$ 100 e US$ 75 mil). O alvo da violência passou a ler o Gini (60 por ponto acima de 0,52), o que soma o efeito da educação ao da pobreza. Save antigo: `iniciarNumeros` projeta o PIB e a população de 2026 até o ano do save, sem sorteio.
@@ -176,6 +176,19 @@ O nome que suja e limpa, a dívida que caduca e o leilão viram entradas própri
 - **`conferirDividas`**, no estado: os espelhos batem com os contratos; todo contrato tem credor e todo financiamento tem o bem em garantia.
 
 O túnel trava o CI se houver um problema sequer, nas vidas sorteadas, nas de origem escolhida e nas gerações das dinastias.
+
+## O Tesouro (`tesouro.ts`, bloco B)
+
+Quem joga empresta ao governo comprando um título: uma entidade `tit<entrada>` (tipo `titulo`), da entrada que comprou. O devedor é o tesouro, contraparte de todo real que entra e sai daqui (as contas fecham entrada por entrada).
+
+- **O título:** `valor` (o que volta no vencimento e a base do cupom), `taxa` (% ao ano acima da inflação, já sem o imposto de renda, travada na compra), `vencimento` (o ano) e `origem` (a entrada que comprou, ou a abertura da vida de quem herdou). O nome é o do papel: "Tesouro IPCA+ 2045". `campos.ts › titulosDe` e `valorDosTitulos`; o título entra no patrimônio pelo valor, e no patrimônio que paga o padrão de vida também (emprestar ao governo não esconde a fortuna do gasto).
+- **A taxa** de um título de `n` anos comprado hoje (`taxaDoTitulo`): (juro real do ano + 0,05 × n + risco da dívida) × 0,85, com uma casa e piso de 0,5. O risco é 0,05 ponto por ponto da dívida acima de 90% do PIB, até 3.
+- **A compra** (folha Dinheiro, `comprarTitulo`, a partir dos 18): sai da conta; 5, 10 ou 20 anos; de R$ 100 para cima; até 5 títulos; e nunca mais de 30% da dívida do país (PIB × dívida) nas mãos de quem joga. Não gasta a ficha do ano.
+- **O ano** (etapa `tesouro`, depois dos bens): o cupom de cada título (valor × taxa) cai na conta, com o tesouro de contraparte e o rótulo `cupom`. O que venceu volta numa entrada visível (`tesouro:vencimento`) que aponta a compra ("que você comprou aos 40") ou a herança ("que você herdou").
+- **A venda** antes do vencimento (`venderTitulo`, ou o efeito `venderTitulos` do conteúdo, que vende uma fração de cada título) sai pelo preço do dia (`precoDoTitulo`): os cupons e o valor que faltam, descontados pela taxa de hoje para o prazo que falta. No ano da compra, o preço é o valor; o juro que caiu depois dá lucro, e o que subiu dá prejuízo.
+- **O calote** (`darCalote`, sorteado em `pais.ts`): quem tem título perde 30% do valor (o cupom encolhe junto) e a renda fixa perde 15%, com o tesouro de contraparte; nada mais sai de quem joga. A dívida do país cai um quarto e `pais.calote` ganha a entrada como causa. A entrada é do mundo (`tesouro:calote`) e aponta quem levou a dívida até ali nos últimos doze anos: a decisão mais recente que pôs a dívida para cima (a posse de um governo ou a reforma que corta imposto ou abre gasto, pesadas pelo efeito na arrecadação e no gasto) e o decreto que aqueceu nos últimos quatro. No ano seguinte, o storylet `depois_do_calote` vem agendado, com o calote de causa.
+- **A herança** (`herdeiro.ts`): os títulos entram na partilha como o resto do dinheiro (pagam a dívida que a conta e os investimentos não pagaram, e cada um fica com a mesma fração que a conta) e passam a quem herda com ids da abertura (`tit<abertura>`), vencendo na vida nova.
+- **A folha País** mostra a dívida em reais (`dividaEmReais`), quanto dela é de quem joga e o risco de calote do ano (`chanceDeCalote`).
 
 ## As fichas do ano (`acoes.ts`)
 

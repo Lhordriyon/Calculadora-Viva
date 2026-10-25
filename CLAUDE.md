@@ -89,6 +89,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   contas.ts            toda transferência tem dois lados: a conferência das contas e das dívidas (entrada por entrada) e o extrato
   contratos.ts         a dívida como contrato com o banco (cheque especial, empréstimo, financiamento, acordo): juros, saque, pagamento, limite
   dividas.ts           o ano das dívidas: parcela, atraso, nome sujo, caducar; renegociar e quitar
+  tesouro.ts           o título do Tesouro: a taxa travada, o cupom, o vencimento, a venda pelo preço do dia e o calote
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor, iniciativas
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro), sem estado novo
@@ -232,3 +233,8 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | No Executivo (prefeito, governador, presidente), dois mandatos seguidos; o terceiro aparece desabilitado com o motivo | agente (correção C3) | 42% das cautelosas ficavam mais de dois mandatos seguidos no mesmo cargo: a política virava eterna |
 | Quem tem cargo, coroa ou regime não faz bico nem entrega | agente (correção C3) | o político arriscado fazia 1.427 bicos em ano de mandato a cada 120 vidas |
 | Quem vive de patrimônio (herdeiro, investidor, banqueiro, dono, fazendeiro) não é demitido: na crise, perde parte do que tem; a demissão de quem é rico não vem com cesta básica | agente (correção C3) | 81% das vidas de família muito rica tinham pai ou mãe "demitido", até herdeira e banqueiro |
+| O título do Tesouro é um contrato com o governo: taxa travada na compra (o juro real, o prazo e o risco da dívida, sem o imposto), cupom na conta todo ano, o valor de volta no vencimento e a venda pelo preço do dia | dono (bloco B) | "o título comprado do Tesouro entra no balanço como ativo financeiro e paga cupom no caixa de quem comprou" |
+| Até 5 títulos ao mesmo tempo, de R$ 100 para cima, e nunca mais de 30% da dívida do país nas mãos de quem joga | agente (bloco B) | o mundo tem tamanho: um trilionário compraria o país inteiro, e a lista de títulos cabe no celular |
+| O calote só vem com a dívida acima de 100% do PIB numa recessão ou numa crise; quem perde é quem tinha a dívida (título e renda fixa), e a notícia aponta a posse, a reforma ou o decreto que a levou até ali | agente (bloco B) | o pedido da I-34 ("quem perde no calote é quem tinha a dívida"); calote sorteado do nada seria ruído, e quem governa e gasta demais precisa ver a conta voltar |
+| Os títulos entram no patrimônio que paga o padrão de vida | agente (bloco B) | sem isso, emprestar ao governo escondia a fortuna do gasto do padrão e virava a resposta certa |
+| O título comprado pela empresa espera o caixa da empresa (I-11) | agente (bloco B) | a empresa é um valor que cresce, sem caixa: o cupom não teria onde cair |

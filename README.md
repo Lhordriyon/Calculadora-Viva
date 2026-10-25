@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C2%3A%20o%20texto%20n%C3%A3o%20contradiz%20a%20vida-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-743-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-B%3A%20o%20Tesouro-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-813-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,33 +15,34 @@
 
 ---
 
-## 🆕 Novidades: Correção C3 · Regras que se medem direito (25/10/2026)
+## 🆕 Novidades: Bloco B · O Tesouro (25/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a última parte do plano de correção de 20/10. Quatro regras do motor mediam ou funcionavam errado:
-> - o túnel media os dilemas com a régua torta;
-> - havia escolhas em que uma opção era melhor em tudo;
-> - quem chegava ao Executivo ficava lá para sempre;
-> - a herdeira era "demitida", com cesta básica de despedida.
+> **O que mudou:** agora dá para emprestar dinheiro ao governo. O título do Tesouro é um contrato:
+> - a taxa fica travada na compra;
+> - o cupom cai na conta todo ano, e o dinheiro volta no vencimento;
+> - vender antes sai pelo preço do dia.
 >
-> Cada conserto foi medido antes e depois.
+> E o governo pode dar calote. Com a dívida acima de 100% do PIB, numa recessão ou numa crise, quem tinha título perde.
 
 > [!TIP]
 > **Para testar:**
-> - Chegue a prefeito ou prefeita pela folha Carreira e se reeleja. No fim do segundo mandato seguido, a candidatura aparece desabilitada com o motivo, e no cargo não tem mais bico.
-> - Nasça numa família muito rica pela escolha da origem: o pai herdeiro não é demitido, mas perde parte do patrimônio numa crise.
-> - Numa batida de carro, resolver no Pix agora tem risco.
+> - Depois dos 18, abra a folha Dinheiro e empreste ao governo por 5, 10 ou 20 anos. Cada botão mostra a taxa do prazo, e o cupom cai na conta no ano seguinte.
+> - Compre um título longo com a Selic alta e venda quando ela cair: o preço do dia sobe.
+> - Chegue a presidente, corte imposto e abra gasto. A dívida sobe, a taxa do título passa a cobrar o risco e, numa recessão, o calote aponta a sua reforma como causa.
+> - A folha País mostra a dívida pública em reais, quanto dela é sua e o risco de calote.
 
-| ✅ O que esta correção trouxe | ⏳ O que ela ainda não trouxe |
+| ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 📏 **A régua do túnel mede direito:** os dilemas se medem em três bolsos (R$ 1 mil, R$ 10 mil e R$ 50 milhões), com a empresa quando o storylet pede uma. O "arriscar nunca compensa" passou a dividir pelos 286 storylets que a conta olha, não pelos 641 | 💰 **O dinheiro do conteúdo que não acompanha a fortuna** (o próximo trabalho grande da auditoria: entra antes em `ideias.md`, com os números alvo) |
-| 🎲 **O robô sorteia no empate:** a cautelosa e a arriscada votavam 100% num bloco só; agora cada bloco recebe de 20% a 27% dos votos da cautelosa e de 15% a 35% dos da arriscada | ⚖️ O risco que compensa (rebalancear o que não é armadilha) |
-| ⚖️ **Zero falsos dilemas** (eram 7): o acordo com o inquilino e o Pix da batida viraram aposta, a cirurgia tem 92% de chance, o clube de ciências custa as tardes de futebol, e negar tudo pode render alívio e o maior contrato do ano. Um teste confere com o conteúdo de verdade | 🧠 Conversa livre com as pessoas e as relações entre os personagens |
-| 🏛️ **Dois mandatos seguidos no Executivo:** prefeito, governador e presidente não disputam o terceiro seguido; a opção aparece desabilitada com o motivo. As cautelosas com mais de dois mandatos seguidos caíram de 42,5% para 0% | 📱 O ícone novo no app Android instalado |
-| 🚫 **Quem tem cargo não faz bico:** político, rei e regime não fazem mais bico nem entrega (eram 1.427 em ano de mandato a cada 120 vidas arriscadas) | |
-| 💼 **A herdeira não é demitida:** quem vive de patrimônio (herdeiro, investidor, banqueiro, acionista, dono, fazendeiro, o ex-jogador da seleção) não perde "o emprego": na crise, perde parte do que tem. A demissão de quem é rico vem com rescisão e bônus, não com cesta básica. Das vidas de família muito rica, as com pai ou mãe "demitido" caíram de 81% para 8% | |
+| 🏛️ **O título do Tesouro:** comprado pela folha Dinheiro, por 5, 10 ou 20 anos. A taxa soma o juro real do ano, o prêmio do prazo e o risco da dívida, já sem o imposto de renda. São no máximo 5 títulos, e ninguém tem mais de 30% da dívida do país | 🏢 **O título comprado pela empresa:** a empresa ainda não tem caixa próprio (ideia I-11), então o cupom não teria onde cair. Vem depois desse caixa |
+| 💵 **O cupom e o vencimento:** o governo paga o cupom na conta todo ano. No vencimento, o dinheiro volta, numa entrada que lembra a idade em que você comprou | 📊 **O orçamento do governo item por item** (receita, gasto e juros em reais): ele muda a conta da dívida e fica para um bloco próprio |
+| 📉 **Vender antes pelo preço do dia:** se o juro caiu depois da compra, você vende com lucro; se subiu, com prejuízo | 🏦 Os outros credores (bancos, fundos, gente de fora) como personagens, e o calote que contagia o crédito |
+| 💥 **O calote:** quem tinha título perde 30% do valor, e a renda fixa perde 15%. A dívida do país cai um quarto, a economia afunda mais e o juro fica alto por seis anos. A notícia aponta a reforma, a posse ou o decreto que levou a dívida até ali | |
+| 👪 **O título passa a quem herda** e vence na vida dele | |
+| 🇧🇷 **A dívida pública em reais** na folha País, com a parte que é sua e o risco de calote | |
+| 📖 **Três histórias novas:** o primeiro cupom, o calote no noticiário (vender ou segurar?) e o dia seguinte ao calote | |
 
-O túnel de vento joga as 10.000 vidas com as metas cumpridas. O histórico está no [📜 CHANGELOG](CHANGELOG.md), e o bloco anterior, as pessoas da sua vida, também.
+No túnel de vento, a estratégia cautelosa compra título em 99,6% das vidas e a arriscada em nenhuma. O calote aparece em 1% das vidas e só leva de quem tinha título ou renda fixa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com a correção anterior (C3).
 
 ## 🗺️ Os próximos blocos
 
@@ -49,8 +50,8 @@ Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outr
 
 ```mermaid
 flowchart LR
-  A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>orçamento e títulos com juros"]:::proximo
-  B --> C["👑 C · A coroa recebe<br/>dotação e imposto da ilha"]:::depois
+  A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>títulos, cupom e calote"]:::feito
+  B --> C["👑 C · A coroa recebe<br/>dotação e imposto da ilha"]:::proximo
   B --> D["🔬 D · O Estado pesquisa<br/>pesquisa paga pelo Tesouro"]:::depois
   B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::depois
   classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
@@ -61,8 +62,8 @@ flowchart LR
 | Bloco | O que entra | Por que nesta ordem |
 |---|---|---|
 | 🟢 **A** · O país em números | PIB, população, PIB per capita, Gini, IDH | ✅ feito |
-| 🟡 **B** · O Tesouro | o orçamento do governo em reais; comprar títulos que pagam cupom na conta ou no caixa da empresa | quem paga a coroa, a pesquisa e o exército é o Tesouro |
-| 🟣 **C** · A coroa recebe | dotação da Casa Real que sai do Tesouro; a ilha soberana com população, PIB e imposto | precisa do Tesouro (B) e do país em números (A) |
+| 🟢 **B** · O Tesouro | o título do Tesouro com cupom, vencimento e calote; a dívida pública em reais | ✅ feito (o título da empresa espera o caixa dela, I-11) |
+| 🟡 **C** · A coroa recebe | dotação da Casa Real que sai do Tesouro; a ilha soberana com população, PIB e imposto | precisa do Tesouro (B) e do país em números (A) |
 | 🟣 **D** · O Estado pesquisa | quem governa decide quanto do orçamento vai para P&D; a pesquisa vira cura, satélite, patente | precisa do orçamento (B) |
 | 🟣 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
 
@@ -83,6 +84,7 @@ flowchart LR
 
 - Carteira em cinco classes (renda fixa, ações, fundos imobiliários, dólar, cripto), três perfis de investidor e o padrão de vida escolhido
 - Toda dívida é um contrato com o banco: cheque especial, empréstimo, financiamento com garantia e acordo. Atrasar suja o nome, e o imóvel financiado vai a leilão
+- Emprestar ao governo: o título do Tesouro paga cupom todo ano, vence ou é vendido pelo preço do dia, e o calote leva parte dele
 - 30 bens: morar, alugar, financiar, imóveis de renda, carros, iate, jatinho, emissora de TV
 - Até cinco empresas, com subsidiárias, fusões, bolsa e a mesa de quem manda
 - Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte
@@ -92,7 +94,7 @@ flowchart LR
 <details>
 <summary><b>🏛️ O país e o mundo</b></summary>
 
-- O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, aprovação, e agora PIB, população, PIB per capita, Gini e IDH
+- O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, aprovação, PIB, população, PIB per capita, Gini, IDH e a dívida pública em reais
 - Quatro blocos políticos fictícios e o Regime; eleições a cada quatro anos; o seu voto pesa
 - Ser vereador, prefeito, deputado, governador, senador, presidente, monarca ou chefe do Regime; quem governa muda as políticas do país
 - Quatro países fictícios lá fora, com o dólar, sanções, acordos e atos de quem governa
@@ -108,7 +110,7 @@ flowchart LR
 
 ## 🚧 O que o jogo ainda não tem
 
-- 🏛️ Tesouro com orçamento em reais e títulos públicos (bloco B)
+- 🏢 O título do Tesouro comprado pela empresa (precisa do caixa da empresa) e o orçamento do governo item por item
 - 👑 Renda para quem é soberano de uma ilha, e a coroa paga pelo Estado (bloco C)
 - 🔬 Pesquisa e desenvolvimento pagos pelo Estado (bloco D)
 - 🛡️ Forças armadas e guerra (bloco E)

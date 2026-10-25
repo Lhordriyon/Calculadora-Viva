@@ -4,6 +4,37 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🏛️ Bloco B · O Tesouro · 25/10/2026
+
+> [!NOTE]
+> O segundo bloco da ordem do dono (19/10): a dívida do governo vira um contrato que quem joga pode comprar, com cupom, vencimento, preço de mercado e calote.
+
+- 🏛️ **O título do Tesouro** (`tit<entrada>`, tipo `titulo`):
+  - comprado pela folha Dinheiro, a partir dos 18 anos, por 5, 10 ou 20 anos;
+  - a taxa fica travada na compra: o juro real do ano, mais 0,05 ponto por ano de prazo e o risco da dívida acima de 90% do PIB, menos o imposto de renda;
+  - no máximo 5 títulos ao mesmo tempo, de R$ 100 para cima, e nunca mais de 30% da dívida do país.
+- 💵 **O cupom e o vencimento:**
+  - o cupom cai na conta todo ano, com o governo de contraparte;
+  - no vencimento, o dinheiro volta numa entrada visível, que aponta a compra (ou a herança).
+- 📉 **A venda antes do vencimento** sai pelo preço do dia: o valor que falta, descontado pela taxa de hoje.
+- 💥 **O calote:**
+  - acontece com a dívida acima de 100% do PIB, numa recessão ou numa crise (1% de chance por ponto acima de 100, até 25% ao ano);
+  - quem tinha título perde 30% do valor, e a renda fixa perde 15%;
+  - a dívida do país cai um quarto e a economia perde 2 pontos de crescimento no ano;
+  - a Selic paga 2 pontos a mais, que somem em seis anos;
+  - a notícia aponta a posse, a reforma ou o decreto que pôs a dívida para cima, e no ano seguinte vem a história do dia seguinte.
+- 👪 **A herança:** o título passa a quem herda, dividido como o resto do espólio, e vence na vida nova.
+- 🇧🇷 **A folha País** mostra a dívida pública em reais, quanto dela é sua e o risco de calote do ano.
+- 📖 **Conteúdo:**
+  - três histórias novas: o primeiro cupom, o calote no noticiário e o dia seguinte ao calote;
+  - o efeito `venderTitulos` deixa uma escolha vender os títulos pelo preço do dia.
+- 🤖 **Os robôs:**
+  - a cautelosa empresta ao governo quando o título longo paga bem;
+  - a aleatória compra e vende de vez em quando;
+  - quem está devendo no banco vende o título.
+
+**Ainda não tem:** o título comprado pela empresa (falta o caixa dela, I-11), o orçamento do governo item por item e os outros credores como personagens.
+
 ## 📏 Correção C3 · Regras que se medem direito · 25/10/2026
 
 > [!NOTE]
