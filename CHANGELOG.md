@@ -4,6 +4,39 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## ✍️ Correção C2 · O texto não contradiz a vida · 25/10/2026
+
+> [!NOTE]
+> Seis consertos de texto, cada um medido em centenas de vidas antes e depois, e cada um com uma regra nova no validador para o erro não voltar.
+
+- 🕊️ **Quem morreu não fala:**
+  - o texto que cita a mãe, o pai, a avó, o amigo ou o amor sabe se a pessoa vive;
+  - vivo, a fala; morto, a lembrança.
+  - Em 150 vidas por estratégia, os mortos falavam em 8% a 77% delas; agora, em nenhuma.
+- 👶 **Cada filho com o próprio nome:**
+  - a história de "um filho" fala do filho certo;
+  - o ciúme do irmão é do primogênito pequeno;
+  - "mais um filho" fala do caçula.
+- ✍️ **Concordância:**
+  - sete modelos quebrados consertados ("inteiroa", "tioa", "rica/rico");
+  - o "dele/dela" segue o amigo;
+  - cerca de 80 textos sobre quem joga ganharam o gênero.
+- 🧒 **Coerência:**
+  - o amigo de infância é reencontrado na escola, não apresentado;
+  - filho único não tem irmão;
+  - o cargo não se repete entre parênteses.
+- 🔁 **Repetição:**
+  - o desfecho já contado volta curto;
+  - as ações mais usadas ganharam variações;
+  - a eleição fala em palavras e conta a vez.
+- 🃏 **O cartão da vida:**
+  - a mesma consequência conta uma vez;
+  - pesam o marco, a eleição, a empresa, o filho, o casamento e as mortes;
+  - o dinheiro pesa pelo logaritmo.
+- 🔧 **Dois storylets raros** (o filho que vai morar fora e a herança do bicho) voltaram a aparecer.
+
+**Ainda não tem:** a correção C3 (regras do motor), o ícone novo no app Android e a rosca do patrimônio.
+
 ## 📏 C0 e ajustes da C1 · A régua da tela · 20/10/2026
 
 - 📏 **`npm run telas`:** uma régua com 52 critérios de interface, medida em sete combinações de tela e letra (do celular pequeno com a letra normal ao do dono com a letra em 1,45), nos dois temas, com seis saves guardados no repositório e oito vidas jogadas pela interface. A versão anterior à correção reprovava em 46 critérios; esta passa em todos.

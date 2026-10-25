@@ -1117,6 +1117,37 @@ O motor não mudou: o túnel dá as mesmas vidas.
 
 Com a máquina ocupada por outro túnel, uma das vidas jogadas parou numa lista de ações por demora. Com uma página por vez (`--paralelo=1`), as oito passaram. O motor não mudou.
 
+## Correção C2: o texto não contradiz a vida (25/10)
+
+Seis itens do plano de correção, feitos por agentes em paralelo (um por item, cada um medindo antes e depois) e juntados por cima da C1. Cada item trouxe uma regra no validador, com teste, para o erro não voltar.
+
+| Item | Medida | Antes | Depois |
+|---|---|---|---|
+| Mortos não falam | vidas com um morto falando (150 por estratégia: primeira, cautelosa, arriscada, aleatória) | 77% / 69% / 8% / 43% | 0 / 0 / 0 / 0 |
+| Cada filho com o próprio nome | vidas com 2+ filhos com o nome de outro filho | 56 de 153 | 0 de 153 |
+| | o ciúme do irmão com o primogênito de 10 anos ou mais | 71 de 176 | 0 de 101 |
+| Português | vidas com "inteiroa", "tioa", "donoa"… (200 vidas) | 44 | 0 |
+| | "fala de a/o …" | 176 vidas | 0 |
+| Coerência | o amigo apresentado como estranho depois de já ter aparecido (200 vidas) | 134 | 0 |
+| | "Agora é X (X…)" | 144 de 369 | 0 de 228 |
+| Repetição | frases repetidas na mesma vida (40 vidas) | 29% | 18% |
+| | vidas com o mesmo resultado 10 vezes ou mais (primeira / arriscada) | 84% / 99% | 0% / 2% |
+| Cartão da vida | pontos de virada que são rotina (400 vidas) | 37,8% | 8,6% |
+| | vidas com 8+ anos de mandato que citam o cargo | 1 de 290 | 283 de 290 |
+
+**Decisões tomadas sozinho:**
+- **Os conflitos da junção** ficaram com as duas intenções:
+  - o dízimo lembra da mãe morta e ganhou o gênero;
+  - o empréstimo ao amigo pede o amigo vivo e ganhou o "dele/dela";
+  - o validador soma as regras de português, de coerência e de repetição;
+  - a derrota na eleição conta a vez e aponta a causa.
+- **Dois storylets raros sumiram** com o sorteio mudado: `filho_foi_embora` (0,1% das vidas na C1) e `o_bicho_herdeiro` (menos de 0,05%). Eles voltaram por duas mudanças:
+  - o filho trabalhador também pode ir morar fora;
+  - o robô aleatório pensa no testamento do bicho mais vezes quando há um bicho vivo.
+- **A C3 ficou para depois.** As regras do motor (a régua do dinheiro, os falsos dilemas, os mandatos, a herdeira) não foram implementadas: o limite semanal de uso parou os agentes, e o dono pediu, em 25/10, o sistema de relacionamento para o mesmo dia.
+
+O túnel joga vidas diferentes da C1: o amigo de infância gravado no balde da pracinha muda a infância. As metas passam, sem storylet morto e sem estratégia dominante.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

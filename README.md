@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C1%3A%20a%20hist%C3%B3ria%20no%20centro-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C2%3A%20o%20texto%20n%C3%A3o%20contradiz%20a%20vida-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-743-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,44 +15,26 @@
 
 ---
 
-## 🆕 Novidades: Correção C1 · A história de volta ao centro (20/10/2026)
-
-<p align="center">
-  <img src="docs/imagens/tela-escura.png" alt="A tela principal no tema escuro, num celular de 360 por 780 com a letra do sistema um pouco maior: no alto, o nome e os quatro botões das folhas; embaixo, o título, a idade e a cidade, o link da economia, os quatro indicadores com barra fina e o dinheiro numa linha; no meio, a história do ano; embaixo, as seis escolhas e o botão Viver mais 1 ano, que diz quantas escolhas sobram" width="290" />
-  &nbsp;
-  <img src="docs/imagens/tela-clara.png" alt="A mesma tela no tema claro, em papel creme" width="290" />
-</p>
+## 🆕 Novidades: Correção C2 · O texto não contradiz a vida (25/10/2026)
 
 > [!IMPORTANT]
-> **O que aconteceu:** a cara nova (V1) foi medida num celular comum, com a letra normal. No celular do dono, com a letra do sistema maior, os cartões do cabeçalho tomavam a tela, a história ficava com um quarto dela (e com 11 px durante um evento), o dinheiro saía cortado e o botão dourado fazia passar o ano sem as escolhas. Esta correção mediu tudo de novo, em sete tamanhos de tela e letra, nos dois temas. O tema noite e ouro ficou.
+> **O que aconteceu:** a história contava coisas que a vida não sustentava. Gente que já tinha morrido aparecia falando, o segundo filho saía com o nome do primeiro, o amigo de infância era apresentado como estranho no primeiro dia de escola, e as mesmas frases voltavam ano após ano. A correção mediu cada caso em centenas de vidas antes e depois, e o validador passou a recusar o texto novo que repetir o erro.
 
 > [!TIP]
-> **Para testar:** jogue com a letra do celular do jeito que você usa. Confira que a história do ano aparece do começo depois de "Viver mais 1 ano", que o dinheiro aparece inteiro, que o botão diz quantas escolhas sobram e que, num evento, as opções ficam sempre à vista. Abra uma folha (Família, Carreira, Dinheiro) e feche pelo **X** no topo ou pelo voltar do Android. Se puder, mande uma captura da tela principal: ela confirma o tamanho da letra do seu celular.
+> **Para testar:** jogue uma vida longa. Quando alguém da família morrer, ela não volta a falar; com dois filhos, cada história fala do filho certo; o primeiro dia de escola lembra do amigo da pracinha; uma jogadora lê "ficou rica", não "ficou rico". No fim, o cartão da vida conta os pontos de virada de verdade (o casamento, o filho, a eleição), não a rotina.
 
 | ✅ O que esta correção trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 📖 **A história no centro:** o cabeçalho virou uma faixa de texto (o nome, a idade, a economia, os indicadores e o dinheiro), sem cartões nem retrato | ✍️ **Correção C2**, o texto que contradiz a vida: pessoas que já morreram falando, irmãos trocados, concordância ("tioa") |
-| 💰 **Nenhum número cortado:** o dinheiro quebra linha em vez de virar "R$ 2,9…" | ⚙️ **Correção C3**, regras que se medem errado: a régua do dinheiro, os falsos dilemas, os mandatos sem fim |
-| ⏩ **O botão do ano diz quantas escolhas sobram** ("Viver mais 1 ano · sobram 3") e só fica dourado quando não há o que escolher | 📱 O ícone novo no app Android instalado |
-| 👆 **O toque duplo não passa mais o ano:** depois de um evento, o segundo toque é ignorado (passava o ano 12 vezes em 40) | 🍩 A rosca do patrimônio na folha Dinheiro |
-| 🎴 **No evento, as opções ficam sempre à vista**; o texto longo rola por dentro, e a história guarda três linhas | |
-| 📜 **A rolagem mostra o começo do ano**, não o fim; o balanço do ano virou uma linha pequena | |
-| ❌ **As folhas fecham no topo** (o X) e com o **voltar do Android**, que antes fechava o app | |
-| 👨‍👩‍👧 **Família** com os medidores certos de novo; **Carreira** com o Poder primeiro para quem tem cargo e as profissões fechadas numa linha só, com o motivo | |
-| 🌙 **O ouro só onde tem papel:** o marco da trajetória, o ponto de novidade, o fio do evento; a Felicidade virou laranja para não se confundir com ele | |
-| 🔠 **Um arranjo só** para qualquer tamanho de letra: o que precisa ceder quebra linha, sem trocar a tela de repente | |
-| 📏 **A régua da tela** (`npm run telas`): 52 critérios medidos em sete tamanhos de tela e letra, nos dois temas; a versão anterior reprovava em 46, esta passa em todos | |
+| 🕊️ **Quem morreu não fala mais:** antes, em 43% das vidas (aleatórias), um morto falava; agora, em nenhuma | ⚙️ **Correção C3**, regras que se medem errado: a régua do dinheiro, os falsos dilemas, os mandatos sem fim, a herdeira |
+| 👶 **Cada filho com o próprio nome:** em 56 de 153 vidas com dois filhos ou mais, um saía com o nome do outro; agora, em 0 | 📱 O ícone novo no app Android instalado |
+| ✍️ **Português no gênero certo:** "inteiroa", "tioa" e "Natália ficou rico" sumiram; cerca de 80 textos agora concordam com quem joga | 🍩 A rosca do patrimônio na folha Dinheiro |
+| 🧒 **O amigo de infância não é estranho:** o primeiro dia de escola lembra da pracinha ou da pré-escola (era estranho em 134 de 200 vidas) | |
+| 🔁 **Menos repetição:** o desfecho já contado volta curto ("deu certo de novo"); a frase repetida na mesma vida caiu de 29% para 18% | |
+| 🗳️ **A eleição fala em palavras:** "por um fio", "no voto a voto", "com folga", e conta a 2ª derrota e o 2º mandato | |
+| 🃏 **O cartão conta a vida, não a rotina:** pontos de virada que eram rotina caíram de 38% para 9%; quem teve mandato longo vê o cargo no cartão (de 0,3% para 98%) | |
+| 🛡️ **O validador recusa** texto com quem pode ter morrido sem saber se vive, filho trocado, concordância quebrada e amigo de infância como estranho | |
 
-**Medido no navegador**, no tamanho do celular do dono (360 × 780), com o save de uma vida cheia:
-
-| Letra do sistema | História (linha do tempo) antes | Agora |
-|---|---|---|
-| 🔤 Normal (1,0) | 224 px · 29% da tela | 334 px · 43% |
-| 🔤 Um pouco maior (1,15) | 168 px · 22% | 320 px · 41% |
-| 🔠 Grande (1,45, a do dono) | 186 px · 24% | 234 px · 30% |
-| 🎴 Grande, com um evento na tela | 11 px | 107 px |
-
-Nenhuma rolagem para o lado, nenhum alvo de toque abaixo de 44 px, nenhuma letra abaixo de 12 px e nenhum erro no console, nos dois temas. O motor não mudou: o túnel de vento dá as mesmas vidas. O histórico de atualizações está no [📜 CHANGELOG](CHANGELOG.md).
+O túnel de vento joga as 10.000 vidas com as metas cumpridas: nenhum storylet morto, nenhuma estratégia dominante, as contas fechando em toda entrada. O histórico está no [📜 CHANGELOG](CHANGELOG.md).
 
 ## 🗺️ Os próximos blocos
 
