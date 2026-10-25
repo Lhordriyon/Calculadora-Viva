@@ -123,6 +123,13 @@ export function chipsDe(h: Entrada, nomeDe: (papel: string) => string | undefine
     // O amor pode mudar de pessoa ao longo da vida: o chip fala do casal, não de um nome.
     const quem = papel === 'amor' ? 'do casal' : nomeDe(papel) ? `com ${nomeDe(papel)}` : '';
     if (Math.abs(v) >= VINCULO_MINIMO && quem) chips.push({ texto: `vínculo ${quem} ${sinal(v)}${Math.abs(v)}`, cor: 'var(--vinculo)', ruim: v < 0 });
+    // A mágoa e a confiança só falam da pessoa (o nome), porque é dela que se trata.
+    const nome = nomeDe(papel);
+    if (!nome) continue;
+    const m = Math.round(d.get(`${papel}.magoa`) ?? 0);
+    if (Math.abs(m) >= VINCULO_MINIMO) chips.push({ texto: `mágoa de ${nome} ${sinal(m)}${Math.abs(m)}`, cor: m > 0 ? 'var(--ruim)' : 'var(--saude)', ruim: m > 0 });
+    const conf = Math.round(d.get(`${papel}.confianca`) ?? 0);
+    if (Math.abs(conf) >= VINCULO_MINIMO) chips.push({ texto: `confiança de ${nome} ${sinal(conf)}${Math.abs(conf)}`, cor: 'var(--turquesa)', ruim: conf < 0 });
   }
   if (mostrarInflacao && h.inflacao) chips.push({ texto: `a inflação comeu ${dinheiro(h.inflacao)} do dinheiro parado`, neutro: true });
   return chips;

@@ -1,8 +1,9 @@
 import { Folha } from './Folha.tsx';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
-import { FILHOS, ehFilho } from '../motor/constantes.ts';
-import { idadeDe, patrimonioDe } from '../motor/campos.ts';
+import { FILHOS, ehFilho, type Humor } from '../motor/constantes.ts';
+import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
+import { convivem, gostoDe, humorDe, lembrancasDe, semONome } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
@@ -83,6 +84,44 @@ function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
   }
 }
 
+/** Como a pessoa está com quem joga (o humor do ano) e a cor dele. */
+const HUMOR: Record<Humor, { m: string; f: string; tom: 'ruim' | 'bom' | 'saudade' | 'neutro' }> = {
+  furia: { m: 'furioso com você', f: 'furiosa com você', tom: 'ruim' },
+  magoa: { m: 'magoado com você', f: 'magoada com você', tom: 'ruim' },
+  abatimento: { m: 'abatido', f: 'abatida', tom: 'neutro' },
+  saudade: { m: 'com saudade de você', f: 'com saudade de você', tom: 'saudade' },
+  alegria: { m: 'feliz com você', f: 'feliz com você', tom: 'bom' },
+  paz: { m: 'em paz com você', f: 'em paz com você', tom: 'neutro' },
+  distancia: { m: 'distante', f: 'distante', tom: 'neutro' },
+};
+
+/**
+ * O que a relação é agora e o que ficou dela: o humor (e o rompimento), os anos sem notícia e as lembranças que a
+ * pessoa tem de quem joga, do livro-razão (a melhor e, se ainda dói, a pior). De quem morreu, fica a lembrança.
+ */
+function Relacao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade }) {
+  const f = en.genero === 'f';
+  const viva = en.vivo !== false;
+  const { boa, ruim } = lembrancasDe(vida, id);
+  const rompeu = (en.q['rompido']?.v ?? 0) > 0;
+  const humor = humorDe(vida, id, en);
+  const longe = en.n['sem_contato'] ?? 0;
+  const lembra = boa ? `de quando você ${semONome(boa.texto, id, en)}, aos ${boa.idade}` : '';
+  const doi = ruim && (en.n['magoa'] ?? 0) >= 10 ? `de quando você ${semONome(ruim.texto, id, en)}, aos ${ruim.idade}` : '';
+  if (!viva) return lembra ? <p class="lembranca">Você lembra {lembra}.</p> : null;
+  // Quem rompeu, rompeu: o resto do humor não importa até as pazes.
+  const como = rompeu ? 'rompeu com você' : humor ? HUMOR[humor][f ? 'f' : 'm'] : '';
+  const tom = rompeu ? 'ruim' : humor ? HUMOR[humor].tom : 'neutro';
+  const distancia = longe >= 2 && !convivem(vida, id, en) ? `sem notícias há ${longe} anos` : '';
+  return (
+    <>
+      {(como || distancia) && <p class={`humor ${tom}`}>{[como, distancia].filter(Boolean).join(' · ')}</p>}
+      {lembra && <p class="lembranca">Lembra {lembra}.</p>}
+      {doi && <p class="lembranca doi">Guarda a mágoa {doi}.</p>}
+    </>
+  );
+}
+
 /** O que está acontecendo com a pessoa agora, em poucas palavras. */
 function situacao(id: string, en: Entidade, c: Conteudo): string[] {
   const f = en.genero === 'f';
@@ -97,6 +136,11 @@ function situacao(id: string, en: Entidade, c: Conteudo): string[] {
   if (en.q['doente']) itens.push('doente');
   if (en.q['ausente']) itens.push('ausente');
   if (id === 'avo' && en.q['mora_junto']) itens.push('mora com vocês');
+  // O que a pessoa ama: o presente certo, o programa junto.
+  if (en.tipo === 'pessoa' && id !== 'eu') {
+    const gosto = c.mundo.gostos.find((g) => g.id === gostoDe(en))?.nome;
+    if (gosto) itens.push(`ama ${gosto}`);
+  }
   return itens;
 }
 
@@ -154,11 +198,14 @@ export function Familia({ vida, conteudo, aoOperar, aoFechar }: Props) {
                     {papelDe(id, en, vida)} · {viva ? anos(idade) : `faleceu aos ${idade}`}
                   </span>
                 </div>
+                {id !== 'pet' && <Relacao vida={vida} id={id} en={en} />}
                 {viva && itens.length > 0 && <p class="situacao">{itens.join(' · ')}</p>}
                 {viva && (
                   <div class="barras">
                     <Barra rotulo="Saúde" valor={en.n['saude'] ?? 0} cor="var(--saude)" />
                     {id !== 'pet' && <Barra rotulo="Vínculo" valor={en.n['vinculo'] ?? 0} cor="var(--vinculo)" />}
+                    {id !== 'pet' && <Barra rotulo="Confiança" valor={Number(lerCaminho(vida, `${id}.confianca`) ?? 60)} cor="var(--turquesa)" />}
+                    {id !== 'pet' && <Barra rotulo="Mágoa" valor={en.n['magoa'] ?? 0} cor="var(--ruim)" />}
                   </div>
                 )}
                 {viva && dinheiro !== null && dinheiro >= 1 && <p class="situacao">Guardado: {formatarDinheiro(dinheiro)}</p>}

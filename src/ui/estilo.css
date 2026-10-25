@@ -1292,6 +1292,38 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* A relação: o humor do ano, os anos sem notícia e as lembranças que a pessoa tem de você. */
+.pessoa .humor {
+  margin: 2px 0 0;
+  color: var(--texto-suave);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pessoa .humor.ruim {
+  color: var(--ruim);
+}
+
+.pessoa .humor.bom {
+  color: var(--saude);
+}
+
+.pessoa .humor.saudade {
+  color: var(--inteligencia);
+}
+
+.pessoa .lembranca {
+  margin: 6px 0 0;
+  color: var(--texto-suave);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.pessoa .lembranca.doi {
+  color: color-mix(in srgb, var(--ruim) 70%, var(--texto));
+}
+
 .pessoa.falecida {
   opacity: 0.6;
 }
