@@ -1149,7 +1149,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - simulação: pouco (três campos por pessoa; o resto sai do livro).
 - **Consome:** fichas do ano. Cuidar de uma relação é uma ação, com custo de oportunidade.
 - **Efeitos causais:**
-  - **mágoa:** sobe com o que machucou e passa no ritmo do perdão do traço; puxa o vínculo para baixo, faz a pessoa brigar mais e ajudar menos, e acima de 60 rompe a relação;
+  - **mágoa:** sobe com o que machucou e passa no ritmo do perdão do traço; puxa o vínculo para baixo, faz a pessoa brigar mais e ajudar menos, e a partir de 42 rompe a relação (o par faz as malas a partir de 45, medido no túnel);
   - **confiança:** abre o conselho e o segredo, e decide se a verdade dita vira conversa ou briga;
   - **anos sem contato:** esfriam o vínculo e trazem a saudade;
   - **memória:** a pessoa lembra da melhor e da pior coisa que você fez com ela, e o texto cita ("de quando você…, aos 34");
@@ -1167,7 +1167,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - a folha Família mostra o humor, a confiança, a mágoa, a distância, o gosto e as lembranças de cada pessoa;
   - numa vida jogada, a morte de alguém próximo conta o que foi a relação.
 - **Prioridade:** Alta · pedido do dono.
-- **Estado:** em andamento (25/10).
+- **Estado:** feito (25/10, bloco R).
 
 ### I-103 · Pessoas que sabem quem você é (pedido do dono, 25/10)
 - **Problema:** depois do I-102, cada pessoa tem mágoa, confiança, saudade e lembranças. O dono pediu mais: que as pessoas decidam sozinhas, tenham vontades, percebam o jeito de quem joga, lembrem do que ele fez e do que deixou de fazer, e ajam pelo que sabem dele. Hoje ninguém tem opinião sobre quem joga, ninguém quer nada da vida, e faltar quando alguém precisou não deixa rastro.
@@ -1219,7 +1219,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - a folha Família mostra a opinião com o porquê e a vontade de cada pessoa;
   - numa vida jogada, uma pessoa cita o que você deixou de fazer, e uma morte diz a vontade que faltou.
 - **Prioridade:** Alta · pedido do dono.
-- **Estado:** em andamento (25/10).
+- **Estado:** feito (25/10, bloco R).
 
 ## Defeitos conhecidos
 

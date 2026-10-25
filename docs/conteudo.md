@@ -131,9 +131,22 @@ Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condi
   "ator.sem_contato": { "min": 3 },   // anos sem se falar (ganhar vínculo zera)
   "ator.gosto": "pescaria",           // o que a pessoa ama: futebol, novela, pescaria, cozinha, musica, fe, plantas, jogos, livros, carros, viagem, danca, bichos, politica, artesanato
   "marcas": ["ator.rompido"],         // a pessoa rompeu (o storylet "rompimento", com mágoa de 42+; o par faz as malas com 45+); "fazer_as_pazes" tira
-  "marcas": ["remorso"], "marcas": ["despediu"] // de quem joga: alguém morreu magoado ou longe; alguém morreu perto e em paz
+  "marcas": ["remorso"], "marcas": ["despediu"], // de quem joga: alguém morreu magoado, longe ou com uma vontade guardada; alguém morreu perto e em paz
+  "ator.visao": ["sumido", "metido"], // o que a pessoa acha de quem joga (a opinião mais forte; true = tem alguma): orgulho, presente,
+                                      // carinhoso, de_palavra, generoso, cuida_dos_filhos, sumido, metido, interesseiro, cabeca_quente,
+                                      // sem_palavra, longe_dos_filhos, casado_com_o_trabalho, perdido
+  "marcas": ["ator.quer_o_mar"],      // uma vontade guardada (mundo.json › vontades); a ação que a realiza tira a marca
+  "marcaHa": [{ "marca": "ator.nao_apareceu", "max": 2 }] // a falta: a pessoa passou um ano doente e você não apareceu
 }
 ```
+
+**A vontade** é uma qualidade `quer_…` da pessoa, declarada em `mundo.json › vontades`. A declaração tem:
+
+- `quer`: o que aparece na folha Família ("Quer ver o mar.");
+- `nunca`: a frase que a morte diz, se a vontade ficou guardada;
+- opcionais: `feita` e `realizada` (a vida realiza: a condição e os textos), `ate` e `perdida` (a idade da pessoa em que a vontade passa, a falta que fica e a mágoa dela) e `pressa` (depois de tantos anos guardada, vira tanta mágoa por ano).
+
+O conteúdo faz a vontade nascer (uma iniciativa da pessoa com `"marcas": ["ator.quer_…"]` e `semMarcas` da mesma vontade) e a ação que a realiza (`removerMarcas`). Toda qualidade que começa com `quer_` precisa estar em `vontades`. Para o texto mudar com a opinião, use trechos com `"se": { "ator.visao": "generoso" }`.
 
 Nos efeitos, `"ator.magoa": 15` machuca e `-20` repara; `"ator.confianca": -10` quebra a confiança; `"ator.sem_contato": { "definir": 0 }` é o contato que não dá vínculo (a briga). No texto, `{ator.lembranca}` e `{ator.magoa_de}` viram "de quando você …, aos 34" (a melhor e a pior coisa que quem joga fez com a pessoa, do livro; sem lembrança forte, o que toda relação tem): escreva "{ator:Ele|Ela} lembrou {ator.lembranca}" e "A mágoa vinha {ator.magoa_de}". Use `"preferir": "+ator.magoa"` para a ação ir primeiro a quem está mais magoado.
 

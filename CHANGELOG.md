@@ -4,6 +4,46 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 💞 Bloco R · As pessoas da sua vida · 25/10/2026
+
+> [!NOTE]
+> Pedido do dono no meio dos blocos: relacionamento de verdade, com causa e consequência, e pessoas que parecem vivas e sabem quem você é. Tudo sai de regras e do livro-razão, sem texto gerado e sem servidor.
+
+- 💞 **A relação com cada pessoa:**
+  - o afeto, a confiança, a mágoa e os anos sem contato;
+  - a mágoa passa no ritmo do perdão de cada traço;
+  - a pessoa rompe a partir de 42 de mágoa, e o par faz as malas a partir de 45;
+  - chegar perto zera os anos longe.
+- 🧠 **A memória:**
+  - a pessoa lembra da melhor e da pior coisa que você fez com ela, contada do ponto de vista dela ("de quando você levou ela para ver o mar, aos 41");
+  - ela lembra também do que você deixou de fazer: quem passa um ano doente sem ver você guarda a falta.
+- 🪞 **A opinião:**
+  - são 14 opiniões sobre você, cada uma com o porquê;
+  - elas saem do que a pessoa viu, do que todo mundo sabe e do que só quem está perto sabe;
+  - o antigo pesa menos, e quem morreu não forma opinião nova;
+  - a opinião muda o que a pessoa faz: quem acha você sumido procura menos, e quem acha você cabeça-quente briga mais fácil.
+- 🌊 **As vontades:**
+  - são nove: ver o mar, voltar à terra natal, ver o neto, casar, ter um filho, um bicho, a casa própria, a viagem com o amigo e a festa de 80;
+  - realizar é uma escolha;
+  - a vontade que espera cobra, e a que passa da hora vira falta;
+  - a morte diz o que faltou.
+- 🕯️ **O luto conta a relação:**
+  - morrer magoado, longe ou com a vontade guardada deixa remorso;
+  - morrer perto e em paz deixa a despedida.
+- 👴 **Os filhos aprendem com você:** na velhice, o filho cuida ou some conforme o que viu.
+- 🤝 **A folha Família:**
+  - mostra o humor, a opinião com o porquê, a vontade, as lembranças, a confiança e a mágoa de cada um;
+  - **Fazer algo com…** abre as ações com cada pessoa.
+- 🧩 **Conteúdo novo:**
+  - 14 storylets de relação (conversar, presentear pelo gosto, pedir desculpas, desabafar, o túmulo, a saudade, a cobrança, o rompimento, as pazes);
+  - 34 storylets de quem sabe quem você é (as vontades e quem as realiza, as reações pela opinião, a falta lembrada, o par que vai embora, pedir um Pix).
+- ⚙️ **Por baixo:**
+  - a soma do livro fica guardada fora do estado: não há save novo;
+  - as condições em campos calculados rodam por último;
+  - o leilão declara as marcas que tira.
+
+**Ainda não tem:** conversa livre com as pessoas, as relações entre os personagens, o ex que continua existindo, a correção C3 e o ícone novo no app Android.
+
 ## ✍️ Correção C2 · O texto não contradiz a vida · 25/10/2026
 
 > [!NOTE]

@@ -91,7 +91,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   dividas.ts           o ano das dívidas: parcela, atraso, nome sujo, caducar; renegociar e quitar
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor, iniciativas
-  relacoes.ts          a relação com cada pessoa: o gosto, o humor, convivência e as lembranças (do livro), sem estado novo
+  relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro), sem estado novo
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -223,3 +223,8 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Relação de verdade com cada pessoa: afeto, confiança, mágoa (que passa no ritmo do perdão do traço e rompe a partir de 42; o par faz as malas a partir de 45) e anos sem contato; a pessoa lembra da melhor e da pior coisa que você fez (do livro), magoada briga mais e ajuda menos; morrer magoado ou longe deixa remorso, perto deixa a despedida | dono (25/10) | "relacionamento de fato, inteligente, com progressão real e causalidade"; NPCs vivos e únicos, a morte que dói pela história, o peso de cada decisão |
 | A confiança guarda a diferença para 60 (campo com base); o gosto, o humor e as lembranças saem do estado e do livro | agente | o save antigo vale sem migrar e o livro fecha; estado novo só onde a relação precisa lembrar sozinha |
 | Contato é chegar perto: ganhar vínculo zera os anos sem contato; ignorar a ligação não | agente | a distância precisa de uma decisão para acabar; aparecer num storylet não é estar perto |
+| Cada pessoa tem opinião sobre quem joga, tirada do que ela viu no livro, do que todo mundo sabe e do que só quem está perto sabe; a opinião mostra o porquê e muda o que a pessoa faz | dono (25/10) | "NPCs que identificam a personalidade do player, lembram do que ele fez ou deixou de fazer e se comportam segundo o que sabem" |
+| A opinião sai do livro, com o antigo pesando metade a cada 12 anos; a soma guardada fica fora do estado; quem morreu não forma opinião nova | agente | sem save novo e sem varrer o livro todo ano; ninguém sabe o que não tinha como saber |
+| A falta: alguém próximo passa um ano doente sem ver você, e isso vira entrada, mágoa e a pior lembrança (uma vez por doença) | agente | o que você deixou de fazer também é história; antes, faltar não deixava rastro |
+| As vontades são qualidades `quer_…` declaradas em `mundo.json`: nascem de uma iniciativa da pessoa, saem realizadas por você ou pela vida, ou perdidas com a idade; a pressa vira mágoa, e morrer com a vontade guardada deixa remorso | agente | a pessoa quer coisas da vida, e a morte diz o que faltou ("ela nunca viu o mar") |
+| O par não "rompe": faz as malas, e o namoro acaba de verdade | agente | um par rompido que continuava casado era incoerente |
