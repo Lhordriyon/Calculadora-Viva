@@ -1135,6 +1135,40 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Alta · pedido do dono.
 - **Estado:** feita (correção C1, 20/10).
 
+### I-102 · Relações de verdade (pedido do dono, 25/10)
+- **Problema:** o dono quer relacionamento de verdade. Pediu:
+  - progressão, causa e consequência com cada personagem principal;
+  - personagens únicos, que parecem vivos e que lembram;
+  - emoção forte: a morte que dói pela história que vocês tiveram, a alegria, a raiva;
+  - o peso de cada decisão, boa, ruim ou neutra.
+  Hoje a relação é um número só (o vínculo), que volta sozinho para o equilíbrio. Ninguém lembra do que você fez, ninguém guarda mágoa, a distância não pesa, e a morte dói igual para todo mundo.
+- **Módulos:** 11, 12, 13.
+- **Depende de:** I-05 (parcial: as pessoas já têm id estável).
+- **Custo:**
+  - implementação: G;
+  - simulação: pouco (três campos por pessoa; o resto sai do livro).
+- **Consome:** fichas do ano. Cuidar de uma relação é uma ação, com custo de oportunidade.
+- **Efeitos causais:**
+  - **mágoa:** sobe com o que machucou e passa no ritmo do perdão do traço; puxa o vínculo para baixo, faz a pessoa brigar mais e ajudar menos, e acima de 75 rompe a relação;
+  - **confiança:** abre o conselho e o segredo, e decide se a verdade dita vira conversa ou briga;
+  - **anos sem contato:** esfriam o vínculo e trazem a saudade;
+  - **memória:** a pessoa lembra da melhor e da pior coisa que você fez com ela, e o texto cita ("de quando você…, aos 34");
+  - **na morte:** quem morre magoado ou longe deixa remorso; quem estava perto deixa a despedida;
+  - **o gosto** de cada pessoa (futebol, pescaria, novela…) decide o presente certo e o programa junto.
+- **Riscos:**
+  - mudar o equilíbrio do vínculo (o túnel mede);
+  - texto que cita lembrança sem lembrança (há o texto de quando não há);
+  - storylets novos mortos no túnel;
+  - save antigo: a confiança guarda a diferença para 60, então o save antigo lê 60 sem migrar.
+- **Aceitação:**
+  - o livro fecha para toda pessoa;
+  - nenhum storylet morto;
+  - nenhuma estratégia dominante;
+  - a folha Família mostra o humor, a confiança, a mágoa, a distância, o gosto e as lembranças de cada pessoa;
+  - numa vida jogada, a morte de alguém próximo conta o que foi a relação.
+- **Prioridade:** Alta · pedido do dono.
+- **Estado:** em andamento (25/10).
+
 ## Defeitos conhecidos
 
 Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num commit com teste, quando a fatia que mexe naquela parte passar por lá, ou antes se ficar barato.
