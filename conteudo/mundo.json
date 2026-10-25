@@ -488,7 +488,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0,
+      "poupanca": 0, "perdao": 0.3,
       "herdeiro": "otimista"
     },
     {
@@ -500,7 +500,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": -0.03,
+      "poupanca": -0.03, "perdao": 0.38,
       "herdeiro": "carismatico"
     },
     {
@@ -512,7 +512,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0.06,
+      "poupanca": 0.06, "perdao": 0.14,
       "herdeiro": "teimoso"
     },
     {
@@ -524,7 +524,7 @@
       "saude": 0,
       "doenca": 1.1,
       "emprego": 1.3,
-      "poupanca": 0,
+      "poupanca": 0, "perdao": 0.12,
       "herdeiro": "teimoso"
     },
     {
@@ -536,7 +536,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0,
+      "poupanca": 0, "perdao": 0.22,
       "herdeiro": "timido"
     },
     {
@@ -548,7 +548,7 @@
       "saude": -2,
       "doenca": 1.1,
       "emprego": 0.5,
-      "poupanca": 0.04,
+      "poupanca": 0.04, "perdao": 0.2,
       "herdeiro": "forte"
     },
     {
@@ -560,7 +560,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1.1,
-      "poupanca": -0.08,
+      "poupanca": -0.08, "perdao": 0.25,
       "herdeiro": "carismatico"
     },
     {
@@ -572,7 +572,7 @@
       "saude": -14,
       "doenca": 2.2,
       "emprego": 1.2,
-      "poupanca": 0,
+      "poupanca": 0, "perdao": 0.25,
       "herdeiro": "ansioso"
     },
     {
@@ -584,7 +584,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 0.8,
-      "poupanca": 0.03,
+      "poupanca": 0.03, "perdao": 0.08,
       "herdeiro": "teimoso"
     },
     {
@@ -596,7 +596,7 @@
       "saude": 0,
       "doenca": 1,
       "emprego": 1,
-      "poupanca": 0,
+      "poupanca": 0, "perdao": 0.32,
       "herdeiro": "otimista"
     },
     {
@@ -608,7 +608,7 @@
       "saude": 1,
       "doenca": 0.9,
       "emprego": 0.9,
-      "poupanca": 0.02,
+      "poupanca": 0.02, "perdao": 0.34,
       "herdeiro": "otimista"
     },
     {
@@ -620,7 +620,7 @@
       "saude": -1,
       "doenca": 1.1,
       "emprego": 0.7,
-      "poupanca": 0.05,
+      "poupanca": 0.05, "perdao": 0.15,
       "herdeiro": "esperto"
     }
   ],
@@ -757,8 +757,8 @@
     },
     "faleceu": {
       "textos": [
-        "{ator.quem} morreu aos {ator.idade} anos, {como}.",
-        "{ator.quem} se foi aos {ator.idade} anos, {como}. [O velório encheu.|Ninguém sabia o que fazer com as coisas {ator:dele|dela}.|A casa ficou grande demais.]"
+        "{ator.quem} morreu aos {ator.idade} anos, {como}. {fecho}",
+        "{ator.quem} se foi aos {ator.idade} anos, {como}. [O velório encheu.|Ninguém sabia o que fazer com as coisas {ator:dele|dela}.|A casa ficou grande demais.] {fecho}"
       ],
       "resumo": "{ator.quem} morreu"
     },
@@ -2756,5 +2756,39 @@
     "Morreu sem saber a senha do wi-fi da casa da vó.",
     "Chegava sempre cinco minutos atrasad{o|a}. Até aqui.",
     "Deixou uma gaveta cheia de sacolinhas e um coração cheio de gente."
-  ]
+  ],
+  "gostos": [
+    { "id": "futebol", "nome": "futebol" },
+    { "id": "novela", "nome": "novela" },
+    { "id": "pescaria", "nome": "pescaria" },
+    { "id": "cozinha", "nome": "cozinhar" },
+    { "id": "musica", "nome": "música" },
+    { "id": "fe", "nome": "a igreja" },
+    { "id": "plantas", "nome": "plantas" },
+    { "id": "jogos", "nome": "jogos" },
+    { "id": "livros", "nome": "livros" },
+    { "id": "carros", "nome": "carros" },
+    { "id": "viagem", "nome": "viajar" },
+    { "id": "danca", "nome": "dançar" },
+    { "id": "bichos", "nome": "bichos" },
+    { "id": "politica", "nome": "política" },
+    { "id": "artesanato", "nome": "trabalhos manuais" }
+  ],
+  "despedidas": {
+    "magoa": [
+      "Vocês não tinham feito as pazes. {ator:Ele|Ela} nunca esqueceu {ator.magoa_de}.",
+      "Morreu {ator:magoado|magoada} com você. Não tem mais como consertar, e é isso que pesa.",
+      "A última conversa de vocês foi uma briga. Ela fica tocando na sua cabeça, palavra por palavra."
+    ],
+    "longe": [
+      "Fazia {ator.sem_contato} anos que vocês não se falavam, e agora não dá mais.",
+      "Você soube pelo grupo da família. Fazia {ator.sem_contato} anos que não ligava.",
+      "Você ia ligar. Fazia {ator.sem_contato} anos que ia ligar."
+    ],
+    "perto": [
+      "Você estava lá até o fim. Lembrou {ator.lembranca}.",
+      "Deu tempo de dizer o que importava. {ator:Ele|Ela} sorriu, e foi assim que você quis lembrar.",
+      "No velório, você contou a história {ator.lembranca}, e todo mundo riu chorando."
+    ]
+  }
 }

@@ -7,7 +7,7 @@ import { FILHOS, ehFilho, type PapelNovo } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
-import { ANOS_UNIAO } from './regras.ts';
+import { ANOS_REMORSO, ANOS_UNIAO, MAGOA_REMORSO } from './regras.ts';
 import { aleatorio, inteiro, sortear } from './rng.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -106,7 +106,21 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   en.morte = e.ano;
   ganhar(e, reg, papel, 'faleceu', causa);
   const vinculo = en.n['vinculo'] ?? 50;
-  if (papel !== 'paixao') somar(e, reg, 'eu', 'felicidade', -(3 + vinculo * 0.14));
+  if (papel !== 'paixao') {
+    somar(e, reg, 'eu', 'felicidade', -(3 + vinculo * 0.14));
+    // A relação pesa no luto: morrer magoado, ou longe há anos, deixa remorso; quem estava perto se despediu.
+    const magoa = en.n['magoa'] ?? 0;
+    const longe = en.n['sem_contato'] ?? 0;
+    if (en.tipo === 'pessoa' && vinculo >= 25 && (magoa >= MAGOA_REMORSO || longe >= ANOS_REMORSO)) {
+      somar(e, reg, 'eu', 'felicidade', -(3 + magoa * 0.06 + Math.min(longe, 10) * 0.4));
+      perder(e, reg, 'eu', 'despediu');
+      perder(e, reg, 'eu', 'remorso');
+      ganhar(e, reg, 'eu', 'remorso', causa);
+    } else if (en.tipo === 'pessoa' && vinculo >= 55 && magoa < 15 && longe === 0) {
+      perder(e, reg, 'eu', 'despediu');
+      ganhar(e, reg, 'eu', 'despediu', causa);
+    }
+  }
   if (papel === 'amor') {
     // O namoro acaba com a morte; casamento ou união longa vira viuvez.
     const namoro = e.entidades['eu']!.q['namoro'];

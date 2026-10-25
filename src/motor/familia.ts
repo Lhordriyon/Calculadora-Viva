@@ -14,20 +14,25 @@ import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho } from './esquema.ts';
 import type { Momento } from './pais.ts';
-import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { morrerPersonagem } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_FALENCIA,
   CHANCE_CURA,
   DEMISSAO_BASE,
+  ANOS_REMORSO,
   DESGASTE_CASAL,
   DISTANCIA_ADULTO,
   DISTANCIA_FILHO,
   DOENCA_POR_ANO,
   DOENCA_QUEDA,
   IDADE_APOSENTADORIA,
+  MAGOA_NO_VINCULO,
+  MAGOA_REMORSO,
+  PERDAO_BASE,
   RECOLOCACAO,
+  VOLTA_CONFIANCA,
   RETORNO_VINCULO,
   PAQUERA_AMOR,
   chanceDeAmor,
@@ -35,11 +40,12 @@ import {
   derivaSaude,
   riscoDeMorte,
 } from './regras.ts';
+import { convivem, temRelacao } from './relacoes.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
 import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
-import type { Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
+import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca } from './tipos.ts';
 
 /** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada. */
 export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet'] as const;
@@ -60,7 +66,7 @@ function acontecer(
   const reg: Mudanca[] = [];
   aplicar(reg, entrada.id);
   const ctx = contexto(e, { ator: papel, textos });
-  entrada.texto = capitalizar(renderizar(ac ? sortear(e.rng, ac.textos) : gatilho, ctx));
+  entrada.texto = capitalizar(renderizar(ac ? sortear(e.rng, ac.textos) : gatilho, ctx)).trim();
   entrada.resumo = renderizar(ac?.resumo ?? gatilho, ctx);
   return lancar(e, entrada, reg);
 }
@@ -82,6 +88,45 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   if (papel === 'paixao') return 30;
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
+}
+
+/**
+ * A relação no ano: a mágoa passa no ritmo do perdão (do traço), a confiança volta devagar para a base, e o ano longe
+ * de quem joga conta como ano sem contato (quem convive, não). Devolve os anos sem contato do começo do ano, que o
+ * esfriamento do vínculo lê.
+ */
+function relacaoNoAno(e: EstadoVida, papel: string, en: Entidade, perdao: number, regAno: Mudanca[]): number {
+  const longe = en.n['sem_contato'] ?? 0;
+  if (!temRelacao(papel, en)) return longe;
+  const magoa = en.n['magoa'] ?? 0;
+  if (magoa > 0) somar(e, regAno, papel, 'magoa', -Math.max(Math.min(magoa, 1), magoa * perdao), 'relacao');
+  const confianca = en.n['confianca'] ?? 0; // guardada como a diferença para a base
+  if (Math.abs(confianca) >= 0.5) somar(e, regAno, papel, 'confianca', -confianca * VOLTA_CONFIANCA, 'relacao');
+  if (convivem(e, papel, en)) {
+    if (longe > 0) definirNumero(e, regAno, papel, 'sem_contato', 0, 'relacao');
+  } else somar(e, regAno, papel, 'sem_contato', 1, 'relacao');
+  return longe;
+}
+
+/**
+ * O que a morte de alguém deixa dito na linha do tempo, pelo que foi a relação: a mágoa que ficou, os anos sem se
+ * falar, ou a despedida de quem estava perto. Os textos são de mundo.json › despedidas.
+ */
+function fechoDaMorte(e: EstadoVida, c: Conteudo, papel: string, en: Entidade): string {
+  if (!temRelacao(papel, en) || papel === 'paixao') return '';
+  const qual = (en.n['magoa'] ?? 0) >= MAGOA_REMORSO ? 'magoa' : (en.n['sem_contato'] ?? 0) >= ANOS_REMORSO ? 'longe' : (en.n['vinculo'] ?? 0) >= 55 ? 'perto' : null;
+  if (!qual) return '';
+  return renderizar(sortear(e.rng, c.mundo.despedidas[qual]), contexto(e, { ator: papel }));
+}
+
+/**
+ * A relação muda o que a pessoa faz: com afeto e sem mágoa, ela ajuda mais; magoada, briga mais. Multiplica a chance
+ * das iniciativas de ajuda e de briga, junto com o traço.
+ */
+export function humorDaIniciativa(en: Entidade, afinidade: 'ajuda' | 'briga'): number {
+  const magoa = en.n['magoa'] ?? 0;
+  if (afinidade === 'briga') return 1 + magoa / 40;
+  return Math.max(0.25, Math.min(1.6, ((en.n['vinculo'] ?? 50) / 60) * (1 - magoa / 120)));
 }
 
 /** Roda as regras do ano de cada personagem vivo. Variações miúdas vão para `regAno`. */
@@ -124,7 +169,7 @@ export function regrasDosPersonagens(
       // O jeito de morrer combina com a idade (a do bicho conta em anos de gente).
       const idadeGente = papel === 'pet' ? idade * 6 : idade;
       const jeitos = c.mundo.mortesPersonagem.filter((m) => !m.idade || (idadeGente >= m.idade[0] && idadeGente <= m.idade[1]));
-      acontecer(e, c, papel, 'faleceu', (reg, id) => morrerPersonagem(e, papel, reg, id), { como: sortear(e.rng, jeitos).texto });
+      acontecer(e, c, papel, 'faleceu', (reg, id) => morrerPersonagem(e, papel, reg, id), { como: sortear(e.rng, jeitos).texto, fecho: fechoDaMorte(e, c, papel, en) });
       continue;
     }
 
@@ -193,13 +238,17 @@ export function regrasDosPersonagens(
       somar(e, regAno, papel, 'dinheiro', guarda - aperto + rende, 'dinheiro', 'mercado');
     }
 
-    // ---- vínculo: volta para o jeito da família; esfria sem contato na vida adulta (bicho não tem)
+    // ---- a relação: a mágoa passa no ritmo do perdão do traço, a confiança volta devagar, e o ano longe conta (bicho não tem)
     if (papel === 'pet') continue;
+    const longe = relacaoNoAno(e, papel, en, traco?.perdao ?? PERDAO_BASE, regAno);
+
+    // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
-    let dv = (equilibrioVinculo(e, c, papel) - v) * RETORNO_VINCULO;
+    let dv = (equilibrioVinculo(e, c, papel) - MAGOA_NO_VINCULO * (en.n['magoa'] ?? 0) - v) * RETORNO_VINCULO;
     if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || papel === 'amigo')) {
       const junto = papel === 'avo' ? en.q['mora_junto'] : eu.q['mora_com_pais'];
-      if (!junto) dv -= DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1);
+      // Quem se falou no ano não esfria; dois anos ou mais longe esfria mais.
+      if (!junto && longe > 0) dv -= DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1) * Math.min(1.5, 0.5 + 0.5 * longe);
     }
     // A rotina gasta o namoro; filho adulto cria a própria vida.
     if (papel === 'amor') dv -= DESGASTE_CASAL;
@@ -245,11 +294,11 @@ export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJoga
     let chance = 0;
     for (const s of elegiveis) {
       const tensao = s.tensao ?? 1;
-      const afinidade = s.afinidade ? (traco?.[s.afinidade] ?? 1) : 1;
+      const afinidade = s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade) : 1;
       chance = Math.max(chance, tensao >= 3 ? 1 : Math.min(1, ATIVIDADE_PERSONAGEM * tensao * afinidade));
     }
     if (aleatorio(e.rng) >= chance) continue;
-    const pesos = elegiveis.map((s) => saliencia(s, e, papel, memoria) * (s.afinidade ? (traco?.[s.afinidade] ?? 1) : 1));
+    const pesos = elegiveis.map((s) => saliencia(s, e, papel, memoria) * (s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade) : 1));
     const i = sortearIndice(e.rng, pesos);
     if (i < 0) continue;
     const s = elegiveis[i]!;

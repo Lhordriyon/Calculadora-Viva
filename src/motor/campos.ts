@@ -5,6 +5,7 @@
  */
 import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
+import { deQuando, gostoDe, humorDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
@@ -24,6 +25,12 @@ export interface DefCampo {
   /** Em milhões no texto (a população: 205 milhões). */
   milhoes?: boolean;
   limites?: readonly [number, number];
+  /**
+   * O valor de quem não tem o campo (a confiança começa em 60). O estado guarda a diferença para a base: o livro
+   * fecha (começo + variações = estado) e o save antigo vale sem migrar. `ler` devolve base + guardado, e os limites
+   * são do valor lido.
+   */
+  base?: number;
 }
 
 const PESSOA: Record<string, DefCampo> = {
@@ -31,8 +38,22 @@ const PESSOA: Record<string, DefCampo> = {
   felicidade: { tipo: 'num', sistema: 'humor', limites: [0, 100] },
   inteligencia: { tipo: 'num', sistema: 'mente', limites: [0, 100] },
   aparencia: { tipo: 'num', sistema: 'corpo', limites: [0, 100] },
-  /** Vínculo com quem joga. */
+  /** Vínculo com quem joga (o afeto). */
   vinculo: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
+  /** A mágoa com quem joga (0 a 100): sobe com o que machucou, passa com o tempo no ritmo do perdão do traço e com desculpa, e puxa o vínculo para baixo. */
+  magoa: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
+  /** A confiança em quem joga (0 a 100; começa em 60): promessa cumprida e ajuda sobem, mentira e sumiço na hora difícil derrubam. */
+  confianca: { tipo: 'num', sistema: 'relacoes', limites: [0, 100], base: 60 },
+  /** Anos sem contato com quem joga: zera quando vocês se falam (qualquer storylet com a pessoa), conta longe de casa. */
+  sem_contato: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
+  /** O que a pessoa ama (GOSTOS), tirado do nome e do nascimento: o presente certo, o programa junto. */
+  gosto: { tipo: 'texto', sistema: 'relacoes', derivado: true },
+  /** Como a pessoa está com quem joga agora (HUMORES). */
+  humor: { tipo: 'texto', sistema: 'relacoes', derivado: true },
+  /** "de quando você …, aos N": a melhor coisa que quem joga fez com a pessoa (do livro-razão). */
+  lembranca: { tipo: 'texto', sistema: 'historia', derivado: true },
+  /** "de quando você …, aos N": o que mais machucou a pessoa. */
+  magoa_de: { tipo: 'texto', sistema: 'historia', derivado: true },
   dinheiro: { tipo: 'num', sistema: 'dinheiro', reais: true },
   /** O que está investido, por classe (rende conforme a fase do país). */
   renda_fixa: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
@@ -421,6 +442,14 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.genero ?? 'm';
       case 'quem':
         return quemE(ent, en);
+      case 'gosto':
+        return en.tipo === 'pessoa' && ent !== 'eu' ? gostoDe(en) : '';
+      case 'humor':
+        return humorDe(e, ent, en);
+      case 'lembranca':
+        return deQuando(e, ent, en, 'boa');
+      case 'magoa_de':
+        return deQuando(e, ent, en, 'ruim');
       case 'eleicao':
         return e.ano % 4 === 2;
       case 'empresas':
@@ -434,7 +463,7 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
     }
     return undefined;
   }
-  return def.tipo === 'texto' ? (en.t[campo] ?? '') : (en.n[campo] ?? 0);
+  return def.tipo === 'texto' ? (en.t[campo] ?? '') : (en.n[campo] ?? 0) + (def.base ?? 0);
 }
 
 /**

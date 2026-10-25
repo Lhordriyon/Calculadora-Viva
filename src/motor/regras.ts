@@ -229,6 +229,17 @@ export const DISTANCIA_ADULTO = 1.2;
 export const DISTANCIA_FILHO = 1.2;
 /** Vínculo do casal que a rotina gasta por ano, sem cuidado. */
 export const DESGASTE_CASAL = 1.4;
+
+/** A relação (relacoes.ts): quanto da mágoa passa por ano sem o traço dizer outra coisa (o generoso perdoa mais, o rígido menos). */
+export const PERDAO_BASE = 0.2;
+/** Quanto da confiança perdida ou ganha volta para a base (60) por ano: confiança é lenta. */
+export const VOLTA_CONFIANCA = 0.04;
+/** Cada ponto de mágoa baixa o ponto para onde o vínculo volta. */
+export const MAGOA_NO_VINCULO = 0.5;
+/** Mágoa a partir da qual a morte da pessoa deixa remorso em quem joga. */
+export const MAGOA_REMORSO = 35;
+/** Anos sem contato a partir dos quais a morte da pessoa deixa remorso (não deu tempo de se despedir). */
+export const ANOS_REMORSO = 4;
 /** Chance anual de alguém aparecer na vida de quem está sem namoro (antes de paquera, aparência e traço). */
 export function chanceDeAmor(idade: number): number {
   if (idade < 16) return 0;

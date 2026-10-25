@@ -12,6 +12,13 @@ function limitar(v: number, limites: readonly [number, number] | undefined): num
   return v < limites[0] ? limites[0] : v > limites[1] ? limites[1] : v;
 }
 
+/** Os limites de um campo como ele fica guardado: o campo com base (a confiança) guarda a diferença para ela. */
+function limitesGuardados(ent: string, campo: string): readonly [number, number] | undefined {
+  const def = defCampo(ent, campo);
+  if (!def?.limites || !def.base) return def?.limites;
+  return [def.limites[0] - def.base, def.limites[1] - def.base];
+}
+
 /** Soma uma variação ao registro, juntando com a do mesmo caminho, regra e contraparte (o dinheiro diz de quem veio). */
 export function anotar(reg: Mudanca[], c: string, d: number, r?: string, p?: string): void {
   if (d === 0) return;
@@ -32,7 +39,7 @@ export function somar(e: EstadoVida, reg: Mudanca[], ent: string, campo: string,
   const en = e.entidades[ent];
   if (!en || delta === 0 || !Number.isFinite(delta)) return 0;
   const antes = en.n[campo] ?? 0;
-  const depois = limitar(antes + delta, defCampo(ent, campo)?.limites);
+  const depois = limitar(antes + delta, limitesGuardados(ent, campo));
   en.n[campo] = depois;
   const d = depois - antes;
   anotar(reg, `${ent}.${campo}`, d, r, p);
@@ -48,7 +55,7 @@ export function somarRepartido(e: EstadoVida, reg: Mudanca[], ent: string, campo
   const en = e.entidades[ent];
   if (!en || total === 0 || !Number.isFinite(total)) return 0;
   const antes = en.n[campo] ?? 0;
-  const depois = limitar(antes + total, defCampo(ent, campo)?.limites);
+  const depois = limitar(antes + total, limitesGuardados(ent, campo));
   en.n[campo] = depois;
   const d = depois - antes;
   let anotado = 0;
@@ -60,8 +67,9 @@ export function somarRepartido(e: EstadoVida, reg: Mudanca[], ent: string, campo
   return d;
 }
 
+/** Define um campo numérico pelo valor que se lê (o campo com base guarda a diferença para ela). */
 export function definirNumero(e: EstadoVida, reg: Mudanca[], ent: string, campo: string, valor: number, r?: string, p?: string): number {
-  const atual = e.entidades[ent]?.n[campo] ?? 0;
+  const atual = (e.entidades[ent]?.n[campo] ?? 0) + (defCampo(ent, campo)?.base ?? 0);
   return somar(e, reg, ent, campo, valor - atual, r, p);
 }
 

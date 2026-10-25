@@ -173,7 +173,8 @@ describe('ficha do ano', () => {
     const e = nascer(real, { semente: 21, ano: 2026 });
     const robo = criarRng(2);
     while (e.idade < 25 && e.vivo) passo(e, real, robo, 'cautelosa');
-    while (e.pendente) escolher(e, real, 0);
+    // A primeira opção disponível (a primeira pode pedir dinheiro que a vida não tem).
+    while (e.pendente) escolher(e, real, Math.max(0, e.pendente.opcoes.findIndex((o) => o.disponivel)));
     const antes = acoesPossiveis(e, real).map((a) => `${a.verbo}:${a.s.id}:${a.ator ?? ''}`);
     const copia = structuredClone(e);
     expect(acoesPossiveis(copia, real).map((a) => `${a.verbo}:${a.s.id}:${a.ator ?? ''}`)).toEqual(antes);

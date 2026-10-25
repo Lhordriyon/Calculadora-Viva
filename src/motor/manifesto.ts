@@ -39,6 +39,12 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.divida',
   'eu.privacao',
   'eu.herdou',
+  // a relação com cada pessoa: a mágoa passa, a confiança volta, o ano longe conta; a morte deixa remorso ou despedida
+  ...de(PESSOAS, 'magoa'),
+  ...de(PESSOAS, 'confianca'),
+  ...de(PESSOAS, 'sem_contato'),
+  'eu.remorso',
+  'eu.despediu',
   // os filhos que quem joga teve (o segundo não apaga o primeiro)
   'eu.filhos',
   // a dinastia: quem herda começa com a geração, a família que já tinha e o que a vida dela deixou
@@ -257,6 +263,11 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['lugar.custo_vida'], 'custo mínimo de vida', true),
   ...ler(de(TODOS, 'saude'), 'mortalidade dos personagens', true),
   ...ler(de(PESSOAS, 'vinculo'), 'luto e felicidade de base', false),
+  ...ler(de(PESSOAS, 'vinculo'), 'chance de o personagem ajudar (o afeto) e a despedida na morte', true),
+  ...ler(de(PESSOAS, 'magoa'), 'o ponto para onde o vínculo volta, a chance de o personagem brigar ou ajudar e o remorso na morte', true),
+  ...ler(de(PESSOAS, 'sem_contato'), 'o vínculo esfria no ano longe; morrer longe deixa remorso', true),
+  ...ler(de(PESSOAS, 'confianca'), 'a confiança volta devagar para a base', false),
+  ...ler(['eu.namoro', 'eu.casado'], 'quem convive com quem joga (o amor não conta ano sem contato)', true),
   ...ler(de(PESSOAS, 'traco'), 'iniciativas dos personagens (afinidade) e vínculo', true),
   ...ler(['eu.paquera', 'eu.aparencia', 'eu.traco'], 'chance de alguém aparecer', true),
   ...ler(de(PAIS_E_AVO, 'renda'), 'poupança dos personagens', false),
@@ -366,8 +377,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'personagens',
     nome: 'a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte',
-    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
-    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar'],
+    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
+    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu'],
   },
   {
     id: 'trabalho',

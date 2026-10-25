@@ -12,6 +12,7 @@ import {
   CONTAS_DE_FORA,
   CLASSES,
   FASES,
+  GOSTOS,
   PAPEIS,
   PARCEIROS,
   PERFIS,
@@ -555,6 +556,8 @@ export const Traco = z.strictObject({
   poupanca: z.number(),
   /** O traço de quem joga que esta pessoa leva quando a história continua com ela (o filho que vira herdeiro). */
   herdeiro: z.string().optional(),
+  /** Quanto da mágoa com quem joga passa por ano (0 a 1; sem isso, PERDAO_BASE): o generoso perdoa, o rígido guarda. */
+  perdao: z.number().min(0).max(1).optional(),
 });
 export type Traco = z.infer<typeof Traco>;
 
@@ -762,5 +765,12 @@ export const Mundo = z.strictObject({
   nascimento: z.array(z.strictObject({ se: Condicoes.optional(), texto: z.string() })).min(1),
   /** Epitáfios genéricos quando nenhuma marca tem um. */
   epitafios: z.array(z.string()).min(3),
+  /** O que cada pessoa pode amar (constantes.ts › GOSTOS, todos e na ordem): o nome que a folha Família mostra. */
+  gostos: z.array(z.strictObject({ id: z.enum(GOSTOS), nome: z.string() })).length(GOSTOS.length),
+  /**
+   * O que a morte de alguém deixa dito, pelo que foi a relação: a mágoa que ficou (`magoa`), os anos sem se falar
+   * (`longe`) ou a despedida de quem estava perto (`perto`). O texto vê a pessoa como `{ator}`.
+   */
+  despedidas: z.strictObject({ magoa: z.array(z.string()).min(2), longe: z.array(z.string()).min(2), perto: z.array(z.string()).min(2) }),
 });
 export type Mundo = z.infer<typeof Mundo>;

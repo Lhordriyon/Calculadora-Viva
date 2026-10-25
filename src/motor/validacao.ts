@@ -488,7 +488,11 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   c.mundo.nascimento.forEach((n, i) => verificarModelo(n.texto, `mundo.json › nascimento[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   c.mundo.epitafios.forEach((t, i) => verificarModelo(t, `mundo.json › epitafios[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
-    for (const t of [...ac.textos, ac.resumo]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, new Set(['como']), new Set(), marcasDoPapel, erro, PAPEIS);
+    for (const t of [...ac.textos, ac.resumo]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, new Set(['como', 'fecho']), new Set(), marcasDoPapel, erro, PAPEIS);
+  }
+  // A despedida fala de quem morreu (o ator, ainda vivo quando o texto é escrito) e da relação com ele.
+  for (const [qual, textos] of Object.entries(c.mundo.despedidas)) {
+    textos.forEach((t, i) => verificarModelo(t, `mundo.json › despedidas.${qual}[${i}]`, new Set(), new Set(), marcasDoPapel, erro, PAPEIS));
   }
   for (const [g, n] of Object.entries(c.mundo.noticias)) {
     for (const t of [...n.textos, n.resumo]) verificarModelo(t, `mundo.json › noticias.${g}`, new Set(), new Set(), marcasDoPapel, erro, PARCEIROS);

@@ -11,9 +11,10 @@ import { contexto } from './contexto.ts';
 import { aplicarEfeitos, type ContextoEfeito } from './efeitos.ts';
 import { reorganizarGrupo } from './empresa.ts';
 import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
-import { lancar, novaEntrada } from './livro.ts';
+import { definirNumero, lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
 import { FILHOS } from './constantes.ts';
+import { temRelacao } from './relacoes.ts';
 import { aleatorio } from './rng.ts';
 import { capitalizar, formatarDinheiro, renderizar, type ContextoTexto } from './texto.ts';
 import type { Causa, Entrada, EstadoVida, Mudanca, OpcaoPendente, TipoEntrada } from './tipos.ts';
@@ -104,6 +105,20 @@ export interface Extras {
  * Storylet sem escolha: aplica os efeitos (e o teste, se houver) e lança a
  * entrada no livro com a causa dada (diretor, personagem ou ação).
  */
+/**
+ * Contato é chegar perto: quem ganhou vínculo com o que aconteceu (a visita, a ligação, o almoço de domingo, o pedido de
+ * desculpas aceito). Os anos sem se falar zeram, na mesma entrada. Ignorar a ligação não é contato; a briga, se for,
+ * diz no conteúdo ("ator.sem_contato": { "definir": 0 }).
+ */
+function contato(e: EstadoVida, reg: Mudanca[]): void {
+  const quem = new Set<string>();
+  for (const m of reg) if (m.d !== undefined && m.d > 0 && m.c.endsWith('.vinculo')) quem.add(m.c.slice(0, -'.vinculo'.length));
+  for (const id of quem) {
+    const en = e.entidades[id];
+    if (temRelacao(id, en) && en.vivo !== false && (en.n['sem_contato'] ?? 0) > 0) definirNumero(e, reg, id, 'sem_contato', 0);
+  }
+}
+
 export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: string | undefined, causa: Causa, extras: Extras = {}): Entrada {
   marcarVisto(e, s, ator);
   const entrada = novaEntrada(e, {
@@ -136,6 +151,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   if (extras.inflacao !== undefined) entrada.inflacao = extras.inflacao;
   // Depois do texto (que ainda fala da empresa que saiu), outra do grupo toma o lugar dela.
   reorganizarGrupo(e, reg);
+  contato(e, reg);
   lancar(e, entrada, reg);
   morrerSePreciso(e, c, morte, entrada.id);
   return entrada;
@@ -231,6 +247,7 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = textoDoDesfecho(e, resultado, ctx);
   reorganizarGrupo(e, reg);
+  contato(e, reg);
   lancar(e, entrada, reg);
   morrerSePreciso(e, c, resultado.efeitos?.morte ?? esc.efeitos?.morte, entrada.id);
   return entrada;

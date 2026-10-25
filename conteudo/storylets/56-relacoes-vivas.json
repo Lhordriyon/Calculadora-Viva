@@ -1,0 +1,334 @@
+[
+  {
+    "id": "conversar_de_verdade",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "conversar com {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "preferir": "+ator.magoa",
+    "idade": [14, 110],
+    "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.idade": { "min": 12 } },
+    "intervalo": 2,
+    "trechos": {
+      "conversa": [
+        { "se": { "ator.magoa": { "min": 30 } }, "texto": "Uma hora a conversa chegou onde precisava: a mágoa {ator.magoa_de}. [{ator} chorou um pouco, você também.|Ninguém gritou, o que na família de vocês é novidade.|Não resolveu tudo, mas destravou alguma coisa.]" },
+        { "se": { "ator.sem_contato": { "min": 2 } }, "texto": "Fazia {ator.sem_contato} anos que vocês não conversavam assim. [Teve muita coisa para contar e um silêncio bom no meio.|Vocês riram de coisas que só vocês dois entendem.|{ator} contou um segredo antigo, e você entendeu muita coisa.]" },
+        { "se": { "ator.confianca": { "min": 75 } }, "texto": "[{ator} te contou o que não conta para ninguém.|Falaram de medo, de dinheiro e de morte, nessa ordem.|Foi o tipo de conversa que vira lembrança.]" },
+        { "texto": "[Falaram da vida, dos planos e de um parente que ninguém aguenta.|A conversa foi longe, e o café esfriou duas vezes.|{ator} quis saber de você de verdade, não só do trabalho.]" }
+      ]
+    },
+    "texto": "Você sentou para conversar com {ator} sem celular na mesa. {conversa}",
+    "resumo": "conversou de verdade com {ator}",
+    "efeitos": { "ator.vinculo": 5, "ator.confianca": 6, "ator.magoa": -12, "felicidade": 1 }
+  },
+  {
+    "id": "pedir_desculpas",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "pedir perdão a {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "preferir": "+ator.magoa",
+    "idade": [10, 110],
+    "condicoes": { "ator.magoa": { "min": 20 } },
+    "intervalo": 1,
+    "texto": "Você foi pedir desculpas a {ator}. A mágoa vinha {ator.magoa_de}, e você sabia.",
+    "resumo": "pediu desculpas a {ator}",
+    "teste": { "atributo": "ator.vinculo", "dificuldade": 45 },
+    "sucesso": {
+      "texto": "[{ator} ouviu até o fim e te abraçou.|{ator} disse que estava esperando isso fazia tempo.|Foi difícil começar e fácil terminar.]",
+      "repete": "{ator} aceitou as desculpas de novo.",
+      "resumo": "fez as pazes com {ator}",
+      "efeitos": { "ator.magoa": -35, "ator.vinculo": 6, "ator.confianca": 4, "felicidade": 3 }
+    },
+    "fracasso": {
+      "texto": "[{ator} ouviu, mas ainda não está pront{ator:o|a}.|\"Desculpa não apaga\", disse {ator}, e foi embora da cozinha.|{ator} aceitou da boca para fora. Você percebeu.]",
+      "repete": "{ator} ainda não aceitou.",
+      "efeitos": { "ator.magoa": -8, "felicidade": -1 }
+    }
+  },
+  {
+    "id": "presente_certo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "presentear {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [12, 110],
+    "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "dinheiro": { "min": 300 } },
+    "intervalo": 3,
+    "trechos": {
+      "presente": [
+        { "se": { "ator.gosto": "futebol" }, "texto": "uma camisa do time, autografada por um reserva" },
+        { "se": { "ator.gosto": "novela" }, "texto": "um ingresso para a peça do ator da novela das nove" },
+        { "se": { "ator.gosto": "pescaria" }, "texto": "uma vara de pesca que custou mais do que deveria" },
+        { "se": { "ator.gosto": "cozinha" }, "texto": "uma panela de ferro, daquelas que passam de mãe para filha" },
+        { "se": { "ator.gosto": "musica" }, "texto": "um ingresso para o show que {ator} cantava no chuveiro" },
+        { "se": { "ator.gosto": "fe" }, "texto": "um terço benzido na romaria" },
+        { "se": { "ator.gosto": "plantas" }, "texto": "uma muda de orquídea rara e um adubo com nome científico" },
+        { "se": { "ator.gosto": "jogos" }, "texto": "o jogo que {ator} estava namorando na vitrine" },
+        { "se": { "ator.gosto": "livros" }, "texto": "a primeira edição de um livro que {ator} citava sempre" },
+        { "se": { "ator.gosto": "carros" }, "texto": "um dia de piloto num autódromo do interior" },
+        { "se": { "ator.gosto": "viagem" }, "texto": "um fim de semana numa pousada com rede e café colonial" },
+        { "se": { "ator.gosto": "danca" }, "texto": "um pacote de aulas de forró para dois" },
+        { "se": { "ator.gosto": "bichos" }, "texto": "uma caminha de bicho que ninguém vai usar, porque o bicho prefere o sofá" },
+        { "se": { "ator.gosto": "politica" }, "texto": "a biografia de um ex-presidente, com orelha marcada" },
+        { "texto": "uma caixa de linhas e agulhas importadas" }
+      ]
+    },
+    "texto": "Sem data nenhuma, você deu a {ator} {presente}. Acertou em cheio: é o que {ator} mais ama.",
+    "resumo": "deu a {ator} o presente certo",
+    "efeitos": { "dinheiro": -300, "ator.vinculo": 6, "ator.magoa": -5, "felicidade": 1 }
+  },
+  {
+    "id": "programa_junto",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "um programa com {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [8, 110],
+    "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.idade": { "min": 6 } },
+    "intervalo": 2,
+    "trechos": {
+      "programa": [
+        { "se": { "ator.gosto": "futebol" }, "texto": "Foram ao estádio. O time perdeu, e vocês voltaram felizes assim mesmo" },
+        { "se": { "ator.gosto": "novela" }, "texto": "Maratonaram a novela inteira e discutiram quem era o vilão de verdade" },
+        { "se": { "ator.gosto": "pescaria" }, "texto": "Passaram a madrugada na beira do rio. Pegaram dois lambaris e muita conversa" },
+        { "se": { "ator.gosto": "cozinha" }, "texto": "Cozinharam juntos a receita da família, e a cozinha ficou um campo de guerra" },
+        { "se": { "ator.gosto": "musica" }, "texto": "Foram a uma roda de samba e cantaram até ficar sem voz" },
+        { "se": { "ator.gosto": "fe" }, "texto": "Foram juntos à missa das sete e depois tomaram café na padaria da praça" },
+        { "se": { "ator.gosto": "plantas" }, "texto": "Passaram a tarde no viveiro, escolhendo vaso como quem escolhe casa" },
+        { "se": { "ator.gosto": "jogos" }, "texto": "Jogaram até a madrugada, e {ator} ganhou todas, sem dó" },
+        { "se": { "ator.gosto": "livros" }, "texto": "Foram a um sebo e saíram com uma sacola de livros e uma discussão boa" },
+        { "se": { "ator.gosto": "carros" }, "texto": "Foram a um encontro de carros antigos e {ator} contou a história de cada um" },
+        { "se": { "ator.gosto": "viagem" }, "texto": "Pegaram a estrada sem destino e acabaram numa cidadezinha com festa de santo" },
+        { "se": { "ator.gosto": "danca" }, "texto": "Foram a um baile de forró, e {ator} dançou melhor do que você" },
+        { "se": { "ator.gosto": "bichos" }, "texto": "Passaram o dia num abrigo de bichos e quase voltaram com três" },
+        { "se": { "ator.gosto": "politica" }, "texto": "Assistiram ao debate na TV e brigaram com o apresentador, os dois do mesmo lado" },
+        { "texto": "Passaram a tarde fazendo crochê e falando mal da vizinhança" }
+      ]
+    },
+    "texto": "{programa}. Foi o melhor dia de {ator} no mês, e {ator:ele|ela} fez questão de dizer.",
+    "resumo": "passou um dia com {ator} fazendo o que {ator:ele|ela} ama",
+    "efeitos": { "dinheiro": -120, "ator.vinculo": 7, "felicidade": 2 }
+  },
+  {
+    "id": "dizer_umas_verdades",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "desabafar com {ator}",
+    "ator": ["mae", "pai", "amigo", "amor", "filho"],
+    "idade": [16, 110],
+    "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.traco": ["brigao", "rigido", "mao_fechada", "gastador", "ausente", "ambicioso"], "ator.idade": { "min": 16 } },
+    "intervalo": 4,
+    "texto": "Você cansou e falou tudo o que estava entalado sobre o jeito de {ator}. Saiu de uma vez, sem ensaio.",
+    "resumo": "disse umas verdades a {ator}",
+    "teste": { "atributo": "ator.confianca", "dificuldade": 60 },
+    "sucesso": {
+      "texto": "[{ator} ficou quiet{ator:o|a} um tempo e depois disse: \"você tem razão\". Ninguém esperava.|Doeu nos dois, mas a relação ficou mais honesta.]",
+      "repete": "{ator} ouviu de novo, e de novo levou a sério.",
+      "efeitos": { "felicidade": 3, "ator.confianca": 8, "ator.magoa": 8, "ator.vinculo": -2 }
+    },
+    "fracasso": {
+      "texto": "[{ator} bateu a porta e ficou uma semana sem atender.|Virou briga, e a briga virou assunto no grupo da família.]",
+      "repete": "Virou briga outra vez.",
+      "efeitos": { "felicidade": 2, "ator.magoa": 22, "ator.vinculo": -7, "ator.sem_contato": { "definir": 0 } }
+    }
+  },
+  {
+    "id": "pedir_conselho",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "conselho de {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor"],
+    "idade": [15, 90],
+    "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.confianca": { "min": 55 }, "ator.idade": { "min": 18 } },
+    "intervalo": 3,
+    "texto": "Você contou para {ator} a decisão que estava te tirando o sono. [{ator} ouviu sem interromper e deu um conselho que você não queria ouvir.|{ator} contou uma história de quando passou pela mesma coisa.|{ator} fez três perguntas, e na terceira você já sabia a resposta.]",
+    "resumo": "pediu conselho a {ator}",
+    "efeitos": { "inteligencia": 1, "felicidade": 1, "ator.vinculo": 3, "ator.confianca": 4 }
+  },
+  {
+    "id": "visitar_o_tumulo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "flores para {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [8, 110],
+    "condicoes": { "ator.vivo": false, "marcaHa": [{ "marca": "ator.faleceu", "min": 1 }] },
+    "intervalo": 5,
+    "trechos": {
+      "tumulo": [
+        { "se": { "marcas": ["remorso"] }, "texto": "Você pediu desculpas para uma lápide. Ela não respondeu, mas alguma coisa no peito afrouxou." },
+        { "se": { "marcas": ["despediu"] }, "texto": "Você contou as novidades em voz baixa, como se {ator} ainda ouvisse, e lembrou {ator.lembranca}." },
+        { "texto": "[Você trocou as flores murchas e ficou um tempo sem saber o que dizer.|Um senhor no túmulo do lado puxou conversa sobre o calor, e foi bom.|Você lembrou {ator.lembranca} e riu sozinh{o|a} no cemitério.]" }
+      ]
+    },
+    "texto": "Você levou flores para o túmulo de {ator.quem}. {tumulo}",
+    "resumo": "visitou o túmulo de {ator}",
+    "efeitos": { "felicidade": 2, "dinheiro": -60, "removerMarcas": ["remorso"] }
+  },
+  {
+    "id": "cobranca_da_magoa",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [12, 110],
+    "condicoes": { "ator.magoa": { "min": 40 }, "ator.idade": { "min": 12 } },
+    "afinidade": "briga",
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "{ator} ainda não esqueceu {ator.magoa_de}. [Veio à tona no almoço de domingo, na frente de todo mundo.|Mandou um áudio de seis minutos sobre o assunto.|Falou do nada, lavando a louça, sem olhar para você.]",
+    "resumo": "{ator} cobrou uma mágoa antiga",
+    "escolhas": [
+      {
+        "texto": "Pedir desculpas de verdade",
+        "resumo": "pediu desculpas a {ator} pela mágoa antiga",
+        "resultado": { "texto": "Você não se defendeu, só ouviu e pediu desculpas. {ator} demorou, mas amoleceu.", "efeitos": { "ator.magoa": -28, "ator.vinculo": 6, "felicidade": 1 } }
+      },
+      {
+        "texto": "Se defender",
+        "resumo": "se defendeu da cobrança de {ator}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 55 },
+        "sucesso": { "texto": "Você explicou o seu lado com calma, e {ator} entendeu que tinha coisa que não sabia.", "efeitos": { "ator.magoa": -12, "ator.confianca": 5 } },
+        "fracasso": { "texto": "A explicação virou discussão, e a discussão virou um mês de silêncio.", "efeitos": { "ator.magoa": 12, "ator.vinculo": -5, "felicidade": -2 } }
+      },
+      {
+        "texto": "Mudar de assunto",
+        "resumo": "mudou de assunto quando {ator} cobrou a mágoa",
+        "resultado": { "texto": "Você falou do tempo, do preço do tomate e do jogo. {ator} percebeu, e anotou.", "efeitos": { "ator.magoa": 6, "felicidade": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "saudade_de_voce",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo"],
+    "idade": [20, 100],
+    "condicoes": { "ator.sem_contato": { "min": 3 }, "ator.vinculo": { "min": 35 }, "semMarcas": ["ator.ausente"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "[{ator} perguntou para um primo se você ainda está viv{o|a}.|{ator} mandou uma foto antiga de vocês dois, sem legenda.|{ator} deixou recado com a vizinha: \"diz que eu perguntei\".] Faz {ator.sem_contato} anos que vocês não se falam.",
+    "resumo": "{ator} sentiu saudade de você",
+    "escolhas": [
+      {
+        "texto": "Ligar na hora",
+        "resumo": "ligou para {ator} depois de anos",
+        "resultado": { "texto": "{ator} atendeu no primeiro toque e chorou no segundo minuto. Vocês combinaram de se ver, e dessa vez é sério.", "efeitos": { "ator.vinculo": 10, "ator.magoa": -6, "felicidade": 3 } }
+      },
+      {
+        "texto": "Responder com um emoji",
+        "resumo": "respondeu {ator} com um emoji",
+        "resultado": { "texto": "Um coraçãozinho. {ator} visualizou, e ficou nisso.", "efeitos": { "ator.vinculo": 1, "ator.magoa": 3 } }
+      },
+      {
+        "texto": "Deixar para depois",
+        "resumo": "deixou para depois a saudade de {ator}",
+        "resultado": { "texto": "Depois é uma palavra que dura anos.", "efeitos": { "ator.magoa": 8, "ator.vinculo": -3, "felicidade": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "orgulho_da_formatura",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [20, 40],
+    "condicoes": { "marcaHa": [{ "marca": "formado", "max": 1 }], "ator.vinculo": { "min": 50 }, "ator.magoa": { "max": 30 }, "semMarcas": ["ator.ausente"] },
+    "tensao": 2,
+    "texto": "{ator} [imprimiu a foto da sua formatura e colou na geladeira, do lado do ímã da pizzaria|mostrou o seu diploma para a vizinha, o padeiro e o moço do gás|mandou sua foto de beca em onze grupos de mensagem].",
+    "resumo": "{ator} encheu a família de orgulho da sua formatura",
+    "efeitos": { "felicidade": 3, "ator.vinculo": 3, "ator.confianca": 3 }
+  },
+  {
+    "id": "remorso_aperta",
+    "idade": [16, 110],
+    "condicoes": { "marcas": ["remorso"] },
+    "repetivel": true,
+    "intervalo": 7,
+    "texto": "No meio de um dia qualquer, [no ônibus|na fila do mercado|escovando os dentes], bate a lembrança de quem morreu sem vocês acertarem as contas. Dá vontade de ligar, e não tem para quem.",
+    "resumo": "sentiu o remorso de uma despedida que não houve",
+    "escolhas": [
+      {
+        "texto": "Procurar terapia",
+        "resumo": "procurou terapia para o remorso",
+        "condicoes": { "dinheiro": { "min": 1500 } },
+        "bloqueio": "terapia custa, e o dinheiro não deixa",
+        "resultado": { "texto": "Toda quinta, cinquenta minutos. Você aprendeu que culpa não traz ninguém de volta, mas pesa menos dita em voz alta.", "efeitos": { "dinheiro": -1500, "felicidade": 4, "removerMarcas": ["remorso"] } }
+      },
+      {
+        "texto": "Escrever uma carta",
+        "resumo": "escreveu uma carta para quem já tinha partido",
+        "teste": { "chance": 0.5 },
+        "sucesso": { "texto": "Você escreveu tudo o que não disse. Guardou a carta numa caixa, e dormiu bem pela primeira vez em meses.", "efeitos": { "felicidade": 3, "removerMarcas": ["remorso"] } },
+        "fracasso": { "texto": "Você escreveu três linhas e rasgou. Ainda não.", "efeitos": { "felicidade": -1 } }
+      },
+      {
+        "texto": "Engolir e seguir",
+        "resumo": "engoliu o remorso e seguiu",
+        "resultado": { "texto": "Você seguiu. O remorso foi junto, quieto, como sempre.", "efeitos": { "felicidade": -2 } }
+      }
+    ]
+  },
+  {
+    "id": "data_da_partida",
+    "idade": [16, 110],
+    "condicoes": { "algumaMarca": ["remorso", "despediu"] },
+    "repetivel": true,
+    "intervalo": 9,
+    "trechos": {
+      "data": [
+        { "se": { "marcas": ["despediu"] }, "texto": "Você lembrou da última conversa, que foi boa, e isso ajuda mais do que parece." },
+        { "texto": "Você lembrou da última conversa, que não foi a que devia ter sido." }
+      ]
+    },
+    "texto": "Hoje faz mais um ano que alguém importante se foi. {data}",
+    "resumo": "lembrou da data em que perdeu alguém",
+    "escolhas": [
+      {
+        "texto": "Juntar a família para lembrar",
+        "resumo": "juntou a família para lembrar de quem se foi",
+        "resultado": { "texto": "Teve foto antiga, história repetida e uma risada no meio do choro. Ninguém foi embora cedo.", "efeitos": { "felicidade": 3, "dinheiro": -200 } }
+      },
+      {
+        "texto": "Passar o dia quieto",
+        "resumo": "passou quieto o dia da partida",
+        "resultado": { "texto": "Você desligou o celular e ficou com a lembrança. Às vezes é o que dá.", "efeitos": { "felicidade": -1, "saude": 1 } }
+      }
+    ]
+  },  {
+    "id": "rompimento",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [14, 110],
+    "condicoes": { "ator.magoa": { "min": 75 }, "semMarcas": ["ator.rompido"], "ator.idade": { "min": 14 } },
+    "tensao": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator} disse que não quer mais te ver. [Bloqueou seu número e saiu do grupo da família.|Devolveu, numa caixa, as coisas que você tinha dado.|Falou isso calm{ator:o|a}, que é pior do que gritar.] A mágoa vinha {ator.magoa_de}.",
+    "resumo": "{ator} rompeu com você",
+    "efeitos": { "marcas": ["ator.rompido"], "ator.vinculo": -12, "felicidade": -4, "ator.sem_contato": { "definir": 0 } }
+  },
+  {
+    "id": "fazer_as_pazes",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "as pazes com {ator}",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [14, 110],
+    "condicoes": { "marcas": ["ator.rompido"] },
+    "intervalo": 2,
+    "texto": "Você foi atrás de {ator} [com um bolo|com uma carta escrita à mão|sem avisar, na porta de casa|com um primo de mediador] para tentar fazer as pazes.",
+    "resumo": "tentou fazer as pazes com {ator}",
+    "teste": { "atributo": "ator.vinculo", "dificuldade": 35 },
+    "sucesso": {
+      "texto": "[{ator} abriu a porta, olhou um tempo e deixou você entrar.|Teve choro, teve silêncio e, no fim, um café.|{ator} disse que também sentia falta, e que era orgulho demais dos dois.]",
+      "repete": "{ator} deixou você voltar, de novo.",
+      "resumo": "fez as pazes com {ator} depois do rompimento",
+      "efeitos": { "removerMarcas": ["ator.rompido"], "ator.magoa": -30, "ator.vinculo": 10, "felicidade": 4 }
+    },
+    "fracasso": {
+      "texto": "[{ator} não abriu a porta.|{ator} leu a carta e não respondeu.|{ator} disse que ainda não, e você respeitou.]",
+      "repete": "{ator} ainda não quis.",
+      "efeitos": { "ator.magoa": -6, "felicidade": -2 }
+    }
+  }
+]

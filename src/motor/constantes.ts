@@ -68,6 +68,14 @@ export const CLASSES = ['extrema_pobreza', 'pobre', 'remediada', 'media', 'rica'
 export type Classe = (typeof CLASSES)[number];
 
 export const TIPOS_FAMILIA = ['acolhedora', 'conflituosa', 'religiosa', 'empreendedora'] as const;
+
+/** O que cada pessoa da vida ama (o gosto sai do nome e do nascimento dela): o presente certo e o programa junto. */
+export const GOSTOS = ['futebol', 'novela', 'pescaria', 'cozinha', 'musica', 'fe', 'plantas', 'jogos', 'livros', 'carros', 'viagem', 'danca', 'bichos', 'politica', 'artesanato'] as const;
+export type Gosto = (typeof GOSTOS)[number];
+
+/** Como cada pessoa está com quem joga, no ano: sai da mágoa, da saudade, da saúde e do vínculo. */
+export const HUMORES = ['furia', 'magoa', 'abatimento', 'saudade', 'alegria', 'paz', 'distancia'] as const;
+export type Humor = (typeof HUMORES)[number];
 export type TipoFamilia = (typeof TIPOS_FAMILIA)[number];
 
 export const CATEGORIAS_MORTE = ['velhice', 'coracao', 'doenca', 'acidente', 'violencia'] as const;
