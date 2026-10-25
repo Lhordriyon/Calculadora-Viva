@@ -240,7 +240,12 @@ function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
     x[campo]! += m.d;
     porPessoa.set(ent, x);
   }
-  const falta = h.ref !== undefined && OMISSOES.has(h.ref);
+  // A falta só conta como falta (o sumiço): a mágoa dela não faz de ninguém cabeça-quente, e a vontade que passou da
+  // idade fica na lembrança, não na opinião.
+  if (h.ref !== undefined && OMISSOES.has(h.ref)) {
+    if (h.ref === 'regra:nao_apareceu' && h.ator) anotar(vistoDe(mapa, h.ator), 'faltou', h.id, w);
+    return;
+  }
   for (const [id, x] of porPessoa) {
     if (chegaram.has(id)) continue;
     const v = vistoDe(mapa, id);
@@ -255,7 +260,6 @@ function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
     // Deu: passou dinheiro para a pessoa, ou gastou de verdade com ela (o presente, a viagem).
     if (meuDinheiro < 0 && (dinheiro > 0 || (id === h.ator && vinculo > 0 && meuDinheiro <= -GASTO_QUE_CONTA))) anotar(v, 'deu', h.id, w);
     if (dinheiro < 0 && meuDinheiro > 0) anotar(v, 'pediu', h.id, w);
-    if (falta && id === h.ator) anotar(v, 'faltou', h.id, w);
     if (ehFilho(id)) {
       const f = vistoDe(mapa, OS_FILHOS);
       if (vinculo > 0) anotar(f, 'filhosBem', h.id, w * vinculo);
@@ -304,7 +308,8 @@ const PESO_DO_QUE_DOI = 1.15;
  * todo mundo sabe e do que só quem está perto sabe. Sem história bastante, a pessoa ainda não tem opinião.
  */
 export function visoesDe(e: EstadoVida, id: string, en: Entidade): Opiniao[] {
-  if (!temRelacao(id, en)) return [];
+  // Quem morreu não forma opinião sobre o que veio depois (a lembrança fica).
+  if (!temRelacao(id, en) || en.vivo === false) return [];
   const eu = e.entidades['eu']!;
   const papel = papelBase(id);
   const familia = papel === 'mae' || papel === 'pai' || papel === 'avo';
@@ -370,7 +375,8 @@ export function visaoDe(e: EstadoVida, id: string, en: Entidade): Visao | '' {
 /** O porquê da opinião, do ponto de vista da pessoa ("você pagou o conserto do carro dela, aos 31"). */
 export function porqueDe(e: EstadoVida, id: string, en: Entidade, o: Opiniao): string {
   const h = o.entrada === undefined ? undefined : e.historico.find((x) => x.id === o.entrada);
-  const feito = h && (feitoPorQuemJoga(h) ?? (h.tipo === 'acao' || h.tipo === 'dinheiro' ? h.resumo : undefined));
+  // Como na linha do tempo: o que quem joga fez, e o que uma regra contou dele (o nome que sujou), vêm sem sujeito.
+  const feito = h && (feitoPorQuemJoga(h) ?? (h.tipo === 'acao' || h.tipo === 'dinheiro' || h.tipo === 'regra' ? h.resumo : undefined));
   if (h && feito) return `você ${semONome(feito, id, en)}, aos ${h.idade}`;
   // O que todo mundo soube (a formatura, a condenação) vem com o sujeito.
   if (h?.resumo) return `${semONome(h.resumo, id, en)}, aos ${h.idade}`;

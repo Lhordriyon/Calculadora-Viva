@@ -4,8 +4,8 @@
     "tipo": "npc",
     "ator": ["mae", "pai", "avo"],
     "idade": [18, 95],
-    "condicoes": { "ator.idade": { "min": 55 }, "classe_origem": { "max": 3 }, "semMarcas": ["ator.quer_o_mar", "ator.ausente", "ator.rompido", "lugar.litoral"] },
-    "texto": "{ator.quem} viu uma reportagem sobre o litoral e ficou um tempo {ator:quieto|quieta}. Depois disse, sem olhar para você: \"Sabe que eu nunca vi o mar?\"",
+    "condicoes": { "ator.idade": { "min": 55 }, "classe_origem": { "max": 3 }, "semMarcas": ["ator.quer_o_mar", "ator.ausente", "ator.rompido", "lugar.litoral", "mae.quer_o_mar", "pai.quer_o_mar", "avo.quer_o_mar"] },
+    "texto": "{ator.quem} [viu uma reportagem sobre o litoral|viu a novela que se passa na praia|ouviu a vizinha contar das férias em Porto Seguro|achou no celular uma foto sua na praia] e ficou um tempo {ator:quieto|quieta}. Depois disse, sem olhar para você: \"Sabe que eu nunca vi o mar?\"",
     "resumo": "{ator.quem} contou que nunca viu o mar",
     "efeitos": { "marcas": ["ator.quer_o_mar"] }
   },
