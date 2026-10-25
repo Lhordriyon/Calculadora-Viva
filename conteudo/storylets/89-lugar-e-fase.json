@@ -313,6 +313,7 @@
       "ator.idade": { "min": 6, "max": 17 },
       "renda": { "min": 20000, "max": 150000 }
     },
+    "tensao": 2,
     "texto": "A mensalidade da escola de {ator.quem} subiu de novo e o salário, não. Na reunião de pais, metade da sala fala em trocar de escola; a outra metade finge que não ouviu.",
     "resumo": "viu a escola de {ator.quem} ficar cara demais",
     "escolhas": [
