@@ -149,13 +149,14 @@ export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJo
 }
 
 /**
- * A ação de "Em família" com uma pessoa escolhida (não a que o verbo escolheria): o storylet existe, a idade dá, a
- * pessoa pode ser o ator, a condição vale para ela e ela ainda não foi feita no ano.
+ * A ação escolhida (o storylet e o ator, que pode não ser o que o verbo escolheria): o storylet existe e é do verbo, a
+ * idade dá, o ator é possível (sem ator, o storylet não tem papel), a condição vale para ele e ela ainda não foi feita
+ * no ano. É o que a lista do verbo aceitaria, sem montar a lista.
  */
-function acaoComPessoa(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha: { id: string; ator?: string | undefined }): AcaoPossivel | undefined {
+function acaoEscolhida(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha: { id: string; ator?: string | undefined }): AcaoPossivel | undefined {
   const s = c.porId.get(escolha.id);
   const ator = escolha.ator;
-  if (!s || s.verbo !== verbo || !ator) return undefined;
+  if (!s || s.verbo !== verbo || (ator === undefined) !== (s.ator === undefined)) return undefined;
   if (s.idade && (e.idade < s.idade[0] || e.idade > s.idade[1])) return undefined;
   if (!atoresPossiveis(s, e).includes(ator) || !elegivel(s, e, ator) || feitasNoAno(e).has(instanciaDe(s, ator))) return undefined;
   return { verbo, s, ator };
@@ -169,7 +170,7 @@ export function acoesComPessoa(e: EstadoVida, c: Conteudo, ator: string, memoria
   if (!e.vivo || e.pendente || jaAgiu(e)) return [];
   const saida: OpcaoDeAcao[] = [];
   for (const s of c.acoes.get('familia') ?? []) {
-    const a = acaoComPessoa(e, c, 'familia', { id: s.id, ator });
+    const a = acaoEscolhida(e, c, 'familia', { id: s.id, ator });
     if (a) saida.push(opcao(e, a, memoria));
   }
   return saida;
@@ -179,8 +180,7 @@ export function acoesComPessoa(e: EstadoVida, c: Conteudo, ator: string, memoria
 export function agir(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha?: { id: string; ator?: string | undefined }): Entrada {
   if (!e.vivo || e.pendente) throw new Error('Agora não dá para agir.');
   if (jaAgiu(e)) throw new Error('As fichas deste ano já foram usadas.');
-  const todas = acoesDoVerbo(e, c, verbo);
-  const a = escolha ? (todas.find((x) => x.s.id === escolha.id && x.ator === escolha.ator) ?? acaoComPessoa(e, c, verbo, escolha)) : todas[0];
+  const a = escolha ? acaoEscolhida(e, c, verbo, escolha) : acoesDoVerbo(e, c, verbo)[0];
   if (!a) throw new Error(`Não dá para ${verbo} agora.`);
   const repeticao = e.vistos[instanciaDe(a.s, a.ator)]?.at(-1) === e.idade - 1;
   return aplicarStorylet(e, c, a.s, a.ator, 'acao', { causas: causasDe(a.s.condicoes, e, a.ator), repeticao });

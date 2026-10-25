@@ -1,0 +1,837 @@
+[
+  {
+    "id": "vontade_ver_o_mar",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [18, 95],
+    "condicoes": { "ator.idade": { "min": 55 }, "classe_origem": { "max": 3 }, "semMarcas": ["ator.quer_o_mar", "ator.ausente", "ator.rompido", "lugar.litoral"] },
+    "texto": "{ator.quem} viu uma reportagem sobre o litoral e ficou um tempo {ator:quieto|quieta}. Depois disse, sem olhar para você: \"Sabe que eu nunca vi o mar?\"",
+    "resumo": "{ator.quem} contou que nunca viu o mar",
+    "efeitos": { "marcas": ["ator.quer_o_mar"] }
+  },
+  {
+    "id": "levar_ao_mar",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "levar {ator} ao mar",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [18, 110],
+    "condicoes": { "marcas": ["ator.quer_o_mar"], "semMarcas": ["ator.rompido"], "dinheiro": { "min": 1800 } },
+    "texto": "Você levou {ator.quem} para ver o mar. [{ator:Ele|Ela} tirou o sapato, molhou o pé e ficou um tempão {ator:calado|calada}, olhando. Depois disse que é maior do que na televisão.|{ator:Ele|Ela} encheu uma garrafinha de água do mar para levar para casa, e ninguém teve coragem de dizer que ia estragar.|{ator:Ele|Ela} entrou até o joelho, de roupa e tudo, rindo igual criança.]",
+    "resumo": "levou {ator.quem} para ver o mar",
+    "efeitos": { "dinheiro": -1800, "ator.vinculo": 15, "ator.magoa": -10, "felicidade": 4, "removerMarcas": ["ator.quer_o_mar"] }
+  },
+  {
+    "id": "excursao_ao_mar",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "excursão com {ator}",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [16, 110],
+    "condicoes": { "marcas": ["ator.quer_o_mar"], "semMarcas": ["ator.rompido"], "dinheiro": { "min": 350 } },
+    "texto": "Vocês foram de excursão: saída às quatro da manhã, farofa no isopor e volta no mesmo dia. {ator.quem} viu o mar da janela do ônibus primeiro, e gritou.",
+    "resumo": "levou {ator.quem} de excursão para ver o mar",
+    "efeitos": { "dinheiro": -350, "ator.vinculo": 10, "ator.magoa": -6, "felicidade": 3, "removerMarcas": ["ator.quer_o_mar"] }
+  },
+  {
+    "id": "vontade_voltar_a_terra",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [18, 95],
+    "condicoes": { "ator.idade": { "min": 62 }, "ator.gosto": ["fe", "cozinha", "pescaria", "musica", "artesanato", "plantas", "danca"], "semMarcas": ["ator.quer_a_terra", "ator.ausente", "ator.rompido"] },
+    "texto": "{ator.quem} [achou no armário uma foto da cidade onde nasceu|ouviu no rádio uma música da terra natal|soube que a igreja da cidade onde nasceu vai ser reformada] e passou o jantar contando história de lá. No fim, disse que queria ver aquilo tudo de novo antes de morrer.",
+    "resumo": "{ator.quem} disse que quer voltar à cidade onde nasceu",
+    "efeitos": { "marcas": ["ator.quer_a_terra"] }
+  },
+  {
+    "id": "levar_a_terra_natal",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "terra natal de {ator}",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [18, 110],
+    "condicoes": { "marcas": ["ator.quer_a_terra"], "semMarcas": ["ator.rompido"], "dinheiro": { "min": 1500 } },
+    "texto": "Você levou {ator.quem} de volta à cidade onde {ator:ele|ela} nasceu. [{ator:Ele|Ela} reconheceu a praça, a padaria e um primo que já não reconhecia ninguém.|A casa da infância virou farmácia, e {ator:ele|ela} riu disso por dois dias.|{ator:Ele|Ela} foi apresentando você para todo mundo como quem mostra um troféu.]",
+    "resumo": "levou {ator.quem} de volta à cidade onde nasceu",
+    "efeitos": { "dinheiro": -1500, "ator.vinculo": 14, "ator.magoa": -8, "felicidade": 3, "removerMarcas": ["ator.quer_a_terra"] }
+  },
+  {
+    "id": "vontade_ver_o_neto",
+    "tipo": "npc",
+    "ator": ["mae", "pai"],
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["pai_mae"], "filho.idade": { "max": 10 }, "ator.sem_contato": { "min": 2 }, "semMarcas": ["ator.quer_o_neto", "ator.ausente", "ator.rompido"] },
+    "texto": "{ator.quem} mandou mensagem perguntando se a criança já anda, já fala, já torce para algum time. Disse que só conhece por foto, e que foto não tem cheiro.",
+    "resumo": "{ator.quem} pediu para ver o neto de perto",
+    "efeitos": { "marcas": ["ator.quer_o_neto"] }
+  },
+  {
+    "id": "amor_quer_casar",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [21, 75],
+    "condicoes": { "marcas": ["namoro"], "marcaHa": [{ "marca": "namoro", "min": 3 }], "semMarcas": ["casado", "ator.quer_casar", "ator.rompido"] },
+    "tensao": 2,
+    "texto": "{ator} perguntou, rindo mas sem rir, se vocês vão casar ou não. [Foi no casamento de uma prima, entre o bolo e o buquê.|Foi no meio do jornal, sem tirar o olho da televisão.|Foi às duas da manhã, com a luz apagada.]",
+    "resumo": "{ator} perguntou se vocês vão casar",
+    "escolhas": [
+      {
+        "texto": "Vamos casar",
+        "resumo": "casou com {ator} no cartório",
+        "condicoes": { "dinheiro": { "min": 600 } },
+        "resultado": {
+          "texto": "Cartório, churrasco e um sim que {ator} repetiu três vezes para ter certeza.",
+          "efeitos": { "dinheiro": -600, "felicidade": 6, "ator.vinculo": 6, "marcas": ["casado"] }
+        }
+      },
+      {
+        "texto": "Ainda não é hora",
+        "resumo": "disse a {ator} que ainda não era hora de casar",
+        "resultado": {
+          "texto": "{ator} disse que tudo bem, do jeito que se diz tudo bem quando não está.",
+          "efeitos": { "ator.magoa": 6, "marcas": ["ator.quer_casar"] }
+        }
+      },
+      {
+        "texto": "Casamento é só um papel",
+        "resumo": "disse a {ator} que casamento é só um papel",
+        "resultado": {
+          "texto": "Para você, era só um papel. Para {ator}, deu para ver no rosto, não era.",
+          "efeitos": { "ator.magoa": 12, "ator.confianca": -5, "marcas": ["ator.quer_casar"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cobranca_do_casamento",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 80],
+    "condicoes": { "marcas": ["namoro", "ator.quer_casar"], "marcaHa": [{ "marca": "ator.quer_casar", "min": 2 }], "semMarcas": ["casado"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "{ator} [foi a mais um casamento que não era o de vocês e voltou {ator:calado|calada}|ouviu da família, de novo, a pergunta sobre a data|parou na frente de uma vitrine de alianças e ficou ali um tempo]. Faz tempo que {ator:ele|ela} espera, e você sabe.",
+    "resumo": "{ator} cobrou o casamento",
+    "escolhas": [
+      {
+        "texto": "Marcar a data",
+        "resumo": "marcou a data do casamento com {ator}",
+        "condicoes": { "dinheiro": { "min": 600 } },
+        "resultado": {
+          "texto": "Você marcou a data na frente de todo mundo, para não ter volta. {ator} chorou e riu na mesma frase.",
+          "efeitos": { "dinheiro": -600, "felicidade": 5, "marcas": ["casado"] }
+        }
+      },
+      {
+        "texto": "Pedir mais um tempo",
+        "resumo": "pediu mais um tempo a {ator}",
+        "resultado": {
+          "texto": "Mais um tempo. {ator} perguntou quanto é um tempo, e você não soube responder.",
+          "efeitos": { "ator.magoa": 8, "ator.confianca": -4 }
+        }
+      },
+      {
+        "texto": "Terminar de vez",
+        "resumo": "terminou com {ator} em vez de casar",
+        "resultado": {
+          "texto": "Doeu nos dois. Mas era melhor do que fazer {ator} esperar a vida inteira.",
+          "efeitos": { "felicidade": -6, "removerMarcas": ["namoro", "ator.quer_casar"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cobranca_do_filho",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 60],
+    "condicoes": { "marcas": ["namoro", "ator.quer_um_filho"], "marcaHa": [{ "marca": "ator.quer_um_filho", "min": 2 }], "semMarcas": ["pai_mae", "sem_filhos"], "ator.idade": { "max": 46 } },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 3,
+    "texto": "{ator} [segurou o bebê de uma amiga e demorou para devolver|viu um carrinho de bebê na calçada e ficou {ator:quieto|quieta} o resto do caminho|disse que sonhou com uma criança na cozinha de vocês]. O assunto do filho voltou, e dessa vez não foi brincadeira.",
+    "resumo": "{ator} voltou a falar do filho que quer",
+    "escolhas": [
+      {
+        "texto": "Ter o bebê",
+        "resumo": "teve {filho} com {ator}",
+        "resultado": {
+          "texto": "Nasceu {filho}. {ator} disse que valeu cada conversa difícil, e você concordou às três da manhã, com a criança no colo.",
+          "efeitos": {
+            "felicidade": 6,
+            "saude": -2,
+            "custo": 12000,
+            "personagens": ["filho"],
+            "marcas": ["pai_mae"],
+            "removerMarcas": ["ator.quer_um_filho"],
+            "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+          }
+        }
+      },
+      {
+        "texto": "Pedir mais um tempo",
+        "resumo": "pediu a {ator} mais um tempo para pensar em filhos",
+        "resultado": {
+          "texto": "{ator} disse que o tempo {ator:dele|dela} anda diferente do seu.",
+          "efeitos": { "ator.magoa": 6 }
+        }
+      },
+      {
+        "texto": "Dizer que não quer filhos",
+        "resumo": "disse a {ator} que não quer ter filhos",
+        "resultado": {
+          "texto": "Você disse com todas as letras. {ator} ouviu com todas as letras também.",
+          "efeitos": { "ator.magoa": 20, "ator.confianca": -6, "removerMarcas": ["ator.quer_um_filho"], "marcas": ["sem_filhos"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "vontade_de_um_bicho",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [24, 70],
+    "condicoes": { "ator.idade": { "min": 5, "max": 11 }, "pet.vivo": false, "semMarcas": ["ator.quer_um_bicho"] },
+    "texto": "{ator} pediu um cachorro pela décima vez. [Prometeu que ia passear, dar comida e limpar a sujeira.|Fez um cartaz com desenho e assinatura.|Já tem até nome escolhido, e é nome de jogador de futebol.]",
+    "resumo": "{ator} pediu um bicho de estimação",
+    "efeitos": { "marcas": ["ator.quer_um_bicho"] }
+  },
+  {
+    "id": "um_bicho_para_o_filho",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "um bicho para {ator}",
+    "ator": ["filho"],
+    "idade": [20, 80],
+    "condicoes": { "marcas": ["ator.quer_um_bicho"], "dinheiro": { "min": 250 } },
+    "texto": "Vocês voltaram do abrigo com {pet}, [que fez xixi no tapete no primeiro minuto|que dormiu no pé da cama de {ator} na primeira noite|que já chegou mandando na casa]. {ator} não cabia em si.",
+    "resumo": "deu um bicho de estimação para {ator}",
+    "efeitos": { "dinheiro": -250, "felicidade": 3, "ator.vinculo": 10, "personagens": ["pet"], "removerMarcas": ["ator.quer_um_bicho"] }
+  },
+  {
+    "id": "vontade_casa_propria",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [45, 95],
+    "condicoes": { "ator.idade": { "min": 26, "max": 42 }, "patrimonio": { "min": 200000 }, "semMarcas": ["ator.quer_a_casa", "ator.rompido"] },
+    "texto": "{ator} contou, sem pedir nada, que está juntando para a entrada de um apartamento. [Mostrou a planta no celular duas vezes.|Já sabe até onde vai pôr o sofá.|Disse que, no ritmo de agora, a entrada fica pronta quando se aposentar.]",
+    "resumo": "{ator} contou que junta para a casa própria",
+    "efeitos": { "marcas": ["ator.quer_a_casa"] }
+  },
+  {
+    "id": "ajudar_com_a_casa",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "dar a entrada a {ator}",
+    "ator": ["filho"],
+    "idade": [40, 110],
+    "condicoes": { "marcas": ["ator.quer_a_casa"], "dinheiro": { "min": 20000 } },
+    "texto": "Você transferiu {transferido} para {ator} dar a entrada da casa. {ator} ligou chorando, depois mandou foto da chave, depois foto da parede que vai pintar.",
+    "resumo": "ajudou {ator} a dar a entrada da casa própria",
+    "efeitos": { "transferir": { "de": "eu", "para": "ator", "fracao": 0.2, "max": 120000 }, "ator.vinculo": 12, "ator.magoa": -10, "felicidade": 3, "removerMarcas": ["ator.quer_a_casa"] }
+  },
+  {
+    "id": "vontade_viagem_com_amigo",
+    "tipo": "npc",
+    "ator": ["amigo"],
+    "idade": [28, 75],
+    "condicoes": { "ator.idade": { "min": 28, "max": 68 }, "ator.vinculo": { "min": 40 }, "semMarcas": ["ator.quer_a_viagem", "ator.rompido"] },
+    "texto": "{ator} mandou um áudio de quatro minutos sobre aquela viagem que vocês planejam desde os vinte anos. [Já tem roteiro.|Já tem até o nome do grupo.|Terminou com: \"esse ano vai\".]",
+    "resumo": "{ator} chamou você para a viagem de sempre",
+    "efeitos": { "marcas": ["ator.quer_a_viagem"] }
+  },
+  {
+    "id": "viajar_com_o_amigo",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "viajar com {ator}",
+    "ator": ["amigo"],
+    "idade": [20, 85],
+    "condicoes": { "marcas": ["ator.quer_a_viagem"], "dinheiro": { "min": 2500 } },
+    "texto": "Você e {ator} finalmente fizeram a viagem. [O carro alugado quebrou no segundo dia, e foi a melhor parte.|Vocês riram das mesmas piadas de vinte anos atrás, e elas ainda funcionam.|Teve briga por causa do mapa e reconciliação por causa de um pastel.]",
+    "resumo": "fez a viagem de anos com {ator}",
+    "efeitos": { "dinheiro": -2500, "ator.vinculo": 12, "ator.magoa": -8, "felicidade": 4, "removerMarcas": ["ator.quer_a_viagem"] }
+  },
+  {
+    "id": "vontade_festa_de_80",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [30, 75],
+    "condicoes": { "ator.idade": { "min": 78, "max": 79 }, "semMarcas": ["ator.quer_a_festa", "ator.ausente", "ator.rompido"] },
+    "texto": "{ator.quem} vai fazer 80 anos e disse que não quer festa nenhuma, do jeito que só diz isso quem quer muito uma festa.",
+    "resumo": "{ator.quem} disse que não quer festa de 80 anos",
+    "efeitos": { "marcas": ["ator.quer_a_festa"] }
+  },
+  {
+    "id": "festa_de_80",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "festa dos 80 de {ator}",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [30, 80],
+    "condicoes": { "marcas": ["ator.quer_a_festa"], "dinheiro": { "min": 2500 } },
+    "texto": "A festa de 80 anos de {ator.quem} teve [bolo de três andares e parente que ninguém via desde 1990|um telão com fotos antigas que fez a família inteira chorar|um bingo, um karaokê e um discurso que você não conseguiu terminar]. {ator:Ele|Ela} dançou mais do que todo mundo.",
+    "resumo": "fez a festa de 80 anos de {ator.quem}",
+    "efeitos": { "dinheiro": -2500, "ator.vinculo": 14, "ator.magoa": -8, "felicidade": 3, "removerMarcas": ["ator.quer_a_festa"] }
+  },
+  {
+    "id": "falando_bem_de_voce",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [18, 90],
+    "condicoes": { "ator.visao": ["orgulho", "carinhoso", "presente", "de_palavra", "generoso", "cuida_dos_filhos"], "ator.vinculo": { "min": 55 } },
+    "repetivel": true,
+    "intervalo": 6,
+    "trechos": {
+      "elogio": [
+        { "se": { "ator.visao": "orgulho" }, "texto": "mostrou sua foto para a vizinha, para a moça da farmácia e para um desconhecido no ônibus. Quem conhece {ator:ele|ela} já sabe a sua vida inteira de cor." },
+        { "se": { "ator.visao": "cuida_dos_filhos" }, "texto": "disse no almoço de domingo que você é {um pai melhor|uma mãe melhor} do que {ator:ele|ela} foi. Disse rápido, olhando para o prato, mas disse." },
+        { "se": { "ator.visao": "generoso" }, "texto": "contou para a família inteira que você ajudou quando precisou. Aumentou o valor, como sempre." },
+        { "se": { "ator.visao": "de_palavra" }, "texto": "disse que, de todo mundo, você é quem cumpre o que promete. Disse isso na frente da sua tia, que não cumpre." },
+        { "texto": "disse para a vizinha que você liga, visita e lembra das datas. A vizinha ficou com inveja e foi ligar para o filho." }
+      ]
+    },
+    "texto": "{ator.quem} {elogio}",
+    "resumo": "{ator.quem} falou bem de você para todo mundo",
+    "efeitos": { "felicidade": 2, "ator.vinculo": 2 }
+  },
+  {
+    "id": "reclama_que_voce_sumiu",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [19, 90],
+    "condicoes": { "ator.visao": ["sumido", "metido"], "ator.vinculo": { "min": 30 }, "semMarcas": ["ator.ausente", "ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "trechos": {
+      "queixa": [
+        { "se": { "ator.visao": "metido" }, "texto": "anda dizendo que você ficou importante demais para visitar quem te criou" },
+        { "texto": "anda dizendo que você só aparece em velório" }
+      ]
+    },
+    "texto": "[Sua tia contou|Um primo contou no grupo da família|A vizinha contou, sem você perguntar] que {ator.quem} {queixa}.",
+    "resumo": "{ator.quem} reclamou que você sumiu",
+    "escolhas": [
+      {
+        "texto": "Aparecer no domingo",
+        "resumo": "apareceu para ver {ator.quem} no domingo",
+        "resultado": {
+          "texto": "Você chegou sem avisar. {ator:Ele|Ela} fingiu que não estava {ator:emocionado|emocionada} por exatamente dois minutos.",
+          "efeitos": { "dinheiro": -150, "ator.vinculo": 6, "ator.magoa": -10 }
+        }
+      },
+      {
+        "texto": "Ligar e prometer ir",
+        "resumo": "ligou para {ator.quem} e prometeu ir",
+        "resultado": {
+          "texto": "{ator:Ele|Ela} disse que vai esperar. Disse também que já esperou outras vezes.",
+          "efeitos": { "ator.vinculo": 2, "ator.magoa": -3, "ator.confianca": -2 }
+        }
+      },
+      {
+        "texto": "Ficar chateado com a fofoca",
+        "resumo": "ficou {chateado|chateada} com a fofoca sobre {ator.quem}",
+        "resultado": {
+          "texto": "Você ficou {chateado|chateada}. A fofoca era verdade, e isso era o que mais irritava.",
+          "efeitos": { "ator.magoa": 6, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "so_aparece_por_dinheiro",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo"],
+    "idade": [18, 90],
+    "condicoes": { "ator.visao": "interesseiro", "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator.quem} disse, no meio de outra conversa, que você só lembra {ator:dele|dela} quando precisa de dinheiro. Disse rindo. Não estava rindo.",
+    "resumo": "{ator.quem} disse que você só aparece por dinheiro",
+    "escolhas": [
+      {
+        "texto": "Devolver o que pegou",
+        "resumo": "devolveu o dinheiro de {ator.quem}",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "resultado": {
+          "texto": "Você transferiu na hora, com juros que ninguém pediu. {ator.quem} ficou sem graça, e depois ficou {ator:contente|contente}.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 2000 }, "ator.magoa": -15, "ator.confianca": 8 }
+        }
+      },
+      {
+        "texto": "Pedir desculpas",
+        "resumo": "pediu desculpas a {ator.quem}",
+        "resultado": {
+          "texto": "Você pediu desculpas sem explicar nada. Foi o que funcionou.",
+          "efeitos": { "ator.magoa": -6 }
+        }
+      },
+      {
+        "texto": "Se ofender",
+        "resumo": "se ofendeu com {ator.quem}",
+        "resultado": {
+          "texto": "Você se ofendeu. {ator.quem} pediu desculpas, mas não retirou o que disse.",
+          "efeitos": { "ator.magoa": 8, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amigo_pede_de_novo",
+    "tipo": "npc",
+    "ator": ["amigo"],
+    "idade": [20, 85],
+    "condicoes": { "ator.visao": "generoso", "ator.idade": { "min": 20 }, "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator} lembrou {ator.lembranca} e, já que você é assim, pediu ajuda de novo: [o carro quebrou|o aluguel atrasou|a mãe {ator:dele|dela} precisa de um exame que o SUS marcou para março].",
+    "resumo": "{ator} pediu ajuda de novo",
+    "escolhas": [
+      {
+        "texto": "Ajudar de novo",
+        "resumo": "ajudou {ator} de novo",
+        "condicoes": { "dinheiro": { "min": 1500 } },
+        "resultado": {
+          "texto": "{ator} jurou que paga. Você já conhece a história, e ajudou mesmo assim.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 1500 }, "ator.vinculo": 6, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Dizer que agora não dá",
+        "resumo": "disse a {ator} que agora não dá",
+        "resultado": {
+          "texto": "{ator} disse que entende. Entendeu tanto que sumiu um mês.",
+          "efeitos": { "ator.magoa": 4 }
+        }
+      },
+      {
+        "texto": "Ajudar a achar outro jeito",
+        "resumo": "ajudou {ator} a achar outro jeito",
+        "resultado": {
+          "texto": "Vocês passaram a tarde ligando para conhecidos. Saiu um bico, e uma amizade mais forte.",
+          "efeitos": { "ator.vinculo": 3, "ator.confianca": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "pisa_em_ovos",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "amor", "amigo", "filho"],
+    "idade": [14, 95],
+    "condicoes": { "ator.visao": "cabeca_quente", "ator.idade": { "min": 12 }, "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "{ator} passou a medir as palavras com você. [Você percebeu no jantar, quando ninguém discordou de nada.|Mudou de assunto três vezes antes de chegar no que queria dizer.|Pediu para outra pessoa dar uma notícia para você.] {ator:Ele|Ela} ainda lembra {ator.magoa_de}.",
+    "resumo": "{ator} passou a pisar em ovos com você",
+    "escolhas": [
+      {
+        "texto": "Perguntar o que houve",
+        "resumo": "perguntou a {ator} o que estava errado",
+        "resultado": {
+          "texto": "{ator} demorou, mas falou. Era você. Era o jeito que você fala quando está com raiva.",
+          "efeitos": { "ator.magoa": -10, "ator.confianca": 5 }
+        }
+      },
+      {
+        "texto": "Procurar terapia",
+        "resumo": "procurou terapia por causa do próprio pavio",
+        "condicoes": { "dinheiro": { "min": 1200 } },
+        "resultado": {
+          "texto": "A terapeuta perguntou desde quando. Você respondeu \"desde sempre\", e ela anotou alguma coisa.",
+          "efeitos": { "dinheiro": -1200, "ator.magoa": -8, "felicidade": 2, "marcas": ["faz_terapia"] }
+        }
+      },
+      {
+        "texto": "Dizer que é o seu jeito",
+        "resumo": "disse a {ator} que esse é o seu jeito",
+        "resultado": {
+          "texto": "\"É o meu jeito.\" {ator} concordou com a cabeça e guardou mais essa.",
+          "efeitos": { "ator.magoa": 6, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "nao_acredita_mais",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "amor", "amigo", "filho"],
+    "idade": [14, 95],
+    "condicoes": { "ator.visao": "sem_palavra", "ator.idade": { "min": 10 }, "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "Você prometeu de novo, e {ator} riu antes de você terminar a frase. [Não foi um riso bom.|Disse só: \"aham\".|Respondeu que acredita quando vir.]",
+    "resumo": "{ator} deixou de acreditar nas suas promessas",
+    "escolhas": [
+      {
+        "texto": "Cumprir dessa vez",
+        "resumo": "cumpriu o que prometeu a {ator}",
+        "resultado": {
+          "texto": "Você apareceu na hora, do jeito combinado. {ator} ficou {ator:desconfiado|desconfiada} do mesmo jeito, mas sorriu.",
+          "efeitos": { "ator.confianca": 10, "ator.vinculo": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Prometer mais forte",
+        "resumo": "prometeu de novo a {ator}",
+        "resultado": {
+          "texto": "Você jurou. {ator} guardou o juramento junto com os outros.",
+          "efeitos": { "ator.confianca": -6 }
+        }
+      },
+      {
+        "texto": "Parar de prometer",
+        "resumo": "parou de prometer coisas a {ator}",
+        "resultado": {
+          "texto": "Sem promessa, ninguém se decepciona. {ator} achou estranho, depois achou melhor.",
+          "efeitos": { "ator.confianca": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "voce_mudou",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo"],
+    "idade": [20, 95],
+    "condicoes": { "ator.visao": "metido", "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 7,
+    "texto": "{ator} disse que você esqueceu de onde veio. [Foi quando você chegou de carro novo na rua de sempre.|Foi depois de você comentar o preço de um vinho.|Foi quando você não reconheceu o filho da vizinha que já carregou no colo.]",
+    "resumo": "{ator} disse que você mudou",
+    "escolhas": [
+      {
+        "texto": "Voltar ao lugar de sempre",
+        "resumo": "voltou ao boteco de sempre com {ator}",
+        "resultado": {
+          "texto": "O boteco é o mesmo, o pastel é o mesmo e, por umas horas, você também.",
+          "efeitos": { "ator.vinculo": 6, "ator.magoa": -8 }
+        }
+      },
+      {
+        "texto": "Dizer que cresceu, não mudou",
+        "resumo": "disse a {ator} que cresceu, não mudou",
+        "resultado": {
+          "texto": "{ator} disse que é a mesma coisa, só que com mais dinheiro.",
+          "efeitos": { "ator.magoa": 5 }
+        }
+      },
+      {
+        "texto": "Pagar a conta de todo mundo",
+        "resumo": "pagou a conta de todo mundo para mostrar que não mudou",
+        "condicoes": { "dinheiro": { "min": 800 } },
+        "resultado": {
+          "texto": "Todo mundo agradeceu. {ator} achou que era exatamente isso que tinha mudado.",
+          "efeitos": { "dinheiro": -800, "ator.vinculo": 2, "ator.magoa": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "jantar_esfriou",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 80],
+    "condicoes": { "ator.visao": "casado_com_o_trabalho", "marcas": ["namoro"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "O jantar esfriou de novo. {ator} [deixou o prato no micro-ondas com um bilhete: \"30 segundos\"|jantou com a televisão e foi dormir antes de você chegar|mandou uma foto da mesa posta às oito, e outra às onze, já sem ninguém].",
+    "resumo": "{ator} jantou sem você de novo",
+    "escolhas": [
+      {
+        "texto": "Sair mais cedo daqui para frente",
+        "resumo": "passou a sair mais cedo do trabalho por {ator}",
+        "resultado": {
+          "texto": "Na primeira semana, você saiu às seis. {ator} achou que tinha acontecido alguma coisa.",
+          "efeitos": { "ator.vinculo": 6, "ator.magoa": -8, "felicidade": 1, "removerMarcas": ["workaholic"] }
+        }
+      },
+      {
+        "texto": "Prometer as férias",
+        "resumo": "prometeu férias a {ator}",
+        "resultado": {
+          "texto": "Você prometeu as férias de julho. {ator} perguntou de qual ano.",
+          "efeitos": { "ator.confianca": -3, "ator.magoa": -2 }
+        }
+      },
+      {
+        "texto": "Dizer que é por vocês",
+        "resumo": "disse a {ator} que trabalha tanto por vocês",
+        "resultado": {
+          "texto": "\"É por nós\", você disse. {ator} perguntou que nós.",
+          "efeitos": { "ator.magoa": 6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_parou_de_contar",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [24, 75],
+    "condicoes": { "ator.idade": { "min": 8, "max": 17 }, "ator.visao": ["casado_com_o_trabalho", "sumido", "cabeca_quente", "sem_palavra"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "{ator} parou de te contar as coisas da escola. [Você ficou sabendo da nota pela mãe de um colega.|A apresentação de teatro foi ontem. Você soube hoje.|Quando você pergunta como foi o dia, a resposta é \"normal\".]",
+    "resumo": "{ator} parou de te contar as coisas",
+    "escolhas": [
+      {
+        "texto": "Buscar na escola a semana toda",
+        "resumo": "buscou {ator} na escola a semana inteira",
+        "resultado": {
+          "texto": "No terceiro dia, {ator} contou uma história inteira do recreio, com personagens e reviravolta.",
+          "efeitos": { "ator.vinculo": 8, "ator.magoa": -8, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Perguntar no jantar, sem celular",
+        "resumo": "conversou com {ator} no jantar, sem celular",
+        "resultado": {
+          "texto": "Saiu pouco, mas saiu. {ator} contou de um amigo novo e de um professor chato.",
+          "efeitos": { "ator.vinculo": 4, "ator.confianca": 4 }
+        }
+      },
+      {
+        "texto": "Achar que é a idade",
+        "resumo": "achou que o silêncio de {ator} era só a idade",
+        "resultado": {
+          "texto": "Era a idade também. Mas não era só.",
+          "efeitos": { "ator.vinculo": -3, "ator.magoa": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_cuida_de_voce",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [66, 110],
+    "condicoes": { "ator.idade": { "min": 25 }, "ator.visao": ["presente", "carinhoso", "de_palavra", "generoso"], "ator.vinculo": { "min": 50 } },
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "{ator} chegou com sacola de mercado e ficou o fim de semana. [Consertou a torneira, trocou a lâmpada e reclamou do seu remédio.|Levou você ao médico e fez as perguntas que você ia esquecer.|Fez o almoço do jeito que você fazia, e errou o sal do mesmo jeito.] Na saída, lembrou {ator.lembranca}.",
+    "resumo": "{ator} veio cuidar de você",
+    "efeitos": { "felicidade": 3, "saude": 1, "ator.vinculo": 2 }
+  },
+  {
+    "id": "filho_nao_veio",
+    "tipo": "npc",
+    "ator": ["filho"],
+    "idade": [60, 110],
+    "condicoes": { "ator.idade": { "min": 25 }, "ator.visao": ["sumido", "casado_com_o_trabalho", "cabeca_quente", "sem_palavra", "interesseiro", "perdido"] },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "Seu aniversário de {idade} anos. {ator} mandou mensagem às 23h47: \"parabéns, muita saúde\". [Sem ligação.|Com um emoji de bolo.|Com o seu nome trocado pelo corretor.] Talvez {ator:ele|ela} ainda lembre {ator.magoa_de}.",
+    "resumo": "{ator} não veio no seu aniversário",
+    "escolhas": [
+      {
+        "texto": "Ligar e pedir desculpas pelo passado",
+        "resumo": "ligou para {ator} e pediu desculpas pelo passado",
+        "resultado": {
+          "texto": "Você falou do que nunca tinha falado. Do outro lado, um silêncio comprido, e depois: \"eu sei, {pai|mãe}\".",
+          "efeitos": { "ator.magoa": -20, "ator.vinculo": 8, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Responder com um obrigado",
+        "resumo": "respondeu {ator} com um {obrigado|obrigada}",
+        "resultado": {
+          "texto": "{Obrigado|Obrigada}. Ponto final. Os dois sabem o que ficou de fora.",
+          "efeitos": { "ator.vinculo": -1 }
+        }
+      },
+      {
+        "texto": "Cobrar a ausência",
+        "resumo": "cobrou a ausência de {ator}",
+        "resultado": {
+          "texto": "Você cobrou. {ator} respondeu que aprendeu com você. Doeu porque era verdade.",
+          "efeitos": { "ator.magoa": 10, "ator.vinculo": -4, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_que_pensa_de_voce",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo"],
+    "idade": [16, 90],
+    "condicoes": { "ator.visao": true, "ator.confianca": { "min": 55 }, "semMarcas": ["ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 8,
+    "trechos": {
+      "conselho": [
+        { "se": { "ator.visao": "sumido" }, "texto": "\"Você sempre foi de sumir quando a coisa aperta. Desde {pequeno|pequena}. Não precisa ser assim.\"" },
+        { "se": { "ator.visao": "cabeca_quente" }, "texto": "\"Você é {igualzinho|igualzinha} a mim com essa raiva. E eu perdi muita gente por causa dela.\"" },
+        { "se": { "ator.visao": "interesseiro" }, "texto": "\"Dinheiro a gente devolve. A impressão que fica, não.\"" },
+        { "se": { "ator.visao": "metido" }, "texto": "\"Não esquece de onde você veio. Ninguém aqui ficou menor porque você subiu.\"" },
+        { "se": { "ator.visao": "casado_com_o_trabalho" }, "texto": "\"Ninguém, no fim da vida, pede mais uma reunião.\"" },
+        { "se": { "ator.visao": "sem_palavra" }, "texto": "\"Promete menos e cumpre mais. Era o que meu pai dizia.\"" },
+        { "se": { "ator.visao": "perdido" }, "texto": "\"Eu sei da encrenca. Todo mundo sabe. A gente só não fala porque gosta de você.\"" },
+        { "se": { "ator.visao": "orgulho" }, "texto": "\"Eu tenho orgulho de você. Não falo sempre porque fico com vergonha.\"" },
+        { "se": { "ator.visao": "longe_dos_filhos" }, "texto": "\"Criança cresce enquanto a gente olha para o outro lado. Eu sei porque olhei.\"" },
+        { "texto": "\"Você é gente boa. Só não deixa ninguém te convencer do contrário, nem você.\"" }
+      ]
+    },
+    "texto": "{ator.quem} te chamou num canto e disse o que pensa de você, sem rodeio: {conselho}",
+    "resumo": "{ator.quem} disse o que pensa de você",
+    "escolhas": [
+      {
+        "texto": "Ouvir até o fim",
+        "resumo": "ouviu {ator.quem} até o fim",
+        "resultado": {
+          "texto": "Você não interrompeu. Foi a coisa mais adulta que você fez naquele ano.",
+          "efeitos": { "ator.vinculo": 4, "ator.confianca": 3, "inteligencia": 1 }
+        }
+      },
+      {
+        "texto": "Discordar",
+        "resumo": "discordou do que {ator.quem} pensa de você",
+        "resultado": {
+          "texto": "Você discordou. {ator:Ele|Ela} disse que tudo bem, que um dia você entende.",
+          "efeitos": { "ator.magoa": 4 }
+        }
+      },
+      {
+        "texto": "Agradecer com um abraço",
+        "resumo": "abraçou {ator.quem} depois do conselho",
+        "resultado": {
+          "texto": "O abraço durou mais do que a conversa.",
+          "efeitos": { "ator.vinculo": 5, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "escolheu_bem",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 90],
+    "condicoes": { "ator.visao": "cuida_dos_filhos", "marcas": ["namoro", "pai_mae"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator} ficou um tempo olhando você com as crianças e disse, sem motivo nenhum, que escolheu bem.",
+    "resumo": "{ator} disse que escolheu bem",
+    "efeitos": { "felicidade": 2, "ator.vinculo": 3 }
+  },
+  {
+    "id": "as_criancas_perguntam",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 80],
+    "condicoes": { "ator.visao": "longe_dos_filhos", "marcas": ["namoro", "pai_mae"], "filho.vivo": true, "filho.idade": { "max": 17 } },
+    "tensao": 2,
+    "repetivel": true,
+    "intervalo": 5,
+    "texto": "{ator} disse que as crianças perguntam de você [como quem pergunta de um tio que mora longe|na hora de dormir, todo dia|e que já não sabe mais o que responder].",
+    "resumo": "{ator} cobrou sua ausência com os filhos",
+    "escolhas": [
+      {
+        "texto": "Tirar o sábado para as crianças",
+        "resumo": "tirou o sábado para as crianças",
+        "resultado": {
+          "texto": "Parque, sorvete e uma bola furada. No fim do dia, ninguém queria ir embora.",
+          "efeitos": { "filho.vinculo": 6, "ator.magoa": -6, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Dizer que faz o que pode",
+        "resumo": "disse a {ator} que faz o que pode",
+        "resultado": {
+          "texto": "{ator} disse que sabe. E que as crianças não sabem.",
+          "efeitos": { "ator.magoa": 5 }
+        }
+      },
+      {
+        "texto": "Prometer as férias com eles",
+        "resumo": "prometeu férias com as crianças",
+        "resultado": {
+          "texto": "As crianças fizeram contagem regressiva no calendário. Você vai ter de ir.",
+          "efeitos": { "ator.confianca": -3, "filho.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "esperou_por_voce",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "idade": [18, 95],
+    "condicoes": { "marcaHa": [{ "marca": "ator.nao_apareceu", "max": 2 }], "semMarcas": ["ator.rompido"] },
+    "tensao": 2,
+    "texto": "Você soube que {ator.quem} contou para a família que [esperou você toda sexta-feira|guardou o seu prato no domingo, por via das dúvidas|deixou o seu nome na portaria do hospital, para você subir direto]. Contou sem raiva, o que é pior.",
+    "resumo": "{ator.quem} contou que esperou por você",
+    "escolhas": [
+      {
+        "texto": "Ir agora, mesmo atrasado",
+        "resumo": "foi ver {ator.quem}, mesmo {atrasado|atrasada}",
+        "resultado": {
+          "texto": "Você chegou tarde, e {ator:ele|ela} disse que antes tarde. O abraço foi o mesmo de sempre, só que mais demorado.",
+          "efeitos": { "dinheiro": -200, "ator.vinculo": 6, "ator.magoa": -12 }
+        }
+      },
+      {
+        "texto": "Mandar um presente",
+        "resumo": "mandou um presente para {ator.quem} no lugar da visita",
+        "resultado": {
+          "texto": "O presente chegou bonito, embrulhado. {ator:Ele|Ela} agradeceu por mensagem.",
+          "efeitos": { "dinheiro": -300, "ator.magoa": -3 }
+        }
+      },
+      {
+        "texto": "Explicar a correria",
+        "resumo": "explicou a correria para {ator.quem}",
+        "resultado": {
+          "texto": "Você explicou. {ator:Ele|Ela} disse que entende. Já tinha entendido da outra vez.",
+          "efeitos": { "ator.magoa": 4, "ator.confianca": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_vai_embora",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [18, 95],
+    "condicoes": { "marcas": ["namoro"], "ator.magoa": { "min": 60 } },
+    "tensao": 3,
+    "repetivel": true,
+    "intervalo": 4,
+    "texto": "{ator} fez as malas. [Não gritou, não chorou, só dobrou as roupas com calma.|Deixou a chave em cima da mesa, do lado da conta de luz.|Disse que gosta de você, e que é por isso que está indo.] A mágoa vinha {ator.magoa_de}.",
+    "resumo": "{ator} fez as malas",
+    "escolhas": [
+      {
+        "texto": "Deixar ir",
+        "resumo": "deixou {ator} ir embora",
+        "resultado": {
+          "texto": "Você ajudou a carregar a última caixa. Foi a coisa mais triste e mais educada que vocês já fizeram juntos.",
+          "efeitos": { "felicidade": -8, "removerMarcas": ["namoro", "casado"], "marcas": ["separado"] }
+        }
+      },
+      {
+        "texto": "Pedir uma última chance",
+        "resumo": "pediu a {ator} uma última chance",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 45 },
+        "sucesso": {
+          "texto": "{ator} sentou na mala e chorou. Desfez a mala no dia seguinte, devagar, uma peça por vez.",
+          "repete": "{ator} ficou de novo. Até quando, ninguém sabe.",
+          "efeitos": { "ator.magoa": -25, "ator.confianca": -5 }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que a última chance foi a penúltima. E foi.",
+          "repete": "{ator} foi, dessa vez de verdade.",
+          "efeitos": { "felicidade": -10, "removerMarcas": ["namoro", "casado"], "marcas": ["separado"] }
+        }
+      }
+    ]
+  }
+]

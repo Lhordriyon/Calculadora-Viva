@@ -768,6 +768,13 @@
         "{ator.quem} fechou as portas do negócio de uma vida inteira. [A placa foi a leilão.|O estoque virou bazar no quintal.|Os clientes antigos ainda perguntam quando reabre.]"
       ],
       "resumo": "{ator.quem} faliu na crise"
+    },
+    "nao_apareceu": {
+      "textos": [
+        "{ator.quem} passou o ano doente, e você não apareceu. [{ator:Ele|Ela} perguntou de você duas vezes, depois parou de perguntar.|A vizinha levou sopa; você mandou um áudio.|Ninguém comentou na sua frente, o que diz tudo.|{ator:Ele|Ela} disse para todo mundo que entendia a sua correria. Entendia, mas contou os dias.]",
+        "Foi um ano de hospital para {ator.quem}, e de desculpas para você. [Cada semana tinha um motivo.|O trabalho, o trânsito, a vida: tudo era mais urgente.|Você ia no fim de semana. Foram muitos fins de semana.]"
+      ],
+      "resumo": "você não apareceu quando {ator.quem} estava doente"
     }
   },
   "setores": [
@@ -2790,5 +2797,117 @@
       "Deu tempo de dizer o que importava. {ator:Ele|Ela} sorriu, e foi assim que você quis lembrar.",
       "No velório, você contou a história {ator.lembranca}, e todo mundo riu chorando."
     ]
-  }
+  },
+  "vontades": [
+    {
+      "id": "quer_o_mar",
+      "papeis": ["mae", "pai", "avo"],
+      "quer": "ver o mar",
+      "nunca": "{ator:Ele|Ela} nunca viu o mar."
+    },
+    {
+      "id": "quer_a_terra",
+      "papeis": ["mae", "pai", "avo"],
+      "quer": "voltar à cidade onde nasceu",
+      "nunca": "{ator:Ele|Ela} não voltou à cidade onde nasceu, e falou dela até o fim."
+    },
+    {
+      "id": "quer_o_neto",
+      "papeis": ["mae", "pai"],
+      "quer": "ver o neto crescer de perto",
+      "nunca": "{ator:Ele|Ela} conheceu os netos mais por foto do que de colo.",
+      "feita": { "ator.sem_contato": { "max": 0 } },
+      "realizada": [
+        "{ator.quem} passou a tarde com a criança no colo e esqueceu de reclamar da vida.",
+        "{ator.quem} levou a criança para mostrar para a rua inteira, de casa em casa."
+      ],
+      "pressa": { "anos": 3, "magoa": 3 }
+    },
+    {
+      "id": "quer_casar",
+      "papeis": ["amor"],
+      "quer": "casar com você",
+      "nunca": "Vocês nunca chegaram a casar, e {ator:ele|ela} queria.",
+      "feita": { "marcas": ["casado"] },
+      "realizada": [
+        "No dia do casamento, {ator} cochichou no seu ouvido: \"demorou, hein\".",
+        "{ator} chorou no cartório, o que surpreendeu até o juiz de paz."
+      ],
+      "pressa": { "anos": 2, "magoa": 5 }
+    },
+    {
+      "id": "quer_um_filho",
+      "papeis": ["amor"],
+      "quer": "ter um filho com você",
+      "nunca": "{ator:Ele|Ela} queria ter tido um filho com você.",
+      "feita": { "marcas": ["pai_mae"] },
+      "realizada": [
+        "{ator} segurou o bebê e disse que tinha valido cada conversa difícil sobre o assunto.",
+        "{ator} olhou o bebê dormindo e disse que agora, sim, a casa estava cheia."
+      ],
+      "ate": 47,
+      "perdida": {
+        "textos": ["{ator} fez as contas da idade e parou de tocar no assunto do filho. Parou de tocar, não de pensar."],
+        "resumo": "você deixou para depois o filho que {ator} queria",
+        "magoa": 15
+      },
+      "pressa": { "anos": 3, "magoa": 4 }
+    },
+    {
+      "id": "quer_um_bicho",
+      "papeis": ["filho"],
+      "quer": "um bicho de estimação",
+      "nunca": "{ator:Ele|Ela} queria tanto um bicho.",
+      "feita": { "pet.vivo": true },
+      "realizada": ["{ator} dormiu {ator:abraçado|abraçada} com o bicho novo e acordou com pelo até na boca, feliz da vida."],
+      "ate": 14,
+      "perdida": {
+        "textos": [
+          "{ator} parou de pedir o cachorro. Desenhou um no caderno, com o nome que ia dar.",
+          "{ator} desistiu do bicho. Agora diz que nem gosta, do jeito de quem gostava muito."
+        ],
+        "resumo": "você nunca deu o bicho que {ator} pedia",
+        "magoa": 10
+      }
+    },
+    {
+      "id": "quer_a_casa",
+      "papeis": ["filho"],
+      "quer": "uma ajuda para dar entrada na casa própria",
+      "nunca": "{ator} ainda pagava {ator:sozinho|sozinha} as parcelas da casa.",
+      "ate": 46,
+      "perdida": {
+        "textos": [
+          "{ator} comprou a casa {ator:sozinho|sozinha}, em trinta e cinco anos de parcelas. Não comentou com você.",
+          "{ator} desistiu da casa própria e foi morar de aluguel mais longe. Disse que está tudo bem, duas vezes."
+        ],
+        "resumo": "você não ajudou {ator} com a casa própria",
+        "magoa": 8
+      }
+    },
+    {
+      "id": "quer_a_viagem",
+      "papeis": ["amigo"],
+      "quer": "uma viagem com você, como antigamente",
+      "nunca": "Ficou faltando a viagem que vocês planejavam desde os vinte anos.",
+      "ate": 72,
+      "perdida": {
+        "textos": ["{ator} parou de falar da viagem. Foi com a família, e mandou foto."],
+        "resumo": "você nunca fez a viagem que {ator} propunha",
+        "magoa": 6
+      }
+    },
+    {
+      "id": "quer_a_festa",
+      "papeis": ["mae", "pai", "avo"],
+      "quer": "uma festa de 80 anos",
+      "nunca": "Ficou faltando a festa de 80 anos.",
+      "ate": 80,
+      "perdida": {
+        "textos": ["{ator.quem} fez 80 anos num almoço de domingo comum. Disse que não queria festa mesmo. Ninguém acreditou."],
+        "resumo": "você não fez a festa de 80 anos de {ator.quem}",
+        "magoa": 6
+      }
+    }
+  ]
 }

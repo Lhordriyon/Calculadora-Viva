@@ -12,7 +12,7 @@ import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
-import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VOTOS } from './manifesto.ts';
+import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VONTADES, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
 import { verificarPortugues } from './portugues.ts';
 import { IDADE_MAXIMA } from './regras.ts';
@@ -234,6 +234,16 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const caminho of ESCRITAS_DO_MOTOR) for (const k of chavesDoManifesto(caminho)) escrever(k, 'motor');
   for (const l of LEITURAS_DO_MOTOR) for (const k of chavesDoManifesto(l.caminho)) ler(k, { sistema: 'motor', decide: l.decide, onde: `motor › ${l.regra}` });
   for (const k of VOTOS(c.mundo.governos)) ler(k, { sistema: 'motor', decide: true, onde: 'motor › eleição: o voto de quem joga pesa no resultado' });
+  // As vontades: as regras dos personagens leem (realizar, apertar, perder, o remorso) e tiram da pessoa.
+  for (const k of VONTADES(c.mundo.vontades)) {
+    escrever(k, 'motor');
+    ler(k, { sistema: 'motor', decide: true, onde: 'motor › vontades: a vida realiza, a pressa vira mágoa, a idade leva, a morte deixa remorso' });
+  }
+  for (const v of c.mundo.vontades) {
+    const onde = `mundo.json › vontades › ${v.id}`;
+    if (v.feita && !v.realizada) erro(onde, 'vontade que a vida realiza ("feita") precisa dos textos de "realizada"');
+    if (v.ate !== undefined && !v.perdida) erro(onde, 'vontade que passa com a idade ("ate") precisa de "perdida"');
+  }
   for (const cidade of c.mundo.cidades) for (const m of cidade.marcas) escrever(`lugar.${m}`, `mundo.json › ${cidade.nome}`);
   // Catálogos: quem compra um bem ganha a qualidade dele; quem nasce numa linhagem, as dela (e o pai ou a mãe, a do papel).
   for (const b of c.mundo.bens) escrever(`eu.${b.marca}`, `mundo.json › bens › ${b.id}`);
@@ -370,6 +380,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       }
     });
   }
+  // A condição que realiza a vontade lê o estado e decide quando a vida a realiza.
+  for (const v of c.mundo.vontades) if (v.feita) conferirCondicao(v.feita, `mundo.json › vontades › ${v.id}`, v.papeis, { sistema: 'motor', decide: true });
   // Requisitos das profissões leem o estado e decidem quem pode tentar a vaga.
   for (const k of c.mundo.carreiras) {
     const onde = `mundo.json › carreiras › ${k.id}`;
@@ -493,6 +505,12 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   // A despedida fala de quem morreu (o ator, ainda vivo quando o texto é escrito) e da relação com ele.
   for (const [qual, textos] of Object.entries(c.mundo.despedidas)) {
     textos.forEach((t, i) => verificarModelo(t, `mundo.json › despedidas.${qual}[${i}]`, new Set(), new Set(), marcasDoPapel, erro, PAPEIS));
+  }
+  for (const v of c.mundo.vontades) {
+    const onde = `mundo.json › vontades › ${v.id}`;
+    for (const t of [v.quer, v.nunca, ...(v.realizada ?? []), ...(v.perdida?.textos ?? []), ...(v.perdida ? [v.perdida.resumo] : [])]) {
+      verificarModelo(t, onde, new Set(), new Set(), marcasDoPapel, erro, v.papeis);
+    }
   }
   for (const [g, n] of Object.entries(c.mundo.noticias)) {
     for (const t of [...n.textos, n.resumo]) verificarModelo(t, `mundo.json › noticias.${g}`, new Set(), new Set(), marcasDoPapel, erro, PARCEIROS);

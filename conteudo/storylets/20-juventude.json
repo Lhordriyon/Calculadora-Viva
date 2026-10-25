@@ -578,7 +578,7 @@
         "resumo": "adiou a decisão de ter filhos",
         "resultado": {
           "texto": "Vocês combinaram de falar disso de novo \"quando a vida estiver mais calma\". Nunca está.",
-          "efeitos": { "felicidade": 1 }
+          "efeitos": { "felicidade": 1, "marcas": ["ator.quer_um_filho"] }
         }
       },
       {

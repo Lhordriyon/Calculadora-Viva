@@ -240,6 +240,16 @@ export const MAGOA_NO_VINCULO = 0.5;
 export const MAGOA_REMORSO = 35;
 /** Anos sem contato a partir dos quais a morte da pessoa deixa remorso (não deu tempo de se despedir). */
 export const ANOS_REMORSO = 4;
+/**
+ * A falta: alguém próximo (vínculo a partir de VINCULO_DA_FALTA) passa um ano doente sem ver quem joga. A mágoa sobe
+ * MAGOA_DA_FALTA mais um pedaço do vínculo (quem ama mais, espera mais), a confiança cai e o vínculo esfria.
+ */
+export const VINCULO_DA_FALTA = 35;
+export const MAGOA_DA_FALTA = 12;
+export const CONFIANCA_DA_FALTA = 10;
+/** A vontade realizada: o afeto que ela traz e a mágoa que ela leva. */
+export const VINCULO_DA_VONTADE = 8;
+export const MAGOA_DA_VONTADE = 10;
 /** Chance anual de alguém aparecer na vida de quem está sem namoro (antes de paquera, aparência e traço). */
 export function chanceDeAmor(idade: number): number {
   if (idade < 16) return 0;

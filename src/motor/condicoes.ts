@@ -3,7 +3,7 @@
  * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
  * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
  */
-import { entidadeDe, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
+import { defCampo, entidadeDe, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
 import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Qualidade } from './tipos.ts';
@@ -71,10 +71,15 @@ function compilar(cond: Condicoes): Teste {
     testes.push((e) => e.entidades['eu']?.genero === g);
   }
   if (cond.inflacao) testes.push(testarCaminho('pais.inflacao', cond.inflacao));
+  // Os campos guardados antes dos derivados: o derivado (o patrimônio, a opinião, a lembrança) é calculado na hora, e
+  // quase sempre outra cláusula já elimina antes dele.
+  const derivados: Teste[] = [];
   for (const [chave, pedido] of Object.entries(cond)) {
     if (ESPECIAIS.has(chave) || pedido === undefined) continue;
-    testes.push(testarCaminho(chave, pedido as ValorCondicao));
+    const { ent, campo } = separar(chave);
+    (defCampo(ent === 'ator' ? 'mae' : ent, campo)?.derivado ? derivados : testes).push(testarCaminho(chave, pedido as ValorCondicao));
   }
+  testes.push(...derivados);
   return (e, ator) => {
     for (const t of testes) if (!t(e, ator)) return false;
     return true;

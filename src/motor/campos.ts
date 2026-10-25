@@ -5,7 +5,7 @@
  */
 import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
-import { deQuando, gostoDe, humorDe } from './relacoes.ts';
+import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
@@ -54,6 +54,8 @@ const PESSOA: Record<string, DefCampo> = {
   lembranca: { tipo: 'texto', sistema: 'historia', derivado: true },
   /** "de quando você …, aos N": o que mais machucou a pessoa. */
   magoa_de: { tipo: 'texto', sistema: 'historia', derivado: true },
+  /** O que a pessoa acha de quem joga (VISOES), tirado do que ela viu e do que se sabe: '' enquanto não tem opinião. */
+  visao: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   dinheiro: { tipo: 'num', sistema: 'dinheiro', reais: true },
   /** O que está investido, por classe (rende conforme a fase do país). */
   renda_fixa: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
@@ -450,6 +452,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return deQuando(e, ent, en, 'boa');
       case 'magoa_de':
         return deQuando(e, ent, en, 'ruim');
+      case 'visao':
+        return visaoDe(e, ent, en);
       case 'eleicao':
         return e.ano % 4 === 2;
       case 'empresas':

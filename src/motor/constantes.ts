@@ -76,6 +76,11 @@ export type Gosto = (typeof GOSTOS)[number];
 /** Como cada pessoa está com quem joga, no ano: sai da mágoa, da saudade, da saúde e do vínculo. */
 export const HUMORES = ['furia', 'magoa', 'abatimento', 'saudade', 'alegria', 'paz', 'distancia'] as const;
 export type Humor = (typeof HUMORES)[number];
+/** O que a pessoa acha de quem joga (relacoes.ts › visoesDe): as opiniões boas primeiro, depois as que doem. */
+export const VISOES_BOAS = ['orgulho', 'presente', 'carinhoso', 'de_palavra', 'generoso', 'cuida_dos_filhos'] as const;
+export const VISOES_RUINS = ['sumido', 'metido', 'interesseiro', 'cabeca_quente', 'sem_palavra', 'longe_dos_filhos', 'casado_com_o_trabalho', 'perdido'] as const;
+export const VISOES = [...VISOES_BOAS, ...VISOES_RUINS] as const;
+export type Visao = (typeof VISOES)[number];
 export type TipoFamilia = (typeof TIPOS_FAMILIA)[number];
 
 export const CATEGORIAS_MORTE = ['velhice', 'coracao', 'doenca', 'acidente', 'violencia'] as const;

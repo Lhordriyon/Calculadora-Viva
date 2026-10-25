@@ -45,6 +45,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...de(PESSOAS, 'sem_contato'),
   'eu.remorso',
   'eu.despediu',
+  // a falta: quem adoeceu e não viu você no ano guarda a falta
+  ...de(PESSOAS, 'nao_apareceu'),
   // os filhos que quem joga teve (o segundo não apaga o primeiro)
   'eu.filhos',
   // a dinastia: quem herda começa com a geração, a família que já tinha e o que a vida dela deixou
@@ -198,6 +200,12 @@ const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[]
 /** Quem joga vota (qualidade voto_<bloco>, da eleição do ano): o motor pesa o voto no resultado. */
 export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): string[] => governos.filter((g) => g.eleito).map((g) => `eu.voto_${g.id}`);
 
+/**
+ * As vontades (mundo.json › vontades) que as regras dos personagens leem e tiram da pessoa: realizada pela vida,
+ * perdida com a idade, a pressa que vira mágoa, o remorso na morte (familia.ts › vontadesNoAno, pessoas.ts).
+ */
+export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
+
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo'];
 
@@ -271,6 +279,13 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(PESSOAS, 'magoa'), 'o ponto para onde o vínculo volta, a chance de o personagem brigar ou ajudar e o remorso na morte', true),
   ...ler(de(PESSOAS, 'sem_contato'), 'o vínculo esfria no ano longe; morrer longe deixa remorso', true),
   ...ler(de(PESSOAS, 'confianca'), 'a confiança volta devagar para a base', false),
+  ...ler(de(PESSOAS, 'nao_apareceu'), 'a falta: uma por doença', true),
+  ...ler(de(PESSOAS, 'rompido'), 'a falta: quem rompeu com você não espera a visita', true),
+  ...ler(
+    ['eu.fama', 'eu.nivel', 'eu.cargo', 'eu.filhos', 'eu.formado', 'eu.workaholic', 'eu.nome_sujo', 'eu.apostador', 'eu.condenado', 'eu.corrupto'],
+    'o que as pessoas acham de quem joga (relacoes.ts › visoesDe): muda a chance de ajudar e de brigar',
+    true,
+  ),
   ...ler(['eu.namoro', 'eu.casado'], 'quem convive com quem joga (o amor não conta ano sem contato)', true),
   ...ler(de(PESSOAS, 'traco'), 'iniciativas dos personagens (afinidade) e vínculo', true),
   ...ler(['eu.paquera', 'eu.aparencia', 'eu.traco'], 'chance de alguém aparecer', true),
@@ -381,7 +396,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'personagens',
     nome: 'a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte',
-    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
+    // As vontades leem o que as realiza (mundo.json › vontades › feita): o casamento, o filho, o bicho, a visita.
+    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.pai_mae', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
     escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu'],
   },
   {

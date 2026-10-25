@@ -432,7 +432,7 @@ export const DefSetor = z.strictObject({
 export type DefSetor = z.infer<typeof DefSetor>;
 
 /** Mudanças que as regras dos personagens produzem sozinhas. */
-export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu'] as const;
+export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu', 'nao_apareceu'] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 
 /**
@@ -772,5 +772,29 @@ export const Mundo = z.strictObject({
    * (`longe`) ou a despedida de quem estava perto (`perto`). O texto vê a pessoa como `{ator}`.
    */
   despedidas: z.strictObject({ magoa: z.array(z.string()).min(2), longe: z.array(z.string()).min(2), perto: z.array(z.string()).min(2) }),
+  /**
+   * O que cada pessoa pode querer da vida (familia.ts › vontadesNoAno). A vontade é a qualidade `id` na pessoa: nasce
+   * de uma iniciativa dela (conteúdo) e sai realizada por uma ação de quem joga, ou pela vida (`feita`), ou se perde
+   * quando a pessoa passa da idade (`ate`). A vontade antiga com `pressa` vira mágoa a cada ano, e quem morre com a
+   * vontade guardada deixa remorso e a frase `nunca`. O texto vê a pessoa como `{ator}`.
+   */
+  vontades: z.array(
+    z.strictObject({
+      id: z.string().regex(/^quer_[a-z_]+$/),
+      papeis: z.array(z.enum(['mae', 'pai', 'avo', 'amor', 'filho', 'amigo'])).min(1),
+      /** "ver o mar": a folha Família diz "Quer ver o mar." */
+      quer: z.string(),
+      /** Na morte, com a vontade guardada: "{ator} nunca viu o mar." */
+      nunca: z.string(),
+      /** A vida realiza a vontade quando a condição vale (o casamento, o filho que nasceu), com um destes textos. */
+      feita: Condicoes.optional(),
+      realizada: z.array(z.string()).min(1).optional(),
+      /** A idade da pessoa em que a vontade passa sem ter sido realizada: a falta vira entrada e lembrança. */
+      ate: z.number().int().optional(),
+      perdida: z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string(), magoa: z.number().min(0) }).optional(),
+      /** Depois de tantos anos guardada, a vontade vira mágoa a cada ano. */
+      pressa: z.strictObject({ anos: z.number().int().min(1), magoa: z.number().min(0) }).optional(),
+    }),
+  ),
 });
 export type Mundo = z.infer<typeof Mundo>;

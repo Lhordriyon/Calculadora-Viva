@@ -7,12 +7,12 @@
  * situação, saliência).
  */
 import { idadeDe } from './campos.ts';
-import { causasDe } from './condicoes.ts';
+import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
-import { FILHOS, ehFilho, papelBase } from './constantes.ts';
+import { FILHOS, ehFilho, papelBase, type Visao } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
-import type { Gatilho } from './esquema.ts';
+import type { Gatilho, Mundo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { morrerPersonagem } from './pessoas.ts';
@@ -22,12 +22,15 @@ import {
   CHANCE_CURA,
   DEMISSAO_BASE,
   ANOS_REMORSO,
+  CONFIANCA_DA_FALTA,
   DESGASTE_CASAL,
   DISTANCIA_ADULTO,
   DISTANCIA_FILHO,
   DOENCA_POR_ANO,
   DOENCA_QUEDA,
   IDADE_APOSENTADORIA,
+  MAGOA_DA_FALTA,
+  MAGOA_DA_VONTADE,
   MAGOA_NO_VINCULO,
   MAGOA_REMORSO,
   PERDAO_BASE,
@@ -35,12 +38,14 @@ import {
   VOLTA_CONFIANCA,
   RETORNO_VINCULO,
   PAQUERA_AMOR,
+  VINCULO_DA_FALTA,
+  VINCULO_DA_VONTADE,
   chanceDeAmor,
   chanceDoenca,
   derivaSaude,
   riscoDeMorte,
 } from './regras.ts';
-import { convivem, temRelacao } from './relacoes.ts';
+import { convivem, temRelacao, visaoDe } from './relacoes.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
 import { causaDaFase } from './trabalho.ts';
@@ -115,18 +120,111 @@ function relacaoNoAno(e: EstadoVida, papel: string, en: Entidade, perdao: number
 function fechoDaMorte(e: EstadoVida, c: Conteudo, papel: string, en: Entidade): string {
   if (!temRelacao(papel, en) || papel === 'paixao') return '';
   const qual = (en.n['magoa'] ?? 0) >= MAGOA_REMORSO ? 'magoa' : (en.n['sem_contato'] ?? 0) >= ANOS_REMORSO ? 'longe' : (en.n['vinculo'] ?? 0) >= 55 ? 'perto' : null;
-  if (!qual) return '';
-  return renderizar(sortear(e.rng, c.mundo.despedidas[qual]), contexto(e, { ator: papel }));
+  const ctx = contexto(e, { ator: papel });
+  const partes = qual ? [renderizar(sortear(e.rng, c.mundo.despedidas[qual]), ctx)] : [];
+  // A vontade que ficou guardada também fica dita.
+  const vontade = c.mundo.vontades.find((v) => (en.q[v.id]?.v ?? 0) > 0);
+  if (vontade) partes.push(capitalizar(renderizar(vontade.nunca, ctx)));
+  return partes.join(' ');
 }
 
 /**
- * A relação muda o que a pessoa faz: com afeto e sem mágoa, ela ajuda mais; magoada, briga mais. Multiplica a chance
- * das iniciativas de ajuda e de briga, junto com o traço.
+ * A falta: alguém próximo passou o ano doente, e quem joga não apareceu (nenhum storylet com a pessoa no ano, e
+ * vocês não moram juntos). Vira entrada visível, com a doença como causa: a mágoa sobe (quem ama mais, espera mais),
+ * a confiança cai, e a pessoa guarda a falta (`nao_apareceu`), que vira a lembrança ruim. Uma vez por doença.
  */
-export function humorDaIniciativa(en: Entidade, afinidade: 'ajuda' | 'briga'): number {
+function faltaNoAno(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, longe: number): void {
+  const doente = en.q['doente'];
+  if (!doente || doente.v <= 0 || doente.idade >= e.idade || longe === 0 || convivem(e, papel, en)) return;
+  if ((en.n['vinculo'] ?? 0) < VINCULO_DA_FALTA || en.q['ausente'] || en.q['rompido']) return;
+  const ja = en.q['nao_apareceu'];
+  if (ja && ja.v > 0 && ja.idade >= doente.idade) return;
+  acontecer(
+    e,
+    c,
+    papel,
+    'nao_apareceu',
+    (reg, id) => {
+      somar(e, reg, papel, 'magoa', MAGOA_DA_FALTA + (en.n['vinculo'] ?? 0) * 0.12);
+      somar(e, reg, papel, 'confianca', -CONFIANCA_DA_FALTA);
+      somar(e, reg, papel, 'vinculo', -4);
+      ganhar(e, reg, papel, 'nao_apareceu', id);
+    },
+    {},
+    doente.causa === null ? [] : [doente.causa],
+  );
+}
+
+type Vontade = Mundo['vontades'][number];
+
+/** A vontade sai do lugar: realizada pela vida, ou perdida porque a pessoa passou da idade dela. */
+function vontadeSai(e: EstadoVida, papel: string, v: Vontade, como: 'realizada' | 'perdida', causas: number[]): void {
+  const entrada = novaEntrada(e, { tipo: 'npc', causa: 'regra', ref: `regra:vontade_${como}`, ator: papel, instancia: `regra:${v.id}#${papel}`, texto: '' });
+  if (causas.length > 0) entrada.causas = causas;
+  const reg: Mudanca[] = [];
+  perder(e, reg, papel, v.id);
+  if (como === 'realizada') {
+    somar(e, reg, papel, 'vinculo', VINCULO_DA_VONTADE);
+    somar(e, reg, papel, 'magoa', -MAGOA_DA_VONTADE);
+    somar(e, reg, 'eu', 'felicidade', 2);
+  } else {
+    somar(e, reg, papel, 'magoa', v.perdida!.magoa);
+    somar(e, reg, papel, 'vinculo', -3);
+  }
+  const ctx = contexto(e, { ator: papel });
+  entrada.texto = capitalizar(renderizar(sortear(e.rng, como === 'realizada' ? v.realizada! : v.perdida!.textos), ctx)).trim();
+  entrada.resumo = renderizar(como === 'realizada' ? `{ator.quem} viu realizada a vontade de ${v.quer}` : v.perdida!.resumo, ctx);
+  lancar(e, entrada, reg);
+}
+
+/**
+ * As vontades que a pessoa guarda (mundo.json › vontades): a vida realiza (`feita`), a idade leva (`ate`, e a falta
+ * fica), e a vontade antiga com `pressa` vira mágoa a cada ano. Realizar pela ação de quem joga é do conteúdo.
+ */
+function vontadesNoAno(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, regAno: Mudanca[]): void {
+  for (const v of c.mundo.vontades) {
+    const q = en.q[v.id];
+    if (!q || q.v <= 0) continue;
+    const desde = q.causa === null ? [] : [q.causa];
+    if (v.feita && atende(v.feita, e, papel)) vontadeSai(e, papel, v, 'realizada', [...desde, ...causasDe(v.feita, e, papel)]);
+    else if (v.ate !== undefined && v.perdida && idadeDe(e, en) > v.ate) vontadeSai(e, papel, v, 'perdida', desde);
+    else if (v.pressa && e.idade - q.idade >= v.pressa.anos) somar(e, regAno, papel, 'magoa', v.pressa.magoa, 'relacao');
+  }
+}
+
+/** O que a pessoa acha de quem joga muda o que ela faz: quem acha você sumido ou interesseiro procura menos. */
+const VISAO_NA_AJUDA: Partial<Record<Visao, number>> = {
+  sumido: 0.6,
+  metido: 0.6,
+  interesseiro: 0.5,
+  sem_palavra: 0.7,
+  perdido: 0.8,
+  orgulho: 1.3,
+  carinhoso: 1.25,
+  presente: 1.2,
+  generoso: 1.2,
+  de_palavra: 1.15,
+};
+/** E quem acha você cabeça-quente ou sem palavra briga mais fácil; quem se sente cuidado, menos. */
+const VISAO_NA_BRIGA: Partial<Record<Visao, number>> = {
+  cabeca_quente: 1.4,
+  sem_palavra: 1.3,
+  interesseiro: 1.25,
+  metido: 1.2,
+  perdido: 1.2,
+  carinhoso: 0.7,
+  presente: 0.8,
+  de_palavra: 0.8,
+};
+
+/**
+ * A relação muda o que a pessoa faz: com afeto e sem mágoa, ela ajuda mais; magoada, briga mais; e o que ela acha de
+ * quem joga (a visão) pesa junto. Multiplica a chance das iniciativas de ajuda e de briga, junto com o traço.
+ */
+export function humorDaIniciativa(en: Entidade, afinidade: 'ajuda' | 'briga', visao: Visao | '' = ''): number {
   const magoa = en.n['magoa'] ?? 0;
-  if (afinidade === 'briga') return 1 + magoa / 40;
-  return Math.max(0.25, Math.min(1.6, ((en.n['vinculo'] ?? 50) / 60) * (1 - magoa / 120)));
+  if (afinidade === 'briga') return (1 + magoa / 40) * ((visao && VISAO_NA_BRIGA[visao]) || 1);
+  return Math.max(0.25, Math.min(1.6, ((en.n['vinculo'] ?? 50) / 60) * (1 - magoa / 120) * ((visao && VISAO_NA_AJUDA[visao]) || 1)));
 }
 
 /** Roda as regras do ano de cada personagem vivo. Variações miúdas vão para `regAno`. */
@@ -240,7 +338,10 @@ export function regrasDosPersonagens(
 
     // ---- a relação: a mágoa passa no ritmo do perdão do traço, a confiança volta devagar, e o ano longe conta (bicho não tem)
     if (papel === 'pet') continue;
+    // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar.
+    vontadesNoAno(e, c, papel, en, regAno);
     const longe = relacaoNoAno(e, papel, en, traco?.perdao ?? PERDAO_BASE, regAno);
+    faltaNoAno(e, c, papel, en, longe);
 
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
@@ -291,14 +392,15 @@ export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJoga
     if (elegiveis.length === 0) continue;
     // A chance de agir vem do storylet mais tenso e do traço; a saliência só é calculada se alguém age.
     const traco = c.tracos.get(en.t['traco'] ?? '');
+    const visao = vivo ? visaoDe(e, papel, en) : '';
     let chance = 0;
     for (const s of elegiveis) {
       const tensao = s.tensao ?? 1;
-      const afinidade = s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade) : 1;
+      const afinidade = s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade, visao) : 1;
       chance = Math.max(chance, tensao >= 3 ? 1 : Math.min(1, ATIVIDADE_PERSONAGEM * tensao * afinidade));
     }
     if (aleatorio(e.rng) >= chance) continue;
-    const pesos = elegiveis.map((s) => saliencia(s, e, papel, memoria) * (s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade) : 1));
+    const pesos = elegiveis.map((s) => saliencia(s, e, papel, memoria) * (s.afinidade ? (traco?.[s.afinidade] ?? 1) * humorDaIniciativa(en, s.afinidade, visao) : 1));
     const i = sortearIndice(e.rng, pesos);
     if (i < 0) continue;
     const s = elegiveis[i]!;

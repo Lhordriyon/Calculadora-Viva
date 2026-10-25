@@ -297,9 +297,9 @@
   },  {
     "id": "rompimento",
     "tipo": "npc",
-    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
-    "idade": [14, 110],
-    "condicoes": { "ator.magoa": { "min": 60 }, "semMarcas": ["ator.rompido"], "ator.idade": { "min": 14 } },
+    "ator": ["mae", "pai", "avo", "amigo", "filho"],
+    "idade": [18, 110],
+    "condicoes": { "ator.magoa": { "min": 60 }, "semMarcas": ["ator.rompido"], "ator.idade": { "min": 18 } },
     "tensao": 3,
     "repetivel": true,
     "intervalo": 6,

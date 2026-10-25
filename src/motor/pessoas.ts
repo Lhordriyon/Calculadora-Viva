@@ -108,11 +108,13 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   const vinculo = en.n['vinculo'] ?? 50;
   if (papel !== 'paixao') {
     somar(e, reg, 'eu', 'felicidade', -(3 + vinculo * 0.14));
-    // A relação pesa no luto: morrer magoado, ou longe há anos, deixa remorso; quem estava perto se despediu.
+    // A relação pesa no luto: morrer magoado, longe há anos ou com uma vontade guardada (mundo.json › vontades: as
+    // qualidades `quer_…`) deixa remorso; quem estava perto se despediu.
     const magoa = en.n['magoa'] ?? 0;
     const longe = en.n['sem_contato'] ?? 0;
-    if (en.tipo === 'pessoa' && vinculo >= 25 && (magoa >= MAGOA_REMORSO || longe >= ANOS_REMORSO)) {
-      somar(e, reg, 'eu', 'felicidade', -(3 + magoa * 0.06 + Math.min(longe, 10) * 0.4));
+    const vontade = Object.entries(en.q).some(([q, v]) => q.startsWith('quer_') && v.v > 0);
+    if (en.tipo === 'pessoa' && vinculo >= 25 && (magoa >= MAGOA_REMORSO || longe >= ANOS_REMORSO || vontade)) {
+      somar(e, reg, 'eu', 'felicidade', -(3 + magoa * 0.06 + Math.min(longe, 10) * 0.4 + (vontade ? 2 : 0)));
       perder(e, reg, 'eu', 'despediu');
       perder(e, reg, 'eu', 'remorso');
       ganhar(e, reg, 'eu', 'remorso', causa);

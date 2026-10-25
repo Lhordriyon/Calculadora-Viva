@@ -3,11 +3,16 @@
  * a mágoa e os anos sem contato. O resto sai do estado e do livro-razão, sem estado novo:
  * - o gosto (o que a pessoa ama), tirado do nome e do nascimento: o presente certo e o programa junto;
  * - o humor do ano (fúria, mágoa, abatimento, saudade, alegria, paz, distância);
- * - as lembranças: a melhor e a pior coisa que quem joga fez com a pessoa, para o texto lembrar ("de quando você…").
- * As regras do ano (familia.ts) fazem a mágoa passar no ritmo do perdão do traço, a confiança voltar devagar e o
- * tempo longe esfriar o vínculo; um storylet com a pessoa é contato (storylets.ts). Este módulo só lê.
+ * - as lembranças: a melhor e a pior coisa que quem joga fez com a pessoa, para o texto lembrar ("de quando você…");
+ * - o que a pessoa acha de quem joga (a visão): o que ela viu você fazer com ela e com os seus filhos, os anos longe e
+ *   as faltas, o que todo mundo sabe (a formatura, a fama, a fortuna, o cargo, a condenação) e o que só quem está perto
+ *   sabe (o nome sujo, a aposta). Cada opinião aponta a entrada que mais pesou: o porquê.
+ * As regras do ano (familia.ts) fazem a mágoa passar no ritmo do perdão do traço, a confiança voltar devagar, o
+ * tempo longe esfriar o vínculo, anotam a falta e cuidam das vontades; um storylet com a pessoa é contato
+ * (storylets.ts). Este módulo só lê.
  */
-import { ehFilho, GOSTOS, type Gosto, type Humor } from './constantes.ts';
+import { classeDoPatrimonio, patrimonioTotal } from './campos.ts';
+import { ehFilho, GOSTOS, papelBase, VISOES_RUINS, type Gosto, type Humor, type Visao } from './constantes.ts';
 import type { Entidade, Entrada, EstadoVida } from './tipos.ts';
 
 /** Quem tem relação com quem joga: as pessoas da vida (o bicho tem vínculo, não mágoa nem confiança). */
@@ -60,8 +65,15 @@ export interface Lembranca {
   peso: number;
 }
 
+/** A entrada em que a pessoa chegou (nasceu, começou o namoro): o vínculo inicial não é algo que quem joga fez com ela. */
+const CHEGADA = new Set(['nascimento', 'saida']);
+function chegouNela(h: Entrada, id: string): boolean {
+  return (h.mudancas ?? []).some((m) => m.r !== undefined && CHEGADA.has(m.r) && m.c.startsWith(`${id}.`));
+}
+
 /** O peso de uma entrada na relação: o afeto que ela deu, a mágoa que deixou (pesa mais) e a confiança. */
 export function pesoNaRelacao(h: Entrada, id: string): number {
+  if (chegouNela(h, id)) return 0;
   let p = 0;
   for (const m of h.mudancas ?? []) {
     if (m.d === undefined || !m.c.startsWith(`${id}.`)) continue;
@@ -72,10 +84,17 @@ export function pesoNaRelacao(h: Entrada, id: string): number {
   return p;
 }
 
-/** Só o que quem joga escolheu ou fez vira lembrança: o resumo dessas entradas completa "você…". */
+/** As faltas de quem joga que a regra anota (familia.ts): a pessoa lembra delas como coisa que você fez. */
+export const OMISSOES: ReadonlySet<string> = new Set(['regra:nao_apareceu', 'regra:vontade_perdida']);
+
+/**
+ * Só o que quem joga escolheu, fez ou deixou de fazer vira lembrança: o resumo dessas entradas completa "você…" (o da
+ * falta já vem com o sujeito, que sai).
+ */
 function feitoPorQuemJoga(h: Entrada): string | undefined {
   if (h.escolha?.resumo) return h.escolha.resumo;
   if (h.tipo === 'acao' && h.causa === 'acao' && h.resumo) return h.resumo;
+  if (h.ref !== undefined && OMISSOES.has(h.ref) && h.resumo) return h.resumo.replace(/^você /, '');
   return undefined;
 }
 
@@ -123,17 +142,26 @@ const QUEM_PELO_PAPEL: Record<string, readonly [string, string]> = {
  */
 export function semONome(texto: string, id: string, en: Entidade): string {
   const ela = en.genero === 'f';
-  const fora = '(?<![\\p{L}])';
-  const fim = '(?![\\p{L}])';
   let t = texto;
   for (const nome of nomesDe(id, en)) {
-    const n = escapar(nome);
-    t = t
-      .replace(new RegExp(`${fora}d[oae] ${n}${fim}`, 'gu'), ela ? 'dela' : 'dele')
-      .replace(new RegExp(`${fora}com [oa] ${n}${fim}`, 'gu'), ela ? 'com ela' : 'com ele')
-      .replace(new RegExp(`${fora}${n}${fim}`, 'gu'), ela ? 'ela' : 'ele');
+    const [de, com, so] = expressoesDe(nome);
+    t = t.replace(de, ela ? 'dela' : 'dele').replace(com, ela ? 'com ela' : 'com ele').replace(so, ela ? 'ela' : 'ele');
   }
   return t;
+}
+
+/** As expressões de cada nome, montadas uma vez ("de Pedro", "com o Pedro", "Pedro", sem pegar pedaço de palavra). */
+const EXPRESSOES = new Map<string, readonly [RegExp, RegExp, RegExp]>();
+function expressoesDe(nome: string): readonly [RegExp, RegExp, RegExp] {
+  let r = EXPRESSOES.get(nome);
+  if (!r) {
+    const n = escapar(nome);
+    const fora = '(?<![\\p{L}])';
+    const fim = '(?![\\p{L}])';
+    r = [new RegExp(`${fora}d[oae] ${n}${fim}`, 'gu'), new RegExp(`${fora}com [oa] ${n}${fim}`, 'gu'), new RegExp(`${fora}${n}${fim}`, 'gu')];
+    EXPRESSOES.set(nome, r);
+  }
+  return r;
 }
 
 /**
@@ -150,4 +178,203 @@ export function deQuando(e: EstadoVida, id: string, en: Entidade, qual: 'boa' | 
   if (id === 'amigo') return 'das besteiras que vocês faziam juntos';
   if (ehFilho(id)) return `de quando você ${en.genero === 'f' ? 'a' : 'o'} levava pela mão`;
   return `de quando você era ${eu.genero === 'f' ? 'pequena' : 'pequeno'}`;
+}
+
+// ---- o que a pessoa acha de quem joga
+
+/** O que é antigo pesa menos na opinião, mas não some: metade do peso a cada tantos anos. */
+const MEIA_VIDA = 12;
+
+type Eixo = 'afeto' | 'ferida' | 'palavraBem' | 'palavraMal' | 'deu' | 'pediu' | 'faltou' | 'filhosBem' | 'filhosMal';
+const EIXOS: readonly Eixo[] = ['afeto', 'ferida', 'palavraBem', 'palavraMal', 'deu', 'pediu', 'faltou', 'filhosBem', 'filhosMal'];
+
+/**
+ * O que a pessoa viu quem joga fazer com ela, somado do livro. Cada parcela entra multiplicada por 2^(idade/MEIA_VIDA)
+ * (a idade de quem joga na entrada): na leitura, 2^(-agora/MEIA_VIDA) dá o peso de hoje, e a soma anda com o livro.
+ */
+interface Visto {
+  soma: Record<Eixo, number>;
+  /** A entrada que mais pesou em cada eixo: o porquê da opinião. */
+  porque: Partial<Record<Eixo, { entrada: number; peso: number }>>;
+}
+
+/** Gastar com a pessoa a partir disto (em reais de hoje) é generosidade que ela nota. */
+const GASTO_QUE_CONTA = 500;
+/** Como quem joga trata os filhos: o amor e os avós veem. */
+const OS_FILHOS = '#filhos';
+const CAMPOS_DA_RELACAO = new Set(['vinculo', 'magoa', 'confianca', 'dinheiro']);
+
+function vistoDe(mapa: Map<string, Visto>, id: string): Visto {
+  let v = mapa.get(id);
+  if (!v) {
+    v = { soma: Object.fromEntries(EIXOS.map((x) => [x, 0])) as Record<Eixo, number>, porque: {} };
+    mapa.set(id, v);
+  }
+  return v;
+}
+
+function anotar(v: Visto, eixo: Eixo, entrada: number, peso: number): void {
+  v.soma[eixo] += peso;
+  const p = v.porque[eixo];
+  if (!p || peso >= p.peso) v.porque[eixo] = { entrada, peso };
+}
+
+function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
+  if (h.idade < IDADE_DA_LEMBRANCA || feitoPorQuemJoga(h) === undefined) return;
+  const w = 2 ** (h.idade / MEIA_VIDA);
+  let meuDinheiro = 0;
+  const porPessoa = new Map<string, Record<string, number>>();
+  const chegaram = new Set<string>();
+  for (const m of h.mudancas ?? []) {
+    if (m.d === undefined) continue;
+    const ponto = m.c.indexOf('.');
+    const ent = m.c.slice(0, ponto);
+    const campo = m.c.slice(ponto + 1);
+    if (m.r !== undefined && CHEGADA.has(m.r)) chegaram.add(ent);
+    if (ent === 'eu') {
+      if (campo === 'dinheiro') meuDinheiro += m.d;
+      continue;
+    }
+    if (!CAMPOS_DA_RELACAO.has(campo)) continue;
+    const x = porPessoa.get(ent) ?? { vinculo: 0, magoa: 0, confianca: 0, dinheiro: 0 };
+    x[campo]! += m.d;
+    porPessoa.set(ent, x);
+  }
+  const falta = h.ref !== undefined && OMISSOES.has(h.ref);
+  for (const [id, x] of porPessoa) {
+    if (chegaram.has(id)) continue;
+    const v = vistoDe(mapa, id);
+    const vinculo = x['vinculo']!;
+    const magoa = x['magoa']!;
+    const confianca = x['confianca']!;
+    const dinheiro = x['dinheiro']!;
+    if (vinculo > 0) anotar(v, 'afeto', h.id, w * vinculo);
+    if (magoa > 0) anotar(v, 'ferida', h.id, w * Math.min(2, magoa / 8));
+    if (confianca > 0) anotar(v, 'palavraBem', h.id, w * confianca);
+    if (confianca < 0) anotar(v, 'palavraMal', h.id, -w * confianca);
+    // Deu: passou dinheiro para a pessoa, ou gastou de verdade com ela (o presente, a viagem).
+    if (meuDinheiro < 0 && (dinheiro > 0 || (id === h.ator && vinculo > 0 && meuDinheiro <= -GASTO_QUE_CONTA))) anotar(v, 'deu', h.id, w);
+    if (dinheiro < 0 && meuDinheiro > 0) anotar(v, 'pediu', h.id, w);
+    if (falta && id === h.ator) anotar(v, 'faltou', h.id, w);
+    if (ehFilho(id)) {
+      const f = vistoDe(mapa, OS_FILHOS);
+      if (vinculo > 0) anotar(f, 'filhosBem', h.id, w * vinculo);
+      if (vinculo < 0 || magoa > 0) anotar(f, 'filhosMal', h.id, w * (Math.max(0, -vinculo) + Math.max(0, magoa) / 2));
+    }
+  }
+}
+
+/**
+ * As somas do livro inteiro, guardadas pela última entrada somada. O livro só cresce e a entrada lançada não muda
+ * (livro.ts › copiarVida): a soma de uma entrada vale para toda cópia da vida que a tem, e a próxima parte dela.
+ */
+const SOMAS = new WeakMap<Entrada, Map<string, Visto>>();
+
+function copiar(m: Map<string, Visto>): Map<string, Visto> {
+  return new Map([...m].map(([k, v]) => [k, { soma: { ...v.soma }, porque: { ...v.porque } }]));
+}
+
+function vistos(e: EstadoVida): Map<string, Visto> {
+  const h = e.historico;
+  const ultima = h[h.length - 1];
+  if (!ultima) return new Map();
+  const pronta = SOMAS.get(ultima);
+  if (pronta) return pronta;
+  let i = h.length - 2;
+  while (i >= 0 && !SOMAS.has(h[i]!)) i--;
+  const mapa = i >= 0 ? copiar(SOMAS.get(h[i]!)!) : new Map<string, Visto>();
+  for (let j = i + 1; j < h.length; j++) somarEntrada(mapa, h[j]!);
+  SOMAS.set(ultima, mapa);
+  return mapa;
+}
+
+export interface Opiniao {
+  visao: Visao;
+  peso: number;
+  /** A entrada que mais pesou (o porquê); sem ela, o porquê é o tempo longe. */
+  entrada?: number;
+}
+
+const RUINS: ReadonlySet<string> = new Set(VISOES_RUINS);
+/** O que machuca pesa mais na opinião do que o que agrada. */
+const PESO_DO_QUE_DOI = 1.15;
+
+/**
+ * O que a pessoa acha de quem joga: as duas opiniões mais fortes, com o porquê. Vem do que ela viu (o livro), do que
+ * todo mundo sabe e do que só quem está perto sabe. Sem história bastante, a pessoa ainda não tem opinião.
+ */
+export function visoesDe(e: EstadoVida, id: string, en: Entidade): Opiniao[] {
+  if (!temRelacao(id, en)) return [];
+  const eu = e.entidades['eu']!;
+  const papel = papelBase(id);
+  const familia = papel === 'mae' || papel === 'pai' || papel === 'avo';
+  const agora = 2 ** (-e.idade / MEIA_VIDA);
+  const somas = vistos(e);
+  const v = somas.get(id);
+  const s = (eixo: Eixo): number => (v?.soma[eixo] ?? 0) * agora;
+  const por = (eixo: Eixo): number | undefined => v?.porque[eixo]?.entrada;
+  const opinioes: Opiniao[] = [];
+  const dar = (visao: Visao, peso: number, entrada?: number | null): void => {
+    opinioes.push({ visao, peso: RUINS.has(visao) ? peso * PESO_DO_QUE_DOI : peso, ...(entrada !== undefined && entrada !== null ? { entrada } : {}) });
+  };
+  const causa = (...marcas: string[]): number | null | undefined => marcas.map((m) => eu.q[m]).find((q) => (q?.v ?? 0) > 0)?.causa;
+
+  // O que todo mundo sabe, e o que só quem está perto sabe.
+  const perto = convivem(e, id, en) || (en.n['vinculo'] ?? 0) >= 55 || papel === 'amor';
+  const classe = classeDoPatrimonio(patrimonioTotal(e));
+  const subiu = classe >= 5 && classe > (eu.n['classe_origem'] ?? 2);
+  const famoso = (eu.n['fama'] ?? 0) >= 50;
+  const escandalo = tem(eu, 'condenado') || tem(eu, 'corrupto');
+  const encrenca = escandalo ? 3 : perto && (tem(eu, 'nome_sujo') || tem(eu, 'apostador')) ? 2.5 : 0;
+
+  const longe = en.n['sem_contato'] ?? 0;
+  const faltou = s('faltou');
+  const sumico = (longe >= 3 ? longe - 1 : 0) + 2.5 * faltou;
+  if (sumico >= 2) dar((familia || papel === 'amigo') && (subiu || famoso) ? 'metido' : 'sumido', sumico, por('faltou'));
+  const pediu = s('pediu');
+  const deu = s('deu');
+  if (pediu >= 1.5 && deu < 0.5) dar('interesseiro', 1 + pediu, por('pediu'));
+  const ferida = s('ferida');
+  if (ferida >= 2.5) dar('cabeca_quente', ferida, por('ferida'));
+  const palavra = s('palavraBem') - s('palavraMal');
+  if (palavra <= -10) dar('sem_palavra', -palavra / 5, por('palavraMal'));
+  else if (palavra >= 10) dar('de_palavra', palavra / 5, por('palavraBem'));
+  if ((eu.n['filhos'] ?? 0) > 0 && (familia || papel === 'amor')) {
+    const f = somas.get(OS_FILHOS);
+    const bem = (f?.soma.filhosBem ?? 0) * agora;
+    const mal = (f?.soma.filhosMal ?? 0) * agora;
+    if (mal - bem >= 4) dar('longe_dos_filhos', 2.5 + (mal - bem) / 6, f?.porque.filhosMal?.entrada);
+    else if (bem >= 8 && mal < bem / 2) dar('cuida_dos_filhos', 1.5 + bem / 10, f?.porque.filhosBem?.entrada);
+  }
+  const afeto = s('afeto');
+  if (papel === 'amor' || papel === 'filho') {
+    if (tem(eu, 'workaholic')) dar('casado_com_o_trabalho', 3, causa('workaholic'));
+    else if ((eu.n['nivel'] ?? 0) >= 3 && afeto < 5) dar('casado_com_o_trabalho', 2);
+  }
+  if (encrenca > 0) dar('perdido', encrenca, causa('condenado', 'corrupto', 'nome_sujo', 'apostador'));
+  if (familia && ferida < 2 && faltou < 1 && encrenca === 0) {
+    const feitos = (tem(eu, 'formado') ? 1.5 : 0) + ((eu.n['nivel'] ?? 0) >= 3 ? 1 : 0) + ((eu.n['fama'] ?? 0) >= 40 ? 1 : 0) + (subiu ? 1 : 0) + (eu.t['cargo'] ? 1 : 0);
+    if (feitos >= 1.5) dar('orgulho', feitos + afeto / 20, causa('formado'));
+  }
+  if (deu >= 0.9) dar('generoso', 1.5 + deu, por('deu'));
+  if (afeto >= 15 && longe < 3) dar('carinhoso', afeto / 7, por('afeto'));
+  else if (afeto >= 6 && faltou < 0.5 && longe <= 1) dar('presente', 1.5 + afeto / 15, por('afeto'));
+  return opinioes.sort((a, b) => b.peso - a.peso).slice(0, 2);
+}
+
+/** A opinião mais forte (o caminho `ator.visao` das condições e do texto); '' enquanto a pessoa não tem opinião. */
+export function visaoDe(e: EstadoVida, id: string, en: Entidade): Visao | '' {
+  return visoesDe(e, id, en)[0]?.visao ?? '';
+}
+
+/** O porquê da opinião, do ponto de vista da pessoa ("você pagou o conserto do carro dela, aos 31"). */
+export function porqueDe(e: EstadoVida, id: string, en: Entidade, o: Opiniao): string {
+  const h = o.entrada === undefined ? undefined : e.historico.find((x) => x.id === o.entrada);
+  const feito = h && (feitoPorQuemJoga(h) ?? (h.tipo === 'acao' || h.tipo === 'dinheiro' ? h.resumo : undefined));
+  if (h && feito) return `você ${semONome(feito, id, en)}, aos ${h.idade}`;
+  // O que todo mundo soube (a formatura, a condenação) vem com o sujeito.
+  if (h?.resumo) return `${semONome(h.resumo, id, en)}, aos ${h.idade}`;
+  const longe = en.n['sem_contato'] ?? 0;
+  if ((o.visao === 'sumido' || o.visao === 'metido') && longe >= 2) return `faz ${longe} anos que vocês não se falam`;
+  return '';
 }

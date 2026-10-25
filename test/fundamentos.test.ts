@@ -11,7 +11,7 @@ import { defCargo, chanceDeEleicao } from '../src/motor/poder.ts';
 import { economiaDoAno } from '../src/motor/economia.ts';
 import { regraDaEmpresa, empresaDe } from '../src/motor/empresa.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
-import { ESCRITAS_DO_MOTOR } from '../src/motor/manifesto.ts';
+import { ESCRITAS_DO_MOTOR, VONTADES } from '../src/motor/manifesto.ts';
 import { CAPACIDADE_DO_MERCADO, MAX_FUNCIONARIOS, TETO_EMPRESA } from '../src/motor/regras.ts';
 import { misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
@@ -54,7 +54,8 @@ describe('livro-razão', () => {
   });
 
   it('as regras do motor só escrevem o que o manifesto declara (o validador confia nele)', () => {
-    const declaradas = new Set(ESCRITAS_DO_MOTOR);
+    // O manifesto, mais o que o conteúdo declara para as regras (as vontades de mundo.json, que o validador também lê).
+    const declaradas = new Set([...ESCRITAS_DO_MOTOR, ...VONTADES(c.mundo.vontades)]);
     const fora = new Set<string>();
     for (const e of amostra) {
       for (const h of e.historico) {
