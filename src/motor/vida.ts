@@ -18,6 +18,7 @@ import { anoDoExterior, exteriorInicial, type Exterior } from './diplomacia.ts';
 import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDasDividas } from './dividas.ts';
+import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCarreira } from './carreira.ts';
 import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
@@ -205,6 +206,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   },
   empresa: (x) => regraDaEmpresa(x.e, x.c, x.fase!, x.reg, x.mercado),
   bens: (x) => regraDosBens(x.e, x.c, x.reg),
+  // Os títulos do Tesouro: o cupom do ano cai na conta e o que venceu volta (tesouro.ts).
+  tesouro: (x) => regraDoTesouro(x.e, x.reg),
   // As dívidas no fim do ano (dividas.ts): a parcela do acordo, o limite, o que caduca e o nome.
   dividas: (x) => regraDasDividas(x.e, x.c, x.reg),
   privacao: (x) => {

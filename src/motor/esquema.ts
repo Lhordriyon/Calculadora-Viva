@@ -173,6 +173,8 @@ const EFEITOS_FIXOS = {
       max: z.number().positive().optional(),
     })
     .optional(),
+  /** Vende essa fração de cada título do Tesouro de quem joga pelo preço do dia (o medo do calote, a conta que apertou): 1 vende todos. */
+  venderTitulos: z.number().gt(0).max(1).optional(),
   /** Move uma fração de onde o dinheiro está para outro lugar ("de": "acoes", "para": "renda_fixa", "fracao": 1 vende todas as ações). */
   realocar: z
     .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })

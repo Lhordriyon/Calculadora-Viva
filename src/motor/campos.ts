@@ -112,6 +112,8 @@ const PESSOA: Record<string, DefCampo> = {
   quem: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   /** Quantas empresas quem joga tem (o grupo; 0 para os outros). */
   empresas: { tipo: 'num', sistema: 'dinheiro', derivado: true },
+  /** Quanto quem joga emprestou ao governo em títulos do Tesouro (o valor que volta no vencimento; 0 para os outros). */
+  titulos: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
 };
 
 const LUGAR: Record<string, DefCampo> = {
@@ -230,6 +232,22 @@ const CONTRATO: Record<string, DefCampo> = {
   atraso: { tipo: 'num', sistema: 'dinheiro', limites: [0, 99] },
 };
 
+/**
+ * Um título do Tesouro de quem joga (tesouro.ts): `tit<entrada>` é o dinheiro que aquela entrada do livro emprestou ao
+ * governo. O devedor é o tesouro; o cupom cai na conta todo ano e o valor volta no vencimento.
+ */
+const TITULO: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  /** O que volta no vencimento (e a base do cupom). */
+  valor: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** O cupom do ano, em % do valor acima da inflação, já sem o imposto: travado na compra. */
+  taxa: { tipo: 'num', sistema: 'dinheiro', limites: [0, 100] },
+  /** O ano em que o valor volta. */
+  vencimento: { tipo: 'num', sistema: 'dinheiro' },
+  /** A entrada do livro que comprou (ou a herança que trouxe): o porquê do vencimento. */
+  origem: { tipo: 'texto', sistema: 'historia' },
+};
+
 const EMPRESA: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
   /** Anos desde a fundação. */
@@ -264,6 +282,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if ((PARCEIROS as readonly string[]).includes(ent)) return ESTRANGEIRO;
   if (ent.startsWith('bem')) return BEM;
   if (ent.startsWith('ctr')) return CONTRATO;
+  if (ent.startsWith('tit')) return TITULO;
   return PESSOA;
 }
 
@@ -381,9 +400,31 @@ export function valorDosBens(e: EstadoVida): number {
   return total;
 }
 
-/** Patrimônio de quem joga: o de fora, a parte nas empresas e os bens. */
+/** Os títulos do Tesouro de quem joga, do que vence primeiro para o último. */
+export function titulosDe(e: EstadoVida): Entidade[] {
+  const saida: Entidade[] = [];
+  for (const id in e.entidades) {
+    if (!id.startsWith('tit')) continue;
+    const x = e.entidades[id]!;
+    if (x.tipo === 'titulo') saida.push(x);
+  }
+  return saida.sort((a, b) => (a.n['vencimento'] ?? 0) - (b.n['vencimento'] ?? 0) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+}
+
+/** O que quem joga emprestou ao governo: o valor dos títulos (o que volta no vencimento; vender antes é pelo preço do dia). */
+export function valorDosTitulos(e: EstadoVida): number {
+  let total = 0;
+  for (const id in e.entidades) {
+    if (!id.startsWith('tit')) continue;
+    const x = e.entidades[id]!;
+    if (x.tipo === 'titulo') total += x.n['valor'] ?? 0;
+  }
+  return total;
+}
+
+/** Patrimônio de quem joga: o de fora, os títulos, a parte nas empresas e os bens. */
 export function patrimonioTotal(e: EstadoVida): number {
-  return patrimonioDe(e.entidades['eu']!) + parteNasEmpresas(e) + valorDosBens(e);
+  return patrimonioDe(e.entidades['eu']!) + valorDosTitulos(e) + parteNasEmpresas(e) + valorDosBens(e);
 }
 
 /** Gente empregada pelo tamanho da empresa: uma pessoa a cada R$ 150 mil enquanto ela é pequena, saturando nas maiores do mundo. */
@@ -458,6 +499,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return e.ano % 4 === 2;
       case 'empresas':
         return ent === 'eu' ? empresasDe(e).length : 0;
+      case 'titulos':
+        return ent === 'eu' ? valorDosTitulos(e) : 0;
       case 'pib_per_capita':
         return indicadoresDoPais(en).pibPerCapita;
       case 'gini':

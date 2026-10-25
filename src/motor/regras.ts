@@ -487,3 +487,25 @@ export const DOLAR_NA_EMPRESA = 0.5;
 export const PROTECAO_NA_EMPRESA = 0.02;
 export const SANCAO_NA_EMPRESA = -0.08;
 export const ACORDO_NA_EMPRESA = 0.02;
+
+// ---- o Tesouro (bloco B: o título público como contrato, o cupom, o vencimento e o calote)
+
+/** Os prazos do título (anos): quem compra escolhe por quanto tempo empresta ao governo. */
+export const PRAZOS_DO_TITULO = [5, 10, 20] as const;
+/**
+ * A taxa do título (% ao ano acima da inflação): o juro real do ano, mais o prêmio do prazo (por ano de prazo) e o
+ * risco da dívida (por ponto acima de `acima`% do PIB, até `teto`), menos o imposto de renda do cupom; nunca abaixo
+ * do `piso`. Fica travada na compra.
+ */
+export const TAXA_DO_TITULO = { premioPorAno: 0.05, riscoPorPonto: 0.05, acima: 90, teto: 3, imposto: 0.15, piso: 0.5 } as const;
+/** O mundo tem tamanho: títulos ao mesmo tempo, a menor compra (reais) e a fatia máxima da dívida do país nas mãos de quem joga. */
+export const MAX_TITULOS = 5;
+export const COMPRA_MINIMA_DE_TITULO = 100;
+export const FATIA_MAXIMA_DA_DIVIDA = 0.3;
+/**
+ * O calote: com a dívida acima de `acima`% do PIB, numa recessão ou numa crise, a chance por ano cresce `porPonto` por
+ * ponto, até `teto`. Quem tem título perde `titulos` do valor e a renda fixa perde `rendaFixa`; a dívida do país cai
+ * `perdao`; a economia perde `choque` pontos de crescimento no ano e ganha `inflacao` pontos de inflação; e a Selic
+ * paga `premio` pontos a mais, que somem em `anos` anos (a confiança que volta devagar).
+ */
+export const CALOTE = { acima: 100, porPonto: 0.01, teto: 0.25, titulos: 0.3, rendaFixa: 0.15, perdao: 0.25, choque: -2, inflacao: 2, premio: 2, anos: 6 } as const;

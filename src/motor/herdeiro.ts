@@ -10,7 +10,7 @@
  * fortuna da família de geração em geração.
  */
 import { ATIVOS, FILHOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
-import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, valorDosBens } from './campos.ts';
+import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
@@ -159,6 +159,8 @@ interface Espolio {
   doIrmaos: number;
   /** O que a conta e a empresa não cobriram da partilha: sai dos bens (os mais baratos são vendidos). */
   dosBens: number;
+  /** A fração do valor de cada título do Tesouro que fica com quem herda (o resto pagou a dívida e a partilha). */
+  titulos: number;
 }
 
 /**
@@ -175,8 +177,11 @@ function partilhar(antiga: EstadoVida, herdeiroEhOPar = false, irmaos = 0): Espo
   const daConta = Math.min(caixa['dinheiro']!, divida);
   caixa['dinheiro']! -= daConta;
   divida -= daConta;
-  resgatarDe(caixa, divida);
-  const bruto = caixa['dinheiro']! + ATIVOS.reduce((s, a) => s + (caixa[a] ?? 0), 0);
+  divida -= resgatarDe(caixa, divida);
+  // O que a conta e os investimentos não pagaram da dívida sai dos títulos do Tesouro, vendidos pelo valor.
+  const titulosAntes = valorDosTitulos(antiga);
+  const emTitulos = titulosAntes - Math.min(titulosAntes, Math.max(0, divida));
+  const bruto = caixa['dinheiro']! + ATIVOS.reduce((s, a) => s + (caixa[a] ?? 0), 0) + emTitulos;
   const naEmpresa = parteNasEmpresas(antiga);
   const emBens = valorDosBens(antiga);
   const total = bruto + naEmpresa + emBens;
@@ -199,7 +204,9 @@ function partilhar(antiga: EstadoVida, herdeiroEhOPar = false, irmaos = 0): Espo
   // O que a conta não pagou sai de cada empresa na mesma proporção.
   const participacoes: Record<string, number> = {};
   for (const emp of empresasDe(antiga)) participacoes[emp.id] = (emp.n['participacao'] ?? 1) * (naEmpresa > 0 ? 1 - daEmpresa / naEmpresa : 1);
-  return { heranca, participacoes, deixou: total - sai, doConjuge, imposto, doacao, doIrmaos, dosBens };
+  // Cada título fica com a mesma fração que a conta: o que saiu deles foi vendido para pagar a partilha.
+  const titulos = titulosAntes > 0 ? (emTitulos * fica) / titulosAntes : 0;
+  return { heranca, participacoes, deixou: total - sai, doConjuge, imposto, doacao, doIrmaos, dosBens, titulos };
 }
 
 /** Uma pessoa nova da geração do herdeiro (o amigo da vida nova). */
@@ -466,6 +473,17 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     const def = defDoBem(c, b);
     if (def) eu.q[def.marca] = { v: 1, ano: e.ano, idade, causa: abertura.id };
     if (copia.q['alugado']) eu.q['senhorio'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+  }
+  // Os títulos do Tesouro passam a quem herda, com a parte que a partilha deixou: vencem na vida nova, e a herança é a
+  // causa (o livro novo não tem a compra).
+  for (const tit of titulosDe(antiga)) {
+    const valor = (tit.n['valor'] ?? 0) * espolio.titulos;
+    if (valor < 1) continue;
+    const idTit = idLivre(e, `tit${abertura.id}`);
+    const copia = recausar(structuredClone({ ...tit, id: idTit }), abertura.id);
+    copia.n['valor'] = valor;
+    copia.t['origem'] = String(abertura.id);
+    e.entidades[idTit] = copia;
   }
   // A coroa e o regime passam ao filho: quem morreu reinava, e a sucessão é o primeiro capítulo (storylet da linhagem).
   const coroa = velho.q['monarca'] ? 'monarca' : velho.q['ditador'] ? 'ditador' : null;

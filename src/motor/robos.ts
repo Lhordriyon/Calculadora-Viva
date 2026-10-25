@@ -16,7 +16,7 @@ import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
 import { chanceDeEleicao } from './poder.ts';
 import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
-import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar } from './campos.ts';
+import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar, titulosDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Parceiro, type Politica, type Verbo } from './constantes.ts';
 import { propostaDeAcordo } from './dividas.ts';
@@ -28,6 +28,7 @@ import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasP
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
+import { precoDoTitulo, taxaDoTitulo, type Prazo } from './tesouro.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 export const ESTRATEGIAS = ['primeira', 'cautelosa', 'arriscada', 'aleatoria'] as const;
@@ -77,6 +78,14 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
     const { de, para, fracao } = ef.realocar;
     const valor = Math.max(0, eu.n[de] ?? 0) * fracao;
     v += ((rendimentoEsperado(c, para) - rendimentoEsperado(c, de)) * 10 * valor) / REAIS_POR_PONTO;
+  }
+  // Vender o título: a diferença entre o preço do dia e o valor, e o cupom que vira dinheiro parado (que encolhe).
+  if (ef.venderTitulos !== undefined) {
+    for (const tit of titulosDe(e)) {
+      const preco = precoDoTitulo(e, tit) * ef.venderTitulos;
+      const valor = (tit.n['valor'] ?? 0) * ef.venderTitulos;
+      v += (preco - valor + (rendimentoEsperado(c, 'dinheiro') - (tit.n['taxa'] ?? 0) / 100) * 10 * preco) / REAIS_POR_PONTO;
+    }
   }
   const renda = eu.n['renda'] ?? 0;
   if (ef.renda !== undefined) {
@@ -273,6 +282,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirGoverno(estrategia, e, c, rng),
     ...decidirDiplomacia(estrategia, e, c, rng),
     ...decidirBens(estrategia, e, c, rng),
+    ...venderTituloParaPagar(e),
     ...decidirDividas(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
@@ -293,8 +303,39 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   const gastos = Math.max(eu.n['custo'] ?? 0, 10000);
   const reserva = estrategia === 'cautelosa' ? gastos : estrategia === 'arriscada' ? gastos / 4 : gastos / 2;
   const sobra = conta - reserva;
-  if (sobra >= 1000) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? sobra / 2 : sobra) });
+  if (sobra < 1000) return ops;
+  const noTesouro = emprestarAoGoverno(estrategia, e, c, rng, sobra);
+  ops.push(...noTesouro);
+  const resto = sobra - noTesouro.reduce((s, op) => s + (op.tipo === 'comprarTitulo' ? op.valor : 0), 0);
+  if (resto >= 1000) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? resto / 2 : resto) });
   return ops;
+}
+
+/** Devendo no banco, vende o título que vale mais: o juro da dívida come mais do que o cupom paga. */
+function venderTituloParaPagar(e: EstadoVida): Operacao[] {
+  if ((e.entidades['eu']!.n['divida'] ?? 0) < 1000) return [];
+  const maior = titulosDe(e).sort((a, b) => precoDoTitulo(e, b) - precoDoTitulo(e, a))[0];
+  return maior ? [{ tipo: 'venderTitulo', id: maior.id }] : [];
+}
+
+/**
+ * O Tesouro dos robôs. A cautelosa empresta ao governo um terço da sobra quando o título longo paga bem (o juro real
+ * alto, que costuma vir com a crise) e guarda até vencer; o prazo encurta com a idade. A aleatória, de vez em quando,
+ * compra um prazo sorteado ou vende um título sorteado. A arriscada prefere a bolsa.
+ */
+function emprestarAoGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng, sobra: number): Operacao[] {
+  if (estrategia === 'cautelosa') {
+    const prazo: Prazo = e.idade <= 55 ? 20 : e.idade <= 70 ? 10 : 5;
+    if (taxaDoTitulo(e, prazo) < 4.8) return [];
+    const op: Operacao = { tipo: 'comprarTitulo', valor: Math.floor(sobra / 3), prazo };
+    return pode(e, c, op) ? [op] : [];
+  }
+  if (estrategia !== 'aleatoria') return [];
+  const titulos = titulosDe(e);
+  if (titulos.length > 0 && aleatorio(rng) < 0.15) return [{ tipo: 'venderTitulo', id: sortear(rng, titulos).id }];
+  if (aleatorio(rng) >= 0.3) return [];
+  const op: Operacao = { tipo: 'comprarTitulo', valor: Math.floor(sobra * (0.2 + 0.3 * aleatorio(rng))), prazo: sortear(rng, [5, 10, 20] as const) };
+  return pode(e, c, op) ? [op] : [];
 }
 
 /**
@@ -600,7 +641,7 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       v.inteligencia += p * (ef.inteligencia ?? 0);
       v.aparencia += p * (ef.aparencia ?? 0);
       const so: Record<string, unknown> = {};
-      for (const k of ['dinheiro', 'investir', 'realocar', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator', 'abrirEmpresa', 'empresaFator', 'venderEmpresa', 'fecharEmpresa', 'rodada'] as const) {
+      for (const k of ['dinheiro', 'investir', 'realocar', 'venderTitulos', 'divida', 'renda', 'custo', 'custoDoPatrimonio', 'rendaFator', 'custoFator', 'patrimonioFator', 'abrirEmpresa', 'empresaFator', 'venderEmpresa', 'fecharEmpresa', 'rodada'] as const) {
         if (ef[k] !== undefined) so[k] = ef[k];
       }
       v.dinheiro += p * valorEfeitos(so as Efeitos, e, c);
@@ -673,13 +714,26 @@ export function pedeEmpresa(s: Storylet): boolean {
   return Object.entries(cond).some(([k, v]) => (k === 'empresas' || daEmpresa(k)) && v !== false);
 }
 
+/** O título típico de quem tem um, para medir os storylets que pedem título: R$ 20 mil a 5% ao ano, com 15 anos pela frente. */
+export const TITULO_TIPICO = { valor: 20_000, taxa: 5, anos: 15 } as const;
+
+/** O storylet só acontece com título do Tesouro: alguma condição pede que quem joga tenha emprestado ao governo. */
+export function pedeTitulos(s: Storylet): boolean {
+  const v = s.condicoes?.['titulos' as keyof NonNullable<Storylet['condicoes']>] as { min?: number } | undefined;
+  return v !== undefined && (v.min ?? 0) > 0;
+}
+
 /**
- * O estado em que um dilema se mede: o estado típico da idade, no bolso dado, e, se o storylet pede empresa, com a
- * empresa típica (sem ela, a régua dava zero a tudo o que mexe na empresa).
+ * O estado em que um dilema se mede: o estado típico da idade, no bolso dado, e, se o storylet pede empresa ou
+ * título, com a empresa típica ou o título típico (sem eles, a régua dava zero a tudo o que mexe neles).
  */
 export function estadoDoDilema(c: Conteudo, base: EstadoVida, s: Storylet, idade: number, bolso: Bolso = 'tipico'): EstadoVida {
   const e = estadoTipico(base, idade, bolso);
   if (pedeEmpresa(s)) abrirPorEfeito(e, c, [], { setor: 'comercio', valor: EMPRESA_TIPICA }, undefined, 0);
+  if (pedeTitulos(s)) {
+    const t = TITULO_TIPICO;
+    e.entidades['tit0'] = { id: 'tit0', tipo: 'titulo', nome: 'Tesouro IPCA+', nascimento: e.ano, vivo: true, n: { valor: t.valor, taxa: t.taxa, vencimento: e.ano + t.anos }, t: {}, q: {} };
+  }
   return e;
 }
 
@@ -692,7 +746,7 @@ export function falsosDilemas(c: Conteudo, base: EstadoVida, bolso: Bolso = 'tip
   const semEmpresa = estadoTipico(base, 30, bolso);
   for (const s of c.storylets) {
     if (!s.escolhas || s.escolhas.length < 2) continue;
-    const e = pedeEmpresa(s) ? estadoDoDilema(c, base, s, 30, bolso) : semEmpresa;
+    const e = pedeEmpresa(s) || pedeTitulos(s) ? estadoDoDilema(c, base, s, 30, bolso) : semEmpresa;
     const vetores = s.escolhas.map((esc) => vetorDe(esc, e, c));
     const i = vetores.findIndex((a, k) => vetores.every((b, j) => j === k || domina(a, b)));
     if (i >= 0) achados.push({ evento: s.id, escolha: i });

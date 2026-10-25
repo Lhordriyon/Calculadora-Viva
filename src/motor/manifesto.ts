@@ -141,6 +141,12 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'ctr.garantia',
   'ctr.origem',
   'eu.nome_sujo',
+  // o Tesouro (tesouro.ts): o título que quem joga compra, o cupom, o vencimento, a venda e o calote, que o país registra
+  'tit.valor',
+  'tit.taxa',
+  'tit.vencimento',
+  'tit.origem',
+  'pais.calote',
   // o país vivo: as estatísticas andam, governos se alternam na eleição e quem governa muda as políticas
   'pais.crescimento',
   'pais.desemprego',
@@ -207,7 +213,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -234,6 +240,10 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.desemprego'], 'país: demissão e recolocação, vaga, pobreza e aprovação', true),
   ...ler(['pais.juros'], 'país: juros da dívida de quem joga, renda fixa e crescimento', true),
   ...ler(['pais.divida'], 'país: crescimento, juros, inflação e chance de crise lá fora', true),
+  ...ler(['pais.divida'], 'Tesouro: o risco que a taxa do título cobra e a chance de calote', true),
+  ...ler(['pais.calote'], 'país: depois do calote, a Selic paga um prêmio que some em seis anos (e o título rende mais)', true),
+  ...ler(['tit.valor', 'tit.taxa', 'tit.vencimento'], 'Tesouro: o cupom do ano, o vencimento, o preço de venda e o patrimônio', true),
+  ...ler(['tit.origem'], 'Tesouro: a compra (ou a herança) é a causa do vencimento', false),
   ...ler(['pais.pobreza'], 'país: violência e o desejo do eleitor', true),
   ...ler(['pais.violencia'], 'país: chance de morrer de violência, crescimento e aprovação', true),
   ...ler(['pais.saude'], 'país: mortalidade de quem depende do SUS e aprovação', true),
@@ -325,8 +335,8 @@ export interface EtapaDoAno {
 
 /** O bolso de quem joga: o dinheiro, a dívida e as classes da carteira (quem paga saca delas, na ordem de liquidez). */
 const BOLSO = ['eu.dinheiro', 'eu.divida', ...ATIVOS.map((a) => `eu.${a}`)];
-/** O patrimônio (campos.ts › patrimonioTotal): o bolso, a parte nas empresas e os bens. */
-const PATRIMONIO = [...BOLSO, 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item'];
+/** O patrimônio (campos.ts › patrimonioTotal): o bolso, os títulos do Tesouro, a parte nas empresas e os bens. */
+const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item'];
 const POLITICAS_DO_PAIS = POLITICAS.map((p) => `pais.pol_${p}`);
 const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
 /** A fase do ciclo, que as regras do ano leem pelo nome. */
@@ -347,9 +357,10 @@ export const ETAPAS_DO_ANO = [
   },
   {
     id: 'pais',
-    nome: 'o país: as estatísticas, a eleição, quem governa e a fase do ciclo',
-    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*'],
-    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'eu.popularidade'],
+    nome: 'o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote',
+    // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe.
+    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
+    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
   },
   {
     id: 'mercado',
@@ -360,7 +371,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'economia',
     nome: 'a economia de quem joga: inflação, juros, salário, imposto, gastos',
-    le: ['ano.mercado', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.padrao', 'eu.aposentado', 'eu.servidor', 'eu.cargo', 'eu.nome_sujo', 'lugar.custo_vida', 'pais.inflacao', 'pais.juros', ...POLITICAS_DO_PAIS],
+    le: ['ano.mercado', ...BOLSO, 'ctr.*', 'tit.valor', 'eu.renda', 'eu.custo', 'eu.padrao', 'eu.aposentado', 'eu.servidor', 'eu.cargo', 'eu.nome_sujo', 'lugar.custo_vida', 'pais.inflacao', 'pais.juros', ...POLITICAS_DO_PAIS],
     escreve: ['ano.economia', 'ano.inflacao', ...BOLSO, 'ctr.*'],
   },
   {
@@ -374,6 +385,12 @@ export const ETAPAS_DO_ANO = [
     nome: 'os bens: valor, manutenção, aluguel e o financiamento',
     le: ['bem.*', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.nome_sujo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', ...RETORNOS],
     escreve: ['bem.*', ...BOLSO, 'ctr.*', 'eu.custo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao'],
+  },
+  {
+    id: 'tesouro',
+    nome: 'os títulos do Tesouro: o cupom do ano e o que venceu',
+    le: ['tit.*', ...BOLSO, 'ctr.*'],
+    escreve: ['tit.*', ...BOLSO, 'ctr.*'],
   },
   {
     id: 'dividas',

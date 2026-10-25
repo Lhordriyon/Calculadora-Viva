@@ -9,6 +9,7 @@
  * dívida é feita de contratos com o banco (contratos.ts): o saque no cheque
  * especial e o pagamento com o que sobra vão para eles também.
  */
+import { valorDosTitulos } from './campos.ts';
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { acompanharCaixa, creditoNovo, jurosDoAno, limiteDeCredito, rotativos, saldoDe } from './contratos.ts';
 import { anotar } from './livro.ts';
@@ -236,7 +237,8 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
       fluxos.push({ campo: 'dinheiro', d: -(consumo - (deficit - coberto)), p: 'mercado', r: 'consumo' });
     }
   }
-  const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) - (n['divida'] ?? 0);
+  // Os títulos do Tesouro entram no que paga o padrão de vida: emprestar ao governo não esconde a fortuna do gasto.
+  const patrimonio = (n['dinheiro'] ?? 0) + somaInvestida(n) + valorDosTitulos(e) - (n['divida'] ?? 0);
   if (e.idade >= 18) {
     const gasto = Math.max(0, patrimonio - PATRIMONIO_SEM_GASTO) * GASTO_DO_PATRIMONIO[padraoDe(e)];
     n['dinheiro'] = (n['dinheiro'] ?? 0) - gasto;

@@ -4,7 +4,7 @@
  * a fase do país, com sorte e azar. O perfil de investidor decide para onde
  * vai o dinheiro novo; o jogador escolhe quanto aplicar ou resgatar, e onde,
  * e o padrão de vida (quanto da sobra do ano vira gasto). A folha Dinheiro
- * também abre e toca a empresa (empresa.ts).
+ * também abre e toca a empresa (empresa.ts) e empresta ao governo (tesouro.ts).
  * O mercado do ano é o mesmo para todo o país e fica no país
  * (`pais.ret_acoes`): storylets reagem à bolsa que despencou ou ao dólar que
  * disparou. Toda operação vira uma entrada do livro (tipo "dinheiro", causa "acao"):
@@ -23,6 +23,7 @@ import { ehOperacaoDePoder, motivoParaNaoOperarPoder, operarPoder, type Operacao
 import { ehOperacaoDePais, juroReal, motivoParaNaoOperarPais, operarPais, type OperacaoPais } from './pais.ts';
 import { ehOperacaoDeDiplomacia, motivoParaNaoOperarDiplomacia, operarDiplomacia, type OperacaoDiplomacia } from './diplomacia.ts';
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
+import { ehOperacaoDeTesouro, motivoParaNaoOperarTesouro, operarTesouro, type OperacaoTesouro } from './tesouro.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
 import { normal } from './rng.ts';
@@ -87,6 +88,7 @@ export type Operacao =
   /** Troca o padrão de vida: quanto da sobra de cada ano vira gasto. */
   | { tipo: 'padrao'; padrao: Padrao }
   | OperacaoBem
+  | OperacaoTesouro
   | OperacaoDivida
   | OperacaoCarreira
   | OperacaoPoder
@@ -112,6 +114,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (e.pendente) return 'responda o cartão do ano primeiro';
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
   if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
+  if (ehOperacaoDeTesouro(op)) return motivoParaNaoOperarTesouro(e, op);
   if (ehOperacaoDeDivida(op)) return motivoParaNaoOperarDivida(e, op);
   if (ehOperacaoDeCarreira(op)) return motivoParaNaoOperarCarreira(e, c, op);
   if (ehOperacaoDePoder(op)) return motivoParaNaoOperarPoder(e, c, op);
@@ -158,6 +161,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   };
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
   if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));
+  if (ehOperacaoDeTesouro(op)) return lancarCom('tesouro', (id) => operarTesouro(e, op, reg, id));
   if (ehOperacaoDeDivida(op)) return lancarCom('divida', (id) => operarDivida(e, c, op, reg, id));
   if (ehOperacaoDeCarreira(op)) return lancarCom('carreira', (id) => operarCarreira(e, c, op, reg, id));
   if (ehOperacaoDePoder(op)) return lancarCom('poder', (id) => operarPoder(e, c, op, reg, id));

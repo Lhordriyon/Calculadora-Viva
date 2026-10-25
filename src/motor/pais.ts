@@ -21,6 +21,7 @@ import type { DefFase, DefGoverno, EfeitoDePolitica } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import type { Exterior } from './diplomacia.ts';
 import {
+  CALOTE,
   CHOQUE_DA_CRISE,
   CRESCIMENTO_POTENCIAL,
   DEMOGRAFIA,
@@ -52,6 +53,7 @@ import {
   VIOLENCIA_POR_GENERO,
 } from './regras.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
+import { chanceDeCalote, darCalote, premioDoCalote } from './tesouro.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -606,6 +608,14 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     choqueNaInflacao = INFLACAO_DA_CRISE;
     deFora = 'crise';
   }
+  // O calote: a dívida passou do ponto numa recessão ou numa crise, e o governo deixa de pagar parte dela (tesouro.ts
+  // diz quem perde). A economia afunda mais no ano; a confiança volta devagar (a Selic paga o prêmio do calote).
+  const chanceDoCalote = chanceDeCalote(e);
+  const calote = chanceDoCalote > 0 && aleatorio(r) < chanceDoCalote;
+  if (calote) {
+    choque += CALOTE.choque;
+    choqueNaInflacao += CALOTE.inflacao;
+  }
 
   // Crescimento: volta para o potencial, com a sorte, o empurrão e o freio do juro real alto.
   const g = limitar(pot + PERSISTENCIA_DO_CRESCIMENTO * (g0 - pot) + choque + 0.6 * impulso - 0.12 * (i0 - pi0 - JURO_REAL_NEUTRO - 0.5), -9, 12);
@@ -628,7 +638,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     0.5,
     30,
   );
-  const i = selic(pi, hiato, d0);
+  const i = limitar(selic(pi, hiato, d0) + premioDoCalote(e), 2, 45);
   // Dívida: o que o governo gasta acima do que arrecada; a recessão derruba a arrecadação.
   const d = limitar(d0 - primarioDe(e, c, impulso) - 0.3 * hiato + 0.5 * impulso, 10, 250);
   // O país das pessoas: anda devagar para onde as políticas, o emprego e as contas levam.
@@ -672,6 +682,8 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   definirNumero(e, reg, 'pais', 'pib', Math.round(n['pib']! * (1 + n['crescimento']! / 100)), 'pais');
   definirNumero(e, reg, 'pais', 'populacao', Math.round(n['populacao']! * (1 + taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) / 100)), 'pais');
   if (voce) definirNumero(e, reg, 'eu', 'popularidade', aprovacao, 'pais');
+  // Quem emprestou ao governo perde, e a dívida encolhe: a notícia do calote vem antes da virada da fase.
+  if (calote) darCalote(e, c);
   // O empurrão de quem governa se desfaz aos poucos.
   const sobra = n['impulso'] ?? 0;
   if (Math.abs(sobra) >= 0.05) somar(e, reg, 'pais', 'impulso', -sobra * (1 - MEMORIA_DO_IMPULSO), 'pais');

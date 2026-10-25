@@ -1,0 +1,107 @@
+[
+  {
+    "id": "primeiro_cupom",
+    "idade": [18, 95],
+    "condicoes": { "titulos": { "min": 1000 } },
+    "peso": 3,
+    "texto": "O extrato mostrou um crédito do Tesouro Nacional: o cupom dos {eu.titulos} que você emprestou ao governo. Dinheiro que entrou sem você levantar da cama. [Você conferiu três vezes se não era golpe.|Seu pai disse que isso é coisa de aposentado.]",
+    "resumo": "recebeu o primeiro cupom do Tesouro",
+    "escolhas": [
+      {
+        "texto": "Comemorar com uma pizza",
+        "resumo": "comemorou o primeiro cupom do Tesouro com pizza",
+        "resultado": {
+          "texto": "Pizza paga pelo governo, de certa forma. A melhor que você já comeu, de certa forma.",
+          "efeitos": { "felicidade": 2, "dinheiro": -90 }
+        }
+      },
+      {
+        "texto": "Explicar para a família no almoço",
+        "resumo": "explicou o Tesouro Direto para a família no almoço de domingo",
+        "resultado": {
+          "texto": "Você desenhou a curva de juros num guardanapo. A tia pediu o seu Pix; o primo perguntou se rende mais que cripto. Ninguém entendeu, e você entendeu melhor.",
+          "efeitos": { "inteligencia": 1, "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Fingir que não viu",
+        "resumo": "deixou o cupom do Tesouro quieto na conta",
+        "resultado": {
+          "texto": "Dinheiro que não se vê não se gasta. Você aprendeu isso com a sua avó, que guardava nota de cem no congelador.",
+          "efeitos": { "inteligencia": 0.3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "calote_no_noticiario",
+    "idade": [18, 95],
+    "condicoes": { "titulos": { "min": 5000 }, "pais.divida": { "min": 97 } },
+    "repetivel": true,
+    "intervalo": 6,
+    "peso": 4,
+    "texto": "A dívida do governo chegou a {pais.divida}% do PIB, e o jornal da noite já fala em calote. Os {eu.titulos} que você emprestou ao governo valem menos na tela do banco do que ontem. O gerente, que nunca liga, ligou.",
+    "resumo": "pensou em vender os títulos com o calote no noticiário",
+    "escolhas": [
+      {
+        "texto": "Vender tudo antes que piore",
+        "resumo": "vendeu os títulos do Tesouro com medo do calote",
+        "resultado": {
+          "texto": "Você vendeu com desconto e dormiu como um bebê. Se o calote vier, você assiste de camarote; se não vier, ninguém precisa saber.",
+          "efeitos": { "venderTitulos": 1, "felicidade": 1.5 }
+        }
+      },
+      {
+        "texto": "Vender metade",
+        "resumo": "vendeu metade dos títulos com medo do calote",
+        "resultado": {
+          "texto": "Metade fora, metade dentro: o meio-termo de quem não sabe e admite.",
+          "efeitos": { "venderTitulos": 0.5, "felicidade": 0.5 }
+        }
+      },
+      {
+        "texto": "Segurar até o vencimento",
+        "resumo": "segurou os títulos do Tesouro com o calote no noticiário",
+        "resultado": {
+          "texto": "Quem vende na baixa realiza o prejuízo, diz o vídeo que você viu às duas da manhã. O governo sempre paga. Quase sempre.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "depois_do_calote",
+    "apenasAgendado": true,
+    "condicoes": { "marcaHa": [{ "marca": "pais.calote", "max": 2 }] },
+    "texto": "Um ano depois do calote, os títulos novos do governo pagam juros de agiota, e ninguém compra. Na fila do banco, um senhor jura que o próximo passo é confiscar a poupança, como em 1990.",
+    "resumo": "decidiu o que fazer com o dinheiro depois do calote do governo",
+    "escolhas": [
+      {
+        "texto": "Pôr na renda fixa, que paga o susto",
+        "resumo": "pôs dinheiro na renda fixa depois do calote, com os juros lá em cima",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "resultado": {
+          "texto": "Você emprestou de novo a quem deu calote, a juros de quem deu calote. A ansiedade veio de brinde.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "renda_fixa", "fracao": 0.5 }, "felicidade": -0.5 }
+        }
+      },
+      {
+        "texto": "Comprar dólar e esperar",
+        "resumo": "fugiu para o dólar depois do calote do governo",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "resultado": {
+          "texto": "Dólar na conta, coração em paz. Rende nada, mas não dá calote: só sobe e desce sem avisar.",
+          "efeitos": { "realocar": { "de": "dinheiro", "para": "dolar", "fracao": 0.4 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Estudar o que deu errado",
+        "resumo": "estudou a história dos calotes do país",
+        "resultado": {
+          "texto": "Você leu sobre a moratória de 1987, o confisco de 1990 e o que veio depois. O país repete a lição; você, pelo menos, anotou.",
+          "efeitos": { "inteligencia": 1 }
+        }
+      }
+    ]
+  }
+]
