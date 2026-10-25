@@ -1149,7 +1149,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - simulação: pouco (três campos por pessoa; o resto sai do livro).
 - **Consome:** fichas do ano. Cuidar de uma relação é uma ação, com custo de oportunidade.
 - **Efeitos causais:**
-  - **mágoa:** sobe com o que machucou e passa no ritmo do perdão do traço; puxa o vínculo para baixo, faz a pessoa brigar mais e ajudar menos, e acima de 75 rompe a relação;
+  - **mágoa:** sobe com o que machucou e passa no ritmo do perdão do traço; puxa o vínculo para baixo, faz a pessoa brigar mais e ajudar menos, e acima de 60 rompe a relação;
   - **confiança:** abre o conselho e o segredo, e decide se a verdade dita vira conversa ou briga;
   - **anos sem contato:** esfriam o vínculo e trazem a saudade;
   - **memória:** a pessoa lembra da melhor e da pior coisa que você fez com ela, e o texto cita ("de quando você…, aos 34");

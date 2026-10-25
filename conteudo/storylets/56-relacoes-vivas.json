@@ -8,7 +8,7 @@
     "preferir": "+ator.magoa",
     "idade": [14, 110],
     "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.idade": { "min": 12 } },
-    "intervalo": 2,
+    "intervalo": 3,
     "trechos": {
       "conversa": [
         { "se": { "ator.magoa": { "min": 30 } }, "texto": "Uma hora a conversa chegou onde precisava: a mágoa {ator.magoa_de}. [{ator} chorou um pouco, você também.|Ninguém gritou, o que na família de vocês é novidade.|Não resolveu tudo, mas destravou alguma coisa.]" },
@@ -19,7 +19,7 @@
     },
     "texto": "Você sentou para conversar com {ator} sem celular na mesa. {conversa}",
     "resumo": "conversou de verdade com {ator}",
-    "efeitos": { "ator.vinculo": 5, "ator.confianca": 6, "ator.magoa": -12, "felicidade": 1 }
+    "efeitos": { "ator.vinculo": 5, "ator.confianca": 6, "ator.magoa": -12, "dinheiro": -40 }
   },
   {
     "id": "pedir_desculpas",
@@ -38,7 +38,7 @@
       "texto": "[{ator} ouviu até o fim e te abraçou.|{ator} disse que estava esperando isso fazia tempo.|Foi difícil começar e fácil terminar.]",
       "repete": "{ator} aceitou as desculpas de novo.",
       "resumo": "fez as pazes com {ator}",
-      "efeitos": { "ator.magoa": -35, "ator.vinculo": 6, "ator.confianca": 4, "felicidade": 3 }
+      "efeitos": { "ator.magoa": -35, "ator.vinculo": 6, "ator.confianca": 4, "felicidade": 1 }
     },
     "fracasso": {
       "texto": "[{ator} ouviu, mas ainda não está pront{ator:o|a}.|\"Desculpa não apaga\", disse {ator}, e foi embora da cozinha.|{ator} aceitou da boca para fora. Você percebeu.]",
@@ -54,7 +54,7 @@
     "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
     "idade": [12, 110],
     "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "dinheiro": { "min": 300 } },
-    "intervalo": 3,
+    "intervalo": 4,
     "trechos": {
       "presente": [
         { "se": { "ator.gosto": "futebol" }, "texto": "uma camisa do time, autografada por um reserva" },
@@ -76,7 +76,7 @@
     },
     "texto": "Sem data nenhuma, você deu a {ator} {presente}. Acertou em cheio: é o que {ator} mais ama.",
     "resumo": "deu a {ator} o presente certo",
-    "efeitos": { "dinheiro": -300, "ator.vinculo": 6, "ator.magoa": -5, "felicidade": 1 }
+    "efeitos": { "dinheiro": -300, "ator.vinculo": 6, "ator.magoa": -5 }
   },
   {
     "id": "programa_junto",
@@ -86,7 +86,7 @@
     "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
     "idade": [8, 110],
     "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.idade": { "min": 6 } },
-    "intervalo": 2,
+    "intervalo": 3,
     "trechos": {
       "programa": [
         { "se": { "ator.gosto": "futebol" }, "texto": "Foram ao estádio. O time perdeu, e vocês voltaram felizes assim mesmo" },
@@ -108,7 +108,7 @@
     },
     "texto": "{programa}. Foi o melhor dia de {ator} no mês, e {ator:ele|ela} fez questão de dizer.",
     "resumo": "passou um dia com {ator} fazendo o que {ator:ele|ela} ama",
-    "efeitos": { "dinheiro": -120, "ator.vinculo": 7, "felicidade": 2 }
+    "efeitos": { "dinheiro": -120, "ator.vinculo": 6, "felicidade": 1 }
   },
   {
     "id": "dizer_umas_verdades",
@@ -125,12 +125,12 @@
     "sucesso": {
       "texto": "[{ator} ficou quiet{ator:o|a} um tempo e depois disse: \"você tem razão\". Ninguém esperava.|Doeu nos dois, mas a relação ficou mais honesta.]",
       "repete": "{ator} ouviu de novo, e de novo levou a sério.",
-      "efeitos": { "felicidade": 3, "ator.confianca": 8, "ator.magoa": 8, "ator.vinculo": -2 }
+      "efeitos": { "felicidade": 2, "ator.confianca": 8, "ator.magoa": 8, "ator.vinculo": -2 }
     },
     "fracasso": {
       "texto": "[{ator} bateu a porta e ficou uma semana sem atender.|Virou briga, e a briga virou assunto no grupo da família.]",
       "repete": "Virou briga outra vez.",
-      "efeitos": { "felicidade": 2, "ator.magoa": 22, "ator.vinculo": -7, "ator.sem_contato": { "definir": 0 } }
+      "efeitos": { "felicidade": 1, "ator.magoa": 22, "ator.vinculo": -7, "ator.sem_contato": { "definir": 0 } }
     }
   },
   {
@@ -141,10 +141,10 @@
     "ator": ["mae", "pai", "avo", "amigo", "amor"],
     "idade": [15, 90],
     "condicoes": { "semMarcas": ["ator.ausente", "ator.rompido"], "ator.confianca": { "min": 55 }, "ator.idade": { "min": 18 } },
-    "intervalo": 3,
+    "intervalo": 4,
     "texto": "Você contou para {ator} a decisão que estava te tirando o sono. [{ator} ouviu sem interromper e deu um conselho que você não queria ouvir.|{ator} contou uma história de quando passou pela mesma coisa.|{ator} fez três perguntas, e na terceira você já sabia a resposta.]",
     "resumo": "pediu conselho a {ator}",
-    "efeitos": { "inteligencia": 1, "felicidade": 1, "ator.vinculo": 3, "ator.confianca": 4 }
+    "efeitos": { "inteligencia": 1, "ator.vinculo": 3, "ator.confianca": 4 }
   },
   {
     "id": "visitar_o_tumulo",
@@ -164,7 +164,7 @@
     },
     "texto": "Você levou flores para o túmulo de {ator.quem}. {tumulo}",
     "resumo": "visitou o túmulo de {ator}",
-    "efeitos": { "felicidade": 2, "dinheiro": -60, "removerMarcas": ["remorso"] }
+    "efeitos": { "felicidade": 1, "dinheiro": -60, "removerMarcas": ["remorso"] }
   },
   {
     "id": "cobranca_da_magoa",
@@ -299,7 +299,7 @@
     "tipo": "npc",
     "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
     "idade": [14, 110],
-    "condicoes": { "ator.magoa": { "min": 75 }, "semMarcas": ["ator.rompido"], "ator.idade": { "min": 14 } },
+    "condicoes": { "ator.magoa": { "min": 60 }, "semMarcas": ["ator.rompido"], "ator.idade": { "min": 14 } },
     "tensao": 3,
     "repetivel": true,
     "intervalo": 6,

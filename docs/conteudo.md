@@ -130,7 +130,7 @@ Storylets sobre quem morreu pedem `ator.vivo: false` ou `ator.faleceu` nas condi
   "ator.confianca": { "min": 70 },    // a confiança (0 a 100, começa em 60)
   "ator.sem_contato": { "min": 3 },   // anos sem se falar (ganhar vínculo zera)
   "ator.gosto": "pescaria",           // o que a pessoa ama: futebol, novela, pescaria, cozinha, musica, fe, plantas, jogos, livros, carros, viagem, danca, bichos, politica, artesanato
-  "marcas": ["ator.rompido"],         // a pessoa rompeu (o storylet "rompimento", com mágoa de 75+); "fazer_as_pazes" tira
+  "marcas": ["ator.rompido"],         // a pessoa rompeu (o storylet "rompimento", com mágoa de 60+); "fazer_as_pazes" tira
   "marcas": ["remorso"], "marcas": ["despediu"] // de quem joga: alguém morreu magoado ou longe; alguém morreu perto e em paz
 }
 ```
