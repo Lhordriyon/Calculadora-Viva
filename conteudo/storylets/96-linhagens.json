@@ -1001,6 +1001,7 @@
   {
     "id": "acusado_de_nepotismo",
     "idade": [18, 60],
+    "peso": 3,
     "condicoes": { "marcas": ["nepotismo"], "fama": { "min": 15 } },
     "texto": "Uma reportagem lista todos os papéis, vagas e contratos que você conseguiu por causa do sobrenome. A hashtag está em primeiro lugar.",
     "resumo": "foi acusad{o|a} de nepotismo",
