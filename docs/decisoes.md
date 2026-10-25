@@ -1264,6 +1264,61 @@ Os portões que já falhavam continuam falhando: a CPU, a herança entre geraç�
 - **A mensalidade da escola na crise ganhou tensão 2.** Era o storylet mais raro (menos de 0,05% das vidas) e sumiu nas 10.000 vidas, porque passou a disputar a vez com as iniciativas novas do filho.
 - **O fechamento do plano é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Bloco B: o Tesouro (25/10)
+
+O segundo bloco da ordem do dono: "o título comprado do Tesouro entra no balanço como ativo financeiro e paga cupom no caixa de quem comprou" (I-34), e o orçamento do governo em reais (I-31). Entrou o título de quem joga, com o calote; ficaram o título da empresa e o orçamento item por item, com os motivos abaixo.
+
+**O que o título faz** (`tesouro.ts`, `docs/motor.md › O Tesouro`):
+- é um contrato com o governo (`tit<entrada>`): o valor, a taxa travada na compra, o vencimento e a entrada que comprou;
+- a taxa é (juro real do ano + 0,05 × anos + risco da dívida) × 0,85;
+- o cupom cai na conta todo ano, o valor volta no vencimento e vender antes sai pelo preço do dia;
+- o calote vem com a dívida acima de 100% do PIB numa recessão ou numa crise.
+
+**Medidas:**
+
+| Medida | Valor |
+|---|---|
+| Quem compra título pela folha (10.000 vidas) | cautelosa 99,6% (7 compras por vida), aleatória 87,2% (2,5), primeira e arriscada 0% |
+| Quem ganha título numa história ("Investir no Tesouro Direto") | de 18,7% (arriscada) a 57,8% (cautelosa) |
+| Cupons na vida, mediana de quem teve título | de R$ 5,7 mil (arriscada) a R$ 2,2 milhões (cautelosa) |
+| Títulos que venceram / vendidos antes (com lucro) | 22.451 / 1.877 (993) |
+| Vidas com calote | 0,9% (93 vidas); quem perdeu algo fora dos títulos e da renda fixa: 0 |
+| Livro por vida (150 vidas do A/B) | 384,3 → 395,3 entradas, 4.716 → 4.810 mudanças |
+
+**O túnel** (10.000 vidas; antes = a C3 publicada, depois = o bloco B):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Falsos dilemas | 0, nos três bolsos | 0, nos três bolsos |
+| Saturação V5 / V20 | 56,0% / 89,9% | 55,9% / 90,2% |
+| Assinaturas por 1.000 vidas (sem a origem) | 903 (583) | 910 (585) |
+| Mobilidade: mesmo quintil / Spearman | 26,7% / 0,34 | 27,2% / 0,34 |
+| Patrimônio p90/p10 | 621,3× | 618,2× |
+| Patrimônio mediano da cautelosa | R$ 63 milhões | R$ 62 milhões |
+| Desvio da felicidade média | 8,73 | 8,78 |
+| Patrimônio negativo ao morrer | 0,6% | 0,7% |
+| Mudanças causadas pelo jogador | 44,2% | 44,2% |
+| Toques por vida | 448,5 | 456,2 |
+| CPU por vida (túnel) | 88,9 ms | 81,5 ms; no A/B na mesma máquina, 85,6 → 89,6 ms (+4,7%) |
+
+Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,84 → 0,84), o bilionário feito (1,46% → 1,34%, com teto de 1%) e as assinaturas sem regressão (903 → 910, para ≥ 918). Os três portões novos (emprestar é escolha, o calote é raro, quem perde é quem tinha a dívida) passam. O segundo `verificar` falhou com um storylet morto (a acusação de nepotismo); o conserto está abaixo.
+
+**Decisões tomadas sozinho:**
+- **O título da empresa ficou para depois.** A empresa é um valor que cresce, sem caixa: o cupom não teria onde cair, e tirar o título do valor dela mudaria a curva de crescimento e os portões de bilionário. Vem com a I-11 (o caixa da empresa).
+- **O orçamento item por item ficou para depois.** A dívida do país anda por uma reação fiscal em pontos do PIB; um orçamento em reais que feche (receita, gasto e juros) muda essa conta e os portões do país vivo. Entrou a dívida em reais (PIB × dívida), que fecha por construção, com quem joga entre os credores.
+- **A taxa é a do papel IPCA+, já sem o imposto.** O jogo inteiro é em reais de hoje; a taxa acima da inflação é a que cabe. O imposto de renda do cupom (15%) entra na taxa, para o botão mostrar o que cai na conta.
+- **O prêmio do prazo é pequeno (0,05 ponto por ano).** Com ele, o título longo rende de 0,4 a 1 ponto a mais que a renda fixa, em troca de travar o dinheiro e do risco do preço. A cautelosa não ficou mais rica por isso: o cupom e o valor que voltam ficam parados na conta até a próxima aplicação.
+- **Os títulos entram no patrimônio que paga o padrão de vida.** Sem isso, emprestar ao governo escondia a fortuna do gasto do padrão e virava a resposta certa.
+- **O calote leva 30% do título e 15% da renda fixa.** A renda fixa também é dívida do governo (o Tesouro Selic, o CDB lastreado), mas mais curta e diversificada. A chance (1% por ponto acima de 100% do PIB, até 25%) dá 0,9% das vidas com calote.
+- **A causa do calote é a decisão que pôs a dívida para cima**, pesada pelo efeito na arrecadação e no gasto: a posse de um governo, a reforma que corta imposto ou abre gasto, o decreto que aquece. O nascimento (o país como estava) não conta.
+- **O mundo tem tamanho:** até 5 títulos ao mesmo tempo, de R$ 100 para cima, e nunca mais de 30% da dívida do país nas mãos de quem joga.
+- **O título herdado na infância:** o cupom cai na conta de quem herdou, e vender espera os 18.
+- **O Tesouro Direto das histórias virou título de verdade.** Duas escolhas diziam "Investir no Tesouro Direto" e punham o dinheiro no perfil, que pode ser metade em ações. Agora elas compram um título (o efeito `comprarTitulo`; sem como comprar, o dinheiro vai para a renda fixa). A ação "investir com método", que investe pelo perfil, deixou de falar em Tesouro.
+- **A CPU subiu 4,7% no A/B** (85,6 → 89,6 ms por vida). O livro cresce 2,9% (as compras, os cupons e os vencimentos), e as vidas da amostra duraram 1,2 ano a mais. Juntar a leitura dos bens e dos títulos numa passada só não mudou a medida, então ficou o código mais simples.
+- **A acusação de nepotismo ganhou o peso 3 dos vizinhos da mesma cadeia.** Ela aparecia em 0,1% das vidas e zerou no túnel quando o título das histórias mudou a trajetória de muita gente. Com o peso, quem ganhou a marca vê a conta chegar; continua rara, porque pede a marca e a fama.
+- **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
