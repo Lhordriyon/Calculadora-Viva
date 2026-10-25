@@ -17,7 +17,7 @@ import { tipoDe } from '../src/motor/conteudo.ts';
 import { anoDoPais, ESTATISTICAS, momentoTipico, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, CLASSES, FASES, type Fase } from '../src/motor/constantes.ts';
 import { mercadoDoAno, motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
-import { ESTRATEGIAS, arriscarNaoCompensa, estadoTipico, falsosDilemas, type Estrategia } from '../src/motor/robos.ts';
+import { BOLSOS, EMPRESA_TIPICA, ESTRATEGIAS, NOMES_DOS_BOLSOS, arriscarNaoCompensa, falsosDilemas, type Bolso, type Estrategia } from '../src/motor/robos.ts';
 import { misturar } from '../src/motor/rng.ts';
 import { listarCadeias } from '../src/motor/validacao.ts';
 import { nascer } from '../src/motor/vida.ts';
@@ -239,10 +239,11 @@ for (const v of vidas) {
 }
 const totalAparicoes = vidas.reduce((s, v) => s + v.instancias.length, 0);
 
+// Os dilemas se medem em três bolsos (R$ 1 mil, R$ 10 mil e R$ 50 milhões na conta) e, os da empresa, com uma empresa típica.
 const base = nascer(c, { semente: 1, ano: ANO });
-const dilemasFalsos = falsosDilemas(c, estadoTipico(base, 30));
-const semTensao = arriscarNaoCompensa(c, base);
-const comRisco = c.storylets.filter((s) => (s.escolhas?.length ?? 0) > 1).length;
+const dilemas = NOMES_DOS_BOLSOS.map((bolso) => ({ bolso, falsos: falsosDilemas(c, base, bolso), risco: arriscarNaoCompensa(c, base, bolso) }));
+const dilemasFalsos = [...new Set(dilemas.flatMap((d) => d.falsos.map((f) => f.evento)))];
+const NOME_DO_BOLSO: Record<Bolso, string> = { pobre: 'pobre', tipico: 'típico', rico: 'rico' };
 
 interface ResumoEstrategia {
   estrategia: Estrategia;
@@ -1137,10 +1138,27 @@ l(`- **Mais repetidos na mesma vida** (repetições a cada 100 aparições): ${m
 l();
 l('## Dilemas');
 l();
-l(`- **Falsos dilemas** (uma opção é melhor ou igual em tudo, com as mesmas consequências futuras): ${dilemasFalsos.length ? dilemasFalsos.map((d) => `\`${d.evento}\``).join(', ') : 'nenhum'}`);
 l(
-  `- **Arriscar nunca compensa** (há opção arriscada, mas a mais segura também tem o maior valor esperado, num estado típico da idade): ${semTensao.length} de ${comRisco} storylets — ${semTensao.map((id) => `\`${id}\``).join(', ')}. Algumas são armadilhas de propósito.`,
+  `Medidos em três bolsos de adulto: ${NOMES_DOS_BOLSOS.map((b) => `${NOME_DO_BOLSO[b]} (${formatarDinheiro(BOLSOS[b].dinheiro)} na conta e ${formatarDinheiro(BOLSOS[b].renda)} de renda por ano)`).join(', ')}. ` +
+    `Os storylets que pedem empresa se medem com uma de ${formatarDinheiro(EMPRESA_TIPICA)}, inteira de quem joga.`,
 );
+l();
+const listaDeIds = (ids: string[]): string => (ids.length ? ids.map((id) => `\`${id}\``).join(', ') : 'nenhum');
+l(
+  `- **Falsos dilemas** (uma opção é melhor ou igual em tudo, com as mesmas consequências futuras): ${dilemasFalsos.length ? dilemas.map((d) => `${NOME_DO_BOLSO[d.bolso]}: ${listaDeIds(d.falsos.map((f) => f.evento))}`).join(' · ') : 'nenhum, nos três bolsos'}`,
+);
+const riscoTipico = dilemas.find((d) => d.bolso === 'tipico')!.risco;
+l(
+  `- **Arriscar nunca compensa** (há opção arriscada, mas a mais segura também tem o maior valor esperado, num estado típico da idade; contam só os storylets com 2 ou mais opções sem condição e alguma com risco, os que a conta olha): ` +
+    `${dilemas.map((d) => `${NOME_DO_BOLSO[d.bolso]} ${d.risco.achados.length} de ${d.risco.avaliados} (${pct(d.risco.achados.length / Math.max(1, d.risco.avaliados), 0)})`).join(' · ')}. Algumas são armadilhas de propósito.`,
+);
+l(`  - No típico: ${listaDeIds(riscoTipico.achados)}.`);
+for (const d of dilemas) {
+  if (d.bolso === 'tipico') continue;
+  const mais = d.risco.achados.filter((id) => !riscoTipico.achados.includes(id));
+  const menos = riscoTipico.achados.filter((id) => !d.risco.achados.includes(id));
+  l(`  - No ${NOME_DO_BOLSO[d.bolso]}, a mais que no típico: ${listaDeIds(mais)}; a menos: ${listaDeIds(menos)}.`);
+}
 l();
 l('## Storylets');
 l();
@@ -1264,7 +1282,10 @@ console.log(
     `mobilidade diag ${pct(mob.diagonal)} ρ ${num(mob.spearman, 2)} · p90/p10 ${Number.isFinite(razao9010) ? num(razao9010, 1) : 'p10≤0'} · desvio felicidade ${num(desvioFelicidade, 2)} · ` +
     `negativas ${pct(negativas)} · jogador ${pct(parteJogador)} · toques ${num(toques, 1)} · ${num(msPorVida, 2)} ms/vida`,
 );
-console.log(`Falsos dilemas: ${dilemasFalsos.length} · arriscar nunca compensa: ${semTensao.length}`);
+console.log(
+  `Falsos dilemas: ${dilemasFalsos.length} (${dilemas.map((d) => `${NOME_DO_BOLSO[d.bolso]} ${d.falsos.length}`).join(' · ')}) · ` +
+    `arriscar nunca compensa: ${dilemas.map((d) => `${NOME_DO_BOLSO[d.bolso]} ${d.risco.achados.length} de ${d.risco.avaliados}`).join(' · ')}`,
+);
 console.log(`Idade média ${num(media(idades))} · patrimônio mediano ${formatarDinheiro(percentil(patOrd, 50))} · felicidade média ${num(media(felicidades))}`);
 for (const r of porEstrategia) {
   console.log(`  ${r.estrategia.padEnd(10)} idade ${num(r.idade)} · patrimônio ${formatarDinheiro(r.patrimonio)} · felicidade ${num(r.felicidade)} · storylets ${num(r.eventos)} · ações ${num(r.acoes)} · V5 ${pct(r.saturacaoV5, 0)}`);

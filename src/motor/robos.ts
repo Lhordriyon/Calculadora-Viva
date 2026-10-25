@@ -22,7 +22,7 @@ import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Parceiro, type Poli
 import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
-import { empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
+import { abrirPorEfeito, empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
 import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
@@ -182,15 +182,22 @@ export function avaliarEscolha(esc: Corpo, e: EstadoVida, c: Conteudo, ator?: st
   return { esperado, risco: Math.sqrt(variancia) + expo };
 }
 
-function melhorPor(estrategia: 'cautelosa' | 'arriscada', avaliacoes: Avaliacao[]): number {
-  let melhor = 0;
+/**
+ * A melhor opção para a estratégia: o menor (cautelosa) ou o maior (arriscada) risco e, no mesmo risco, o maior
+ * valor esperado. Empate em tudo (o voto, o amigo em apuros) se resolve no sorteio do robô, como quem joga escolhe
+ * entre opções que valem o mesmo; sem isso, o robô levava sempre a primeira e votava 100% num bloco só.
+ */
+function melhorPor(estrategia: 'cautelosa' | 'arriscada', avaliacoes: Avaliacao[], rng: Rng): number {
+  let melhores = [0];
   for (let i = 1; i < avaliacoes.length; i++) {
     const a = avaliacoes[i]!;
-    const m = avaliacoes[melhor]!;
+    const m = avaliacoes[melhores[0]!]!;
     const dif = estrategia === 'cautelosa' ? m.risco - a.risco : a.risco - m.risco;
-    if (dif > 1e-9 || (Math.abs(dif) <= 1e-9 && a.esperado > m.esperado + 1e-9)) melhor = i;
+    if (dif > 1e-9 || (Math.abs(dif) <= 1e-9 && a.esperado > m.esperado + 1e-9)) melhores = [i];
+    else if (Math.abs(dif) <= 1e-9 && Math.abs(a.esperado - m.esperado) <= 1e-9) melhores.push(i);
   }
-  return melhor;
+  // Só sorteia no empate: fora dele, o rng do robô segue a mesma sequência.
+  return melhores.length === 1 ? melhores[0]! : sortear(rng, melhores);
 }
 
 /** Índice da escolha que a estratégia faz na pendência atual. */
@@ -203,7 +210,7 @@ export function decidir(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   if (estrategia === 'primeira') return disponiveis[0]!;
   if (estrategia === 'aleatoria') return sortear(rng, disponiveis);
   const av = disponiveis.map((i) => avaliarEscolha(escolhas[i]!, e, c, p.ator));
-  return disponiveis[melhorPor(estrategia, av)]!;
+  return disponiveis[melhorPor(estrategia, av, rng)]!;
 }
 
 function corpoDaAcao(s: Storylet): Corpo {
@@ -234,7 +241,7 @@ export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
     return { verbo: a.verbo, escolha: { id: a.s.id, ator: a.ator } };
   }
   const av = [{ esperado: 0, risco: 0 }, ...todas.map((a) => avaliarEscolha(corpoDaAcao(a.s), e, c, a.ator))];
-  const i = melhorPor(estrategia, av);
+  const i = melhorPor(estrategia, av, rng);
   if (i === 0) return null;
   const a = todas[i - 1]!;
   return { verbo: a.verbo, escolha: { id: a.s.id, ator: a.ator } };
@@ -622,13 +629,70 @@ function domina(a: Vetor, b: Vetor): boolean {
 }
 
 /**
- * Falso dilema: uma escolha melhor ou igual às outras em tudo (efeitos esperados,
- * risco, mesmas qualidades). Avaliado num estado típico de adulto.
+ * Os três bolsos de adulto em que os dilemas se medem: a mesma escolha pesa diferente com R$ 1 mil, R$ 10 mil ou
+ * R$ 50 milhões na conta (dinheiro e renda por ano em reais de hoje). Criança não tem bolso: vale o mesmo nos três.
  */
-export function falsosDilemas(c: Conteudo, e: EstadoVida): { evento: string; escolha: number }[] {
+export const BOLSOS = {
+  pobre: { dinheiro: 1_000, renda: 18_000, custo: 15_000 },
+  tipico: { dinheiro: 10_000, renda: 30_000, custo: 18_000 },
+  rico: { dinheiro: 50_000_000, renda: 600_000, custo: 120_000 },
+} as const;
+export type Bolso = keyof typeof BOLSOS;
+export const NOMES_DOS_BOLSOS = Object.keys(BOLSOS) as Bolso[];
+
+/** A empresa típica de quem tem uma, para medir os storylets que pedem empresa: R$ 1 milhão, inteira de quem joga. */
+export const EMPRESA_TIPICA = 1_000_000;
+
+/** Um estado típico para a idade de um storylet (atributos médios daquela fase), no bolso dado. */
+export function estadoTipico(base: EstadoVida, idade: number, bolso: Bolso = 'tipico'): EstadoVida {
+  const e = structuredClone(base);
+  e.idade = idade;
+  e.ano = e.anoNascimento + idade;
+  const crianca = idade < 18;
+  const n = e.entidades['eu']!.n;
+  const b = BOLSOS[bolso];
+  Object.assign(n, {
+    saude: crianca ? 85 : idade < 60 ? 65 : 45,
+    felicidade: 60,
+    inteligencia: crianca ? 30 + idade * 1.5 : 55,
+    aparencia: 50,
+    renda: crianca ? 0 : b.renda,
+    custo: crianca ? 0 : b.custo,
+    dinheiro: crianca ? 0 : b.dinheiro,
+    divida: 0,
+  });
+  return e;
+}
+
+/** O storylet só acontece com empresa: alguma condição lê a empresa de quem joga (e não pede que ela falte). */
+export function pedeEmpresa(s: Storylet): boolean {
+  const cond = s.condicoes;
+  if (!cond) return false;
+  const daEmpresa = (m: string): boolean => m.startsWith('empresa.');
+  if ((cond.marcas ?? []).some(daEmpresa) || (cond.algumaMarca ?? []).some(daEmpresa) || (cond.marcaHa ?? []).some((x) => daEmpresa(x.marca))) return true;
+  return Object.entries(cond).some(([k, v]) => (k === 'empresas' || daEmpresa(k)) && v !== false);
+}
+
+/**
+ * O estado em que um dilema se mede: o estado típico da idade, no bolso dado, e, se o storylet pede empresa, com a
+ * empresa típica (sem ela, a régua dava zero a tudo o que mexe na empresa).
+ */
+export function estadoDoDilema(c: Conteudo, base: EstadoVida, s: Storylet, idade: number, bolso: Bolso = 'tipico'): EstadoVida {
+  const e = estadoTipico(base, idade, bolso);
+  if (pedeEmpresa(s)) abrirPorEfeito(e, c, [], { setor: 'comercio', valor: EMPRESA_TIPICA }, undefined, 0);
+  return e;
+}
+
+/**
+ * Falso dilema: uma escolha melhor ou igual às outras em tudo (efeitos esperados,
+ * risco, mesmas qualidades). Avaliado num estado típico de adulto, no bolso dado.
+ */
+export function falsosDilemas(c: Conteudo, base: EstadoVida, bolso: Bolso = 'tipico'): { evento: string; escolha: number }[] {
   const achados: { evento: string; escolha: number }[] = [];
+  const semEmpresa = estadoTipico(base, 30, bolso);
   for (const s of c.storylets) {
     if (!s.escolhas || s.escolhas.length < 2) continue;
+    const e = pedeEmpresa(s) ? estadoDoDilema(c, base, s, 30, bolso) : semEmpresa;
     const vetores = s.escolhas.map((esc) => vetorDe(esc, e, c));
     const i = vetores.findIndex((a, k) => vetores.every((b, j) => j === k || domina(a, b)));
     if (i >= 0) achados.push({ evento: s.id, escolha: i });
@@ -636,43 +700,27 @@ export function falsosDilemas(c: Conteudo, e: EstadoVida): { evento: string; esc
   return achados;
 }
 
-/** Um estado típico para a idade de um storylet (atributos médios daquela fase). */
-export function estadoTipico(base: EstadoVida, idade: number): EstadoVida {
-  const e = structuredClone(base);
-  e.idade = idade;
-  e.ano = e.anoNascimento + idade;
-  const crianca = idade < 18;
-  const n = e.entidades['eu']!.n;
-  Object.assign(n, {
-    saude: crianca ? 85 : idade < 60 ? 65 : 45,
-    felicidade: 60,
-    inteligencia: crianca ? 30 + idade * 1.5 : 55,
-    aparencia: 50,
-    renda: crianca ? 0 : 30000,
-    custo: crianca ? 0 : 18000,
-    dinheiro: crianca ? 0 : 10000,
-    divida: 0,
-  });
-  return e;
-}
-
 /**
  * Storylets em que arriscar nunca compensa: há opção com risco, mas a mais
  * segura também tem o maior valor esperado. (Armadilhas de propósito entram
  * aqui e tudo bem; o número serve para não deixar o jogo inteiro assim.)
+ * `avaliados` é o denominador: os storylets com 2 ou mais opções sem condição
+ * e alguma com risco, os únicos que a conta olha.
  */
-export function arriscarNaoCompensa(c: Conteudo, base: EstadoVida): string[] {
+export function arriscarNaoCompensa(c: Conteudo, base: EstadoVida, bolso: Bolso = 'tipico'): { avaliados: number; achados: string[] } {
   const achados: string[] = [];
+  let avaliados = 0;
   for (const s of c.storylets) {
     if (!s.escolhas || s.escolhas.length < 2) continue;
     const idade = s.idade ? Math.round((s.idade[0] + s.idade[1]) / 2) : 30;
-    const e = estadoTipico(base, idade);
+    const e = estadoDoDilema(c, base, s, idade, bolso);
     // Opções com condição são situacionais (dependem de qualidades ou dinheiro): ficam de fora.
     const av = s.escolhas.filter((esc) => !esc.condicoes).map((esc) => avaliarEscolha(esc, e, c));
     if (av.length < 2) continue;
     if (!av.some((a) => a.risco > 1e-9)) continue;
+    avaliados++;
     const segura = av.reduce((m, a, i) => (a.risco < av[m]!.risco - 1e-9 || (Math.abs(a.risco - av[m]!.risco) <= 1e-9 && a.esperado > av[m]!.esperado) ? i : m), 0);
     if (av.every((a) => a.esperado <= av[segura]!.esperado + 1e-9)) achados.push(s.id);
   }
-  return achados;
+  return { avaliados, achados };
 }
