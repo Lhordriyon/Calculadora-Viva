@@ -174,5 +174,6 @@
   "sem_vacina": { "epitafio": "Cresceu sem vacina, e com mais sorte que juízo." },
   "prematuro": { "epitafio": "Chegou antes da hora e passou a vida sem pressa." },
   "asma": { "epitafio": "Respirou fundo a vida inteira, com bombinha no bolso." },
-  "musica_cedo": { "epitafio": "Aprendeu as cantigas da avó antes de aprender a falar." }
+  "musica_cedo": { "epitafio": "Aprendeu as cantigas da avó antes de aprender a falar." },
+  "veterano": { "epitafio": "Voltou da guerra e nunca contou tudo." }
 }

@@ -1,0 +1,263 @@
+[
+  {
+    "id": "a_convocacao",
+    "apenasAgendado": true,
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "marcas": ["ator.guerra"] },
+    "texto": "Com a guerra contra {ator:o|a} {ator}, chegou a carta da convocação: quartel em quinze dias, documento, roupa de frio e nenhuma pergunta. Veio com carimbo vermelho e um formulário em três vias.",
+    "resumo": "recebeu a carta da convocação para a guerra",
+    "escolhas": [
+      {
+        "texto": "Se apresentar no quartel",
+        "resumo": "se apresentou no quartel para a guerra contra {ator:o|a} {ator}",
+        "resultado": {
+          "texto": "Meses de farda, frio e espera. Você voltou inteiro por fora, com um apelido que ninguém em casa entende e o sono mais leve do que antes.",
+          "efeitos": { "marcas": ["veterano"], "saude": -4, "felicidade": -4, "eu.influencia": 2 }
+        }
+      },
+      {
+        "texto": "Pedir dispensa à junta",
+        "resumo": "pediu dispensa da guerra à junta militar",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "A junta aceitou: arrimo de família, com laudo e carimbo. Você ficou, e a culpa veio morar junto.",
+          "resumo": "conseguiu a dispensa da guerra",
+          "efeitos": { "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "A junta negou em trinta segundos. Você foi para o quartel com o pedido de dispensa ainda no bolso e voltou meses depois, sem vontade de contar.",
+          "resumo": "teve a dispensa negada e foi para a guerra",
+          "efeitos": { "marcas": ["veterano"], "saude": -4, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Sumir no interior até passar",
+        "resumo": "fugiu da convocação para o interior",
+        "resultado": {
+          "texto": "Você passou a guerra numa cidade de três ruas, com outro nome no crachá do mercadinho. Quando voltou, a vizinhança lembrava.",
+          "efeitos": { "dinheiro": -2000, "felicidade": -3, "eu.popularidade": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "filho_convocado",
+    "apenasAgendado": true,
+    "ator": ["filho"],
+    "condicoes": { "marcas": ["pai_mae"] },
+    "valores": { "advogado": 8000 },
+    "texto": "Chegou a carta da convocação de {ator}: quartel em quinze dias, roupa de frio e nenhuma pergunta. {ator} leu em voz alta, rindo de nervoso; você leu de novo, sem rir.",
+    "resumo": "viu {ator} ser {ator:convocado|convocada} para a guerra",
+    "escolhas": [
+      {
+        "texto": "Levar {ator} até o quartel",
+        "resumo": "levou {ator} até o quartel na guerra",
+        "resultado": {
+          "texto": "Você ficou no portão até o ônibus virar a esquina. As cartas chegavam toda semana, curtas; um dia, {ator} voltou, mais calado e mais alto.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": -5, "saude": -2 }
+        }
+      },
+      {
+        "texto": "Pagar um advogado para a dispensa ({advogado})",
+        "resumo": "pagou um advogado para livrar {ator} da guerra",
+        "condicoes": { "dinheiro": { "min": 8000 } },
+        "bloqueio": "precisa de R$ 8 mil na conta",
+        "resultado": {
+          "texto": "O advogado achou um laudo, um carimbo e uma brecha. {ator} ficou em casa e passou a guerra fingindo que não ouvia o noticiário.",
+          "efeitos": { "dinheiro": -8000, "ator.vinculo": 3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Deixar {ator} decidir",
+        "resumo": "deixou {ator} decidir se ia para a guerra",
+        "resultado": {
+          "texto": "{ator} decidiu ir. Você ajudou a fazer a mala e passou meses dormindo com o celular no peito. {ator:Ele|Ela} voltou, e vocês nunca mais falaram de política no almoço.",
+          "efeitos": { "ator.vinculo": 4, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "racionamento",
+    "idade": [16, 95],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "marcas": ["ator.guerra"] },
+    "peso": 10,
+    "texto": "Com a guerra contra {ator:o|a} {ator}, o mercado limitou o arroz, o óleo e a gasolina: duas unidades por CPF e fila desde as cinco da manhã. O vizinho do 302 já tem um quartinho só de lata.",
+    "resumo": "viveu o racionamento da guerra",
+    "escolhas": [
+      {
+        "texto": "Estocar o que der",
+        "resumo": "estocou comida no racionamento da guerra",
+        "resultado": {
+          "texto": "Você voltou com o porta-malas cheio e a consciência pesada. Em casa, ninguém passou vontade; no prédio, ninguém mais te cumprimenta.",
+          "efeitos": { "dinheiro": -1500, "felicidade": 1, "saude": 2 }
+        }
+      },
+      {
+        "texto": "Dividir o que tem com os vizinhos",
+        "resumo": "dividiu a comida com os vizinhos no racionamento da guerra",
+        "resultado": {
+          "texto": "Você montou uma caixa na portaria: quem tem deixa, quem precisa leva. O prédio comeu menos e brigou menos.",
+          "efeitos": { "dinheiro": -300, "felicidade": 3, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Encarar a fila como todo mundo",
+        "resumo": "encarou a fila do racionamento da guerra",
+        "resultado": {
+          "texto": "Três horas de fila, duas latas de óleo e uma amizade nova com a senhora da frente. Faltou um pouco de tudo, menos assunto.",
+          "efeitos": { "felicidade": -1, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "fabrica_de_municao",
+    "idade": [18, 60],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "marcas": ["ator.guerra"], "cargo": false, "renda": { "min": 1 }, "patrimonio": { "max": 3000000 }, "semMarcas": ["aposentado"] },
+    "peso": 10,
+    "texto": "A fábrica de [panelas|autopeças|geladeiras] da cidade virou fábrica de munição para a guerra contra {ator:o|a} {ator}: hora extra em dobro, turno da noite e ninguém fala do que sai pelo portão dos fundos.",
+    "resumo": "teve a chance de um turno extra numa fábrica de munição",
+    "escolhas": [
+      {
+        "texto": "Pegar o turno da noite",
+        "resumo": "trabalhou no turno da noite de uma fábrica de munição",
+        "resultado": {
+          "texto": "Seis meses de pó de pólvora, café de garrafa térmica e um salário que você nunca tinha visto. Você dormia de dia e sonhava com barulho.",
+          "efeitos": { "dinheiro": 9000, "saude": -3, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Recusar e ficar no que faz",
+        "resumo": "recusou o turno na fábrica de munição",
+        "resultado": {
+          "texto": "Você disse que não sabia mexer com aquilo, o que era verdade e também desculpa. O dinheiro extra ficou para quem precisava mais, ou se importava menos.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "guerra_na_escola",
+    "idade": [7, 15],
+    "ator": ["federacao", "celeste", "liga", "pacto"],
+    "condicoes": { "marcas": ["ator.guerra"] },
+    "peso": 10,
+    "texto": "Por causa da guerra contra {ator:o|a} {ator}, a escola fez um simulado de abrigo: todo mundo embaixo da carteira, contando até cem. O professor de história ficou mais sério do que o normal.",
+    "resumo": "fez um simulado de abrigo na escola por causa da guerra",
+    "escolhas": [
+      {
+        "texto": "Decorar o caminho do abrigo",
+        "resumo": "decorou o caminho do abrigo da escola na guerra",
+        "resultado": {
+          "texto": "Você desenhou o mapa da escola com setas e entregou para a diretora. Ela pendurou no mural e disse que era o melhor plano que já tinham.",
+          "efeitos": { "inteligencia": 2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fazer piada embaixo da carteira",
+        "resumo": "fez a turma rir no simulado de abrigo da guerra",
+        "resultado": {
+          "texto": "Você imitou o diretor contando até cem, e a sala inteira riu embaixo das carteiras. Ganhou uma advertência e o recreio mais famoso do ano.",
+          "efeitos": { "felicidade": 3, "inteligencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_veterano",
+    "idade": [21, 95],
+    "condicoes": { "marcaHa": [{ "marca": "veterano", "min": 3, "max": 40 }], "pais.guerra": false },
+    "peso": 5,
+    "texto": "Num churrasco, alguém que nunca saiu do bairro pergunta como foi a guerra. A carne chiando na grelha faz um barulho parecido com outra coisa.",
+    "resumo": "ouviu uma pergunta sobre a guerra num churrasco",
+    "escolhas": [
+      {
+        "texto": "Contar o que dá para contar",
+        "resumo": "contou um pouco da guerra num churrasco",
+        "resultado": {
+          "texto": "Você contou a parte do frio, da comida e dos amigos. A outra parte ficou no copo. Na volta, dormiu melhor.",
+          "efeitos": { "felicidade": 2, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Procurar o grupo de veteranos",
+        "resumo": "procurou um grupo de veteranos da guerra",
+        "resultado": {
+          "texto": "Toda quinta, num salão de igreja, gente que esteve lá toma café ruim e fala pouco. É o único lugar em que o silêncio não pesa.",
+          "efeitos": { "felicidade": 3, "saude": 1, "dinheiro": -200 }
+        }
+      },
+      {
+        "texto": "Mudar de assunto e ir embora cedo",
+        "resumo": "fugiu da conversa sobre a guerra",
+        "resultado": {
+          "texto": "Você disse que não lembrava direito e foi embora antes da sobremesa. Em casa, deixou a TV ligada a noite toda.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "desfile_de_sete_de_setembro",
+    "idade": [6, 13],
+    "condicoes": { "pais.defesa": { "min": 62 } },
+    "peso": 2,
+    "texto": "No desfile de Sete de Setembro, os caças passaram tão baixo que o algodão-doce voou. Os tanques ligaram de primeira, o que, segundo um senhor de boné, era novidade.",
+    "resumo": "viu os caças passarem baixo no desfile de Sete de Setembro",
+    "escolhas": [
+      {
+        "texto": "Decidir que vai ser piloto",
+        "resumo": "decidiu ser piloto vendo o desfile de Sete de Setembro",
+        "resultado": {
+          "texto": "Você passou o mês desenhando caça no caderno e perguntando como se faz para voar. A professora de geografia agradeceu o interesse pelo mapa.",
+          "efeitos": { "inteligencia": 1, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Tapar os ouvidos e pedir pipoca",
+        "resumo": "assistiu o desfile de Sete de Setembro comendo pipoca",
+        "resultado": {
+          "texto": "Barulho demais para um feriado. Você viu o resto do desfile de costas, comendo pipoca doce, perfeitamente feliz.",
+          "efeitos": { "felicidade": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quartel_sem_verba",
+    "idade": [18, 60],
+    "condicoes": { "carreira": "militar", "pais.pol_defesa": { "max": 0 } },
+    "peso": 4,
+    "texto": "Com a defesa desmobilizada, o quartel cortou o treino de tiro, o rancho de sábado e a promoção da sua turma. O caminhão do batalhão anda empurrado, e o coronel chama isso de \"exercício\".",
+    "resumo": "viu o quartel ficar sem verba",
+    "escolhas": [
+      {
+        "texto": "Fazer bico de segurança nas folgas",
+        "resumo": "fez bico de segurança nas folgas do quartel",
+        "resultado": {
+          "texto": "Fim de semana de colete na porta de festa de quinze anos. O dinheiro ajuda; o sono, nem tanto.",
+          "efeitos": { "dinheiro": 4000, "saude": -2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Estudar para um concurso de fora",
+        "resumo": "estudou para um concurso fora do quartel",
+        "resultado": {
+          "texto": "Apostila na guarita, vídeo-aula no alojamento. O quartel não paga, mas ensina a ter paciência.",
+          "efeitos": { "inteligencia": 3, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Esperar a verba voltar",
+        "resumo": "esperou a verba do quartel voltar",
+        "resultado": {
+          "texto": "Você aprendeu a consertar o caminhão com arame e fé. Ninguém promove por isso, mas todo mundo te chama quando quebra.",
+          "efeitos": { "felicidade": 1, "eu.influencia": 1 }
+        }
+      }
+    ]
+  }
+]
