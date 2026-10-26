@@ -838,7 +838,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Pedido do dono (19/10):** usar o Tesouro do Estado para pagar pesquisa e desenvolvimento. Depende do orçamento em reais (I-31).
 - **Desenho do bloco D (26/10):**
   - **A política "Ciência e tecnologia"**, a sétima da folha País, com três níveis: cortada, regular ou prioridade.
-    - No nível regular, o governo põe 0,5% do PIB em pesquisa; cortada tira 0,3 ponto do gasto, e prioridade soma 0,6.
+    - No nível regular, o governo põe 0,5% do PIB em pesquisa; cortada tira 0,2 ponto do gasto, e prioridade soma 0,4.
     - O dinheiro sai do Tesouro: o gasto entra no primário, e a dívida anda com ele. A folha País mostra quanto é, em reais.
     - Cada bloco tem o seu nível: a frente popular e o Regime pesquisam como prioridade, o bloco liberal corta, a aliança da ordem e o centrão ficam no regular. O voto decide a pesquisa.
   - **O estoque de tecnologia** (`pais.tecnologia`, de 0 a 100) anda devagar para o alvo: 6% do caminho por ano, uma década para chegar perto. O alvo é 50, mais 15 com a prioridade (menos 15 com a ciência cortada), mais 0,4 ponto por ponto de escola acima de 50.
@@ -853,7 +853,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
     - a causa é a decisão que pôs a ciência como prioridade (a posse do governo ou a reforma) nos últimos 30 anos.
   - **A fuga de cérebros:** abaixo de 42, os laboratórios esvaziam (12% por ano, no máximo uma a cada 10 anos). A tecnologia perde 3 pontos, e o corte é a causa.
   - **Na vida de quem joga:**
-    - quem pesquisa recebe o edital (com a prioridade) ou o corte da bolsa (com a ciência cortada), e a decisão do governo é a causa;
+    - quem está na faculdade ganha a chance da bolsa de iniciação (com a prioridade) ou vê a federal parar (com a ciência cortada); quem já pesquisou é chamado para o edital ou vê o antigo laboratório apagar a luz; a decisão do governo é a causa;
     - a vacina daqui chega ao posto, o satélite passa na TV de quem é criança, e quem tem dinheiro pode entrar de sócio na empresa que nasceu da patente;
     - as jogadas de quem é bilionário (a cura e o foguete) somam ao estoque do país.
   - **Ler a política é consultar quem a decidiu:** o storylet que pede `pais.pol_pesquisa` aponta a posse ou a reforma que a pôs ali.

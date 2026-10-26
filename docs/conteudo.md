@@ -173,6 +173,14 @@ Toda dívida é um contrato com o banco (`docs/motor.md`): o cheque especial, o 
 - **A carta do banco** (o storylet `nome_sujo`) é agendada pelo motor quando o nome suja, e pelo rotativo; ela só chega se o nome estiver sujo.
 - **Renegociar é decisão.** A escolha que fecha um acordo usa `renegociar`. A que só abate (vender o carro, cortar tudo) usa `dividaFator` ou `divida` negativo.
 
+## A ciência e a tecnologia (bloco D)
+
+Quem governa decide a ciência, e a tecnologia do país chega à vida (`docs/motor.md › O Estado pesquisa`).
+- **`pais.pol_pesquisa`** (0 cortada, 1 regular, 2 prioridade) é a política de agora. Condição: `"pais.pol_pesquisa": { "max": 0 }`. O storylet que a pede ganha de causa a posse ou a reforma que a pôs ali.
+- **`pais.tecnologia`** (de 0 a 100) é o estoque do país. Condição: `"pais.tecnologia": { "min": 60 }`; efeito: `"pais.tecnologia": 3` (a cura paga por quem é bilionário soma ao país).
+- **A carreira que a ciência paga** (`mundo.json › carreiras › verba: "pesquisa"`): quem é cientista entra e sobe mais com a prioridade. `"carreira": ["pesquisador"]` nas condições pega quem é cientista agora.
+- **Os agendados do motor:** a vacina no posto, o satélite na TV e a empresa da patente chegam no ano seguinte à descoberta, com ela de causa; eles não podem pedir idade (o motor confere a idade ao agendar).
+
 ## A coroa e a ilha (bloco C)
 
 Quem tem coroa escolhe como ela recebe (`docs/motor.md › A coroa`). O conteúdo lê e, quando a história pede, muda a forma.

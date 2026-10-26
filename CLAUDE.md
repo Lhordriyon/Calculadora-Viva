@@ -91,6 +91,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   dividas.ts           o ano das dívidas: parcela, atraso, nome sujo, caducar; renegociar e quitar
   tesouro.ts           o título do Tesouro: a taxa travada, o cupom, o vencimento, a venda pelo preço do dia e o calote
   coroa.ts             a coroa recebe: a forma (salário, parte dos impostos, taxa), a dotação e o preço na aprovação; a ilha que quem joga fundou
+  pesquisa.ts          o Estado pesquisa: o gasto da ciência em reais, a verba das carreiras, as descobertas (a cura, o satélite, a patente) e a fuga de cérebros, com a decisão de causa
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
   familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor, iniciativas
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro), sem estado novo
@@ -242,3 +243,6 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem tem coroa (o monarca do Brasil e quem é soberano da ilha) escolhe como ela recebe: o salário da Casa Real, uma parte dos impostos ou a taxa da coroa; a dotação é a renda de quem reina, paga pelo tesouro ou pela ilha | dono (bloco C) | "por que o soberano não recebe salário, parte dos impostos ou taxa da coroa" |
 | Cobrar mais custa aprovação (5 pontos com a parte dos impostos, 15 com a taxa), a reação chega com o decreto de causa, e abaixo de 30 vem o plebiscito ou a greve; a forma muda uma vez por ano | agente (bloco C) | sem preço, a taxa da coroa seria a resposta certa; com ele, cobrar é aposta, e o porquê fica no livro |
 | A ilha que quem joga funda é uma entidade com população, PIB e imposto, que anda todo ano e passa a quem herda | dono (bloco C) | "a ilha soberana ganha população, PIB e imposto": o país fundado precisava existir depois da jogada |
+| Quem governa decide a ciência (cortada, regular, prioridade: de 0,3% a 0,9% do PIB, pagos pelo Tesouro), e a tecnologia do país anda devagar com ela e com a escola e volta como crescimento, saúde pública, tração das empresas e a vaga de quem é cientista | dono (bloco D) | "usar o Tesouro do Estado para pagar pesquisa e desenvolvimento" |
+| A descoberta (a cura, o satélite, a patente) e a fuga de cérebros são entradas do mundo que apontam a decisão que fez o estoque (a posse ou a reforma, mesmo desfeita depois), e chegam à vida de quem joga no ano seguinte | agente (bloco D) | a pesquisa vira cura, satélite e patente, e o porquê vale para ela como para a fase e a sanção |
+| Ler uma política é consultar quem a decidiu: o storylet que pede `pais.pol_*` aponta a posse ou a reforma que a pôs ali | agente (bloco D) | o corte da bolsa precisa mostrar o corte da ciência como causa, e não só a marca de quem pesquisa |

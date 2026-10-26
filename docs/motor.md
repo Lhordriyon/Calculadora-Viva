@@ -20,8 +20,8 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 ## Um ano (`avancarAno`)
 
-**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 21 etapas e o que cada uma lê e escreve, em caminhos genéricos:
-- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `tesouro`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `coroa`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
+**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 22 etapas e o que cada uma lê e escreve, em caminhos genéricos:
+- a ordem: `exterior`, `pais`, `pesquisa`, `mercado`, `economia`, `empresa`, `bens`, `tesouro`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `coroa`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
 - os caminhos: `pessoa.saude` vale para qualquer personagem; `bem.*`, `ctr.*`, `tit.*`, `empresa.*` e `fora.*` valem para qualquer bem, contrato, título do Tesouro, empresa e país de fora; `agenda` é o que fica marcado para um ano que vem; `ano.fase`, `ano.mercado` e `ano.economia` são o que uma etapa passa às seguintes sem gravar no estado; `*` é o conteúdo.
 
 `vida.ts › ETAPAS` roda as etapas nessa ordem, e o ano para quando a vida acaba ou o storylet do ano acontece.
@@ -39,13 +39,14 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
    - **a economia de cada um**: volta para o crescimento dele (60% do desvio fica), com a sorte que o mundo divide (0,5 ponto) e a dele; a crise de lá (1% a 2% por ano, −4 pontos lá) e o boom da Celeste (3%, +3) viram notícias;
    - **o que chega aqui**: a crise de lá tira 3 pontos do crescimento daqui (vezes o peso do país ÷ 0,3, até 1) e põe 2,5 de inflação; o boom soma 2; o que o mundo compra a mais ou a menos soma 0,15 × peso × o desvio de cada um (sem a demanda de quem sanciona); a sanção tira 1,2 × peso por ano e o acordo soma 0,5 × peso. A notícia da crise de fora é a primeira causa da virada da fase daqui;
    - **o dólar** (`pais.cambio`, em reais de hoje): anda 30% por ano para um alvo de R$ 5 que sobe com a dívida acima de 75% do PIB, com as sanções e com a economia daqui abaixo do potencial no ano anterior, e cai com o juro real alto e com o mundo comprando do Brasil; a crise lá fora o faz saltar 16% no ano e o boom o derruba 8%; sorte de 8%. Entre R$ 2 e R$ 15.
-3. **O país vivo** (`pais.ts`). Andam dez estatísticas, puxadas pelo ano anterior, pelas políticas de quem governa (`mundo.json › politicas`: impostos, programas sociais, saúde, educação, segurança e comércio exterior, cada uma em três níveis), pelo empurrão dos decretos (`pais.impulso`, de −3 a 3, que some pela metade a cada ano), pelo mundo lá fora e pela sorte:
-   - **crescimento** (% do PIB): volta 20% por ano para o potencial. O potencial é 2% com as políticas médias; imposto baixo soma 0,5 e alto tira 0,5; a fronteira aberta soma 0,3 e fechada tira 0,4; a escola boa sobe devagar; dívida acima de 90% do PIB e violência acima de 25 por 100 mil tiram. Desvio de 1,05 ponto, mais o que vem de fora; com a dívida acima de 100% do PIB, a fuga de capitais (0,2% de chance por ponto acima, até 8%) faz o choque de uma crise. O decreto soma 0,6 × impulso; o juro real acima do neutro freia;
+3. **O país vivo** (`pais.ts`). Andam onze estatísticas, puxadas pelo ano anterior, pelas políticas de quem governa (`mundo.json › politicas`: impostos, programas sociais, saúde, educação, segurança, comércio exterior e ciência e tecnologia, cada uma em três níveis), pelo empurrão dos decretos (`pais.impulso`, de −3 a 3, que some pela metade a cada ano), pelo mundo lá fora e pela sorte:
+   - **crescimento** (% do PIB): volta 20% por ano para o potencial. O potencial é 2% com as políticas médias; imposto baixo soma 0,5 e alto tira 0,5; a fronteira aberta soma 0,3 e fechada tira 0,4; a escola boa sobe devagar; a tecnologia soma 0,02 por ponto acima de 50; dívida acima de 90% do PIB e violência acima de 25 por 100 mil tiram. Desvio de 1,05 ponto, mais o que vem de fora; com a dívida acima de 100% do PIB, a fuga de capitais (0,2% de chance por ponto acima, até 8%) faz o choque de uma crise. O decreto soma 0,6 × impulso; o juro real acima do neutro freia;
    - **desemprego**: volta para o natural (8,5%, menos com escola boa) e cai 0,45 ponto por ponto de crescimento acima do potencial;
    - **inflação**: metade da do ano passado e metade da meta (4,5%), mais a economia quente, o decreto, a dívida alta, a alta do dólar (0,08 ponto por ponto percentual de alta no ano) e a tarifa (com o tempo, −0,5 ponto com a fronteira aberta e +0,8 com ela fechada);
    - **juros** (Selic): juro real neutro de 4% mais a inflação, mais metade do que ela passa da meta, mais a economia quente e o prêmio da dívida alta;
    - **dívida pública**: sobe com o que o governo gasta acima do que arrecada (políticas, emendas, decretos) e com a recessão, que derruba a arrecadação; acima de 75% do PIB, quem governa corta 5% do excesso por ano. Com ela acima de 100% do PIB, numa recessão ou numa crise (as do ano passado), vem o **calote** com 1% de chance por ponto acima de 100 (até 25%): a economia perde 2 pontos de crescimento e ganha 2 de inflação no ano, a dívida cai um quarto, e a Selic paga 2 pontos a mais, que somem em seis anos (`pais.calote` guarda o ano). Quem perde está em `tesouro.ts`;
-   - **pobreza, violência, saúde e educação públicas**: andam 30%, 20%, 15% e 8% por ano para onde as políticas, o desemprego, a pobreza e a dívida levam (a escola leva uma geração);
+   - **pobreza, violência, saúde e educação públicas**: andam 30%, 20%, 15% e 8% por ano para onde as políticas, o desemprego, a pobreza e a dívida levam (a escola leva uma geração). O alvo da saúde ganha 0,2 por ponto de tecnologia acima de 50;
+   - **tecnologia** (bloco D, `pais.tecnologia`, de 0 a 100): anda 6% por ano para 50, mais o efeito da ciência (−15 cortada, +15 com a prioridade), mais 0,4 por ponto de escola acima de 50 (uma década para chegar perto). Quem nasce começa em 50 + 0,6 × o efeito da ciência do governo + 0,4 × (escola − 50); o save de antes ganha esse valor e a ciência do governo de agora no primeiro ano, sem sorteio;
    - **aprovação do governo**: anda 35% por ano para um alvo feito de crescimento, desemprego, inflação, violência, saúde pública e do que as políticas agradam.
    - **o país em números** (bloco A): o PIB (`pais.pib`, em reais de hoje, R$ 11,7 trilhões em 2026) cresce exatamente o crescimento do ano, já arredondado; a população (`pais.populacao`, 213 milhões em 2026) cresce `0,45% − 0,022 por ano depois de 2026` (com piso de −0,35%), mais 0,01 por ponto de saúde pública acima de 50 e 0,006 por ponto de pobreza acima de 25 (`regras.ts › DEMOGRAFIA`). Três números são derivados, sem estado (`campos.ts › indicadoresDoPais`): o PIB per capita; o Gini, `0,52 + 0,005 × (pobreza − 25) − 0,0015 × (educação − 50)`, entre 0,25 e 0,75; e o IDH, a média geométrica de saúde (expectativa de vida `62 + 0,3 × saúde`), educação (`0,4 + 0,0056 × educação`) e renda (log do PIB per capita em dólar, com paridade de poder de compra de 1,6, entre US$ 100 e US$ 75 mil). O alvo da violência passou a ler o Gini (60 por ponto acima de 0,52), o que soma o efeito da educação ao da pobreza. Save antigo: `iniciarNumeros` projeta o PIB e a população de 2026 até o ano do save, sem sorteio.
 
@@ -213,6 +214,25 @@ Quem tem coroa (o monarca do Brasil, cargo `rei`, e quem é soberano da ilha, ca
   - sem soberano (quem fundou desceu do trono ou fez a república), a coroa não cobra nada;
   - o save antigo de quem fundou um país (a marca `micronacao` sem ilha) ganha a ilha no primeiro ano;
   - na herança, a ilha passa a quem herda (com a marca `micronacao` e o reconhecimento), e quem era soberano deixa a coroa da ilha, com a dotação dela.
+
+## O Estado pesquisa (`pesquisa.ts`, bloco D)
+
+Quem governa decide quanto do orçamento vai para a ciência, e o que ela compra volta uma década depois.
+
+- **A política "Ciência e tecnologia"** (`mundo.json › politicas › pesquisa`): cortada, regular ou prioridade.
+  - No regular, o governo põe 0,5% do PIB em pesquisa (`PESQUISA.base`); a ciência cortada tira 0,2 ponto do gasto, e a prioridade soma 0,4. O gasto entra no primário, e a dívida anda com ele. `gastoEmPesquisa` dá os pontos e os reais, que a folha País mostra.
+  - Cada bloco tem o seu nível: a frente popular e o Regime pesquisam como prioridade, o bloco liberal corta, a aliança da ordem e o centrão ficam no regular. A cautelosa no poder põe a ciência como prioridade; a arriscada corta.
+- **O estoque** é `pais.tecnologia` (o país vivo, acima). O que ele faz:
+  - o crescimento potencial ganha 0,02 ponto por ponto acima de 50, e o alvo da saúde pública, 0,2;
+  - a tração das empresas sobe com ele (`setores › pesquisa`, por ponto acima de 50): tecnologia 0,04, saúde e indústria 0,02, agro 0,015;
+  - a carreira que a ciência paga (`carreiras › verba`: a de cientista) tem a vaga e a promoção vezes 0,5, 1 ou 1,6 pelo nível da política (`VERBA_DA_CARREIRA`).
+- **A etapa `pesquisa`** (`regraDaPesquisa`, depois do país):
+  - acima de 55 de tecnologia, a chance de uma descoberta é de 0,8% por ponto por ano, com no máximo uma a cada 4 anos e o mesmo tipo a cada 15. A cura põe a saúde pública 4 pontos acima, o satélite põe a aprovação 3 pontos acima (a popularidade, se quem governa é quem joga), e a patente soma 2 à tecnologia;
+  - a descoberta é uma entrada do mundo (`pesquisa:<tipo>`, com o texto de `mundo.json › noticias`). A causa é `causaDaPesquisa`: a decisão mais recente, nos últimos 30 anos, que deixou a ciência como prioridade (a reforma que a pôs ali ou a posse do governo que a manteve), mesmo desfeita depois, porque a tecnologia ainda carrega o que ela fez. O país em que se nasce não tem decisão;
+  - a descoberta chega à vida de quem joga no ano seguinte, agendada com ela de causa: `a_vacina_no_posto` (de 12 anos em diante), `satelite_na_tv` (de 6 a 17) e `socio_da_patente` (de 25 a 75);
+  - com a ciência cortada e a tecnologia abaixo de 42, a fuga de cérebros (12% por ano, no máximo uma a cada 10 anos) tira 3 pontos de tecnologia, com o corte de causa.
+- **Ler a política é consultar quem a decidiu:** `causasDe` põe entre as causas do storylet que pede `pais.pol_*` a última decisão sobre ela (`entradaQueDecidiu`: a posse ou a reforma, nunca uma regra).
+- **As jogadas somam ao estoque:** a cura paga (+3) e o foguete em órbita (+2); liberar a fórmula da cura soma 2 à saúde pública.
 
 ## As fichas do ano (`acoes.ts`)
 
