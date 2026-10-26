@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-E%3A%20Defesa-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-833-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-F%3A%20O%20poder%20que%20passa-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-835-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,34 +15,37 @@
 
 ---
 
-## 🆕 Novidades: Bloco E · Defesa (26/10/2026)
+## 🆕 Novidades: Bloco F · O poder que passa (26/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o país ganhou Forças Armadas, e a guerra virou um processo com custo, não um botão. A folha País ganhou a política "Defesa":
-> - desmobilizada: o governo gasta 0,3 ponto do PIB a menos, e os vizinhos relaxam;
-> - regular;
-> - reforçada: 0,5 ponto a mais, um pouco de voto e vizinhos preocupados.
+> **O que mudou:** a coroa, o Regime e a ilha agora passam de verdade. Quem continua a história herda o trono, seja quem for: o filho, o par, o amigo ou o sobrinho. A resposta vem no primeiro ano da vida nova, ou aos 18 (até lá, a regência governa). E vem também quando o pai ou a mãe que reinava morre durante a sua vida. Enquanto você pensa, o governo espera: ninguém toma o seu lugar no meio do caminho.
 >
-> Quem governa encomenda caças, submarino, defesa antiaérea ou satélite militar: a conta vai para a dívida na hora, e o equipamento chega anos depois. A capacidade das Forças Armadas dissuade. Quando um país de fora já sanciona o Brasil e a relação está no chão, pode vir a guerra, e ela vem mais fácil para quem desarmou. Cada ano de guerra custa crescimento, inflação, dívida, gente e aprovação. Ela acaba em vitória, derrota ou cessar-fogo, e mais depressa se quem governa pedir a paz.
+> E o poder também se toma. Na folha Carreira e poder, a seção nova "Tomar o poder" mostra o que não passa pela urna:
+> - ficar no poder: quem é presidente fecha o Congresso (uma aposta na popularidade) ou muda a Constituição para mais quatro anos (uma aposta na influência);
+> - tomar o poder: quem tem influência lidera os quartéis (se for coronel ou general) ou financia os generais (R$ 20 bilhões);
+> - restaurar a monarquia: quem é famoso e rico banca o plebiscito e, se o povo quiser, é coroado.
+>
+> Dá certo: o cargo para a vida inteira, e quem herda entra na fila. Dá errado: o impeachment ou a cadeia. Lá fora, o mundo reage: a Federação do Norte esfria, a República Celeste se aproxima, e a sanção que vier aponta o golpe.
 
 > [!TIP]
 > **Para testar:**
-> - Abra a folha País: a defesa está em "Como está", e a seção "Defesa" diz se há guerra à vista. O voto decide, porque a aliança da ordem reforça o quartel e a frente popular desmobiliza.
-> - Chegue a presidente e rompa com um país que já anda frio. Se a sanção vier e o quartel estiver fraco, a guerra pode começar, e a notícia aponta o seu rompimento como causa (e a desmobilização, se você desarmou).
-> - Em guerra, a folha mostra as chances de vitória, derrota e cessar-fogo pela capacidade daqui contra a força de lá. Peça a paz e veja o fim chegar mais rápido. Encomende caças e veja a entrega anos depois, com a encomenda de causa.
-> - Tenha de 18 a 30 anos quando a guerra começar: chega a carta da convocação. Com um filho nessa idade, chega a dele. Nos anos de guerra, aparecem o racionamento, a fábrica de munição e o simulado de abrigo da escola.
+> - Comece na família real ("Nova vida", linhagem). Quando o pai ou a mãe que reina morrer, o Palácio espera a sua resposta: aceitar, abdicar ou propor o fim da monarquia. Com menos de 18, a regência governa, e a resposta vem no seu aniversário.
+> - Reine e morra com alguém para continuar (o filho ou, pelo testamento, o par ou o amigo): a vida nova começa na fila, e a coroa chega no primeiro ano.
+> - Chegue a presidente e abra "Tomar o poder" na folha Carreira e poder. Com a popularidade alta, o autogolpe tende a dar certo; depois, o país vira Regime, não há mais eleição geral e você governa até morrer.
+> - Funde um país sendo presidente: você deixa o cargo daqui na hora, e quem assume o governo aponta a fundação como causa.
+> - Salve o país da crise comprando títulos: os R$ 200 bilhões viram um título do Tesouro, que paga juro todo ano (e pode levar calote).
 
 | ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🛡️ **A política "Defesa":** a oitava da folha País, com o gasto, a relação lá fora e a aprovação de cada nível. Cada bloco tem o seu | 🗺️ **A ocupação e o território:** a guerra não move fronteira |
-| 🎖️ **A capacidade das Forças Armadas:** de 0 a 100, anda devagar com a política e com a tecnologia do país (o armamento moderno vem da pesquisa) | 🏭 **A mobilização da economia** e a logística da guerra |
-| ✈️ **Quatro sistemas de armamento:** caças, submarino, defesa antiaérea e satélite militar (que pede tecnologia). Um por ano, com o custo em reais e a entrega à vista | 🤝 **As alianças militares** e a guerra entre os países de fora (ideia I-51) |
-| ⚔️ **A guerra como processo:** começa com quem sanciona e anda frio, apontando quem esfriou a relação e quem desarmou. Custa todo ano e acaba em vitória, derrota (com reparação) ou cessar-fogo; no oitavo ano, acaba de cansaço | 🏗️ **A reconstrução** como programa de governo |
-| 🕊️ **O pedido de paz:** um por ano, de quem governa. Esquenta a relação e dobra a chance de a guerra acabar no ano seguinte | |
-| 📖 **Oito histórias novas:** a convocação (servir, pedir dispensa ou sumir no interior), o filho convocado, o racionamento, a fábrica de munição, o simulado de abrigo, quem voltou, o desfile de Sete de Setembro e o quartel sem verba. Ninguém morre numa história de guerra | |
-| 💼 **Quem é militar sente a verba:** a vaga e a promoção andam com a defesa | |
+| 👑 **A sucessão que passa:** a coroa, o Regime e a ilha vão para quem herda, seja quem for, no primeiro ano ou aos 18, e também quando quem reina morre em vida | 🏝️ **Governar a ilha e a cidade que você fundou** (o imposto e as obras pagas do próprio bolso): é o próximo bloco, o F2 |
+| 🏛️ **Sem interregno:** enquanto você responde, quem governava continua; quem abdica devolve o governo no ano seguinte | 🏦 **O empréstimo aos bancos como contrato** e os bens que rendem: o bloco I |
+| ⚔️ **Tomar o poder:** o autogolpe, o golpe (pelos quartéis ou pelo dinheiro) e a coroa restaurada no plebiscito, com o teste e o preço à vista | 🌍 **Países de verdade e o mapa:** precisam de uma decisão sua (hoje a política do jogo é toda fictícia) |
+| 🌐 **O mundo reage ao golpe:** sob o Regime, a Federação esfria e a Celeste se aproxima, e a sanção aponta o golpe | |
+| 🏝️ **Quem vai reinar na ilha deixa o Brasil:** o cargo daqui acaba na hora, e o governo de transição aponta a fundação | |
+| 💼 **Quem tem cargo vive dele:** não é demitido, e a coroa leva a carreira de antes; sob o Regime, não há eleição geral | |
+| 💰 **O resgate do país vira título:** os R$ 200 bilhões entram no patrimônio, pagam cupom e podem levar calote | |
 
-No túnel de vento, a guerra aparece em 2,9% das vidas, e 89% delas apontam a decisão que esfriou a relação. Nos anos de guerra, o país cresce −2,2% ao ano, contra 2,1% nos de paz. Com o quartel abaixo de 60, a guerra começa em 3,5% dos anos de ameaça; acima, em 2,9%. O preço do quartel reforçado aparece lá fora: as sanções foram de 3.406 para 5.165 nas 10.000 vidas. E a frente popular, que desmobiliza, gasta menos: o calote voltou de 1,9% para 1,1% das vidas. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a ciência).
+No túnel de vento, todas as 516 sucessões que chegaram a um adulto tiveram resposta (404 em vida, 112 na herança), e 79% de quem começou a vida na fila reinou. Os anos em que quem joga governa o país quase dobraram (de 6.742 para 12.587 nas 10.000 vidas). Das 69 tentativas de golpe e autogolpe, 68% deram certo; das 40 de restaurar a monarquia, 30%. Nenhuma estratégia passou a vencer em tudo, e a CPU não mudou. Os outros pedidos da lista de 26/10 (as empresas com caixa e pesquisa, os filhos quando quiser, a vida longa, os impostos, a escola inteira, os gráficos) estão em ordem logo abaixo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a defesa).
 
 ## 🗺️ Os blocos do dono
 
@@ -66,6 +69,35 @@ flowchart LR
 | 🟢 **C** · A coroa recebe | o salário, a parte dos impostos ou a taxa da coroa; a ilha com população, PIB e imposto | ✅ feito |
 | 🟢 **D** · O Estado pesquisa | a ciência paga pelo Tesouro, a tecnologia do país e as descobertas (a cura, o satélite, a patente) | ✅ feito |
 | 🟢 **E** · Defesa | forças armadas com custo e capacidade; os sistemas de armamento; a guerra como processo, com custos e consequências | ✅ feito (a ocupação e as alianças militares ficam para depois) |
+
+### A segunda lista do dono (26/10)
+
+A lista nova não cabe de uma vez. A ordem começa pelos defeitos (o que já existe e não funciona) e segue pelo que mais muda o que dá para fazer numa vida, um bloco publicado de cada vez. As ideias de cada um estão em [`docs/ideias.md`](docs/ideias.md) (a seção "A segunda ordem do dono").
+
+```mermaid
+flowchart LR
+  F["👑 F · O poder que passa<br/>sucessão, golpe, governo vitalício"]:::feito --> F2["🏝️ F2 · Governar o que você fundou<br/>a ilha e a cidade"]:::proximo
+  F2 --> C4["✍️ C4 · O texto revisado"]:::depois
+  C4 --> K["👶 K · Filhos quando quiser"]:::depois
+  K --> I["💰 I · O dinheiro que rende"]:::depois
+  I --> H["🏭 H · A empresa de verdade"]:::depois
+  H --> J["🧬 J · A vida longa"]:::depois
+  classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
+  classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
+  classDef depois fill:#8250df,stroke:#6639ba,color:#fff
+```
+
+| Bloco | O que entra | Estado |
+|---|---|---|
+| 🟢 **F** · O poder que passa | a sucessão da coroa, do Regime e da ilha para quem herda (com a regência); o golpe, o autogolpe e a coroa restaurada; quem vai reinar na ilha deixa o Brasil; o resgate do país como título | ✅ feito |
+| 🟡 **F2** · Governar o que você fundou | a ilha e a cidade como territórios, com imposto e obras pagas do próprio bolso | ⏭️ próximo |
+| 🟣 **C4** · O texto revisado | a varredura de gramática do conteúdo inteiro, com regras novas no validador | depois |
+| 🟣 **K** · Filhos quando quiser | tentar ter filho, adotar e planejar, com a fertilidade pela idade | depois |
+| 🟣 **I** · O dinheiro que rende | os bens que produzem, a carteira de dívidas do SPC e do Serasa como ativo, o empréstimo aos bancos como contrato | depois |
+| 🟣 **H** · A empresa de verdade | o caixa da empresa, o lucro com origem, a pesquisa e desenvolvimento, as fábricas e lojas | depois |
+| 🟣 **J** · A vida longa | a ciência da longevidade, com etapas até a reversão do envelhecimento e a continuidade do eu | depois |
+| 🟣 **G**, **L**, **M**, **P**, **N** | os impostos um por um; a escola inteira e mais profissões; a civilização; os gráficos; as formas de governo | depois |
+| ⚪ **O** · O mundo | o mapa-múndi e os países de verdade | pede a sua decisão: hoje governos, partidos e países são fictícios por requisito seu |
 
 ## 🎮 O que o jogo tem
 
@@ -99,6 +131,7 @@ flowchart LR
 - As Forças Armadas com custo e capacidade, os sistemas de armamento e a guerra como processo: ela começa com quem sanciona e anda frio, custa todo ano e acaba em vitória, derrota ou cessar-fogo
 - Quatro blocos políticos fictícios e o Regime; eleições a cada quatro anos; o seu voto pesa
 - Ser vereador, prefeito, deputado, governador, senador, presidente, monarca ou chefe do Regime; quem governa muda as políticas do país
+- A coroa, o Regime e a ilha passam a quem herda (com a regência até os 18); o poder também se toma: o autogolpe, o golpe e a coroa restaurada no plebiscito
 - Quatro países fictícios lá fora, com o dólar, sanções, acordos e atos de quem governa
 </details>
 

@@ -4,6 +4,36 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 👑 Bloco F · O poder que passa · 26/10/2026
+
+> [!NOTE]
+> O primeiro bloco da segunda lista do dono (26/10): "não estou herdando o regime, a monarquia ou a soberania", "não consigo dar um golpe de Estado", "não consigo governar quando sou monarca, ditador ou soberano", "quando fundo o país, continuo governando o Brasil". A ordem começa pelo que existia e não funcionava.
+
+- 👑 **A sucessão** (`sucessao.ts`):
+  - quem herda a coroa do Brasil, o Regime ou a ilha (o filho, o par, o amigo ou o sobrinho: o testamento é a lei da sucessão) entra na fila (`principe`, `herdeiro_regime`, `herdeiro_ilha`), e o motor agenda a resposta para o primeiro ano da vida nova, ou para os 18 (até lá, a regência);
+  - vale também em vida: quando o pai ou a mãe que reinava morre, a resposta vem no mesmo ano (ou aos 18), com a morte de causa;
+  - `sucessao_coroa` e `sucessao_regime` viram storylets agendados pelo motor; o texto diz quem morreu ou que a regência acabou, e eles pedem a monarquia (ou o Regime) que ainda existe;
+  - a ilha passa sozinha, no primeiro ano ou aos 18, com a dotação e a popularidade em pelo menos 55; quem tem outro cargo deixa a ilha com o conselho.
+- 🏛️ **Sem interregno:** enquanto a resposta está marcada, quem governava continua, inclusive sob o Regime; quem abdica devolve o governo no ano seguinte.
+- 🗳️ **Quem governa precisa do cargo:** quem deixou o cargo no meio do ano (foi reinar na ilha, caiu, renunciou) não decide mais pelo país, e o governo de transição aponta a entrada que mudou o cargo (antes dizia "com a morte de quem governava").
+- ⚔️ **O poder que se toma** (`99-tomar-o-poder.json`, jogadas com `"folha": "poder"`):
+  - ficar no poder: quem é presidente fecha o Congresso (popularidade contra 60) ou muda a Constituição para mais quatro anos (influência contra 70), ou cumpre o mandato;
+  - tomar o poder: com influência 60 e sem cargo, liderar os quartéis (coronel ou general; influência contra 65) ou financiar os generais (R$ 20 bilhões; influência contra 75), ou recusar e contar tudo à imprensa;
+  - restaurar a monarquia: com R$ 10 bilhões e fama 50, bancar o plebiscito (R$ 5 bilhões; popularidade contra 70);
+  - dá certo: o cargo vitalício, o Regime ou a monarquia, e a marca `golpista` (com epitáfio); dá errado: o impeachment ou a cadeia.
+- 🌐 **O mundo reage ao golpe:** sob o Regime, quem joga governa com a postura dele lá fora (a Celeste se aproxima, a Federação esfria), e a sanção aponta o golpe.
+- 🔧 **Defeitos corrigidos:**
+  - a coroa vai para quem herda, seja quem for (D-01); sob o Regime não há eleição geral (D-03); quem tem cargo não é demitido nem anda com o setor, a carreira para no cargo e fica para trás com a coroa ou o Regime (D-04);
+  - a popularidade de quem nasce e de quem herda começa em 50 (começava em zero, e a greve tirava a ilha do herdeiro em poucos anos); a coroa aceita soma 10 pontos de imagem (somava 60) e o Regime assumido tira 5 (somava 45);
+  - a eleição de verdade do Regime vira a Presidência, com mandato (deixava o cargo de chefe do Regime num país que vota);
+  - a greve da ilha que acaba no churrasco devolve 15 pontos de popularidade, e fundar um país avisa que reinar lá é deixar o cargo daqui.
+- 💰 **O resgate do país vira título:** "Salvar o país da crise" compra R$ 200 bilhões em títulos do Tesouro de 10 anos (`comprarTitulo` com `valor`), que ficam no patrimônio, pagam cupom e podem levar calote; o reembolso sorteado (`o_pais_te_paga`) saiu.
+- 🖥️ **Na tela:** a seção "Tomar o poder" na folha Carreira e poder, com o teste e o preço de cada opção; o cartão do Poder mostra a sucessão marcada para os 18, e a seção da ilha diz que a coroa dela chega aos 18.
+- 🤖 **Os robôs:** a cautelosa recusa o golpe, a arriscada tenta, a aleatória sorteia; quem é presidente só pensa nisso no fim do mandato.
+- 📏 **O túnel:** 80 dinastias que nascem na família real ou no Regime, a resposta de cada sucessão e as jogadas do poder com o desfecho; dois portões novos (a coroa passa; o poder se toma e é aposta).
+
+**Ainda não tem:** governar a ilha e a cidade fundadas (o imposto e as obras do próprio bolso: o bloco F2), o empréstimo aos bancos como contrato (o bloco I) e os países de verdade (pedem a decisão do dono).
+
 ## 🛡️ Bloco E · Defesa · 26/10/2026
 
 > [!NOTE]

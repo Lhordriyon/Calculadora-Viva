@@ -1515,6 +1515,68 @@ Os portões que já falhavam continuam falhando: a CPU, a herança entre geraç�
 - **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 111,1 → 112,2 ms por vida (+1,0%, ±1,6%). A etapa da guerra custa 0,68 ms por vida no túnel (0,6% do ano) e quase nada no livro; a ameaça só lê o livro quando há quem ameace. A CPU do túnel muda de rodada para rodada na mesma máquina (o mesmo código mediu 101,8 e 113,6 ms por vida), por isso a comparação é o A/B.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Bloco F: o poder que passa (26/10)
+
+O primeiro bloco da segunda ordem do dono (26/10, `docs/ideias.md › A segunda ordem do dono`): "não estou herdando o regime, a monarquia ou a soberania", "não consigo dar um golpe de Estado", "não consigo governar quando sou monarca, ditador ou soberano", "quando fundo o país, continuo governando o Brasil". A ordem começa pelos defeitos: o que existia e não funcionava. Entraram a sucessão (em vida e na herança, com a regência), o poder que se toma (o autogolpe, o golpe e a coroa restaurada), a saída do governo de quem vai reinar na ilha, os defeitos D-01, D-03 e D-04 e o resgate do país como título. Ficou para o bloco F2 governar a ilha e a cidade fundadas (o imposto e as obras do próprio bolso).
+
+**O que mudou** (`sucessao.ts`, `docs/motor.md › A sucessão e o poder que se toma`):
+- quem herda a coroa, o Regime ou a ilha entra na fila, e o motor agenda a resposta para o primeiro ano ou para os 18; o mesmo quando o pai ou a mãe que reinava morre em vida;
+- enquanto a resposta não vem, quem governava continua; quem joga só governa com o cargo que governa;
+- as jogadas do poder na folha Carreira e poder: ficar no poder, tomar o poder, restaurar a monarquia.
+
+**Medidas** (as 10.000 vidas, as de origem escolhida e as gerações das dinastias, com 80 dinastias novas que nascem na família real ou no Regime):
+
+| Medida | Valor |
+|---|---|
+| Sucessões que chegaram a quem tinha 18 anos ou mais | 404 em vida e 112 na herança, 100% com resposta |
+| Herdeiros que começaram na fila e reinaram | 78,6% de 117 |
+| Anos governados por quem joga / pelo Regime dos outros (vidas sorteadas) | 6.742 → 12.587 / 8.830 → 5.938 |
+| Tomar o poder (liderar os quartéis ou financiar os generais) | 39 tentativas, 66,7% deram certo |
+| Fechar o Congresso / mudar a Constituição | 30 (70,0%) / 1 (100%) |
+| Restaurar a monarquia | 40 tentativas, 30,0% deram certo |
+| Sanções nas vidas sorteadas | 5.165 → 5.260; nos anos de quem joga governando, 0,62% → 2,04% dos anos com sanção nova (e os acordos, 7,40% → 3,84%) |
+| Vidas com calote | 1,1% → 1,4% |
+
+**O túnel** (10.000 vidas; antes = o bloco E publicado, depois = o bloco F):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Falsos dilemas | 0, nos três bolsos | 0, nos três bolsos |
+| Saturação V5 / V20 | 55,1% / 90,2% | 55,1% / 90,1% |
+| Assinaturas por 1.000 vidas (sem a origem) | 912 (595) | 915 (592) |
+| Mobilidade: mesmo quintil / Spearman | 27,1% / 0,33 | 27,3% / 0,33 |
+| Do quintil mais pobre ao mais rico / do mais rico ao mais pobre | 14,4% / 2,6% | 16,7% / 2,8% |
+| Patrimônio p90/p10 | 624,1× | 595,0× |
+| Patrimônio mediano da cautelosa | R$ 63 milhões | R$ 57 milhões |
+| Desvio da felicidade média | 8,72 | 8,68 |
+| Patrimônio negativo ao morrer | 0,7% | 0,7% |
+| Mudanças causadas pelo jogador | 44,3% | 44,6% |
+| Toques por vida | 457,6 | 457,9 |
+| O porquê à vista (acontecimentos com a causa de um ano anterior) | 36,5% | 36,6% |
+| CPU por vida (túnel) | 113,6 ms | 95,6 ms; no A/B na mesma máquina, 99,9 → 97,2 ms (−2,7%, ±1,5%) |
+
+Os portões que já falhavam continuam falhando, alguns um pouco melhores: a CPU, a herança entre gerações (Spearman 0,82 → 0,83), as assinaturas sem regressão (912 → 915, para ≥ 918), o bilionário feito (1,56% → 1,41%, com teto de 1%) e o do quintil mais rico ao mais pobre (2,6% → 2,8%, para ≥ 3,0%). Os dois portões novos passam.
+
+**Decisões tomadas sozinho:**
+- **A sucessão é do motor, não do sorteio.** Ela era um storylet comum, sorteado pelo ritmo da idade: em vidas de linhagem real, dos 19 herdeiros de quem reinou com a cautelosa, nenhum virou rei em 40 anos. Agora a morte de quem reina (ou a abertura da vida nova) agenda a resposta, e o storylet só acontece agendado (`AGENDADOS_PELO_MOTOR`). No túnel, todas as 516 sucessões que chegaram a um adulto tiveram resposta.
+- **Quem herda é quem continua a história, seja quem for.** O storylet pedia o pai ou a mãe morto como ator: o par, o amigo e o sobrinho nunca se qualificavam (D-01). O testamento é a lei da sucessão da dinastia: quem herda a fortuna herda a coroa.
+- **A regência vai até os 18.** Antes, a resposta fica marcada para o ano dos 18: a coroa espera com um governo de transição, e o Regime, com a junta (o Regime dos outros). O texto diz quem morreu ou que a regência acabou.
+- **Sem interregno.** Enquanto a resposta está marcada, quem governava continua governando, inclusive sob o Regime (antes, o Regime tomava o governo do herdeiro no primeiro ano, antes de ele responder). Quem abdica devolve o governo, e o governo de transição entra no ano seguinte.
+- **A ilha passa sozinha, e quem assume começa com a imagem em pelo menos 55.** A popularidade de quem nascia (e de quem herdava) começava em zero, porque o campo não existia e a soma partia do nada, e a greve geral da ilha tirava a coroa do herdeiro em poucos anos. Quem nasce e quem herda começam em 50, e o save antigo também. A coroa aceita somava 60 pontos de imagem (com a base em 50, chegava a 100): agora soma 10; o Regime assumido somava 45, agora tira 5.
+- **Quem governa precisa do cargo que governa.** As decisões pelo país (as políticas, o ato lá fora, a defesa) pediam só o governo de quem joga; quem ia reinar na ilha que fundou continuava decidindo pelo Brasil até a próxima posse. Agora quem deixou o cargo não decide mais, e o governo de transição aponta a entrada que mudou o cargo (antes, sem marca de saída, o texto dizia "com a morte de quem governava").
+- **Sob o Regime, não há eleição geral** (D-03); a municipal continua. **Quem tem cargo vive dele** (D-04): o setor e a demissão não o alcançam, a carreira para no cargo e, com a coroa ou o Regime, fica para trás, numa entrada com a posse de causa. A mobilidade de quem nasce pobre subiu (14,4% → 16,7% chegam ao quintil mais rico): quem chega a um cargo não perde mais o salário numa demissão.
+- **Os três caminhos do poder, cada um com o seu teste.** O autogolpe testa a popularidade (dificuldade 60): quem fecha o Congresso precisa do povo; a emenda testa a influência (70) e dá mais quatro anos, não o mandato vitalício; o golpe de fora pede influência 60 e testa a influência (65 nos quartéis, que só seguem coronel ou general; 75 com o dinheiro, R$ 20 bilhões); a coroa restaurada pede R$ 10 bilhões e fama 50 e testa a popularidade (70). Dá errado: o impeachment, ou a cadeia (`condenado`). Dá certo: o cargo vitalício, o Regime ou a monarquia, e a marca `golpista`, que fecha as outras jogadas do poder.
+- **O mundo reage ao golpe pela relação.** Sob o Regime, quem joga governa com a postura do Regime lá fora (a Celeste se aproxima, a Federação, rival dela, esfria 15 pontos), e a sanção que vier aponta o golpe (ou o fim do Regime) como causa. Por isso a sanção nova nos anos de quem joga governando foi de 0,62% para 2,04%: os herdeiros do Regime agora governam eles mesmos.
+- **A eleição de verdade do Regime vira a Presidência.** Ela tirava o Regime e deixava o cargo de chefe do Regime, vitalício, num país que vota. Agora quem ganha é presidente, com quatro anos de mandato e a marca de quem redemocratizou.
+- **O resgate do país é um título do Tesouro.** "Salvar o país da crise" tirava R$ 200 bilhões e devolvia, anos depois, um reembolso sorteado (`o_pais_te_paga`, que saiu). Agora a jogada compra R$ 200 bilhões em títulos de 10 anos (`comprarTitulo` com `valor`, que resgata o que faltar na conta): o dinheiro fica no patrimônio, paga cupom e pode levar calote. O empréstimo aos bancos continua como era até o bloco I (o dinheiro que rende).
+- **Os robôs e o poder.** A cautelosa recusa (a última opção, por convenção a que devolve o poder), a arriscada tenta a primeira que cabe em 35% do que tem e a aleatória sorteia; quem é presidente só pensa nisso no fim do mandato. Sem cargo de presidente, influência 60 ou fama 50, o robô nem abre a seção e não gasta sorteio. Quase todas as tentativas vêm das vidas que nascem com fortuna ou numa linhagem.
+- **Dinastias que nascem na família real e no Regime** (80) entram no túnel para medir a herança da coroa; contam para storylet morto, não para as métricas das dinastias, porque a origem é escolhida.
+- **A linha da sucessão na folha só aparece na regência.** Na régua da tela, a folha Carreira e poder do save real (um príncipe deputado) estava a 23 px do limite de duas telas, e a linha "Sucessão" custava 61 px. Para quem é adulto, a resposta vem no mesmo ano da morte de quem reina, então a linha só informa algo quando a sucessão está marcada para os 18.
+- **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 99,9 → 97,2 ms por vida (−2,7%, ±1,5%). Quem tem cargo pula a etapa do trabalho e a da carreira.
+- **Governar a ilha e a cidade fica para o bloco F2**, para o bloco ficar pequeno e os defeitos chegarem antes ao dono.
+- **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
