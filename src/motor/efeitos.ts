@@ -5,6 +5,7 @@
 import { ATIVOS, ATRIBUTOS, type PapelNovo } from './constantes.ts';
 import { pesosDoPerfil, realocar } from './carteira.ts';
 import { comprarPorEfeito, venderParteDosTitulos } from './tesouro.ts';
+import { acertarDotacao, fundarIlha } from './coroa.ts';
 import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
@@ -64,6 +65,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.realocar) realocar(e, reg, ef.realocar.de, ef.realocar.para, ef.realocar.fracao);
   if (ef.venderTitulos !== undefined) venderParteDosTitulos(e, reg, ef.venderTitulos);
   if (ef.comprarTitulo) comprarPorEfeito(e, reg, ef.comprarTitulo.fracao, ef.comprarTitulo.prazo, origem);
+  if (ef.fundarIlha) fundarIlha(e, reg);
   if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));
   if (ef.custo !== undefined) definirNumero(e, reg, 'eu', 'custo', ajustar(eu.n['custo'] ?? 0, ef.custo));
@@ -100,6 +102,8 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
       else if (typeof v === 'number') definirNumero(e, reg, ent, campo, v);
     }
   }
+  // A escolha que muda a forma da coroa (voltar ao salário depois do protesto) já vale para a dotação do ano que vem.
+  if ('pais.coroa' in ef || 'ilha.coroa' in ef) acertarDotacao(e, c, reg);
 
   // Um storylet que troca a ocupação ou zera a renda (a demissão, o bico) encerra a carreira escolhida na folha,
   // e o salário em dólar, que era daquele emprego.

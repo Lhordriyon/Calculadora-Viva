@@ -1,0 +1,238 @@
+[
+  {
+    "id": "rua_contra_a_taxa_da_coroa",
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 4,
+    "condicoes": {
+      "cargo": "rei",
+      "pais.coroa": "taxa"
+    },
+    "texto": "A Esplanada encheu de gente com coroas de papelão rasgadas: é contra a taxa da coroa. Um cartaz diz \"o rei come, o povo paga\", e a foto já está em todos os jornais.",
+    "resumo": "enfrentou a rua contra a taxa da coroa",
+    "escolhas": [
+      {
+        "texto": "Manter a taxa e dobrar a guarda",
+        "resumo": "manteve a taxa da coroa com a rua cheia",
+        "resultado": {
+          "texto": "O Palácio ganhou grade nova e a taxa continuou. A rua voltou para casa, por enquanto.",
+          "efeitos": {
+            "eu.popularidade": -4,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Voltar ao salário da Casa Real",
+        "resumo": "acabou com a taxa da coroa depois do protesto",
+        "resultado": {
+          "texto": "Você anunciou o fim da taxa da janela do Palácio. Aplaudiram; alguns ainda rasgaram a coroa de papelão, por garantia.",
+          "efeitos": {
+            "pais.coroa": {
+              "definir": "salario"
+            },
+            "eu.popularidade": 8
+          }
+        }
+      },
+      {
+        "texto": "Doar a taxa do ano aos hospitais",
+        "resumo": "doou a taxa da coroa do ano para os hospitais públicos",
+        "condicoes": {
+          "dinheiro": {
+            "min": 2000000000
+          }
+        },
+        "bloqueio": "a taxa deste ano já foi gasta",
+        "resultado": {
+          "texto": "Dois bilhões para os hospitais, com foto e placa. A taxa continua, mas hoje ninguém fala dela.",
+          "efeitos": {
+            "dinheiro": -2000000000,
+            "eu.popularidade": 5,
+            "pais.saude": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_conta_da_coroa",
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": {
+      "cargo": "rei",
+      "pais.coroa": "impostos"
+    },
+    "texto": "A parte da coroa nos impostos fechou o ano em {eu.renda}, {ritmo}. O jornal fez a conta por habitante, e ela é pequena; a manchete, não.",
+    "resumo": "viu a conta da parte da coroa nos impostos",
+    "trechos": {
+      "ritmo": [
+        {
+          "se": {
+            "pais.crescimento": {
+              "min": 3
+            }
+          },
+          "texto": "um recorde, com o país crescendo {pais.crescimento}% ao ano"
+        },
+        {
+          "se": {
+            "pais.crescimento": {
+              "max": -0.5
+            }
+          },
+          "texto": "menos que no ano passado, com o país encolhendo"
+        },
+        {
+          "texto": "mais do que qualquer salário da Casa Real"
+        }
+      ]
+    },
+    "escolhas": [
+      {
+        "texto": "Pôr a sobra em escolas",
+        "resumo": "pôs a sobra da coroa em escolas",
+        "condicoes": {
+          "dinheiro": {
+            "min": 100000000
+          }
+        },
+        "bloqueio": "a sobra ainda não caiu na conta",
+        "resultado": {
+          "texto": "Cem escolas reformadas com o brasão na fachada. A oposição diz que é propaganda; as crianças não leem a oposição.",
+          "efeitos": {
+            "dinheiro": -100000000,
+            "eu.popularidade": 4,
+            "pais.educacao": 1
+          }
+        }
+      },
+      {
+        "texto": "Reformar o Palácio",
+        "resumo": "reformou o Palácio com a parte da coroa nos impostos",
+        "resultado": {
+          "texto": "Mármore novo, lustre novo, jardim novo. A foto do lustre virou meme.",
+          "efeitos": {
+            "felicidade": 3,
+            "eu.popularidade": -3
+          }
+        }
+      },
+      {
+        "texto": "Guardar e não comentar",
+        "resumo": "guardou a parte recorde da coroa sem dizer nada",
+        "resultado": {
+          "texto": "O silêncio é de ouro, diz o seu tesoureiro, que é pago para dizer isso.",
+          "efeitos": {
+            "eu.influencia": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_ilha_cresceu",
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "micronacao"
+      ]
+    },
+    "texto": "{ilha.nome} passou de {ilha.populacao} habitantes e de {ilha.pib} de PIB. O porto não dá conta dos barcos, a escola tem fila e já tem gente pedindo bairro novo.",
+    "resumo": "viu a ilha que fundou passar de 2.600 habitantes",
+    "escolhas": [
+      {
+        "texto": "Construir porto e escola",
+        "resumo": "construiu um porto e uma escola na ilha que fundou",
+        "condicoes": {
+          "dinheiro": {
+            "min": 500000000
+          }
+        },
+        "bloqueio": "precisa de R$ 500 milhões na conta",
+        "resultado": {
+          "texto": "Porto novo, escola nova e uma festa de inauguração com o hino que você escreveu. Chegou mais gente.",
+          "efeitos": {
+            "dinheiro": -500000000,
+            "eu.popularidade": 5,
+            "ilha.populacao": 200
+          }
+        }
+      },
+      {
+        "texto": "Fechar a imigração",
+        "resumo": "fechou a imigração da ilha que fundou",
+        "resultado": {
+          "texto": "Quem está, está. A ilha continua do tamanho que você conhece, e o pescador candidato achou ótimo para a campanha.",
+          "efeitos": {
+            "eu.popularidade": -2,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Deixar a ilha crescer sozinha",
+        "resumo": "deixou a ilha que fundou crescer sozinha",
+        "resultado": {
+          "texto": "Barracas na praia, uma padaria nova por mês. Ninguém planejou, e de algum jeito funciona.",
+          "efeitos": {
+            "eu.fama": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "barco_de_mudanca",
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": {
+      "marcas": [
+        "micronacao"
+      ],
+      "cargo": "soberano",
+      "ilha.coroa": "taxa"
+    },
+    "texto": "Mais uma família de pescadores foi embora de {ilha.nome} por causa da taxa da coroa. No porto, o barco saiu lotado, e alguém escreveu o seu nome no casco, com um palavrão do lado.",
+    "resumo": "viu gente ir embora da ilha por causa da taxa da coroa",
+    "escolhas": [
+      {
+        "texto": "Isentar os pescadores",
+        "resumo": "isentou os pescadores da taxa da coroa",
+        "resultado": {
+          "texto": "Os pescadores não pagam mais a taxa. O barco seguinte voltou com a família dentro e um peixe de presente.",
+          "efeitos": {
+            "eu.popularidade": 4,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Deixar ir",
+        "resumo": "deixou os pescadores irem embora da ilha",
+        "resultado": {
+          "texto": "Menos gente, menos reclamação, menos peixe. A ilha ficou mais quieta, e você não sabe se gosta.",
+          "efeitos": {
+            "eu.popularidade": -2,
+            "ilha.populacao": -60
+          }
+        }
+      },
+      {
+        "texto": "Acabar com a taxa da coroa",
+        "resumo": "acabou com a taxa da coroa na ilha",
+        "resultado": {
+          "texto": "A taxa acabou no mesmo dia. O barco de mudança virou barco de passeio.",
+          "efeitos": {
+            "ilha.coroa": {
+              "definir": "salario"
+            },
+            "eu.popularidade": 6
+          }
+        }
+      }
+    ]
+  }
+]

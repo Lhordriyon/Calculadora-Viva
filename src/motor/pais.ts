@@ -54,6 +54,7 @@ import {
 } from './regras.ts';
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { chanceDeCalote, darCalote, premioDoCalote } from './tesouro.ts';
+import { custoDaCoroa } from './coroa.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -657,7 +658,9 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     0.2 * (vio - 22) +
     0.1 * (sau - 50) +
     efeito('aprovacao') +
-    (gov?.aprovacao ?? 0);
+    (gov?.aprovacao ?? 0) -
+    // Quem reina e cobra pela coroa (parte dos impostos, taxa) vê a aprovação andar para mais baixo (coroa.ts).
+    custoDaCoroa(e, 'pais');
   // Quando quem governa é quem joga, a aprovação do governo é a popularidade dele.
   const voce = governoAtual(e) === 'voce';
   const atual = voce ? (e.entidades['eu']!.n['popularidade'] ?? 50) : (n['aprovacao'] ?? 50);

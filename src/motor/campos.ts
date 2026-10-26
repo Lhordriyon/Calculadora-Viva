@@ -24,6 +24,8 @@ export interface DefCampo {
   casas?: number;
   /** Em milhões no texto (a população: 205 milhões). */
   milhoes?: boolean;
+  /** Com ponto de milhar no texto (a população da ilha: 2.300). */
+  milhar?: boolean;
   limites?: readonly [number, number];
   /**
    * O valor de quem não tem o campo (a confiança começa em 60). O estado guarda a diferença para a base: o livro
@@ -156,6 +158,8 @@ const PAIS: Record<string, DefCampo> = {
   ...Object.fromEntries(POLITICAS.map((p): [string, DefCampo] => [`pol_${p}`, { tipo: 'num', sistema: 'poder', limites: [0, 2] }])),
   /** Ano de eleição geral (2026, 2030…): o voto aparece. */
   eleicao: { tipo: 'bool', sistema: 'poder', derivado: true },
+  /** Como a coroa do Brasil recebe (FORMAS_DA_COROA; '' é o salário da Casa Real): fica com o país, e quem herda a coroa herda a regra. */
+  coroa: { tipo: 'texto', sistema: 'poder' },
   /** O dólar em reais de hoje: anda com o mundo lá fora, a dívida e os juros daqui; pesa na inflação, no investimento em dólar e nas empresas que exportam ou importam. */
   cambio: { tipo: 'num', sistema: 'mundo', reais: true, centavos: true, limites: [1.5, 20] },
   /** O tamanho do país (pais.ts): o PIB em reais de hoje, que anda com o crescimento, e a população, que anda com a transição demográfica, a saúde e a pobreza. */
@@ -165,6 +169,18 @@ const PAIS: Record<string, DefCampo> = {
   pib_per_capita: { tipo: 'num', sistema: 'mundo', derivado: true, reais: true },
   gini: { tipo: 'num', sistema: 'mundo', derivado: true, casas: 2 },
   idh: { tipo: 'num', sistema: 'mundo', derivado: true, casas: 2 },
+};
+
+/** A ilha (coroa.ts): o país que quem joga fundou no Pacífico, com população, PIB e o imposto de sempre (ILHA.imposto). */
+const ILHA: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
+  /** Gente morando lá: cresce com a ilha reconhecida e encolhe com a taxa da coroa. */
+  populacao: { tipo: 'num', sistema: 'mundo', limites: [0, Infinity], milhar: true },
+  /** O PIB em reais de hoje: a população vezes a renda por pessoa, que cresce todo ano. */
+  pib: { tipo: 'num', sistema: 'mundo', reais: true, limites: [0, Infinity] },
+  pib_per_capita: { tipo: 'num', sistema: 'mundo', derivado: true, reais: true },
+  /** Como a coroa da ilha recebe (FORMAS_DA_COROA; '' é o salário). */
+  coroa: { tipo: 'texto', sistema: 'poder' },
 };
 
 /** Paridade de poder de compra: um real compra mais aqui do que o câmbio diz (o IDH usa a renda em dólares PPC). */
@@ -278,6 +294,7 @@ const EMPRESA: Record<string, DefCampo> = {
 export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent === 'lugar') return LUGAR;
   if (ent === 'pais') return PAIS;
+  if (ent === 'ilha') return ILHA;
   if (ent.startsWith('empresa')) return EMPRESA;
   if ((PARCEIROS as readonly string[]).includes(ent)) return ESTRANGEIRO;
   if (ent.startsWith('bem')) return BEM;

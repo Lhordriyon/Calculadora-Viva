@@ -509,3 +509,39 @@ export const FATIA_MAXIMA_DA_DIVIDA = 0.3;
  * paga `premio` pontos a mais, que somem em `anos` anos (a confiança que volta devagar).
  */
 export const CALOTE = { acima: 100, porPonto: 0.01, teto: 0.25, titulos: 0.3, rendaFixa: 0.15, perdao: 0.25, choque: -2, inflacao: 2, premio: 2, anos: 6 } as const;
+
+// ---- a coroa recebe (bloco C: a forma da coroa, a dotação e a ilha)
+
+/**
+ * Como a coroa recebe, no Brasil e na ilha: o salário da Casa Real (reais por ano), a parte dos impostos (a fatia da
+ * arrecadação) e a taxa da coroa (a fatia do PIB). `custo` é quanto cada forma tira do ponto para onde a aprovação anda,
+ * e `anuncio`, quanto ela muda na hora, ao ser decretada. A carga do Brasil é a arrecadação em % do PIB com as políticas
+ * médias (as políticas somam ou tiram dela).
+ */
+export const COROA = {
+  brasil: { salario: 4_000_000, parte: 0.0001, taxa: 0.001 },
+  ilha: { salario: 500_000, parte: 0.1, taxa: 0.08 },
+  carga: 33,
+  custo: { salario: 0, impostos: 5, taxa: 15 },
+  anuncio: { salario: 3, impostos: -2, taxa: -6 },
+} as const;
+/**
+ * A ilha que quem joga fundou: os habitantes e a renda por pessoa da fundação, o imposto (fração do PIB), o quanto a
+ * renda por pessoa e a população crescem por ano, o que o reconhecimento soma às duas, o que a taxa da coroa tira da
+ * renda, quanto cada forma da coroa espanta de gente e a sorte de um ano.
+ */
+export const ILHA = {
+  habitantes: 2300,
+  porPessoa: 80_000,
+  imposto: 0.2,
+  renda: 0.025,
+  populacao: 0.01,
+  reconhecida: 0.01,
+  taxaNaRenda: 0.01,
+  fuga: { salario: 0, impostos: 0.01, taxa: 0.04 },
+  desvio: 0.02,
+  /** A ilha que passa desta população ganha a história do crescimento (uma vez). */
+  marco: 2600,
+} as const;
+/** Quantos anos depois do decreto a reação chega: a rua contra a taxa, o barco de mudança, a conta da parte dos impostos. */
+export const REACAO_DA_COROA = { taxa: [1, 3], impostos: [2, 4] } as const;

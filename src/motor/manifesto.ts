@@ -141,6 +141,11 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'ctr.garantia',
   'ctr.origem',
   'eu.nome_sujo',
+  // a coroa (coroa.ts): a forma que quem tem coroa escolhe e a ilha que quem joga fundou, que anda todo ano
+  'pais.coroa',
+  'ilha.coroa',
+  'ilha.populacao',
+  'ilha.pib',
   // o Tesouro (tesouro.ts): o título que quem joga compra, o cupom, o vencimento, a venda e o calote, que o país registra
   'tit.valor',
   'tit.taxa',
@@ -213,7 +218,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -244,6 +249,10 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.calote'], 'país: depois do calote, a Selic paga um prêmio que some em seis anos (e o título rende mais)', true),
   ...ler(['tit.valor', 'tit.taxa', 'tit.vencimento'], 'Tesouro: o cupom do ano, o vencimento, o preço de venda e o patrimônio', true),
   ...ler(['tit.origem'], 'Tesouro: a compra (ou a herança) é a causa do vencimento', false),
+  ...ler(['pais.coroa', 'ilha.coroa'], 'coroa: a dotação de quem tem coroa e o ponto para onde a aprovação anda', true),
+  ...ler(['ilha.populacao', 'ilha.pib'], 'coroa: a ilha do ano seguinte parte da deste; a parte dos impostos e a taxa da coroa', true),
+  ...ler(['eu.pais_reconhecido'], 'coroa: a ilha reconhecida cresce mais', true),
+  ...ler(['eu.micronacao'], 'coroa: quem fundou um país num save antigo ganha a ilha', true),
   ...ler(['pais.pobreza'], 'país: violência e o desejo do eleitor', true),
   ...ler(['pais.violencia'], 'país: chance de morrer de violência, crescimento e aprovação', true),
   ...ler(['pais.saude'], 'país: mortalidade de quem depende do SUS e aprovação', true),
@@ -359,7 +368,7 @@ export const ETAPAS_DO_ANO = [
     id: 'pais',
     nome: 'o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote',
     // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe.
-    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
+    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
     escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
   },
   {
@@ -433,8 +442,14 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'poder',
     nome: 'o poder: influência, popularidade, mandato e queda',
-    le: ['ano.fase', ...PATRIMONIO, 'empresa.subsidiarias', 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.fama', 'eu.renda', 'eu.ocupacao', 'eu.genero', 'eu.politico', 'eu.ex_politico', 'eu.filho_de_politico', 'eu.monarca', 'eu.principe', 'eu.ditador', 'eu.herdeiro_regime'],
+    le: ['ano.fase', ...PATRIMONIO, 'empresa.subsidiarias', 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.fama', 'eu.renda', 'eu.ocupacao', 'eu.genero', 'eu.politico', 'eu.ex_politico', 'eu.filho_de_politico', 'eu.monarca', 'eu.principe', 'eu.ditador', 'eu.herdeiro_regime', 'eu.micronacao', 'ilha.coroa'],
     escreve: ['eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.ex_politico', 'eu.ocupacao', 'eu.renda', 'agenda'],
+  },
+  {
+    id: 'coroa',
+    nome: 'a coroa: a ilha anda e quem tem coroa recebe a dotação da forma',
+    le: ['ilha.*', 'eu.cargo', 'eu.renda', 'eu.micronacao', 'eu.pais_reconhecido', 'lugar.nome', 'pais.coroa', 'pais.pib', ...POLITICAS_DO_PAIS],
+    escreve: ['ilha.*', 'eu.renda', 'agenda'],
   },
   {
     id: 'padrao',

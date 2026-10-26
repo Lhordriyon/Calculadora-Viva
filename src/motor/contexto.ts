@@ -31,6 +31,7 @@ function formatar(ent: string, campo: string, v: number | string | boolean | und
   if (def?.reais) return formatarDinheiro(v);
   if (def?.casas !== undefined) return v.toFixed(def.casas).replace('.', ',');
   if (def?.milhoes) return `${Math.round(v / 1e6)} milhões`;
+  if (def?.milhar) return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   return String(Math.round(v));
 }
 

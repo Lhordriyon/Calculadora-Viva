@@ -1048,6 +1048,10 @@
         "texto": "Comprar e se declarar soberano",
         "resumo": "fundou um país numa ilha do Pacífico e se declarou soberano",
         "efeitos": {
+          "fundarIlha": true,
+          "renda": {
+            "definir": 500000
+          },
           "dinheiro": -300000000000.0,
           "eu.cargo": {
             "definir": "soberano"
@@ -1082,6 +1086,7 @@
         "texto": "Comprar e fazer uma república de verdade",
         "resumo": "fundou uma república numa ilha do Pacífico",
         "efeitos": {
+          "fundarIlha": true,
           "dinheiro": -300000000000.0,
           "eu.fama": 25,
           "eu.popularidade": 10,
@@ -2644,13 +2649,15 @@
   {
     "id": "greve_na_ilha",
     "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 6,
     "condicoes": {
       "marcas": [
         "micronacao"
       ],
       "eu.cargo": "soberano"
     },
-    "texto": "Os 2.300 habitantes do seu país entraram em greve geral: querem eleições, e o pescador mais simpático já é candidato.",
+    "texto": "Os {ilha.populacao} habitantes de {ilha.nome} entraram em greve geral: querem eleições, e o pescador mais simpático já é candidato.",
     "resumo": "enfrentou uma greve geral no país que fundou",
     "escolhas": [
       {
@@ -2661,6 +2668,9 @@
           "efeitos": {
             "eu.cargo": {
               "definir": ""
+            },
+            "renda": {
+              "definir": 0
             },
             "felicidade": 4,
             "eu.popularidade": 15
@@ -2688,6 +2698,9 @@
           "efeitos": {
             "eu.cargo": {
               "definir": ""
+            },
+            "renda": {
+              "definir": 0
             },
             "felicidade": -8,
             "eu.fama": 8

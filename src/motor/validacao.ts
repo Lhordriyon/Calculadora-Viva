@@ -104,6 +104,8 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
   // Vender os títulos do Tesouro põe o preço do dia na conta; comprar tira da conta (ou põe na renda fixa).
   if (ef.venderTitulos !== undefined || ef.comprarTitulo) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
   if (ef.comprarTitulo) out.push({ caminho: 'eu.renda_fixa', sistema: 'dinheiro' });
+  // A ilha nasce com gente e PIB.
+  if (ef.fundarIlha) out.push({ caminho: 'ilha.populacao', sistema: 'mundo' }, { caminho: 'ilha.pib', sistema: 'mundo' });
   if (ef.dinheiro || ef.divida || ef.dividaFator !== undefined || ef.investir) {
     if (ef.dinheiro || ef.investir) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' });
     if (ef.investir) out.push(...ATIVOS.map((a) => ({ caminho: `eu.${a}`, sistema: 'dinheiro' as Sistema })));
@@ -438,7 +440,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const [chave, onde] of escritores) {
     const { ent, campo } = separar(chave);
     if (defCampo(ent, campo)?.derivado) continue;
-    if (!PAPEL_PESSOA.has(ent) && !PAIS_DE_FORA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais' && ent !== 'empresa') continue;
+    if (!PAPEL_PESSOA.has(ent) && !PAIS_DE_FORA.has(ent) && ent !== 'eu' && ent !== 'lugar' && ent !== 'pais' && ent !== 'empresa' && ent !== 'ilha') continue;
     const lista = leitores.get(chave) ?? [];
     const sistemas = new Set(lista.map((l) => l.sistema));
     const local = onde.find((o) => o !== 'motor') ?? onde[0]!;

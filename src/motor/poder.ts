@@ -18,6 +18,7 @@ import type { DefCargo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, somar } from './livro.ts';
 import { influenciaDoPatrimonio, POPULARIDADE_CRITICA, RITMO_INFLUENCIA, RITMO_POPULARIDADE, SUBSIDIARIAS_DO_CONGLOMERADO } from './regras.ts';
+import { custoDaCoroa } from './coroa.ts';
 import { aleatorio, normal } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
@@ -183,9 +184,12 @@ export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mud
   if (!def) return;
   // Quem governa o país tem a aprovação do governo como popularidade (pais.ts); os outros cargos sentem a fase.
   const pop = eu.n['popularidade'] ?? 50;
-  if (!def.governa) somar(e, reg, 'eu', 'popularidade', (50 + (BONUS_DA_FASE[fase.id] ?? 0) - pop) * RITMO_POPULARIDADE + normal(e.rng, 0, 3), 'poder');
-  if ((eu.n['popularidade'] ?? 50) < POPULARIDADE_CRITICA && c.porId.has('queda_do_cargo') && !e.agenda.some((a) => a.evento === 'queda_do_cargo')) {
-    e.agenda.push({ evento: 'queda_do_cargo', ano: e.ano, origem: eu.q['politico']?.causa ?? eu.q['monarca']?.causa ?? eu.q['ditador']?.causa ?? null });
+  // A coroa da ilha cobra do povo de lá: a parte dos impostos e a taxa puxam a popularidade de quem é soberano (coroa.ts).
+  if (!def.governa) somar(e, reg, 'eu', 'popularidade', (50 + (BONUS_DA_FASE[fase.id] ?? 0) - custoDaCoroa(e, 'ilha') - pop) * RITMO_POPULARIDADE + normal(e.rng, 0, 3), 'poder');
+  // Abaixo do ponto crítico, o cargo balança: na ilha, a greve geral; nos outros, a queda do cargo.
+  const queda = def.id === 'soberano' ? 'greve_na_ilha' : 'queda_do_cargo';
+  if ((eu.n['popularidade'] ?? 50) < POPULARIDADE_CRITICA && c.porId.has(queda) && !e.agenda.some((a) => a.evento === queda)) {
+    e.agenda.push({ evento: queda, ano: e.ano, origem: eu.q['politico']?.causa ?? eu.q['monarca']?.causa ?? eu.q['ditador']?.causa ?? eu.q['micronacao']?.causa ?? null });
   }
   if (def.esfera === 'vitalicio') return;
   // O último ano do mandato (0) é ano de eleição: dá para tentar a reeleição ainda no cargo.

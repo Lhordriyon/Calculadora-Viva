@@ -18,7 +18,7 @@ import { chanceDeEleicao } from './poder.ts';
 import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
 import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar, titulosDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
-import { PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Parceiro, type Politica, type Verbo } from './constantes.ts';
+import { FORMAS_DA_COROA, PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type FormaDaCoroa, type Parceiro, type Politica, type Verbo } from './constantes.ts';
 import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
@@ -29,6 +29,7 @@ import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso } from './storylets.ts';
 import { precoDoTitulo, taxaDoTitulo, type Prazo } from './tesouro.ts';
+import { formaDaCoroa, paisDaCoroa } from './coroa.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 export const ESTRATEGIAS = ['primeira', 'cautelosa', 'arriscada', 'aleatoria'] as const;
@@ -287,6 +288,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirGoverno(estrategia, e, c, rng),
     ...decidirDiplomacia(estrategia, e, c, rng),
     ...decidirBens(estrategia, e, c, rng),
+    ...decidirCoroa(estrategia, e, c, rng),
     ...venderTituloParaPagar(e),
     ...decidirDividas(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
@@ -314,6 +316,24 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
   const resto = sobra - noTesouro.reduce((s, op) => s + (op.tipo === 'comprarTitulo' ? op.valor : 0), 0);
   if (resto >= 1000) ops.push({ tipo: 'aplicar', valor: Math.floor(estrategia === 'aleatoria' ? resto / 2 : resto) });
   return ops;
+}
+
+/**
+ * A coroa dos robôs: a cautelosa fica no salário da Casa Real e, com o povo do lado (popularidade 60 ou mais), passa a
+ * receber uma parte dos impostos, de onde só volta abaixo de 40; a arriscada cobra a taxa da coroa e não recua; a
+ * aleatória troca de forma de vez em quando.
+ */
+function decidirCoroa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const onde = paisDaCoroa(e);
+  if (!onde) return [];
+  const forma = formaDaCoroa(e, onde);
+  const pop = e.entidades['eu']!.n['popularidade'] ?? 50;
+  let alvo: FormaDaCoroa = forma;
+  if (estrategia === 'cautelosa') alvo = pop >= 60 ? 'impostos' : pop < 40 || forma === 'taxa' ? 'salario' : forma;
+  else if (estrategia === 'arriscada') alvo = 'taxa';
+  else if (aleatorio(rng) < 0.3) alvo = sortear(rng, FORMAS_DA_COROA);
+  const op: Operacao = { tipo: 'coroa', forma: alvo };
+  return alvo !== forma && pode(e, c, op) ? [op] : [];
 }
 
 /** Devendo no banco, vende o título que vale mais: o juro da dívida come mais do que o cupom paga. */

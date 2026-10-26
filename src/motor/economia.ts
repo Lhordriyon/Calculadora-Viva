@@ -140,9 +140,15 @@ export function anotarCaixa(reg: Mudanca[], ent: string, antes: Numeros, n: Nume
   for (const k of CAMPOS_CAIXA) anotar(reg, `${ent}.${k}`, resto[k] ?? 0, r);
 }
 
-/** Quem paga a renda de quem joga: o tesouro paga a aposentadoria, o servidor e o cargo público; o resto vem do mercado. */
+/**
+ * Quem paga a renda de quem joga: a coroa recebe a dotação do tesouro (no Brasil) ou da ilha; o tesouro paga a
+ * aposentadoria, o servidor e o cargo público; o resto vem do mercado.
+ */
 function pagadorDaRenda(e: EstadoVida): { p: string; r: string } {
   const eu = e.entidades['eu']!;
+  const cargo = eu.t['cargo'] ?? '';
+  if (cargo === 'rei') return { p: 'tesouro', r: 'dotacao' };
+  if (cargo === 'soberano' && e.entidades['ilha']) return { p: 'ilha', r: 'dotacao' };
   if (eu.q['aposentado']) return { p: 'tesouro', r: 'aposentadoria' };
   if (eu.q['servidor'] || (eu.t['cargo'] ?? '') !== '') return { p: 'tesouro', r: 'salario' };
   return { p: 'mercado', r: 'salario' };

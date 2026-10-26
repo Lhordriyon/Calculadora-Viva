@@ -52,8 +52,15 @@ export type Contraparte = ContaDeFora | 'reavaliacao' | (string & {});
 export const MODALIDADES = ['credito', 'emprestimo', 'financiamento', 'acordo'] as const;
 export type Modalidade = (typeof MODALIDADES)[number];
 
-/** Entidades da vida: quem joga, as pessoas, o lugar, o país, os países de fora e a empresa (quando quem joga tem uma). */
-export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', ...PARCEIROS, 'empresa'] as const;
+/** Entidades da vida: quem joga, as pessoas, o lugar, o país, os países de fora, a empresa (quando quem joga tem uma) e a ilha (o país que quem joga fundou). */
+export const ENTIDADES = ['eu', ...PAPEIS, 'lugar', 'pais', ...PARCEIROS, 'empresa', 'ilha'] as const;
+
+/**
+ * Como a coroa recebe (coroa.ts): o salário da Casa Real (fixo), uma parte dos impostos (uma fatia da arrecadação, que
+ * anda com a economia) ou a taxa da coroa (um imposto a mais, só para ela).
+ */
+export const FORMAS_DA_COROA = ['salario', 'impostos', 'taxa'] as const;
+export type FormaDaCoroa = (typeof FORMAS_DA_COROA)[number];
 export type IdEntidade = (typeof ENTIDADES)[number];
 
 /** Os verbos da ficha do ano. */

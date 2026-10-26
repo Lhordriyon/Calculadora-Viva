@@ -180,6 +180,7 @@ const NOMES: Record<string, string> = {
   caducou: 'Dívida que caducou',
   leilao: 'Leilão',
   rendimento: 'Juro da renda fixa',
+  dotacao: 'Dotação da coroa',
   cupom: 'Cupom dos títulos',
   compra_de_titulo: 'Títulos comprados',
   venda_de_titulo: 'Títulos vendidos',

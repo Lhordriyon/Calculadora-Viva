@@ -24,6 +24,7 @@ import { ehOperacaoDePais, juroReal, motivoParaNaoOperarPais, operarPais, type O
 import { ehOperacaoDeDiplomacia, motivoParaNaoOperarDiplomacia, operarDiplomacia, type OperacaoDiplomacia } from './diplomacia.ts';
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { ehOperacaoDeTesouro, motivoParaNaoOperarTesouro, operarTesouro, type OperacaoTesouro } from './tesouro.ts';
+import { ehOperacaoDeCoroa, motivoParaNaoOperarCoroa, operarCoroa, type OperacaoCoroa } from './coroa.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
 import { normal } from './rng.ts';
@@ -95,7 +96,8 @@ export type Operacao =
   | OperacaoTestamento
   | OperacaoJogada
   | OperacaoPais
-  | OperacaoDiplomacia;
+  | OperacaoDiplomacia
+  | OperacaoCoroa;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
 export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
@@ -122,6 +124,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (ehOperacaoDeJogada(op)) return motivoParaNaoOperarJogada(e, c, op);
   if (ehOperacaoDePais(op)) return motivoParaNaoOperarPais(e, c, op);
   if (ehOperacaoDeDiplomacia(op)) return motivoParaNaoOperarDiplomacia(e, c, op);
+  if (ehOperacaoDeCoroa(op)) return motivoParaNaoOperarCoroa(e, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -168,6 +171,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
   if (ehOperacaoDePais(op)) return lancarCom('pais', () => operarPais(e, c, op, reg));
   if (ehOperacaoDeDiplomacia(op)) return lancarCom('pais', (id) => operarDiplomacia(e, c, op, reg, id));
+  if (ehOperacaoDeCoroa(op)) return lancarCom('coroa', (id) => operarCoroa(e, c, op, reg, id));
   let texto: string;
   let resumo: string;
   if (op.tipo === 'aplicar') {

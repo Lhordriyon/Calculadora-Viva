@@ -12,6 +12,7 @@
 import { ATIVOS, FILHOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
 import { defDoBem } from './bens.ts';
+import { dotacaoDe } from './coroa.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
 import { influenciaAlvo } from './poder.ts';
@@ -484,6 +485,17 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     copia.n['valor'] = valor;
     copia.t['origem'] = String(abertura.id);
     e.entidades[idTit] = copia;
+  }
+  // A ilha que quem morreu fundou passa a quem herda, com a forma da coroa dela; quem era soberano deixa a coroa da ilha.
+  const ilha = antiga.entidades['ilha'];
+  if (ilha) {
+    e.entidades['ilha'] = recausar(structuredClone(ilha), abertura.id);
+    eu.q['micronacao'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    if (velho.q['pais_reconhecido']) eu.q['pais_reconhecido'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    if (velho.t['cargo'] === 'soberano') {
+      eu.t['cargo'] = 'soberano';
+      eu.n['renda'] = Math.round(dotacaoDe(e, c, 'ilha'));
+    }
   }
   // A coroa e o regime passam ao filho: quem morreu reinava, e a sucessão é o primeiro capítulo (storylet da linhagem).
   const coroa = velho.q['monarca'] ? 'monarca' : velho.q['ditador'] ? 'ditador' : null;

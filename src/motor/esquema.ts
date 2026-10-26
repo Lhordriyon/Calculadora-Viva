@@ -173,6 +173,8 @@ const EFEITOS_FIXOS = {
       max: z.number().positive().optional(),
     })
     .optional(),
+  /** A ilha nasce (a jogada "fundar um país"): o país de quem joga, com população, PIB e imposto (coroa.ts). */
+  fundarIlha: z.literal(true).optional(),
   /** Vende essa fração de cada título do Tesouro de quem joga pelo preço do dia (o medo do calote, a conta que apertou): 1 vende todos. */
   venderTitulos: z.number().gt(0).max(1).optional(),
   /**
