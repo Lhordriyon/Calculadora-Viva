@@ -50,7 +50,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
 | B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
 | C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | feito (26/10): a forma da coroa e a ilha com população e PIB; a legitimidade (I-42) e o ditador ficam para depois |
-| D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
+| D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | em andamento (26/10): a política de ciência, o estoque de tecnologia e as descobertas |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
 
 ## Índice
@@ -96,7 +96,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-51 | Alianças e blocos econômicos | 6 | Média | proposta |
 | I-52 | Instituições multilaterais | 6 | Média | proposta |
 | I-53 | Poder nacional por dimensões | 6 | Média | proposta |
-| I-54 | Pesquisa e tecnologia como estoque | 6 | Média | proposta (bloco D do dono) |
+| I-54 | Pesquisa e tecnologia como estoque | 6 | Média | em andamento (bloco D): a política de ciência, o estoque de tecnologia e as descobertas |
 | I-60 | Forças armadas como capacidade | 7 | Média | proposta (bloco E do dono) |
 | I-61 | Guerra como processo com custos | 7 | Média | proposta (bloco E do dono) |
 | I-62 | Coerção econômica além da sanção | 7 | Baixa | proposta |
@@ -836,8 +836,34 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Riscos:** nenhum além do escopo.
 - **Aceitação:** o investimento leva ao estoque e o estoque à produtividade, com causa no livro.
 - **Pedido do dono (19/10):** usar o Tesouro do Estado para pagar pesquisa e desenvolvimento. Depende do orçamento em reais (I-31).
+- **Desenho do bloco D (26/10):**
+  - **A política "Ciência e tecnologia"**, a sétima da folha País, com três níveis: cortada, regular ou prioridade.
+    - No nível regular, o governo põe 0,5% do PIB em pesquisa; cortada tira 0,3 ponto do gasto, e prioridade soma 0,6.
+    - O dinheiro sai do Tesouro: o gasto entra no primário, e a dívida anda com ele. A folha País mostra quanto é, em reais.
+    - Cada bloco tem o seu nível: a frente popular e o Regime pesquisam como prioridade, o bloco liberal corta, a aliança da ordem e o centrão ficam no regular. O voto decide a pesquisa.
+  - **O estoque de tecnologia** (`pais.tecnologia`, de 0 a 100) anda devagar para o alvo: 6% do caminho por ano, uma década para chegar perto. O alvo é 50, mais 15 com a prioridade (menos 15 com a ciência cortada), mais 0,4 ponto por ponto de escola acima de 50.
+  - **O que a tecnologia faz, com atraso:**
+    - o crescimento potencial ganha 0,02 ponto por ponto acima de 50 (com 65, +0,3 ponto por ano);
+    - o alvo da saúde pública ganha 0,2 ponto por ponto acima de 50;
+    - a tração das empresas sobe com ela no setor de tecnologia e, menos, na saúde, na indústria e no agro;
+    - a vaga e a promoção de quem é cientista valem metade com a ciência cortada e 1,6 vez com a prioridade.
+  - **As descobertas** são entradas do mundo na linha do tempo, como a virada da fase:
+    - acima de 55 de tecnologia, a chance é de 0,8% por ponto por ano, com no máximo uma a cada 4 anos;
+    - a cura põe a saúde pública 4 pontos acima, o satélite põe a aprovação de quem governa 3 pontos acima, e a patente soma 2 pontos à tecnologia;
+    - a causa é a decisão que pôs a ciência como prioridade (a posse do governo ou a reforma) nos últimos 30 anos.
+  - **A fuga de cérebros:** abaixo de 42, os laboratórios esvaziam (12% por ano, no máximo uma a cada 10 anos). A tecnologia perde 3 pontos, e o corte é a causa.
+  - **Na vida de quem joga:**
+    - quem pesquisa recebe o edital (com a prioridade) ou o corte da bolsa (com a ciência cortada), e a decisão do governo é a causa;
+    - a vacina daqui chega ao posto, o satélite passa na TV de quem é criança, e quem tem dinheiro pode entrar de sócio na empresa que nasceu da patente;
+    - as jogadas de quem é bilionário (a cura e o foguete) somam ao estoque do país.
+  - **Ler a política é consultar quem a decidiu:** o storylet que pede `pais.pol_pesquisa` aponta a posse ou a reforma que a pôs ali.
+- **Fica para depois, com o motivo:**
+  - o orçamento item por item (o resto da I-31, no bloco B2): a pesquisa entra no gasto em pontos do PIB, como a saúde e a escola;
+  - a pesquisa privada como estoque de cada empresa: a empresa ainda não tem caixa (I-11);
+  - os pesquisadores como pessoas e o setor privado do país (I-36);
+  - a corrida tecnológica com os países de fora.
 - **Prioridade:** Média · bloco D do dono.
-- **Estado:** proposta.
+- **Estado:** em andamento (bloco D, 26/10).
 
 ## Fase 7 — defesa e conflito
 
