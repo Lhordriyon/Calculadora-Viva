@@ -12,7 +12,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { Noticia } from './esquema.ts';
 import { lancar, novaEntrada, somar } from './livro.ts';
-import { governoAtual, nivelDe } from './pais.ts';
+import { decisaoQueDeixou, governoAtual, nivelDe } from './pais.ts';
 import { PESQUISA, VERBA_DA_CARREIRA } from './regras.ts';
 import { aleatorio, sortear } from './rng.ts';
 import { capitalizar, renderizar } from './texto.ts';
@@ -41,28 +41,12 @@ export function verbaDe(e: EstadoVida, politica: Politica | undefined): number {
 }
 
 /**
- * A decisão que fez o estoque de agora, nos últimos `PESQUISA.descoberta.causa` anos: a mais recente que deixou a
- * ciência como prioridade (`nivel` 2, a causa da descoberta) ou cortada (`nivel` 0, a da fuga). Vale a reforma que a
- * pôs ali e a posse do governo que a manteve (a reeleição de quem pesquisa também é decisão); mesmo desfeita depois, a
- * tecnologia ainda carrega o que ela fez. O livro guarda a variação, e o nível de cada momento sai de andar para trás a
- * partir do de agora. As regras não contam, só quem decidiu; o país em que se nasce não tem decisão (null).
+ * A decisão que fez o estoque de agora, nos últimos `PESQUISA.descoberta.causa` anos (pais.ts › decisaoQueDeixou): a
+ * mais recente que deixou a ciência como prioridade (`nivel` 2, a causa da descoberta) ou cortada (`nivel` 0, a da
+ * fuga), mesmo desfeita depois: a tecnologia ainda carrega o que ela fez.
  */
 export function causaDaPesquisa(e: EstadoVida, nivel: 0 | 2): number | null {
-  let depois = e.entidades['pais']?.n['pol_pesquisa'] ?? 1;
-  for (let k = e.historico.length - 1; k >= 0; k--) {
-    const h = e.historico[k]!;
-    if (h.ano < e.ano - PESQUISA.descoberta.causa) break;
-    const deixou = Math.round(depois) === nivel;
-    if (deixou && h.ref?.startsWith('governo:')) return h.id;
-    const ms = h.mudancas ?? [];
-    for (let j = ms.length - 1; j >= 0; j--) {
-      const m = ms[j]!;
-      if (m.c !== 'pais.pol_pesquisa' || m.d === undefined) continue;
-      if (m.r === undefined && Math.round(depois) === nivel && (nivel === 2 ? m.d > 0 : m.d < 0)) return h.id;
-      depois -= m.d;
-    }
-  }
-  return null;
+  return decisaoQueDeixou(e, 'pesquisa', nivel, PESQUISA.descoberta.causa);
 }
 
 /** Há quantos anos o país viveu a última entrada com essa ref (ou com o prefixo dela): Infinity se não foi nos últimos `limite`. */

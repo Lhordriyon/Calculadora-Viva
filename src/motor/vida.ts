@@ -21,6 +21,7 @@ import { regraDasDividas } from './dividas.ts';
 import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCoroa } from './coroa.ts';
 import { regraDaPesquisa } from './pesquisa.ts';
+import { regraDaGuerra } from './guerra.ts';
 import { regraDaCarreira } from './carreira.ts';
 import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
@@ -195,6 +196,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   exterior: (x) => {
     x.exterior = anoDoExterior(x.e, x.c, x.reg);
   },
+  // A defesa: o armamento encomendado chega, e a guerra começa, segue ou acaba (guerra.ts); o país do ano já a sente.
+  guerra: (x) => regraDaGuerra(x.e, x.c),
   pais: (x) => {
     x.fase = anoDoPais(x.e, x.c, x.reg, x.exterior);
     x.idRegras = x.e.proximoId++;

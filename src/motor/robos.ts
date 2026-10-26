@@ -287,6 +287,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirPoder(estrategia, e, c, rng),
     ...decidirGoverno(estrategia, e, c, rng),
     ...decidirDiplomacia(estrategia, e, c, rng),
+    ...decidirDefesa(estrategia, e, c, rng),
     ...decidirBens(estrategia, e, c, rng),
     ...decidirCoroa(estrategia, e, c, rng),
     ...venderTituloParaPagar(e),
@@ -401,13 +402,14 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
 /** Eleições: a arriscada disputa o cargo mais alto com chance razoável; a cautelosa, só o que é quase certo; a aleatória, às vezes. */
 /**
  * Quem governa o país, uma reforma por ano. A cautelosa governa com as contas em ordem e o olho na década: imposto
- * médio, saúde, escola e ciência caprichadas, e sobe o imposto ou corta o social quando a dívida passa de 90% do PIB.
- * A arriscada é populista: imposto baixo, programa social amplo, polícia na rua, a fronteira fechada e a ciência
- * cortada (a conta fica para depois). A aleatória mexe numa política sorteada de vez em quando.
+ * médio, saúde, escola e ciência caprichadas, a defesa regular, e sobe o imposto ou corta o social quando a dívida
+ * passa de 90% do PIB. A arriscada é populista: imposto baixo, programa social amplo, polícia na rua, a fronteira
+ * fechada, o quartel reforçado e a ciência cortada (a conta fica para depois). A aleatória mexe numa política sorteada
+ * de vez em quando.
  */
 const GOVERNO_DOS_ROBOS: Record<'cautelosa' | 'arriscada', Record<Politica, number>> = {
-  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1, pesquisa: 2 },
-  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2, pesquisa: 0 },
+  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1, pesquisa: 2, defesa: 1 },
+  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2, pesquisa: 0, defesa: 2 },
 };
 
 function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
@@ -450,6 +452,28 @@ function decidirDiplomacia(estrategia: Estrategia, e: EstadoVida, c: Conteudo, r
     return (maisFrio.n['relacao'] ?? 50) < 45 ? ato(maisFrio, 'aproximar') : [];
   }
   return (e.entidades['eu']!.n['popularidade'] ?? 50) < 40 && (maisFrio.n['relacao'] ?? 50) < 50 ? ato(maisFrio, 'romper') : [];
+}
+
+/**
+ * A defesa: uma encomenda por ano e o pedido de paz. A cautelosa pede a paz assim que pode e, com ameaça à vista (um
+ * país que sanciona ou anda frio) e o quartel abaixo de 60, encomenda o sistema mais barato que cabe. A arriscada não
+ * pede a paz (a bandeira na janela) e encomenda caças sempre que pode: o desfile rende voto. A aleatória pede a paz às
+ * vezes e encomenda um sistema sorteado de vez em quando.
+ */
+function decidirDefesa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  if (estrategia === 'primeira' || governoAtual(e) !== 'voce') return [];
+  const paz: Operacao = { tipo: 'paz' };
+  const cabem = c.mundo.sistemas.filter((s) => pode(e, c, { tipo: 'sistema', sistema: s.id }));
+  const encomendar = (id: string): Operacao[] => [{ tipo: 'sistema', sistema: id }];
+  if (estrategia === 'aleatoria') {
+    if (pode(e, c, paz) && aleatorio(rng) < 0.5) return [paz];
+    return cabem.length > 0 && aleatorio(rng) < 0.08 ? encomendar(sortear(rng, cabem).id) : [];
+  }
+  if (estrategia === 'arriscada') return cabem.some((s) => s.id === 'cacas') ? encomendar('cacas') : [];
+  if (pode(e, c, paz)) return [paz];
+  const ameaca = parceirosDe(e).some((x) => x.q['sancao'] || (x.n['relacao'] ?? 50) < 25);
+  if (!ameaca || (e.entidades['pais']?.n['defesa'] ?? 50) >= 60 || cabem.length === 0) return [];
+  return encomendar(cabem.reduce((a, b) => (b.custo < a.custo ? b : a)).id);
 }
 
 function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {

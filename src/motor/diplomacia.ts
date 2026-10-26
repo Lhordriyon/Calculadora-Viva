@@ -151,7 +151,7 @@ function noticia(e: EstadoVida, c: Conteudo, tipo: Noticia, parceiro: string, ca
  * (a posse ou a reeleição do governo, a tarifa), de quando for, se ela puxa a
  * relação nesse sentido. Vira a causa da notícia.
  */
-function causaDaRelacao(e: EstadoVida, c: Conteudo, def: DefEstrangeiro, para: 'baixo' | 'cima'): number[] {
+export function causaDaRelacao(e: EstadoVida, c: Conteudo, def: DefEstrangeiro, para: 'baixo' | 'cima'): number[] {
   const sinal = para === 'baixo' ? -1 : 1;
   const puxa = sinal * (alvoDaRelacao(e, c, def) - def.relacao) > 0;
   for (let k = e.historico.length - 1; k >= 0 && e.historico[k]!.ano >= e.ano - 10; k--) {
@@ -210,8 +210,8 @@ export function anoDoExterior(e: EstadoVida, c: Conteudo, reg: Mudanca[]): Exter
       ganhar(e, mud, def.id, 'sancao', ent.id);
       perder(e, mud, def.id, 'acordo');
       lancar(e, ent, mud);
-    } else if (en.q['sancao'] && (rel > SANCAO.acaba || aleatorio(r) < SANCAO.cansaco)) {
-      // Acaba quando a relação volta, ou cansa: o mercado de lá sente falta do que comprava daqui.
+    } else if (en.q['sancao'] && !en.q['guerra'] && (rel > SANCAO.acaba || aleatorio(r) < SANCAO.cansaco)) {
+      // Acaba quando a relação volta, ou cansa: o mercado de lá sente falta do que comprava daqui. Na guerra, fica até o fim dela (guerra.ts).
       const ent = noticia(e, c, 'fimDaSancao', def.id, causaDaRelacao(e, c, def, 'cima'));
       const mud: Mudanca[] = [];
       perder(e, mud, def.id, 'sancao');
@@ -333,6 +333,7 @@ export function motivoParaNaoOperarDiplomacia(e: EstadoVida, c: Conteudo, op: Op
   const en = e.entidades[op.parceiro];
   if (!en || !(PARCEIROS as readonly string[]).includes(op.parceiro)) return 'escolha o país';
   if (!(ACOES_DIPLOMATICAS as readonly string[]).includes(op.acao)) return 'escolha o que fazer';
+  if (en.q['guerra']) return 'em guerra: só cabe pedir a paz';
   if (atoNoAno(e)) return 'um ato lá fora por ano';
   if (op.acao === 'acordo') {
     if (en.q['acordo']) return 'o acordo já está em vigor';

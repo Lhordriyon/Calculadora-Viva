@@ -572,3 +572,39 @@ export const PESQUISA = {
 } as const;
 /** A vaga e a promoção de uma carreira que uma política paga (mundo.json › carreiras › verba), por nível dela: cortada, regular, prioridade. */
 export const VERBA_DA_CARREIRA = [0.5, 1, 1.6] as const;
+
+// ---- defesa (bloco E: a capacidade das Forças Armadas, os sistemas de armamento e a guerra)
+
+/**
+ * A defesa (guerra.ts, pais.ts):
+ * - `ritmo` e `tecnologia`: quanto do caminho até o alvo a capacidade anda por ano, e quanto cada ponto de tecnologia
+ *   acima de 50 soma ao alvo (o armamento moderno vem da pesquisa);
+ * - `guerra`: com um país de fora que sanciona o Brasil e a relação abaixo de `relacao`, a chance por ano é `chance`,
+ *   dobrando a cada `dobra` pontos de capacidade abaixo de 50 (e caindo à metade a cada `dobra` acima), até `teto`;
+ *   com a capacidade abaixo de `desarmado`, a decisão que desmobilizou também é causa; depois de uma guerra, `intervalo`
+ *   anos sem outra;
+ * - `ano`: o que cada ano de guerra faz (pontos de crescimento, que se acumulam com a persistência do ciclo, de inflação,
+ *   de gasto do governo, os pontos da taxa de crescimento da população, os pontos de aprovação no alvo) e a união do
+ *   primeiro ano (aprovação na hora);
+ * - `fim`: a partir do segundo ano, a chance de acabar, o que o pedido de paz do ano anterior soma e o ano em que ela
+ *   acaba de cansaço (cessar-fogo); a parte das guerras que acaba decidida (vitória ou derrota, pela capacidade daqui
+ *   contra a força de lá; o resto é cessar-fogo), a reparação da derrota (pontos do PIB na dívida), a relação depois e
+ *   a aprovação na hora;
+ * - `paz`: o que o pedido de paz soma à relação com o outro lado.
+ */
+export const DEFESA = {
+  ritmo: 0.08,
+  tecnologia: 0.3,
+  guerra: { relacao: 25, chance: 0.05, dobra: 15, teto: 0.25, desarmado: 45, intervalo: 10 },
+  ano: { choque: -1.2, inflacao: 2, gasto: 2, populacao: 0.1, aprovacao: -3, uniao: 5 },
+  fim: {
+    chance: 0.25,
+    paz: 0.25,
+    maximo: 8,
+    decisiva: 0.6,
+    reparacao: 4,
+    relacao: { vitoria: 30, derrota: 30, cessarFogo: 22 },
+    aprovacao: { vitoria: 6, derrota: -8, cessarFogo: 0 },
+  },
+  paz: { relacao: 5 },
+} as const;

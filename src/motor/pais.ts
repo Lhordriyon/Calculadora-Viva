@@ -1,20 +1,21 @@
 /**
  * O país vivo. Todo ano andam as estatísticas do país (crescimento,
  * desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação
- * públicas, tecnologia, aprovação do governo), puxadas pelas políticas de quem governa
- * (mundo.json › politicas), pelos decretos (pais.impulso), pelas contas e
- * pela sorte (a crise lá fora, a alta das commodities). A fase do ciclo é o
- * nome do crescimento, uma qualidade do país com a entrada que a anunciou
- * como causa; o que ela muda na vida (demissão, salário, empresa) sai das
- * estatísticas, e o resto do país chega pelo bolso (imposto, auxílio, juros),
- * pelo corpo (a saúde pública, a violência) e pela escola. Governos fictícios
+ * públicas, tecnologia, defesa, aprovação do governo), puxadas pelas políticas
+ * de quem governa (mundo.json › politicas), pelos decretos (pais.impulso),
+ * pelas contas, pela guerra (guerra.ts) e pela sorte (a crise lá fora, a alta
+ * das commodities). A fase do ciclo é o nome do crescimento, uma qualidade do
+ * país com a entrada que a anunciou como causa; o que ela muda na vida
+ * (demissão, salário, empresa) sai das estatísticas, e o resto do país chega
+ * pelo bolso (imposto, auxílio, juros), pelo corpo (a saúde pública, a
+ * violência) e pela escola. Governos fictícios
  * se alternam em eleições de quatro em quatro anos (mundo.json › governos), e
  * o voto de quem joga pesa; no poder (presidente, monarca, chefe do Regime),
  * quem joga escolhe as políticas pela folha País. Cada mudança fica no livro
  * com a causa: o voto, a eleição, a reforma, o decreto, o choque de fora.
  */
 import { POLITICAS, type Fase, type Politica } from './constantes.ts';
-import { classeDoPatrimonio, indicadoresDoPais, patrimonioTotal } from './campos.ts';
+import { classeDoPatrimonio, indicadoresDoPais, inimigoDe, patrimonioTotal } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefFase, DefGoverno, EfeitoDePolitica } from './esquema.ts';
@@ -24,6 +25,7 @@ import {
   CALOTE,
   CHOQUE_DA_CRISE,
   CRESCIMENTO_POTENCIAL,
+  DEFESA,
   DEMOGRAFIA,
   DESEMPREGO_NATURAL,
   DESVIO_DO_CRESCIMENTO,
@@ -56,11 +58,12 @@ import {
 import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { chanceDeCalote, darCalote, premioDoCalote } from './tesouro.ts';
 import { custoDaCoroa } from './coroa.ts';
+import { comecoDaGuerra } from './guerra.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
 /** As estatísticas do país, na ordem da folha País. */
-export const ESTATISTICAS = ['crescimento', 'desemprego', 'inflacao', 'juros', 'divida', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'aprovacao'] as const;
+export const ESTATISTICAS = ['crescimento', 'desemprego', 'inflacao', 'juros', 'divida', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'defesa', 'aprovacao'] as const;
 export type Estatistica = (typeof ESTATISTICAS)[number];
 
 const limitar = (v: number, min: number, max: number): number => (v < min ? min : v > max ? max : v);
@@ -150,6 +153,30 @@ export function nivelDe(e: EstadoVida, p: Politica): number {
   return v === undefined ? 1 : limitar(Math.round(v), 0, 2);
 }
 
+/**
+ * A decisão que deixou uma política num nível, nos últimos `anos`: a reforma que a pôs ali ou a posse do governo que a
+ * manteve (a reeleição também é decisão), a mais recente, mesmo desfeita depois (o estoque que ela fez ainda está lá: a
+ * tecnologia da ciência, a capacidade da defesa). O livro guarda a variação, e o nível de cada momento sai de andar para
+ * trás a partir do de agora. As regras não contam, só quem decidiu; o país em que se nasce não tem decisão (null).
+ */
+export function decisaoQueDeixou(e: EstadoVida, p: Politica, nivel: number, anos: number): number | null {
+  const caminho = `pais.pol_${p}`;
+  let depois = e.entidades['pais']?.n[`pol_${p}`] ?? 1;
+  for (let k = e.historico.length - 1; k >= 0; k--) {
+    const h = e.historico[k]!;
+    if (h.ano < e.ano - anos) break;
+    if (Math.round(depois) === nivel && h.ref?.startsWith('governo:')) return h.id;
+    const ms = h.mudancas ?? [];
+    for (let j = ms.length - 1; j >= 0; j--) {
+      const m = ms[j]!;
+      if (m.c !== caminho || m.d === undefined) continue;
+      if (m.r === undefined && Math.round(depois) === nivel && Math.round(depois - m.d) !== nivel) return h.id;
+      depois -= m.d;
+    }
+  }
+  return null;
+}
+
 /** A soma do que as políticas em vigor fazem com uma conta (receita, pobreza, auxílio…). */
 export function efeitoDasPoliticas(e: EstadoVida, c: Conteudo, chave: EfeitoDePolitica): number {
   let soma = 0;
@@ -200,7 +227,7 @@ export function potencialDe(e: EstadoVida, c: Conteudo): number {
   );
 }
 
-/** Quanto o governo arrecada a mais do que gasta (pontos do PIB), antes dos juros: positivo paga a dívida. */
+/** Quanto o governo arrecada a mais do que gasta (pontos do PIB), antes dos juros: positivo paga a dívida. A guerra custa. */
 export function primarioDe(e: EstadoVida, c: Conteudo, impulso = e.entidades['pais']?.n['impulso'] ?? 0): number {
   const n = e.entidades['pais']!.n;
   const gov = defGoverno(c, governoAtual(e));
@@ -208,6 +235,7 @@ export function primarioDe(e: EstadoVida, c: Conteudo, impulso = e.entidades['pa
     efeitoDasPoliticas(e, c, 'receita') -
     efeitoDasPoliticas(e, c, 'gasto') -
     (gov?.gasto ?? 0) -
+    (inimigoDe(e) ? DEFESA.ano.gasto : 0) -
     impulso +
     REACAO_FISCAL * ((n['divida'] ?? DIVIDA_DE_EQUILIBRIO) - DIVIDA_DE_EQUILIBRIO)
   );
@@ -255,6 +283,7 @@ export function paisInicial(e: EstadoVida, c: Conteudo): void {
     aprovacao: arred(limitar(normal(r, 50, 8), 15, 85)),
   });
   n['tecnologia'] = tecnologiaDeQuemNasce(e, c);
+  n['defesa'] = defesaDeQuemNasce(e, c);
   const fase = faseDoCrescimento(n['crescimento']!);
   if (fase !== 'normal') pais.q[fase] = { v: 1, ano: e.ano, idade: 0, causa: null };
   iniciarNumeros(e);
@@ -275,6 +304,23 @@ function migrarPesquisa(e: EstadoVida, c: Conteudo): void {
   const gov = defGoverno(c, governoAtual(e));
   if (n['pol_pesquisa'] === undefined && gov) n['pol_pesquisa'] = gov.politicas.pesquisa;
   n['tecnologia'] = tecnologiaDeQuemNasce(e, c);
+}
+
+/**
+ * A capacidade das Forças Armadas no país em que se nasce (e no save de antes dela): parte do caminho que a defesa do
+ * governo de agora leva, mais o que a tecnologia arma. Sem sorteio: o save antigo não muda de sorte.
+ */
+function defesaDeQuemNasce(e: EstadoVida, c: Conteudo): number {
+  const n = e.entidades['pais']!.n;
+  return arred(limitar(50 + 0.6 * efeitoDasPoliticas(e, c, 'defesa') + DEFESA.tecnologia * ((n['tecnologia'] ?? 50) - 50), 10, 90));
+}
+
+/** O save de antes da defesa (bloco E): a defesa do governo de agora e a capacidade que ela e a tecnologia levam. */
+function migrarDefesa(e: EstadoVida, c: Conteudo): void {
+  const n = e.entidades['pais']!.n;
+  const gov = defGoverno(c, governoAtual(e));
+  if (n['pol_defesa'] === undefined && gov) n['pol_defesa'] = gov.politicas.defesa;
+  n['defesa'] = defesaDeQuemNasce(e, c);
 }
 
 /** Quanto a população cresce no ano (% ao ano): a transição demográfica, a saúde pública e a pobreza. */
@@ -322,6 +368,7 @@ export function migrarPais(e: EstadoVida, c: Conteudo): void {
     saude: 50,
     educacao: 50,
     tecnologia: 50,
+    defesa: 50,
     aprovacao: 50,
   });
 }
@@ -513,8 +560,11 @@ function quemGoverna(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
 
 // ---------------------------------------------------------------- o ano do país
 
-/** Quanto do caminho até o alvo a pobreza, a violência, a saúde, a educação e a tecnologia andam por ano (a escola leva uma geração; a pesquisa, uma década). */
-const RITMO_DO_PAIS = { pobreza: 0.3, violencia: 0.2, saude: 0.15, educacao: 0.08, tecnologia: PESQUISA.ritmo } as const;
+/**
+ * Quanto do caminho até o alvo a pobreza, a violência, a saúde, a educação, a tecnologia e a defesa andam por ano (a
+ * escola leva uma geração; a pesquisa, uma década; o quartel, também: o equipamento envelhece de volta para o alvo).
+ */
+const RITMO_DO_PAIS = { pobreza: 0.3, violencia: 0.2, saude: 0.15, educacao: 0.08, tecnologia: PESQUISA.ritmo, defesa: DEFESA.ritmo } as const;
 
 /** Para onde andam as estatísticas lentas, com as políticas de agora, o desemprego, a pobreza, a escola, a dívida e a tecnologia dados. */
 export function alvosDoPais(
@@ -525,7 +575,7 @@ export function alvosDoPais(
   educacao: number,
   divida: number,
   tecnologia: number,
-): { pobreza: number; violencia: number; saude: number; educacao: number; tecnologia: number } {
+): { pobreza: number; violencia: number; saude: number; educacao: number; tecnologia: number; defesa: number } {
   const efeito = (k: EfeitoDePolitica): number => efeitoDasPoliticas(e, c, k);
   return {
     pobreza: 25 + efeito('pobreza') + 1.2 * (desemprego - DESEMPREGO_NATURAL),
@@ -536,6 +586,8 @@ export function alvosDoPais(
     educacao: 50 + efeito('educacao'),
     // Escola boa forma quem pesquisa: a ciência do governo e a escola levam a tecnologia.
     tecnologia: 50 + efeito('tecnologia') + PESQUISA.educacao * (educacao - 50),
+    // O quartel equipado: a defesa do governo e a tecnologia, que arma melhor.
+    defesa: 50 + efeito('defesa') + DEFESA.tecnologia * (tecnologia - 50),
   };
 }
 
@@ -594,8 +646,9 @@ function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 
   const ctx = contexto(e, { ator: 'pais' });
   entrada.texto = capitalizar(renderizar(sortear(e.rng, doChoque ? def.choque! : def.textos), ctx));
   entrada.resumo = renderizar(def.resumo, ctx);
-  // O choque de fora que virou a fase (a notícia da crise ou do boom lá fora) vem antes de quem empurrou daqui.
-  const causas = [...(doChoque && origem !== null ? [origem] : []), ...causasDaVirada(e, melhorou, pot)];
+  // O choque de fora que virou a fase (a notícia da crise ou do boom lá fora) vem antes de quem empurrou daqui; a guerra, quando piorou.
+  const guerra = melhorou ? null : comecoDaGuerra(e);
+  const causas = [...(doChoque && origem !== null ? [origem] : []), ...(guerra !== null ? [guerra] : []), ...causasDaVirada(e, melhorou, pot)];
   if (causas.length > 0) entrada.causas = causas;
   lancar(e, entrada, reg);
 }
@@ -611,6 +664,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const n = pais.n;
   if (n['crescimento'] === undefined) migrarPais(e, c);
   if (n['tecnologia'] === undefined) migrarPesquisa(e, c);
+  if (n['defesa'] === undefined) migrarDefesa(e, c);
   quemGoverna(e, c, reg);
   const r = e.rng;
   const efeito = (k: EfeitoDePolitica): number => efeitoDasPoliticas(e, c, k);
@@ -624,7 +678,10 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const d0 = n['divida'] ?? DIVIDA_DE_EQUILIBRIO;
   const edu0 = n['educacao'] ?? 50;
   const tec0 = n['tecnologia'] ?? 50;
+  const def0 = n['defesa'] ?? 50;
   const pot = potencialDe(e, c);
+  // A guerra (guerra.ts): o crescimento perde, os preços sobem, o governo gasta mais (primarioDe) e a aprovação cai.
+  const guerra = inimigoDe(e) !== undefined;
 
   // A sorte do ano, o que o mundo lá fora fez com o Brasil (diplomacia.ts) e a fuga de capitais quando a dívida daqui passa do ponto.
   let choque = normal(r, 0, DESVIO_DO_CRESCIMENTO) + fora.choque;
@@ -643,6 +700,10 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   if (calote) {
     choque += CALOTE.choque;
     choqueNaInflacao += CALOTE.inflacao;
+  }
+  if (guerra) {
+    choque += DEFESA.ano.choque;
+    choqueNaInflacao += DEFESA.ano.inflacao;
   }
 
   // Crescimento: volta para o potencial, com a sorte, o empurrão e o freio do juro real alto.
@@ -677,6 +738,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const sau = (n['saude'] ?? 50) + RITMO_DO_PAIS.saude * (alvo1.saude - (n['saude'] ?? 50));
   const edu = edu0 + RITMO_DO_PAIS.educacao * (alvo1.educacao - edu0);
   const tec = tec0 + RITMO_DO_PAIS.tecnologia * (alvo1.tecnologia - tec0);
+  const dfs = def0 + RITMO_DO_PAIS.defesa * (alvo1.defesa - def0);
   // Aprovação: o emprego, a renda, os preços, a violência e o posto de saúde, mais o que as políticas agradam.
   const alvo =
     50 +
@@ -686,7 +748,8 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     0.2 * (vio - 22) +
     0.1 * (sau - 50) +
     efeito('aprovacao') +
-    (gov?.aprovacao ?? 0) -
+    (gov?.aprovacao ?? 0) +
+    (guerra ? DEFESA.ano.aprovacao : 0) -
     // Quem reina e cobra pela coroa (parte dos impostos, taxa) vê a aprovação andar para mais baixo (coroa.ts).
     custoDaCoroa(e, 'pais');
   // Quando quem governa é quem joga, a aprovação do governo é a popularidade dele.
@@ -705,14 +768,16 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     saude: limitar(sau, 5, 95),
     educacao: limitar(edu, 5, 95),
     tecnologia: limitar(tec, 5, 95),
+    defesa: limitar(dfs, 0, 100),
     aprovacao,
   };
   for (const k of ESTATISTICAS) definirNumero(e, reg, 'pais', k, arred(valores[k]), 'pais');
-  // O tamanho do país: o PIB anda com o crescimento real do ano; a população, com a demografia, a saúde e a pobreza.
+  // O tamanho do país: o PIB anda com o crescimento real do ano; a população, com a demografia, a saúde, a pobreza e a guerra.
   if (n['pib'] === undefined) iniciarNumeros(e);
   // Com os números já arredondados: o PIB cresce o mesmo que a folha País mostra.
   definirNumero(e, reg, 'pais', 'pib', Math.round(n['pib']! * (1 + n['crescimento']! / 100)), 'pais');
-  definirNumero(e, reg, 'pais', 'populacao', Math.round(n['populacao']! * (1 + taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) / 100)), 'pais');
+  const taxa = taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) - (guerra ? DEFESA.ano.populacao : 0);
+  definirNumero(e, reg, 'pais', 'populacao', Math.round(n['populacao']! * (1 + taxa / 100)), 'pais');
   if (voce) definirNumero(e, reg, 'eu', 'popularidade', aprovacao, 'pais');
   // Quem emprestou ao governo perde, e a dívida encolhe: a notícia do calote vem antes da virada da fase.
   if (calote) darCalote(e, c);

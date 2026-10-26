@@ -166,6 +166,9 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...POLITICAS.map((p) => `pais.pol_${p}`),
   // o Estado pesquisa (pesquisa.ts): o estoque de tecnologia anda com a ciência e a escola, e a descoberta e a fuga mexem nele
   'pais.tecnologia',
+  // a defesa (guerra.ts): a capacidade anda com a política e a tecnologia, e a entrega dos sistemas soma; a guerra é uma qualidade do país de fora
+  'pais.defesa',
+  ...de(PARCEIROS, 'guerra'),
   // o mundo lá fora: a economia e a relação de cada país, as crises de lá, as sanções e os acordos, e o dólar
   ...de(PARCEIROS, 'crescimento'),
   ...de(PARCEIROS, 'relacao'),
@@ -220,7 +223,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -260,6 +263,9 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.saude'], 'país: mortalidade de quem depende do SUS e aprovação', true),
   ...ler(['pais.educacao'], 'país: inteligência de quem estuda na escola pública, desemprego e crescimento', true),
   ...ler(['pais.tecnologia'], 'pesquisa: o crescimento potencial, a saúde pública, a tração das empresas e a chance de descoberta', true),
+  ...ler(['pais.tecnologia'], 'defesa: o armamento moderno (o alvo da capacidade e o satélite militar)', true),
+  ...ler(['pais.defesa'], 'defesa: a chance de a guerra começar e o desfecho dela', true),
+  ...ler(de(PARCEIROS, 'guerra'), 'guerra: o crescimento, a inflação, o gasto, a população e a aprovação do país; o fim, e a sanção que não acaba antes dele', true),
   ...ler(['pais.aprovacao'], 'país: reeleição do governo', true),
   ...ler(['pais.governo'], 'país: quem governa adota as políticas; eleição e transição', true),
   ...ler(
@@ -354,7 +360,7 @@ const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
 /** A fase do ciclo, que as regras do ano leem pelo nome. */
 const FASE = ['pais.expansao', 'pais.recessao', 'pais.crise'];
 /** As estatísticas do país que anoDoPais faz andar. */
-const ESTATISTICAS = ['pais.aprovacao', 'pais.crescimento', 'pais.desemprego', 'pais.divida', 'pais.educacao', 'pais.impulso', 'pais.inflacao', 'pais.juros', 'pais.pobreza', 'pais.saude', 'pais.tecnologia', 'pais.violencia'];
+const ESTATISTICAS = ['pais.aprovacao', 'pais.crescimento', 'pais.defesa', 'pais.desemprego', 'pais.divida', 'pais.educacao', 'pais.impulso', 'pais.inflacao', 'pais.juros', 'pais.pobreza', 'pais.saude', 'pais.tecnologia', 'pais.violencia'];
 
 /**
  * As etapas do ano, na ordem em que vida.ts › avancarAno roda. test/ano.test.ts joga vidas com um gravador e falha se
@@ -368,10 +374,17 @@ export const ETAPAS_DO_ANO = [
     escreve: ['ano.exterior', 'fora.*', 'pais.cambio'],
   },
   {
+    id: 'guerra',
+    nome: 'a defesa: o armamento encomendado chega, e a guerra começa, segue ou acaba',
+    // A convocação chega a quem tem de 18 a 30 anos (sem cargo) e ao filho mais velho nessa idade; o texto concorda com quem joga.
+    le: ['fora.*', 'pais.defesa', 'pais.governo', 'pais.aprovacao', 'pais.divida', 'eu.cargo', 'eu.genero', 'eu.popularidade', 'pessoa.nascimento', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
+    escreve: ['fora.guerra', 'fora.relacao', 'fora.sancao', 'pais.defesa', 'pais.divida', 'pais.aprovacao', 'eu.popularidade', 'agenda'],
+  },
+  {
     id: 'pais',
     nome: 'o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote',
-    // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe.
-    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
+    // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe. A guerra (fora.guerra) custa no ano.
+    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'fora.guerra', 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
     escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
   },
   {

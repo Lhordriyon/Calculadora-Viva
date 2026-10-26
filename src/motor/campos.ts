@@ -152,6 +152,10 @@ const PAIS: Record<string, DefCampo> = {
   educacao: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
   /** A tecnologia do país (0 a 100): o estoque que a ciência paga pelo Tesouro e a escola constroem devagar (pesquisa.ts). */
   tecnologia: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  /** A capacidade das Forças Armadas (0 a 100): anda com a política de defesa e a tecnologia, e os sistemas encomendados somam (guerra.ts). */
+  defesa: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
+  /** O Brasil está em guerra: algum país de fora tem a qualidade `guerra` (guerra.ts). */
+  guerra: { tipo: 'bool', sistema: 'poder', derivado: true },
   /** Aprovação do governo (%): decide a reeleição; quando quem governa é quem joga, é a popularidade dele. */
   aprovacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quem governa: o id de um bloco (mundo.json › governos), 'regime' ou 'voce'. */
@@ -516,6 +520,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return visaoDe(e, ent, en);
       case 'eleicao':
         return e.ano % 4 === 2;
+      case 'guerra':
+        return inimigoDe(e) !== undefined;
       case 'empresas':
         return ent === 'eu' ? empresasDe(e).length : 0;
       case 'titulos':
@@ -530,6 +536,15 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
     return undefined;
   }
   return def.tipo === 'texto' ? (en.t[campo] ?? '') : (en.n[campo] ?? 0) + (def.base ?? 0);
+}
+
+/** O país de fora com quem o Brasil está em guerra (a qualidade `guerra` dele, com o começo de causa), se há um. */
+export function inimigoDe(e: EstadoVida): Entidade | undefined {
+  for (const id of PARCEIROS) {
+    const en = e.entidades[id];
+    if (en?.q['guerra']) return en;
+  }
+  return undefined;
 }
 
 /**

@@ -25,6 +25,7 @@ import { ehOperacaoDeDiplomacia, motivoParaNaoOperarDiplomacia, operarDiplomacia
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { ehOperacaoDeTesouro, motivoParaNaoOperarTesouro, operarTesouro, type OperacaoTesouro } from './tesouro.ts';
 import { ehOperacaoDeCoroa, motivoParaNaoOperarCoroa, operarCoroa, type OperacaoCoroa } from './coroa.ts';
+import { ehOperacaoDeDefesa, motivoParaNaoOperarDefesa, operarDefesa, REF_DA_ENCOMENDA, REF_DA_PAZ, type OperacaoDefesa } from './guerra.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
 import { normal } from './rng.ts';
@@ -97,6 +98,7 @@ export type Operacao =
   | OperacaoJogada
   | OperacaoPais
   | OperacaoDiplomacia
+  | OperacaoDefesa
   | OperacaoCoroa;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
@@ -124,6 +126,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (ehOperacaoDeJogada(op)) return motivoParaNaoOperarJogada(e, c, op);
   if (ehOperacaoDePais(op)) return motivoParaNaoOperarPais(e, c, op);
   if (ehOperacaoDeDiplomacia(op)) return motivoParaNaoOperarDiplomacia(e, c, op);
+  if (ehOperacaoDeDefesa(op)) return motivoParaNaoOperarDefesa(e, c, op);
   if (ehOperacaoDeCoroa(op)) return motivoParaNaoOperarCoroa(e, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
@@ -154,8 +157,8 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   const n = eu.n;
   const reg: Mudanca[] = [];
   // A entrada nasce antes: o que a operação cria (a empresa, o imóvel, o cargo) aponta para ela como causa.
-  const lancarCom = (grupo: string, fazer: (origem: number) => { texto: string; resumo: string; causas?: number[] }): Entrada => {
-    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref: `${grupo}:${op.tipo}`, texto: '' });
+  const lancarCom = (grupo: string, fazer: (origem: number) => { texto: string; resumo: string; causas?: number[] }, ref = `${grupo}:${op.tipo}`): Entrada => {
+    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'acao', ref, texto: '' });
     const { texto, resumo, causas } = fazer(entrada.id);
     entrada.texto = texto;
     entrada.resumo = resumo;
@@ -171,6 +174,8 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
   if (ehOperacaoDePais(op)) return lancarCom('pais', () => operarPais(e, c, op, reg));
   if (ehOperacaoDeDiplomacia(op)) return lancarCom('pais', (id) => operarDiplomacia(e, c, op, reg, id));
+  // A encomenda leva o sistema na ref: a entrega, anos depois, acha a encomenda pelo livro (guerra.ts).
+  if (ehOperacaoDeDefesa(op)) return lancarCom('defesa', () => operarDefesa(e, c, op, reg), op.tipo === 'paz' ? REF_DA_PAZ : `${REF_DA_ENCOMENDA}${op.sistema}`);
   if (ehOperacaoDeCoroa(op)) return lancarCom('coroa', (id) => operarCoroa(e, c, op, reg, id));
   let texto: string;
   let resumo: string;

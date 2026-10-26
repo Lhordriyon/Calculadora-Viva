@@ -501,11 +501,32 @@ export const DefEstrangeiro = z.strictObject({
   compra: z.array(id).min(1),
   /** A relação de partida com o Brasil (0 a 100). */
   relacao: z.number().min(0).max(100),
+  /** A força militar dele (0 a 100), contra a capacidade daqui no fim de uma guerra (guerra.ts). */
+  forca: z.number().min(0).max(100),
 });
 export type DefEstrangeiro = z.infer<typeof DefEstrangeiro>;
 
+/**
+ * Um sistema de armamento que quem governa encomenda (guerra.ts): o custo (pontos do PIB, para a dívida na hora), a
+ * capacidade que soma às Forças Armadas quando chega, os anos até a entrega, a tecnologia que ele pede e o que a
+ * encomenda e a entrega contam na linha do tempo.
+ */
+export const DefSistema = z.strictObject({
+  id,
+  nome: z.string().min(3),
+  /** "os caças": como o texto o chama. */
+  artigo: z.string().min(3),
+  custo: z.number().gt(0).max(3),
+  capacidade: z.number().gt(0).max(20),
+  anos: z.number().int().min(1).max(8),
+  tecnologia: z.number().min(0).max(100).optional(),
+  encomenda: z.strictObject({ texto: z.string().min(10), resumo: z.string().min(3) }),
+  entrega: z.strictObject({ texto: z.string().min(10), resumo: z.string().min(3) }),
+});
+export type DefSistema = z.infer<typeof DefSistema>;
+
 /** O que o mundo lá fora conta na linha do tempo, por tipo de notícia ({ator} é o país de fora); os três últimos são os atos de quem governa (o resumo completa "aos 52, você…"). */
-export const NOTICIAS = ['crise', 'boom', 'sancao', 'fimDaSancao', 'acordo', 'fimDoAcordo', 'aproximar', 'assinar', 'romper', 'cura', 'satelite', 'patente', 'fugaDeCerebros'] as const;
+export const NOTICIAS = ['crise', 'boom', 'sancao', 'fimDaSancao', 'acordo', 'fimDoAcordo', 'aproximar', 'assinar', 'romper', 'cura', 'satelite', 'patente', 'fugaDeCerebros', 'guerra', 'vitoria', 'derrota', 'cessarFogo', 'paz'] as const;
 export type Noticia = (typeof NOTICIAS)[number];
 
 /** Perfil de investidor: a divisão do dinheiro novo entre as classes (somando 1). */
@@ -679,7 +700,7 @@ export const DefCargo = z.strictObject({
 export type DefCargo = z.infer<typeof DefCargo>;
 
 /** O que uma política muda, por nível (baixo, médio, alto). Os números entram nas contas de pais.ts. */
-export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'renda', 'auxilio', 'inflacao', 'relacao'] as const;
+export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'defesa', 'renda', 'auxilio', 'inflacao', 'relacao'] as const;
 export type EfeitoDePolitica = (typeof EFEITOS_DE_POLITICA)[number];
 
 /** Uma política do governo: três níveis, cada um com efeitos nas contas, nas estatísticas e no bolso de quem joga. */
@@ -713,6 +734,7 @@ export const DefGoverno = z.strictObject({
     seguranca: z.number().int().min(0).max(2),
     comercio: z.number().int().min(0).max(2),
     pesquisa: z.number().int().min(0).max(2),
+    defesa: z.number().int().min(0).max(2),
   }),
   /** Os países de fora de quem o bloco se aproxima no governo (a relação com eles sobe, com os rivais deles cai). */
   aproxima: z.array(z.enum(PARCEIROS)).optional(),
@@ -775,6 +797,8 @@ export const Mundo = z.strictObject({
   politicas: z.array(DefPolitica).length(POLITICAS.length),
   /** Quem pode governar o país (blocos eleitos e o regime). */
   governos: z.array(DefGoverno).min(3),
+  /** Os sistemas de armamento que quem governa pode encomendar (guerra.ts). */
+  sistemas: z.array(DefSistema).min(1),
   ativos: z.array(DefAtivo).length(ATIVOS.length),
   perfis: z.array(DefPerfil).length(PERFIS.length),
   bens: z.array(DefBem).min(5),

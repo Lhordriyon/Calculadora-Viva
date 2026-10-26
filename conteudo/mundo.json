@@ -944,7 +944,8 @@
       "crise": 0.015,
       "rival": "celeste",
       "compra": ["industria", "agro"],
-      "relacao": 52
+      "relacao": 52,
+      "forca": 90
     },
     {
       "id": "celeste",
@@ -959,7 +960,8 @@
       "boom": 0.03,
       "rival": "federacao",
       "compra": ["agro"],
-      "relacao": 50
+      "relacao": 50,
+      "forca": 85
     },
     {
       "id": "liga",
@@ -972,7 +974,8 @@
       "desvio": 1,
       "crise": 0.01,
       "compra": ["agro", "industria"],
-      "relacao": 50
+      "relacao": 50,
+      "forca": 70
     },
     {
       "id": "pacto",
@@ -985,7 +988,8 @@
       "desvio": 2,
       "crise": 0.02,
       "compra": ["industria", "comercio"],
-      "relacao": 55
+      "relacao": 55,
+      "forca": 45
     }
   ],
   "noticias": {
@@ -1068,6 +1072,36 @@
         "Sem bolsa e sem edital, os laboratórios [da federal|dos institutos públicos] apagaram a luz: [metade dos doutores|os melhores pesquisadores do país] foram trabalhar [lá fora|em laboratório estrangeiro] e levaram junto [dez anos de pesquisa|a vacina que estava quase pronta]. O aeroporto agradece a movimentação."
       ],
       "resumo": "os cientistas do país foram embora"
+    },
+    "guerra": {
+      "textos": [
+        "Depois de [meses de sanção e ameaça|um incidente na fronteira que cada lado conta de um jeito|um navio parado no lugar errado], o Brasil está em guerra com {ator:o|a} {ator}. Ninguém sabe quanto vai durar; o noticiário já tem vinheta."
+      ],
+      "resumo": "o Brasil entrou em guerra com {ator:o|a} {ator}"
+    },
+    "vitoria": {
+      "textos": [
+        "{ator:O|A} {ator} recuou: a guerra acabou com o Brasil de pé, a dívida mais alta e [muita gente que não voltou|cidades inteiras esperando a reconstrução]. Ninguém soltou fogos por muito tempo."
+      ],
+      "resumo": "a guerra com {ator:o|a} {ator} acabou com o outro lado recuando"
+    },
+    "derrota": {
+      "textos": [
+        "A guerra com {ator:o|a} {ator} acabou mal: o acordo de paz custa uma reparação bilionária, e [o governo fala em \"página virada\"|a oposição fala em \"humilhação\"]. A conta vai para a dívida, e a dívida vai para os netos."
+      ],
+      "resumo": "a guerra com {ator:o|a} {ator} acabou com uma reparação"
+    },
+    "cessarFogo": {
+      "textos": [
+        "Cessar-fogo com {ator:o|a} {ator}: as armas param, as sanções continuam e ninguém assina nada. [A fronteira virou um corredor de diplomatas.|Os dois lados dizem que ganharam.]"
+      ],
+      "resumo": "o Brasil e {ator:o|a} {ator} pararam a guerra num cessar-fogo"
+    },
+    "paz": {
+      "textos": [
+        "Pediu a paz {ator:ao|à} {ator}: [uma carta levada pelo embaixador de um país neutro|um discurso em rede nacional pedindo negociação|uma ligação de madrugada para o outro palácio]. A resposta vem em semanas; a guerra, enquanto isso, continua."
+      ],
+      "resumo": "pediu a paz {ator:ao|à} {ator}"
     }
   },
   "fases": [
@@ -1237,6 +1271,26 @@
         "texto": "A conta fecha hoje. Os laboratórios apagam a luz mais cedo, e quem pesquisa começa a olhar as vagas lá fora.",
         "resumo": "cortou a verba da ciência"
       }
+    },
+    {
+      "id": "defesa",
+      "nome": "Defesa",
+      "niveis": ["desmobilizada", "regular", "reforçada"],
+      "descricao": "Quartel equipado, treino e fronteira vigiada: quem tem defesa forte é atacado menos e assusta os vizinhos. Custa todo ano, e a farda dá um pouco de voto.",
+      "efeitos": {
+        "gasto": [-0.3, 0, 0.5],
+        "defesa": [-15, 0, 15],
+        "relacao": [2, 0, -3],
+        "aprovacao": [-1, 0, 1]
+      },
+      "subir": {
+        "texto": "Mais verba para os quartéis: treino de verdade, peça de reposição e um desfile de Sete de Setembro com tanque que liga. Os vizinhos anotaram.",
+        "resumo": "pôs mais dinheiro na defesa"
+      },
+      "baixar": {
+        "texto": "A verba dos quartéis encolheu: menos treino, menos fronteira vigiada e os tanques do desfile empurrados. Sobra dinheiro, e falta dissuasão.",
+        "resumo": "cortou a verba da defesa"
+      }
     }
   ],
   "governos": [
@@ -1244,7 +1298,7 @@
       "id": "frente_popular",
       "nome": "a frente popular",
       "promessa": "comida no prato, posto de saúde e escola boa, pagos por quem pode mais",
-      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1, "pesquisa": 2 },
+      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1, "pesquisa": 2, "defesa": 0 },
       "eleito": true,
       "aproxima": ["pacto", "celeste"]
     },
@@ -1252,7 +1306,7 @@
       "id": "bloco_liberal",
       "nome": "o bloco liberal",
       "promessa": "menos imposto, menos Estado e a economia andando com as próprias pernas",
-      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0, "pesquisa": 0 },
+      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0, "pesquisa": 0, "defesa": 1 },
       "eleito": true,
       "aproxima": ["federacao", "liga"]
     },
@@ -1260,7 +1314,7 @@
       "id": "alianca_da_ordem",
       "nome": "a aliança da ordem",
       "promessa": "polícia na rua, contas em dia e o resto depois",
-      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 1 },
+      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 1, "defesa": 2 },
       "eleito": true,
       "aproxima": ["federacao"]
     },
@@ -1268,7 +1322,7 @@
       "id": "centrao",
       "nome": "o centrão",
       "promessa": "um pouco de tudo para todo mundo, desde que sobrem cargos",
-      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1, "pesquisa": 1 },
+      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1, "pesquisa": 1, "defesa": 1 },
       "gasto": 1,
       "aprovacao": 4,
       "eleito": true
@@ -1277,9 +1331,76 @@
       "id": "regime",
       "nome": "o regime",
       "promessa": "ordem, progresso e nenhuma pergunta",
-      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 2 },
+      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 2, "defesa": 2 },
       "eleito": false,
       "aproxima": ["celeste"]
+    }
+  ],
+  "sistemas": [
+    {
+      "id": "cacas",
+      "nome": "Caças",
+      "artigo": "os caças",
+      "custo": 0.6,
+      "capacidade": 6,
+      "anos": 3,
+      "encomenda": {
+        "texto": "Encomendou uma esquadrilha de caças: contrato bilionário, peça fabricada aqui e uma foto na pista ao lado de um piloto que você não conhecia. A entrega é em três anos.",
+        "resumo": "encomendou caças para a Força Aérea"
+      },
+      "entrega": {
+        "texto": "Chegaram os caças encomendados: a Força Aérea fez um voo rasante sobre a capital, e o barulho virou assunto por uma semana.",
+        "resumo": "os caças encomendados chegaram"
+      }
+    },
+    {
+      "id": "submarino",
+      "nome": "Submarino",
+      "artigo": "o submarino",
+      "custo": 0.8,
+      "capacidade": 7,
+      "anos": 5,
+      "encomenda": {
+        "texto": "Encomendou um submarino moderno: cinco anos de estaleiro, um contrato que ninguém consegue ler inteiro e a promessa de vigiar o mar do petróleo.",
+        "resumo": "encomendou um submarino para a Marinha"
+      },
+      "entrega": {
+        "texto": "O submarino encomendado foi para a água, com banda da Marinha e champanhe no casco. Agora ele some, que é o trabalho dele.",
+        "resumo": "o submarino encomendado foi para a água"
+      }
+    },
+    {
+      "id": "antiaerea",
+      "nome": "Defesa antiaérea",
+      "artigo": "a defesa antiaérea",
+      "custo": 0.3,
+      "capacidade": 3,
+      "anos": 2,
+      "encomenda": {
+        "texto": "Encomendou baterias de defesa antiaérea para as capitais: radar no alto do morro e um míssil que ninguém quer ver usado.",
+        "resumo": "encomendou defesa antiaérea para as capitais"
+      },
+      "entrega": {
+        "texto": "A defesa antiaérea encomendada está instalada: radares nos morros e um botão que, todo mundo torce, ninguém vai apertar.",
+        "resumo": "a defesa antiaérea encomendada foi instalada"
+      }
+    },
+    {
+      "id": "satelite_militar",
+      "nome": "Satélite militar",
+      "artigo": "o satélite militar",
+      "custo": 0.4,
+      "capacidade": 4,
+      "anos": 3,
+      "tecnologia": 55,
+      "encomenda": {
+        "texto": "Encomendou um satélite militar feito aqui: comunicação segura, olho na fronteira e um orçamento carimbado como sigiloso.",
+        "resumo": "encomendou um satélite militar"
+      },
+      "entrega": {
+        "texto": "O satélite militar encomendado subiu e já manda imagem: a fronteira inteira, vista de cima, a toda hora.",
+        "resumo": "o satélite militar encomendado entrou em órbita"
+      }
     }
   ],
   "ativos": [
@@ -1955,7 +2076,8 @@
       "cargos": ["recruta", "cabo", "sargento", "tenente", "coronel", "general"],
       "promocao": 0.12,
       "estavel": true,
-      "idade": [17, 30]
+      "idade": [17, 30],
+      "verba": "defesa"
     },
     {
       "id": "servidor_publico",
