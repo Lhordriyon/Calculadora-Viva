@@ -36,8 +36,16 @@ function adulto(semente: number): EstadoVida {
 
 /** Quem joga governa o país e decide a ciência numa reforma (a entrada da reforma volta). */
 function reformar(e: EstadoVida, nivel: number): number {
-  e.entidades['pais']!.t['governo'] = 'voce';
+  governar(e);
   return operar(e, c, { tipo: 'politica', politica: 'pesquisa', nivel }).id;
+}
+
+
+/** Quem joga governa o país: o governo é dele, e o cargo de presidente também (com o mandato pela frente). */
+function governar(e: EstadoVida): void {
+  e.entidades['pais']!.t['governo'] = 'voce';
+  e.entidades['eu']!.t['cargo'] = 'presidente';
+  e.entidades['eu']!.n['mandato'] = 3;
 }
 
 describe('a política de ciência', () => {

@@ -78,6 +78,14 @@ function ateAcabar(e: EstadoVida, antesDoAno?: (e: EstadoVida) => void): { fim: 
   throw new Error('a guerra não acabou');
 }
 
+
+/** Quem joga governa o país: o governo é dele, e o cargo de presidente também (com o mandato pela frente). */
+function governar(e: EstadoVida): void {
+  e.entidades['pais']!.t['governo'] = 'voce';
+  e.entidades['eu']!.t['cargo'] = 'presidente';
+  e.entidades['eu']!.n['mandato'] = 3;
+}
+
 describe('a capacidade das Forças Armadas', () => {
   it('é paga pelo Tesouro: a defesa reforçada gasta 0,8 ponto do PIB a mais do que a desmobilizada', () => {
     const e = adulto(1);
@@ -149,7 +157,7 @@ describe('os sistemas de armamento', () => {
   it('só quem governa encomenda; a dívida sobe o custo na hora, e a entrega soma a capacidade, com a encomenda de causa', () => {
     const e = adulto(20);
     expect(motivoParaNaoOperar(e, c, { tipo: 'sistema', sistema: 'antiaerea' })).toBe('só quem governa encomenda armamento');
-    e.entidades['pais']!.t['governo'] = 'voce';
+    governar(e);
     const divida = e.entidades['pais']!.n['divida']!;
     const encomenda = operar(e, c, { tipo: 'sistema', sistema: 'antiaerea' });
     expect(encomenda.ref).toBe('defesa:sistema:antiaerea');
@@ -176,7 +184,7 @@ describe('os sistemas de armamento', () => {
 
   it('o que foi encomendado e ainda não chegou passa a quem herda: entra na capacidade do país herdado', () => {
     const e = adulto(22, 60);
-    e.entidades['pais']!.t['governo'] = 'voce';
+    governar(e);
     criarPersonagem(e, c, 'filho', []);
     e.entidades['filho']!.nascimento = e.ano - 30;
     operar(e, c, { tipo: 'sistema', sistema: 'submarino' });
@@ -190,7 +198,7 @@ describe('os sistemas de armamento', () => {
 
   it('uma encomenda por ano, a mesma só depois da entrega, e o satélite militar pede tecnologia 55', () => {
     const e = adulto(21);
-    e.entidades['pais']!.t['governo'] = 'voce';
+    governar(e);
     operar(e, c, { tipo: 'sistema', sistema: 'cacas' });
     expect(motivoParaNaoOperar(e, c, { tipo: 'sistema', sistema: 'submarino' })).toBe('uma encomenda por ano');
     e.ano++;
@@ -224,7 +232,7 @@ describe('a guerra', () => {
 
   it('começa com quem sanciona e anda frio, apontando o rompimento e a desmobilização, e o país se une no primeiro ano', () => {
     const e = adulto(31);
-    e.entidades['pais']!.t['governo'] = 'voce';
+    governar(e);
     const desmobilizou = operar(e, c, { tipo: 'politica', politica: 'defesa', nivel: 0 });
     e.ano++;
     const rompeu = operar(e, c, { tipo: 'diplomacia', parceiro: 'celeste', acao: 'romper' });
@@ -321,7 +329,7 @@ describe('a guerra', () => {
 
   it('o pedido de paz: só em guerra e de quem governa, um por ano; esquenta a relação e apressa o fim', () => {
     const e = adulto(37);
-    e.entidades['pais']!.t['governo'] = 'voce';
+    governar(e);
     expect(motivoParaNaoOperar(e, c, { tipo: 'paz' })).toBe('o país não está em guerra');
     ameacar(e);
     e.entidades['pais']!.n['defesa'] = 0;
@@ -336,6 +344,7 @@ describe('a guerra', () => {
     // Visitar ou romper com quem está em guerra com o Brasil não cabe.
     expect(motivoParaNaoOperar(e, c, { tipo: 'diplomacia', parceiro: 'celeste', acao: 'aproximar' })).toBe('em guerra: só cabe pedir a paz');
     e.entidades['pais']!.t['governo'] = 'centrao';
+    e.entidades['eu']!.t['cargo'] = '';
     expect(motivoParaNaoOperar(e, c, { tipo: 'paz' })).toBe('só quem governa pede a paz');
 
     // Em 300 guerras, a que pediu a paz no primeiro ano acaba no segundo bem mais vezes do que a que não pediu.
@@ -343,7 +352,7 @@ describe('a guerra', () => {
       let acabou = 0;
       for (let k = 0; k < 300; k++) {
         const x = adulto(misturar(38, k));
-        x.entidades['pais']!.t['governo'] = 'voce';
+        governar(x);
         ameacar(x);
         x.entidades['pais']!.n['defesa'] = 0;
         ateComecar(x);

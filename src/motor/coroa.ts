@@ -16,6 +16,7 @@ import { efeitoDasPoliticas } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
 import { COROA, ILHA, REACAO_DA_COROA } from './regras.ts';
 import { inteiro, normal } from './rng.ts';
+import { assumirAIlha } from './sucessao.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -101,6 +102,8 @@ function anoDaIlha(e: EstadoVida, reg: Mudanca[]): void {
  */
 export function regraDaCoroa(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   if (!e.entidades['ilha'] && (e.entidades['eu']?.q['micronacao']?.v ?? 0) > 0) fundarIlha(e, reg);
+  // Quem herdou a ilha assume a coroa dela (no primeiro ano, ou aos 18).
+  assumirAIlha(e, c);
   if (e.entidades['ilha']) anoDaIlha(e, reg);
   acertarDotacao(e, c, reg, 'coroa');
 }

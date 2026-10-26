@@ -63,6 +63,8 @@ export function motivoParaNaoOperarPoder(e: EstadoVida, c: Conteudo, op: Operaca
   if (!def || def.esfera === 'vitalicio') return 'escolha o cargo';
   const atual = cargoDe(e, c);
   if (atual?.esfera === 'vitalicio') return 'quem tem coroa não disputa eleição';
+  // Sob o Regime, não há eleição geral; a municipal continua, de fachada (D-03).
+  if (e.entidades['pais']?.q['regime'] && def.esfera === 'geral') return 'sob o Regime, não há eleição';
   if (e.idade < def.idade) return `só a partir dos ${def.idade} anos`;
   const ano = proximaEleicao(e.ano, def);
   if (ano !== e.ano) return `a próxima eleição é em ${ano}`;

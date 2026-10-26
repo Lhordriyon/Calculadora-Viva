@@ -6,6 +6,7 @@
  * nas profissões de palco. Tentar uma vaga não gasta ficha, mas é uma por ano.
  * Mudar de emprego por um storylet (a demissão, o bico) tira a carreira.
  */
+import { entradaQueDefiniu } from './campos.ts';
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { momentoDoPais } from './pais.ts';
@@ -140,6 +141,9 @@ export function operarCarreira(e: EstadoVida, c: Conteudo, op: OperacaoCarreira,
   };
 }
 
+/** O que a coroa, o Regime e a ilha viram na vida de quem os assume. */
+const OQUE_VIROU_O_TRABALHO: Record<string, string> = { rei: 'A coroa virou o trabalho', ditador: 'O Regime virou o trabalho', soberano: 'A ilha virou o trabalho' };
+
 /** O ano da carreira: a fama anda para a do cargo, e o cargo pode subir (com o salário junto). */
 export function regraDaCarreira(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
@@ -150,6 +154,24 @@ export function regraDaCarreira(e: EstadoVida, c: Conteudo, reg: Mudanca[]): voi
   const alvo = trabalhando && def?.fama ? (def.fama * nivel) / Math.max(1, ultimo) : 0;
   const fama = eu.n['fama'] ?? 0;
   if (Math.abs(alvo - fama) >= 0.5) somar(e, reg, 'eu', 'fama', (alvo - fama) * (alvo > fama ? 0.35 : 0.08), 'carreira');
+  // Quem tem coroa, Regime ou ilha larga a carreira de antes: o cargo virou o trabalho, e a renda é a dele (D-04).
+  const politico = c.mundo.cargos.find((k) => k.id === eu.t['cargo']);
+  if (politico?.esfera === 'vitalicio' && def) {
+    const fim: Mudanca[] = [];
+    const posse = entradaQueDefiniu(e, 'eu', 'cargo');
+    const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'carreira:coroa', texto: '', ...(posse !== null ? { causas: [posse] } : {}) });
+    const nome = noGenero(def.nome, eu.genero);
+    definirTexto(e, fim, 'eu', 'carreira', '');
+    definirNumero(e, fim, 'eu', 'nivel', 0);
+    definirTexto(e, fim, 'eu', 'ocupacao', noGenero(politico.nome, eu.genero));
+    perder(e, fim, 'eu', 'servidor');
+    entrada.texto = `${OQUE_VIROU_O_TRABALHO[politico.id] ?? 'O cargo virou o trabalho'}: a carreira de ${nome} ficou para trás.`;
+    entrada.resumo = `largou a carreira de ${nome}`;
+    lancar(e, entrada, fim);
+    return;
+  }
+  // Com mandato, a carreira espera: ninguém é promovido no emprego que deixou para governar.
+  if (eu.t['cargo']) return;
   if (trabalhando && def?.fim !== undefined && e.idade >= def.fim) {
     // Atleta e modelo têm prazo: a carreira acaba sozinha, com a fama indo embora devagar.
     const fim: Mudanca[] = [];

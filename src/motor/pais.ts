@@ -59,6 +59,7 @@ import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
 import { chanceDeCalote, darCalote, premioDoCalote } from './tesouro.ts';
 import { custoDaCoroa } from './coroa.ts';
 import { comecoDaGuerra } from './guerra.ts';
+import { sucessaoPendente } from './sucessao.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -205,6 +206,16 @@ export function jogadorGoverna(e: EstadoVida, c: Conteudo): boolean {
   const cargo = c.mundo.cargos.find((x) => x.id === eu?.t['cargo']);
   if (!cargo?.governa) return false;
   return cargo.esfera === 'vitalicio' || (eu?.n['mandato'] ?? 0) > 0;
+}
+
+/**
+ * Por que quem joga não manda no país agora (null se manda): o governo é dele e o cargo que governa também. Quem
+ * deixou o cargo no meio do ano (fundou um país, caiu, renunciou) não governa mais, mesmo antes da transição.
+ */
+export function motivoParaNaoGovernar(e: EstadoVida, c: Conteudo, quem = 'só quem governa o país decide isso'): string | null {
+  if (governoAtual(e) !== 'voce') return jogadorGoverna(e, c) ? 'a posse é no ano que vem' : quem;
+  if (!jogadorGoverna(e, c)) return 'você não governa mais o país';
+  return null;
 }
 
 /** Eleição geral nos anos que deixam resto 2 na divisão por 4 (2026, 2030…); a posse é no ano seguinte. */
@@ -512,6 +523,11 @@ function causaDaSaida(e: EstadoVida): number | null {
     const saida = q[m];
     if (saida && saida.causa !== null && saida.ano >= e.ano - 2) return saida.causa;
   }
+  // Sem marca de saída (fundou um país e foi reinar lá, trocou um cargo pelo outro): a entrada que mudou o cargo.
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano >= e.ano - 2; i--) {
+    const h = e.historico[i]!;
+    if ((h.mudancas ?? []).some((m) => m.c === 'eu.cargo')) return h.id;
+  }
   return null;
 }
 
@@ -531,6 +547,8 @@ function quemGoverna(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
     }
     return;
   }
+  // Quem governava morreu e quem herda ainda não respondeu à sucessão (sucessao.ts): o governo espera, sem interregno.
+  if (atual === 'voce' && sucessaoPendente(e)) return;
   const regime = defGoverno(c, 'regime');
   if (pais.q['regime'] && regime) {
     if (atual !== 'regime') posse(e, regime, 'O regime tomou o governo. [Os jornais ficaram mais finos.|A televisão passou a só dar boas notícias.]', 'o regime tomou o governo', [], 50);
@@ -863,7 +881,8 @@ function reformouEsteAno(e: EstadoVida): boolean {
 }
 
 export function motivoParaNaoOperarPais(e: EstadoVida, c: Conteudo, op: OperacaoPais): string | null {
-  if (governoAtual(e) !== 'voce') return jogadorGoverna(e, c) ? 'a posse é no ano que vem' : 'só quem governa o país muda as políticas';
+  const naoGoverna = motivoParaNaoGovernar(e, c, 'só quem governa o país muda as políticas');
+  if (naoGoverna) return naoGoverna;
   if (!(POLITICAS as readonly string[]).includes(op.politica)) return 'escolha a política';
   if (!Number.isInteger(op.nivel) || op.nivel < 0 || op.nivel > 2) return 'escolha o nível';
   if (nivelDe(e, op.politica) === op.nivel) return 'essa já é a política em vigor';

@@ -20,7 +20,7 @@ import { contexto } from './contexto.ts';
 import { causaDaRelacao, defEstrangeiro, parceirosDe } from './diplomacia.ts';
 import type { DefSistema, Noticia } from './esquema.ts';
 import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { decisaoQueDeixou, governoAtual, jogadorGoverna } from './pais.ts';
+import { decisaoQueDeixou, governoAtual, motivoParaNaoGovernar } from './pais.ts';
 import { DEFESA } from './regras.ts';
 import { aleatorio, sortear } from './rng.ts';
 import { capitalizar, renderizar } from './texto.ts';
@@ -242,10 +242,8 @@ export function ehOperacaoDeDefesa(op: { tipo: string }): op is OperacaoDefesa {
 }
 
 export function motivoParaNaoOperarDefesa(e: EstadoVida, c: Conteudo, op: OperacaoDefesa): string | null {
-  if (governoAtual(e) !== 'voce') {
-    if (jogadorGoverna(e, c)) return 'a posse é no ano que vem';
-    return op.tipo === 'paz' ? 'só quem governa pede a paz' : 'só quem governa encomenda armamento';
-  }
+  const naoGoverna = motivoParaNaoGovernar(e, c, op.tipo === 'paz' ? 'só quem governa pede a paz' : 'só quem governa encomenda armamento');
+  if (naoGoverna) return naoGoverna;
   if (op.tipo === 'paz') {
     if (!inimigoDe(e)) return 'o país não está em guerra';
     if (noAno(e, REF_DA_PAZ) !== null) return 'um pedido de paz por ano';

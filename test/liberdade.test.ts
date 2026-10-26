@@ -8,7 +8,7 @@ import { aplicarEfeitos } from '../src/motor/efeitos.ts';
 import type { Efeitos } from '../src/motor/esquema.ts';
 import { continuarComoHerdeiro, herdeiroPossivel, IMPOSTO_HERANCA } from '../src/motor/herdeiro.ts';
 import { ganhar } from '../src/motor/livro.ts';
-import { criarPersonagem } from '../src/motor/pessoas.ts';
+import { criarPersonagem, morrerPersonagem } from '../src/motor/pessoas.ts';
 import { mandatosSeguidos, proximaEleicao, regraDoPoder } from '../src/motor/poder.ts';
 import { elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
@@ -189,13 +189,15 @@ describe('linhagens', () => {
     const papel = ['mae', 'pai'].find((p) => e.entidades[p]!.q['monarca'])!;
     expect(papel).toBeDefined();
     expect(e.historico[0]!.texto).toMatch(/Palácio/);
+    // A sucessão é do motor (sucessao.ts): a morte de quem reina agenda a resposta para o mesmo ano (ou para os 18).
     const sucessao = c.porId.get('sucessao_coroa')!;
+    expect(sucessao.apenasAgendado).toBe(true);
     e.idade = 30;
     e.ano += 30;
-    expect(elegivel(sucessao, e, papel)).toBe(false);
-    ganhar(e, [], papel, 'faleceu', null);
-    e.entidades[papel]!.vivo = false;
-    expect(elegivel(sucessao, e, papel)).toBe(true);
+    e.agenda = [];
+    expect(elegivel(sucessao, e, undefined)).toBe(true);
+    morrerPersonagem(e, papel, [], 0);
+    expect(e.agenda.some((a) => a.evento === 'sucessao_coroa' && a.ano === e.ano)).toBe(true);
   });
 
   it('no começo em um toque, algumas vidas nascem numa linhagem; a escolha manual de classe não sorteia linhagem', () => {

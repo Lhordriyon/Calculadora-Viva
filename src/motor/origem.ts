@@ -243,6 +243,8 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   eu.n['felicidade'] = Math.round(limitar(base('felicidade', 65, 8) + traco.felicidade, 25, 97));
   eu.n['inteligencia'] = Math.round(limitar(base('inteligencia', 30, 10) + traco.inteligencia, 5, 80));
   eu.n['aparencia'] = Math.round(limitar(base('aparencia', 50, 14) + traco.aparencia, 8, 97));
+  // A imagem pública nasce no meio: quem a lê conta 50 quando ela falta, e a primeira mudança partia do zero.
+  eu.n['popularidade'] = 50;
 
   // O parto: prematuro em 1 de cada 10 nascimentos, mais nas famílias pobres e nas mães muito novas ou mais velhas.
   // Nasce com menos saúde, e o conteúdo lê a marca (o peito que chia, o pediatra que acompanha).

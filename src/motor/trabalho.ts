@@ -32,7 +32,8 @@ function agendarJa(e: EstadoVida, c: Conteudo, evento: string, origem: number | 
 export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
   const renda = eu.n['renda'] ?? 0;
-  if (e.idade < 18 || e.idade >= IDADE_APOSENTADORIA || renda <= 0 || eu.q['aposentado']) return;
+  // Quem tem cargo (o mandato, a coroa, o Regime, a ilha) vive do salário dele: nem o setor mexe nele, nem a demissão o alcança (D-04).
+  if (e.idade < 18 || e.idade >= IDADE_APOSENTADORIA || renda <= 0 || eu.q['aposentado'] || eu.t['cargo']) return;
   const setor = c.setores.get(eu.t['setor'] ?? '');
   const sente = setor?.ciclo ?? 1;
   const crescimento = setor?.crescimento ?? 0.004;

@@ -12,10 +12,10 @@
 import { ATIVOS, FILHOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
 import { defDoBem } from './bens.ts';
-import { dotacaoDe } from './coroa.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
 import { defSistema, encomendasPendentes } from './guerra.ts';
+import { herdarACoroa } from './sucessao.ts';
 import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
@@ -497,18 +497,15 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     e.entidades['ilha'] = recausar(structuredClone(ilha), abertura.id);
     eu.q['micronacao'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
     if (velho.q['pais_reconhecido']) eu.q['pais_reconhecido'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
-    if (velho.t['cargo'] === 'soberano') {
-      eu.t['cargo'] = 'soberano';
-      eu.n['renda'] = Math.round(dotacaoDe(e, c, 'ilha'));
-    }
   }
-  // A coroa e o regime passam ao filho: quem morreu reinava, e a sucessão é o primeiro capítulo (storylet da linhagem).
-  const coroa = velho.q['monarca'] ? 'monarca' : velho.q['ditador'] ? 'ditador' : null;
-  if (coroa && !sobrinho) {
-    eu.q[coroa === 'monarca' ? 'principe' : 'herdeiro_regime'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
-    const morto = e.entidades[slotVelho];
-    if (morto) morto.q[coroa] = { v: 1, ano: e.ano, idade, causa: abertura.id };
-  }
+  // A coroa, o Regime e a ilha passam a quem continua a história, seja quem for (sucessao.ts): a resposta fica agendada
+  // para o primeiro ano, ou para os 18. Quem morreu fica com a coroa no lugar que ocupa na família nova (o pai, a mãe).
+  const sucessao = herdarACoroa(e, velho, abertura.id);
+  const reinava = velho.q['monarca'] ? 'monarca' : velho.q['ditador'] ? 'ditador' : null;
+  const morto = reinava ? e.entidades[novosPais ? filho.parentesco : slotVelho] : undefined;
+  if (reinava && morto && morto.vivo === false) morto.q[reinava] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+  // A imagem pública começa no meio (quem nasce também): sem ela, o primeiro ano a levava para perto de zero.
+  eu.n['popularidade'] = 50;
 
   // ---- o que a história lembra
   const reg: Mudanca[] = [];
@@ -586,7 +583,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
       : filho.parentesco === 'amor'
         ? `A história da família ${ultimo} continua com você.`
         : `Geração ${geracao} da família ${ultimo}.`;
-  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}`;
+  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}${sucessao ? ` ${sucessao}` : ''}`;
   abertura.resumo = espolio.deixou >= 1 ? `herdou ${formatarDinheiro(espolio.deixou)} da família` : 'começou sem herança';
   lancar(e, abertura, daAbertura);
   // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.

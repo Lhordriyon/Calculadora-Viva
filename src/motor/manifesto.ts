@@ -99,11 +99,12 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.politico',
   'eu.ex_politico',
   'pais.impulso',
-  // bens: morar no que é seu, alugar; a coroa e o regime passam ao filho
+  // bens: morar no que é seu, alugar; a coroa, o Regime e a ilha passam a quem herda (sucessao.ts)
   'eu.casa_propria',
   'eu.senhorio',
   'eu.principe',
   'eu.herdeiro_regime',
+  'eu.herdeiro_ilha',
   ...de(['mae', 'pai'], 'monarca'),
   ...de(['mae', 'pai'], 'ditador'),
   // o testamento que o jogador escolhe na folha Família
@@ -223,7 +224,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -288,7 +289,9 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['empresa.na_bolsa'], 'grupo: na bolsa, o valor anda com o humor do mercado e quem compra não desconta a dependência', true),
   ...ler(['eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico'], 'poder: a linhagem dá influência', false),
   ...ler(['eu.lei_da_heranca'], 'herança: a lei comprada baixa o imposto de 4% para 1%', true),
-  ...ler(['eu.monarca', 'eu.ditador'], 'dinastia: a coroa e o regime passam ao filho', true),
+  ...ler(['eu.monarca', 'eu.ditador'], 'dinastia: a coroa e o Regime passam a quem herda', true),
+  ...ler(['mae.monarca', 'pai.monarca', 'mae.ditador', 'pai.ditador', 'eu.principe', 'eu.herdeiro_regime'], 'sucessão: quem reinava morreu, e a resposta de quem herda fica agendada (agora ou aos 18)', true),
+  ...ler(['eu.herdeiro_ilha'], 'sucessão: quem herdou a ilha assume a coroa dela (no primeiro ano ou aos 18)', true),
   ...ler(['eu.testamento'], 'dinastia: quem herda e continua a história', true),
   ...ler(['eu.politico', 'eu.monarca', 'eu.ditador'], 'poder: a posse é a causa da queda', false),
   ...ler(['eu.ocupacao'], 'carreira: quem tem ocupação pode pedir demissão', true),
@@ -370,14 +373,15 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'exterior',
     nome: 'o mundo lá fora: a economia de cada país, a relação, sanções e acordos',
-    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.tecnologia', 'pais.violencia', ...POLITICAS_DO_PAIS],
+    // Sob o Regime, quem joga governa com a postura dele lá fora (diplomacia.ts › posturaDoGoverno).
+    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.regime', 'pais.tecnologia', 'pais.violencia', ...POLITICAS_DO_PAIS],
     escreve: ['ano.exterior', 'fora.*', 'pais.cambio'],
   },
   {
     id: 'guerra',
     nome: 'a defesa: o armamento encomendado chega, e a guerra começa, segue ou acaba',
     // A convocação chega a quem tem de 18 a 30 anos (sem cargo) e ao filho mais velho nessa idade; o texto concorda com quem joga.
-    le: ['fora.*', 'pais.defesa', 'pais.governo', 'pais.aprovacao', 'pais.divida', 'eu.cargo', 'eu.genero', 'eu.popularidade', 'pessoa.nascimento', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
+    le: ['fora.*', 'pais.defesa', 'pais.governo', 'pais.regime', 'pais.aprovacao', 'pais.divida', 'eu.cargo', 'eu.genero', 'eu.popularidade', 'pessoa.nascimento', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
     escreve: ['fora.guerra', 'fora.relacao', 'fora.sancao', 'pais.defesa', 'pais.divida', 'pais.aprovacao', 'eu.popularidade', 'agenda'],
   },
   {
@@ -447,20 +451,23 @@ export const ETAPAS_DO_ANO = [
     id: 'personagens',
     nome: 'a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte',
     // As vontades leem o que as realiza (mundo.json › vontades › feita): o casamento, o filho, o bicho, a visita.
-    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.pai_mae', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
-    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu'],
+    // A morte de quem reinava (o pai ou a mãe de quem é príncipe ou herdeiro do Regime) agenda a sucessão (sucessao.ts).
+    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.pai_mae', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'eu.principe', 'eu.herdeiro_regime', 'eu.monarca', 'eu.ditador', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
+    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
   },
   {
     id: 'trabalho',
     nome: 'o trabalho de quem joga: salário e demissão',
-    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'lugar.desemprego', ...FASE],
+    // Quem tem cargo (mandato, coroa, Regime) vive do cargo: nem o setor nem a demissão o alcançam.
+    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', ...FASE],
     escreve: ['eu.renda', 'agenda'],
   },
   {
     id: 'carreira',
     nome: 'a carreira: promoção, fama e o fim da carreira',
-    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', ...POLITICAS_DO_PAIS],
-    escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar'],
+    // No cargo, a carreira para; com a coroa ou o Regime, ela fica para trás (o cargo vitalício vira o trabalho).
+    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', ...POLITICAS_DO_PAIS],
+    escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor'],
   },
   {
     id: 'poder',
@@ -471,8 +478,9 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'coroa',
     nome: 'a coroa: a ilha anda e quem tem coroa recebe a dotação da forma',
-    le: ['ilha.*', 'eu.cargo', 'eu.renda', 'eu.micronacao', 'eu.pais_reconhecido', 'lugar.nome', 'pais.coroa', 'pais.pib', ...POLITICAS_DO_PAIS],
-    escreve: ['ilha.*', 'eu.renda', 'agenda'],
+    // Quem herdou a ilha assume a coroa dela (sucessao.ts › assumirAIlha): o cargo, a imagem e a dotação.
+    le: ['ilha.*', 'eu.cargo', 'eu.renda', 'eu.micronacao', 'eu.pais_reconhecido', 'eu.herdeiro_ilha', 'eu.popularidade', 'lugar.nome', 'pais.coroa', 'pais.pib', ...POLITICAS_DO_PAIS],
+    escreve: ['ilha.*', 'eu.renda', 'eu.cargo', 'eu.popularidade', 'eu.herdeiro_ilha', 'agenda'],
   },
   {
     id: 'padrao',

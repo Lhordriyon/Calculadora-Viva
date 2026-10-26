@@ -23,7 +23,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefEstrangeiro, Noticia } from './esquema.ts';
 import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { defGoverno, efeitoDasPoliticas, governoAtual, jogadorGoverna, nivelDe, potencialDe } from './pais.ts';
+import { defGoverno, efeitoDasPoliticas, governoAtual, jogadorGoverna, motivoParaNaoGovernar, nivelDe, potencialDe } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
 import {
   ACORDO,
@@ -87,9 +87,14 @@ export function alvoDaRelacao(e: EstadoVida, c: Conteudo, def: DefEstrangeiro): 
   return alvoCom(c, def, posturaDoGoverno(e, c));
 }
 
-/** O que vale para todos os países no ano: a tarifa e de quem o governo de agora se aproxima. */
+/**
+ * O que vale para todos os países no ano: a tarifa e de quem o governo de agora se aproxima. Sob o Regime, quem joga
+ * governa com a postura dele: o golpe muda quem é amigo lá fora (e a sanção vem de quem ficou do outro lado).
+ */
 function posturaDoGoverno(e: EstadoVida, c: Conteudo): { tarifa: number; aproxima: readonly string[] } {
-  return { tarifa: efeitoDasPoliticas(e, c, 'relacao'), aproxima: defGoverno(c, governoAtual(e))?.aproxima ?? [] };
+  const atual = governoAtual(e);
+  const id = atual === 'voce' && e.entidades['pais']?.q['regime'] ? 'regime' : atual;
+  return { tarifa: efeitoDasPoliticas(e, c, 'relacao'), aproxima: defGoverno(c, id)?.aproxima ?? [] };
 }
 
 function alvoCom(c: Conteudo, def: DefEstrangeiro, postura: { tarifa: number; aproxima: readonly string[] }): number {
@@ -159,11 +164,12 @@ export function causaDaRelacao(e: EstadoVida, c: Conteudo, def: DefEstrangeiro, 
     if (h.mudancas?.some((m) => m.r === undefined && m.c === `${def.id}.relacao` && sinal * (m.d ?? 0) > 0)) return [h.id];
   }
   if (!puxa) return [];
-  // A reeleição também conta: a posse de quem já governava não muda nada no livro, mas manteve a postura.
+  // A reeleição também conta: a posse de quem já governava não muda nada no livro, mas manteve a postura. O golpe (ou
+  // o fim do Regime) também: sob o Regime, quem joga governa com a postura dele.
   const posseDeAgora = `governo:${governoAtual(e)}`;
   for (let k = e.historico.length - 1; k >= 0; k--) {
     const h = e.historico[k]!;
-    if (h.ref === posseDeAgora || h.mudancas?.some((m) => m.r === undefined && (m.c === 'pais.governo' || m.c === 'pais.pol_comercio'))) return [h.id];
+    if (h.ref === posseDeAgora || h.mudancas?.some((m) => (m.r === undefined && (m.c === 'pais.governo' || m.c === 'pais.pol_comercio')) || (m.c === 'pais.regime' && m.q !== undefined))) return [h.id];
   }
   return [];
 }
@@ -329,7 +335,8 @@ function atoNoAno(e: EstadoVida): boolean {
 }
 
 export function motivoParaNaoOperarDiplomacia(e: EstadoVida, c: Conteudo, op: OperacaoDiplomacia): string | null {
-  if (governoAtual(e) !== 'voce') return jogadorGoverna(e, c) ? 'a posse é no ano que vem' : 'só quem governa o país fala por ele lá fora';
+  const naoGoverna = motivoParaNaoGovernar(e, c, 'só quem governa o país fala por ele lá fora');
+  if (naoGoverna) return naoGoverna;
   const en = e.entidades[op.parceiro];
   if (!en || !(PARCEIROS as readonly string[]).includes(op.parceiro)) return 'escolha o país';
   if (!(ACOES_DIPLOMATICAS as readonly string[]).includes(op.acao)) return 'escolha o que fazer';

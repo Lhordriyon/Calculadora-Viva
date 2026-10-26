@@ -184,6 +184,9 @@ function lerCasca(casca: z.infer<typeof EsquemaSave>, conteudo: Conteudo): Save 
   }
   // Antes do país vivo, o país só tinha a fase: ganha as estatísticas típicas dela e um governo.
   migrarPais(v, conteudo);
+  // A imagem pública que nunca foi gravada é a do meio (50), como a leitura sempre contou.
+  const quemJoga = v.entidades['eu'];
+  if (quemJoga && quemJoga.n['popularidade'] === undefined) quemJoga.n['popularidade'] = 50;
   // Save de antes do país em números: o PIB e a população do ano, projetados sem sorteio.
   iniciarNumeros(v);
   // Antes do mundo lá fora, não havia países de fora nem dólar: eles chegam como os dados os descrevem.

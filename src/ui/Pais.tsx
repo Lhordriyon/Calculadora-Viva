@@ -9,7 +9,7 @@ import { indicadoresDoPais, inimigoDe, valorDosTitulos } from '../motor/campos.t
 import { ameacaDeGuerra, chancesDoFim, encomendasPendentes } from '../motor/guerra.ts';
 import { chanceDeCalote, dividaEmReais } from '../motor/tesouro.ts';
 import { gastoEmPesquisa } from '../motor/pesquisa.ts';
-import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
+import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, motivoParaNaoGovernar, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
 import { ACORDO, ATO, DEFESA, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -212,7 +212,7 @@ const ROTULO_DO_ATO: Record<AcaoDiplomatica, string> = { aproximar: 'Visita de E
 function LaFora({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const [aberto, setAberto] = useState<string | null>(null);
   const [rompendo, setRompendo] = useState(false);
-  const governa = governoAtual(vida) === 'voce';
+  const governa = motivoParaNaoGovernar(vida, conteudo) === null;
   const cambio = vida.entidades['pais']!.n['cambio'] ?? 5;
   const d = variacaoDoCambio(vida);
   const pct = cambio - d > 0 ? (100 * d) / (cambio - d) : 0;
@@ -336,7 +336,7 @@ function LaFora({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
  */
 function Defesa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const [confirmando, setConfirmando] = useState<string | null>(null);
-  const governa = governoAtual(vida) === 'voce';
+  const governa = motivoParaNaoGovernar(vida, conteudo) === null;
   const pib = vida.entidades['pais']!.n['pib'] ?? 0;
   const inimigo = inimigoDe(vida);
   const ameaca = ameacaDeGuerra(vida);
@@ -436,7 +436,7 @@ function Defesa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 
 /** As políticas em vigor; quem governa muda uma por ano. */
 function Politicas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
-  const governa = governoAtual(vida) === 'voce';
+  const governa = motivoParaNaoGovernar(vida, conteudo) === null;
   const [sel, setSel] = useState<{ politica: Politica; nivel: number } | null>(null);
   return (
     <div class="politicas">
@@ -498,7 +498,9 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
   const fase = faseDe(vida);
   const id = governoAtual(vida);
   const bloco = defGoverno(conteudo, id);
-  const governa = id === 'voce';
+  const governa = motivoParaNaoGovernar(vida, conteudo) === null;
+  // O governo ainda é de quem joga, mas o cargo acabou no meio do ano (fundou um país, caiu, renunciou): a transição é no ano que vem.
+  const saindo = id === 'voce' && !governa;
   const eleicao = proximaEleicaoGeral(vida.ano);
   const voto = Object.entries(vida.entidades['eu']!.q).find(([k, q]) => k.startsWith('voto_') && q.v > 0);
   const votouEm = voto ? defGoverno(conteudo, voto[0].slice('voto_'.length)) : undefined;
@@ -512,6 +514,8 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
         </p>
         {governa ? (
           <p class="nota">Você governa o país. A aprovação do governo é a sua popularidade: abaixo de 30%, o cargo balança.</p>
+        ) : saindo ? (
+          <p class="nota">Você deixou o governo do país neste ano. Quem assume entra no ano que vem; até lá, as políticas ficam como estão.</p>
         ) : bloco ? (
           <p class="nota">
             {capitalizar(bloco.nome)} {bloco.eleito ? 'governa prometendo' : 'manda prometendo'} {bloco.promessa}.

@@ -182,8 +182,11 @@ describe('a ilha', () => {
     morrer(e, c);
     const h = continuarComoHerdeiro(e, c);
     expect(h.entidades['ilha']?.n['populacao']).toBe(e.entidades['ilha']!.n['populacao']);
-    expect(h.entidades['eu']!.t['cargo']).toBe('soberano');
     expect(h.entidades['eu']!.q['micronacao']?.causa).toBe(h.historico[0]!.id);
+    // A coroa passa no primeiro ano (sucessao.ts › assumirAIlha), com a herança de causa.
+    expect(h.entidades['eu']!.q['herdeiro_ilha']?.causa).toBe(h.historico[0]!.id);
+    regraDaCoroa(h, c, []);
+    expect(h.entidades['eu']!.t['cargo']).toBe('soberano');
     expect(formaDaCoroa(h, 'ilha')).toBe('impostos');
     expect(paisDaCoroa(h)).toBe('ilha');
   });

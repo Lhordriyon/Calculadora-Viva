@@ -7,6 +7,7 @@ import { FILHOS, ehFilho, type PapelNovo } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
+import { aoMorrerQuemReina } from './sucessao.ts';
 import { ANOS_REMORSO, ANOS_UNIAO, MAGOA_REMORSO } from './regras.ts';
 import { aleatorio, inteiro, sortear } from './rng.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
@@ -105,6 +106,8 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   en.vivo = false;
   en.morte = e.ano;
   ganhar(e, reg, papel, 'faleceu', causa);
+  // Quem reinava era o pai ou a mãe de quem está na fila: a sucessão vem agora, ou aos 18 (sucessao.ts).
+  if (papel === 'mae' || papel === 'pai') aoMorrerQuemReina(e, en, causa);
   const vinculo = en.n['vinculo'] ?? 50;
   if (papel !== 'paixao') {
     somar(e, reg, 'eu', 'felicidade', -(3 + vinculo * 0.14));
