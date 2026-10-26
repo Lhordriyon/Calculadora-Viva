@@ -7,6 +7,7 @@ import { ACOES_DIPLOMATICAS, chanceDeSancao, defEstrangeiro, oPais, parceirosDe,
 import type { DefPolitica, EfeitoDePolitica } from '../motor/esquema.ts';
 import { indicadoresDoPais, valorDosTitulos } from '../motor/campos.ts';
 import { chanceDeCalote, dividaEmReais } from '../motor/tesouro.ts';
+import { gastoEmPesquisa } from '../motor/pesquisa.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
 import { ACORDO, ATO, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
@@ -34,6 +35,7 @@ const ESTATISTICA: Record<Estatistica, { nome: string; valor: (v: number) => str
   violencia: { nome: 'Violência', valor: (v) => `${inteiro(v)} homicídios por 100 mil`, bom: -1 },
   saude: { nome: 'Saúde pública', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
   educacao: { nome: 'Educação pública', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
+  tecnologia: { nome: 'Tecnologia', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
   aprovacao: { nome: 'Aprovação do governo', valor: (v) => `${inteiro(v)}%`, bom: 1 },
 };
 
@@ -59,6 +61,7 @@ const EFEITO: Record<EfeitoDePolitica, (d: number) => string> = {
   violencia: (d) => `violência ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, com o tempo`,
   saude: (d) => `saúde pública ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, com o tempo`,
   educacao: (d) => `educação pública ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma geração`,
+  tecnologia: (d) => `tecnologia ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma década`,
   renda: (d) => `renda de quem não é pobre ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d) * 100)}%`,
   auxilio: (d) => `auxílio de quem é pobre ${d > 0 ? '+' : '−'}${formatarDinheiro(Math.abs(d) / 12)} por mês`,
   inflacao: (d) => `inflação ${d > 0 ? '+' : '−'}${num(Math.abs(d))} ponto`,
@@ -90,6 +93,7 @@ function Estatisticas({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
     violencia: `vai para ${inteiro(rumo.violencia)}`,
     saude: `vai para ${inteiro(rumo.saude)}`,
     educacao: `vai para ${inteiro(rumo.educacao)}`,
+    tecnologia: `vai para ${inteiro(rumo.tecnologia)}`,
   };
   return (
     <dl class="estatisticas">
@@ -135,8 +139,8 @@ function quemEmpresta(vida: EstadoVida): string {
   return `o que o governo deve a bancos, fundos e gente de fora; ${parte}${calote > 0 ? `. Risco de calote neste ano: ${Math.round(calote * 100)}%` : ''}`;
 }
 
-/** O tamanho do país: PIB e população (com a seta do ano em %), a renda por pessoa, a desigualdade, o IDH e a dívida em reais. */
-function Numeros({ vida }: Pick<Props, 'vida'>) {
+/** O tamanho do país: PIB e população (com a seta do ano em %), a renda por pessoa, a desigualdade, o IDH, a dívida e a pesquisa em reais. */
+function Numeros({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
   const pais = vida.entidades['pais']!;
   const n = pais.n;
   const variou = variacoesDoAno(vida);
@@ -154,8 +158,9 @@ function Numeros({ vida }: Pick<Props, 'vida'>) {
     { nome: 'PIB per capita', valor: `${formatarDinheiro(pibPerCapita)} por pessoa`, nota: 'o PIB dividido por todo mundo, que é a média e não o seu salário' },
     { nome: 'Desigualdade (Gini)', valor: gini.toFixed(2).replace('.', ','), nota: '0 é todo mundo igual; 1, um só tem tudo. Sobe com a pobreza, cai com a educação' },
     { nome: 'IDH', valor: `${idh.toFixed(2).replace('.', ',')} (${faixaDoIdh(idh)})`, nota: 'saúde, educação e renda numa nota de 0 a 1' },
-    // Num save de antes do país ter tamanho, o PIB nasce no primeiro ano: até lá, a dívida em reais não aparece.
+    // Num save de antes do país ter tamanho, o PIB nasce no primeiro ano: até lá, a dívida e a pesquisa em reais não aparecem.
     ...(dividaEmReais(vida) !== undefined ? [{ nome: 'Dívida pública', valor: formatarDinheiro(dividaEmReais(vida)!), nota: quemEmpresta(vida) }] : []),
+    ...(n['pib'] !== undefined ? [{ nome: 'Pesquisa pública', valor: `${formatarDinheiro(gastoEmPesquisa(vida, conteudo).reais)} por ano`, nota: `${num(gastoEmPesquisa(vida, conteudo).pontos)}% do PIB, pagos pelo Tesouro; vira tecnologia em uma década` }] : []),
   ];
   return (
     <dl class="estatisticas">
@@ -408,7 +413,7 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
         )}
         <fieldset class="grupo">
           <legend>Em números</legend>
-          <Numeros vida={vida} />
+          <Numeros vida={vida} conteudo={conteudo} />
         </fieldset>
         <fieldset class="grupo">
           <legend>Como está</legend>
