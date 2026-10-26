@@ -12,6 +12,7 @@ import { causasDe } from '../src/motor/condicoes.ts';
 import { alvoDaTracao } from '../src/motor/empresa.ts';
 import { anoDoPais, defGoverno, potencialDe, primarioDe, rumoDoPais } from '../src/motor/pais.ts';
 import { causaDaPesquisa, gastoEmPesquisa, regraDaPesquisa, verbaDe } from '../src/motor/pesquisa.ts';
+import { lancar, novaEntrada } from '../src/motor/livro.ts';
 import { novaEntidade } from '../src/motor/pessoas.ts';
 import { PESQUISA, VERBA_DA_CARREIRA } from '../src/motor/regras.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
@@ -206,6 +207,18 @@ describe('as descobertas e a fuga de cérebros', () => {
     expect(causaDaPesquisa(e, 2)).toBe(deNovo);
     // O país em que se nasce não tem decisão.
     expect(causaDaPesquisa(adulto(25), 2)).toBeNull();
+  });
+
+  it('a posse de quem mantém a ciência como prioridade também é causa (a reeleição de quem pesquisa é decisão)', () => {
+    const e = adulto(26);
+    e.entidades['pais']!.n['pol_pesquisa'] = 2;
+    // Nascido com a prioridade, sem decisão nesta vida; depois, a posse do governo que a manteve (sem mudar o nível).
+    expect(causaDaPesquisa(e, 2)).toBeNull();
+    e.ano++;
+    const posse = lancar(e, novaEntrada(e, { tipo: 'mundo', causa: 'regra', ref: 'governo:frente_popular', ator: 'pais', texto: 'Posse.' }), []);
+    expect(causaDaPesquisa(e, 2)).toBe(posse.id);
+    // A posse não é causa de um nível que ela não deixou.
+    expect(causaDaPesquisa(e, 0)).toBeNull();
   });
 });
 

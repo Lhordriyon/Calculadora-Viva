@@ -41,17 +41,19 @@ export function verbaDe(e: EstadoVida, politica: Politica | undefined): number {
 }
 
 /**
- * A decisão que fez o estoque de agora: a posse ou a reforma mais recente que pôs a ciência como prioridade (`nivel`
- * 2, a causa da descoberta) ou a cortou (`nivel` 0, a da fuga), nos últimos `PESQUISA.descoberta.causa` anos; mesmo
- * desfeita depois, a tecnologia ainda carrega o que ela fez. O livro guarda a variação, e o nível de cada momento sai
- * de andar para trás a partir do de agora. As regras não contam, só quem decidiu; o país em que se nasce não tem
- * decisão (null).
+ * A decisão que fez o estoque de agora, nos últimos `PESQUISA.descoberta.causa` anos: a mais recente que deixou a
+ * ciência como prioridade (`nivel` 2, a causa da descoberta) ou cortada (`nivel` 0, a da fuga). Vale a reforma que a
+ * pôs ali e a posse do governo que a manteve (a reeleição de quem pesquisa também é decisão); mesmo desfeita depois, a
+ * tecnologia ainda carrega o que ela fez. O livro guarda a variação, e o nível de cada momento sai de andar para trás a
+ * partir do de agora. As regras não contam, só quem decidiu; o país em que se nasce não tem decisão (null).
  */
 export function causaDaPesquisa(e: EstadoVida, nivel: 0 | 2): number | null {
   let depois = e.entidades['pais']?.n['pol_pesquisa'] ?? 1;
   for (let k = e.historico.length - 1; k >= 0; k--) {
     const h = e.historico[k]!;
     if (h.ano < e.ano - PESQUISA.descoberta.causa) break;
+    const deixou = Math.round(depois) === nivel;
+    if (deixou && h.ref?.startsWith('governo:')) return h.id;
     const ms = h.mudancas ?? [];
     for (let j = ms.length - 1; j >= 0; j--) {
       const m = ms[j]!;
