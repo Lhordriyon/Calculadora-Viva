@@ -25,8 +25,8 @@ import { dependenciasDoAno, ETAPAS_DO_ANO, type IdEtapa } from '../src/motor/man
 import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { anoDoExterior } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
-import { PESQUISA } from '../src/motor/regras.ts';
-import { ANO, executar, type DoJogador, type Geracao, type HistoriaDasDividas, type Resultado, type Tarefa, type Vida } from './tunel-vida.ts';
+import { DEFESA, PESQUISA } from '../src/motor/regras.ts';
+import { ANO, executar, QUARTEL_FRACO, type DoJogador, type Geracao, type HistoriaDasDividas, type Resultado, type Tarefa, type Vida } from './tunel-vida.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
 const args = new Map(
@@ -165,6 +165,8 @@ const cpuDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, amos
 const bytesDaEtapa = new Map<IdEtapa, number>(ETAPAS_DO_ANO.map((x) => [x.id, 0]));
 /** O save de cada vida da amostra (bytes) e quanto dele é o livro. */
 const saves: { total: number; livro: number }[] = [];
+/** A dissuasão (bloco E): os anos de ameaça com o quartel fraco (abaixo de 50) e forte, e as guerras que começaram neles. */
+const ameacaDoQuartel = { fraco: { anos: 0, guerras: 0 }, forte: { anos: 0, guerras: 0 } };
 const escolhidas: { classe: number; vida: Vida }[] = [];
 const fortunas: Vida[] = [];
 const geracoes: Geracao[] = [];
@@ -189,6 +191,10 @@ fila.forEach(({ t, como }, i) => {
     sequenciasPorEstrategia.get(t.estrategia)!.push(r.seq);
     saves.push(...r.saves);
     for (const [id, b] of Object.entries(r.bytes)) bytesDaEtapa.set(id as IdEtapa, bytesDaEtapa.get(id as IdEtapa)! + b);
+    for (const q of ['fraco', 'forte'] as const) {
+      ameacaDoQuartel[q].anos += r.ameaca[q].anos;
+      ameacaDoQuartel[q].guerras += r.ameaca[q].guerras;
+    }
   } else if (r.tipo === 'origem' && como.em === 'escolhida') {
     escolhidas.push({ classe: como.classe, vida: r.vida });
     if (como.fortuna) fortunas.push(r.vida);
@@ -816,6 +822,47 @@ const portoesD = [
   ],
 ] as const;
 
+// ---- a defesa (bloco E)
+const NIVEIS_DA_DEFESA = ['desmobilizada', 'regular', 'reforçada'] as const;
+const anosDaDefesa = [0, 1, 2].map((k) => vidas.reduce((t, v) => t + v.defesa.anos[k as 0 | 1 | 2], 0));
+const capacidadePorAno = [0, 1, 2].map((k) => vidas.reduce((t, v) => t + v.defesa.variacao[k as 0 | 1 | 2], 0) / Math.max(1, anosDaDefesa[k]!));
+const capacidadeAoMorrer = ordenar(vidas.map((v) => v.defesa.fim));
+const somaDaDefesa = (f: (v: Vida) => number): number => vidas.reduce((t, v) => t + f(v), 0);
+const guerras = somaDaDefesa((v) => v.defesa.guerras);
+const comGuerra = vidas.filter((v) => v.defesa.guerras > 0).length / Math.max(1, vidas.length);
+const guerrasComCausa = somaDaDefesa((v) => v.defesa.comCausa) / Math.max(1, guerras);
+const finsDaGuerra = { vitoria: somaDaDefesa((v) => v.defesa.fins.vitoria), derrota: somaDaDefesa((v) => v.defesa.fins.derrota), cessarFogo: somaDaDefesa((v) => v.defesa.fins.cessarFogo) };
+const duracoes = vidas.flatMap((v) => v.defesa.duracoes);
+const maiorGuerra = Math.max(0, ...vidas.map((v) => v.defesa.maiorDuracao));
+const naGuerra = vidas.reduce((t, v) => ({ soma: t.soma + v.defesa.crescimentoNaGuerra.soma, anos: t.anos + v.defesa.crescimentoNaGuerra.anos }), { soma: 0, anos: 0 });
+const naPaz = vidas.reduce((t, v) => ({ soma: t.soma + v.defesa.crescimentoNaPaz.soma, anos: t.anos + v.defesa.crescimentoNaPaz.anos }), { soma: 0, anos: 0 });
+const crescimentoNaGuerra = naGuerra.soma / Math.max(1, naGuerra.anos);
+const crescimentoNaPaz = naPaz.soma / Math.max(1, naPaz.anos);
+const chanceNoAnoDeAmeaca = (q: 'fraco' | 'forte'): number => ameacaDoQuartel[q].guerras / Math.max(1, ameacaDoQuartel[q].anos);
+const portoesE = [
+  [
+    'A defesa paga vira capacidade: com a defesa reforçada, a capacidade sobe; desmobilizada, cai',
+    anosDaDefesa[0]! >= 100 && anosDaDefesa[2]! >= 100 && capacidadePorAno[2]! > 0.1 && capacidadePorAno[0]! < -0.1,
+    NIVEIS_DA_DEFESA.map((x, k) => `${x} ${capacidadePorAno[k]! >= 0 ? '+' : ''}${num(capacidadePorAno[k]!, 2)} por ano (${num(anosDaDefesa[k]!, 0)} anos)`).join(' · '),
+  ],
+  [
+    'A guerra é rara e tem porquê: em 0,5% a 8% das vidas, e ≥ 70% dos começos apontam a decisão que esfriou a relação',
+    comGuerra >= 0.005 && comGuerra <= 0.08 && guerrasComCausa >= 0.7,
+    `${pct(comGuerra)} das vidas; ${pct(guerrasComCausa)} de ${num(guerras, 0)} guerras com a decisão de causa`,
+  ],
+  [
+    `A capacidade dissuade: nos anos de ameaça, a guerra começa mais com o quartel abaixo de ${QUARTEL_FRACO} do que acima`,
+    ameacaDoQuartel.fraco.anos >= 50 && ameacaDoQuartel.forte.anos >= 50 && chanceNoAnoDeAmeaca('fraco') > chanceNoAnoDeAmeaca('forte'),
+    `quartel fraco: ${pct(chanceNoAnoDeAmeaca('fraco'))} de ${num(ameacaDoQuartel.fraco.anos, 0)} anos · forte: ${pct(chanceNoAnoDeAmeaca('forte'))} de ${num(ameacaDoQuartel.forte.anos, 0)} anos`,
+  ],
+  [
+    'A guerra custa: o crescimento nos anos de guerra fica ≥ 1,5 ponto abaixo do dos anos de paz',
+    naGuerra.anos >= 30 && crescimentoNaPaz - crescimentoNaGuerra >= 1.5,
+    `${num(crescimentoNaGuerra, 2)}% em ${num(naGuerra.anos, 0)} anos de guerra · ${num(crescimentoNaPaz, 2)}% nos de paz`,
+  ],
+  ['Toda guerra acaba: nenhuma passa do oitavo ano', maiorGuerra <= DEFESA.fim.maximo, `a mais longa: ${num(maiorGuerra, 0)} anos`],
+] as const;
+
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
 const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
@@ -1021,6 +1068,29 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesD) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## A defesa (bloco E)');
+l();
+l(
+  'Quem governa decide a defesa (desmobilizada, regular ou reforçada) e encomenda sistemas de armamento, que vão para a dívida na hora e somam à capacidade quando chegam. ' +
+    `A capacidade das Forças Armadas dissuade: com um país que sanciona e anda frio, a guerra pode começar, e a chance dobra a cada ${DEFESA.guerra.dobra} pontos abaixo de 50. Nas vidas sorteadas:`,
+);
+l();
+l('| Defesa | Anos | A capacidade por ano |');
+l('|---|---|---|');
+NIVEIS_DA_DEFESA.forEach((x, k) => l(`| ${x} | ${num(anosDaDefesa[k]!, 0)} | ${capacidadePorAno[k]! >= 0 ? '+' : ''}${num(capacidadePorAno[k]!, 2)} |`));
+l();
+l(
+  `A capacidade ao morrer: p10 ${num(percentil(capacidadeAoMorrer, 10), 1)}, mediana ${num(percentil(capacidadeAoMorrer, 50), 1)}, p90 ${num(percentil(capacidadeAoMorrer, 90), 1)}. ` +
+    `Encomendas por 100 vidas: ${num((100 * somaDaDefesa((v) => v.defesa.encomendas)) / Math.max(1, vidas.length), 1)} (${num(somaDaDefesa((v) => v.defesa.entregas), 0)} entregas). ` +
+    `Guerras por 100 vidas: ${num((100 * guerras) / Math.max(1, vidas.length), 1)}, em ${pct(comGuerra)} das vidas; acabaram em vitória ${num(finsDaGuerra.vitoria, 0)}, derrota ${num(finsDaGuerra.derrota, 0)} e cessar-fogo ${num(finsDaGuerra.cessarFogo, 0)}, ` +
+    `com ${duracoes.length ? num(duracoes.reduce((t, x) => t + x, 0) / duracoes.length, 1) : '—'} anos em média. Pedidos de paz: ${num(somaDaDefesa((v) => v.defesa.pedidosDePaz), 0)}; convocações: ${num(somaDaDefesa((v) => v.defesa.convocacoes), 0)}; ` +
+    `${pct(vidas.filter((v) => v.defesa.veterano).length / Math.max(1, vidas.length))} das vidas voltaram da guerra com a marca.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesE) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1415,6 +1485,7 @@ for (const [nome, ok, detalhe] of portoes11) console.log(`${ok ? '✓' : '·'} p
 for (const [nome, ok, detalhe] of portoesB) console.log(`${ok ? '✓' : '·'} portão B: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesC) console.log(`${ok ? '✓' : '·'} portão C: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesD) console.log(`${ok ? '✓' : '·'} portão D: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesE) console.log(`${ok ? '✓' : '·'} portão E: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

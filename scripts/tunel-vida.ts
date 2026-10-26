@@ -20,6 +20,8 @@ import { agir, avancarAno, escolher, nascer, observarOAno } from '../src/motor/v
 import { pontosDeVirada, porqueDe } from '../src/motor/virada.ts';
 import { alvoDaTracao, cargaDaMesa, empresaDe } from '../src/motor/empresa.ts';
 import { parceirosDe } from '../src/motor/diplomacia.ts';
+import { ameacaDeGuerra } from '../src/motor/guerra.ts';
+import { inimigoDe } from '../src/motor/campos.ts';
 import { conferirContas, conferirContratos, conferirDividas, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
 
 export const ANO = 2026;
@@ -351,6 +353,8 @@ export interface Vida {
   coroa: HistoriaDaCoroa;
   /** O Estado pesquisa (bloco D): os anos de cada nível da ciência, a tecnologia, as descobertas e a fuga de cérebros. */
   pesquisa: HistoriaDaPesquisa;
+  /** A defesa (bloco E): os anos de cada nível da defesa, a capacidade, as encomendas e as guerras. */
+  defesa: HistoriaDaDefesa;
 }
 
 export interface HistoriaDaCoroa {
@@ -447,6 +451,113 @@ function pesquisaDaVida(e: EstadoVida): HistoriaDaPesquisa {
       if ((h.causas?.length ?? 0) > 0) t.comCausa++;
     }
   }
+  return t;
+}
+
+export interface HistoriaDaDefesa {
+  /** Anos de cada nível da defesa (desmobilizada, regular, reforçada) e o quanto a capacidade andou neles, pela regra do país. */
+  anos: [number, number, number];
+  variacao: [number, number, number];
+  /** A capacidade ao nascer e ao morrer. */
+  inicio: number;
+  fim: number;
+  /** Encomendas de sistemas (a decisão de quem governa) e entregas. */
+  encomendas: number;
+  entregas: number;
+  /** As guerras: quantas começaram, quantas apontam uma decisão, como acabaram, quanto duraram (as que acabaram em vida). */
+  guerras: number;
+  comCausa: number;
+  fins: Record<'vitoria' | 'derrota' | 'cessarFogo', number>;
+  duracoes: number[];
+  /** A maior duração vista, contando a guerra que ainda corria na morte. */
+  maiorDuracao: number;
+  /** O crescimento do país nos anos de guerra e nos de paz (soma e anos). */
+  crescimentoNaGuerra: { soma: number; anos: number };
+  crescimentoNaPaz: { soma: number; anos: number };
+  /** Os pedidos de paz, as convocações (de quem joga e do filho) e quem voltou com a marca. */
+  pedidosDePaz: number;
+  convocacoes: number;
+  veterano: boolean;
+}
+
+/**
+ * A defesa pelo livro: o nível da defesa, a capacidade de quem nasce e o crescimento saem do fim menos o que o livro
+ * mudou; depois, ano a ano, o nível em vigor, o quanto a capacidade andou na regra do país, se o Brasil estava em
+ * guerra (a qualidade guerra dos países de fora) e o crescimento do ano, mais as encomendas, as entregas e as notícias.
+ */
+function defesaDaVida(e: EstadoVida): HistoriaDaDefesa {
+  const t: HistoriaDaDefesa = {
+    anos: [0, 0, 0],
+    variacao: [0, 0, 0],
+    inicio: 0,
+    fim: 0,
+    encomendas: 0,
+    entregas: 0,
+    guerras: 0,
+    comCausa: 0,
+    fins: { vitoria: 0, derrota: 0, cessarFogo: 0 },
+    duracoes: [],
+    maiorDuracao: 0,
+    crescimentoNaGuerra: { soma: 0, anos: 0 },
+    crescimentoNaPaz: { soma: 0, anos: 0 },
+    pedidosDePaz: 0,
+    convocacoes: 0,
+    veterano: 'veterano' in (e.entidades['eu']?.q ?? {}) || e.historico.some((h) => h.mudancas?.some((m) => m.c === 'eu.veterano' && m.q === 1)),
+  };
+  const n = e.entidades['pais']?.n ?? {};
+  const soma = { nivel: 0, defesa: 0, crescimento: 0 };
+  let emGuerraNoFim = 0;
+  for (const en of parceirosDe(e)) if (en.q['guerra']) emGuerraNoFim++;
+  let mudouGuerra = 0;
+  for (const h of e.historico) {
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'pais.pol_defesa' && m.d !== undefined) soma.nivel += m.d;
+      if (m.c === 'pais.defesa' && m.d !== undefined) soma.defesa += m.d;
+      if (m.c === 'pais.crescimento' && m.d !== undefined) soma.crescimento += m.d;
+      if (m.q !== undefined && /\.guerra$/.test(m.c) && m.c !== 'pais.guerra') mudouGuerra += m.q;
+    }
+  }
+  let nivel = (n['pol_defesa'] ?? 1) - soma.nivel;
+  t.fim = n['defesa'] ?? 50;
+  t.inicio = t.fim - soma.defesa;
+  let crescimento = (n['crescimento'] ?? 0) - soma.crescimento;
+  // Quem herdou uma guerra (a vida do herdeiro) nasce com ela: o começo é o fim menos o que o livro mudou.
+  let emGuerra = emGuerraNoFim - mudouGuerra;
+  let desde = emGuerra > 0 ? (e.historico[0]?.ano ?? e.ano) : 0;
+  for (const h of e.historico) {
+    let andou = 0;
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'pais.pol_defesa' && m.d !== undefined) nivel += m.d;
+      if (m.c === 'pais.defesa' && m.r === 'pais' && m.d !== undefined) andou += m.d;
+      if (m.c === 'pais.crescimento' && m.d !== undefined) crescimento += m.d;
+      if (m.q !== undefined && /\.guerra$/.test(m.c) && m.c !== 'pais.guerra') {
+        if (m.q > 0 && emGuerra === 0) desde = h.ano;
+        emGuerra += m.q;
+        if (m.q < 0 && emGuerra === 0) t.duracoes.push(h.ano - desde);
+      }
+    }
+    if (h.tipo === 'regra' && h.ref === 'ano') {
+      const k = Math.max(0, Math.min(2, Math.round(nivel))) as 0 | 1 | 2;
+      t.anos[k]++;
+      t.variacao[k] += andou;
+      const onde = emGuerra > 0 ? t.crescimentoNaGuerra : t.crescimentoNaPaz;
+      onde.soma += crescimento;
+      onde.anos++;
+    }
+    const ref = h.ref ?? '';
+    if (ref.startsWith('defesa:sistema:')) t.encomendas++;
+    else if (ref.startsWith('defesa:entrega:')) t.entregas++;
+    else if (ref === 'defesa:paz') t.pedidosDePaz++;
+    else if (ref === 'a_convocacao' || ref === 'filho_convocado') t.convocacoes++;
+    else if (ref.startsWith('guerra:guerra:')) {
+      t.guerras++;
+      if ((h.causas?.length ?? 0) > 0) t.comCausa++;
+    } else if (ref.startsWith('guerra:')) {
+      const tipo = ref.split(':')[1] as keyof HistoriaDaDefesa['fins'];
+      if (tipo in t.fins) t.fins[tipo]++;
+    }
+  }
+  t.maiorDuracao = Math.max(0, ...t.duracoes, emGuerra > 0 ? e.ano - desde : 0);
   return t;
 }
 
@@ -763,6 +874,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     tesouro: tesouroDaVida(e),
     coroa: coroaDaVida(e),
     pesquisa: pesquisaDaVida(e),
+    defesa: defesaDaVida(e),
     ...contasDaVida(e),
   };
 }
@@ -829,6 +941,11 @@ export interface DoJogador {
   /** CPU (ms) e bytes no livro de cada etapa do ano, nas vidas guardadas. */
   cpu: Record<string, number>;
   bytes: Record<string, number>;
+  /**
+   * A dissuasão (bloco E): nos anos de ameaça (um país que sanciona e anda frio), quantos tinham o quartel fraco
+   * (capacidade abaixo de 60, perto da mediana desses anos) ou forte, e em quantos a guerra começou.
+   */
+  ameaca: Record<'fraco' | 'forte', { anos: number; guerras: number }>;
 }
 export interface DaOrigem {
   tipo: 'origem';
@@ -845,15 +962,27 @@ export interface DaDinastia {
 }
 export type Resultado = DoJogador | DaOrigem | DaDinastia;
 
-/** O custo de cada etapa do ano (fatia 1.3): a CPU, e o que cada uma deixa no livro quando `bytes` mede. */
-function medirEtapas(medirBytes: boolean): { cpu: Record<string, number>; bytes: Record<string, number> } {
+/**
+ * O custo de cada etapa do ano (fatia 1.3): a CPU, e o que cada uma deixa no livro quando `bytes` mede. E a dissuasão
+ * (bloco E): antes da etapa da guerra, se há ameaça e como está o quartel; depois, se a guerra começou (fora do relógio).
+ */
+/** Abaixo disto, o quartel é fraco na conta da dissuasão: quem esfria a relação costuma armar-se, e a capacidade dos anos de ameaça fica perto de 60. */
+export const QUARTEL_FRACO = 60;
+
+function medirEtapas(medirBytes: boolean): { cpu: Record<string, number>; bytes: Record<string, number>; ameaca: DoJogador['ameaca'] } {
   const cpu: Record<string, number> = {};
   const bytes: Record<string, number> = {};
+  const ameaca: DoJogador['ameaca'] = { fraco: { anos: 0, guerras: 0 }, forte: { anos: 0, guerras: 0 } };
   let relogio = 0;
   let regAntes = 0;
   let livroAntes = 0;
+  let quartel: 'fraco' | 'forte' | null = null;
   observarOAno({
-    antes(_etapa, e, reg) {
+    antes(etapa, e, reg) {
+      if (etapa === 'guerra') {
+        quartel = ameacaDeGuerra(e) ? ((e.entidades['pais']?.n['defesa'] ?? 50) < QUARTEL_FRACO ? 'fraco' : 'forte') : null;
+        if (quartel) ameaca[quartel].anos++;
+      }
       if (medirBytes) {
         regAntes = reg.length;
         livroAntes = e.historico.length;
@@ -862,6 +991,7 @@ function medirEtapas(medirBytes: boolean): { cpu: Record<string, number>; bytes:
     },
     depois(etapa, e, reg) {
       cpu[etapa] = (cpu[etapa] ?? 0) + performance.now() - relogio;
+      if (etapa === 'guerra' && quartel && inimigoDe(e)?.q['guerra']?.ano === e.ano) ameaca[quartel].guerras++;
       if (!medirBytes) return;
       // As regras miúdas vão para a entrada invisível do ano, que já foi contada etapa por etapa pelo registro.
       let b = reg.length > regAntes ? JSON.stringify(reg.slice(regAntes)).length : 0;
@@ -869,13 +999,13 @@ function medirEtapas(medirBytes: boolean): { cpu: Record<string, number>; bytes:
       bytes[etapa] = (bytes[etapa] ?? 0) + b;
     },
   });
-  return { cpu, bytes };
+  return { cpu, bytes, ameaca };
 }
 
 function rodarJogador(c: Conteudo, t: Extract<Tarefa, { tipo: 'jogador' }>): DoJogador {
   // A CPU de cada etapa nas vidas guardadas; o livro, quando a tarefa pede.
   const medirBytes = t.guardar && t.livro;
-  const etapas = t.guardar ? medirEtapas(medirBytes) : { cpu: {}, bytes: {} };
+  const etapas = t.guardar ? medirEtapas(medirBytes) : { cpu: {}, bytes: {}, ameaca: { fraco: { anos: 0, guerras: 0 }, forte: { anos: 0, guerras: 0 } } };
   const r: DoJogador = { tipo: 'jogador', vidas: [], seq: [], seqRegras: [], textos: [], saves: [], medido: medirBytes, ...etapas };
   let memoria = novaMemoria();
   const textosVistos = new Set<string>();
