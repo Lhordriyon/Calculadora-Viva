@@ -97,7 +97,8 @@ function Estatisticas({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
   };
   return (
     <dl class="estatisticas">
-      {ESTATISTICAS.map((k) => {
+      {/* Num save de antes da pesquisa, a tecnologia nasce no primeiro ano: até lá, ela não aparece. */}
+      {ESTATISTICAS.filter((k) => n[k] !== undefined).map((k) => {
         const def = ESTATISTICA[k];
         const d = variou.get(k) ?? 0;
         const seta = Math.abs(d) < 0.05 ? '' : d > 0 ? '▲' : '▼';
