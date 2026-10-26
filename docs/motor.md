@@ -20,8 +20,8 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
 
 ## Um ano (`avancarAno`)
 
-**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 20 etapas e o que cada uma lê e escreve, em caminhos genéricos:
-- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `tesouro`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
+**O ano é uma lista de etapas declaradas** (fatia 1.3 do universo de bolso). `manifesto.ts › ETAPAS_DO_ANO` diz a ordem das 21 etapas e o que cada uma lê e escreve, em caminhos genéricos:
+- a ordem: `exterior`, `pais`, `mercado`, `economia`, `empresa`, `bens`, `tesouro`, `dividas`, `privacao`, `corpo`, `personagens`, `trabalho`, `carreira`, `poder`, `coroa`, `padrao`, `regras`, `morte`, `amor`, `iniciativas` e `diretor`;
 - os caminhos: `pessoa.saude` vale para qualquer personagem; `bem.*`, `ctr.*`, `tit.*`, `empresa.*` e `fora.*` valem para qualquer bem, contrato, título do Tesouro, empresa e país de fora; `agenda` é o que fica marcado para um ano que vem; `ano.fase`, `ano.mercado` e `ano.economia` são o que uma etapa passa às seguintes sem gravar no estado; `*` é o conteúdo.
 
 `vida.ts › ETAPAS` roda as etapas nessa ordem, e o ano para quando a vida acaba ou o storylet do ano acontece.
@@ -190,6 +190,29 @@ Quem joga empresta ao governo comprando um título: uma entidade `tit<entrada>` 
 - **O calote** (`darCalote`, sorteado em `pais.ts`): quem tem título perde 30% do valor (o cupom encolhe junto) e a renda fixa perde 15%, com o tesouro de contraparte; nada mais sai de quem joga. A dívida do país cai um quarto e `pais.calote` ganha a entrada como causa. A entrada é do mundo (`tesouro:calote`) e aponta quem levou a dívida até ali nos últimos doze anos: a decisão mais recente que pôs a dívida para cima (a posse de um governo ou a reforma que corta imposto ou abre gasto, pesadas pelo efeito na arrecadação e no gasto) e o decreto que aqueceu nos últimos quatro. No ano seguinte, o storylet `depois_do_calote` vem agendado, com o calote de causa.
 - **A herança** (`herdeiro.ts`): os títulos entram na partilha como o resto do dinheiro (pagam a dívida que a conta e os investimentos não pagaram, e cada um fica com a mesma fração que a conta) e passam a quem herda com ids da abertura (`tit<abertura>`), vencendo na vida nova.
 - **A folha País** mostra a dívida em reais (`dividaEmReais`), quanto dela é de quem joga e o risco de calote do ano (`chanceDeCalote`).
+
+## A coroa (`coroa.ts`, bloco C)
+
+Quem tem coroa (o monarca do Brasil, cargo `rei`, e quem é soberano da ilha, cargo `soberano`) escolhe como ela recebe. A forma fica com o país (`pais.coroa`, `ilha.coroa`; vazio é o salário), e quem herda a coroa herda a regra.
+
+- **As formas** (`COROA` em `regras.ts`):
+  - o salário da Casa Real é fixo: R$ 4 milhões por ano no Brasil e R$ 500 mil na ilha;
+  - a parte dos impostos é uma fatia da arrecadação (`arrecadacaoDe`): 0,01% da do Brasil (o PIB vezes a carga de 33%, mais o que as políticas somam) ou 10% da da ilha (20% do PIB dela);
+  - a taxa da coroa é uma fatia do PIB: 0,1% do Brasil, 8% da ilha.
+- **A dotação** (`dotacaoDe`) é a renda de quem reina. A etapa `coroa`, depois do poder, a recalcula todo ano, e `acertarDotacao` a acerta na hora quando a forma muda: pela folha (`operarCoroa`), por uma escolha do conteúdo (`"pais.coroa": { "definir": "salario" }`) ou na herança. A economia do ano a paga com o tesouro (no Brasil) ou a ilha de contraparte, com o rótulo `dotacao`.
+- **O preço** (`custoDaCoroa`):
+  - no Brasil, o ponto para onde a aprovação do governo anda (`pais.ts`) fica 5 pontos mais baixo com a parte dos impostos e 15 com a taxa;
+  - na ilha, o mesmo vale para a popularidade de quem é soberano (`poder.ts`);
+  - o anúncio também pesa na hora (+3 ao voltar ao salário, −2 na parte dos impostos, −6 na taxa);
+  - abaixo de 30, o cargo balança: no Brasil, `queda_do_cargo` (o plebiscito); na ilha, `greve_na_ilha`.
+- **A reação ao decreto** vem agendada, com o decreto de causa: a rua contra a taxa (`rua_contra_a_taxa_da_coroa`) ou o barco de mudança, na ilha (`barco_de_mudanca`), de 1 a 3 anos depois; a conta da parte dos impostos (`a_conta_da_coroa`), de 2 a 4.
+- **A ilha** (`ilha`, tipo `jurisdicao`, campos `populacao`, `pib`, `pib_per_capita` e `coroa`):
+  - nasce do efeito `fundarIlha` (as duas escolhas de "fundar um país"), com o nome "Nova" mais a cidade natal, 2.300 habitantes e R$ 80 mil de PIB por pessoa;
+  - todo ano, na etapa `coroa`, a renda por pessoa cresce 2,5% (+1 ponto com o país reconhecido, −1 com a taxa da coroa) e a população cresce 1% (+1 reconhecida, −1 com a parte dos impostos, −4 com a taxa), com sorte;
+  - a ilha que passa de 2.600 habitantes agenda `a_ilha_cresceu`, uma vez;
+  - sem soberano (quem fundou desceu do trono ou fez a república), a coroa não cobra nada;
+  - o save antigo de quem fundou um país (a marca `micronacao` sem ilha) ganha a ilha no primeiro ano;
+  - na herança, a ilha passa a quem herda (com a marca `micronacao` e o reconhecimento), e quem era soberano deixa a coroa da ilha, com a dotação dela.
 
 ## As fichas do ano (`acoes.ts`)
 

@@ -173,6 +173,15 @@ Toda dívida é um contrato com o banco (`docs/motor.md`): o cheque especial, o 
 - **A carta do banco** (o storylet `nome_sujo`) é agendada pelo motor quando o nome suja, e pelo rotativo; ela só chega se o nome estiver sujo.
 - **Renegociar é decisão.** A escolha que fecha um acordo usa `renegociar`. A que só abate (vender o carro, cortar tudo) usa `dividaFator` ou `divida` negativo.
 
+## A coroa e a ilha (bloco C)
+
+Quem tem coroa escolhe como ela recebe (`docs/motor.md › A coroa`). O conteúdo lê e, quando a história pede, muda a forma.
+- **`pais.coroa` e `ilha.coroa`** (texto: `salario`, `impostos` ou `taxa`; vazio é o salário) são a forma da coroa do Brasil e da ilha. Condição: `"pais.coroa": "taxa"`. Efeito: `"pais.coroa": { "definir": "salario" }`. A dotação de quem reina acompanha a forma na hora.
+- **A ilha** (`ilha`): `{ilha.nome}`, `{ilha.populacao}` (com ponto de milhar: "2.300"), `{ilha.pib}` e `{ilha.pib_per_capita}` no texto; `"ilha.populacao": { "min": 3000 }` nas condições; `"ilha.populacao": 200` nos efeitos (o porto novo que trouxe gente). Texto que fala da ilha pede a marca `micronacao`.
+- **`fundarIlha`** (efeito, `true`): a ilha nasce, com o nome da cidade natal de quem fundou. Só a jogada "fundar um país" usa.
+- **Os agendados do motor:** a rua contra a taxa, o barco de mudança e a conta da parte dos impostos chegam depois do decreto; a ilha que cresceu, quando ela passa de 2.600 habitantes; a greve na ilha, quando a popularidade de quem é soberano cai abaixo de 30.
+- Quem tem cargo (`"cargo": false` exclui) não recebe proposta de emprego: a renda de quem reina é a dotação.
+
 ## O Tesouro (bloco B)
 
 Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`). O conteúdo não compra título: lê e, quando a história pede, vende.

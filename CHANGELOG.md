@@ -4,6 +4,34 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 👑 Bloco C · A coroa recebe · 26/10/2026
+
+> [!NOTE]
+> O terceiro bloco da ordem do dono (19/10): "por que o soberano não recebe salário, parte dos impostos ou taxa da coroa". Ele jogou uma soberana bilionária numa ilha, e a coroa não pagava nada.
+
+- 👑 **Como a coroa recebe** (`coroa.ts`), para o monarca do Brasil e para quem é soberano da ilha:
+  - o salário da Casa Real (R$ 4 milhões por ano no Brasil; R$ 500 mil na ilha);
+  - a parte dos impostos (0,01% da arrecadação do Brasil, 10% da da ilha);
+  - a taxa da coroa (0,1% do PIB do Brasil, 8% do PIB da ilha).
+  A escolha é na folha Carreira e poder, uma vez por ano, com a dotação e o custo à vista.
+- 💸 **A dotação é a renda de quem reina,** paga pelo tesouro ou pela ilha, com o rótulo "Dotação da coroa" no extrato. A regra a recalcula todo ano; quem muda a forma (a folha, uma escolha, a herança) a acerta na hora.
+- 📉 **O preço:**
+  - com a parte dos impostos, a aprovação anda 5 pontos para baixo; com a taxa, 15;
+  - o anúncio também pesa na hora;
+  - abaixo de 30, o Brasil faz o plebiscito (a queda do cargo) e a ilha entra em greve geral.
+- 🏝️ **A ilha** (`ilha`, tipo `jurisdicao`):
+  - nasce da jogada "fundar um país", nas duas escolhas, com o nome da cidade natal, 2.300 habitantes, R$ 80 mil de PIB por pessoa e imposto de 20%;
+  - todo ano, a renda por pessoa e a população andam: o reconhecimento soma, e a taxa da coroa tira;
+  - passa a quem herda, com a coroa e a forma.
+- 📖 **Conteúdo:**
+  - quatro histórias agendadas pela decisão, com ela de causa: a rua contra a taxa da coroa, a conta da parte dos impostos, a ilha que passou de 2.600 habitantes e o barco de mudança;
+  - a greve na ilha fala da população de agora, volta quando a aprovação cai e zera a renda de quem desce do trono;
+  - a proposta da concorrente, o recrutador e o trabalho remoto em dólar não chegam mais a quem tem cargo.
+  - as histórias de quem reina (a assinatura, as mordomias, o jubileu e a vida depois da coroa) ganharam peso: num reinado de 30 anos, quase nunca apareciam. Cortar as mordomias não mexe mais na renda, que agora é a dotação.
+- 🤖 **Os robôs:** a cautelosa fica no salário e passa à parte dos impostos com o povo do lado (popularidade 60 ou mais), de onde só volta abaixo de 40; a arriscada cobra a taxa e não recua; a aleatória troca de forma de vez em quando.
+
+**Ainda não tem:** a legitimidade medida à parte da popularidade, o imposto da ilha como decisão, o ditador com outra regra e o reconhecimento como processo.
+
 ## 🏛️ Bloco B · O Tesouro · 25/10/2026
 
 > [!NOTE]
