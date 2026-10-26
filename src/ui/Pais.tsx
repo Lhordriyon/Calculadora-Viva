@@ -5,11 +5,12 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import type { Politica } from '../motor/constantes.ts';
 import { ACOES_DIPLOMATICAS, chanceDeSancao, defEstrangeiro, oPais, parceirosDe, type AcaoDiplomatica } from '../motor/diplomacia.ts';
 import type { DefPolitica, EfeitoDePolitica } from '../motor/esquema.ts';
-import { indicadoresDoPais, valorDosTitulos } from '../motor/campos.ts';
+import { indicadoresDoPais, inimigoDe, valorDosTitulos } from '../motor/campos.ts';
+import { ameacaDeGuerra, chancesDoFim, encomendasPendentes } from '../motor/guerra.ts';
 import { chanceDeCalote, dividaEmReais } from '../motor/tesouro.ts';
 import { gastoEmPesquisa } from '../motor/pesquisa.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
-import { ACORDO, ATO, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
+import { ACORDO, ATO, DEFESA, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
@@ -23,6 +24,8 @@ interface Props {
 /** "2,1" (uma casa, vírgula). */
 const num = (v: number): string => v.toFixed(1).replace('.', ',').replace('-', '−');
 const inteiro = (v: number): string => String(Math.round(v)).replace('-', '−');
+/** "2" ou "1,2": uma casa só quando ela existe. */
+const curto = (v: number): string => num(v).replace(/,0$/, '');
 
 /** Como cada estatística aparece, e se subir é bom (1), ruim (−1) ou depende (0: juros alto é bom para quem guarda). */
 const ESTATISTICA: Record<Estatistica, { nome: string; valor: (v: number) => string; bom: 1 | -1 | 0 }> = {
@@ -36,6 +39,7 @@ const ESTATISTICA: Record<Estatistica, { nome: string; valor: (v: number) => str
   saude: { nome: 'Saúde pública', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
   educacao: { nome: 'Educação pública', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
   tecnologia: { nome: 'Tecnologia', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
+  defesa: { nome: 'Defesa', valor: (v) => `${inteiro(v)} de 100`, bom: 1 },
   aprovacao: { nome: 'Aprovação do governo', valor: (v) => `${inteiro(v)}%`, bom: 1 },
 };
 
@@ -62,6 +66,7 @@ const EFEITO: Record<EfeitoDePolitica, (d: number) => string> = {
   saude: (d) => `saúde pública ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, com o tempo`,
   educacao: (d) => `educação pública ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma geração`,
   tecnologia: (d) => `tecnologia ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma década`,
+  defesa: (d) => `capacidade das Forças Armadas ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d))}, em uma década`,
   renda: (d) => `renda de quem não é pobre ${d > 0 ? '+' : '−'}${inteiro(Math.abs(d) * 100)}%`,
   auxilio: (d) => `auxílio de quem é pobre ${d > 0 ? '+' : '−'}${formatarDinheiro(Math.abs(d) / 12)} por mês`,
   inflacao: (d) => `inflação ${d > 0 ? '+' : '−'}${num(Math.abs(d))} ponto`,
@@ -94,10 +99,11 @@ function Estatisticas({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
     saude: `vai para ${inteiro(rumo.saude)}`,
     educacao: `vai para ${inteiro(rumo.educacao)}`,
     tecnologia: `vai para ${inteiro(rumo.tecnologia)}`,
+    defesa: `vai para ${inteiro(rumo.defesa)}`,
   };
   return (
     <dl class="estatisticas">
-      {/* Num save de antes da pesquisa, a tecnologia nasce no primeiro ano: até lá, ela não aparece. */}
+      {/* Num save de antes da pesquisa (ou da defesa), a tecnologia (a defesa) nasce no primeiro ano: até lá, ela não aparece. */}
       {ESTATISTICAS.filter((k) => n[k] !== undefined).map((k) => {
         const def = ESTATISTICA[k];
         const d = variou.get(k) ?? 0;
@@ -324,6 +330,110 @@ function LaFora({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/**
+ * A defesa: a guerra em curso (o custo do ano e as chances do fim) ou a ameaça dela, e o que foi encomendado; quem
+ * governa pede a paz e encomenda um sistema de armamento por ano, com o custo e a entrega à vista.
+ */
+function Defesa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const [confirmando, setConfirmando] = useState<string | null>(null);
+  const governa = governoAtual(vida) === 'voce';
+  const pib = vida.entidades['pais']!.n['pib'] ?? 0;
+  const inimigo = inimigoDe(vida);
+  const ameaca = ameacaDeGuerra(vida);
+  const pendentes = encomendasPendentes(vida, conteudo);
+  const paz: Operacao = { tipo: 'paz' };
+  const motivoDaPaz = motivoParaNaoOperar(vida, conteudo, paz);
+  const { ano, fim, guerra } = DEFESA;
+  const chances = inimigo ? chancesDoFim(vida, conteudo, inimigo) : null;
+  const aCaminho = conteudo.mundo.sistemas.filter((s) => pendentes.has(s.id)).map((s) => `${s.artigo} (${pendentes.get(s.id)!.entrega})`);
+  return (
+    <>
+      {inimigo && chances ? (
+        <p class="nota">
+          Em guerra com {oPais(inimigo)} desde {inimigo.q['guerra']!.ano}. Cada ano custa crescimento (−{curto(-ano.choque)} ponto, que se acumula), inflação (+{curto(ano.inflacao)}) e gasto (+
+          {curto(ano.gasto)} pontos do PIB). A partir do segundo ano, ela pode acabar: {inteiro(100 * fim.chance)}% ao ano, {inteiro(100 * (fim.chance + fim.paz))}% depois de um pedido de paz. Pela
+          capacidade daqui contra a força de lá: vitória {inteiro(100 * chances.vitoria)}%, derrota {inteiro(100 * chances.derrota)}%, cessar-fogo {inteiro(100 * chances.cessarFogo)}%.
+        </p>
+      ) : ameaca ? (
+        <p class="nota">
+          {capitalizar(oPais(ameaca.pais))} sanciona o Brasil, e a relação está no chão: a chance de uma guerra neste ano é de {inteiro(100 * ameaca.chance)}%. Quanto mais forte a defesa,
+          menor ela fica.
+        </p>
+      ) : (
+        <p class="nota">
+          Sem guerra à vista. Ela só vem de um país que já sanciona o Brasil, com a relação abaixo de {guerra.relacao}; a capacidade das Forças Armadas dissuade (a chance dobra a cada{' '}
+          {guerra.dobra} pontos abaixo de 50).
+        </p>
+      )}
+      {governa && inimigo && (
+        <div class="acoes">
+          <button type="button" class="botao secundario" disabled={motivoDaPaz !== null} onClick={() => aoOperar(paz)}>
+            Pedir a paz
+            {motivoDaPaz ? <small> · {motivoDaPaz}</small> : null}
+          </button>
+        </div>
+      )}
+      {!governa && aCaminho.length > 0 && <p class="nota">Encomendado e a caminho: {aCaminho.join(', ')}.</p>}
+      {governa && (
+        <div class="politicas">
+          {conteudo.mundo.sistemas.map((def) => {
+            const op: Operacao = { tipo: 'sistema', sistema: def.id };
+            const motivo = motivoParaNaoOperar(vida, conteudo, op);
+            const pendente = pendentes.get(def.id);
+            return (
+              <div class="politica" key={def.id}>
+                <div class="politica-topo">
+                  <b>{def.nome}</b>
+                  <span>{pendente ? `chega em ${pendente.entrega}` : `+${def.capacidade} de capacidade`}</span>
+                </div>
+                <p class="nota">
+                  {num(def.custo)} ponto do PIB ({formatarDinheiro((pib * def.custo) / 100)}) na dívida, na hora; a entrega leva {def.anos} anos
+                  {def.tecnologia !== undefined ? `, e pede tecnologia ${def.tecnologia}` : ''}.
+                </p>
+                {confirmando === def.id ? (
+                  <div class="confirmar">
+                    <p>
+                      Encomendar {def.artigo}? A dívida sobe {num(def.custo)} ponto do PIB agora; a entrega é em {vida.ano + def.anos}, com +{def.capacidade} de capacidade.
+                    </p>
+                    <div class="escolhas-origem">
+                      <button
+                        type="button"
+                        class="botao"
+                        disabled={motivo !== null}
+                        onClick={() => {
+                          setConfirmando(null);
+                          aoOperar(op);
+                        }}
+                      >
+                        Encomendar
+                      </button>
+                      <button type="button" class="botao secundario" onClick={() => setConfirmando(null)}>
+                        Voltar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div class="acoes">
+                    <button type="button" class="botao secundario" disabled={motivo !== null} onClick={() => setConfirmando(def.id)}>
+                      Encomendar
+                      {motivo ? <small> · {motivo}</small> : null}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <p class="nota">
+        {governa
+          ? 'Uma encomenda por ano. O equipamento novo soma à capacidade e envelhece de volta para onde a política de defesa e a tecnologia levam.'
+          : 'A capacidade anda com a política de defesa e a tecnologia; quem governa encomenda o armamento e pede a paz.'}
+      </p>
+    </>
+  );
+}
+
 /** As políticas em vigor; quem governa muda uma por ano. */
 function Politicas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const governa = governoAtual(vida) === 'voce';
@@ -397,6 +507,7 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
     <Folha id="titulo-pais" titulo={pais.nome} classe="dinheiro-folha" aoFechar={aoFechar}>
         <p class="meta">
           {fase === 'normal' ? 'Economia normal' : capitalizar(defFase(conteudo, fase).nome)} · governo: <b>{nomeDoGoverno(vida, conteudo)}</b>
+          {inimigoDe(vida) ? ` · em guerra com ${oPais(inimigoDe(vida)!)}` : ''}
           {bloco?.eleito !== false && !governa ? (eleicao === vida.ano ? ' · eleição para presidente neste ano' : ` · próxima eleição para presidente em ${eleicao}`) : ''}
         </p>
         {governa ? (
@@ -423,6 +534,10 @@ export function Pais({ vida, conteudo, aoOperar, aoFechar }: Props) {
         <fieldset class="grupo">
           <legend>Lá fora</legend>
           <LaFora vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
+        </fieldset>
+        <fieldset class="grupo">
+          <legend>Defesa</legend>
+          <Defesa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         </fieldset>
         <fieldset class="grupo">
           <legend>Políticas</legend>
