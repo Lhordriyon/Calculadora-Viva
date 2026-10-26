@@ -5,7 +5,9 @@ import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { DefCargo, DefCarreira } from '../motor/esquema.ts';
 import { cargoDe, chanceDeEleicao, ondeDoCargo, proximaEleicao } from '../motor/poder.ts';
-import { POPULARIDADE_CRITICA } from '../motor/regras.ts';
+import { FORMAS_DA_COROA, type FormaDaCoroa } from '../motor/constantes.ts';
+import { dotacaoDe, formaDaCoroa, nomeDaForma, paisDaCoroa } from '../motor/coroa.ts';
+import { COROA, ILHA, POPULARIDADE_CRITICA } from '../motor/regras.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
@@ -237,6 +239,81 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/** "2.300": a população da ilha, com ponto de milhar. */
+const milhar = (v: number): string => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+/** O que cada forma faz, numa linha. */
+const EXPLICA_A_FORMA: Record<FormaDaCoroa, string> = {
+  salario: 'Um valor fixo, combinado com quem paga.',
+  impostos: 'Uma fatia do que se arrecada: cresce com a economia e encolhe na crise.',
+  taxa: 'Um imposto a mais, só para a coroa: muito dinheiro e muita gente brava.',
+};
+
+/**
+ * A coroa: como ela recebe, com a dotação de cada forma e o que ela custa na aprovação, à vista antes de escolher (uma
+ * mudança por ano); e a ilha que quem joga fundou, com a população, o PIB e o imposto.
+ */
+function Coroa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const onde = paisDaCoroa(vida);
+  const ilha = vida.entidades['ilha'];
+  if (!onde && !ilha) return null;
+  const forma = onde ? formaDaCoroa(vida, onde) : null;
+  const motivoDe = (f: FormaDaCoroa): string | null => motivoParaNaoOperar(vida, conteudo, { tipo: 'coroa', forma: f });
+  const bloqueio = onde ? FORMAS_DA_COROA.filter((f) => f !== forma).map(motivoDe).find((m) => m !== null) : null;
+  const populacao = ilha?.n['populacao'] ?? 0;
+  const pib = ilha?.n['pib'] ?? 0;
+  return (
+    <fieldset class="grupo">
+      <legend>{onde === 'pais' ? 'A coroa' : (ilha?.nome ?? 'A coroa')}</legend>
+      {ilha && (
+        <dl class="empresa-cartao">
+          <dt>População</dt>
+          <dd>{milhar(populacao)} habitantes</dd>
+          <dt>PIB</dt>
+          <dd>{formatarDinheiro(pib)} por ano</dd>
+          <dt>Por pessoa</dt>
+          <dd>{formatarDinheiro(pib / Math.max(1, populacao))}</dd>
+          <dt>Imposto</dt>
+          <dd>{Math.round(ILHA.imposto * 100)}% do PIB</dd>
+        </dl>
+      )}
+      {onde && forma ? (
+        <>
+          <p class="nota">
+            Como a coroa recebe. A dotação é a sua renda, paga {onde === 'pais' ? 'pelo Tesouro' : 'pela ilha'}, e a forma muda uma vez por ano. Abaixo de {POPULARIDADE_CRITICA}% de aprovação, o
+            cargo balança.
+          </p>
+          {FORMAS_DA_COROA.map((f) => (
+            <div class="bem-meu" key={f}>
+              <p>
+                <b>{nomeDaForma(f, onde)}</b> · {formatarDinheiro(dotacaoDe(vida, conteudo, onde, f))} por ano
+              </p>
+              <p class="nota">
+                {COROA.custo[f] > 0 ? <span class="atrasada">A aprovação anda {COROA.custo[f]} pontos para baixo.</span> : 'O povo nem nota.'} {EXPLICA_A_FORMA[f]}
+              </p>
+              <div class="escolhas-origem">
+                <button
+                  type="button"
+                  class="chip-origem"
+                  aria-pressed={forma === f}
+                  aria-label={forma === f ? `${nomeDaForma(f, onde)}: em vigor` : `Escolher: ${nomeDaForma(f, onde)}`}
+                  disabled={f !== forma && motivoDe(f) !== null}
+                  onClick={() => f !== forma && aoOperar({ tipo: 'coroa', forma: f })}
+                >
+                  {forma === f ? 'Em vigor' : 'Escolher'}
+                </button>
+              </div>
+            </div>
+          ))}
+          {bloqueio && <p class="nota">Agora não: {bloqueio}.</p>}
+        </>
+      ) : (
+        <p class="nota">A ilha tem governo próprio, eleito por quem mora lá: você é do país que fundou, sem coroa nele.</p>
+      )}
+    </fieldset>
+  );
+}
+
 /** Um cargo eletivo da lista: a eleição, a influência e a campanha, e a chance (ou o motivo de não poder agora). */
 function Cargo({ k, motivo, vida, escolhido, aoEscolher }: { k: DefCargo; motivo: string | null; vida: EstadoVida; escolhido: boolean; aoEscolher: (id: string) => void }) {
   return (
@@ -259,6 +336,7 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
   const comCargo = cargoDe(vida, conteudo) !== undefined;
   const trabalho = <Trabalho vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
   const poder = <Poder vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
+  const coroa = <Coroa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
   return (
     <Folha id="titulo-carreira" titulo="Carreira e poder" classe="dinheiro-folha" aoFechar={aoFechar}>
         {vida.idade < 16 ? (
@@ -266,7 +344,9 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
         ) : (
           <>
             {comCargo ? poder : trabalho}
+            {comCargo && coroa}
             {comCargo ? trabalho : poder}
+            {!comCargo && coroa}
           </>
         )}
         <div class="acoes">
