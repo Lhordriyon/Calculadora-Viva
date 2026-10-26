@@ -1554,7 +1554,7 @@ O primeiro bloco da segunda ordem do dono (26/10, `docs/ideias.md › A segunda 
 | Mudanças causadas pelo jogador | 44,3% | 44,6% |
 | Toques por vida | 457,6 | 457,9 |
 | O porquê à vista (acontecimentos com a causa de um ano anterior) | 36,5% | 36,6% |
-| CPU por vida (túnel) | 113,6 ms | 95,6 ms; no A/B na mesma máquina, 99,9 → 97,2 ms (−2,7%, ±1,5%) |
+| CPU por vida (túnel) | 113,6 ms | 100,1 ms; no A/B na mesma máquina, 99,9 → 97,2 ms (−2,7%, ±1,5%) |
 
 Os portões que já falhavam continuam falhando, alguns um pouco melhores: a CPU, a herança entre gerações (Spearman 0,82 → 0,83), as assinaturas sem regressão (912 → 915, para ≥ 918), o bilionário feito (1,56% → 1,41%, com teto de 1%) e o do quintil mais rico ao mais pobre (2,6% → 2,8%, para ≥ 3,0%). Os dois portões novos passam.
 
