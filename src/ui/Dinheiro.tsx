@@ -10,7 +10,7 @@ import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
-import { ehDaEmpresa, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
+import { ehDaEmpresa, ehDoPoder, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
 import { anosParaVencer, chanceDeCalote, cupomDe, precoDoTitulo, taxaDoTitulo, type Prazo } from '../motor/tesouro.ts';
 import {
   ANOS_PARA_CADUCAR,
@@ -777,7 +777,7 @@ function custoDaOpcao(j: JogadaDisponivel, i: number): string {
 }
 
 /** Jogadas abertas uma a uma: o texto e as opções com o custo e o motivo do bloqueio. */
-function ListaDeJogadas({ lista, aoOperar, rotulo }: { lista: JogadaDisponivel[]; aoOperar: Props['aoOperar']; rotulo: string }) {
+export function ListaDeJogadas({ lista, aoOperar, rotulo }: { lista: JogadaDisponivel[]; aoOperar: Props['aoOperar']; rotulo: string }) {
   const [aberta, setAberta] = useState<string | null>(null);
   return (
     <ul class="vagas" aria-label={rotulo}>
@@ -921,7 +921,8 @@ function Dividas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 }
 
 function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
-  const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s));
+  // As do poder (o golpe, a coroa) ficam na folha Carreira e poder.
+  const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s) && !ehDoPoder(j.s));
   if (lista.length === 0) return null;
   return (
     <fieldset class="grupo">

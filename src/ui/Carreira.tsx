@@ -7,6 +7,9 @@ import type { DefCargo, DefCarreira } from '../motor/esquema.ts';
 import { cargoDe, chanceDeEleicao, ondeDoCargo, proximaEleicao } from '../motor/poder.ts';
 import { FORMAS_DA_COROA, type FormaDaCoroa } from '../motor/constantes.ts';
 import { dotacaoDe, formaDaCoroa, nomeDaForma, paisDaCoroa } from '../motor/coroa.ts';
+import { ehDoPoder, jogadasDe } from '../motor/fortuna.ts';
+import { MAIORIDADE } from '../motor/sucessao.ts';
+import { ListaDeJogadas } from './Dinheiro.tsx';
 import { COROA, ILHA, POPULARIDADE_CRITICA } from '../motor/regras.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -166,6 +169,13 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const opSel: Operacao | null = sel ? { tipo: 'candidatarCargo', cargo: sel.id } : null;
   const motivoSel = opSel ? motivoParaNaoOperar(vida, conteudo, opSel) : null;
   const mandato = eu.n['mandato'] ?? 0;
+  // Na fila da coroa ou do Regime: a resposta vem quando quem reina morrer (antes dos 18, a regência governa).
+  const fila =
+    eu.q['principe'] && !eu.q['monarca'] && vida.entidades['pais']?.q['monarquia']
+      ? `Você está na linha de sucessão: quando quem reina morrer, a coroa espera a sua resposta (antes dos ${MAIORIDADE}, a regência governa).`
+      : eu.q['herdeiro_regime'] && !eu.q['ditador'] && vida.entidades['pais']?.q['regime']
+        ? `O Regime é da sua família: quando quem manda morrer, os generais esperam a sua resposta (antes dos ${MAIORIDADE}, uma junta governa).`
+        : null;
 
   return (
     <fieldset class="grupo">
@@ -195,6 +205,7 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
       <p class="nota">
         A influência vem do patrimônio, dos bens, da fama, da empresa e do cargo, e decide eleições. Municipais nos anos múltiplos de 4; gerais, dois anos depois.
       </p>
+      {fila && <p class="nota">{fila}</p>}
       {sel && (
         <div class="confirmar">
           <p>
@@ -235,6 +246,22 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           ),
         )}
       </ul>
+    </fieldset>
+  );
+}
+
+/**
+ * O que não passa pela urna (as jogadas do poder: ficar no poder, tomar o poder, restaurar a coroa): aparece quando a
+ * vida deixa, com o texto e as opções, o teste e o preço de cada uma.
+ */
+function TomarOPoder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const lista = jogadasDe(vida, conteudo).filter((j) => ehDoPoder(j.s));
+  if (lista.length === 0) return null;
+  return (
+    <fieldset class="grupo">
+      <legend>Tomar o poder</legend>
+      <p class="nota">O que não passa pela urna. Não gasta a ficha do ano, e o mundo vai reagir: lá fora, quem não gosta de golpe se afasta.</p>
+      <ListaDeJogadas lista={lista} aoOperar={aoOperar} rotulo="Jogadas do poder" />
     </fieldset>
   );
 }
@@ -307,6 +334,8 @@ function Coroa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           ))}
           {bloqueio && <p class="nota">Agora não: {bloqueio}.</p>}
         </>
+      ) : vida.entidades['eu']?.q['herdeiro_ilha'] ? (
+        <p class="nota">A coroa da ilha é sua aos {MAIORIDADE}; até lá, um conselho cuida dela.</p>
       ) : (
         <p class="nota">A ilha tem governo próprio, eleito por quem mora lá: você é do país que fundou, sem coroa nele.</p>
       )}
@@ -337,6 +366,7 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
   const trabalho = <Trabalho vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
   const poder = <Poder vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
   const coroa = <Coroa vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
+  const tomar = <TomarOPoder vida={vida} conteudo={conteudo} aoOperar={aoOperar} />;
   return (
     <Folha id="titulo-carreira" titulo="Carreira e poder" classe="dinheiro-folha" aoFechar={aoFechar}>
         {vida.idade < 16 ? (
@@ -344,8 +374,10 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
         ) : (
           <>
             {comCargo ? poder : trabalho}
+            {comCargo && tomar}
             {comCargo && coroa}
             {comCargo ? trabalho : poder}
+            {!comCargo && tomar}
             {!comCargo && coroa}
           </>
         )}
