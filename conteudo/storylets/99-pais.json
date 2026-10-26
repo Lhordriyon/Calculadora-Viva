@@ -377,6 +377,7 @@
     "id": "vaga_sobrando",
     "idade": [18, 64],
     "condicoes": {
+      "cargo": false,
       "renda": { "min": 1 },
       "semMarcas": ["servidor", "aposentado", "empreendedor", "socio", "herdeiro_negocio"],
       "pais.desemprego": { "max": 6.5 }

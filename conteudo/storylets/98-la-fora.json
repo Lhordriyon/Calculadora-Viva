@@ -129,6 +129,7 @@
     "ator": ["federacao", "celeste", "liga", "pacto"],
     "preferir": "+ator.relacao",
     "condicoes": {
+      "cargo": false,
       "marcas": ["formado"],
       "inteligencia": { "min": 60 },
       "renda": { "min": 1 },

@@ -735,6 +735,7 @@
     "id": "proposta_na_expansao",
     "idade": [22, 60],
     "condicoes": {
+      "cargo": false,
       "marcas": ["pais.expansao"],
       "renda": { "min": 15000 },
       "semMarcas": [
