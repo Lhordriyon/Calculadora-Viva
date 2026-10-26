@@ -169,13 +169,11 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   const opSel: Operacao | null = sel ? { tipo: 'candidatarCargo', cargo: sel.id } : null;
   const motivoSel = opSel ? motivoParaNaoOperar(vida, conteudo, opSel) : null;
   const mandato = eu.n['mandato'] ?? 0;
-  // Na fila da coroa ou do Regime: a resposta vem quando quem reina morrer (antes dos 18, a regência governa).
-  const fila =
-    eu.q['principe'] && !eu.q['monarca'] && vida.entidades['pais']?.q['monarquia']
-      ? `Você está na linha de sucessão: quando quem reina morrer, a coroa espera a sua resposta (antes dos ${MAIORIDADE}, a regência governa).`
-      : eu.q['herdeiro_regime'] && !eu.q['ditador'] && vida.entidades['pais']?.q['regime']
-        ? `O Regime é da sua família: quando quem manda morrer, os generais esperam a sua resposta (antes dos ${MAIORIDADE}, uma junta governa).`
-        : null;
+  // A sucessão marcada para os 18 (quem reinava morreu e quem herda ainda é menor): até lá, a regência ou a junta.
+  const marcada = (evento: string): number | undefined => vida.agenda.find((a) => a.evento === evento)?.ano;
+  const coroa = marcada('sucessao_coroa');
+  const junta = marcada('sucessao_regime');
+  const fila = coroa !== undefined ? `a coroa, em ${coroa} (até lá, a regência)` : junta !== undefined ? `o Regime, em ${junta} (até lá, uma junta)` : null;
 
   return (
     <fieldset class="grupo">
@@ -185,6 +183,12 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         <dd>{Math.round(eu.n['influencia'] ?? 0)}</dd>
         <dt>Fama</dt>
         <dd>{Math.round(eu.n['fama'] ?? 0)}</dd>
+        {fila && (
+          <>
+            <dt>Sucessão</dt>
+            <dd>{fila}</dd>
+          </>
+        )}
         {cargo && (
           <>
             <dt>Cargo</dt>
@@ -205,7 +209,6 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
       <p class="nota">
         A influência vem do patrimônio, dos bens, da fama, da empresa e do cargo, e decide eleições. Municipais nos anos múltiplos de 4; gerais, dois anos depois.
       </p>
-      {fila && <p class="nota">{fila}</p>}
       {sel && (
         <div class="confirmar">
           <p>
