@@ -1319,6 +1319,73 @@ Os portões que já falhavam continuam falhando: a CPU, a herança entre geraç�
 - **A acusação de nepotismo ganhou o peso 3 dos vizinhos da mesma cadeia.** Ela aparecia em 0,1% das vidas e zerou no túnel quando o título das histórias mudou a trajetória de muita gente. Com o peso, quem ganhou a marca vê a conta chegar; continua rara, porque pede a marca e a fama.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Bloco C: a coroa recebe (26/10)
+
+O terceiro bloco da ordem do dono: "por que o soberano não recebe salário, parte dos impostos ou taxa da coroa" (19/10). Ele jogou uma soberana bilionária numa ilha, e a coroa não pagava nada. Entrou a forma da coroa (I-41) e o começo do Estado novo (I-43): a ilha com população, PIB e imposto. Ficaram a legitimidade à parte (I-42), o ditador e o efeito no orçamento, com os motivos abaixo.
+
+**O que a coroa faz** (`coroa.ts`, `docs/motor.md › A coroa`):
+- quem tem coroa (o monarca do Brasil e quem é soberano da ilha) escolhe na folha Carreira e poder, uma vez por ano: o salário da Casa Real, a parte dos impostos ou a taxa da coroa;
+- a forma fica com o país (`pais.coroa`, `ilha.coroa`), e a dotação é a renda de quem reina, paga pelo tesouro ou pela ilha;
+- a parte dos impostos tira 5 pontos do alvo da aprovação, a taxa 15; abaixo de 30, o plebiscito ou a greve geral;
+- a ilha nasce da jogada "fundar um país" e anda todo ano; quem herda leva a ilha, a coroa e a forma.
+
+**Medidas:**
+
+| Medida | Valor |
+|---|---|
+| Vidas com coroa (todas as do túnel, com as de origem escolhida e as dinastias) | 111, e 38 com ilha |
+| Anos de coroa: salário / parte dos impostos / taxa | 1.136 / 792 / 371 |
+| Dotação por ano, média | R$ 3,8 milhões / R$ 1,8 bilhão / R$ 22 bilhões |
+| Quedas do cargo por 100 anos de coroa | 0,6 / 1,0 / 2,2 |
+| População da ilha no fim (fundada com 2.300) | p10 2.042, mediana 2.544, p90 3.180; mediana de 2.791 sem a taxa (22 ilhas) e 1.413 com 5 anos ou mais de taxa (6) |
+| Dotação para quem não reina | 0 vidas |
+| Trocas de forma por reinado (160 vidas da linhagem real) | cautelosa 2 (até 4), arriscada 2, aleatória 3 (até 9) |
+
+**O túnel** (10.000 vidas; antes = o bloco B publicado, depois = o bloco C):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Falsos dilemas | 0, nos três bolsos | 0, nos três bolsos |
+| Saturação V5 / V20 | 55,9% / 90,2% | 55,7% / 90,1% |
+| Assinaturas por 1.000 vidas (sem a origem) | 910 (585) | 909 (581) |
+| Mobilidade: mesmo quintil / Spearman | 27,2% / 0,34 | 27,0% / 0,33 |
+| Do quintil mais pobre ao mais rico / do mais rico ao mais pobre | 14,3% / 3,3% | 13,2% / 2,8% |
+| Patrimônio p90/p10 | 618,2× | 645,1× |
+| Patrimônio mediano da cautelosa | R$ 62 milhões | R$ 62 milhões |
+| Desvio da felicidade média | 8,78 | 8,72 |
+| Patrimônio negativo ao morrer | 0,7% | 0,6% |
+| Mudanças causadas pelo jogador | 44,2% | 44,2% |
+| Toques por vida | 456,2 | 455,7 |
+| CPU por vida (túnel) | 81,5 ms | 105,9 ms; no A/B na mesma máquina, 108,1 → 113,6 ms (+5,1%) |
+
+Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,84 → 0,85), o bilionário feito (1,34% → 1,40%, com teto de 1%) e as assinaturas sem regressão (910 → 909, para ≥ 918). Os três portões novos (a taxa tem preço, a ilha vive, toda dotação tem coroa) passam.
+
+Um portão que passava falhou: do quintil mais rico ao mais pobre, 3,3% → 2,8%, para ≥ 3,0%. Noutra semente (20261026), a base dá 3,4% e o bloco C 3,1%. A diferença, de 0,3 a 0,5 ponto, cabe no ruído de uma rodada (uns 0,5 ponto), e o que mudou para quem não tem coroa é pouco: as propostas de emprego de quem tem cargo e o peso do negócio da família que quebra. Se a queda se repetir no próximo bloco, ela vira uma investigação própria.
+
+O primeiro `verificar` falhou com um storylet morto, o negócio da família que quebra na crise; o conserto está abaixo.
+
+**Decisões tomadas sozinho:**
+- **Os números das três formas.** O salário é fixo e pequeno perto de uma fortuna real (R$ 4 milhões por ano no Brasil, R$ 500 mil na ilha). A parte dos impostos do Brasil é 0,01% da arrecadação, a escala da dotação de uma casa real europeia: uns R$ 400 milhões por ano em 2026, que sobem com o PIB. A taxa é 0,1% do PIB, uns R$ 12 bilhões por ano: muito dinheiro, com o preço mais alto. Na ilha, que é pequena, as fatias são maiores (10% da arrecadação e 8% do PIB), e a taxa espanta gente.
+- **A primeira parte dos impostos era o dobro.** Com 0,02% da arrecadação, ela dava R$ 2,2 bilhões por ano numa vida de 2066: 550 vezes o salário, por um terço do preço da taxa. Com 0,01%, dá R$ 1,1 bilhão nessa vida.
+- **A forma é do país, não da pessoa.** Ela fica em `pais.coroa` e `ilha.coroa`, como uma lei: quem herda a coroa herda a regra, e o conteúdo pode mudá-la (a rua que derruba a taxa).
+- **A dotação é recalculada todo ano** e acertada na hora em que a forma muda (pela folha, por uma escolha do conteúdo ou na herança). Na primeira versão, o túnel media de R$ 31 a 83 milhões por ano de salário, que é de R$ 4 milhões, por três vazamentos:
+  - uma escolha que voltava ao salário deixava a renda da taxa por mais um ano;
+  - quem descia do trono da ilha levava a renda junto;
+  - as propostas de emprego trocavam a dotação por um salário.
+- **O preço está no alvo da aprovação, não num tombo só.** A cada ano, a aprovação anda uma parte do caminho até o alvo (35% no Brasil, 20% na ilha); com a taxa, o alvo fica 15 pontos mais baixo enquanto ela durar. O anúncio pesa na hora (−6 na taxa, −2 na parte dos impostos, +3 ao voltar ao salário).
+- **A reação ao decreto vem agendada, com o decreto de causa:** a rua contra a taxa e o barco de mudança, de 1 a 3 anos depois; a conta da parte dos impostos, de 2 a 4. O porquê fica à vista na linha do tempo.
+- **A ilha é uma entidade nova** (`ilha`, tipo `jurisdicao`), lida pelo validador como as outras: nome, população, PIB, PIB por pessoa e a forma da coroa. Os números da fundação (2.300 habitantes, R$ 80 mil por pessoa, imposto de 20%) são os de um país pequeno e rico. A ilha anda devagar (a renda por pessoa 2,5% e a população 1% por ano, mais com o reconhecimento), para a taxa ser a decisão que mais pesa nela.
+- **O ditador ficou de fora.** O Regime não é coroa: quem manda nele continua com o salário que já tinha.
+- **O efeito da dotação no orçamento do Brasil ficou para depois.** A taxa, a maior forma, é 0,1% do PIB: abaixo do ruído da reação fiscal da dívida. A dotação sai da conta do tesouro, e as contas fecham entrada por entrada.
+- **As propostas de emprego não chegam a quem tem cargo** (`"cargo": false`): a concorrente, o recrutador e o trabalho remoto em dólar. Valia para o bico e a entrega desde a C3; agora vale também para elas.
+- **Quem desce do trono da ilha fica sem a renda da coroa:** a greve na ilha zera a renda nas duas saídas do trono, como a queda do cargo faz com quem perde o mandato.
+- **Os robôs.** A arriscada cobra a taxa e não recua: na primeira versão, ela voltava ao salário com a popularidade abaixo de 35, e o túnel não via o preço da taxa. A cautelosa passa à parte dos impostos com popularidade 60 ou mais e só volta ao salário abaixo de 40; com 55 e 45, ela trocava de forma 4 vezes por reinado (até 10), e agora troca 2 (até 4). A aleatória troca de forma em 30% dos anos.
+- **O negócio da família que quebra na crise ganhou peso 4.** Ele pede a marca de quem assumiu o negócio (3,2% das vidas) e um ano de crise (2,3% dos anos), e aparecia em 0,0% das vidas. Zerou no primeiro túnel do bloco C e, noutra semente, zera também na base: estava à beira de morrer. Com o peso, continua raro.
+- **As histórias de quem reina ganharam peso.** Em 160 vidas da linhagem real (1.736 anos de rei), a assinatura da reforma apareceu 2 vezes, as mordomias 2 e o jubileu 3; no túnel do bloco B, 0,1% e 0,0% das vidas, à beira de morrer. Com peso 4 (e 6 na vida depois da coroa), elas aparecem 17, 19 e 9 vezes, e a vida depois da coroa 8. Cortar as mordomias não mexe mais na renda: ela é a dotação, e o corte sumia no ano seguinte.
+- **A CPU subiu 5,1% no A/B:** 20 rodadas alternadas de cada versão, de 150 a 300 vidas, deram 108,1 → 113,6 ms por vida (±3,5%). O livro tem o mesmo tamanho (395 → 396 entradas por vida), e a etapa da coroa custa 0,11 ms por vida (0,1% do ano). O perfil não aponta uma função nova entre as que mais custam: a diferença se espalha pelas de sempre, como a elegibilidade dos storylets e os atores possíveis. Nesta máquina, uma rodada variou de 100 a 127 ms.
+- **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

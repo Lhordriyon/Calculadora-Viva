@@ -49,7 +49,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 |---|---|---|---|
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
 | B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
-| C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | em andamento (26/10): a forma da coroa e a ilha com população e PIB |
+| C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | feito (26/10): a forma da coroa e a ilha com população e PIB; a legitimidade (I-42) e o ditador ficam para depois |
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
 
@@ -88,9 +88,9 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-35 | Falência, reestruturação e intervenção | 4 | Média | proposta |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
-| I-41 | Monarquia institucional e Casa Real | 5 | Alta | em andamento (bloco C): a renda da coroa tem forma e regra |
+| I-41 | Monarquia institucional e Casa Real | 5 | Alta | feita em parte (bloco C, 26/10): a renda da coroa tem forma e regra; falta a legitimidade à parte (I-42) |
 | I-42 | Indicadores separados de poder, riqueza, prestígio e legitimidade | 5 | Média | proposta |
-| I-43 | Criar um Estado | 5 | Média | em andamento (bloco C): a ilha com população, PIB e imposto |
+| I-43 | Criar um Estado | 5 | Média | começada (bloco C, 26/10): a ilha com população, PIB e imposto |
 | I-44 | Formas de Estado e de governo | 5 | Média | proposta |
 | I-50 | Tratados como objetos | 6 | Média | proposta |
 | I-51 | Alianças e blocos econômicos | 6 | Média | proposta |
@@ -731,7 +731,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - o ditador: o Regime tem o salário dele, e não é coroa;
   - o efeito da dotação no orçamento do Brasil: 0,1% do PIB, no máximo, não move a dívida.
 - **Prioridade:** Alta · Fase 5.
-- **Estado:** em andamento (bloco C, 26/10).
+- **Estado:** feita em parte (bloco C, 26/10): a renda da coroa tem forma e regra. A legitimidade medida à parte é a I-42.
 
 ### I-42 · Indicadores separados
 - **Problema:** influência e popularidade misturam poder, riqueza, fama e legitimidade.
@@ -762,7 +762,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - a república (a outra escolha da jogada) também cria a ilha, sem coroa para quem fundou.
 - **Fica para depois:** o imposto da ilha como decisão (o paraíso fiscal), as empresas que se mudam para lá, as instituições, o reconhecimento como processo e as relações com os países de fora.
 - **Prioridade:** Média · Fase 5.
-- **Estado:** em andamento (bloco C, 26/10): a ilha com população, PIB e imposto.
+- **Estado:** começada (bloco C, 26/10): a ilha com população, PIB e imposto.
 
 ### I-44 · Formas de Estado e de governo
 - **Problema:** hoje há governos fictícios, o regime e o "você". A missão pede Estado unitário, federal, confederação, presidencialismo, parlamentarismo, híbridos e autoritários.
