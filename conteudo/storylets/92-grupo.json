@@ -228,9 +228,9 @@
   {
     "id": "grupo_na_capa",
     "idade": [25, 95],
-    "condicoes": { "empresas": { "min": 3 }, "patrimonio": { "min": 100000000 } },
+    "condicoes": { "empresas": { "min": 2 }, "patrimonio": { "min": 100000000 } },
     "peso": 3,
-    "texto": "Uma revista de negócios pôs o seu grupo na capa: [\"O império que ninguém viu crescer\"|\"O sobrenome que está em tudo\"|\"Três empresas, nenhuma folga\"]. Na foto, você aparece de braços cruzados, como pediram.",
+    "texto": "Uma revista de negócios pôs o seu grupo na capa: [\"O império que ninguém viu crescer\"|\"O sobrenome que está em tudo\"|\"Um grupo, nenhuma folga\"]. Na foto, você aparece de braços cruzados, como pediram.",
     "resumo": "foi capa de revista por causa do próprio grupo",
     "escolhas": [
       {
