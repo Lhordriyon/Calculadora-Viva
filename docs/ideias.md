@@ -70,7 +70,8 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 
 | Bloco | O que entra | Ideias | Estado |
 |---|---|---|---|
-| F · O poder que passa | a sucessão imediata da coroa, do regime e da ilha para quem continua a história (com regência abaixo dos 18); o golpe e o autogolpe (governar vitalício); governar a ilha e a cidade fundadas (imposto e obras pagas do próprio bolso); quem funda o país deixa o cargo no Brasil; o dinheiro que salva o país vira título | I-106, I-107, I-108, D-01, D-03, D-04 | em andamento (26/10) |
+| F · O poder que passa | a sucessão imediata da coroa, do regime e da ilha para quem continua a história (com regência abaixo dos 18); o golpe e o autogolpe (governar vitalício); quem funda o país deixa o cargo no Brasil; o dinheiro que salva o país vira título | I-106, I-107, parte da I-108, D-01, D-03, D-04 | feito (26/10) |
+| F2 · Governar o que você fundou | a ilha e a cidade fundadas como territórios: imposto e obras pagas do próprio bolso | o resto da I-108 | próximo |
 | C4 · O texto revisado | a varredura de gramática do conteúdo inteiro, com regras novas no validador | I-120 | proposta |
 | K · Filhos quando quiser | tentar ter filho, adotar e planejar, com a fertilidade pela idade | I-113 | proposta |
 | I · O dinheiro que rende | os bens que produzem (a fazenda, a emissora, o iate fretado), a carteira de dívidas do SPC e do Serasa como ativo, e o empréstimo aos bancos como contrato | I-112 | proposta |
@@ -154,9 +155,9 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 | I-98 | De que é feito o patrimônio: a rosca na folha Dinheiro | — | Média | proposta (bloco V1) |
 | I-99 | Escolher o tema (claro, escuro, o do celular) dentro do jogo | — | Baixa | proposta (bloco V1) |
 | I-100 | O ícone do app Android na cor nova | — | Baixa | proposta (bloco V1) |
-| I-106 | A sucessão que passa (a coroa, o regime e a ilha) | 5 | Alta | em andamento (bloco F) |
-| I-107 | Tomar o poder: o golpe, o autogolpe e o governo vitalício | 5 | Alta | em andamento (bloco F) |
-| I-108 | Governar o que você fundou (a ilha e a cidade) | 5 | Alta | em andamento (bloco F) |
+| I-106 | A sucessão que passa (a coroa, o regime e a ilha) | 5 | Alta | feito (bloco F) |
+| I-107 | Tomar o poder: o golpe, o autogolpe e o governo vitalício | 5 | Alta | feito (bloco F) |
+| I-108 | Governar o que você fundou (a ilha e a cidade) | 5 | Alta | em parte (bloco F; o resto no F2) |
 | I-109 | O Estado financiado por quem joga | 4 | Média | proposta (bloco G) |
 | I-110 | Os impostos um por um | 5 | Alta | proposta (bloco G) |
 | I-111 | A empresa de verdade: caixa, pesquisa, fábricas e lojas | 2 | Alta | proposta (bloco H) |
@@ -901,7 +902,7 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 - **Riscos:** o túnel tem lotes de linhagem e de dinastia: mais coroas herdadas mudam as vidas de lá.
 - **Aceitação:** teste: o herdeiro (filho, par, amigo, sobrinho) de quem reinava recebe a sucessão no primeiro ano, ou aos 18; o governo não troca no ano da sucessão. No túnel, a parte dos herdeiros de quem reinava que reinam.
 - **Prioridade:** Alta · Fase 5.
-- **Estado:** em andamento (bloco F, 26/10).
+- **Estado:** feito (bloco F, 26/10): `sucessao.ts`; o túnel tem dinastias que nascem na família real e no Regime e mede a resposta de cada sucessão.
 
 ### I-107 · Tomar o poder: o golpe, o autogolpe e o governo vitalício
 - **Problema:** o dono: "não consigo dar um golpe de Estado", "não consigo tomar o poder ou governar vitalício". Hoje, governar para sempre só vem do berço (a linhagem real ou a do regime).
@@ -911,14 +912,14 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 - **Consome:** influência, popularidade, dinheiro e a relação com os países de fora.
 - **Efeitos causais:**
   - o autogolpe: quem é presidente fecha o Congresso (ou muda a Constituição pelo voto) e vira chefe do Regime, vitalício; dá errado, cai e é condenado;
-  - o golpe: quem tem influência (ou quem é coronel ou general) lidera os quartéis, ou quem tem bilhões financia os generais; dá errado, vai para o exílio;
+  - o golpe: quem tem influência (ou quem é coronel ou general) lidera os quartéis, ou quem tem bilhões financia os generais; dá errado, vai preso;
   - restaurar a monarquia: quem é famoso e rico banca o plebiscito e, se o povo quiser, vira monarca;
   - o mundo reage: os países de fora esfriam a relação (a sanção e, com ela, a guerra do bloco E podem vir), e as histórias do regime passam a valer;
   - sob o Regime, ninguém se candidata a presidente (o defeito D-03).
 - **Riscos:** tom: o golpe é história, não apologia; a queda, o exílio e o tribunal também estão lá.
 - **Aceitação:** teste dos três caminhos e do fracasso de cada um; no túnel, a parte de quem governa que tenta e consegue.
 - **Prioridade:** Alta · Fase 5.
-- **Estado:** em andamento (bloco F, 26/10).
+- **Estado:** feito (bloco F, 26/10): as jogadas da folha Carreira e poder (`99-tomar-o-poder.json`); a emenda dá mais quatro anos, não o mandato vitalício.
 
 ### I-108 · Governar o que você fundou (a ilha e a cidade)
 - **Problema:** o dono: "não consigo governar o país que fundei, a cidade que fundei" e "quando fundo o país e me torno soberano, continuo no Brasil e continuo governando o Brasil". Hoje, a ilha só cresce sozinha (2.300 habitantes, R$ 184 milhões de PIB para quem pagou R$ 300 bilhões) e a cidade é só uma marca.
@@ -933,7 +934,7 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 - **Riscos:** o patrimônio dos mais ricos vira obra: o portão do bilionário feito.
 - **Aceitação:** teste: a obra soma infraestrutura e a infraestrutura faz a população e o PIB crescerem; o paraíso fiscal cresce mais e arrecada menos; quem funda o país deixa o cargo daqui.
 - **Prioridade:** Alta · Fase 5.
-- **Estado:** em andamento (bloco F, 26/10).
+- **Estado:** em parte (bloco F, 26/10): quem funda o país deixa o cargo daqui na hora, e a greve da ilha pode acabar de verdade. O imposto, as obras e a cidade como território são o bloco F2.
 
 ### I-110 · Os impostos um por um
 - **Problema:** o dono: "o controle dos impostos está muito simples". Hoje, a política de impostos tem três níveis e mexe na arrecadação, no crescimento e na renda de quem não é pobre.
@@ -1647,10 +1648,10 @@ Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num c
 
 | Id | Defeito | Onde | Gravidade | Estado |
 |---|---|---|---|---|
-| D-01 | A coroa vai para a pessoa errada quando quem herda é o par ou o amigo | `herdeiro.ts:437` | Média | em andamento (bloco F, I-106) |
+| D-01 | A coroa vai para a pessoa errada quando quem herda é o par ou o amigo | `herdeiro.ts:437` | Média | corrigido (bloco F, I-106: quem herda recebe a sucessão, seja quem for) |
 | D-02 | Qualidades herdadas guardam a idade da geração anterior (`marcaHa` erra a partir da 2ª geração) | `herdeiro.ts:205-208` | Média | aberto |
-| D-03 | Dá para ser eleito presidente sob o regime | `poder.ts:59-73` | Média | em andamento (bloco F, I-107) |
-| D-04 | O monarca coroado continua na carreira de antes e pode ser demitido | `carreira.ts`, `trabalho.ts`, `96-linhagens.json` | Média | em andamento (bloco F, I-106) |
+| D-03 | Dá para ser eleito presidente sob o regime | `poder.ts:59-73` | Média | corrigido (bloco F: sob o Regime, não há eleição geral) |
+| D-04 | O monarca coroado continua na carreira de antes e pode ser demitido | `carreira.ts`, `trabalho.ts`, `96-linhagens.json` | Média | corrigido (bloco F: quem tem cargo não é demitido, e a coroa leva a carreira) |
 | D-05 | Quatro storylets fazem reforma fora do limite de uma por ano | `99-pais.json` | Baixa | aberto |
 | D-06 | A morte do corpo pode sair rotulada como violência | `morte.ts:23-24` | Baixa | aberto |
 | D-07 | Os limites do câmbio divergem entre o motor e o campo | `diplomacia.ts:291`, `campos.ts:129` | Baixa | aberto |

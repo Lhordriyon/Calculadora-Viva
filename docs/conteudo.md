@@ -34,7 +34,8 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 | `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente. `filho` vale para cada filho de quem joga (até quatro): escreva `{ator}`, não `{filho}`, quando o texto é sobre qualquer um deles. `{filho}` e `filho.x` são o primeiro filho, salvo no storylet que cria um filho, em que `{filho}` é o recém-nascido |
 | `preferir` | entre vários atores possíveis, o de menor (`-ator.vinculo`) ou maior (`+ator.dinheiro`) valor |
 | `idade` | faixa `[min, max]` de quem joga (obrigatória, exceto em `apenasAgendado`) |
-| `apenasAgendado` | só acontece quando outro efeito o agenda |
+| `apenasAgendado` | só acontece quando outro efeito o agenda (ou o motor: `manifesto.ts › AGENDADOS_PELO_MOTOR`, como a sucessão da coroa e do Regime) |
+| `folha` | só em jogada: `poder` põe a jogada na seção "Tomar o poder" da folha Carreira e poder, em vez de Brincar de deus |
 | `marco` | quando elegível, acontece sem sorteio (ENEM, primeiro emprego, aposentadoria) |
 | `peso` | peso na saliência (padrão 1) |
 | `tensao` | urgência: multiplica a saliência e a chance de o personagem agir; 2 passa na frente do sorteio; 3 acontece com certeza |
@@ -206,7 +207,7 @@ Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`
 - **`eu.titulos`** (ou `"titulos"` nas condições) é quanto quem joga emprestou ao governo, em reais: `"titulos": { "min": 5000 }` pede alguém com título, e `{eu.titulos}` no texto sai como dinheiro ("R$ 731 mil"). A régua dos dilemas mede o storylet que pede título com um título típico (R$ 20 mil a 5%, com 15 anos pela frente).
 - **`pais.calote`** é a qualidade do país que deu calote, com o ano: `"marcaHa": [{ "marca": "pais.calote", "max": 2 }]` é "até dois anos depois do calote". O calote é do motor (a dívida acima de 100% do PIB numa recessão ou numa crise); o conteúdo lê.
 - **`venderTitulos`** (efeito) vende uma fração de cada título pelo preço do dia: o medo do calote no noticiário (`58-tesouro.json`), a conta que apertou.
-- **`comprarTitulo`** (efeito) empresta ao governo uma fração da conta num título de 5, 10 ou 20 anos, com a taxa do dia e a história de causa (o vencimento diz "que você comprou aos 19"). Sem como comprar (antes dos 18, cinco títulos, menos de R$ 100), o dinheiro vai para a renda fixa. Texto que diz "Tesouro Direto" usa este efeito; o que investe pelo perfil (`investir`) não fala em Tesouro, porque o perfil pode ser metade em ações.
+- **`comprarTitulo`** (efeito) empresta ao governo uma fração da conta (`fracao`) ou um valor certo em reais de hoje (`valor`: o que faltar na conta sai dos investimentos, e numa jogada o valor conta no preço) num título de 5, 10 ou 20 anos, com a taxa do dia e a história de causa (o vencimento diz "que você comprou aos 19"). Sem como comprar (antes dos 18, cinco títulos, menos de R$ 100), o dinheiro vai para a renda fixa. Texto que diz "Tesouro Direto" usa este efeito; o que investe pelo perfil (`investir`) não fala em Tesouro, porque o perfil pode ser metade em ações.
 - O storylet `depois_do_calote` é agendado pelo motor no ano seguinte ao calote, com ele de causa.
 
 ## Efeitos
@@ -236,7 +237,7 @@ Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`
 | `morte` | `"num acidente de moto"` | quem joga morre; completa "morreu aos N anos, …" |
 | `realocar` | `{ "de": "acoes", "para": "renda_fixa", "fracao": 1 }` | move dinheiro entre a conta e as classes investidas |
 | `venderTitulos` | `1` ou `0.5` | vende essa fração de cada título do Tesouro pelo preço do dia (o juro que caiu dá lucro, o que subiu dá prejuízo) |
-| `comprarTitulo` | `{ "fracao": 0.6, "prazo": 10 }` | empresta ao governo essa fração da conta num título do Tesouro (5, 10 ou 20 anos); sem como comprar, vai para a renda fixa |
+| `comprarTitulo` | `{ "fracao": 0.6, "prazo": 10 }` ou `{ "valor": 200000000000, "prazo": 10 }` | empresta ao governo essa fração da conta (ou esse valor, resgatando o que faltar) num título do Tesouro (5, 10 ou 20 anos); sem como comprar, vai para a renda fixa |
 | `abrirEmpresa` | `{ "setor": "comercio", "valor": 30000 }` | abre a empresa de quem joga (uma por vez): `setor` ou `copiarSetor` (`"ator.setor"`); `valor` (o trabalho criou, ninguém paga), `capital` (quem joga põe) ou `fracao` do dinheiro de `de` (o negócio da família: `"de": "ator"`); `participacao` e `tracao` opcionais; `{capital}` no texto |
 | `empresaFator` | `0.7` | multiplica o valor da empresa (o contrato grande, a crise do setor) |
 | `rodada` | `{ "parte": 0.2 }` | investidores compram 20% pelo valor de agora: o dinheiro entra na empresa e a parte de quem joga encolhe; `{rodada}` no texto |
@@ -331,6 +332,7 @@ O que só dá para fazer com muito dinheiro. Uma jogada é um storylet `"tipo": 
 - **Preço:** o `dinheiro` negativo dos efeitos certos da escolha (mais o `capital` de `abrirEmpresa`). Sem esse valor na mão (conta e investimentos), a opção aparece bloqueada com "precisa de R$ X na mão": jogada não se faz no fiado. A lista mostra "a partir de" a opção mais barata.
 - **Não precisa de escolha sem condição:** a jogada não trava a vida, porque a folha tem "Voltar". Em compensação, cada escolha precisa mexer em 2 sistemas ou mais.
 - **O mundo responde:** a jogada deixa uma marca e agenda a reação (`agendar`), que é um evento comum, de preferência `apenasAgendado` e repetível quando a jogada pode se repetir. A entrada da jogada vira causa da reação. O túnel mede quantas jogadas causam algum acontecimento depois (portão: 50% ou mais).
+- **Jogadas do poder (`"folha": "poder"`):** ficam na folha Carreira e poder, em "Tomar o poder" (o golpe, o autogolpe, a coroa restaurada, em `99-tomar-o-poder.json`). Por convenção, a primeira opção é a mais ousada e a última devolve o poder (os robôs leem assim). O teste pode ler a popularidade ou a influência (`"atributo": "popularidade"`).
 - **Jogadas na empresa:** uma jogada cuja condição exige a empresa (`"empresa.valor": { "min": … }`) aparece na seção Empresa da folha, em "Quem manda", não em Brincar de deus. O custo pode sair da própria empresa (`empresaFator: 0.995`): a opção mostra "R$ X da empresa", não bloqueia pelo dinheiro na mão e não sai da conta.
 - **Quem manda (`empresa.dependencia`, de 0 a 100):** quanto a empresa depende de quem manda nela. Nasce em 80 (com sócios, 80 × a parte de quem joga). Só muda por decisão: escolhas e jogadas escrevem `"empresa.dependencia": -25` (delegar) ou `+20` (centralizar), ou `{ "definir": 5 }` (sair de cena). Condições como `"empresa.dependencia": { "min": 70 }` dão os eventos de quem centraliza (férias que param a empresa, tudo pela sua mesa); `{ "max": 25 }`, os de quem delegou (a empresa atravessa a crise sem você). O motor lê a dependência no ritmo, na morte e na venda (ver `docs/motor.md`).
 

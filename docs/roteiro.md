@@ -46,6 +46,11 @@ Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra 
 
 Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a fatia 1.4b.
 
+**A segunda ordem do dono (26/10).** A lista nova, com os blocos e a ordem, está em `docs/ideias.md › A segunda ordem do dono`.
+
+- [x] Bloco F (26/10): o poder que passa. A coroa, o Regime e a ilha passam a quem continua a história, seja quem for (o filho, o par, o amigo, o sobrinho), no primeiro ano ou aos 18 (até lá, a regência), e também quando quem reina morre em vida; quem governava espera a resposta, sem interregno. O poder também se toma: o autogolpe de quem é presidente, o golpe de quem tem influência e a coroa restaurada no plebiscito, com o mundo reagindo lá fora. Quem foi reinar na ilha deixa de governar o Brasil; quem tem cargo não é demitido e larga a carreira com a coroa; sob o Regime não há eleição geral; o resgate do país virou título do Tesouro (I-106, I-107, parte da I-108, D-01, D-03, D-04)
+- [ ] Bloco F2: governar o que você fundou. A ilha e a cidade como territórios, com imposto e obras pagas do próprio bolso (o resto da I-108)
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
