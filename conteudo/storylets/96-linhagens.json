@@ -188,6 +188,7 @@
     "condicoes": { "cargo": "rei" },
     "repetivel": true,
     "intervalo": 4,
+    "peso": 4,
     "texto": "O primeiro-ministro traz uma reforma impopular para a sua assinatura: cortar gastos agora para o país crescer depois. Pela Constituição, você pode atrasar tudo por um ano.",
     "resumo": "decidiu o que assinar como monarca",
     "escolhas": [
@@ -215,6 +216,7 @@
     "condicoes": { "cargo": "rei" },
     "repetivel": true,
     "intervalo": 6,
+    "peso": 4,
     "texto": "Vazou a planilha de gastos do Palácio: quarenta mil reais por mês só em flores. A oposição chama de escândalo; o florista, de contrato.",
     "resumo": "enfrentou o escândalo das mordomias do Palácio",
     "escolhas": [
@@ -223,7 +225,7 @@
         "resumo": "cortou as mordomias do Palácio",
         "resultado": {
           "texto": "Menos flores, menos jantares, mais aplausos. A sua mesa ficou mais triste e o seu índice de aprovação, mais alegre.",
-          "efeitos": { "renda": -400000, "eu.popularidade": 10, "felicidade": -2 }
+          "efeitos": { "eu.popularidade": 10, "felicidade": -2 }
         }
       },
       {
@@ -248,6 +250,7 @@
     "id": "jubileu",
     "idade": [30, 99],
     "condicoes": { "marcaHa": [{ "marca": "monarca", "min": 10, "max": 30 }], "cargo": "rei" },
+    "peso": 4,
     "texto": "Dez anos de reinado. O povo quer festa; o tesouro quer economia; você quer as duas coisas e um cochilo.",
     "resumo": "comemorou os dez anos de reinado",
     "escolhas": [
@@ -1045,6 +1048,6 @@
         }
       }
     ],
-    "peso": 3
+    "peso": 6
   }
 ]
