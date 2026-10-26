@@ -404,7 +404,7 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
 /**
  * Para onde a tração da empresa volta: a do setor, mais o talento de quem
  * manda (na proporção da dependência, dividido pela mesa dele), a equipe, as
- * portas que a influência abre, menos o freio do tamanho.
+ * portas que a influência abre e a tecnologia do país, menos o freio do tamanho.
  */
 export function alvoDaTracao(e: EstadoVida, c: Conteudo, emp: Entidade, carga = cargaDaMesa(e)): number {
   const n = emp.n;
@@ -419,7 +419,9 @@ export function alvoDaTracao(e: EstadoVida, c: Conteudo, emp: Entidade, carga = 
   const porte = PENALIDADE_PORTE * Math.max(0, Math.log10(Math.max(1, n['valor'] ?? 0) / PORTE_GRANDE)) * (1 + GARGALO_DO_DONO * (dependencia - 0.5));
   // Influência abre portas (contrato, crédito, fornecedor): até +2 pontos de tração.
   const portas = Math.min(2, (e.entidades['eu']!.n['influencia'] ?? 0) / 40);
-  return (setor?.tracao ?? 4) + talento + equipe + portas - porte;
+  // O país que pesquisa puxa quem vive de inovar (a tecnologia, mais; a saúde, a indústria e o agro, menos): pesquisa.ts.
+  const pesquisa = (setor?.pesquisa ?? 0) * ((e.entidades['pais']?.n['tecnologia'] ?? 50) - 50);
+  return (setor?.tracao ?? 4) + talento + equipe + portas + pesquisa - porte;
 }
 
 /**

@@ -3,7 +3,7 @@
  * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
  * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
  */
-import { defCampo, entidadeDe, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
+import { defCampo, entidadeDe, entradaQueDecidiu, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
 import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Qualidade } from './tipos.ts';
@@ -159,6 +159,12 @@ export function causasDe(cond: Condicoes | undefined, e: EstadoVida, ator?: stri
   if (cargo === true || (typeof cargo === 'string' && cargo !== '') || (Array.isArray(cargo) && cargo.length > 0)) {
     const posse = entradaQueDefiniu(e, 'eu', 'cargo');
     if (posse !== null && !causas.includes(posse)) causas.push(posse);
+  }
+  // Ler uma política é consultar quem a decidiu: o que acontece com ela em vigor descende da posse ou da reforma que a pôs ali.
+  for (const k of Object.keys(cond)) {
+    if (!k.startsWith('pais.pol_')) continue;
+    const decisao = entradaQueDecidiu(e, k);
+    if (decisao !== null && !causas.includes(decisao)) causas.push(decisao);
   }
   return causas;
 }

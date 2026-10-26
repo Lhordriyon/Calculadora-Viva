@@ -827,7 +827,8 @@
         "Fábrica de Doces {sobrenome}"
       ],
       "cambio": 0.4,
-      "protecao": 1
+      "protecao": 1,
+      "pesquisa": 0.02
     },
     {
       "id": "construcao",
@@ -853,7 +854,8 @@
       "risco": 0.8,
       "empresas": ["Fazenda {sobrenome}", "Agropecuária {sobrenome}", "Grãos {sobrenome}", "Sítio d{o|a} {nome}"],
       "cambio": 0.8,
-      "protecao": -0.5
+      "protecao": -0.5,
+      "pesquisa": 0.015
     },
     {
       "id": "tecnologia",
@@ -864,7 +866,8 @@
       "risco": 1.2,
       "empresas": ["{sobrenome} Tech", "{nome}.app", "Nuvem {sobrenome}", "{sobrenome} Labs"],
       "cambio": -0.3,
-      "protecao": -0.5
+      "protecao": -0.5,
+      "pesquisa": 0.04
     },
     {
       "id": "saude",
@@ -875,7 +878,8 @@
       "risco": 0.7,
       "empresas": ["Clínica {sobrenome}", "Farmácia {sobrenome}", "Instituto {sobrenome}", "Laboratório {sobrenome}"],
       "cambio": -0.3,
-      "protecao": -0.2
+      "protecao": -0.2,
+      "pesquisa": 0.02
     },
     {
       "id": "educacao",
@@ -1040,6 +1044,30 @@
         "Rompeu com {ator:o|a} {ator}: embaixador chamado de volta, discurso em rede nacional e a bandeira em todas as janelas. A popularidade subiu; a conta, que vem em dólar, chega depois."
       ],
       "resumo": "rompeu relações com {ator:o|a} {ator}"
+    },
+    "cura": {
+      "textos": [
+        "Um laboratório [da universidade federal|de um instituto público] anunciou [a vacina contra a dengue|um remédio barato para a pressão alta|um tratamento do câncer mais comum, de graça no SUS]: dez anos de [bolsa, edital e café requentado|pipeta, relatório e congresso] pagos pelo Tesouro. O posto de saúde recebe [no ano que vem|antes do que o ministro prometeu]."
+      ],
+      "resumo": "um laboratório público daqui anunciou uma cura"
+    },
+    "satelite": {
+      "textos": [
+        "O primeiro satélite [feito inteiro aqui|com peça, parafuso e programa daqui] subiu da base do Maranhão sem explodir, o que já é muito. Vai vigiar [a Amazônia|as queimadas|a seca do sertão] e, nas horas vagas, o orgulho nacional."
+      ],
+      "resumo": "o Brasil pôs em órbita um satélite feito aqui"
+    },
+    "patente": {
+      "textos": [
+        "Uma patente [de bateria de lítio|de semente que aguenta a seca|de chip para hospital] de um laboratório público virou indústria: [três fábricas no interior|uma empresa que já vale bilhões e ainda tem o estagiário do primeiro ano|royalties pingando no Tesouro]. Os economistas chamam de produtividade; o prefeito, de inauguração."
+      ],
+      "resumo": "uma patente de laboratório público virou indústria"
+    },
+    "fugaDeCerebros": {
+      "textos": [
+        "Sem bolsa e sem edital, os laboratórios [da federal|dos institutos públicos] apagaram a luz: [metade dos doutores|os melhores pesquisadores do país] foram trabalhar [lá fora|em laboratório estrangeiro] e levaram junto [dez anos de pesquisa|a vacina que estava quase pronta]. O aeroporto agradece a movimentação."
+      ],
+      "resumo": "os cientistas do país foram embora"
     }
   },
   "fases": [
@@ -1191,6 +1219,24 @@
         "texto": "Tarifa baixa na fronteira: o importado chega barato, a fábrica daqui sua para competir e os parceiros abrem as portas.",
         "resumo": "abriu o comércio exterior"
       }
+    },
+    {
+      "id": "pesquisa",
+      "nome": "Ciência e tecnologia",
+      "niveis": ["cortada", "regular", "prioridade"],
+      "descricao": "Laboratório, bolsa e edital: o país que pesquisa cresce mais, cura mais e inventa mais, uma década depois. Custa hoje, não rende voto, e quem paga raramente está lá para inaugurar.",
+      "efeitos": {
+        "gasto": [-0.2, 0, 0.4],
+        "tecnologia": [-15, 0, 15]
+      },
+      "subir": {
+        "texto": "Edital novo, bolsa paga em dia e laboratório com ar-condicionado. O resultado chega daqui a uma década, quando ninguém mais lembrar quem pagou.",
+        "resumo": "pôs mais dinheiro na ciência"
+      },
+      "baixar": {
+        "texto": "A conta fecha hoje. Os laboratórios apagam a luz mais cedo, e quem pesquisa começa a olhar as vagas lá fora.",
+        "resumo": "cortou a verba da ciência"
+      }
     }
   ],
   "governos": [
@@ -1198,7 +1244,7 @@
       "id": "frente_popular",
       "nome": "a frente popular",
       "promessa": "comida no prato, posto de saúde e escola boa, pagos por quem pode mais",
-      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1 },
+      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1, "pesquisa": 2 },
       "eleito": true,
       "aproxima": ["pacto", "celeste"]
     },
@@ -1206,7 +1252,7 @@
       "id": "bloco_liberal",
       "nome": "o bloco liberal",
       "promessa": "menos imposto, menos Estado e a economia andando com as próprias pernas",
-      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0 },
+      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0, "pesquisa": 0 },
       "eleito": true,
       "aproxima": ["federacao", "liga"]
     },
@@ -1214,7 +1260,7 @@
       "id": "alianca_da_ordem",
       "nome": "a aliança da ordem",
       "promessa": "polícia na rua, contas em dia e o resto depois",
-      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2 },
+      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 1 },
       "eleito": true,
       "aproxima": ["federacao"]
     },
@@ -1222,7 +1268,7 @@
       "id": "centrao",
       "nome": "o centrão",
       "promessa": "um pouco de tudo para todo mundo, desde que sobrem cargos",
-      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1 },
+      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1, "pesquisa": 1 },
       "gasto": 1,
       "aprovacao": 4,
       "eleito": true
@@ -1231,7 +1277,7 @@
       "id": "regime",
       "nome": "o regime",
       "promessa": "ordem, progresso e nenhuma pergunta",
-      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2 },
+      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 2 },
       "eleito": false,
       "aproxima": ["celeste"]
     }
@@ -2277,7 +2323,8 @@
         "cientista premiado|cientista premiada"
       ],
       "promocao": 0.1,
-      "fama": 25
+      "fama": 25,
+      "verba": "pesquisa"
     },
     {
       "id": "jogador_futebol",

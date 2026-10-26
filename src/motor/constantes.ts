@@ -97,7 +97,7 @@ export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
 export type Fase = (typeof FASES)[number];
 
 /** As políticas do governo (pais.pol_impostos…), cada uma em três níveis: 0 baixo, 1 médio, 2 alto. */
-export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca', 'comercio'] as const;
+export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca', 'comercio', 'pesquisa'] as const;
 export type Politica = (typeof POLITICAS)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];
 

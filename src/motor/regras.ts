@@ -545,3 +545,30 @@ export const ILHA = {
 } as const;
 /** Quantos anos depois do decreto a reação chega: a rua contra a taxa, o barco de mudança, a conta da parte dos impostos. */
 export const REACAO_DA_COROA = { taxa: [1, 3], impostos: [2, 4] } as const;
+
+// ---- o Estado pesquisa (bloco D: a política de ciência, o estoque de tecnologia e as descobertas)
+
+/**
+ * A pesquisa paga pelo Tesouro (pesquisa.ts, pais.ts):
+ * - `base`: quanto do PIB o governo põe em pesquisa com a ciência no regular (a política soma ou tira o gasto dela);
+ * - `ritmo`: quanto do caminho até o alvo a tecnologia do país anda por ano (uma década para chegar perto);
+ * - `educacao`: quanto da escola acima de 50 vira tecnologia no alvo (escola boa forma quem pesquisa);
+ * - `potencial` e `saude`: o que cada ponto de tecnologia acima de 50 soma ao crescimento potencial e ao alvo da saúde pública;
+ * - `descoberta`: acima de `acima`, a chance por ano cresce `porPonto` por ponto, com uma a cada `intervalo` anos no
+ *   máximo e o mesmo tipo a cada `repete`; a decisão que pôs a ciência como prioridade conta como causa por `causa` anos;
+ * - `efeitos`: o que cada descoberta faz (a cura com a saúde pública, o satélite com a aprovação, a patente com a tecnologia);
+ * - `fuga`: com a ciência cortada e a tecnologia abaixo de `abaixo`, a chance por ano de os cientistas irem embora, uma
+ *   a cada `intervalo` anos, levando `perda` pontos de tecnologia.
+ */
+export const PESQUISA = {
+  base: 0.5,
+  ritmo: 0.06,
+  educacao: 0.4,
+  potencial: 0.02,
+  saude: 0.2,
+  descoberta: { acima: 55, porPonto: 0.008, intervalo: 4, repete: 15, causa: 30 },
+  efeitos: { cura: 4, satelite: 3, patente: 2 },
+  fuga: { abaixo: 42, chance: 0.12, intervalo: 10, perda: 3 },
+} as const;
+/** A vaga e a promoção de uma carreira que uma política paga (mundo.json › carreiras › verba), por nível dela: cortada, regular, prioridade. */
+export const VERBA_DA_CARREIRA = [0.5, 1, 1.6] as const;

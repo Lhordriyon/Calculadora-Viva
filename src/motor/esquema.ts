@@ -439,6 +439,8 @@ export const DefSetor = z.strictObject({
   cambio: z.number().min(-1).max(1).optional(),
   /** Quanto ela ganha com a tarifa alta na fronteira (a indústria protegida: positivo; quem vende importado: negativo). */
   protecao: z.number().min(-1).max(1).optional(),
+  /** Pontos de tração por ponto de tecnologia do país acima de 50 (pesquisa.ts): a tecnologia puxa mais, a saúde e o agro menos. */
+  pesquisa: z.number().min(0).max(0.2).optional(),
 });
 export type DefSetor = z.infer<typeof DefSetor>;
 
@@ -503,7 +505,7 @@ export const DefEstrangeiro = z.strictObject({
 export type DefEstrangeiro = z.infer<typeof DefEstrangeiro>;
 
 /** O que o mundo lá fora conta na linha do tempo, por tipo de notícia ({ator} é o país de fora); os três últimos são os atos de quem governa (o resumo completa "aos 52, você…"). */
-export const NOTICIAS = ['crise', 'boom', 'sancao', 'fimDaSancao', 'acordo', 'fimDoAcordo', 'aproximar', 'assinar', 'romper'] as const;
+export const NOTICIAS = ['crise', 'boom', 'sancao', 'fimDaSancao', 'acordo', 'fimDoAcordo', 'aproximar', 'assinar', 'romper', 'cura', 'satelite', 'patente', 'fugaDeCerebros'] as const;
 export type Noticia = (typeof NOTICIAS)[number];
 
 /** Perfil de investidor: a divisão do dinheiro novo entre as classes (somando 1). */
@@ -646,6 +648,8 @@ export const DefCarreira = z.strictObject({
   idade: Intervalo.optional(),
   /** Idade em que a carreira acaba sozinha (atleta, modelo). */
   fim: z.number().int().optional(),
+  /** A política que paga a vaga (a ciência paga quem é cientista): a vaga e a promoção andam com o nível dela (regras.ts › VERBA_DA_CARREIRA). */
+  verba: z.enum(POLITICAS).optional(),
 });
 export type DefCarreira = z.infer<typeof DefCarreira>;
 
@@ -675,7 +679,7 @@ export const DefCargo = z.strictObject({
 export type DefCargo = z.infer<typeof DefCargo>;
 
 /** O que uma política muda, por nível (baixo, médio, alto). Os números entram nas contas de pais.ts. */
-export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'renda', 'auxilio', 'inflacao', 'relacao'] as const;
+export const EFEITOS_DE_POLITICA = ['receita', 'gasto', 'potencial', 'aprovacao', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'renda', 'auxilio', 'inflacao', 'relacao'] as const;
 export type EfeitoDePolitica = (typeof EFEITOS_DE_POLITICA)[number];
 
 /** Uma política do governo: três níveis, cada um com efeitos nas contas, nas estatísticas e no bolso de quem joga. */
@@ -708,6 +712,7 @@ export const DefGoverno = z.strictObject({
     educacao: z.number().int().min(0).max(2),
     seguranca: z.number().int().min(0).max(2),
     comercio: z.number().int().min(0).max(2),
+    pesquisa: z.number().int().min(0).max(2),
   }),
   /** Os países de fora de quem o bloco se aproxima no governo (a relação com eles sobe, com os rivais deles cai). */
   aproxima: z.array(z.enum(PARCEIROS)).optional(),

@@ -20,6 +20,7 @@ import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDasDividas } from './dividas.ts';
 import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCoroa } from './coroa.ts';
+import { regraDaPesquisa } from './pesquisa.ts';
 import { regraDaCarreira } from './carreira.ts';
 import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
@@ -198,6 +199,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
     x.fase = anoDoPais(x.e, x.c, x.reg, x.exterior);
     x.idRegras = x.e.proximoId++;
   },
+  // A pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros (pesquisa.ts).
+  pesquisa: (x) => regraDaPesquisa(x.e, x.c),
   mercado: (x) => {
     x.mercado = mercadoDoAno(x.e, x.c, x.fase!.id, x.reg, x.fase!.cambio);
   },

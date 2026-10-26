@@ -1354,6 +1354,7 @@
         "eu.popularidade": 15,
         "mae.saude": 5,
         "pai.saude": 5,
+        "pais.tecnologia": 3,
         "removerMarcas": [
           "pesquisa_cura"
         ],
@@ -1416,6 +1417,7 @@
       "efeitos": {
         "felicidade": 10,
         "eu.fama": 18,
+        "pais.tecnologia": 2,
         "marcas": [
           "foguete_em_orbita"
         ],
@@ -2275,7 +2277,8 @@
           "efeitos": {
             "felicidade": 6,
             "eu.popularidade": 15,
-            "eu.fama": 12
+            "eu.fama": 12,
+            "pais.saude": 2
           }
         }
       }

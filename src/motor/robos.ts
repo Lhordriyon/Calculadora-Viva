@@ -400,14 +400,14 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
 
 /** Eleições: a arriscada disputa o cargo mais alto com chance razoável; a cautelosa, só o que é quase certo; a aleatória, às vezes. */
 /**
- * Quem governa o país, uma reforma por ano. A cautelosa governa com as contas em ordem: imposto médio, saúde e
- * escola caprichadas, e sobe o imposto ou corta o social quando a dívida passa de 90% do PIB. A arriscada é
- * populista: imposto baixo, programa social amplo, polícia na rua e a fronteira fechada (a conta fica para depois). A aleatória
- * mexe numa política sorteada de vez em quando.
+ * Quem governa o país, uma reforma por ano. A cautelosa governa com as contas em ordem e o olho na década: imposto
+ * médio, saúde, escola e ciência caprichadas, e sobe o imposto ou corta o social quando a dívida passa de 90% do PIB.
+ * A arriscada é populista: imposto baixo, programa social amplo, polícia na rua, a fronteira fechada e a ciência
+ * cortada (a conta fica para depois). A aleatória mexe numa política sorteada de vez em quando.
  */
 const GOVERNO_DOS_ROBOS: Record<'cautelosa' | 'arriscada', Record<Politica, number>> = {
-  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1 },
-  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2 },
+  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1, pesquisa: 2 },
+  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2, pesquisa: 0 },
 };
 
 function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {

@@ -164,6 +164,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'pais.aprovacao',
   'pais.governo',
   ...POLITICAS.map((p) => `pais.pol_${p}`),
+  // o Estado pesquisa (pesquisa.ts): o estoque de tecnologia anda com a ciência e a escola, e a descoberta e a fuga mexem nele
+  'pais.tecnologia',
   // o mundo lá fora: a economia e a relação de cada país, as crises de lá, as sanções e os acordos, e o dólar
   ...de(PARCEIROS, 'crescimento'),
   ...de(PARCEIROS, 'relacao'),
@@ -218,7 +220,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -257,6 +259,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.violencia'], 'país: chance de morrer de violência, crescimento e aprovação', true),
   ...ler(['pais.saude'], 'país: mortalidade de quem depende do SUS e aprovação', true),
   ...ler(['pais.educacao'], 'país: inteligência de quem estuda na escola pública, desemprego e crescimento', true),
+  ...ler(['pais.tecnologia'], 'pesquisa: o crescimento potencial, a saúde pública, a tração das empresas e a chance de descoberta', true),
   ...ler(['pais.aprovacao'], 'país: reeleição do governo', true),
   ...ler(['pais.governo'], 'país: quem governa adota as políticas; eleição e transição', true),
   ...ler(
@@ -351,7 +354,7 @@ const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
 /** A fase do ciclo, que as regras do ano leem pelo nome. */
 const FASE = ['pais.expansao', 'pais.recessao', 'pais.crise'];
 /** As estatísticas do país que anoDoPais faz andar. */
-const ESTATISTICAS = ['pais.aprovacao', 'pais.crescimento', 'pais.desemprego', 'pais.divida', 'pais.educacao', 'pais.impulso', 'pais.inflacao', 'pais.juros', 'pais.pobreza', 'pais.saude', 'pais.violencia'];
+const ESTATISTICAS = ['pais.aprovacao', 'pais.crescimento', 'pais.desemprego', 'pais.divida', 'pais.educacao', 'pais.impulso', 'pais.inflacao', 'pais.juros', 'pais.pobreza', 'pais.saude', 'pais.tecnologia', 'pais.violencia'];
 
 /**
  * As etapas do ano, na ordem em que vida.ts › avancarAno roda. test/ano.test.ts joga vidas com um gravador e falha se
@@ -361,7 +364,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'exterior',
     nome: 'o mundo lá fora: a economia de cada país, a relação, sanções e acordos',
-    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.violencia', ...POLITICAS_DO_PAIS],
+    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.tecnologia', 'pais.violencia', ...POLITICAS_DO_PAIS],
     escreve: ['ano.exterior', 'fora.*', 'pais.cambio'],
   },
   {
@@ -370,6 +373,13 @@ export const ETAPAS_DO_ANO = [
     // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe.
     le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
     escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
+  },
+  {
+    id: 'pesquisa',
+    nome: 'a pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros',
+    // O texto da notícia concorda com quem joga (eu.genero).
+    le: ['pais.tecnologia', 'pais.governo', 'pais.saude', 'pais.aprovacao', 'eu.popularidade', 'eu.genero', ...POLITICAS_DO_PAIS],
+    escreve: ['pais.tecnologia', 'pais.saude', 'pais.aprovacao', 'eu.popularidade', 'agenda'],
   },
   {
     id: 'mercado',
@@ -386,7 +396,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: crescimento, retirada, quebra',
-    le: ['ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'fora.acordo', 'fora.sancao', ...POLITICAS_DO_PAIS],
+    le: ['ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'fora.acordo', 'fora.sancao', 'pais.tecnologia', ...POLITICAS_DO_PAIS],
     escreve: ['empresa.*', ...BOLSO, 'ctr.*', 'agenda'],
   },
   {
@@ -436,7 +446,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'carreira',
     nome: 'a carreira: promoção, fama e o fim da carreira',
-    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia'],
+    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', ...POLITICAS_DO_PAIS],
     escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar'],
   },
   {

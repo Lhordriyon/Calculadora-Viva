@@ -1,0 +1,270 @@
+[
+  {
+    "id": "bolsa_de_iniciacao",
+    "idade": [18, 24],
+    "condicoes": { "marcas": ["cursando"], "pais.pol_pesquisa": { "min": 2 }, "semMarcas": ["pesquisador"] },
+    "peso": 3,
+    "texto": "Com a ciência como prioridade, a faculdade abriu bolsas de iniciação científica: R$ 700 por mês, uma bancada no laboratório e um orientador que responde e-mail.",
+    "resumo": "teve a chance de uma bolsa de iniciação científica",
+    "escolhas": [
+      {
+        "texto": "Pegar a bolsa e entrar no laboratório",
+        "resumo": "entrou no laboratório com uma bolsa de iniciação científica",
+        "resultado": {
+          "texto": "Um ano de pipeta, planilha e reunião de grupo às oito da manhã. O seu nome saiu no rodapé de um artigo, em letra miúda e para sempre.",
+          "efeitos": { "inteligencia": 3, "dinheiro": 8400, "marcas": ["pesquisador"] }
+        }
+      },
+      {
+        "texto": "Arrumar um estágio que paga mais",
+        "resumo": "trocou a bolsa de pesquisa por um estágio que pagava mais",
+        "resultado": {
+          "texto": "O estágio paga o dobro e ensina a fazer apresentação. O laboratório ficou para quem gosta de fungo.",
+          "efeitos": { "renda": 6000, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "greve_da_federal",
+    "idade": [18, 24],
+    "condicoes": { "marcas": ["cursando"], "pais.pol_pesquisa": { "max": 0 } },
+    "peso": 3,
+    "texto": "Sem verba, a federal entrou em greve: o laboratório fechou, a bolsa acabou e o restaurante universitário serve arroz com esperança. Ninguém sabe quando a aula volta.",
+    "resumo": "viu a faculdade parar por falta de verba",
+    "escolhas": [
+      {
+        "texto": "Estudar por conta própria",
+        "resumo": "estudou por conta própria durante a greve da faculdade",
+        "resultado": {
+          "texto": "Biblioteca vazia, apostila emprestada e vídeo-aula em velocidade dobrada. Você voltou da greve sabendo mais do que a ementa.",
+          "efeitos": { "inteligencia": 2, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer bico até a aula voltar",
+        "resumo": "fez bico durante a greve da faculdade",
+        "resultado": {
+          "texto": "Três meses servindo mesa num bufê de casamento. A faculdade voltou; o seu jeito de equilibrar bandeja, também.",
+          "efeitos": { "dinheiro": 3000, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Aproveitar as férias forçadas",
+        "resumo": "aproveitou a greve da faculdade como férias",
+        "resultado": {
+          "texto": "Praia, série e um curso de violão que durou duas semanas. Quando a aula voltou, você tinha esquecido a senha do portal.",
+          "efeitos": { "felicidade": 3, "inteligencia": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "edital_da_ciencia",
+    "idade": [23, 65],
+    "condicoes": { "marcas": ["pesquisador", "formado"], "pais.pol_pesquisa": { "min": 2 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "texto": "Saiu o edital grande da ciência, e o seu antigo laboratório quer você no projeto: dinheiro de verdade, prazo de três semanas e um formulário de quarenta páginas.",
+    "resumo": "foi chamado para o edital grande da ciência",
+    "escolhas": [
+      {
+        "texto": "Escrever o projeto ambicioso",
+        "resumo": "escreveu um projeto ambicioso para o edital da ciência",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Aprovado! Laboratório novo, três bolsistas e um equipamento com nome em inglês. A pesquisa virou assunto no congresso, e você, no crachá.",
+          "resumo": "ganhou o edital grande da ciência",
+          "efeitos": { "dinheiro": 40000, "eu.fama": 6, "felicidade": 4 }
+        },
+        "fracasso": {
+          "texto": "Reprovado por \"falta de aderência ao escopo\". Ninguém sabe direito o que é escopo, mas você não aderiu.",
+          "resumo": "perdeu o edital grande da ciência",
+          "efeitos": { "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Ajudar no projeto à noite",
+        "resumo": "ajudou à noite no projeto do edital da ciência",
+        "resultado": {
+          "texto": "Você revisou planilha de madrugada e ganhou uma linha nos agradecimentos. O café do laboratório continua horrível.",
+          "efeitos": { "inteligencia": 2, "felicidade": -1, "dinheiro": 5000 }
+        }
+      },
+      {
+        "texto": "Deixar o edital para a turma nova",
+        "resumo": "deixou o edital da ciência para a turma nova",
+        "resultado": {
+          "texto": "Você indicou dois ex-alunos e foi para casa cedo. Um deles pôs o seu nome nos agradecimentos.",
+          "efeitos": { "felicidade": 2, "eu.influencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_laboratorio_apaga_a_luz",
+    "idade": [23, 65],
+    "condicoes": { "marcas": ["pesquisador", "formado"], "pais.pol_pesquisa": { "max": 0 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "peso": 3,
+    "tensao": 2,
+    "texto": "Com a verba da ciência cortada, o seu antigo laboratório desliga o freezer à noite para economizar luz. O orientador mandou um e-mail pedindo ajuda para salvar as amostras, e um laboratório de fora mandou outro, elogioso demais.",
+    "resumo": "viu o antigo laboratório ficar sem verba",
+    "escolhas": [
+      {
+        "texto": "Pagar a luz do freezer por um ano",
+        "resumo": "pagou a luz do freezer do antigo laboratório",
+        "condicoes": { "dinheiro": { "min": 3000 } },
+        "bloqueio": "precisa de R$ 3 mil na conta",
+        "resultado": {
+          "texto": "Dez anos de amostra salvos por um Pix. O orientador escreveu o seu nome na porta do freezer, com fita crepe.",
+          "efeitos": { "dinheiro": -3000, "felicidade": 2, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Trabalhar para o laboratório de fora",
+        "resumo": "foi trabalhar para um laboratório de fora, ganhando em dólar",
+        "condicoes": { "renda": { "min": 1 }, "semMarcas": ["salario_em_dolar"] },
+        "bloqueio": "precisa de um emprego para trocar",
+        "resultado": {
+          "texto": "Remoto, em dólar e com reagente que chega no prazo. A pesquisa anda; o orgulho de fazer ciência aqui, nem tanto.",
+          "efeitos": { "rendaFator": 1.4, "marcas": ["salario_em_dolar"], "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Arquivar os dois e-mails",
+        "resumo": "arquivou os pedidos do antigo laboratório",
+        "resultado": {
+          "texto": "O que os olhos não leem, o coração não sente. O freezer apagou na sexta, e você só soube pelo grupo da turma, meses depois.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "olimpiada_do_instituto",
+    "idade": [13, 17],
+    "condicoes": { "pais.tecnologia": { "min": 60 } },
+    "peso": 2,
+    "texto": "O instituto de pesquisa abriu uma olimpíada para quem está no ensino médio: o prêmio é uma bolsa de iniciação científica e um mês num laboratório de verdade, com jaleco emprestado.",
+    "resumo": "fez a olimpíada do instituto de pesquisa",
+    "escolhas": [
+      {
+        "texto": "Estudar de madrugada para a prova",
+        "resumo": "estudou de madrugada para a olimpíada do instituto",
+        "teste": { "atributo": "inteligencia", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Medalha de ouro e a bolsa! No laboratório, deixaram você mexer na centrífuga. Duas vezes.",
+          "resumo": "ganhou a olimpíada do instituto e uma bolsa de iniciação",
+          "efeitos": { "inteligencia": 4, "felicidade": 3, "marcas": ["pesquisador"] }
+        },
+        "fracasso": {
+          "texto": "Ficou a três pontos da medalha, atrás de uma menina de Sobral que dorme quatro horas por noite. Ano que vem tem outra.",
+          "resumo": "ficou perto da medalha na olimpíada do instituto",
+          "efeitos": { "inteligencia": 2, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Fazer a prova por diversão",
+        "resumo": "fez a olimpíada do instituto por diversão",
+        "resultado": {
+          "texto": "Você chutou metade das questões e acertou mais do que devia. Saiu da prova com um broche e nenhuma olheira.",
+          "efeitos": { "felicidade": 2, "inteligencia": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_vacina_no_posto",
+    "apenasAgendado": true,
+    "texto": "A vacina feita aqui chegou ao posto do bairro: fila dobrando o quarteirão às seis da manhã, enfermeira com isopor e um vizinho jurando que leu no grupo da família que ela pega wi-fi.",
+    "resumo": "viu chegar ao posto a vacina feita aqui",
+    "escolhas": [
+      {
+        "texto": "Encarar a fila no primeiro dia",
+        "resumo": "tomou a vacina daqui no primeiro dia",
+        "resultado": {
+          "texto": "Seis horas de fila, uma picada e um adesivo de \"eu tomei\". Você postou a foto antes de sair do posto.",
+          "efeitos": { "saude": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Esperar a fila diminuir",
+        "resumo": "esperou a fila da vacina diminuir",
+        "resultado": {
+          "texto": "Um mês depois, você tomou em cinco minutos, sem adesivo e sem foto. A saúde agradece igual, só que mais tarde.",
+          "efeitos": { "saude": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ser voluntário na fila do posto",
+        "resumo": "foi voluntário na fila da vacina feita aqui",
+        "resultado": {
+          "texto": "Você perdeu um dia de trabalho distribuindo senha e água. Tomou a vacina no fim do turno, com a enfermeira do isopor.",
+          "efeitos": { "saude": 3, "felicidade": 3, "dinheiro": -200 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "satelite_na_tv",
+    "apenasAgendado": true,
+    "texto": "A escola parou para ver na TV o lançamento do satélite feito aqui. Na contagem regressiva, a sala inteira gritou junto; no \"zero\", a professora chorou e disse que era alergia.",
+    "resumo": "viu o satélite daqui subir na TV da escola",
+    "escolhas": [
+      {
+        "texto": "Decidir que vai ser cientista",
+        "resumo": "decidiu ser cientista vendo o satélite subir",
+        "resultado": {
+          "texto": "Você passou a semana desenhando foguete no caderno de matemática. A matemática, curiosamente, melhorou.",
+          "efeitos": { "inteligencia": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer um foguete de garrafa PET",
+        "resumo": "fez um foguete de garrafa PET depois do satélite",
+        "resultado": {
+          "texto": "O foguete de garrafa subiu oito metros e caiu no telhado do vizinho. Foi o melhor dia do ano.",
+          "efeitos": { "felicidade": 4, "saude": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "socio_da_patente",
+    "apenasAgendado": true,
+    "condicoes": { "empresa.valor": false, "pais.tecnologia": { "min": 50 } },
+    "texto": "Uma colega de faculdade está transformando a patente do laboratório público em empresa e procura quem entre com o primeiro dinheiro. \"É ciência, não é aposta\", ela diz, com a cara de quem já ouviu o contrário.",
+    "resumo": "teve a chance de ser sócio da empresa de uma patente daqui",
+    "escolhas": [
+      {
+        "texto": "Entrar de sócio com R$ 50 mil",
+        "resumo": "entrou de sócio numa empresa nascida de uma patente daqui",
+        "condicoes": { "dinheiro": { "min": 50000 } },
+        "bloqueio": "precisa de R$ 50 mil na conta",
+        "resultado": {
+          "texto": "Você virou sócio de um laboratório que ainda funciona no fundo de uma garagem. O contrato tem doze páginas, e dez falam de propriedade intelectual.",
+          "efeitos": { "dinheiro": -50000, "abrirEmpresa": { "setor": "tecnologia", "valor": 160000, "participacao": 0.3 } }
+        }
+      },
+      {
+        "texto": "Ajudar nas horas vagas, sem dinheiro",
+        "resumo": "ajudou de graça a empresa nascida de uma patente daqui",
+        "resultado": {
+          "texto": "Você passou as noites de quinta montando planilha e testando protótipo na garagem. Ganhou um crachá de \"conselheiro\" e muito sono.",
+          "efeitos": { "inteligencia": 2, "felicidade": -1, "eu.influencia": 1 }
+        }
+      },
+      {
+        "texto": "Desejar sorte e ficar de fora",
+        "resumo": "ficou de fora da empresa da patente",
+        "resultado": {
+          "texto": "Você mandou um emoji de foguete e voltou para a sua vida. Às vezes procura o nome da empresa na internet, por curiosidade.",
+          "efeitos": { "felicidade": 0.5 }
+        }
+      }
+    ]
+  }
+]

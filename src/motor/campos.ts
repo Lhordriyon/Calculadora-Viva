@@ -150,6 +150,8 @@ const PAIS: Record<string, DefCampo> = {
   violencia: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
   saude: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
   educacao: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
+  /** A tecnologia do país (0 a 100): o estoque que a ciência paga pelo Tesouro e a escola constroem devagar (pesquisa.ts). */
+  tecnologia: { tipo: 'num', sistema: 'mundo', limites: [0, 100] },
   /** Aprovação do governo (%): decide a reeleição; quando quem governa é quem joga, é a popularidade dele. */
   aprovacao: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quem governa: o id de um bloco (mundo.json › governos), 'regime' ou 'voce'. */
@@ -545,6 +547,21 @@ export function entradaQueDefiniu(e: EstadoVida, ent: string, campo: string): nu
     for (let j = mudancas.length - 1; j >= 0; j--) {
       const m = mudancas[j]!;
       if (m.c === caminho && m.t !== undefined) return m.t === valor ? h.id : null;
+    }
+  }
+  return null;
+}
+
+/**
+ * A decisão (a posse, a reforma, uma escolha: o que não é regra) que mudou por último um campo numérico, como uma
+ * política (`pais.pol_pesquisa`). Null se a última mudança foi de uma regra ou se o valor vem do país em que se nasceu.
+ */
+export function entradaQueDecidiu(e: EstadoVida, caminho: string): number | null {
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const mudancas = e.historico[i]!.mudancas ?? [];
+    for (let j = mudancas.length - 1; j >= 0; j--) {
+      const m = mudancas[j]!;
+      if (m.c === caminho && m.d !== undefined) return m.r === undefined ? e.historico[i]!.id : null;
     }
   }
   return null;

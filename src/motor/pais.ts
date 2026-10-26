@@ -1,7 +1,7 @@
 /**
  * O país vivo. Todo ano andam as estatísticas do país (crescimento,
  * desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação
- * públicas, aprovação do governo), puxadas pelas políticas de quem governa
+ * públicas, tecnologia, aprovação do governo), puxadas pelas políticas de quem governa
  * (mundo.json › politicas), pelos decretos (pais.impulso), pelas contas e
  * pela sorte (a crise lá fora, a alta das commodities). A fase do ciclo é o
  * nome do crescimento, uma qualidade do país com a entrada que a anunciou
@@ -44,6 +44,7 @@ import {
   PAIS_EM_2026,
   PERSISTENCIA_DO_CRESCIMENTO,
   PESO_DA_ESCOLA_PUBLICA,
+  PESQUISA,
   PESO_DA_SAUDE_PUBLICA,
   PESO_DO_VOTO,
   REACAO_FISCAL,
@@ -59,7 +60,7 @@ import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
 /** As estatísticas do país, na ordem da folha País. */
-export const ESTATISTICAS = ['crescimento', 'desemprego', 'inflacao', 'juros', 'divida', 'pobreza', 'violencia', 'saude', 'educacao', 'aprovacao'] as const;
+export const ESTATISTICAS = ['crescimento', 'desemprego', 'inflacao', 'juros', 'divida', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'aprovacao'] as const;
 export type Estatistica = (typeof ESTATISTICAS)[number];
 
 const limitar = (v: number, min: number, max: number): number => (v < min ? min : v > max ? max : v);
@@ -186,13 +187,14 @@ export function proximaEleicaoGeral(ano: number): number {
   return ano + ((2 - (ano % 4) + 4) % 4);
 }
 
-/** Crescimento para onde a economia volta: as políticas, a escola de uma geração, a dívida e a violência. */
+/** Crescimento para onde a economia volta: as políticas, a escola de uma geração, a tecnologia de uma década, a dívida e a violência. */
 export function potencialDe(e: EstadoVida, c: Conteudo): number {
   const n = e.entidades['pais']!.n;
   return (
     CRESCIMENTO_POTENCIAL +
     efeitoDasPoliticas(e, c, 'potencial') +
-    0.015 * ((n['educacao'] ?? 50) - 50) -
+    0.015 * ((n['educacao'] ?? 50) - 50) +
+    PESQUISA.potencial * ((n['tecnologia'] ?? 50) - 50) -
     Math.min(1.5, 0.03 * Math.max(0, (n['divida'] ?? DIVIDA_DE_EQUILIBRIO) - 90)) -
     Math.min(1, 0.02 * Math.max(0, (n['violencia'] ?? 22) - 25))
   );
@@ -252,9 +254,27 @@ export function paisInicial(e: EstadoVida, c: Conteudo): void {
     educacao: arred(limitar(50 + 0.6 * efeito('educacao') + normal(r, 0, 3), 10, 90)),
     aprovacao: arred(limitar(normal(r, 50, 8), 15, 85)),
   });
+  n['tecnologia'] = tecnologiaDeQuemNasce(e, c);
   const fase = faseDoCrescimento(n['crescimento']!);
   if (fase !== 'normal') pais.q[fase] = { v: 1, ano: e.ano, idade: 0, causa: null };
   iniciarNumeros(e);
+}
+
+/**
+ * A tecnologia do país em que se nasce (e do save de antes dela): a escola de agora e parte do caminho que a ciência do
+ * governo de agora leva, como a escola. Sem sorteio: o save antigo não muda de sorte.
+ */
+function tecnologiaDeQuemNasce(e: EstadoVida, c: Conteudo): number {
+  const n = e.entidades['pais']!.n;
+  return arred(limitar(50 + 0.6 * efeitoDasPoliticas(e, c, 'tecnologia') + PESQUISA.educacao * ((n['educacao'] ?? 50) - 50), 10, 90));
+}
+
+/** O save de antes da pesquisa (bloco D): a ciência do governo de agora e a tecnologia que ela e a escola levam. */
+function migrarPesquisa(e: EstadoVida, c: Conteudo): void {
+  const n = e.entidades['pais']!.n;
+  const gov = defGoverno(c, governoAtual(e));
+  if (n['pol_pesquisa'] === undefined && gov) n['pol_pesquisa'] = gov.politicas.pesquisa;
+  n['tecnologia'] = tecnologiaDeQuemNasce(e, c);
 }
 
 /** Quanto a população cresce no ano (% ao ano): a transição demográfica, a saúde pública e a pobreza. */
@@ -301,6 +321,7 @@ export function migrarPais(e: EstadoVida, c: Conteudo): void {
     violencia: 22,
     saude: 50,
     educacao: 50,
+    tecnologia: 50,
     aprovacao: 50,
   });
 }
@@ -492,10 +513,10 @@ function quemGoverna(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
 
 // ---------------------------------------------------------------- o ano do país
 
-/** Quanto do caminho até o alvo a pobreza, a violência, a saúde e a educação andam por ano (a escola leva uma geração). */
-const RITMO_DO_PAIS = { pobreza: 0.3, violencia: 0.2, saude: 0.15, educacao: 0.08 } as const;
+/** Quanto do caminho até o alvo a pobreza, a violência, a saúde, a educação e a tecnologia andam por ano (a escola leva uma geração; a pesquisa, uma década). */
+const RITMO_DO_PAIS = { pobreza: 0.3, violencia: 0.2, saude: 0.15, educacao: 0.08, tecnologia: PESQUISA.ritmo } as const;
 
-/** Para onde andam as estatísticas lentas, com as políticas de agora, o desemprego, a pobreza, a escola e a dívida dados. */
+/** Para onde andam as estatísticas lentas, com as políticas de agora, o desemprego, a pobreza, a escola, a dívida e a tecnologia dados. */
 export function alvosDoPais(
   e: EstadoVida,
   c: Conteudo,
@@ -503,21 +524,25 @@ export function alvosDoPais(
   pobreza: number,
   educacao: number,
   divida: number,
-): { pobreza: number; violencia: number; saude: number; educacao: number } {
+  tecnologia: number,
+): { pobreza: number; violencia: number; saude: number; educacao: number; tecnologia: number } {
   const efeito = (k: EfeitoDePolitica): number => efeitoDasPoliticas(e, c, k);
   return {
     pobreza: 25 + efeito('pobreza') + 1.2 * (desemprego - DESEMPREGO_NATURAL),
     // A violência anda com a desigualdade (o Gini resume a pobreza e a escola).
     violencia: 22 + 60 * (indicadoresDoPais({ id: 'pais', tipo: 'jurisdicao', nome: '', n: { pobreza, educacao }, t: {}, q: {} }).gini - 0.52) + efeito('violencia'),
-    saude: 50 + efeito('saude') - 0.2 * Math.max(0, divida - 100),
+    // A pesquisa cura: a tecnologia acima de 50 puxa a saúde pública junto.
+    saude: 50 + efeito('saude') - 0.2 * Math.max(0, divida - 100) + PESQUISA.saude * (tecnologia - 50),
     educacao: 50 + efeito('educacao'),
+    // Escola boa forma quem pesquisa: a ciência do governo e a escola levam a tecnologia.
+    tecnologia: 50 + efeito('tecnologia') + PESQUISA.educacao * (educacao - 50),
   };
 }
 
 /** Para onde o país caminha agora (a folha País mostra a seta): o crescimento potencial, o desemprego natural, as contas e as estatísticas lentas. */
 export function rumoDoPais(e: EstadoVida, c: Conteudo): { potencial: number; natural: number; primario: number } & ReturnType<typeof alvosDoPais> {
   const n = e.entidades['pais']!.n;
-  const alvos = alvosDoPais(e, c, n['desemprego'] ?? DESEMPREGO_NATURAL, n['pobreza'] ?? 25, n['educacao'] ?? 50, n['divida'] ?? DIVIDA_DE_EQUILIBRIO);
+  const alvos = alvosDoPais(e, c, n['desemprego'] ?? DESEMPREGO_NATURAL, n['pobreza'] ?? 25, n['educacao'] ?? 50, n['divida'] ?? DIVIDA_DE_EQUILIBRIO, n['tecnologia'] ?? 50);
   return {
     potencial: potencialDe(e, c),
     natural: DESEMPREGO_NATURAL - 0.03 * ((n['educacao'] ?? 50) - 50),
@@ -585,6 +610,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const pais = e.entidades['pais']!;
   const n = pais.n;
   if (n['crescimento'] === undefined) migrarPais(e, c);
+  if (n['tecnologia'] === undefined) migrarPesquisa(e, c);
   quemGoverna(e, c, reg);
   const r = e.rng;
   const efeito = (k: EfeitoDePolitica): number => efeitoDasPoliticas(e, c, k);
@@ -597,6 +623,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const i0 = n['juros'] ?? JUROS_MEDIOS;
   const d0 = n['divida'] ?? DIVIDA_DE_EQUILIBRIO;
   const edu0 = n['educacao'] ?? 50;
+  const tec0 = n['tecnologia'] ?? 50;
   const pot = potencialDe(e, c);
 
   // A sorte do ano, o que o mundo lá fora fez com o Brasil (diplomacia.ts) e a fuga de capitais quando a dívida daqui passa do ponto.
@@ -644,11 +671,12 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const d = limitar(d0 - primarioDe(e, c, impulso) - 0.3 * hiato + 0.5 * impulso, 10, 250);
   // O país das pessoas: anda devagar para onde as políticas, o emprego e as contas levam.
   const pob0 = n['pobreza'] ?? 25;
-  const pob = pob0 + RITMO_DO_PAIS.pobreza * (alvosDoPais(e, c, u, pob0, edu0, d).pobreza - pob0);
-  const alvo1 = alvosDoPais(e, c, u, pob, edu0, d);
+  const pob = pob0 + RITMO_DO_PAIS.pobreza * (alvosDoPais(e, c, u, pob0, edu0, d, tec0).pobreza - pob0);
+  const alvo1 = alvosDoPais(e, c, u, pob, edu0, d, tec0);
   const vio = (n['violencia'] ?? 22) + RITMO_DO_PAIS.violencia * (alvo1.violencia - (n['violencia'] ?? 22));
   const sau = (n['saude'] ?? 50) + RITMO_DO_PAIS.saude * (alvo1.saude - (n['saude'] ?? 50));
   const edu = edu0 + RITMO_DO_PAIS.educacao * (alvo1.educacao - edu0);
+  const tec = tec0 + RITMO_DO_PAIS.tecnologia * (alvo1.tecnologia - tec0);
   // Aprovação: o emprego, a renda, os preços, a violência e o posto de saúde, mais o que as políticas agradam.
   const alvo =
     50 +
@@ -676,6 +704,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
     violencia: limitar(vio, 2, 80),
     saude: limitar(sau, 5, 95),
     educacao: limitar(edu, 5, 95),
+    tecnologia: limitar(tec, 5, 95),
     aprovacao,
   };
   for (const k of ESTATISTICAS) definirNumero(e, reg, 'pais', k, arred(valores[k]), 'pais');

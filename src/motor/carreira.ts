@@ -11,6 +11,7 @@ import type { Conteudo } from './conteudo.ts';
 import { momentoDoPais } from './pais.ts';
 import type { DefCarreira } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import { verbaDe } from './pesquisa.ts';
 import { PIRAMIDE, PIRAMIDE_DA_FAMA } from './regras.ts';
 import { aleatorio } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
@@ -61,11 +62,11 @@ export function profissaoComCargo(nome: string, cargo: string): string {
   return `${nome} (${cargo})`;
 }
 
-/** Chance de passar na seleção: a base da profissão, o talento e o desemprego da fase. */
+/** Chance de passar na seleção: a base da profissão, o talento, o desemprego da fase e a verba de quem paga a vaga (a ciência paga quem é cientista). */
 export function chanceDeEntrar(e: EstadoVida, def: DefCarreira): number {
   const talento = e.entidades['eu']!.n[def.talento] ?? 50;
   const fase = momentoDoPais(e);
-  return Math.min(0.95, Math.max(0.02, (def.chance * (1 + (talento - 55) / 60)) / Math.sqrt(fase.desemprego)));
+  return Math.min(0.95, Math.max(0.02, (def.chance * (1 + (talento - 55) / 60) * verbaDe(e, def.verba)) / Math.sqrt(fase.desemprego)));
 }
 
 /** Já tentou uma vaga neste ano (as tentativas ficam no livro). */
@@ -164,7 +165,8 @@ export function regraDaCarreira(e: EstadoVida, c: Conteudo, reg: Mudanca[]): voi
   const talento = eu.n[def.talento] ?? 50;
   // Pirâmide: cada degrau é mais difícil que o anterior; no palco, muito mais (pouca gente chega ao topo).
   const piramide = Math.pow(def.fama ? PIRAMIDE_DA_FAMA : PIRAMIDE, nivel);
-  const chance = Math.min(0.9, Math.max(0, def.promocao * (1 + (talento - 60) / 80) * piramide));
+  // Sem verba, ninguém sobe: com a ciência cortada, o laboratório não abre vaga de chefe.
+  const chance = Math.min(0.9, Math.max(0, def.promocao * (1 + (talento - 60) / 80) * piramide * verbaDe(e, def.verba)));
   if (aleatorio(e.rng) >= chance) return;
   const sobe: Mudanca[] = [];
   const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'carreira:promocao', texto: '' });
