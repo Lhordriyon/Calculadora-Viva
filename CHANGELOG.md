@@ -28,6 +28,7 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
   - a greve na ilha fala da população de agora, volta quando a aprovação cai e zera a renda de quem desce do trono;
   - a proposta da concorrente, o recrutador e o trabalho remoto em dólar não chegam mais a quem tem cargo.
   - as histórias de quem reina (a assinatura, as mordomias, o jubileu e a vida depois da coroa) ganharam peso: num reinado de 30 anos, quase nunca apareciam. Cortar as mordomias não mexe mais na renda, que agora é a dotação.
+  - o negócio da família que quebra na crise ganhou peso: aparecia em 0,0% das vidas e estava à beira de sumir do jogo.
 - 🤖 **Os robôs:** a cautelosa fica no salário e passa à parte dos impostos com o povo do lado (popularidade 60 ou mais), de onde só volta abaixo de 40; a arriscada cobra a taxa e não recua; a aleatória troca de forma de vez em quando.
 
 **Ainda não tem:** a legitimidade medida à parte da popularidade, o imposto da ilha como decisão, o ditador com outra regra e o reconhecimento como processo.

@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-B%3A%20o%20Tesouro-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-813-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C%3A%20a%20coroa%20recebe-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-817-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,35 +15,33 @@
 
 ---
 
-## 🆕 Novidades: Bloco B · O Tesouro (25/10/2026)
+## 🆕 Novidades: Bloco C · A coroa recebe (26/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** agora dá para emprestar dinheiro ao governo. O título do Tesouro é um contrato:
-> - a taxa fica travada na compra;
-> - o cupom cai na conta todo ano, e o dinheiro volta no vencimento;
-> - vender antes sai pelo preço do dia.
+> **O que mudou:** quem tem coroa escolhe como ela recebe. Vale para o monarca do Brasil e para quem é soberano da ilha que fundou:
+> - o salário da Casa Real, fixo;
+> - uma parte dos impostos, que sobe e desce com a economia;
+> - a taxa da coroa, um imposto a mais só para ela.
 >
-> E o governo pode dar calote. Com a dívida acima de 100% do PIB, numa recessão ou numa crise, quem tinha título perde.
+> Cobrar mais custa aprovação, e abaixo de 30% o cargo balança. E a ilha que você funda virou um país de verdade, com população, PIB e imposto.
 
 > [!TIP]
 > **Para testar:**
-> - Depois dos 18, abra a folha Dinheiro e empreste ao governo por 5, 10 ou 20 anos. Cada botão mostra a taxa do prazo, e o cupom cai na conta no ano seguinte.
-> - Compre um título longo com a Selic alta e venda quando ela cair: o preço do dia sobe.
-> - Chegue a presidente, corte imposto e abra gasto. A dívida sobe, a taxa do título passa a cobrar o risco e, numa recessão, o calote aponta a sua reforma como causa.
-> - A folha País mostra a dívida pública em reais, quanto dela é sua e o risco de calote.
+> - Escolha a origem na linhagem da família real e aceite a coroa. Na folha Carreira e poder, troque o salário pela taxa da coroa: um a três anos depois, a rua enche de coroas de papelão rasgadas.
+> - Fique rica o bastante para "Fundar um país" (em Brincar de deus). A ilha ganha o nome da sua cidade natal, 2.300 habitantes e PIB próprio. Com a taxa da coroa, o barco de mudança sai lotado.
+> - Morra soberana com um filho: ele herda a ilha e a coroa dela, com a forma que você escolheu.
 
 | ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🏛️ **O título do Tesouro:** comprado pela folha Dinheiro, por 5, 10 ou 20 anos. A taxa soma o juro real do ano, o prêmio do prazo e o risco da dívida, já sem o imposto de renda. São no máximo 5 títulos, e ninguém tem mais de 30% da dívida do país | 🏢 **O título comprado pela empresa:** a empresa ainda não tem caixa próprio (ideia I-11), então o cupom não teria onde cair. Vem depois desse caixa |
-| 💵 **O cupom e o vencimento:** o governo paga o cupom na conta todo ano. No vencimento, o dinheiro volta, numa entrada que lembra a idade em que você comprou | 📊 **O orçamento do governo item por item** (receita, gasto e juros em reais): ele muda a conta da dívida e fica para um bloco próprio |
-| 📉 **Vender antes pelo preço do dia:** se o juro caiu depois da compra, você vende com lucro; se subiu, com prejuízo | 🏦 Os outros credores (bancos, fundos, gente de fora) como personagens, e o calote que contagia o crédito |
-| 💥 **O calote:** quem tinha título perde 30% do valor, e a renda fixa perde 15%. A dívida do país cai um quarto, a economia afunda mais e o juro fica alto por seis anos. A notícia aponta a reforma, a posse ou o decreto que levou a dívida até ali | |
-| 👪 **O título passa a quem herda** e vence na vida dele | |
-| 🇧🇷 **A dívida pública em reais** na folha País, com a parte que é sua e o risco de calote | |
-| 📖 **Três histórias novas:** o primeiro cupom, o calote no noticiário (vender ou segurar?) e o dia seguinte ao calote | |
-| 🔗 **O Tesouro Direto das histórias é de verdade:** "Investir no Tesouro Direto" no primeiro investimento compra um título que aparece na folha e vence dez anos depois, lembrando a idade em que você comprou | |
+| 👑 **Como a coroa recebe:** salário, parte dos impostos ou taxa da coroa, com a dotação e o custo de cada forma à vista antes de escolher. A forma muda uma vez por ano | ⚖️ **A legitimidade medida à parte da popularidade** (ideia I-42): ela mexe em todo o poder e fica para um bloco próprio |
+| 💸 **A dotação é a renda de quem reina:** o Tesouro (no Brasil) ou a ilha paga, e ela é recalculada todo ano pela forma escolhida | 🏝️ **O imposto da ilha como decisão** (o paraíso fiscal) e as empresas que se mudam para lá |
+| 📉 **O povo reage:** com a parte dos impostos, a aprovação anda 5 pontos para baixo; com a taxa, 15. Abaixo de 30%, o Brasil faz o plebiscito e a ilha entra em greve geral | 🎖️ **O ditador:** o Regime continua com o salário dele, porque não é coroa |
+| 🏝️ **A ilha é um país:** tem nome ("Nova" mais a sua cidade natal), população, PIB e imposto de 20%, e anda todo ano. Reconhecida, cresce mais; com a taxa da coroa, esvazia | 🌐 **O reconhecimento como processo**, e a ilha nas relações com os países de fora |
+| 👪 **A ilha passa a quem herda,** com a coroa e a forma escolhida | |
+| 📖 **Quatro histórias novas, que chegam por causa da sua decisão:** a rua contra a taxa, a conta da parte dos impostos, a ilha que passou de 2.600 habitantes e o barco de mudança | |
+| 🔧 **Três consertos:** a greve na ilha fala da população de agora e volta quando a aprovação cai. As propostas de emprego (a concorrente, o recrutador, o trabalho remoto em dólar) não chegam mais a quem tem cargo. As histórias de quem reina (a assinatura, as mordomias, o jubileu) aparecem num reinado comum; antes, quase nunca | |
 
-No túnel de vento (10.000 vidas), a estratégia cautelosa compra título pela folha em 99,6% das vidas e a arriscada em nenhuma; pelas histórias, de 19% a 58% das vidas ganham um. O calote aparece em 0,9% das vidas e só leva de quem tinha título ou renda fixa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com a correção anterior (C3).
+No túnel de vento, 111 vidas tiveram coroa. Com a taxa, a coroa cai 2,2 vezes a cada 100 anos de reinado, contra 0,6 com o salário. A ilha de quem cobra a taxa por 5 anos ou mais termina com metade da gente: 1.413 habitantes, contra 2.791 sem a taxa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o Tesouro).
 
 ## 🗺️ Os próximos blocos
 
@@ -52,8 +50,8 @@ Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outr
 ```mermaid
 flowchart LR
   A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>títulos, cupom e calote"]:::feito
-  B --> C["👑 C · A coroa recebe<br/>dotação e imposto da ilha"]:::proximo
-  B --> D["🔬 D · O Estado pesquisa<br/>pesquisa paga pelo Tesouro"]:::depois
+  B --> C["👑 C · A coroa recebe<br/>a forma da coroa e a ilha"]:::feito
+  B --> D["🔬 D · O Estado pesquisa<br/>pesquisa paga pelo Tesouro"]:::proximo
   B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::depois
   classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
   classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
@@ -64,8 +62,8 @@ flowchart LR
 |---|---|---|
 | 🟢 **A** · O país em números | PIB, população, PIB per capita, Gini, IDH | ✅ feito |
 | 🟢 **B** · O Tesouro | o título do Tesouro com cupom, vencimento e calote; a dívida pública em reais | ✅ feito (o título da empresa espera o caixa dela, I-11) |
-| 🟡 **C** · A coroa recebe | dotação da Casa Real que sai do Tesouro; a ilha soberana com população, PIB e imposto | precisa do Tesouro (B) e do país em números (A) |
-| 🟣 **D** · O Estado pesquisa | quem governa decide quanto do orçamento vai para P&D; a pesquisa vira cura, satélite, patente | precisa do orçamento (B) |
+| 🟢 **C** · A coroa recebe | o salário, a parte dos impostos ou a taxa da coroa; a ilha com população, PIB e imposto | ✅ feito |
+| 🟡 **D** · O Estado pesquisa | quem governa decide quanto do orçamento vai para P&D; a pesquisa vira cura, satélite, patente | precisa do orçamento (B) |
 | 🟣 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
 
 ## 🎮 O que o jogo tem
@@ -88,7 +86,7 @@ flowchart LR
 - Emprestar ao governo: o título do Tesouro paga cupom todo ano, vence ou é vendido pelo preço do dia, e o calote leva parte dele
 - 30 bens: morar, alugar, financiar, imóveis de renda, carros, iate, jatinho, emissora de TV
 - Até cinco empresas, com subsidiárias, fusões, bolsa e a mesa de quem manda
-- Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte
+- Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte, e a ilha que vira país, com população, PIB e coroa
 - Todo real tem contraparte: o extrato do ano e o da vida fecham entrada por entrada
 </details>
 
@@ -112,7 +110,7 @@ flowchart LR
 ## 🚧 O que o jogo ainda não tem
 
 - 🏢 O título do Tesouro comprado pela empresa (precisa do caixa da empresa) e o orçamento do governo item por item
-- 👑 Renda para quem é soberano de uma ilha, e a coroa paga pelo Estado (bloco C)
+- ⚖️ A legitimidade de quem governa medida à parte da popularidade
 - 🔬 Pesquisa e desenvolvimento pagos pelo Estado (bloco D)
 - 🛡️ Forças armadas e guerra (bloco E)
 - 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens (a mãe com o pai, o amigo com o par)
