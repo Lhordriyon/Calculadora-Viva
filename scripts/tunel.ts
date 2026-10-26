@@ -109,8 +109,12 @@ const VIDAS_POR_FORTUNA = Math.max(3, Math.round(JOGADORES / 2));
 // Dinastias: quando a vida acaba e há filho ou filha viva, a história continua com essa pessoa (até 5 gerações).
 const DINASTIAS = Math.max(4, Math.round(JOGADORES / 3));
 const MAX_GERACOES = 5;
+// Dinastias que nascem na família real e no Regime (bloco F): medem a coroa que passa a quem herda. Contam para storylet
+// morto, não para as métricas das dinastias (a origem é escolhida).
+const DINASTIAS_DE_LINHAGEM = Math.max(2, Math.round(JOGADORES / 12));
+const LINHAGENS_DE_COROA = ['realeza', 'regime'];
 
-type ComoEntra = { em: 'vidas' } | { em: 'semMemoria' } | { em: 'escolhida'; classe: number; fortuna: boolean } | { em: 'dinastia' };
+type ComoEntra = { em: 'vidas' } | { em: 'semMemoria' } | { em: 'escolhida'; classe: number; fortuna: boolean } | { em: 'dinastia' } | { em: 'dinastiaDeLinhagem' };
 const fila: { t: Tarefa; como: ComoEntra }[] = [];
 ESTRATEGIAS.forEach((estrategia, s) => {
   for (let j = 0; j < JOGADORES; j++)
@@ -137,6 +141,12 @@ for (const classe of [6, 7]) {
 }
 ESTRATEGIAS.forEach((estrategia, s) => {
   for (let d = 0; d < DINASTIAS; d++) fila.push({ t: { tipo: 'dinastia', semente: misturar(SEMENTE, 777, s, d), estrategia, geracoes: MAX_GERACOES }, como: { em: 'dinastia' } });
+});
+LINHAGENS_DE_COROA.forEach((linhagem, l) => {
+  ESTRATEGIAS.forEach((estrategia, s) => {
+    for (let d = 0; d < DINASTIAS_DE_LINHAGEM; d++)
+      fila.push({ t: { tipo: 'dinastia', semente: misturar(SEMENTE, 888, l, s, d), estrategia, geracoes: MAX_GERACOES, linhagem }, como: { em: 'dinastiaDeLinhagem' } });
+  });
 });
 
 const resultados = await executarTodas(fila.map((x) => x.t));
@@ -170,6 +180,8 @@ const ameacaDoQuartel = { fraco: { anos: 0, guerras: 0 }, forte: { anos: 0, guer
 const escolhidas: { classe: number; vida: Vida }[] = [];
 const fortunas: Vida[] = [];
 const geracoes: Geracao[] = [];
+/** As gerações das dinastias que nasceram na família real ou no Regime (bloco F). */
+const geracoesDeLinhagem: Geracao[] = [];
 /** Pares (patrimônio de quem morreu, patrimônio do herdeiro ao morrer). */
 const paresGeracao: [number, number][] = [];
 const tamanhos: number[] = [];
@@ -198,6 +210,8 @@ fila.forEach(({ t, como }, i) => {
   } else if (r.tipo === 'origem' && como.em === 'escolhida') {
     escolhidas.push({ classe: como.classe, vida: r.vida });
     if (como.fortuna) fortunas.push(r.vida);
+  } else if (r.tipo === 'dinastia' && como.em === 'dinastiaDeLinhagem') {
+    geracoesDeLinhagem.push(...r.geracoes);
   } else if (r.tipo === 'dinastia') {
     geracoes.push(...r.geracoes);
     paresGeracao.push(...r.pares);
@@ -218,7 +232,7 @@ for (const v of vidas) {
   for (const id of new Set([...v.eventos, ...v.acoes, ...v.jogadas])) vidasCom.set(id, (vidasCom.get(id) ?? 0) + 1);
 }
 // Storylet morto é o que nenhuma vida vê: nem as sorteadas, nem as de origem escolhida, nem as dos herdeiros.
-for (const x of [...escolhidas.map((v) => v.vida), ...geracoes]) for (const id of [...x.eventos, ...x.acoes, ...x.jogadas]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
+for (const x of [...escolhidas.map((v) => v.vida), ...geracoes, ...geracoesDeLinhagem]) for (const id of [...x.eventos, ...x.acoes, ...x.jogadas]) ocorrencias.set(id, (ocorrencias.get(id) ?? 0) + 1);
 const mortos = c.storylets.filter((s) => (ocorrencias.get(s.id) ?? 0) === 0).map((s) => s.id);
 const raros = c.storylets
   .filter((s) => {
@@ -863,6 +877,38 @@ const portoesE = [
   ['Toda guerra acaba: nenhuma passa do oitavo ano', maiorGuerra <= DEFESA.fim.maximo, `a mais longa: ${num(maiorGuerra, 0)} anos`],
 ] as const;
 
+// ---- o poder que passa (bloco F)
+/** As vidas que medem o poder: as sorteadas, as de origem escolhida (as linhagens, as fortunas) e as gerações das dinastias. */
+const poderes = [...todasAsVidas.map((v) => v.poder), ...geracoes.map((g) => g.poder), ...geracoesDeLinhagem.map((g) => g.poder)];
+const sucessoesDo = (quando: 'vida' | 'heranca'): { quando: string; respondeu: boolean }[] => poderes.flatMap((p) => p.sucessoes.filter((x) => x.quando === quando));
+const respondidas = (l: { respondeu: boolean }[]): number => l.filter((x) => x.respondeu).length / Math.max(1, l.length);
+const sucessoesEmVida = sucessoesDo('vida');
+const sucessoesNaHeranca = sucessoesDo('heranca');
+const herdeirosNaFila = poderes.filter((p) => p.herdeiroReinou !== null);
+const herdeirosQueReinaram = herdeirosNaFila.filter((p) => p.herdeiroReinou).length / Math.max(1, herdeirosNaFila.length);
+type JogadaDoPoder = 'golpe' | 'autogolpe' | 'emenda' | 'restauracao';
+const JOGADAS_DO_PODER: [JogadaDoPoder, string][] = [
+  ['golpe', 'Tomar o poder (liderar os quartéis ou financiar os generais)'],
+  ['autogolpe', 'Fechar o Congresso (o autogolpe de quem é presidente)'],
+  ['emenda', 'Mudar a Constituição para mais um mandato'],
+  ['restauracao', 'Restaurar a monarquia no plebiscito'],
+];
+const doPoder = (k: JogadaDoPoder, ps = poderes): [number, number] => ps.reduce<[number, number]>((t, p) => [t[0] + p[k][0], t[1] + p[k][1]], [0, 0]);
+const tentativasDeGolpe = doPoder('golpe')[0] + doPoder('autogolpe')[0];
+const golpesQueDeram = (doPoder('golpe')[1] + doPoder('autogolpe')[1]) / Math.max(1, tentativasDeGolpe);
+const portoesF = [
+  [
+    'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
+    sucessoesEmVida.length >= 20 && sucessoesNaHeranca.length >= 20 && respondidas(sucessoesEmVida) === 1 && respondidas(sucessoesNaHeranca) === 1,
+    `em vida ${pct(respondidas(sucessoesEmVida))} de ${num(sucessoesEmVida.length, 0)} · na herança ${pct(respondidas(sucessoesNaHeranca))} de ${num(sucessoesNaHeranca.length, 0)}`,
+  ],
+  [
+    'O poder se toma, e é aposta: golpes e autogolpes são tentados (≥ 20 vezes) e dão certo em 15% a 85% das tentativas',
+    tentativasDeGolpe >= 20 && golpesQueDeram >= 0.15 && golpesQueDeram <= 0.85,
+    `${num(tentativasDeGolpe, 0)} tentativas, ${pct(golpesQueDeram)} deram certo`,
+  ],
+] as const;
+
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
 const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
@@ -1091,6 +1137,31 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesE) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O poder que passa (bloco F)');
+l();
+l(
+  'A coroa, o Regime e a ilha passam a quem continua a história: em vida (o pai ou a mãe que reinava morre) e na herança (seja quem for que herde), agora ou aos 18, ' +
+    'e quem governava espera a resposta, sem interregno. Quem tem cargo vive dele, e o poder também se toma: o golpe, o autogolpe, a emenda e a coroa restaurada. ' +
+    `Nas vidas sorteadas, nas de origem escolhida e nas gerações das dinastias (com ${num(LINHAGENS_DE_COROA.length * ESTRATEGIAS.length * DINASTIAS_DE_LINHAGEM, 0)} dinastias que nascem na família real ou no Regime):`,
+);
+l();
+l(
+  `Sucessões que chegaram a quem tinha 18 anos ou mais: ${num(sucessoesEmVida.length, 0)} em vida (${pct(respondidas(sucessoesEmVida))} com resposta) e ${num(sucessoesNaHeranca.length, 0)} na herança (${pct(respondidas(sucessoesNaHeranca))}). ` +
+    `De ${num(herdeirosNaFila.length, 0)} herdeiros que começaram na fila, ${pct(herdeirosQueReinaram)} reinaram.`,
+);
+l();
+l('| Jogada | Tentativas | Deram certo | Por estratégia (tentativas nas vidas sorteadas) |');
+l('|---|---|---|---|');
+for (const [k, nome] of JOGADAS_DO_PODER) {
+  const [n, ok] = doPoder(k);
+  const porEstrategia = ESTRATEGIAS.map((x) => `${x} ${num(doPoder(k, vidas.filter((v) => v.estrategia === x).map((v) => v.poder))[0], 0)}`).join(' · ');
+  l(`| ${nome} | ${num(n, 0)} | ${n > 0 ? pct(ok / n) : '—'} | ${porEstrategia} |`);
+}
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesF) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1486,6 +1557,7 @@ for (const [nome, ok, detalhe] of portoesB) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoesC) console.log(`${ok ? '✓' : '·'} portão C: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesD) console.log(`${ok ? '✓' : '·'} portão D: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesE) console.log(`${ok ? '✓' : '·'} portão E: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesF) console.log(`${ok ? '✓' : '·'} portão F: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

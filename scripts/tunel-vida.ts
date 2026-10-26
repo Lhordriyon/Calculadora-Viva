@@ -355,6 +355,26 @@ export interface Vida {
   pesquisa: HistoriaDaPesquisa;
   /** A defesa (bloco E): os anos de cada nível da defesa, a capacidade, as encomendas e as guerras. */
   defesa: HistoriaDaDefesa;
+  /** O poder que passa (bloco F): a sucessão que chegou e a resposta, quem reinou, e as jogadas do poder. */
+  poder: HistoriaDoPoder;
+}
+
+export interface HistoriaDoPoder {
+  /**
+   * Cada vez que a coroa, o Regime ou a ilha chegou a quem joga com 18 anos ou mais e a vida seguiu dois anos: na
+   * herança (a vida começou na fila) ou em vida (o pai ou a mãe que reinava morreu), e se a resposta veio (o storylet
+   * da sucessão ou a posse da ilha).
+   */
+  sucessoes: { quando: 'heranca' | 'vida'; respondeu: boolean }[];
+  /** Quem herdou na fila (a vida do herdeiro) e reinou. */
+  herdeiroReinou: boolean | null;
+  /** Reinou (monarca, chefe do Regime ou soberano) em algum momento da vida. */
+  reinou: boolean;
+  /** As jogadas do poder: [tentativas, as que deram certo]. */
+  golpe: [number, number];
+  autogolpe: [number, number];
+  emenda: [number, number];
+  restauracao: [number, number];
 }
 
 export interface HistoriaDaCoroa {
@@ -368,6 +388,62 @@ export interface HistoriaDaCoroa {
   ilha: { populacao: number; anosComTaxa: number } | null;
   /** Dotação paga a quem não tinha coroa (deve ser zero). */
   dotacaoSemCoroa: number;
+}
+
+const DA_FILA = ['eu.principe', 'eu.herdeiro_regime', 'eu.herdeiro_ilha'];
+const CARGOS_DE_COROA = new Set(['rei', 'ditador', 'soberano']);
+const RESPOSTAS = new Set(['sucessao_coroa', 'sucessao_regime', 'sucessao:ilha']);
+
+/**
+ * O poder pelo livro: a sucessão (a vida do herdeiro que começou na fila, e o pai ou a mãe que reinava e morreu com
+ * quem joga adulto na fila), se a resposta veio, e as jogadas do poder com o desfecho (o cargo que a entrada deu).
+ */
+function poderDaVida(e: EstadoVida): HistoriaDoPoder {
+  const eu = e.entidades['eu']!;
+  const t: HistoriaDoPoder = { sucessoes: [], herdeiroReinou: null, reinou: CARGOS_DE_COROA.has(eu.t['cargo'] ?? ''), golpe: [0, 0], autogolpe: [0, 0], emenda: [0, 0], restauracao: [0, 0] };
+  const respostas = e.historico.filter((h) => RESPOSTAS.has(h.ref ?? ''));
+  const respondeuDepois = (ano: number): boolean => respostas.some((h) => h.ano >= ano);
+  // Na fila num ano: a qualidade ainda está lá, ou saiu (na resposta) daquele ano em diante.
+  const saida = new Map<string, number>();
+  for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.q === -1 && DA_FILA.includes(m.c)) saida.set(m.c, h.ano);
+  const naFilaEm = (campo: string, ano: number): boolean => eu.q[campo.slice(3)] !== undefined || (saida.get(campo) ?? -1) >= ano;
+  for (const h of e.historico) {
+    const muda = h.mudancas ?? [];
+    if (muda.some((m) => m.c === 'eu.cargo' && m.t !== undefined && CARGOS_DE_COROA.has(m.t))) t.reinou = true;
+    const deu = (cargo: string): boolean => muda.some((m) => m.c === 'eu.cargo' && m.t === cargo);
+    const i = h.escolha?.indice;
+    if (h.ref === 'jogada:tomar_o_poder' && i !== undefined && i < 2) {
+      t.golpe[0]++;
+      if (deu('ditador')) t.golpe[1]++;
+    } else if (h.ref === 'jogada:ficar_no_poder' && i === 0) {
+      t.autogolpe[0]++;
+      if (deu('ditador')) t.autogolpe[1]++;
+    } else if (h.ref === 'jogada:ficar_no_poder' && i === 1) {
+      t.emenda[0]++;
+      if (muda.some((m) => m.c === 'eu.mandato' && (m.d ?? 0) > 0)) t.emenda[1]++;
+    } else if (h.ref === 'jogada:restaurar_a_monarquia' && i === 0) {
+      t.restauracao[0]++;
+      if (deu('rei')) t.restauracao[1]++;
+    }
+    // Em vida: o pai ou a mãe que reinava morreu, com quem joga na fila (a qualidade ainda não tinha saído).
+    for (const m of muda) {
+      if (m.q !== 1 || (m.c !== 'mae.faleceu' && m.c !== 'pai.faleceu')) continue;
+      const quem = e.entidades[m.c.slice(0, 3)];
+      const fila = (quem?.q['monarca'] !== undefined && naFilaEm('eu.principe', h.ano)) || (quem?.q['ditador'] !== undefined && naFilaEm('eu.herdeiro_regime', h.ano));
+      if (fila && h.idade >= 18 && e.idade - h.idade >= 2) t.sucessoes.push({ quando: 'vida', respondeu: respondeuDepois(h.ano) });
+    }
+  }
+  // Na herança: a vida começou na fila (a primeira mudança da qualidade é a saída, ou ela nunca saiu).
+  const abertura = e.historico[0];
+  const noComeco = (campo: string): boolean => {
+    for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.c === campo && m.q !== undefined) return m.q < 0;
+    return eu.q[campo.slice(3)] !== undefined;
+  };
+  if (abertura?.ref === 'herdeiro' && DA_FILA.some(noComeco)) {
+    t.herdeiroReinou = t.reinou;
+    if (abertura.idade >= 18 && e.idade - abertura.idade >= 2) t.sucessoes.push({ quando: 'heranca', respondeu: respostas.length > 0 });
+  }
+  return t;
 }
 
 /** A coroa pelo livro: segue o cargo e a forma entrada por entrada, e conta os anos, a dotação e as quedas de cada forma. */
@@ -875,6 +951,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     coroa: coroaDaVida(e),
     pesquisa: pesquisaDaVida(e),
     defesa: defesaDaVida(e),
+    poder: poderDaVida(e),
     ...contasDaVida(e),
   };
 }
@@ -917,6 +994,8 @@ export interface Geracao {
   eventos: string[];
   acoes: string[];
   jogadas: string[];
+  /** A sucessão e as jogadas do poder na geração (bloco F). */
+  poder: HistoriaDoPoder;
 }
 
 export type Tarefa =
@@ -924,8 +1003,8 @@ export type Tarefa =
   | { tipo: 'jogador'; semente: number; estrategia: Estrategia; idEstrategia: number; jogador: number; vidas: number; usarMemoria: boolean; guardar: boolean; livro: boolean }
   /** Uma vida de origem escolhida (classe, linhagem, fortuna). */
   | { tipo: 'origem'; semente: number; estrategia: Estrategia; origem: EscolhaOrigem }
-  /** Uma dinastia: a vida e as dos herdeiros, até `geracoes`. */
-  | { tipo: 'dinastia'; semente: number; estrategia: Estrategia; geracoes: number };
+  /** Uma dinastia: a vida e as dos herdeiros, até `geracoes` (a primeira nasce numa linhagem, se pedida). */
+  | { tipo: 'dinastia'; semente: number; estrategia: Estrategia; geracoes: number; linhagem?: string };
 
 export interface DoJogador {
   tipo: 'jogador';
@@ -1032,7 +1111,7 @@ function rodarJogador(c: Conteudo, t: Extract<Tarefa, { tipo: 'jogador' }>): DoJ
 
 function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): DaDinastia {
   const r: DaDinastia = { tipo: 'dinastia', geracoes: [], pares: [], tamanho: 0, dividasErradas: 0, entradasConferidas: 0, exemploDeDivida: '' };
-  let e = nascer(c, { semente: t.semente, ano: ANO });
+  let e = nascer(c, { semente: t.semente, ano: ANO, ...(t.linhagem ? { origem: { linhagem: t.linhagem } } : {}) });
   const robo = criarRng(misturar(t.semente, 78));
   let anterior: number | null = null;
   let g = 1;
@@ -1059,6 +1138,7 @@ function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): D
       eventos: visiveis.map((h) => h.ref!),
       acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
       jogadas: jogadasDaVida(e).jogadas,
+      poder: poderDaVida(e),
     });
     if (!herdeiroPossivel(e, c) || g === t.geracoes) break;
     anterior = patrimonio;
