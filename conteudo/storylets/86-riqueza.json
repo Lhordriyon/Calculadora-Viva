@@ -115,6 +115,7 @@
     "idade": [25, 75],
     "condicoes": { "marcas": ["herdeiro_negocio", "pais.crise"] },
     "tensao": 2,
+    "peso": 4,
     "texto": "A crise acertou o negócio da família em cheio: o banco cortou o crédito, os fornecedores querem receber à vista e os clientes sumiram.",
     "resumo": "viu o negócio da família quebrar na crise",
     "escolhas": [
