@@ -25,6 +25,7 @@ import { dependenciasDoAno, ETAPAS_DO_ANO, type IdEtapa } from '../src/motor/man
 import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { anoDoExterior } from '../src/motor/diplomacia.ts';
 import { formatarDinheiro } from '../src/motor/texto.ts';
+import { PESQUISA } from '../src/motor/regras.ts';
 import { ANO, executar, type DoJogador, type Geracao, type HistoriaDasDividas, type Resultado, type Tarefa, type Vida } from './tunel-vida.ts';
 import { assinaturasPorBloco, correlacao, desvio, media, mobilidade, ordenar, percentil, saturacao } from './medidas.ts';
 
@@ -785,6 +786,36 @@ const portoesC = [
   ['Toda dotação tem coroa por trás: nenhum real dela para quem não reina', todasAsVidas.every((v) => Math.abs(v.coroa.dotacaoSemCoroa) < 1), `${todasAsVidas.filter((v) => Math.abs(v.coroa.dotacaoSemCoroa) >= 1).length} vidas`],
 ] as const;
 
+// ---- o Estado pesquisa (bloco D)
+const NIVEIS_DA_CIENCIA = ['cortada', 'regular', 'prioridade'] as const;
+const gastoDaCiencia = c.mundo.politicas.find((p) => p.id === 'pesquisa')?.efeitos.gasto ?? [0, 0, 0];
+const anosDaCiencia = [0, 1, 2].map((k) => vidas.reduce((t, v) => t + v.pesquisa.anos[k as 0 | 1 | 2], 0));
+const andouPorAno = [0, 1, 2].map((k) => vidas.reduce((t, v) => t + v.pesquisa.variacao[k as 0 | 1 | 2], 0) / Math.max(1, anosDaCiencia[k]!));
+const tecnologiaAoMorrer = ordenar(vidas.map((v) => v.pesquisa.fim));
+const DESCOBERTAS_DO_TUNEL = ['cura', 'satelite', 'patente'] as const;
+const descobertasDo = (x: (typeof DESCOBERTAS_DO_TUNEL)[number]): number => vidas.reduce((t, v) => t + v.pesquisa.descobertas[x], 0);
+const todasAsDescobertas = DESCOBERTAS_DO_TUNEL.reduce((t, x) => t + descobertasDo(x), 0);
+const comDescoberta = vidas.filter((v) => DESCOBERTAS_DO_TUNEL.some((x) => v.pesquisa.descobertas[x] > 0)).length / Math.max(1, vidas.length);
+const descobertasComCausa = vidas.reduce((t, v) => t + v.pesquisa.comCausa, 0) / Math.max(1, todasAsDescobertas);
+const comFuga = vidas.filter((v) => v.pesquisa.fugas > 0).length / Math.max(1, vidas.length);
+const portoesD = [
+  [
+    'A ciência paga vira tecnologia: com a prioridade, a tecnologia do país sobe; com a ciência cortada, cai',
+    anosDaCiencia[0]! >= 100 && anosDaCiencia[2]! >= 100 && andouPorAno[2]! > 0.1 && andouPorAno[0]! < -0.1,
+    NIVEIS_DA_CIENCIA.map((x, k) => `${x} ${andouPorAno[k]! >= 0 ? '+' : ''}${num(andouPorAno[k]!, 2)} por ano (${num(anosDaCiencia[k]!, 0)} anos)`).join(' · '),
+  ],
+  [
+    'O país termina diferente: a tecnologia ao morrer tem p90 − p10 ≥ 10 pontos',
+    percentil(tecnologiaAoMorrer, 90) - percentil(tecnologiaAoMorrer, 10) >= 10,
+    `p10 ${num(percentil(tecnologiaAoMorrer, 10), 1)} · mediana ${num(percentil(tecnologiaAoMorrer, 50), 1)} · p90 ${num(percentil(tecnologiaAoMorrer, 90), 1)}`,
+  ],
+  [
+    'A descoberta acontece e tem porquê: em 10% a 70% das vidas, e ≥ 60% delas apontam a decisão que pôs a ciência como prioridade',
+    comDescoberta >= 0.1 && comDescoberta <= 0.7 && descobertasComCausa >= 0.6,
+    `${pct(comDescoberta)} das vidas; ${pct(descobertasComCausa)} de ${num(todasAsDescobertas, 0)} descobertas com a decisão de causa`,
+  ],
+] as const;
+
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
 const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
@@ -969,6 +1000,27 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesC) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O Estado pesquisa (bloco D)');
+l();
+l(
+  `Quem governa decide quanto do orçamento vai para a ciência: cortada, regular ou prioridade (de ${num(PESQUISA.base + gastoDaCiencia[0], 1)}% a ${num(PESQUISA.base + gastoDaCiencia[2], 1)}% do PIB, pagos pelo Tesouro). ` +
+    'A tecnologia do país anda devagar para onde a ciência e a escola levam e volta como crescimento, saúde pública e tração das empresas. Nas vidas sorteadas:',
+);
+l();
+l('| Ciência | Anos | A tecnologia por ano |');
+l('|---|---|---|');
+NIVEIS_DA_CIENCIA.forEach((x, k) => l(`| ${x} | ${num(anosDaCiencia[k]!, 0)} | ${andouPorAno[k]! >= 0 ? '+' : ''}${num(andouPorAno[k]!, 2)} |`));
+l();
+l(
+  `A tecnologia ao morrer: p10 ${num(percentil(tecnologiaAoMorrer, 10), 1)}, mediana ${num(percentil(tecnologiaAoMorrer, 50), 1)}, p90 ${num(percentil(tecnologiaAoMorrer, 90), 1)}. ` +
+    `Descobertas por 100 vidas: a cura ${num((100 * descobertasDo('cura')) / Math.max(1, vidas.length), 1)}, o satélite ${num((100 * descobertasDo('satelite')) / Math.max(1, vidas.length), 1)}, a patente ${num((100 * descobertasDo('patente')) / Math.max(1, vidas.length), 1)}; ` +
+    `${pct(comDescoberta)} das vidas veem uma. A fuga de cérebros: ${pct(comFuga)} das vidas.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesD) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1360,6 +1412,9 @@ for (const [nome, ok, detalhe] of portoes8) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoes9) console.log(`${ok ? '✓' : '·'} portão 9: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes10) console.log(`${ok ? '✓' : '·'} portão 10: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoes11) console.log(`${ok ? '✓' : '·'} portão A: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesB) console.log(`${ok ? '✓' : '·'} portão B: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesC) console.log(`${ok ? '✓' : '·'} portão C: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesD) console.log(`${ok ? '✓' : '·'} portão D: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

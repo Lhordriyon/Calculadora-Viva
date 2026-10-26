@@ -349,6 +349,8 @@ export interface Vida {
   tesouro: HistoriaDoTesouro;
   /** A coroa (bloco C): os anos com coroa em cada forma, a dotação, as quedas e a ilha. */
   coroa: HistoriaDaCoroa;
+  /** O Estado pesquisa (bloco D): os anos de cada nível da ciência, a tecnologia, as descobertas e a fuga de cérebros. */
+  pesquisa: HistoriaDaPesquisa;
 }
 
 export interface HistoriaDaCoroa {
@@ -393,6 +395,58 @@ function coroaDaVida(e: EstadoVida): HistoriaDaCoroa {
   }
   const ilha = e.entidades['ilha'];
   if (ilha) t.ilha = { populacao: ilha.n['populacao'] ?? 0, anosComTaxa };
+  return t;
+}
+
+export interface HistoriaDaPesquisa {
+  /** Anos de cada nível da ciência (cortada, regular, prioridade) e o quanto a tecnologia do país andou neles. */
+  anos: [number, number, number];
+  variacao: [number, number, number];
+  /** A tecnologia do país ao nascer e ao morrer. */
+  inicio: number;
+  fim: number;
+  /** As descobertas que a vida viu, por tipo, quantas apontam uma decisão (a posse ou a reforma) e as fugas de cérebros. */
+  descobertas: Record<'cura' | 'satelite' | 'patente', number>;
+  comCausa: number;
+  fugas: number;
+}
+
+/**
+ * A pesquisa pelo livro: o nível da ciência e a tecnologia de quem nasce saem do fim menos o que o livro mudou; depois,
+ * ano a ano, o nível em vigor e o quanto a tecnologia andou na regra do país, mais as notícias da pesquisa.
+ */
+function pesquisaDaVida(e: EstadoVida): HistoriaDaPesquisa {
+  const t: HistoriaDaPesquisa = { anos: [0, 0, 0], variacao: [0, 0, 0], inicio: 0, fim: 0, descobertas: { cura: 0, satelite: 0, patente: 0 }, comCausa: 0, fugas: 0 };
+  const n = e.entidades['pais']?.n ?? {};
+  let somaDoNivel = 0;
+  let somaDaTecnologia = 0;
+  for (const h of e.historico) {
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'pais.pol_pesquisa' && m.d !== undefined) somaDoNivel += m.d;
+      if (m.c === 'pais.tecnologia' && m.d !== undefined) somaDaTecnologia += m.d;
+    }
+  }
+  let nivel = (n['pol_pesquisa'] ?? 1) - somaDoNivel;
+  t.fim = n['tecnologia'] ?? 50;
+  t.inicio = t.fim - somaDaTecnologia;
+  for (const h of e.historico) {
+    let andou = 0;
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'pais.pol_pesquisa' && m.d !== undefined) nivel += m.d;
+      if (m.c === 'pais.tecnologia' && m.r === 'pais' && m.d !== undefined) andou += m.d;
+    }
+    if (h.tipo === 'regra' && h.ref === 'ano') {
+      const k = Math.max(0, Math.min(2, Math.round(nivel))) as 0 | 1 | 2;
+      t.anos[k]++;
+      t.variacao[k] += andou;
+    }
+    const tipo = h.ref?.startsWith('pesquisa:') ? h.ref.slice('pesquisa:'.length) : '';
+    if (tipo === 'fugaDeCerebros') t.fugas++;
+    else if (tipo === 'cura' || tipo === 'satelite' || tipo === 'patente') {
+      t.descobertas[tipo]++;
+      if ((h.causas?.length ?? 0) > 0) t.comCausa++;
+    }
+  }
   return t;
 }
 
@@ -708,6 +762,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     vendeu: 'vendeu_empresa' in q,
     tesouro: tesouroDaVida(e),
     coroa: coroaDaVida(e),
+    pesquisa: pesquisaDaVida(e),
     ...contasDaVida(e),
   };
 }
