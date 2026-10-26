@@ -86,6 +86,59 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 
 **A decisão do dono que falta:** os países de verdade batem num requisito dele mesmo, "política fictícia e genérica" (o motivo é a identidade e o risco legal). A proposta da I-118 é manter fictícios os governos, os partidos e as pessoas, e trazer reais a geografia, a economia e os nomes dos países. A guerra com um país de verdade fica de fora até ele decidir.
 
+## A missão Ω (26/10/2026)
+
+O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não tem nada criativo, único, original", "só atualize o jogo quando voltar com algo que de fato se compare a um jogo muito bem construído", e entregou um backlog mestre e uma missão (o jogador passa de "o que acontece agora?" para "o que eu posso fazer?"). O diagnóstico e a decisão estão em `docs/auditoria-omega.md`. As camadas vão para o branch de trabalho, cada uma com o `verificar` passando, e a `main` recebe o conjunto. Os blocos da segunda ordem entram onde cabem (os filhos quando quiser viram um projeto, a I-113).
+
+| Camada | O que entra | Ideias | Estado |
+|---|---|---|---|
+| Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121 | em andamento |
+| Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | proposta |
+| Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | proposta |
+| Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
+| Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
+| Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
+
+### I-123 · Os verbos sociais
+- **Problema:** com uma pessoa, hoje, só dá para fazer as ações escritas para o papel dela (visitar, ligar, presentear). Não dá para pedir dinheiro, pedir um emprego, oferecer sociedade, cobrar uma dívida ou contar uma verdade, e a pessoa não decide nada: o storylet decide.
+- **Efeitos causais:** um verbo (pedir, oferecer, propor, cobrar, contar, apresentar) com um objeto (dinheiro, ajuda, emprego, perdão, sociedade, casamento, morar junto) vale para qualquer pessoa. Ela decide pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo dinheiro que tem, pelo que acha de você e pelo momento, e diz o porquê. O empréstimo entre pessoas é um contrato com ela de credora; o calote vira mágoa, e o favor pago, confiança. As pessoas também pedem a você.
+- **Aceitação:** teste: a mesma pergunta, com a mesma pessoa, sai diferente com a mágoa alta e com a confiança alta; o empréstimo fecha as contas e aparece nas dívidas; o porquê aponta a entrada que pesou.
+- **Estado:** proposta (Ω2).
+
+### I-124 · Os projetos
+- **Problema:** o jogador não pode querer nada. A vida é uma sequência de respostas.
+- **Efeitos causais:** o jogador escolhe até três projetos (sair das dívidas, reparar uma relação, ter um filho, mudar de cidade, abrir uma empresa, chegar a um cargo, comprar a casa, cuidar da saúde, a independência financeira). Cada um mostra as etapas possíveis, que são ações, operações e verbos que já existem; o progresso é lido do estado; o projeto dá histórias próprias e termina em conquista, desistência ou prazo vencido, com a causa no livro.
+- **Aceitação:** teste de cada projeto do começo ao fim; no túnel, os robôs perseguem projetos e a saturação cai.
+- **Estado:** proposta (Ω3).
+
+### I-125 · Os segredos
+- **Problema:** todo mundo sabe o que a vida de quem joga mostra; nada fica escondido, nada é descoberto.
+- **Efeitos causais:** algumas escolhas criam segredos (o caso, a dívida escondida, o crime, o filho fora do casamento); cada pessoa sabe o que viu, ouviu ou descobriu; a informação corre pela rede pelo traço e pela proximidade; a opinião só usa o que a pessoa sabe; a revelação e a chantagem são consequências; descobrir quem espalhou vira projeto.
+- **Aceitação:** teste: o segredo que ninguém sabe não muda opinião nenhuma; o que a irmã sabe pode chegar à mãe, não ao chefe sem caminho.
+- **Estado:** proposta (Ω4).
+
+### I-126 · A peneira: os capítulos da vida
+- **Problema:** o livro guarda o porquê de tudo, mas a vida aparece como uma lista de anos, e o rastro de uma simulação não é uma história sozinho.
+- **Efeitos causais:** padrões declarados sobre o livro (a amizade que virou sociedade, a volta por cima, a dívida que virou briga, o favor devolvido, o amor reencontrado) reconhecem os arcos de cada vida e os mostram como capítulos, na linha do tempo e no cartão; o diretor apoia o arco começado.
+- **Aceitação:** teste de cada padrão com uma vida montada; no túnel, a parte das vidas com capítulos e a variedade deles.
+- **Estado:** proposta (Ω5).
+
+### I-127 · O caminho não tomado
+- **Problema:** o jogador não tem como saber o peso de uma escolha.
+- **Efeitos causais:** o save guarda os comandos; no fim, o jogador escolhe um ponto de virada e vê a vida que não viveu: a mesma semente, as mesmas decisões até ali, a outra opção naquele ponto e um robô com o jeito dele depois. É um experimento dentro do modelo, não uma previsão, e a tela diz isso.
+- **Aceitação:** teste: refazer sem trocar nada dá a mesma vida; trocar a escolha muda a vida a partir dali.
+- **Estado:** proposta (Ω5).
+
+### I-128 · O ritmo e o apoio às histórias
+- **Problema:** o diretor não sabe se a vida está agitada ou parada, e o arco começado pode não ter fim.
+- **Efeitos causais:** anos tranquilos depois de anos pesados; o storylet que dá continuidade a um arco começado ganha peso.
+- **Estado:** proposta (Ω6).
+
+### I-129 · A diversidade pela estrutura causal
+- **Problema:** a assinatura de vida mede o destino (classe, carreira, estado civil), não o caminho. Duas vidas com os mesmos números e causas diferentes contam igual.
+- **Efeitos causais:** o túnel mede a diversidade pelas cadeias de causa (quem levou a quê) e pelos capítulos, ao lado da saturação.
+- **Estado:** proposta (Ω6).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -94,7 +147,7 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 | I-02 | Dívida e financiamento como contrato | 1 | Alta | feita (fatia 1.2, 12/10) |
 | I-03 | O ano em etapas declaradas | 1 | Alta | feita (fatia 1.3) |
 | I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | reavaliada: adiada com números (fatia 1.3) |
-| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | parcial: vários filhos (fatia 1.4a) |
+| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | parcial: vários filhos (fatia 1.4a); a rede no formato dos filhos (Ω1) |
 | I-06 | Causa com contribuição e explicação incompleta | 1 | Média | proposta |
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
 | I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | feita no critério (fatia 1.3); o próximo ganho é indexar os storylets |
@@ -172,6 +225,13 @@ Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e 
 | I-120 | O texto revisado: a gramática do conteúdo inteiro | 9 | Alta | proposta (correção C4) |
 | I-121 | NPCs com objetivos próprios | 9 | Média | proposta |
 | I-122 | Descobrir o que não se sabia que existia | 9 | Média | proposta |
+| I-123 | Os verbos sociais: pedir, oferecer, propor, cobrar, contar, apresentar | Ω | Alta | proposta (Ω2) |
+| I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | proposta (Ω3) |
+| I-125 | Os segredos: quem sabe o quê | Ω | Alta | proposta (Ω4) |
+| I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |
+| I-127 | O caminho não tomado | Ω | Alta | proposta (Ω5) |
+| I-128 | O ritmo e o apoio às histórias | Ω | Média | proposta (Ω6) |
+| I-129 | A diversidade pela estrutura causal | Ω | Média | proposta (Ω6) |
 
 (os blocos de cada ideia vêm na versão final)
 
