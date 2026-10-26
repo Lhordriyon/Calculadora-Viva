@@ -49,7 +49,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 |---|---|---|---|
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
 | B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
-| C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | depois do B |
+| C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | em andamento (26/10): a forma da coroa e a ilha com população e PIB |
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | depois do B |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
 
@@ -88,9 +88,9 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-35 | Falência, reestruturação e intervenção | 4 | Média | proposta |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
-| I-41 | Monarquia institucional e Casa Real | 5 | Alta | proposta (bloco C do dono) |
+| I-41 | Monarquia institucional e Casa Real | 5 | Alta | em andamento (bloco C): a renda da coroa tem forma e regra |
 | I-42 | Indicadores separados de poder, riqueza, prestígio e legitimidade | 5 | Média | proposta |
-| I-43 | Criar um Estado | 5 | Média | proposta (bloco C do dono: a ilha com população, PIB e imposto) |
+| I-43 | Criar um Estado | 5 | Média | em andamento (bloco C): a ilha com população, PIB e imposto |
 | I-44 | Formas de Estado e de governo | 5 | Média | proposta |
 | I-50 | Tratados como objetos | 6 | Média | proposta |
 | I-51 | Alianças e blocos econômicos | 6 | Média | proposta |
@@ -717,8 +717,21 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - mecenato, reforma, repressão e abuso pesam na legitimidade e nas contas.
 - **Riscos:** as linhagens reais existentes; a migração é por conteúdo.
 - **Aceitação:** a renda do monarca tem origem e regra, e a legitimidade é medida à parte.
+- **Pedido do dono (19/10):** "por que o soberano não recebe salário, parte dos impostos ou taxa da coroa". Ele jogou uma soberana bilionária numa ilha que comprou, e a coroa não pagava nada.
+- **Desenho do bloco C (26/10):**
+  - **Quem tem coroa** (o monarca do Brasil, cargo `rei`, e quem é soberano da ilha, cargo `soberano`) escolhe **como a coroa recebe**, na folha Carreira e poder, uma vez por ano, com o efeito à vista antes:
+    - **salário da Casa Real:** fixo (R$ 4 milhões por ano no Brasil, R$ 500 mil na ilha);
+    - **parte dos impostos:** uma fatia da arrecadação (0,01% da do Brasil, a escala da dotação britânica, e 10% da da ilha). Sobe e desce com a economia, e a aprovação vai 5 pontos para baixo;
+    - **taxa da coroa:** um imposto a mais, só para a coroa (0,1% do PIB do Brasil, 8% do PIB da ilha). É muito dinheiro, a aprovação vai 15 pontos para baixo e, na ilha, gente vai embora.
+  - Abaixo de 30 de aprovação, o cargo balança: no Brasil, o plebiscito (a queda do cargo de hoje); na ilha, a greve geral.
+  - A forma fica com o país (`pais.coroa`, `ilha.coroa`): quem herda a coroa herda a regra.
+  - A dotação é a renda de quem tem coroa (a regra a recalcula todo ano), paga pelo tesouro, no Brasil, ou pela ilha, com o rótulo "Dotação da coroa".
+- **Fica para depois, com o motivo:**
+  - a legitimidade medida à parte da popularidade: é a I-42, e mexe em todo o poder;
+  - o ditador: o Regime tem o salário dele, e não é coroa;
+  - o efeito da dotação no orçamento do Brasil: 0,1% do PIB, no máximo, não move a dívida.
 - **Prioridade:** Alta · Fase 5.
-- **Estado:** proposta.
+- **Estado:** em andamento (bloco C, 26/10).
 
 ### I-42 · Indicadores separados
 - **Problema:** influência e popularidade misturam poder, riqueza, fama e legitimidade.
@@ -741,8 +754,15 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Efeitos causais:** independência, secessão ou federação têm custos, dívidas herdadas e reações.
 - **Riscos:** escopo. Só depois das fases 3 a 6.
 - **Aceitação:** um Estado novo tem balanço, instituições e situação diplomática, e as consequências ficam no livro.
+- **O começo, no bloco C (26/10):**
+  - a jogada "fundar um país" cria a ilha como entidade (`ilha`, tipo `jurisdicao`, efeito `fundarIlha`). O nome é "Nova" mais a cidade natal de quem fundou, com 2.300 habitantes e R$ 80 mil de PIB por pessoa;
+  - o imposto da ilha é 20% do PIB;
+  - todo ano, a renda por pessoa cresce 2,5% (3,5% com o país reconhecido) e a população cresce 1% (2% reconhecida), menos 4 pontos com a taxa da coroa e 1 com a parte dos impostos;
+  - a ilha passa a quem herda; quem era soberano deixa a coroa da ilha para o herdeiro;
+  - a república (a outra escolha da jogada) também cria a ilha, sem coroa para quem fundou.
+- **Fica para depois:** o imposto da ilha como decisão (o paraíso fiscal), as empresas que se mudam para lá, as instituições, o reconhecimento como processo e as relações com os países de fora.
 - **Prioridade:** Média · Fase 5.
-- **Estado:** proposta.
+- **Estado:** em andamento (bloco C, 26/10): a ilha com população, PIB e imposto.
 
 ### I-44 · Formas de Estado e de governo
 - **Problema:** hoje há governos fictícios, o regime e o "você". A missão pede Estado unitário, federal, confederação, presidencialismo, parlamentarismo, híbridos e autoritários.
