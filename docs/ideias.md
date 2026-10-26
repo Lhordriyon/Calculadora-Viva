@@ -53,6 +53,38 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | feito (26/10): a política de ciência, o estoque de tecnologia e as descobertas; o orçamento item por item e a pesquisa das empresas ficam para depois |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | feito (26/10): a política de defesa, a capacidade, os sistemas de armamento e a guerra como processo (o começo, os anos e o fim); a ocupação, a mobilização da economia e as alianças militares ficam para depois |
 
+## A segunda ordem do dono (26/10/2026)
+
+Depois do bloco E, o dono jogou e mandou duas mensagens: uma com defeitos do poder ("não estou herdando o regime, a monarquia ou a soberania", "não consigo dar um golpe de Estado", "não consigo governar a ilha") e outra com tudo o que ele quer do jogo. Resumo dela, nas palavras dele:
+- governar o país e a cidade que fundou; tomar o poder e governar vitalício; os herdeiros recebem a sucessão;
+- o controle dos impostos é simples demais; com trilhões, financiar o Estado com dinheiro privado;
+- as empresas sem caixa, sem expansão física e sem pesquisa e desenvolvimento; um simulador de empresas completo;
+- quem funda o país e vira soberano continua no Brasil e continua governando o Brasil;
+- o dinheiro emprestado ao Estado, a dívida do Estado comprada e os nomes do SPC e do Serasa não entram no patrimônio nem rendem; outros bens que deveriam render não rendem;
+- com riqueza astronômica, não há o que fazer: uma progressão civilizatória;
+- resolver a morte pela ciência (a reversão do envelhecimento e a continuação do senso de eu);
+- escolher quando ter filhos;
+- mais mecânicas, liberdade, histórias e opções; interfaces mais agradáveis; economia e mercado financeiro melhores; mais profissões, diplomas e graduações; o sistema acadêmico e o de carreiras completos; sistemas de governo completos; o mapa-múndi e países de verdade; mais gráficos; causalidade em tudo; os erros de gramática corrigidos; NPCs inteligentes; descobrir coisas que nem sabia que existiam.
+
+Não cabe de uma vez. A ordem abaixo começa pelos defeitos (o que já existe e não funciona) e segue pelo que mais muda o que dá para fazer numa vida, um bloco publicado de cada vez:
+
+| Bloco | O que entra | Ideias | Estado |
+|---|---|---|---|
+| F · O poder que passa | a sucessão imediata da coroa, do regime e da ilha para quem continua a história (com regência abaixo dos 18); o golpe e o autogolpe (governar vitalício); governar a ilha e a cidade fundadas (imposto e obras pagas do próprio bolso); quem funda o país deixa o cargo no Brasil; o dinheiro que salva o país vira título | I-106, I-107, I-108, D-01, D-03, D-04 | em andamento (26/10) |
+| C4 · O texto revisado | a varredura de gramática do conteúdo inteiro, com regras novas no validador | I-120 | proposta |
+| K · Filhos quando quiser | tentar ter filho, adotar e planejar, com a fertilidade pela idade | I-113 | proposta |
+| I · O dinheiro que rende | os bens que produzem (a fazenda, a emissora, o iate fretado), a carteira de dívidas do SPC e do Serasa como ativo, e o empréstimo aos bancos como contrato | I-112 | proposta |
+| H · A empresa de verdade | o caixa da empresa, o lucro com origem, a pesquisa e desenvolvimento, as fábricas e lojas, e o título comprado pela empresa | I-11, I-111 | proposta |
+| J · A vida longa | a ciência da longevidade, paga pela empresa, pela fundação ou pelo Estado, com etapas até a reversão do envelhecimento e a continuidade do eu | I-114 | proposta |
+| G · Os impostos | os impostos um por um (renda, consumo, empresas, fortunas, herança) e o Estado financiado por quem joga | I-109, I-110, I-31 | proposta |
+| L · A escola inteira | graduação, mestrado e doutorado, diplomas e bolsas; mais profissões e carreiras completas | I-116, I-117 | proposta |
+| M · A civilização | o que fazer com riqueza astronômica: energia, espaço, cidades, inteligência artificial, uma árvore de progresso | I-115 | proposta |
+| P · Os gráficos | o patrimônio, a felicidade e o país ao longo da vida | I-80, I-119 | proposta |
+| N · Os governos | formas de governo (parlamento, federação, poderes separados) | I-40, I-44 | proposta |
+| O · O mundo | o mapa-múndi e os países de verdade | I-20, I-22, I-118 | proposta: pede a decisão do dono sobre a política fictícia (abaixo) |
+
+**A decisão do dono que falta:** os países de verdade batem num requisito dele mesmo, "política fictícia e genérica" (o motivo é a identidade e o risco legal). A proposta da I-118 é manter fictícios os governos, os partidos e as pessoas, e trazer reais a geografia, a economia e os nomes dos países. A guerra com um país de verdade fica de fora até ele decidir.
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -122,6 +154,23 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-98 | De que é feito o patrimônio: a rosca na folha Dinheiro | — | Média | proposta (bloco V1) |
 | I-99 | Escolher o tema (claro, escuro, o do celular) dentro do jogo | — | Baixa | proposta (bloco V1) |
 | I-100 | O ícone do app Android na cor nova | — | Baixa | proposta (bloco V1) |
+| I-106 | A sucessão que passa (a coroa, o regime e a ilha) | 5 | Alta | em andamento (bloco F) |
+| I-107 | Tomar o poder: o golpe, o autogolpe e o governo vitalício | 5 | Alta | em andamento (bloco F) |
+| I-108 | Governar o que você fundou (a ilha e a cidade) | 5 | Alta | em andamento (bloco F) |
+| I-109 | O Estado financiado por quem joga | 4 | Média | proposta (bloco G) |
+| I-110 | Os impostos um por um | 5 | Alta | proposta (bloco G) |
+| I-111 | A empresa de verdade: caixa, pesquisa, fábricas e lojas | 2 | Alta | proposta (bloco H) |
+| I-112 | O dinheiro que rende: bens que produzem, créditos que se compram | 2 | Alta | proposta (bloco I) |
+| I-113 | Filhos quando quiser | — | Alta | proposta (bloco K) |
+| I-114 | A vida longa: a ciência contra a morte | 8 | Média | proposta (bloco J) |
+| I-115 | A progressão civilizatória | 8 | Média | proposta (bloco M) |
+| I-116 | O sistema acadêmico completo | — | Média | proposta (bloco L) |
+| I-117 | Carreiras completas e mais profissões | — | Média | proposta (bloco L) |
+| I-118 | O mapa-múndi e os países de verdade | 3 | Média | proposta (bloco O, decisão do dono) |
+| I-119 | Os gráficos da vida e do país | 9 | Média | proposta (bloco P) |
+| I-120 | O texto revisado: a gramática do conteúdo inteiro | 9 | Alta | proposta (correção C4) |
+| I-121 | NPCs com objetivos próprios | 9 | Média | proposta |
+| I-122 | Descobrir o que não se sabia que existia | 9 | Média | proposta |
 
 (os blocos de cada ideia vêm na versão final)
 
@@ -460,6 +509,37 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Média · Fase 2.
 - **Estado:** proposta.
 
+
+### I-111 · A empresa de verdade: caixa, pesquisa, fábricas e lojas
+- **Problema:** o dono: "as empresas não têm caixa nem expansão física", "não podem investir em pesquisa e desenvolvimento para se tornarem competitivas", "um simulador de empresas completo". Hoje, a empresa é um valor que cresce com a tração, e o lucro vira retirada ou crescimento.
+- **Módulos:** 5, 4, 3.
+- **Depende de:** I-11.
+- **Custo:** GG (em partes).
+- **Consome:** o caixa da empresa, o tempo de quem manda e o mercado do setor.
+- **Efeitos causais:**
+  - o caixa: o lucro entra no caixa; dele saem a retirada, o investimento, a pesquisa e a compra de título; sem caixa, a empresa toma empréstimo ou quebra;
+  - a pesquisa e desenvolvimento: o caixa vira tecnologia da empresa, que soma à tração e à fatia do mercado (e pode virar patente);
+  - a expansão física: fábricas e lojas, cada uma com custo, capacidade e cidade, e a concorrência por fatia de mercado no setor.
+- **Riscos:** o patrimônio de quem tem empresa e o portão do bilionário; o tamanho do save.
+- **Aceitação:** as contas da empresa fecham entrada por entrada; o túnel mede a pesquisa que vira fatia de mercado.
+- **Prioridade:** Alta · Fase 2.
+- **Estado:** proposta (bloco H).
+
+### I-112 · O dinheiro que rende: bens que produzem, créditos que se compram
+- **Problema:** o dono: "o dinheiro que empresto ao Estado, a dívida do Estado que compro e os nomes do SPC e do Serasa não entram no patrimônio e não rendem", "outros bens que deveriam render também não rendem". O resgate do país (a jogada) tira R$ 200 bilhões da conta e só os devolve num storylet agendado anos depois.
+- **Módulos:** 5, 4, 3.
+- **Depende de:** I-34.
+- **Custo:** M.
+- **Consome:** o dinheiro de quem joga.
+- **Efeitos causais:**
+  - o empréstimo ao país é um título do Tesouro (o bloco F começa por aí), e o empréstimo aos bancos é um contrato com juro e risco;
+  - a carteira de dívidas atrasadas (os nomes do SPC e do Serasa): comprada por uma fração do valor, rende o que se recupera, e quem joga decide entre cobrar e perdoar (o que o povo acha muda);
+  - os bens que produzem: a fazenda colhe (e sente a seca e o preço), a emissora fatura com a audiência, o iate e o jatinho fretados pagam parte do que custam.
+- **Riscos:** a conta do padrão de vida e o portão do patrimônio negativo.
+- **Aceitação:** todo crédito e todo bem que rende aparecem no patrimônio e no extrato, com a contraparte.
+- **Prioridade:** Alta · Fase 2.
+- **Estado:** proposta (bloco I).
+
 ## Fase 3 — países reais e geografia
 
 ### I-20 · Países reais como condição inicial
@@ -567,6 +647,19 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Aceitação:** mudar de cidade muda emprego e custo, com causa no livro.
 - **Prioridade:** Média · Fase 3.
 - **Estado:** proposta.
+
+
+### I-118 · O mapa-múndi e os países de verdade
+- **Problema:** o dono: "quero mapa-múndi, quero países de verdade, quero poder governar mais".
+- **Módulos:** 7, 8, 13.
+- **Depende de:** I-20, I-22 e a decisão do dono sobre a política fictícia.
+- **Custo:** GG.
+- **Consome:** CPU e save (mais países).
+- **Efeitos causais:** os países de fora passam a ser os de verdade (a geografia, a economia, a população), com governos e partidos fictícios; o mapa mostra onde cada coisa acontece.
+- **Riscos:** o requisito do dono "política fictícia e genérica" (identidade e risco legal) e a guerra com um país de verdade.
+- **Aceitação:** a decisão do dono registrada; o mapa abre no celular em 360 px.
+- **Prioridade:** Média · Fase 3.
+- **Estado:** proposta (bloco O): pede a decisão do dono.
 
 ## Fase 4 — bancos, crédito, moedas e dívida
 
@@ -690,6 +783,19 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Média · Fase 4.
 - **Estado:** proposta.
 
+
+### I-109 · O Estado financiado por quem joga
+- **Problema:** o dono: "quando tenho quantidades trilionárias de patrimônio, não consigo financiar o Estado com dinheiro privado". O que existe são as jogadas (salvar o país, a estatal), que gastam e somem do patrimônio.
+- **Módulos:** 4, 6, 3.
+- **Depende de:** I-31.
+- **Custo:** M.
+- **Consome:** o dinheiro de quem joga.
+- **Efeitos causais:** doar ao Tesouro abate a dívida; pagar um hospital, uma escola ou uma universidade sobe a saúde, a educação ou a tecnologia do país, com a doação de causa; o dinheiro emprestado ao governo é um título (com cupom e vencimento), não um gasto.
+- **Riscos:** a dívida do país e o calote mudam com quem doa.
+- **Aceitação:** a doação abate a dívida e sobe a estatística paga, com a causa no livro; o empréstimo ao país aparece no patrimônio.
+- **Prioridade:** Média · Fase 4.
+- **Estado:** proposta (bloco G); o resgate do país vira título no bloco F.
+
 ## Fase 5 — governo, regimes e Estados
 
 ### I-40 · Poderes separados
@@ -775,6 +881,71 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Aceitação:** cada forma com regras testadas.
 - **Prioridade:** Média · Fase 5.
 - **Estado:** proposta.
+
+
+### I-106 · A sucessão que passa (a coroa, o regime e a ilha)
+- **Problema:** o dono: "não estou herdando o regime, a monarquia ou a soberania". Medido (26/10) em vidas de linhagem real: dos 19 herdeiros de quem reinou, com a cautelosa, nenhum virou rei em 40 anos; com a arriscada, de 9 filhos herdeiros, 3 viraram reis (depois de 2, 10 e 28 anos) e 6 nunca. As causas:
+  - a sucessão é um storylet comum (`sucessao_coroa`, `sucessao_regime`), sorteado pelo diretor: pode levar décadas ou não vir;
+  - ele pede o pai ou a mãe morto como ator: quem herda por testamento (o par, o amigo) e o sobrinho nunca se qualificam (o defeito D-01);
+  - enquanto ela não vem, o país passa para um governo de transição;
+  - a ilha passa a quem herda mesmo criança, e o herdeiro adulto começa com a popularidade baixa: a greve geral tira a coroa em poucos anos.
+- **Módulos:** 6, 2, 11.
+- **Depende de:** nada.
+- **Custo:** M.
+- **Consome:** nada novo.
+- **Efeitos causais:**
+  - quem continua a história herda a coroa, o regime e a ilha, seja quem for (o testamento é a lei da sucessão da dinastia);
+  - o motor agenda a sucessão no primeiro ano de quem herda (ou no ano em que faz 18: até lá, a regência), e também quando quem reina morre durante a vida de quem joga;
+  - enquanto a sucessão espera a resposta, quem governava continua governando: não há interregno;
+  - quem é coroado larga a carreira de antes (o defeito D-04).
+- **Riscos:** o túnel tem lotes de linhagem e de dinastia: mais coroas herdadas mudam as vidas de lá.
+- **Aceitação:** teste: o herdeiro (filho, par, amigo, sobrinho) de quem reinava recebe a sucessão no primeiro ano, ou aos 18; o governo não troca no ano da sucessão. No túnel, a parte dos herdeiros de quem reinava que reinam.
+- **Prioridade:** Alta · Fase 5.
+- **Estado:** em andamento (bloco F, 26/10).
+
+### I-107 · Tomar o poder: o golpe, o autogolpe e o governo vitalício
+- **Problema:** o dono: "não consigo dar um golpe de Estado", "não consigo tomar o poder ou governar vitalício". Hoje, governar para sempre só vem do berço (a linhagem real ou a do regime).
+- **Módulos:** 6, 8, 9.
+- **Depende de:** I-106.
+- **Custo:** M.
+- **Consome:** influência, popularidade, dinheiro e a relação com os países de fora.
+- **Efeitos causais:**
+  - o autogolpe: quem é presidente fecha o Congresso (ou muda a Constituição pelo voto) e vira chefe do Regime, vitalício; dá errado, cai e é condenado;
+  - o golpe: quem tem influência (ou quem é coronel ou general) lidera os quartéis, ou quem tem bilhões financia os generais; dá errado, vai para o exílio;
+  - restaurar a monarquia: quem é famoso e rico banca o plebiscito e, se o povo quiser, vira monarca;
+  - o mundo reage: os países de fora esfriam a relação (a sanção e, com ela, a guerra do bloco E podem vir), e as histórias do regime passam a valer;
+  - sob o Regime, ninguém se candidata a presidente (o defeito D-03).
+- **Riscos:** tom: o golpe é história, não apologia; a queda, o exílio e o tribunal também estão lá.
+- **Aceitação:** teste dos três caminhos e do fracasso de cada um; no túnel, a parte de quem governa que tenta e consegue.
+- **Prioridade:** Alta · Fase 5.
+- **Estado:** em andamento (bloco F, 26/10).
+
+### I-108 · Governar o que você fundou (a ilha e a cidade)
+- **Problema:** o dono: "não consigo governar o país que fundei, a cidade que fundei" e "quando fundo o país e me torno soberano, continuo no Brasil e continuo governando o Brasil". Hoje, a ilha só cresce sozinha (2.300 habitantes, R$ 184 milhões de PIB para quem pagou R$ 300 bilhões) e a cidade é só uma marca.
+- **Módulos:** 6, 5, 7.
+- **Depende de:** I-43.
+- **Custo:** M.
+- **Consome:** o dinheiro de quem joga (as obras) e a popularidade (o imposto).
+- **Efeitos causais:**
+  - quem funda o país deixa o cargo que tinha no Brasil na hora, e o governo daqui não é mais dele;
+  - a ilha e a cidade são territórios com população, PIB, imposto e infraestrutura; quem manda nelas escolhe o imposto (o paraíso fiscal atrai gente e empresas e arrecada pouco; o alto arrecada e espanta) e paga obras do próprio bolso (o porto, o aeroporto, a universidade, a cidade nova), que viram infraestrutura e crescimento, com a obra de causa;
+  - a popularidade de quem manda sente o imposto e as obras, e a greve geral deixa de ser quase certa.
+- **Riscos:** o patrimônio dos mais ricos vira obra: o portão do bilionário feito.
+- **Aceitação:** teste: a obra soma infraestrutura e a infraestrutura faz a população e o PIB crescerem; o paraíso fiscal cresce mais e arrecada menos; quem funda o país deixa o cargo daqui.
+- **Prioridade:** Alta · Fase 5.
+- **Estado:** em andamento (bloco F, 26/10).
+
+### I-110 · Os impostos um por um
+- **Problema:** o dono: "o controle dos impostos está muito simples". Hoje, a política de impostos tem três níveis e mexe na arrecadação, no crescimento e na renda de quem não é pobre.
+- **Módulos:** 4, 6.
+- **Depende de:** I-31.
+- **Custo:** G.
+- **Consome:** a renda e o patrimônio de quem joga e das empresas.
+- **Efeitos causais:** o imposto de renda (com faixas), o imposto sobre o consumo, o das empresas, o das fortunas e o da herança, cada um com alíquota escolhida por quem governa, mexem na arrecadação, no crescimento, na desigualdade, na fuga de capitais e no bolso de quem joga (o extrato mostra cada um).
+- **Riscos:** a conta do padrão de vida e o portão do patrimônio negativo.
+- **Aceitação:** o extrato mostra cada imposto pago; o túnel mede a arrecadação e o crescimento por combinação.
+- **Prioridade:** Alta · Fase 5.
+- **Estado:** proposta (bloco G).
 
 ## Fase 6 — sistema internacional
 
@@ -1004,6 +1175,31 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Baixa · Fase 8.
 - **Estado:** proposta.
 
+
+### I-114 · A vida longa: a ciência contra a morte
+- **Problema:** o dono: "uma coisa que quero muito é resolver o problema da morte física e da descontinuação mental, através da ciência (nanopartículas, a reversão do envelhecimento e a continuação indefinida do senso de eu)".
+- **Módulos:** 5, 6, 10.
+- **Depende de:** I-54 e I-111 (a pesquisa paga pela empresa).
+- **Custo:** G.
+- **Consome:** bilhões em pesquisa (da empresa, da fundação ou do Estado), anos e o risco do fracasso.
+- **Efeitos causais:** uma árvore de pesquisa com etapas (a terapia do envelhecimento, a reversão, a continuidade do eu); cada etapa vencida diminui a mortalidade de quem joga (e, liberada, a do país) e empurra a idade máxima; a última muda a dinastia (a próxima vida pode ser a sua, de novo).
+- **Riscos:** o túnel precisa que as vidas acabem; a fama e a desigualdade (quem tem acesso).
+- **Aceitação:** a mortalidade e a idade máxima de quem venceu cada etapa, no túnel; o custo à vista antes.
+- **Prioridade:** Média · Fase 8.
+- **Estado:** proposta (bloco J).
+
+### I-115 · A progressão civilizatória
+- **Problema:** o dono: "quando chega a riquezas astronômicas, não tem mais o que fazer com o dinheiro; poderia ter um sistema de progressão civilizatória".
+- **Módulos:** 10, 6, 5.
+- **Depende de:** I-54, I-114.
+- **Custo:** G.
+- **Consome:** trilhões, décadas e a estabilidade do país.
+- **Efeitos causais:** uma escada de projetos que dependem uns dos outros (a energia limpa e barata, a cidade inteira automatizada, a órbita, a Lua, Marte, a inteligência artificial geral), cada um mudando o país (crescimento, emprego, desigualdade) e a vida de quem joga.
+- **Riscos:** o mundo tem tamanho (o teto da riqueza); o tom.
+- **Aceitação:** cada degrau com custo, pré-requisito e consequência no livro; o túnel mede quem sobe.
+- **Prioridade:** Média · Fase 8.
+- **Estado:** proposta (bloco M).
+
 ## Fase 9 — contínuo
 
 ### I-80 · Histórico de indicadores
@@ -1063,6 +1259,55 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Efeitos causais:** nenhum.
 - **Riscos:** baixo.
 - **Aceitação:** nenhum literal de regra em `src/ui`, e toda operação com motivo.
+- **Prioridade:** Média · Fase 9.
+- **Estado:** proposta.
+
+
+### I-119 · Os gráficos da vida e do país
+- **Problema:** o dono: "quero mais gráficos". Hoje, os números do ano aparecem com a seta do último ano, sem a curva.
+- **Módulos:** 13.
+- **Depende de:** I-80.
+- **Custo:** M.
+- **Consome:** nada (sai do livro).
+- **Efeitos causais:** a curva do patrimônio, da felicidade e da saúde ao longo da vida, e a do país (o crescimento, a inflação, a dívida), tiradas do livro.
+- **Riscos:** a régua da tela (360 px, letra 1,45).
+- **Aceitação:** os 52 critérios da régua passam; o gráfico lê no celular.
+- **Prioridade:** Média · Fase 9.
+- **Estado:** proposta (bloco P).
+
+### I-120 · O texto revisado: a gramática do conteúdo inteiro
+- **Problema:** o dono: "quero que corrija os erros de gramática".
+- **Módulos:** 13.
+- **Depende de:** nada.
+- **Custo:** M.
+- **Consome:** nada.
+- **Efeitos causais:** uma varredura do conteúdo (concordância, crase, regência, pontuação, a forma do resumo) e regras novas no validador para o que dá para pegar sozinho.
+- **Riscos:** nenhum.
+- **Aceitação:** a lista do que mudou, e as regras novas no validador.
+- **Prioridade:** Alta · Fase 9.
+- **Estado:** proposta (correção C4).
+
+### I-121 · NPCs com objetivos próprios
+- **Problema:** o dono: "NPCs inteligentes de verdade". O bloco R deu opinião, lembrança e vontade às pessoas; falta elas perseguirem um objetivo ao longo dos anos (a carreira, o casamento, a empresa) e cruzarem o caminho de quem joga por causa dele.
+- **Módulos:** 11, 2.
+- **Depende de:** I-05.
+- **Custo:** G.
+- **Consome:** CPU.
+- **Efeitos causais:** cada pessoa tem um plano que anda sozinho e bate na vida de quem joga (o amigo que abre a empresa concorrente, a filha que entra na política).
+- **Riscos:** CPU por vida.
+- **Aceitação:** no túnel, a parte das histórias que nascem do plano de outra pessoa.
+- **Prioridade:** Média · Fase 9.
+- **Estado:** proposta.
+
+### I-122 · Descobrir o que não se sabia que existia
+- **Problema:** o dono: "quero descobrir coisas que nem sabia que existiam".
+- **Módulos:** 13, 12.
+- **Depende de:** nada.
+- **Custo:** M.
+- **Consome:** nada.
+- **Efeitos causais:** caminhos escondidos (combinações raras de qualidades que abrem histórias, jogadas e cargos), e o caderno de descobertas entre vidas, que conta o que já se viu sem dizer como.
+- **Riscos:** o portão dos storylets mortos (o raro precisa acontecer no túnel).
+- **Aceitação:** o caderno entre vidas; no túnel, o que cada descoberta pede.
 - **Prioridade:** Média · Fase 9.
 - **Estado:** proposta.
 
@@ -1359,16 +1604,53 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 - **Prioridade:** Alta · fecha o plano de correção do dono.
 - **Estado:** feito (25/10, correção C3).
 
+
+### I-113 · Filhos quando quiser
+- **Problema:** o dono: "não posso escolher quando ter filhos". Hoje, o filho vem de storylets (o casamento, a gravidez surpresa, mais um filho), e quem reina sem filho perde a dinastia.
+- **Módulos:** 2, 11.
+- **Depende de:** nada.
+- **Custo:** M.
+- **Consome:** uma ficha do ano, dinheiro (o tratamento, a adoção) e a saúde.
+- **Efeitos causais:** tentar ter um filho (com o par, a chance anda com a idade e a saúde), o tratamento de fertilidade e a adoção (com ou sem par); cada filho entra com a decisão de causa.
+- **Riscos:** a demografia das vidas e o tamanho do save (até quatro filhos).
+- **Aceitação:** teste das três vias; no túnel, a idade em que se tem o primeiro filho por estratégia.
+- **Prioridade:** Alta.
+- **Estado:** proposta (bloco K).
+
+### I-116 · O sistema acadêmico completo
+- **Problema:** o dono: "mais diplomas, mais graduações, sistema acadêmico completo".
+- **Módulos:** 2, 11.
+- **Depende de:** nada.
+- **Custo:** G.
+- **Consome:** anos, mensalidade e fichas.
+- **Efeitos causais:** a graduação (curso por área, pública ou particular), o mestrado, o doutorado e a pós, com bolsa, diploma e o que cada um abre nas carreiras.
+- **Riscos:** a saturação e o portão das assinaturas.
+- **Aceitação:** cada diploma abre ou melhora pelo menos uma carreira; o túnel mede quem chega a cada nível.
+- **Prioridade:** Média.
+- **Estado:** proposta (bloco L).
+
+### I-117 · Carreiras completas e mais profissões
+- **Problema:** o dono: "mais profissões, sistemas de carreiras completo". Hoje, 49 profissões com cargos e promoção.
+- **Módulos:** 2, 4.
+- **Depende de:** I-116.
+- **Custo:** G.
+- **Consome:** nada novo.
+- **Efeitos causais:** mais profissões, a carreira com mudança de área, o empreendedorismo dentro da profissão (o consultório, o escritório) e a aposentadoria por carreira.
+- **Riscos:** a saturação.
+- **Aceitação:** o túnel mede a diversidade de carreiras por mil vidas.
+- **Prioridade:** Média.
+- **Estado:** proposta (bloco L).
+
 ## Defeitos conhecidos
 
 Da auditoria de 12/10 (`docs/auditoria-universo.md`). Cada um é corrigido num commit com teste, quando a fatia que mexe naquela parte passar por lá, ou antes se ficar barato.
 
 | Id | Defeito | Onde | Gravidade | Estado |
 |---|---|---|---|---|
-| D-01 | A coroa vai para a pessoa errada quando quem herda é o par ou o amigo | `herdeiro.ts:437` | Média | aberto |
+| D-01 | A coroa vai para a pessoa errada quando quem herda é o par ou o amigo | `herdeiro.ts:437` | Média | em andamento (bloco F, I-106) |
 | D-02 | Qualidades herdadas guardam a idade da geração anterior (`marcaHa` erra a partir da 2ª geração) | `herdeiro.ts:205-208` | Média | aberto |
-| D-03 | Dá para ser eleito presidente sob o regime | `poder.ts:59-73` | Média | aberto |
-| D-04 | O monarca coroado continua na carreira de antes e pode ser demitido | `carreira.ts`, `trabalho.ts`, `96-linhagens.json` | Média | aberto (vai com I-41) |
+| D-03 | Dá para ser eleito presidente sob o regime | `poder.ts:59-73` | Média | em andamento (bloco F, I-107) |
+| D-04 | O monarca coroado continua na carreira de antes e pode ser demitido | `carreira.ts`, `trabalho.ts`, `96-linhagens.json` | Média | em andamento (bloco F, I-106) |
 | D-05 | Quatro storylets fazem reforma fora do limite de uma por ano | `99-pais.json` | Baixa | aberto |
 | D-06 | A morte do corpo pode sair rotulada como violência | `morte.ts:23-24` | Baixa | aberto |
 | D-07 | Os limites do câmbio divergem entre o motor e o campo | `diplomacia.ts:291`, `campos.ts:129` | Baixa | aberto |
