@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-D%3A%20o%20Estado%20pesquisa-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-825-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-E%3A%20Defesa-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-833-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,45 +15,45 @@
 
 ---
 
-## 🆕 Novidades: Bloco D · O Estado pesquisa (26/10/2026)
+## 🆕 Novidades: Bloco E · Defesa (26/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** quem governa decide quanto do orçamento vai para a ciência. A folha País ganhou a política "Ciência e tecnologia":
-> - cortada, 0,3% do PIB;
-> - regular, 0,5% do PIB;
-> - prioridade, 0,9% do PIB.
+> **O que mudou:** o país ganhou Forças Armadas, e a guerra virou um processo com custo, não um botão. A folha País ganhou a política "Defesa":
+> - desmobilizada: o governo gasta 0,3 ponto do PIB a menos, e os vizinhos relaxam;
+> - regular;
+> - reforçada: 0,5 ponto a mais, um pouco de voto e vizinhos preocupados.
 >
-> O dinheiro sai do Tesouro, e a dívida anda com ele. Em troca, a tecnologia do país sobe devagar e volta, uma década depois, como crescimento, saúde e empresas que crescem mais. Acima de um ponto, o país descobre coisas: a vacina feita aqui, o satélite e a patente que vira indústria. Com a ciência cortada, os cientistas vão embora.
+> Quem governa encomenda caças, submarino, defesa antiaérea ou satélite militar: a conta vai para a dívida na hora, e o equipamento chega anos depois. A capacidade das Forças Armadas dissuade. Quando um país de fora já sanciona o Brasil e a relação está no chão, pode vir a guerra, e ela vem mais fácil para quem desarmou. Cada ano de guerra custa crescimento, inflação, dívida, gente e aprovação. Ela acaba em vitória, derrota ou cessar-fogo, e mais depressa se quem governa pedir a paz.
 
 > [!TIP]
 > **Para testar:**
-> - Abra a folha País: a tecnologia está em "Como está", e a pesquisa pública em reais, em "Em números". O voto decide, porque a frente popular põe a ciência como prioridade e o bloco liberal corta.
-> - Chegue a presidente e ponha a ciência como prioridade (a reforma mostra o custo antes). Anos depois, a descoberta aponta a sua reforma como causa.
-> - Entre na faculdade num governo que prioriza a ciência e pegue a bolsa de iniciação. Num governo que corta, a federal para.
-> - Com a tecnologia alta, a vacina chega ao posto no ano seguinte à descoberta. Se você for criança, o satélite passa na TV da escola. Com R$ 50 mil na conta, dá para entrar de sócio na empresa da patente.
+> - Abra a folha País: a defesa está em "Como está", e a seção "Defesa" diz se há guerra à vista. O voto decide, porque a aliança da ordem reforça o quartel e a frente popular desmobiliza.
+> - Chegue a presidente e rompa com um país que já anda frio. Se a sanção vier e o quartel estiver fraco, a guerra pode começar, e a notícia aponta o seu rompimento como causa (e a desmobilização, se você desarmou).
+> - Em guerra, a folha mostra as chances de vitória, derrota e cessar-fogo pela capacidade daqui contra a força de lá. Peça a paz e veja o fim chegar mais rápido. Encomende caças e veja a entrega anos depois, com a encomenda de causa.
+> - Tenha de 18 a 30 anos quando a guerra começar: chega a carta da convocação. Com um filho nessa idade, chega a dele. Nos anos de guerra, aparecem o racionamento, a fábrica de munição e o simulado de abrigo da escola.
 
 | ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🔬 **A ciência paga pelo Tesouro:** a sétima política da folha País, com o custo em pontos do PIB e em reais. Cada bloco tem o seu nível | 📊 **O orçamento do governo item por item** (bloco B2): a pesquisa entra no gasto em pontos do PIB, como a saúde e a escola |
-| 📈 **A tecnologia do país:** um estoque de 0 a 100 que anda devagar com a ciência e com a escola. Ela volta como crescimento, saúde pública e tração das empresas (as de tecnologia mais; as de saúde, indústria e agro, menos) | 🏢 **A pesquisa das empresas:** a empresa ainda não tem caixa próprio (ideia I-11) |
-| 💉 **As descobertas:** a cura, o satélite e a patente. Cada uma aponta a decisão que deixou a ciência como prioridade, mesmo se outro governo a desfez depois | 👩‍🔬 **Os cientistas como pessoas** e o setor privado do país (ideia I-36) |
-| ✈️ **A fuga de cérebros:** com a ciência cortada e a tecnologia baixa, os laboratórios esvaziam, e o corte é a causa | 🌍 **A corrida tecnológica** com os países de fora |
-| 🎓 **Oito histórias novas:** a bolsa de iniciação ou a greve da federal, o edital ou o laboratório que apaga a luz, a olimpíada do instituto, a vacina no posto, o satélite na TV e a empresa da patente | |
-| 💼 **Quem é cientista sente a verba:** a vaga e a promoção valem metade com a ciência cortada e 1,6 vez com a prioridade | |
-| 🚀 **As jogadas somam:** a cura paga por quem é bilionário e o foguete em órbita põem a tecnologia do país para cima | |
+| 🛡️ **A política "Defesa":** a oitava da folha País, com o gasto, a relação lá fora e a aprovação de cada nível. Cada bloco tem o seu | 🗺️ **A ocupação e o território:** a guerra não move fronteira |
+| 🎖️ **A capacidade das Forças Armadas:** de 0 a 100, anda devagar com a política e com a tecnologia do país (o armamento moderno vem da pesquisa) | 🏭 **A mobilização da economia** e a logística da guerra |
+| ✈️ **Quatro sistemas de armamento:** caças, submarino, defesa antiaérea e satélite militar (que pede tecnologia). Um por ano, com o custo em reais e a entrega à vista | 🤝 **As alianças militares** e a guerra entre os países de fora (ideia I-51) |
+| ⚔️ **A guerra como processo:** começa com quem sanciona e anda frio, apontando quem esfriou a relação e quem desarmou. Custa todo ano e acaba em vitória, derrota (com reparação) ou cessar-fogo; no oitavo ano, acaba de cansaço | 🏗️ **A reconstrução** como programa de governo |
+| 🕊️ **O pedido de paz:** um por ano, de quem governa. Esquenta a relação e dobra a chance de a guerra acabar no ano seguinte | |
+| 📖 **Oito histórias novas:** a convocação (servir, pedir dispensa ou sumir no interior), o filho convocado, o racionamento, a fábrica de munição, o simulado de abrigo, quem voltou, o desfile de Sete de Setembro e o quartel sem verba. Ninguém morre numa história de guerra | |
+| 💼 **Quem é militar sente a verba:** a vaga e a promoção andam com a defesa | |
 
-No túnel de vento, a tecnologia do país sobe 0,75 ponto por ano com a ciência como prioridade e cai 0,70 com ela cortada. 29% das vidas veem uma descoberta, e 91% delas apontam a decisão que pagou a ciência. O preço aparece na dívida: o calote foi de 1,1% para 1,9% das vidas. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a coroa).
+No túnel de vento, a guerra aparece em 2,9% das vidas, e 89% delas apontam a decisão que esfriou a relação. Nos anos de guerra, o país cresce −2,2% ao ano, contra 2,1% nos de paz. Com o quartel abaixo de 60, a guerra começa em 3,5% dos anos de ameaça; acima, em 2,9%. O preço do quartel reforçado aparece lá fora: as sanções foram de 3.406 para 5.165 nas 10.000 vidas. E a frente popular, que desmobiliza, gasta menos: o calote voltou de 1,9% para 1,1% das vidas. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a ciência).
 
-## 🗺️ Os próximos blocos
+## 🗺️ Os blocos do dono
 
-Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro. A cara nova (V1) e a correção dela (C1 a C3) entraram no meio, a pedido dele:
+Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outro. A cara nova (V1) e a correção dela (C1 a C3) entraram no meio, a pedido dele. Os cinco estão feitos; seguem o bloco B2 (o título comprado pela empresa e o orçamento do governo item por item) e a identidade das pessoas (o ex que continua existindo):
 
 ```mermaid
 flowchart LR
   A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>títulos, cupom e calote"]:::feito
   B --> C["👑 C · A coroa recebe<br/>a forma da coroa e a ilha"]:::feito
   B --> D["🔬 D · O Estado pesquisa<br/>ciência, tecnologia e descobertas"]:::feito
-  B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::proximo
+  B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::feito
   classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
   classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
   classDef depois fill:#8250df,stroke:#6639ba,color:#fff
@@ -65,7 +65,7 @@ flowchart LR
 | 🟢 **B** · O Tesouro | o título do Tesouro com cupom, vencimento e calote; a dívida pública em reais | ✅ feito (o título da empresa espera o caixa dela, I-11) |
 | 🟢 **C** · A coroa recebe | o salário, a parte dos impostos ou a taxa da coroa; a ilha com população, PIB e imposto | ✅ feito |
 | 🟢 **D** · O Estado pesquisa | a ciência paga pelo Tesouro, a tecnologia do país e as descobertas (a cura, o satélite, a patente) | ✅ feito |
-| 🟡 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
+| 🟢 **E** · Defesa | forças armadas com custo e capacidade; os sistemas de armamento; a guerra como processo, com custos e consequências | ✅ feito (a ocupação e as alianças militares ficam para depois) |
 
 ## 🎮 O que o jogo tem
 
@@ -96,6 +96,7 @@ flowchart LR
 
 - O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, tecnologia, aprovação, PIB, população, PIB per capita, Gini, IDH e a dívida pública em reais
 - A ciência paga pelo Tesouro: a tecnologia do país vira crescimento, saúde e empresas, e descoberta (a cura, o satélite, a patente)
+- As Forças Armadas com custo e capacidade, os sistemas de armamento e a guerra como processo: ela começa com quem sanciona e anda frio, custa todo ano e acaba em vitória, derrota ou cessar-fogo
 - Quatro blocos políticos fictícios e o Regime; eleições a cada quatro anos; o seu voto pesa
 - Ser vereador, prefeito, deputado, governador, senador, presidente, monarca ou chefe do Regime; quem governa muda as políticas do país
 - Quatro países fictícios lá fora, com o dólar, sanções, acordos e atos de quem governa
@@ -113,7 +114,7 @@ flowchart LR
 
 - 🏢 O título do Tesouro comprado pela empresa (precisa do caixa da empresa) e o orçamento do governo item por item
 - ⚖️ A legitimidade de quem governa medida à parte da popularidade
-- 🛡️ Forças armadas e guerra (bloco E)
+- 🛡️ A ocupação de território, as alianças militares e a guerra entre os países de fora
 - 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens (a mãe com o pai, o amigo com o par)
 - 💬 Conversar com as pessoas com as suas palavras
 - ✈️ Morar em outro país

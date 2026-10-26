@@ -237,6 +237,7 @@ Quem governa decide quanto o país gasta com as Forças Armadas e o que encomend
   - Derrota: a reparação soma 4 pontos do PIB à dívida, a sanção acaba, a relação vai a 30 e a aprovação cai 8.
   - Cessar-fogo: ninguém assina nada, a sanção continua e a relação vai a 22.
   - A notícia do fim aponta o começo e o pedido de paz.
+- **A herança**: o país, a guerra em curso e a sanção passam a quem herda como estavam (a qualidade aponta a abertura da vida nova). O armamento que quem governava encomendou e ainda não chegou entra na capacidade do país herdado: o livro novo não tem a encomenda, e o que foi pago não se perde.
 - **O tom**: abstrata e sem glorificação. Ninguém morre num storylet de guerra; a guerra mata pela estatística do país e deixa a dívida, a inflação e quem voltou diferente (a marca `veterano`, com epitáfio e o storylet `o_veterano`).
 
 ## O Estado pesquisa (`pesquisa.ts`, bloco D)

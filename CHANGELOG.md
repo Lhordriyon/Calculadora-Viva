@@ -4,6 +4,34 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🛡️ Bloco E · Defesa · 26/10/2026
+
+> [!NOTE]
+> O quinto e último bloco da ordem do dono (19/10): "sistemas de armamento e guerra". A guerra é um processo com custo, e cada notícia dela aponta a decisão que a levou até ali.
+
+- 🛡️ **A política "Defesa"**, a oitava da folha País, em três níveis:
+  - desmobilizada (−0,3 ponto do PIB no gasto), regular e reforçada (+0,5), no primário, como a saúde e a ciência;
+  - armar-se preocupa os vizinhos (a relação com os países de fora anda +2, 0 e −3), e a farda dá um pouco de voto (−1, 0 e +1);
+  - cada bloco tem o seu nível: a aliança da ordem e o Regime reforçam, a frente popular desmobiliza, o bloco liberal e o centrão ficam no regular.
+- 🎖️ **A capacidade das Forças Armadas** (`pais.defesa`, de 0 a 100) anda 8% por ano para onde a política (±15) e a tecnologia (0,3 por ponto acima de 50) levam. A vaga e a promoção de quem é militar andam com a verba da defesa.
+- ✈️ **Os sistemas de armamento** (`mundo.json › sistemas`): caças (0,6 ponto do PIB, +6, em 3 anos), submarino (0,8, +7, em 5), defesa antiaérea (0,3, +3, em 2) e satélite militar (0,4, +4, em 3, com tecnologia 55). Quem governa encomenda um por ano pela folha País, com confirmação: a dívida sobe na hora, e a entrega soma à capacidade, com a encomenda de causa. O que ainda não chegou quando quem governava morre entra na capacidade do país herdado.
+- ⚔️ **A guerra** (`guerra.ts`, a etapa nova do ano, entre o mundo lá fora e o país):
+  - começa com um país que sanciona o Brasil e anda frio (relação abaixo de 25): 5% ao ano, o dobro a cada 15 pontos de capacidade abaixo de 50, até 25%. A notícia aponta a decisão que esfriou a relação e, com o quartel abaixo de 45, a que o desmobilizou;
+  - cada ano dela custa 1,2 ponto de crescimento (a perda se acumula), 2 de inflação, 2 pontos do PIB de gasto, 0,1 ponto da população e aprovação; no primeiro ano, o país se une;
+  - acaba a partir do segundo ano (25% ao ano, 50% depois de um pedido de paz; no oitavo, de cansaço), em vitória, derrota (com 4 pontos do PIB de reparação) ou cessar-fogo (a sanção continua), pela capacidade daqui contra a força de lá. Depois, dez anos sem outra;
+  - na guerra, a sanção do inimigo não acaba, e quem governa só pode pedir a paz a ele.
+- 🕊️ **O pedido de paz:** um por ano, de quem governa; a relação com o outro lado sobe 5, e a notícia aponta o começo.
+- 📖 **Conteúdo** (`59-defesa.json`):
+  - a convocação (servir, pedir dispensa à junta ou sumir no interior) para quem tem de 18 a 30 anos, e a do filho nessa idade, no ano em que a guerra começa;
+  - o racionamento, a fábrica de munição e o simulado de abrigo da escola, nos anos de guerra, com o inimigo no texto;
+  - quem voltou (a marca `veterano`, com epitáfio) e a pergunta no churrasco, anos depois;
+  - o desfile de Sete de Setembro com o quartel equipado e o quartel sem verba para quem é militar;
+  - ninguém morre numa história de guerra: ela mata pela estatística do país.
+- 🤖 **Os robôs:** a cautelosa no poder fica no regular, pede a paz assim que pode e, com ameaça à vista, encomenda o sistema mais barato; a arriscada reforça o quartel, encomenda caças e nunca pede a paz.
+- 🧭 **Uma regra geral:** `decisaoQueDeixou` acha a decisão que deixou qualquer política num nível (a reforma ou a posse de quem a manteve), para a desmobilização da guerra e para a ciência das descobertas.
+
+**Ainda não tem:** a ocupação e o território, a mobilização da economia e a logística, as alianças militares, a guerra entre os países de fora e a reconstrução como programa.
+
 ## 🔬 Bloco D · O Estado pesquisa · 26/10/2026
 
 > [!NOTE]

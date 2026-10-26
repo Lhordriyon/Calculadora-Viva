@@ -891,7 +891,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
     A encomenda vai para a dívida na hora; a entrega soma à capacidade, com a encomenda de causa, e o equipamento envelhece de volta para o alvo.
   - **A dissuasão:** a capacidade muda a chance da guerra (o dobro a cada 15 pontos abaixo de 50, a metade a cada 15 acima).
   - **A vaga de militar anda com a verba da defesa**, como a de cientista com a da ciência (`carreiras › verba`).
-- **O que mudou ao medir (26/10):** nada no desenho da capacidade e dos sistemas. Nas vidas do túnel, quem governa raramente encomenda (os robôs só governam de vez em quando); a encomenda é decisão de quem joga no poder.
+- **O que mudou ao medir (26/10):** nada no desenho da capacidade e dos sistemas. Nas vidas do túnel, quem governa raramente encomenda (os robôs só governam de vez em quando); a encomenda é decisão de quem joga no poder. Entrou uma regra: o que quem governava encomendou e ainda não chegou passa a quem herda, na capacidade do país (o livro novo não tem a encomenda).
 - **Prioridade:** Média · Fase 7.
 - **Estado:** feita (bloco E, 26/10).
 

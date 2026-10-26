@@ -1448,6 +1448,73 @@ O primeiro `verificar` falhou com um storylet morto, o grupo na capa; o conserto
 - **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 97,1 → 96,5 ms por vida (−0,7%, ±2,9%). A etapa da pesquisa custa 0,22 ms por vida (0,2% do ano) e grava 0,4 KB no livro.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Bloco E: defesa (26/10)
+
+O quinto e último bloco da ordem do dono: "sistemas de armamento e guerra" (19/10). Entraram a política de defesa, a capacidade das Forças Armadas, os sistemas de armamento e a guerra como processo: o começo, os anos de guerra e o fim. Ficaram a ocupação e o território, a mobilização da economia, a logística, as alianças militares (I-51), a guerra entre os países de fora e a reconstrução, com os motivos abaixo.
+
+**O que a defesa faz** (`guerra.ts`, `docs/motor.md › A defesa e a guerra`):
+- a política "Defesa" (desmobilizada, regular, reforçada) gasta de −0,3 a +0,5 ponto do PIB, mexe na relação com os países de fora (+2 a −3) e dá um pouco de voto (−1 a +1);
+- a capacidade (`pais.defesa`) anda 8% por ano para onde a política e a tecnologia levam, e os sistemas encomendados somam quando chegam;
+- com um país que sanciona e anda frio, a guerra pode começar, mais fácil com o quartel fraco; cada ano dela custa ao país, e ela acaba em vitória, derrota ou cessar-fogo, com a decisão de causa em cada notícia.
+
+**Medidas** (10.000 vidas):
+
+| Medida | Valor |
+|---|---|
+| Anos com a defesa desmobilizada / regular / reforçada (vidas sorteadas) | 180.612 / 344.583 / 181.106 |
+| A capacidade por ano em cada nível | −0,84 / −0,01 / +0,86 |
+| A capacidade ao morrer (quem nasce começa perto de 50) | p10 43,2, mediana 49,7, p90 57,7 |
+| Guerras por 100 vidas | 3,0, em 2,9% das vidas; 88,9% de 298 apontam a decisão que esfriou a relação |
+| Como acabaram | vitória 59, derrota 92, cessar-fogo 135 (12 corriam quando a vida acabou); 3,6 anos em média, 8 no máximo |
+| O crescimento nos anos de guerra / nos de paz | −2,18% (1.051 anos) / 2,10% |
+| A guerra começa nos anos de ameaça | 3,5% com o quartel abaixo de 60 (4.708 anos), 2,9% acima (4.554) |
+| Sanções (vidas com sanção) | 3.406 → 5.165 (25,3% → 34,4%) |
+| Vidas com calote | 1,9% → 1,1% (187 → 111) |
+| Encomendas por 100 vidas | 2,1 (188 entregas); convocações, 55; 0,3% das vidas voltaram com a marca de quem serviu |
+
+**O túnel** (10.000 vidas; antes = o bloco D publicado, depois = o bloco E):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Falsos dilemas | 0, nos três bolsos | 0, nos três bolsos |
+| Saturação V5 / V20 | 55,7% / 89,7% | 55,1% / 90,2% |
+| Assinaturas por 1.000 vidas (sem a origem) | 906 (589) | 912 (595) |
+| Mobilidade: mesmo quintil / Spearman | 27,0% / 0,34 | 27,1% / 0,33 |
+| Do quintil mais pobre ao mais rico / do mais rico ao mais pobre | 14,4% / 3,1% | 14,4% / 2,6% |
+| Patrimônio p90/p10 | 684,9× | 624,1× |
+| Patrimônio mediano da cautelosa | R$ 63 milhões | R$ 63 milhões |
+| Desvio da felicidade média | 8,75 | 8,72 |
+| Patrimônio negativo ao morrer | 0,7% | 0,7% |
+| Mudanças causadas pelo jogador | 44,3% | 44,3% |
+| Toques por vida | 457,1 | 457,6 |
+| O porquê à vista (acontecimentos com a causa de um ano anterior) | 35,8% | 36,5% |
+| CPU por vida (túnel) | 87,9 ms | 101,8 ms; no A/B na mesma máquina, 111,1 → 112,2 ms (+1,0%) |
+
+Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,83 → 0,82) e as assinaturas sem regressão (906 → 912, para ≥ 918). Dois pioraram: o bilionário feito (1,20% → 1,56%, com teto de 1%) e o do quintil mais rico ao mais pobre, que volta a falhar (3,1% → 2,6%, para ≥ 3,0%). Com outra semente (20261026), as duas versões dão o mesmo sentido: 1,11% → 1,34% e 3,5% → 2,8%, e o calote 2,0% → 1,2%. A explicação está nas decisões abaixo. Os cinco portões novos passam nas duas sementes.
+
+**Decisões tomadas sozinho:**
+- **A defesa é a oitava política, e a guerra é um processo, não um ato.** A política entrou como a ciência e a saúde: três níveis, o gasto em pontos do PIB e o efeito à vista antes da reforma. A guerra não tem botão: ela nasce da relação, e quem governa decide o que leva até ela (romper, desarmar) e o que a encurta (armar-se, pedir a paz).
+- **Os números da defesa.** A reforçada soma 0,5 ponto do PIB ao gasto, e a dívida de equilíbrio de quem reforça sobe 10 pontos; a desmobilizada tira 0,3, e a de quem desmobiliza cai 6. Armar-se esfria a relação com todos os países em 3 pontos (desmobilizar esquenta 2), e a farda vale 1 ponto de aprovação.
+- **Cada bloco tem o seu nível**, para o voto decidir a defesa: a aliança da ordem e o Regime reforçam ("polícia na rua" e "ordem"), a frente popular desmobiliza, o bloco liberal e o centrão ficam no regular. A cautelosa no poder fica no regular; a arriscada reforça.
+- **A capacidade anda devagar** (8% do caminho por ano, mais 0,3 ponto por ponto de tecnologia acima de 50): o quartel equipado leva uma década, e o equipamento que chega envelhece de volta para o alvo. O armamento moderno vem da pesquisa, e a ciência do bloco D passa a armar o país.
+- **Os sistemas de armamento: um por ano, a conta na hora, a entrega com a encomenda de causa.** A encomenda vai para a dívida no ano em que é feita, como um decreto; a entrega é uma notícia do mundo que aponta a encomenda. O que ainda não chegou sai do livro, sem estado novo. O satélite militar pede tecnologia 55: a pesquisa abre o armamento.
+- **A encomenda a caminho passa a quem herda.** O livro da vida nova não tem a encomenda, então o que quem governava pagou e ainda não chegou entra na capacidade do país herdado, como os títulos entram na herança. Sem isso, o submarino pago sumia com a morte de quem o encomendou.
+- **A guerra começa com a relação abaixo de 25, não de 15.** Com 15, nenhuma guerra começou em 1.200 vidas: um país que sanciona e anda tão frio aparece em 0,1% dos anos. Com 25 ("frio", perto de hostil), a guerra aparece em 2,9% das vidas, dentro do portão (de 0,5% a 8%).
+- **Um ano de guerra tira 1,2 ponto do crescimento, não 2,5.** A persistência do ciclo acumula a perda: com 2,5, os anos de guerra ficavam 6,8 pontos abaixo dos de paz (no túnel de 2.000 vidas), e uma guerra de quatro anos levava um quinto do PIB. Com 1,2, a diferença fica em 4,3 pontos. A inflação ganha 2, o governo gasta 2 pontos do PIB a mais, a população cresce 0,1 ponto a menos e a aprovação anda 3 pontos para baixo.
+- **Toda guerra acaba.** A partir do segundo ano, 25% de chance por ano (50% no ano seguinte a um pedido de paz) e, no oitavo, o cessar-fogo de cansaço: sem o teto, uma guerra em treze passaria de dez anos. Depois de uma guerra, dez anos sem outra, para o país não viver uma em série.
+- **O desfecho sai da capacidade contra a força de lá.** 60% das guerras acabam decididas, vitória ou derrota na razão entre a capacidade daqui e a força do outro (a Federação 90, a Celeste 85, a Liga 70, o Pacto 45); o resto é cessar-fogo, e a sanção continua. A derrota soma 4 pontos do PIB de reparação à dívida. Contra a Celeste, quase todas as guerras do túnel, a derrota sai mais que a vitória (92 × 59): o Brasil tem capacidade perto de 50, e ela tem 85.
+- **Na guerra, a sanção do inimigo não acaba, e com ele só cabe pedir a paz.** A sanção cansava (15% ao ano) no meio da guerra, e quem governava podia fazer visita de Estado ao inimigo.
+- **A dissuasão é fraca nas vidas do túnel, e isso é do desenho.** Quem esfria a relação (a aliança da ordem, o Regime) é quem reforça o quartel, então a capacidade dos anos de ameaça fica perto de 60 (com o limite em 50, só 4 anos de ameaça em 2.000 vidas tinham o quartel fraco, e o portão passou a dividir em 60). A dissuasão pesa para quem governa: desarmar e romper é a combinação perigosa (com a capacidade em 20, a chance é 20% ao ano; em 50, 5%).
+- **O preço do quartel reforçado aparece lá fora.** As sanções foram de 3.406 para 5.165 nas 10.000 vidas, e a Celeste sanciona 1,9% dos anos da aliança da ordem (era 1,2%). Ficou: "armar-se preocupa os vizinhos" é o desenho, e o portão das sanções (de 5% a 40% das vidas) passa com 34%.
+- **O calote voltou a 1,1%, e o rico ficou mais rico.** A frente popular, que já gastava mais do que arrecadava e passou a pagar a ciência no bloco D, desmobiliza e gasta 0,3 ponto a menos: a dívida dela passa menos de 100% do PIB, e o calote voltou perto do que era antes da ciência. O calote é o que mais derruba quem tem título e renda fixa, e com ele raro o bilionário feito subiu e a queda do quintil mais rico ficou menor. Os dois portões oscilam de incremento em incremento: o do bilionário falha há vários (entre 1,2% e 1,9%), e o do rico que fica pobre já passou e falhou perto dos 3%. A outra semente dá o mesmo sentido. Nenhum dos dois trava o CI, e mexer neles pede uma decisão sobre o teto da riqueza, fora deste bloco.
+- **Ninguém morre num storylet de guerra.** O tom pedido na I-61 (abstrata e sem glorificação): a guerra mata pela estatística do país (a população) e aparece na vida pela convocação, pelo racionamento, pela fábrica de munição, pelo simulado de abrigo e por quem voltou.
+- **A convocação vale para todo mundo de 18 a 30 anos sem cargo.** O texto é o mesmo para qualquer gênero; o presidente, o deputado e o rei não são convocados.
+- **As histórias da guerra têm peso alto (10).** Elas só cabem nos anos de guerra (3% das vidas), e com peso 6 o racionamento apareceu 2 vezes em 31 guerras. Com 10, a guerra se sente na vida de quem a atravessa; nenhuma morreu no túnel.
+- **Nos robôs, quase ninguém pede a paz** (0 pedidos nas 10.000 vidas): os robôs raramente governam durante uma guerra. O pedido é testado à parte: em 300 guerras, a que pediu a paz no primeiro ano acaba no segundo bem mais vezes do que a que não pediu.
+- **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 111,1 → 112,2 ms por vida (+1,0%, ±1,6%). A etapa da guerra custa 0,43 ms por vida (0,4% do ano) e quase nada no livro; o livro só é lido quando há quem ameace.
+- **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
