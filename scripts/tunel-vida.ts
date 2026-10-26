@@ -347,6 +347,53 @@ export interface Vida {
   dividas: HistoriaDasDividas;
   /** O Tesouro (bloco B): os títulos de quem joga e os calotes que a vida viu. */
   tesouro: HistoriaDoTesouro;
+  /** A coroa (bloco C): os anos com coroa em cada forma, a dotação, as quedas e a ilha. */
+  coroa: HistoriaDaCoroa;
+}
+
+export interface HistoriaDaCoroa {
+  /** Anos com coroa (o Brasil ou a ilha), em cada forma, e a dotação que cada forma pagou. */
+  anos: Record<'salario' | 'impostos' | 'taxa', number>;
+  dotacao: Record<'salario' | 'impostos' | 'taxa', number>;
+  /** Vezes em que a coroa caiu (o cargo de rei ou de soberano acabou em vida), pela forma da hora. */
+  quedas: Record<'salario' | 'impostos' | 'taxa', number>;
+  reinou: boolean;
+  /** A ilha: se a vida fundou (ou herdou) uma, a população no fim e os anos com a taxa da coroa. */
+  ilha: { populacao: number; anosComTaxa: number } | null;
+  /** Dotação paga a quem não tinha coroa (deve ser zero). */
+  dotacaoSemCoroa: number;
+}
+
+/** A coroa pelo livro: segue o cargo e a forma entrada por entrada, e conta os anos, a dotação e as quedas de cada forma. */
+function coroaDaVida(e: EstadoVida): HistoriaDaCoroa {
+  const vazio = (): Record<'salario' | 'impostos' | 'taxa', number> => ({ salario: 0, impostos: 0, taxa: 0 });
+  const t: HistoriaDaCoroa = { anos: vazio(), dotacao: vazio(), quedas: vazio(), reinou: false, ilha: null, dotacaoSemCoroa: 0 };
+  let cargo = '';
+  const forma = { pais: 'salario', ilha: 'salario' } as Record<'pais' | 'ilha', 'salario' | 'impostos' | 'taxa'>;
+  let anosComTaxa = 0;
+  const daCoroa = (): 'pais' | 'ilha' | null => (cargo === 'rei' ? 'pais' : cargo === 'soberano' ? 'ilha' : null);
+  for (const h of e.historico) {
+    const antes = daCoroa();
+    for (const m of h.mudancas ?? []) {
+      if (m.c === 'eu.cargo' && m.t !== undefined) cargo = m.t;
+      if ((m.c === 'pais.coroa' || m.c === 'ilha.coroa') && m.t !== undefined) forma[m.c === 'pais.coroa' ? 'pais' : 'ilha'] = (m.t || 'salario') as 'salario';
+      if (m.c === 'eu.dinheiro' && m.r === 'dotacao' && m.d !== undefined) {
+        const onde = antes ?? daCoroa();
+        if (onde) t.dotacao[forma[onde]] += m.d;
+        else t.dotacaoSemCoroa += m.d;
+      }
+    }
+    const agora = daCoroa();
+    if (agora) t.reinou = true;
+    if (antes && !agora) t.quedas[forma[antes]]++;
+    if (h.tipo === 'regra' && h.ref === 'ano' && agora) {
+      t.anos[forma[agora]]++;
+      if (agora === 'ilha' && forma.ilha === 'taxa') anosComTaxa++;
+    }
+  }
+  const ilha = e.entidades['ilha'];
+  if (ilha) t.ilha = { populacao: ilha.n['populacao'] ?? 0, anosComTaxa };
+  return t;
 }
 
 export interface HistoriaDoTesouro {
@@ -660,6 +707,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     quebrou: e.historico.some((h) => QUEBRAS.has(h.ref ?? '') && h.mudancas?.some((m) => m.c === 'empresa.fundada' && m.q === -1)),
     vendeu: 'vendeu_empresa' in q,
     tesouro: tesouroDaVida(e),
+    coroa: coroaDaVida(e),
     ...contasDaVida(e),
   };
 }

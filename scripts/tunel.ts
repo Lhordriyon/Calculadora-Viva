@@ -760,6 +760,31 @@ const portoesB = [
   ['Quem perde no calote é quem tinha a dívida: nada sai de quem joga fora dos títulos e da renda fixa', perderamSemTer === 0, `${perderamSemTer} vidas`],
 ] as const;
 
+// ---- a coroa (bloco C)
+const FORMAS = ['salario', 'impostos', 'taxa'] as const;
+const NOME_DA_FORMA: Record<(typeof FORMAS)[number], string> = { salario: 'salário da Casa Real', impostos: 'parte dos impostos', taxa: 'taxa da coroa' };
+const comCoroa = todasAsVidas.filter((v) => v.coroa.reinou);
+const somaDa = (f: (v: Vida) => number): number => comCoroa.reduce((t, v) => t + f(v), 0);
+const anosDaForma = (x: (typeof FORMAS)[number]): number => somaDa((v) => v.coroa.anos[x]);
+const quedasPor100 = (x: (typeof FORMAS)[number]): number => (100 * somaDa((v) => v.coroa.quedas[x])) / Math.max(1, anosDaForma(x));
+const ilhas = todasAsVidas.filter((v) => v.coroa.ilha !== null);
+const ilhasComTaxa = ilhas.filter((v) => (v.coroa.ilha?.anosComTaxa ?? 0) >= 5);
+const ilhasSemTaxa = ilhas.filter((v) => (v.coroa.ilha?.anosComTaxa ?? 0) === 0);
+const mediana = (xs: number[]): number => percentil(ordenar(xs), 50);
+const portoesC = [
+  [
+    'A taxa da coroa tem preço: por ano de coroa, ela cai mais com a taxa do que com o salário',
+    anosDaForma('taxa') >= 20 && anosDaForma('salario') >= 20 && quedasPor100('taxa') > quedasPor100('salario'),
+    `${num(quedasPor100('taxa'), 1)} quedas por 100 anos com a taxa (${num(anosDaForma('taxa'), 0)} anos) × ${num(quedasPor100('salario'), 1)} com o salário (${num(anosDaForma('salario'), 0)} anos)`,
+  ],
+  [
+    'A ilha vive: a população de toda ilha andou desde a fundação, e a taxa da coroa a esvazia',
+    ilhas.length > 0 && ilhas.every((v) => v.coroa.ilha!.populacao !== 2300) && (ilhasComTaxa.length === 0 || mediana(ilhasComTaxa.map((v) => v.coroa.ilha!.populacao)) < mediana(ilhasSemTaxa.map((v) => v.coroa.ilha!.populacao))),
+    `${ilhas.length} ilhas; mediana de ${num(mediana(ilhasSemTaxa.map((v) => v.coroa.ilha!.populacao)), 0)} habitantes sem a taxa (${ilhasSemTaxa.length}) e ${ilhasComTaxa.length ? num(mediana(ilhasComTaxa.map((v) => v.coroa.ilha!.populacao)), 0) : '—'} com 5 anos ou mais de taxa (${ilhasComTaxa.length})`,
+  ],
+  ['Toda dotação tem coroa por trás: nenhum real dela para quem não reina', todasAsVidas.every((v) => Math.abs(v.coroa.dotacaoSemCoroa) < 1), `${todasAsVidas.filter((v) => Math.abs(v.coroa.dotacaoSemCoroa) >= 1).length} vidas`],
+] as const;
+
 // ---- o ano em etapas (fatia 1.3)
 const CPU_DA_FATIA_12 = 43.74;
 const cpuEtapa = (id: IdEtapa): number => cpuDaEtapa.get(id)! / Math.max(1, vidasDaAmostraCpu.length);
@@ -927,6 +952,23 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesB) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## A coroa (bloco C)');
+l();
+l(
+  `Quem tem coroa (o monarca do Brasil e quem é soberano da ilha que fundou) escolhe como ela recebe: o salário da Casa Real, uma parte dos impostos ou a taxa da coroa. ` +
+    `A dotação é a renda de quem reina, paga pelo tesouro ou pela ilha, e a aprovação anda para mais baixo com a parte dos impostos e mais ainda com a taxa. ${comCoroa.length} vidas tiveram coroa (todas as vidas do túnel, com as de origem escolhida e as dinastias):`,
+);
+l();
+l('| Forma | Anos de coroa | Dotação por ano (média) | Quedas por 100 anos |');
+l('|---|---|---|---|');
+for (const x of FORMAS) l(`| ${NOME_DA_FORMA[x]} | ${num(anosDaForma(x), 0)} | ${formatarDinheiro(somaDa((v) => v.coroa.dotacao[x]) / Math.max(1, anosDaForma(x)))} | ${num(quedasPor100(x), 1)} |`);
+l();
+l(`A ilha: ${ilhas.length} vidas fundaram ou herdaram uma. População no fim: p10 ${num(percentil(ordenar(ilhas.map((v) => v.coroa.ilha!.populacao)), 10), 0)}, mediana ${num(mediana(ilhas.map((v) => v.coroa.ilha!.populacao)), 0)}, p90 ${num(percentil(ordenar(ilhas.map((v) => v.coroa.ilha!.populacao)), 90), 0)}.`);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesC) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
