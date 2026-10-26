@@ -15,6 +15,7 @@ import { defDoBem } from './bens.ts';
 import { dotacaoDe } from './coroa.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
+import { defSistema, encomendasPendentes } from './guerra.ts';
 import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
@@ -429,6 +430,10 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     const en = antiga.entidades[id];
     if (en) e.entidades[id] = recausar(structuredClone(en), abertura.id);
   }
+  // O armamento que quem governava encomendou e ainda não chegou entra na capacidade do país herdado: o livro novo não
+  // tem a encomenda, e o que foi pago não se perde (guerra.ts).
+  const pais = e.entidades['pais'];
+  if (pais) for (const id of encomendasPendentes(antiga, c).keys()) pais.n['defesa'] = Math.min(100, (pais.n['defesa'] ?? 50) + (defSistema(c, id)?.capacidade ?? 0));
   // As empresas da família passam inteiras para o herdeiro (menos o que pagou a partilha), com a idade, a tração e o jeito de tocar.
   // A primeira é a que ele toca de perto.
   const herdadas = empresasDe(antiga).filter((x) => (espolio.participacoes[x.id] ?? 0) > 0.001);

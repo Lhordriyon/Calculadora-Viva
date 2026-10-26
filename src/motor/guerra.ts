@@ -86,13 +86,15 @@ export function chanceDeGuerra(capacidade: number): number {
  * mais de um), com a chance da guerra. Null em guerra, logo depois de uma ou sem ninguém assim.
  */
 export function ameacaDeGuerra(e: EstadoVida): { pais: Entidade; chance: number } | null {
-  if (inimigoDe(e) || anosDesde(e, 'guerra:', DEFESA.guerra.intervalo) < DEFESA.guerra.intervalo) return null;
+  if (inimigoDe(e)) return null;
   let pior: Entidade | null = null;
   for (const en of parceirosDe(e)) {
     const rel = en.n['relacao'] ?? 50;
     if (en.q['sancao'] && rel < DEFESA.guerra.relacao && (!pior || rel < (pior.n['relacao'] ?? 50))) pior = en;
   }
-  return pior ? { pais: pior, chance: chanceDeGuerra(e.entidades['pais']?.n['defesa'] ?? 50) } : null;
+  // O livro só é lido quando há quem ameace: quase todo ano, ninguém ameaça.
+  if (!pior || anosDesde(e, 'guerra:', DEFESA.guerra.intervalo) < DEFESA.guerra.intervalo) return null;
+  return { pais: pior, chance: chanceDeGuerra(e.entidades['pais']?.n['defesa'] ?? 50) };
 }
 
 /** A notícia do começo da guerra em curso (a causa do que ela faz com o país), se está no livro desta vida. */

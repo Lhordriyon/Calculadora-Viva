@@ -11,14 +11,15 @@ import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { defCarreira, chanceDeEntrar } from '../src/motor/carreira.ts';
 import { POLITICAS } from '../src/motor/constantes.ts';
 import { anoDoExterior } from '../src/motor/diplomacia.ts';
+import { continuarComoHerdeiro } from '../src/motor/herdeiro.ts';
 import { ameacaDeGuerra, chanceDeGuerra, chancesDoFim, encomendasPendentes, regraDaGuerra } from '../src/motor/guerra.ts';
 import { ESCRITAS_DO_MOTOR, ETAPAS_DO_ANO, VONTADES } from '../src/motor/manifesto.ts';
 import { anoDoPais, defGoverno, primarioDe, rumoDoPais } from '../src/motor/pais.ts';
-import { novaEntidade } from '../src/motor/pessoas.ts';
+import { criarPersonagem, novaEntidade } from '../src/motor/pessoas.ts';
 import { DEFESA, VERBA_DA_CARREIRA } from '../src/motor/regras.ts';
 import { criarRng, misturar } from '../src/motor/rng.ts';
 import type { Entrada, EstadoVida } from '../src/motor/tipos.ts';
-import { nascer } from '../src/motor/vida.ts';
+import { morrer, nascer } from '../src/motor/vida.ts';
 import { passo } from './apoio.ts';
 import { foraDa, gravarEtapas } from './gravador.ts';
 
@@ -171,6 +172,20 @@ describe('os sistemas de armamento', () => {
       }
     }
     expect(encomendasPendentes(e, c).size).toBe(0);
+  });
+
+  it('o que foi encomendado e ainda não chegou passa a quem herda: entra na capacidade do país herdado', () => {
+    const e = adulto(22, 60);
+    e.entidades['pais']!.t['governo'] = 'voce';
+    criarPersonagem(e, c, 'filho', []);
+    e.entidades['filho']!.nascimento = e.ano - 30;
+    operar(e, c, { tipo: 'sistema', sistema: 'submarino' });
+    const capacidade = e.entidades['pais']!.n['defesa']!;
+    morrer(e, c);
+    const h = continuarComoHerdeiro(e, c);
+    expect(h.entidades['pais']!.n['defesa']).toBeCloseTo(capacidade + 7, 5);
+    // O livro novo não tem a encomenda: nada chega duas vezes.
+    expect(encomendasPendentes(h, c).size).toBe(0);
   });
 
   it('uma encomenda por ano, a mesma só depois da entrega, e o satélite militar pede tecnologia 55', () => {
