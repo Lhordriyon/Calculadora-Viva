@@ -125,6 +125,8 @@
   "exilado": { "epitafio": "Morreu longe, com o dinheiro do lado e o país do outro." },
   "repressor": { "epitafio": "A história ainda está decidindo o que dizer." },
   "ex_ditador": { "epitafio": "Perdeu a eleição que podia ter fraudado, e entregou a faixa." },
+  "herdeiro_ilha": { "epitafio": "Morreu antes da maioridade, com uma ilha inteira à espera." },
+  "golpista": { "epitafio": "Tentou mandar no país sem pedir licença a ele." },
   "nepotismo": { "epitafio": "O sobrenome abriu a porta; o resto foi com as próprias pernas, ou quase." },
   "nomeado": { "epitafio": "Recebia sem aparecer, até a polícia aparecer." },
   "cliente_duvidoso": { "epitafio": "Teve um cliente que pagava em dólar e explicava pouco." },

@@ -43,6 +43,11 @@ export function ehDaEmpresa(s: Storylet): boolean {
   return Object.keys(s.condicoes ?? {}).some((k) => k.startsWith('empresa.'));
 }
 
+/** As jogadas do poder (o golpe, o autogolpe, a coroa): aparecem na folha de Carreira e poder, não na do Dinheiro. */
+export function ehDoPoder(s: Storylet): boolean {
+  return s.folha === 'poder';
+}
+
 export function precoDe(s: Storylet): number {
   const custos = (s.escolhas ?? []).map(custoDaEscolha).filter((x) => x > 0);
   return custos.length > 0 ? Math.min(...custos) : 0;

@@ -12,7 +12,7 @@
 import { titulosDe, valorDosTitulos } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { idLivre } from './contratos.ts';
-import { anotarCaixa, caixaDe, movimentar } from './economia.ts';
+import { anotarCaixa, caixaDe, movimentar, resgatarDe } from './economia.ts';
 import { definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { faseDe, governoAtual, juroReal } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
@@ -159,12 +159,20 @@ function abrirTitulo(e: EstadoVida, reg: Mudanca[], quanto: number, prazo: Prazo
 }
 
 /**
- * O efeito `comprarTitulo` do conteúdo: empresta ao governo uma fração da conta, se a folha deixaria (a idade, os cinco
- * títulos, a compra mínima, a fatia da dívida); senão, o dinheiro vai para a renda fixa, que também é Tesouro.
+ * O efeito `comprarTitulo` do conteúdo: empresta ao governo uma fração da conta, ou um valor certo (o resgate do país:
+ * o que faltar na conta sai dos investimentos, na ordem de liquidez), se a folha deixaria (a idade, os cinco títulos, a
+ * compra mínima, a fatia da dívida); senão, o dinheiro vai para a renda fixa, que também é Tesouro.
  */
-export function comprarPorEfeito(e: EstadoVida, reg: Mudanca[], fracao: number, prazo: Prazo, origem: number | null): void {
+export function comprarPorEfeito(e: EstadoVida, reg: Mudanca[], pedido: { fracao?: number | undefined; valor?: number | undefined }, prazo: Prazo, origem: number | null): void {
   const eu = e.entidades['eu']!.n;
-  const valor = Math.floor(Math.max(0, eu['dinheiro'] ?? 0) * Math.min(1, Math.max(0, fracao)));
+  const falta = (pedido.valor ?? 0) - Math.max(0, eu['dinheiro'] ?? 0);
+  if (falta > 0) {
+    const antes = caixaDe(eu);
+    eu['dinheiro'] = (eu['dinheiro'] ?? 0) + resgatarDe(eu, falta);
+    anotarCaixa(reg, 'eu', antes, eu);
+  }
+  const naConta = Math.max(0, eu['dinheiro'] ?? 0);
+  const valor = Math.floor(pedido.valor !== undefined ? Math.min(pedido.valor, naConta) : naConta * Math.min(1, Math.max(0, pedido.fracao ?? 0)));
   if (valor < 1) return;
   const op: OperacaoTesouro = { tipo: 'comprarTitulo', valor, prazo };
   if (origem !== null && motivoParaNaoOperarTesouro(e, op) === null) {

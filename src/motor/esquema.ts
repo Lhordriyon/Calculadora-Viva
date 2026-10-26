@@ -182,7 +182,11 @@ const EFEITOS_FIXOS = {
    * investimento, a moeda trocada pelo Tesouro Direto). Sem como comprar (antes dos 18, cinco títulos, pouco dinheiro),
    * o dinheiro vai para a renda fixa, que é Tesouro também.
    */
-  comprarTitulo: z.strictObject({ fracao: z.number().gt(0).max(1), prazo: z.union([z.literal(5), z.literal(10), z.literal(20)]) }).optional(),
+  /** Empresta ao governo uma fração da conta, ou um valor certo em reais de hoje (o que faltar na conta sai dos investimentos). */
+  comprarTitulo: z
+    .strictObject({ fracao: z.number().gt(0).max(1).optional(), valor: z.number().positive().optional(), prazo: z.union([z.literal(5), z.literal(10), z.literal(20)]) })
+    .refine((t) => (t.fracao === undefined) !== (t.valor === undefined), 'use fracao (da conta) ou valor (reais de hoje)')
+    .optional(),
   /** Move uma fração de onde o dinheiro está para outro lugar ("de": "acoes", "para": "renda_fixa", "fracao": 1 vende todas as ações). */
   realocar: z
     .strictObject({ de: z.enum(['dinheiro', ...ATIVOS]), para: z.enum(['dinheiro', ...ATIVOS]), fracao: z.number().gt(0).max(1) })
@@ -312,6 +316,8 @@ export const Storylet = z
     verbo: z.enum(VERBOS).optional(),
     /** Ações: o que aparece no botão do verbo ("cursinho do ENEM"). Jogadas: o nome na lista ("Fundar uma cidade"). */
     rotulo: z.string().min(3).optional(),
+    /** Jogadas: onde aparecem; a folha Dinheiro (padrão) ou a de Carreira e poder (o golpe, o autogolpe, a coroa). */
+    folha: z.enum(['dinheiro', 'poder']).optional(),
     /** Papéis que podem ocupar {ator}: quem age (npc) ou de quem se trata; ou os países de fora (todos do mesmo tipo). */
     ator: z.array(z.enum([...PAPEIS, ...PARCEIROS])).min(1).optional(),
     /** Entre vários atores possíveis, prefere o de menor ("-ator.vinculo") ou maior ("+ator.dinheiro") valor. */
@@ -367,6 +373,7 @@ export const Storylet = z
     } else if (s.verbo || s.rotulo) {
       erro('verbo e rótulo são só de ações e jogadas');
     }
+    if (s.folha && tipo !== 'jogada') erro('folha é só de jogada', 'folha');
     if (tipo === 'npc' && !s.ator) erro('storylet de personagem precisa de ator', 'ator');
     if (s.preferir && !s.ator) erro('preferir só vale com ator', 'preferir');
   });

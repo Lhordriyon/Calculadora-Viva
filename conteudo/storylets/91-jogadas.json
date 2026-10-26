@@ -930,9 +930,9 @@
     "escolhas": [
       {
         "texto": "Comprar títulos e segurar o câmbio",
-        "resumo": "comprou títulos para tirar o país da crise",
+        "resumo": "emprestou ao governo, em títulos do Tesouro, para tirar o país da crise",
         "efeitos": {
-          "dinheiro": -200000000000.0,
+          "comprarTitulo": { "valor": 200000000000, "prazo": 10 },
           "pais.impulso": 3,
           "eu.fama": 25,
           "eu.popularidade": 12,
@@ -946,18 +946,11 @@
                 1,
                 2
               ]
-            },
-            {
-              "evento": "o_pais_te_paga",
-              "em": [
-                3,
-                6
-              ]
             }
           ]
         },
         "resultado": {
-          "texto": "O dólar caiu no mesmo dia. O ministro te chamou de \"parceiro estratégico\"; os jornais, de \"dono do Brasil\"."
+          "texto": "O dólar caiu no mesmo dia. O ministro te chamou de \"parceiro estratégico\"; os jornais, de \"dono do Brasil\". Os títulos pagam juro todo ano, se o país pagar."
         }
       },
       {
@@ -1041,7 +1034,13 @@
         "ditador"
       ]
     },
-    "texto": "Uma ilha vulcânica no Pacífico, sem dono reconhecido, está à venda. Com ela vêm um porto, duas praias e a chance de escrever uma Constituição.",
+    "trechos": {
+      "cargo_daqui": [
+        { "se": { "cargo": ["presidente", "governador", "prefeito", "senador", "deputado_federal", "deputado_estadual", "vereador"] }, "texto": " Reinar lá é deixar o seu cargo aqui." },
+        { "texto": "" }
+      ]
+    },
+    "texto": "Uma ilha vulcânica no Pacífico, sem dono reconhecido, está à venda. Com ela vêm um porto, duas praias e a chance de escrever uma Constituição.{cargo_daqui}",
     "resumo": "comprou uma ilha para fundar um país",
     "escolhas": [
       {
@@ -1659,50 +1658,6 @@
         }
       }
     ]
-  },
-  {
-    "id": "o_pais_te_paga",
-    "apenasAgendado": true,
-    "condicoes": {
-      "marcas": [
-        "salvou_o_pais"
-      ]
-    },
-    "repetivel": true,
-    "intervalo": 1,
-    "texto": "O Tesouro manda o extrato: chegou a hora de devolver o que você pôs no país quando ninguém mais punha.",
-    "resumo": "cobrou do país o dinheiro do resgate",
-    "teste": {
-      "chance": 0.75
-    },
-    "sucesso": {
-      "texto": "Pagaram tudo, com juros. Você salvou o país e ainda lucrou, o que irrita todo mundo.",
-      "resumo": "recebeu de volta, com juros, o dinheiro com que salvou o país",
-      "efeitos": {
-        "dinheiro": 260000000000.0,
-        "eu.fama": 4
-      }
-    },
-    "fracasso": {
-      "texto": "O governo novo deu um calote parcial. Você recebeu um terço, um pedido de desculpas e uma medalha.",
-      "resumo": "levou um calote do governo que salvou",
-      "efeitos": {
-        "dinheiro": 70000000000.0,
-        "felicidade": -6,
-        "marcas": [
-          "inimigo_do_governo"
-        ],
-        "agendar": [
-          {
-            "evento": "receita_no_seu_pe",
-            "em": [
-              1,
-              3
-            ]
-          }
-        ]
-      }
-    }
   },
   {
     "id": "os_bancos_pagam",
@@ -2692,7 +2647,8 @@
         "sucesso": {
           "texto": "A greve acabou no churrasco que você mandou junto. Por enquanto.",
           "efeitos": {
-            "felicidade": 2
+            "felicidade": 2,
+            "eu.popularidade": 15
           }
         },
         "fracasso": {

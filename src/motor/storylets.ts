@@ -159,7 +159,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
 
 /** O que a escolha custa na hora: o dinheiro que sai e o capital de uma empresa aberta com ela. */
 export function custoDaEscolha(esc: Escolha): number {
-  return Math.max(0, -(esc.efeitos?.dinheiro ?? 0)) + (esc.efeitos?.abrirEmpresa?.capital ?? 0);
+  return Math.max(0, -(esc.efeitos?.dinheiro ?? 0)) + (esc.efeitos?.abrirEmpresa?.capital ?? 0) + (esc.efeitos?.comprarTitulo?.valor ?? 0);
 }
 
 /**

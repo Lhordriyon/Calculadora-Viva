@@ -23,11 +23,11 @@ import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { abrirPorEfeito, empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
-import { ehDaEmpresa, jogadasDe } from './fortuna.ts';
+import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
-import { chanceDeSucesso } from './storylets.ts';
+import { chanceDeSucesso, custoDaEscolha, elegivel, opcoesDe } from './storylets.ts';
 import { precoDoTitulo, taxaDoTitulo, type Prazo } from './tesouro.ts';
 import { formaDaCoroa, paisDaCoroa } from './coroa.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
@@ -90,7 +90,7 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   }
   // Comprar o título troca dinheiro parado (que encolhe) pelo cupom do dia, nos anos de horizonte.
   if (ef.comprarTitulo) {
-    const valor = Math.max(0, eu.n['dinheiro'] ?? 0) * ef.comprarTitulo.fracao;
+    const valor = ef.comprarTitulo.valor ?? Math.max(0, eu.n['dinheiro'] ?? 0) * (ef.comprarTitulo.fracao ?? 0);
     v += ((taxaDoTitulo(e, ef.comprarTitulo.prazo) / 100 - rendimentoEsperado(c, 'dinheiro')) * 10 * valor) / REAIS_POR_PONTO;
   }
   const renda = eu.n['renda'] ?? 0;
@@ -294,6 +294,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirDividas(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
+    ...decidirGolpe(estrategia, e, c, rng),
   );
   // Testamento: a aleatória, aos 50, às vezes deixa tudo para alguém fora da linha da lei (o bicho, se houver, tem a preferência,
   // e com bicho vivo ela pensa nisso mais vezes: o bicho morre cedo, e o storylet da herança dele precisa de vez).
@@ -554,7 +555,7 @@ function decidirJogada(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: 
   if (aleatorio(rng) >= chance) return [];
   const teto = liquidoDe(e) * (estrategia === 'cautelosa' ? 0.08 : estrategia === 'arriscada' ? 0.35 : 0.5);
   const jogadas = jogadasDe(e, c)
-    .filter((j) => !ehDaEmpresa(j.s))
+    .filter((j) => !ehDaEmpresa(j.s) && !ehDoPoder(j.s))
     .map((j) =>
       j.opcoes.map((o, i) => ({ id: j.s.id, i, custo: j.custos[i]!, livre: o.disponivel })).filter((x) => x.livre && x.custo <= teto && (x.custo > 0 || estrategia === 'aleatoria')),
     )
@@ -568,6 +569,32 @@ function decidirJogada(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: 
       ? sortear(rng, opcoes)
       : [...opcoes].sort((a, b) => (estrategia === 'arriscada' ? b.custo - a.custo : a.custo - b.custo))[0]!;
   return [{ tipo: 'jogada', id: alvo.id, escolha: alvo.i }];
+}
+
+/**
+ * O poder que não passa pela urna (as jogadas da folha Carreira e poder: ficar no poder, tomar o poder, restaurar a
+ * coroa), para quem pode, uma vez a cada dez anos (a arriscada, a cada quatro): a cautelosa recusa (a última opção, a
+ * que devolve o poder), a arriscada tenta a primeira que cabe no bolso (a mais ousada) e a aleatória sorteia. Quem
+ * governa só pensa em ficar quando o mandato está acabando.
+ */
+function decidirGolpe(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const eu = e.entidades['eu']!;
+  // Sem cargo de presidente, sem influência nem fama, nem abre a seção (e não gasta sorteio: as vidas comuns ficam iguais).
+  const presidente = eu.t['cargo'] === 'presidente';
+  if (e.idade < 30 || (!presidente && (eu.n['influencia'] ?? 0) < 60 && (eu.n['fama'] ?? 0) < 50)) return [];
+  if (presidente && (eu.n['mandato'] ?? 0) > 1) return [];
+  if (aleatorio(rng) >= (estrategia === 'arriscada' ? 0.25 : 0.1)) return [];
+  // Só as do poder, e só a sorteada monta as opções (a folha inteira monta o texto de todas).
+  const jogadas = c.jogadas.filter((s) => ehDoPoder(s) && elegivel(s, e, undefined));
+  if (jogadas.length === 0) return [];
+  const s = sortear(rng, jogadas);
+  const teto = liquidoDe(e) * 0.35;
+  const livres = opcoesDe(e, s, undefined)
+    .map((o, i) => ({ i, livre: o.disponivel && custoDaEscolha(s.escolhas![i]!) <= teto }))
+    .filter((x) => x.livre);
+  if (livres.length === 0) return [];
+  const alvo = estrategia === 'cautelosa' ? livres[livres.length - 1]! : estrategia === 'arriscada' ? livres[0]! : sortear(rng, livres);
+  return [{ tipo: 'jogada', id: s.id, escolha: alvo.i }];
 }
 
 /** O quanto a opção mexe na dependência da empresa (negativo é delegar). */

@@ -126,11 +126,18 @@
   },
   {
     "id": "sucessao_coroa",
-    "ator": ["mae", "pai"],
-    "idade": [18, 99],
-    "condicoes": { "marcas": ["principe", "ator.monarca", "ator.faleceu"] },
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["principe", "pais.monarquia"], "semMarcas": ["monarca", "ditador"] },
     "tensao": 3,
-    "texto": "{ator.quem} morreu, e o Palácio inteiro espera a sua resposta: a coroa é sua. Lá fora, a multidão; na mesa, o juramento; no peito, a vontade de sair correndo.",
+    "trechos": {
+      "quem": [
+        { "se": { "marcaHa": [{ "marca": "mae.faleceu", "max": 1 }], "marcas": ["mae.monarca"] }, "texto": "{mae} morreu" },
+        { "se": { "marcaHa": [{ "marca": "pai.faleceu", "max": 1 }], "marcas": ["pai.monarca"] }, "texto": "{pai} morreu" },
+        { "se": { "eu.idade": { "max": 18 } }, "texto": "Você fez 18 anos, a regência acabou" },
+        { "texto": "Quem reinava morreu" }
+      ]
+    },
+    "texto": "{quem}, e o Palácio inteiro espera a sua resposta: a coroa é sua. Lá fora, a multidão; na mesa, o juramento; no peito, a vontade de sair correndo.",
     "resumo": "decidiu o destino da coroa",
     "escolhas": [
       {
@@ -145,7 +152,7 @@
             "renda": { "definir": 4000000 },
             "eu.influencia": 20,
             "eu.fama": 15,
-            "eu.popularidade": 60
+            "eu.popularidade": 10
           }
         }
       },
@@ -166,8 +173,6 @@
       {
         "texto": "Propor o fim da monarquia",
         "resumo": "propôs um plebiscito para acabar com a monarquia",
-        "condicoes": { "marcas": ["pais.monarquia"] },
-        "bloqueio": "a monarquia já acabou",
         "resultado": {
           "texto": "O país votou pela república, e você virou a pessoa que devolveu o trono. Metade te chama de traidor, metade de herói.",
           "efeitos": {
@@ -325,11 +330,18 @@
   },
   {
     "id": "sucessao_regime",
-    "ator": ["mae", "pai"],
-    "idade": [18, 99],
-    "condicoes": { "marcas": ["herdeiro_regime", "ator.ditador", "ator.faleceu"] },
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["herdeiro_regime", "pais.regime"], "semMarcas": ["ditador"] },
     "tensao": 3,
-    "texto": "{ator.quem} morreu. Os generais esperam na sala ao lado, a TV estatal já preparou o discurso, e o Regime inteiro aguarda: você assume?",
+    "trechos": {
+      "quem": [
+        { "se": { "marcaHa": [{ "marca": "mae.faleceu", "max": 1 }], "marcas": ["mae.ditador"] }, "texto": "{mae} morreu" },
+        { "se": { "marcaHa": [{ "marca": "pai.faleceu", "max": 1 }], "marcas": ["pai.ditador"] }, "texto": "{pai} morreu" },
+        { "se": { "eu.idade": { "max": 18 } }, "texto": "Você fez 18 anos, e a junta que mandava em seu nome se desfez" },
+        { "texto": "Quem mandava no Regime morreu" }
+      ]
+    },
+    "texto": "{quem}. Os generais esperam na sala ao lado, a TV estatal já preparou o discurso, e o Regime inteiro aguarda: você assume?",
     "resumo": "decidiu o destino do Regime",
     "escolhas": [
       {
@@ -344,15 +356,13 @@
             "renda": { "definir": 6000000 },
             "eu.influencia": 30,
             "eu.fama": 20,
-            "eu.popularidade": 45
+            "eu.popularidade": -5
           }
         }
       },
       {
         "texto": "Convocar eleições livres",
         "resumo": "convocou eleições livres e encerrou o Regime",
-        "condicoes": { "marcas": ["pais.regime"] },
-        "bloqueio": "o Regime já acabou",
         "resultado": {
           "texto": "Primeira eleição livre em décadas. Você votou como todo mundo, na fila, e chorou na urna.",
           "efeitos": {
@@ -476,7 +486,14 @@
         "teste": { "atributo": "popularidade", "dificuldade": 55 },
         "sucesso": {
           "texto": "Você ganhou de verdade, por pouco. O mundo inteiro mandou parabéns, e desta vez valia.",
-          "efeitos": { "eu.popularidade": 20, "felicidade": 6, "removerMarcas": ["pais.regime"] }
+          "efeitos": {
+            "eu.cargo": { "definir": "presidente" },
+            "eu.mandato": { "definir": 4 },
+            "marcas": ["redemocratizou", "politico"],
+            "removerMarcas": ["pais.regime", "ditador"],
+            "eu.popularidade": 20,
+            "felicidade": 6
+          }
         },
         "fracasso": {
           "texto": "Você perdeu. Entregou a faixa ao vencedor na TV. Foi o dia mais humilhante e mais digno da sua vida.",

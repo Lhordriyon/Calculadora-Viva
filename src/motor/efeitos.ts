@@ -64,7 +64,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.dinheiro || ef.investir) movimentar(e, reg, { dinheiro: ef.dinheiro, investir: ef.investir, pesos: pesosDoPerfil(e, c), contraparte });
   if (ef.realocar) realocar(e, reg, ef.realocar.de, ef.realocar.para, ef.realocar.fracao);
   if (ef.venderTitulos !== undefined) venderParteDosTitulos(e, reg, ef.venderTitulos);
-  if (ef.comprarTitulo) comprarPorEfeito(e, reg, ef.comprarTitulo.fracao, ef.comprarTitulo.prazo, origem);
+  if (ef.comprarTitulo) comprarPorEfeito(e, reg, ef.comprarTitulo, ef.comprarTitulo.prazo, origem);
   if (ef.fundarIlha) fundarIlha(e, reg);
   if (ef.rendaFator !== undefined) somar(e, reg, 'eu', 'renda', (eu.n['renda'] ?? 0) * (ef.rendaFator - 1));
   if (ef.renda !== undefined) definirNumero(e, reg, 'eu', 'renda', ajustar(eu.n['renda'] ?? 0, ef.renda));

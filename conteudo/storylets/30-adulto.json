@@ -86,6 +86,7 @@
     "apenasAgendado": true,
     "condicoes": {
       "renda": { "min": 15000 },
+      "cargo": false,
       "semMarcas": ["servidor", "empreendedor", "aposentado", "influencer", "profissional"]
     },
     "repetivel": true,

@@ -1,0 +1,181 @@
+[
+  {
+    "id": "ficar_no_poder",
+    "tipo": "jogada",
+    "folha": "poder",
+    "rotulo": "Ficar no poder",
+    "idade": [30, 95],
+    "condicoes": { "cargo": "presidente", "semMarcas": ["golpista"] },
+    "intervalo": 4,
+    "texto": "O ministro da Defesa pediu uma conversa a sós e trouxe três papéis: um decreto que fecha o Congresso, uma emenda que muda a Constituição e o calendário da próxima eleição. Ele diz que os quartéis fazem o que você mandar.",
+    "resumo": "decidiu se ficava no poder",
+    "escolhas": [
+      {
+        "texto": "Fechar o Congresso e governar por decreto",
+        "resumo": "fechou o Congresso e passou a governar por decreto",
+        "teste": { "atributo": "popularidade", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Tanques na Esplanada, o Congresso de portas fechadas e você em rede nacional dizendo que é temporário. Ninguém acreditou, e ninguém conseguiu impedir.",
+          "efeitos": {
+            "eu.cargo": { "definir": "ditador" },
+            "renda": { "definir": 6000000 },
+            "marcas": ["ditador", "golpista", "pais.regime"],
+            "removerMarcas": ["politico"],
+            "eu.influencia": 15,
+            "eu.popularidade": -15,
+            "pais.impulso": -1
+          }
+        },
+        "fracasso": {
+          "texto": "Os quartéis ficaram parados e o Congresso, aberto. O impeachment saiu em uma semana, e você deixou o Palácio pela garagem, com uma caixa de papelão.",
+          "resumo": "tentou fechar o Congresso e caiu",
+          "efeitos": {
+            "eu.cargo": { "definir": "" },
+            "renda": { "definir": 0 },
+            "marcas": ["derrubado", "golpista"],
+            "removerMarcas": ["politico"],
+            "eu.influencia": -30,
+            "eu.popularidade": -20,
+            "felicidade": -12
+          }
+        }
+      },
+      {
+        "texto": "Mudar a Constituição para mais um mandato",
+        "resumo": "tentou mudar a Constituição para ficar mais quatro anos",
+        "teste": { "atributo": "influencia", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "A emenda passou por três votos, num plenário cheio de gente que você sabe quanto custou. Mais quatro anos, com a Constituição do seu lado e o país dividido.",
+          "resumo": "mudou a Constituição e ganhou mais quatro anos de mandato",
+          "efeitos": { "eu.mandato": 4, "eu.popularidade": -8, "eu.influencia": -5, "felicidade": 3, "pais.impulso": -0.5 }
+        },
+        "fracasso": {
+          "texto": "A emenda caiu no plenário, e a foto dos ministros de cabeça baixa saiu em todos os jornais. Você vai até o fim do mandato, menor.",
+          "efeitos": { "eu.popularidade": -10, "eu.influencia": -10, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Cumprir o mandato e passar a faixa",
+        "resumo": "guardou os papéis e marcou a data de passar a faixa",
+        "resultado": {
+          "texto": "Você guardou os papéis na gaveta e marcou a data da passagem da faixa. O ministro saiu do gabinete com cara de quem perdeu uma aposta, e o mercado, aliviado, subiu.",
+          "efeitos": { "eu.popularidade": 4, "felicidade": 2, "pais.impulso": 0.5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "tomar_o_poder",
+    "tipo": "jogada",
+    "folha": "poder",
+    "rotulo": "Tomar o poder",
+    "idade": [30, 85],
+    "condicoes": { "cargo": false, "eu.influencia": { "min": 60 }, "semMarcas": ["golpista", "exilado", "pais.regime"] },
+    "intervalo": 8,
+    "texto": "Três generais da reserva, um banqueiro e um apresentador de TV jantaram na sua casa e saíram sem sobremesa. A conversa foi uma só: o país precisa de \"ordem\", e eles acham que a ordem tem o seu rosto.",
+    "resumo": "ouviu a proposta de um golpe",
+    "escolhas": [
+      {
+        "texto": "Liderar os quartéis",
+        "resumo": "liderou os quartéis num golpe de Estado",
+        "condicoes": { "carreira": "militar", "nivel": { "min": 4 } },
+        "bloqueio": "os quartéis só seguem coronel ou general",
+        "teste": { "atributo": "influencia", "dificuldade": 65 },
+        "sucesso": {
+          "texto": "Os tanques saíram de madrugada, e às sete a TV já tocava o hino. Às oito você leu o primeiro decreto; às nove, metade do país tinha desligado o noticiário, e a outra metade, saído das ruas.",
+          "efeitos": {
+            "eu.cargo": { "definir": "ditador" },
+            "renda": { "definir": 6000000 },
+            "marcas": ["ditador", "golpista", "pais.regime"],
+            "removerMarcas": ["pais.monarquia"],
+            "eu.influencia": 20,
+            "eu.popularidade": -15,
+            "eu.fama": 25,
+            "pais.impulso": -1.5
+          }
+        },
+        "fracasso": {
+          "texto": "Um capitão avisou o governo duas horas antes. Os tanques nem saíram do quartel, e você foi pres{o|a} de farda, ao vivo, na frente das câmeras que tinha convocado.",
+          "resumo": "tentou um golpe de Estado e foi pres{o|a}",
+          "efeitos": { "marcas": ["golpista", "condenado"], "eu.influencia": -35, "eu.popularidade": -20, "eu.fama": 15, "felicidade": -15 }
+        }
+      },
+      {
+        "texto": "Financiar os generais",
+        "resumo": "financiou um golpe de Estado",
+        "efeitos": { "dinheiro": -20000000000 },
+        "teste": { "atributo": "influencia", "dificuldade": 75 },
+        "sucesso": {
+          "texto": "O dinheiro chegou aos quartéis antes da notícia chegar ao governo. Na manhã seguinte, os generais te entregaram a faixa, a caneta e uma lista do que esperam receber de volta.",
+          "efeitos": {
+            "eu.cargo": { "definir": "ditador" },
+            "renda": { "definir": 6000000 },
+            "marcas": ["ditador", "golpista", "pais.regime"],
+            "removerMarcas": ["pais.monarquia"],
+            "eu.influencia": 15,
+            "eu.popularidade": -20,
+            "eu.fama": 25,
+            "pais.impulso": -1.5
+          }
+        },
+        "fracasso": {
+          "texto": "Os generais pegaram o dinheiro e entregaram você. A operação da Polícia Federal teve nome de constelação e helicóptero na porta de casa.",
+          "resumo": "financiou um golpe que deu errado e foi pres{o|a}",
+          "efeitos": { "marcas": ["golpista", "condenado"], "eu.influencia": -35, "eu.popularidade": -25, "eu.fama": 15, "felicidade": -15 }
+        }
+      },
+      {
+        "texto": "Recusar e contar tudo à imprensa",
+        "resumo": "recusou o golpe e contou tudo à imprensa",
+        "resultado": {
+          "texto": "A entrevista parou o país por uma noite. Os generais foram para a reserva da reserva, o banqueiro negou tudo e o apresentador mudou de canal.",
+          "efeitos": { "eu.popularidade": 10, "eu.fama": 8, "eu.influencia": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "restaurar_a_monarquia",
+    "tipo": "jogada",
+    "folha": "poder",
+    "rotulo": "Restaurar a monarquia",
+    "idade": [35, 90],
+    "condicoes": { "patrimonio": { "min": 10000000000 }, "eu.fama": { "min": 50 }, "semMarcas": ["pais.monarquia", "pais.regime", "monarca", "ditador", "golpista"] },
+    "intervalo": 10,
+    "texto": "Um historiador garante que a sua família descende, por caminhos tortos, de um ramo esquecido da antiga Casa Imperial. Um movimento monarquista já tem bandeira, hino e dois deputados, e quer saber se você topa ser a cara da volta da coroa.",
+    "resumo": "pensou em restaurar a monarquia",
+    "escolhas": [
+      {
+        "texto": "Bancar o plebiscito e a campanha",
+        "resumo": "bancou um plebiscito para restaurar a monarquia",
+        "efeitos": { "dinheiro": -5000000000 },
+        "teste": { "atributo": "popularidade", "dificuldade": 70 },
+        "sucesso": {
+          "texto": "O sim venceu por dois pontos, num domingo de chuva. Coroação em rede nacional, manto bordado às pressas e um país inteiro curioso para ver no que vai dar.",
+          "resumo": "restaurou a monarquia e foi coroad{o|a}",
+          "efeitos": {
+            "eu.cargo": { "definir": "rei" },
+            "renda": { "definir": 4000000 },
+            "marcas": ["monarca", "pais.monarquia"],
+            "removerMarcas": ["politico"],
+            "eu.fama": 20,
+            "eu.influencia": 10
+          }
+        },
+        "fracasso": {
+          "texto": "O não venceu com folga, e a sua foto de coroa de papelão virou figurinha em todos os grupos do país.",
+          "resumo": "perdeu o plebiscito da monarquia",
+          "efeitos": { "eu.popularidade": -10, "eu.fama": 10, "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Agradecer e deixar a coroa no museu",
+        "resumo": "deixou a coroa no museu",
+        "resultado": {
+          "texto": "Você mandou uma carta educada ao movimento e uma doação ao museu. O hino monarquista virou o toque do seu celular, por ironia.",
+          "efeitos": { "felicidade": 1, "eu.fama": 2 }
+        }
+      }
+    ]
+  }
+]
