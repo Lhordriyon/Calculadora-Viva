@@ -4,6 +4,35 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🔬 Bloco D · O Estado pesquisa · 26/10/2026
+
+> [!NOTE]
+> O quarto bloco da ordem do dono (19/10): "usar o Tesouro do Estado para pagar pesquisa e desenvolvimento". A pesquisa vira cura, satélite e patente, e cada uma aponta a decisão que a pagou.
+
+- 🔬 **A política "Ciência e tecnologia"**, a sétima da folha País, em três níveis:
+  - cortada (0,3% do PIB), regular (0,5%) e prioridade (0,9%), pagos pelo Tesouro: o gasto entra no primário, e a dívida anda com ele;
+  - cada bloco tem o seu nível: a frente popular e o Regime pesquisam como prioridade, o bloco liberal corta, a aliança da ordem e o centrão ficam no regular;
+  - a folha País mostra a pesquisa pública em reais e, na reforma, o custo e a tecnologia antes de aprovar.
+- 📈 **A tecnologia do país** (`pais.tecnologia`, de 0 a 100) anda 6% por ano para onde a ciência (±15) e a escola (0,4 por ponto acima de 50) levam. Ela volta:
+  - como crescimento potencial: 0,02 ponto por ponto acima de 50;
+  - como saúde pública: 0,2 no alvo por ponto;
+  - como tração das empresas: 0,04 na tecnologia, 0,02 na saúde e na indústria, 0,015 no agro;
+  - como a vaga e a promoção de quem é cientista: metade com a ciência cortada, 1,6 vez com a prioridade.
+- 💉 **As descobertas** (`pesquisa.ts`): acima de 55 de tecnologia, a cura (+4 de saúde pública), o satélite (+3 de aprovação) e a patente (+2 de tecnologia), no máximo uma a cada 4 anos. Cada uma é uma notícia na linha do tempo e aponta a decisão que deixou a ciência como prioridade (a reforma ou a posse de quem a manteve), mesmo desfeita depois. No ano seguinte, ela chega à vida de quem joga.
+- ✈️ **A fuga de cérebros:** com a ciência cortada e a tecnologia abaixo de 42, os laboratórios esvaziam (−3 de tecnologia), com o corte de causa.
+- 📖 **Conteúdo** (`59-pesquisa.json`):
+  - a bolsa de iniciação (que abre o caminho para ser cientista) ou a greve da federal, para quem está na faculdade;
+  - o edital ou o laboratório que apaga a luz, para quem já pesquisou;
+  - a olimpíada do instituto, para quem é adolescente num país de tecnologia alta;
+  - a vacina no posto, o satélite na TV da escola e a empresa da patente, agendados pela descoberta;
+  - a cura paga por quem é bilionário e o foguete em órbita somam ao estoque do país, e liberar a fórmula da cura soma à saúde pública.
+- 🧭 **Ler uma política é consultar quem a decidiu:** o storylet que pede `pais.pol_*` aponta a posse ou a reforma que a pôs ali.
+- 🤖 **Os robôs:** a cautelosa no poder põe a ciência como prioridade, e a arriscada corta.
+- 💸 **O preço da ciência aparece na dívida:** a frente popular, que já gastava mais do que arrecadava, passou a pagar a ciência, e o calote foi de 1,1% para 1,9% das vidas no túnel.
+- 🔧 **Um conserto:** o grupo na capa pede duas empresas, não três; ele estava à beira de sumir do jogo.
+
+**Ainda não tem:** o orçamento do governo item por item, a pesquisa das empresas, os cientistas como pessoas e a corrida tecnológica com os países de fora.
+
 ## 👑 Bloco C · A coroa recebe · 26/10/2026
 
 > [!NOTE]

@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-C%3A%20a%20coroa%20recebe-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-817-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-D%3A%20o%20Estado%20pesquisa-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-825-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,33 +15,34 @@
 
 ---
 
-## 🆕 Novidades: Bloco C · A coroa recebe (26/10/2026)
+## 🆕 Novidades: Bloco D · O Estado pesquisa (26/10/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** quem tem coroa escolhe como ela recebe. Vale para o monarca do Brasil e para quem é soberano da ilha que fundou:
-> - o salário da Casa Real, fixo;
-> - uma parte dos impostos, que sobe e desce com a economia;
-> - a taxa da coroa, um imposto a mais só para ela.
+> **O que mudou:** quem governa decide quanto do orçamento vai para a ciência. A folha País ganhou a política "Ciência e tecnologia":
+> - cortada, 0,3% do PIB;
+> - regular, 0,5% do PIB;
+> - prioridade, 0,9% do PIB.
 >
-> Cobrar mais custa aprovação, e abaixo de 30% o cargo balança. E a ilha que você funda virou um país de verdade, com população, PIB e imposto.
+> O dinheiro sai do Tesouro, e a dívida anda com ele. Em troca, a tecnologia do país sobe devagar e volta, uma década depois, como crescimento, saúde e empresas que crescem mais. Acima de um ponto, o país descobre coisas: a vacina feita aqui, o satélite e a patente que vira indústria. Com a ciência cortada, os cientistas vão embora.
 
 > [!TIP]
 > **Para testar:**
-> - Escolha a origem na linhagem da família real e aceite a coroa. Na folha Carreira e poder, troque o salário pela taxa da coroa: um a três anos depois, a rua enche de coroas de papelão rasgadas.
-> - Fique rica o bastante para "Fundar um país" (em Brincar de deus). A ilha ganha o nome da sua cidade natal, 2.300 habitantes e PIB próprio. Com a taxa da coroa, o barco de mudança sai lotado.
-> - Morra soberana com um filho: ele herda a ilha e a coroa dela, com a forma que você escolheu.
+> - Abra a folha País: a tecnologia está em "Como está", e a pesquisa pública em reais, em "Em números". O voto decide, porque a frente popular põe a ciência como prioridade e o bloco liberal corta.
+> - Chegue a presidente e ponha a ciência como prioridade (a reforma mostra o custo antes). Anos depois, a descoberta aponta a sua reforma como causa.
+> - Entre na faculdade num governo que prioriza a ciência e pegue a bolsa de iniciação. Num governo que corta, a federal para.
+> - Com a tecnologia alta, a vacina chega ao posto no ano seguinte à descoberta. Se você for criança, o satélite passa na TV da escola. Com R$ 50 mil na conta, dá para entrar de sócio na empresa da patente.
 
 | ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 👑 **Como a coroa recebe:** salário, parte dos impostos ou taxa da coroa, com a dotação e o custo de cada forma à vista antes de escolher. A forma muda uma vez por ano | ⚖️ **A legitimidade medida à parte da popularidade** (ideia I-42): ela mexe em todo o poder e fica para um bloco próprio |
-| 💸 **A dotação é a renda de quem reina:** o Tesouro (no Brasil) ou a ilha paga, e ela é recalculada todo ano pela forma escolhida | 🏝️ **O imposto da ilha como decisão** (o paraíso fiscal) e as empresas que se mudam para lá |
-| 📉 **O povo reage:** com a parte dos impostos, a aprovação anda 5 pontos para baixo; com a taxa, 15. Abaixo de 30%, o Brasil faz o plebiscito e a ilha entra em greve geral | 🎖️ **O ditador:** o Regime continua com o salário dele, porque não é coroa |
-| 🏝️ **A ilha é um país:** tem nome ("Nova" mais a sua cidade natal), população, PIB e imposto de 20%, e anda todo ano. Reconhecida, cresce mais; com a taxa da coroa, esvazia | 🌐 **O reconhecimento como processo**, e a ilha nas relações com os países de fora |
-| 👪 **A ilha passa a quem herda,** com a coroa e a forma escolhida | |
-| 📖 **Quatro histórias novas, que chegam por causa da sua decisão:** a rua contra a taxa, a conta da parte dos impostos, a ilha que passou de 2.600 habitantes e o barco de mudança | |
-| 🔧 **Três consertos:** a greve na ilha fala da população de agora e volta quando a aprovação cai. As propostas de emprego (a concorrente, o recrutador, o trabalho remoto em dólar) não chegam mais a quem tem cargo. As histórias de quem reina (a assinatura, as mordomias, o jubileu) aparecem num reinado comum; antes, quase nunca | |
+| 🔬 **A ciência paga pelo Tesouro:** a sétima política da folha País, com o custo em pontos do PIB e em reais. Cada bloco tem o seu nível | 📊 **O orçamento do governo item por item** (bloco B2): a pesquisa entra no gasto em pontos do PIB, como a saúde e a escola |
+| 📈 **A tecnologia do país:** um estoque de 0 a 100 que anda devagar com a ciência e com a escola. Ela volta como crescimento, saúde pública e tração das empresas (as de tecnologia mais; as de saúde, indústria e agro, menos) | 🏢 **A pesquisa das empresas:** a empresa ainda não tem caixa próprio (ideia I-11) |
+| 💉 **As descobertas:** a cura, o satélite e a patente. Cada uma aponta a decisão que deixou a ciência como prioridade, mesmo se outro governo a desfez depois | 👩‍🔬 **Os cientistas como pessoas** e o setor privado do país (ideia I-36) |
+| ✈️ **A fuga de cérebros:** com a ciência cortada e a tecnologia baixa, os laboratórios esvaziam, e o corte é a causa | 🌍 **A corrida tecnológica** com os países de fora |
+| 🎓 **Oito histórias novas:** a bolsa de iniciação ou a greve da federal, o edital ou o laboratório que apaga a luz, a olimpíada do instituto, a vacina no posto, o satélite na TV e a empresa da patente | |
+| 💼 **Quem é cientista sente a verba:** a vaga e a promoção valem metade com a ciência cortada e 1,6 vez com a prioridade | |
+| 🚀 **As jogadas somam:** a cura paga por quem é bilionário e o foguete em órbita põem a tecnologia do país para cima | |
 
-No túnel de vento, 111 vidas tiveram coroa. Com a taxa, a coroa cai 2,2 vezes a cada 100 anos de reinado, contra 0,6 com o salário. A ilha de quem cobra a taxa por 5 anos ou mais termina com metade da gente: 1.413 habitantes, contra 2.791 sem a taxa. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o Tesouro).
+No túnel de vento, a tecnologia do país sobe 0,75 ponto por ano com a ciência como prioridade e cai 0,70 com ela cortada. 29% das vidas veem uma descoberta, e 91% delas apontam a decisão que pagou a ciência. O preço aparece na dívida: o calote foi de 1,1% para 1,9% das vidas. Nenhuma estratégia passou a vencer em tudo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a coroa).
 
 ## 🗺️ Os próximos blocos
 
@@ -51,8 +52,8 @@ Pedidos do dono em 19/10, em blocos pequenos, na ordem em que um precisa do outr
 flowchart LR
   A["🇧🇷 A · O país em números<br/>PIB, população, Gini, IDH"]:::feito --> B["🏛️ B · O Tesouro<br/>títulos, cupom e calote"]:::feito
   B --> C["👑 C · A coroa recebe<br/>a forma da coroa e a ilha"]:::feito
-  B --> D["🔬 D · O Estado pesquisa<br/>pesquisa paga pelo Tesouro"]:::proximo
-  B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::depois
+  B --> D["🔬 D · O Estado pesquisa<br/>ciência, tecnologia e descobertas"]:::feito
+  B --> E["🛡️ E · Defesa<br/>forças armadas e guerra"]:::proximo
   classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
   classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
   classDef depois fill:#8250df,stroke:#6639ba,color:#fff
@@ -63,8 +64,8 @@ flowchart LR
 | 🟢 **A** · O país em números | PIB, população, PIB per capita, Gini, IDH | ✅ feito |
 | 🟢 **B** · O Tesouro | o título do Tesouro com cupom, vencimento e calote; a dívida pública em reais | ✅ feito (o título da empresa espera o caixa dela, I-11) |
 | 🟢 **C** · A coroa recebe | o salário, a parte dos impostos ou a taxa da coroa; a ilha com população, PIB e imposto | ✅ feito |
-| 🟡 **D** · O Estado pesquisa | quem governa decide quanto do orçamento vai para P&D; a pesquisa vira cura, satélite, patente | precisa do orçamento (B) |
-| 🟣 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
+| 🟢 **D** · O Estado pesquisa | a ciência paga pelo Tesouro, a tecnologia do país e as descobertas (a cura, o satélite, a patente) | ✅ feito |
+| 🟡 **E** · Defesa | forças armadas com custo e capacidade; guerra como processo, com custos e consequências | precisa do orçamento (B) e do mundo lá fora (já feito) |
 
 ## 🎮 O que o jogo tem
 
@@ -93,7 +94,8 @@ flowchart LR
 <details>
 <summary><b>🏛️ O país e o mundo</b></summary>
 
-- O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, aprovação, PIB, população, PIB per capita, Gini, IDH e a dívida pública em reais
+- O país vivo: crescimento, desemprego, inflação, juros, dívida, pobreza, violência, saúde e educação públicas, tecnologia, aprovação, PIB, população, PIB per capita, Gini, IDH e a dívida pública em reais
+- A ciência paga pelo Tesouro: a tecnologia do país vira crescimento, saúde e empresas, e descoberta (a cura, o satélite, a patente)
 - Quatro blocos políticos fictícios e o Regime; eleições a cada quatro anos; o seu voto pesa
 - Ser vereador, prefeito, deputado, governador, senador, presidente, monarca ou chefe do Regime; quem governa muda as políticas do país
 - Quatro países fictícios lá fora, com o dólar, sanções, acordos e atos de quem governa
@@ -111,7 +113,6 @@ flowchart LR
 
 - 🏢 O título do Tesouro comprado pela empresa (precisa do caixa da empresa) e o orçamento do governo item por item
 - ⚖️ A legitimidade de quem governa medida à parte da popularidade
-- 🔬 Pesquisa e desenvolvimento pagos pelo Estado (bloco D)
 - 🛡️ Forças armadas e guerra (bloco E)
 - 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens (a mãe com o pai, o amigo com o par)
 - 💬 Conversar com as pessoas com as suas palavras
