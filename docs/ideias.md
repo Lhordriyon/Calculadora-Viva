@@ -50,7 +50,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | A · O país em números | PIB, PIB per capita, Gini, IDH e população | I-96 (e o começo da I-70) | feito (19/10) |
 | B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
 | C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | feito (26/10): a forma da coroa e a ilha com população e PIB; a legitimidade (I-42) e o ditador ficam para depois |
-| D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | em andamento (26/10): a política de ciência, o estoque de tecnologia e as descobertas |
+| D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | feito (26/10): a política de ciência, o estoque de tecnologia e as descobertas; o orçamento item por item e a pesquisa das empresas ficam para depois |
 | E · Defesa | sistemas de armamento e guerra | I-60, I-61 | depois do B |
 
 ## Índice
@@ -96,7 +96,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-51 | Alianças e blocos econômicos | 6 | Média | proposta |
 | I-52 | Instituições multilaterais | 6 | Média | proposta |
 | I-53 | Poder nacional por dimensões | 6 | Média | proposta |
-| I-54 | Pesquisa e tecnologia como estoque | 6 | Média | em andamento (bloco D): a política de ciência, o estoque de tecnologia e as descobertas |
+| I-54 | Pesquisa e tecnologia como estoque | 6 | Média | feita em parte (bloco D, 26/10): o investimento vira estoque e o estoque vira produtividade, com causa no livro; faltam a pesquisa das empresas e o setor privado (I-36) |
 | I-60 | Forças armadas como capacidade | 7 | Média | proposta (bloco E do dono) |
 | I-61 | Guerra como processo com custos | 7 | Média | proposta (bloco E do dono) |
 | I-62 | Coerção econômica além da sanção | 7 | Baixa | proposta |
@@ -863,7 +863,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - os pesquisadores como pessoas e o setor privado do país (I-36);
   - a corrida tecnológica com os países de fora.
 - **Prioridade:** Média · bloco D do dono.
-- **Estado:** em andamento (bloco D, 26/10).
+- **Estado:** feita em parte (bloco D, 26/10): o investimento público vira estoque e o estoque vira produtividade, saúde e descoberta, com causa no livro. Faltam a pesquisa das empresas e o setor privado (I-36).
 
 ## Fase 7 — defesa e conflito
 

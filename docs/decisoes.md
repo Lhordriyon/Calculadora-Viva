@@ -1386,6 +1386,68 @@ O primeiro `verificar` falhou com um storylet morto, o negócio da família que 
 - **A CPU subiu 5,1% no A/B:** 20 rodadas alternadas de cada versão, de 150 a 300 vidas, deram 108,1 → 113,6 ms por vida (±3,5%). O livro tem o mesmo tamanho (395 → 396 entradas por vida), e a etapa da coroa custa 0,11 ms por vida (0,1% do ano). O perfil não aponta uma função nova entre as que mais custam: a diferença se espalha pelas de sempre, como a elegibilidade dos storylets e os atores possíveis. Nesta máquina, uma rodada variou de 100 a 127 ms.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Bloco D: o Estado pesquisa (26/10)
+
+O quarto bloco da ordem do dono: "usar o Tesouro do Estado para pagar pesquisa e desenvolvimento" (19/10). Entrou a política de ciência, o estoque de tecnologia do país e o que ele vira: as descobertas (a cura, o satélite, a patente) e a fuga de cérebros, com a decisão de causa. Ficaram o orçamento item por item (bloco B2), a pesquisa das empresas (I-11), os cientistas como pessoas (I-36) e a corrida com os países de fora, com os motivos abaixo.
+
+**O que a pesquisa faz** (`pesquisa.ts`, `docs/motor.md › O Estado pesquisa`):
+- a política "Ciência e tecnologia" (cortada, regular, prioridade) põe de 0,3% a 0,9% do PIB em pesquisa, e o gasto entra no primário;
+- a tecnologia do país (`pais.tecnologia`) anda 6% por ano para onde a ciência e a escola levam e volta como crescimento potencial, saúde pública, tração das empresas e a vaga de quem é cientista;
+- acima de 55, as descobertas; com a ciência cortada e a tecnologia abaixo de 42, a fuga de cérebros; cada uma aponta a decisão que fez o estoque e chega à vida de quem joga.
+
+**Medidas** (10.000 vidas):
+
+| Medida | Valor |
+|---|---|
+| Anos com a ciência cortada / regular / prioridade (vidas sorteadas) | 171.202 / 342.129 / 192.428 |
+| A tecnologia por ano em cada nível | −0,70 / −0,04 / +0,75 |
+| A tecnologia ao morrer (quem nasce começa perto de 50) | p10 42,3, mediana 49,9, p90 58,5 |
+| Descobertas por 100 vidas | a cura 16,5, o satélite 18,0, a patente 16,8; 28,7% das vidas veem uma |
+| Descobertas com a decisão de causa | 90,7% de 5.119 |
+| Vidas com fuga de cérebros | 25,8% |
+| Vidas com calote | 1,1% → 1,9% (107 → 187) |
+
+**O túnel** (10.000 vidas; antes = o bloco C publicado, depois = o bloco D):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Storylets mortos / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| Falsos dilemas | 0, nos três bolsos | 0, nos três bolsos |
+| Saturação V5 / V20 | 55,7% / 90,1% | 55,7% / 89,7% |
+| Assinaturas por 1.000 vidas (sem a origem) | 909 (581) | 906 (589) |
+| Mobilidade: mesmo quintil / Spearman | 27,0% / 0,33 | 27,0% / 0,34 |
+| Do quintil mais pobre ao mais rico / do mais rico ao mais pobre | 13,2% / 2,8% | 14,4% / 3,1% |
+| Patrimônio p90/p10 | 645,1× | 684,9× |
+| Patrimônio mediano da cautelosa | R$ 62 milhões | R$ 63 milhões |
+| Desvio da felicidade média | 8,72 | 8,75 |
+| Patrimônio negativo ao morrer | 0,6% | 0,7% |
+| Mudanças causadas pelo jogador | 44,2% | 44,3% |
+| Toques por vida | 455,7 | 457,1 |
+| O porquê à vista (acontecimentos com a causa de um ano anterior) | 34,2% | 35,8% |
+| CPU por vida (túnel) | 105,9 ms | 87,9 ms; no A/B na mesma máquina, 97,1 → 96,5 ms (−0,7%) |
+
+Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,85 → 0,83), o bilionário feito (1,40% → 1,20%, com teto de 1%) e as assinaturas sem regressão (909 → 906, para ≥ 918). O do quintil mais rico ao mais pobre, que tinha falhado no bloco C (2,8%), voltou a passar (3,1%, para ≥ 3,0%), como a outra semente do bloco C sugeria. Os três portões novos (a ciência paga vira tecnologia, o país termina diferente, a descoberta tem porquê) passam.
+
+O primeiro `verificar` falhou com um storylet morto, o grupo na capa; o conserto está abaixo.
+
+**Decisões tomadas sozinho:**
+- **A pesquisa é a sétima política, não um orçamento novo.** A saúde e a escola já são políticas de três níveis com o gasto em pontos do PIB, e a folha País já mostra o efeito antes da reforma. A pesquisa entrou do mesmo jeito; o orçamento item por item continua no bloco B2.
+- **Os números da ciência.** O regular põe 0,5% do PIB em pesquisa, perto do que o Brasil gasta de dinheiro público hoje; a prioridade soma 0,4 ponto, e a ciência cortada tira 0,2. A primeira versão somava 0,6 e tirava 0,3: com ela, a dívida de equilíbrio da frente popular subia 12 pontos do PIB, e o calote quase triplicava na amostra de 2.000 vidas (de 1,1% para 3,0%).
+- **O preço da ciência é a dívida.** Mesmo com 0,4 ponto, o calote subiu de 1,1% para 1,9% das vidas: a frente popular, que já gastava mais do que arrecadava, passou a pagar a ciência, e a dívida de equilíbrio dela sobe 8 pontos do PIB. O portão do calote (de 0,2% a 5%) continua passando, e a notícia do calote aponta a reforma da ciência quando foi ela que pôs a dívida para cima.
+- **Cada bloco tem o seu nível**, para o voto decidir a pesquisa: a frente popular pesquisa como prioridade, o bloco liberal corta, a aliança da ordem e o centrão ficam no regular. O Regime pesquisa como prioridade ("ordem e progresso", o satélite estratégico). Na média dos quatro blocos eleitos, a ciência fica no regular.
+- **A tecnologia anda devagar** (6% do caminho por ano, uma década para chegar perto). Os governos se alternam a cada oito anos, em média, e o estoque guarda o que cada um fez. O efeito é pequeno de propósito: com 65 de tecnologia, o crescimento potencial ganha 0,3 ponto por ano, menos que o imposto baixo (0,5) e mais que a escola boa de uma geração.
+- **A escola forma quem pesquisa:** 0,4 ponto de tecnologia por ponto de escola acima de 50. Assim, a educação, que já mexia no crescimento e no desemprego, também mexe na ciência, e um governo que prioriza as duas colhe mais.
+- **A descoberta é uma notícia do mundo, não um storylet.** Ela acontece no país, como a virada da fase e a sanção, e chega à vida de quem joga no ano seguinte, por um storylet agendado (a vacina no posto, o satélite na TV, a empresa da patente) com a descoberta de causa.
+- **A causa da descoberta é a decisão que fez o estoque, mesmo desfeita depois.** A tecnologia de hoje vem da ciência de dez anos atrás, então a reforma que pôs a ciência como prioridade continua sendo a causa depois que outro governo a cortou. Na amostra de 2.000 vidas, só 60% das descobertas tinham causa: quem nasceu com a ciência como prioridade e viu o mesmo bloco reeleito não tinha nenhuma mudança no livro. A posse de quem manteve a ciência passou a contar, como a reeleição conta na sanção, e a parte com causa foi para 91% no túnel de 10.000 vidas.
+- **Ler uma política é consultar quem a decidiu.** O storylet que pede `pais.pol_pesquisa` (a greve da federal, o laboratório que apaga a luz) ganha de causa a posse ou a reforma que a pôs ali. A regra vale para todas as políticas: os storylets que já pediam uma (a saúde, a escola, o programa social, o imposto, a segurança, a tarifa) passam a mostrar a decisão também.
+- **As histórias de quem pesquisa mudaram de público.** A primeira versão falava de quem é cientista, mas nenhuma das 600 vidas de uma amostra virou cientista: as histórias morreriam no túnel. Agora são de quem está na faculdade (a bolsa de iniciação, que dá a marca de quem pesquisou e abre o caminho para a carreira, ou a greve da federal) e de quem já pesquisou (o edital ou o laboratório que apaga a luz).
+- **A vaga de cientista anda com a verba** (`carreiras › verba`): metade com a ciência cortada e 1,6 vez com a prioridade, na entrada e na promoção. O campo vale para qualquer carreira que uma política pague, mas só a de cientista usa por enquanto: ligar a do médico à saúde e a do professor à escola mudaria vidas demais neste bloco.
+- **A fuga de cérebros** acontece em 26% das vidas: o bloco liberal corta a ciência e governa um quarto dos anos. Ela tira 3 pontos de tecnologia, com o corte de causa, e no máximo uma vez a cada 10 anos.
+- **As jogadas somam ao estoque.** A cura paga por quem é bilionário soma 3 pontos à tecnologia do país, o foguete em órbita soma 2, e liberar a fórmula da cura soma 2 à saúde pública. Brincar de deus passa a mexer no país do jeito que a ciência pública mexe.
+- **O grupo na capa pede duas empresas, não três.** Ele aparecia em 0,0% das vidas e zerou no túnel do bloco D.
+- **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 97,1 → 96,5 ms por vida (−0,7%, ±2,9%). A etapa da pesquisa custa 0,22 ms por vida (0,2% do ano) e grava 0,4 KB no livro.
+- **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
