@@ -1489,7 +1489,7 @@ O quinto e último bloco da ordem do dono: "sistemas de armamento e guerra" (19/
 | Mudanças causadas pelo jogador | 44,3% | 44,3% |
 | Toques por vida | 457,1 | 457,6 |
 | O porquê à vista (acontecimentos com a causa de um ano anterior) | 35,8% | 36,5% |
-| CPU por vida (túnel) | 87,9 ms | 101,8 ms; no A/B na mesma máquina, 111,1 → 112,2 ms (+1,0%) |
+| CPU por vida (túnel) | 87,9 ms | 113,6 ms; no A/B na mesma máquina, 111,1 → 112,2 ms (+1,0%) |
 
 Os portões que já falhavam continuam falhando: a CPU, a herança entre gerações (Spearman 0,83 → 0,82) e as assinaturas sem regressão (906 → 912, para ≥ 918). Dois pioraram: o bilionário feito (1,20% → 1,56%, com teto de 1%) e o do quintil mais rico ao mais pobre, que volta a falhar (3,1% → 2,6%, para ≥ 3,0%). Com outra semente (20261026), as duas versões dão o mesmo sentido: 1,11% → 1,34% e 3,5% → 2,8%, e o calote 2,0% → 1,2%. A explicação está nas decisões abaixo. Os cinco portões novos passam nas duas sementes.
 
@@ -1512,7 +1512,7 @@ Os portões que já falhavam continuam falhando: a CPU, a herança entre geraç�
 - **A convocação vale para todo mundo de 18 a 30 anos sem cargo.** O texto é o mesmo para qualquer gênero; o presidente, o deputado e o rei não são convocados.
 - **As histórias da guerra têm peso alto (10).** Elas só cabem nos anos de guerra (3% das vidas), e com peso 6 o racionamento apareceu 2 vezes em 31 guerras. Com 10, a guerra se sente na vida de quem a atravessa; nenhuma morreu no túnel.
 - **Nos robôs, quase ninguém pede a paz** (0 pedidos nas 10.000 vidas): os robôs raramente governam durante uma guerra. O pedido é testado à parte: em 300 guerras, a que pediu a paz no primeiro ano acaba no segundo bem mais vezes do que a que não pediu.
-- **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 111,1 → 112,2 ms por vida (+1,0%, ±1,6%). A etapa da guerra custa 0,43 ms por vida (0,4% do ano) e quase nada no livro; o livro só é lido quando há quem ameace.
+- **A CPU não mudou no A/B:** 10 rodadas alternadas de cada versão, de 150 vidas, deram 111,1 → 112,2 ms por vida (+1,0%, ±1,6%). A etapa da guerra custa 0,68 ms por vida no túnel (0,6% do ano) e quase nada no livro; a ameaça só lê o livro quando há quem ameace. A CPU do túnel muda de rodada para rodada na mesma máquina (o mesmo código mediu 101,8 e 113,6 ms por vida), por isso a comparação é o A/B.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
 ## Próximos passos (núcleo)
