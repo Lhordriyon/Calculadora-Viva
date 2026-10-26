@@ -51,7 +51,7 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | B · O Tesouro | dívida soberana comprada vira ativo no balanço, com cupom no caixa pessoal ou da empresa | I-31, I-34 | feito (25/10): o título na conta pessoal e o calote; o da empresa espera o caixa (I-11) |
 | C · A coroa recebe | o soberano recebe salário, parte dos impostos ou taxa da coroa | I-41, I-43 | feito (26/10): a forma da coroa e a ilha com população e PIB; a legitimidade (I-42) e o ditador ficam para depois |
 | D · O Estado pesquisa | usar o Tesouro do Estado para pagar pesquisa e desenvolvimento | I-54 | feito (26/10): a política de ciência, o estoque de tecnologia e as descobertas; o orçamento item por item e a pesquisa das empresas ficam para depois |
-| E · Defesa | sistemas de armamento e guerra | I-60, I-61 | em andamento (26/10): a política de defesa, a capacidade, os sistemas de armamento e o começo da guerra como processo |
+| E · Defesa | sistemas de armamento e guerra | I-60, I-61 | feito (26/10): a política de defesa, a capacidade, os sistemas de armamento e a guerra como processo (o começo, os anos e o fim); a ocupação, a mobilização da economia e as alianças militares ficam para depois |
 
 ## Índice
 
@@ -97,8 +97,8 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
 | I-52 | Instituições multilaterais | 6 | Média | proposta |
 | I-53 | Poder nacional por dimensões | 6 | Média | proposta |
 | I-54 | Pesquisa e tecnologia como estoque | 6 | Média | feita em parte (bloco D, 26/10): o investimento vira estoque e o estoque vira produtividade, com causa no livro; faltam a pesquisa das empresas e o setor privado (I-36) |
-| I-60 | Forças armadas como capacidade | 7 | Média | em andamento (bloco E): a capacidade com custo, a política e os sistemas de armamento |
-| I-61 | Guerra como processo com custos | 7 | Média | em andamento (bloco E): o começo, os anos de guerra e o fim (vitória, derrota ou cessar-fogo) |
+| I-60 | Forças armadas como capacidade | 7 | Média | feita (bloco E, 26/10): a capacidade com custo, a política e os sistemas de armamento |
+| I-61 | Guerra como processo com custos | 7 | Média | parte feita (bloco E, 26/10): o começo, os anos de guerra e o fim (vitória, derrota ou cessar-fogo); a ocupação e a reconstrução ficam |
 | I-62 | Coerção econômica além da sanção | 7 | Baixa | proposta |
 | I-63 | Espionagem, influência, ciber e guerra híbrida | 7 | Baixa | proposta |
 | I-64 | Mudança de fronteira e suas consequências | 7 | Baixa | proposta |
@@ -891,8 +891,9 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
     A encomenda vai para a dívida na hora; a entrega soma à capacidade, com a encomenda de causa, e o equipamento envelhece de volta para o alvo.
   - **A dissuasão:** a capacidade muda a chance da guerra (o dobro a cada 15 pontos abaixo de 50, a metade a cada 15 acima).
   - **A vaga de militar anda com a verba da defesa**, como a de cientista com a da ciência (`carreiras › verba`).
+- **O que mudou ao medir (26/10):** nada no desenho da capacidade e dos sistemas. Nas vidas do túnel, quem governa raramente encomenda (os robôs só governam de vez em quando); a encomenda é decisão de quem joga no poder.
 - **Prioridade:** Média · Fase 7.
-- **Estado:** em andamento (bloco E, 26/10).
+- **Estado:** feita (bloco E, 26/10).
 
 ### I-61 · Guerra como processo com custos
 - **Problema:** a missão pede guerra com mobilização, logística, perdas, ocupação, impasse, negociação e reconstrução.
@@ -909,9 +910,13 @@ O dono pediu atualizações em blocos pequenos, nesta ordem de interesse. A orde
   - **Como acaba:** a partir do segundo ano, 25% de chance por ano, mais 25 pontos no ano em que quem governa pede a paz. Pela razão entre a capacidade daqui e a força de lá (`estrangeiros › forca`), vem a vitória (o outro recua), a derrota (a reparação soma 4 pontos à dívida) ou o cessar-fogo (a sanção continua). A notícia do fim aponta o começo e o pedido de paz.
   - **Na vida de quem joga:** a convocação (de 18 a 30 anos) e o filho convocado chegam no ano em que a guerra começa, com ela de causa; o racionamento e a fábrica de munição aparecem nos anos de guerra; quem serviu carrega a marca de quem voltou.
   - **O tom:** abstrata e sem glorificação. Ninguém morre num storylet de guerra; a guerra mata pela estatística do país, e o que ela deixa é a dívida, a inflação e quem voltou diferente.
+- **O que mudou ao medir (26/10):**
+  - com a relação abaixo de 15, nenhuma guerra começou em 1.200 vidas: a sanção com a relação tão baixa acontece em 0,1% dos anos. O limite passou a 25 ("frio", perto de hostil), e a guerra aparece em 2,5% das vidas;
+  - o crescimento perdia 2,5 pontos por ano de guerra, mas a persistência do ciclo acumula a perda: os anos de guerra ficavam 6,8 pontos abaixo dos de paz. A perda passou a 1,2 ponto por ano, e a diferença ficou em uns 4;
+  - entraram três regras que o desenho não tinha: a guerra acaba de cansaço no oitavo ano (em cessar-fogo), dez anos sem outra depois dela, e a sanção do inimigo não acaba durante a guerra (quem governa também não visita nem rompe com ele: só pede a paz).
 - **Fica para depois:** a ocupação e o território, a mobilização da economia, a logística, as alianças militares (I-51), a guerra entre os países de fora e a reconstrução como programa.
 - **Prioridade:** Média · Fase 7.
-- **Estado:** em andamento (bloco E, 26/10): o começo, os anos de guerra e o fim.
+- **Estado:** parte feita (bloco E, 26/10): o começo, os anos de guerra e o fim.
 
 ### I-62 · Coerção econômica além da sanção
 - **Problema:** já existem sanção e tarifa; faltam embargo, congelamento de reservas e controle de exportação.

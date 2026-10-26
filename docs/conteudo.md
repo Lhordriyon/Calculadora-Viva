@@ -181,6 +181,16 @@ Quem governa decide a ciência, e a tecnologia do país chega à vida (`docs/mot
 - **A carreira que a ciência paga** (`mundo.json › carreiras › verba: "pesquisa"`): quem é cientista entra e sobe mais com a prioridade. `"carreira": ["pesquisador"]` nas condições pega quem é cientista agora.
 - **Os agendados do motor:** a vacina no posto, o satélite na TV e a empresa da patente chegam no ano seguinte à descoberta, com ela de causa; eles não podem pedir idade (o motor confere a idade ao agendar).
 
+## A defesa e a guerra (bloco E)
+
+Quem governa decide a defesa e encomenda armamento; a guerra nasce da relação e chega à vida (`docs/motor.md › A defesa e a guerra`).
+- **`pais.pol_defesa`** (0 desmobilizada, 1 regular, 2 reforçada) é a política de agora; **`pais.defesa`** (de 0 a 100) é a capacidade das Forças Armadas. Condições: `"pais.pol_defesa": { "max": 0 }` (o quartel sem verba), `"pais.defesa": { "min": 62 }` (o desfile com os caças).
+- **A guerra é uma qualidade do país de fora:** `"ator": ["federacao", "celeste", "liga", "pacto"]` com `"marcas": ["ator.guerra"]` faz o storylet acontecer na guerra, com o inimigo como `{ator}` ("Com a guerra contra {ator:o|a} {ator}…"). `"pais.guerra": true` (ou `false`) diz só se o Brasil está em guerra, sem dizer com quem. A guerra não se escreve pelo conteúdo: nasce da sanção e da relação.
+- **Os agendados do motor:** a convocação (`a_convocacao`, com o país de fora de ator) e a do filho (`filho_convocado`, com o filho de ator) chegam no ano em que a guerra começa, com ela de causa; não podem pedir idade (o motor confere: de 18 a 30 anos, e quem joga sem cargo).
+- **A marca `veterano`** é de quem voltou (serviu, ou teve a dispensa negada): tem epitáfio, e `o_veterano` a lê anos depois (`marcaHa`).
+- **O tom:** a guerra é abstrata e sem glorificação. Ninguém morre num storylet de guerra; ela aparece no racionamento, na fábrica de munição, no simulado de abrigo da escola e em quem voltou diferente.
+- **Os sistemas** (`mundo.json › sistemas`): `nome`, `artigo` ("os caças"), `custo` (pontos do PIB), `capacidade`, `anos` até a entrega, `tecnologia` que pedem (opcional) e os textos da encomenda e da entrega, que contam na linha do tempo.
+
 ## A coroa e a ilha (bloco C)
 
 Quem tem coroa escolhe como ela recebe (`docs/motor.md › A coroa`). O conteúdo lê e, quando a história pede, muda a forma.
