@@ -31,7 +31,7 @@ Evento, ação e iniciativa de personagem têm o mesmo formato. O `tipo` diz que
 |---|---|
 | `id` | único, `minusculas_com_sublinhado` |
 | `tipo` | `evento`, `npc`, `acao` ou `jogada` |
-| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente. `filho` vale para cada filho de quem joga (até quatro): escreva `{ator}`, não `{filho}`, quando o texto é sobre qualquer um deles. `{filho}` e `filho.x` são o primeiro filho, salvo no storylet que cria um filho, em que `{filho}` é o recém-nascido |
+| `ator` | papéis que podem ocupar `{ator}` (`mae`, `pai`, `avo`, `amigo`, `amor`, `filho`, `paixao`, `pet`, e a rede: `irmao`, `ex`, `colega`, `chefe`), ou os países de fora (`federacao`, `celeste`, `liga`, `pacto`), nunca os dois juntos; cada um é uma instância diferente. `filho`, `irmao`, `ex` e `amigo` valem para cada pessoa do papel (até quatro filhos, cinco irmãos, três ex e três amigos): escreva `{ator}` e `ator.x`, não `{filho}` ou `amigo.x`, quando o texto é sobre qualquer um deles (o validador cobra). `{filho}` e `filho.x` são o primeiro filho, salvo no storylet que cria um filho, em que `{filho}` é o recém-nascido; `{amigo}` é o amigo de infância (a marca `ator.de_infancia` separa o de infância dos da vida adulta) |
 | `preferir` | entre vários atores possíveis, o de menor (`-ator.vinculo`) ou maior (`+ator.dinheiro`) valor |
 | `idade` | faixa `[min, max]` de quem joga (obrigatória, exceto em `apenasAgendado`) |
 | `apenasAgendado` | só acontece quando outro efeito o agenda (ou o motor: `manifesto.ts › AGENDADOS_PELO_MOTOR`, como a sucessão da coroa e do Regime) |
@@ -209,6 +209,15 @@ Quem joga empresta ao governo pela folha Dinheiro (`docs/motor.md › O Tesouro`
 - **`venderTitulos`** (efeito) vende uma fração de cada título pelo preço do dia: o medo do calote no noticiário (`58-tesouro.json`), a conta que apertou.
 - **`comprarTitulo`** (efeito) empresta ao governo uma fração da conta (`fracao`) ou um valor certo em reais de hoje (`valor`: o que faltar na conta sai dos investimentos, e numa jogada o valor conta no preço) num título de 5, 10 ou 20 anos, com a taxa do dia e a história de causa (o vencimento diz "que você comprou aos 19"). Sem como comprar (antes dos 18, cinco títulos, menos de R$ 100), o dinheiro vai para a renda fixa. Texto que diz "Tesouro Direto" usa este efeito; o que investe pelo perfil (`investir`) não fala em Tesouro, porque o perfil pode ser metade em ações.
 - O storylet `depois_do_calote` é agendado pelo motor no ano seguinte ao calote, com ele de causa.
+
+## A rede (missão Ω1)
+
+As pessoas da rede existem só quando a vida as trouxe: os irmãos (os mais novos nascem pelo storylet agendado `irmao_nasce`, com `"personagens": ["irmao"]`), os ex (o amor que foi embora), o colega e o chefe (com o trabalho) e os amigos da vida adulta (o colega que ficou). Com o papel como ator, a pessoa existe; fora do ator, o texto que cita `{irmao}`, `{ex}`, `{colega}` ou `{chefe}` pede `"<papel>.vivo"` na condição (ou num trecho).
+
+- **A mesma pessoa em outro papel:** `"promover": { "de": "ator", "para": "amor" }` com o ex como ator traz o ex de volta (quem estava no lugar do amor vira ex); com o colega, é o romance do trabalho (quem estava no lugar do amor vira ex). Depois do efeito, o texto do storylet chama o ator pelo papel novo.
+- **Qualidades da rede que o motor escreve e o conteúdo lê:** `irmao.gemeo`, `irmao.casado`, `irmao.separado`, `irmao.pai_mae`, `irmao.mora_longe`, `irmao.desempregado`, `irmao.aposentado`, `amigo.de_infancia` e o número `irmao.filhos` (os sobrinhos); `ex.casou` e `ex.bloqueado` são do conteúdo.
+- **Notícias** (`mundo.json › acontecimentos`): `casou`, `teve_filho`, `mudou_de_cidade`, `separou` (a vida dos irmãos longe de quem joga) e `virou_amigo` (o colega que ficou).
+- **Agendados pelo motor:** `namoro_esfriou` (o namoro que esfria), `irmao_nasce`, `casamento_do_irmao` e `padrinho_do_sobrinho` (com o irmão perto).
 
 ## Efeitos
 

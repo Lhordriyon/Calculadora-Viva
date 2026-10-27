@@ -92,7 +92,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 
 | Camada | O que entra | Ideias | Estado |
 |---|---|---|---|
-| Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | em andamento |
+| Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | feita (27/10, no branch de trabalho) |
 | Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | proposta |
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | proposta |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
@@ -159,7 +159,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-02 | Dívida e financiamento como contrato | 1 | Alta | feita (fatia 1.2, 12/10) |
 | I-03 | O ano em etapas declaradas | 1 | Alta | feita (fatia 1.3) |
 | I-04 | Livro compacto (anos antigos em resumo) | 1 | Alta | reavaliada: adiada com números (fatia 1.3) |
-| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | parcial: vários filhos (fatia 1.4a); a rede no formato dos filhos (Ω1) |
+| I-05 | Identidade de pessoas e relações como arestas | 1 | Alta | feita: vários filhos (fatia 1.4a) e a identidade de pessoas, com quem ocupou cada papel (Ω1); as relações entre as outras pessoas, não |
 | I-06 | Causa com contribuição e explicação incompleta | 1 | Média | proposta |
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
 | I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | feita no critério (fatia 1.3); o próximo ganho é indexar os storylets |

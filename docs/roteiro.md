@@ -27,7 +27,7 @@ Daqui em diante, os incrementos são as fatias das fases. Toda ideia nova entra 
 - [x] Fatia 1.2: a dívida como contrato. Toda dívida é um contrato com o banco: o cheque especial, o empréstimo de uma escolha, o financiamento com o imóvel em garantia e o acordo. O que passa do limite e a parcela que não cabe atrasam, e o atraso suja o nome: o banco não empresta mais nem financia. O financiamento atrasado vai a leilão, a dívida atrasada caduca em cinco anos, e renegociar é decisão. A folha Dinheiro mostra cada dívida, de onde veio e a proposta do banco. O túnel confere, em toda entrada, que o que se deve é o que o banco tem a receber
 - [x] Fatia 1.3: o ano em etapas declaradas. As 19 etapas do ano dizem o que leem e escrevem, um teste confere, e o túnel mostra a ordem, a CPU e o livro de cada uma. O save tem cópia de segurança, exportar e importar. O livro compacto ficou para quando o save passar de 1 MB (o maior é 479 KB). No mesmo dia: o túnel roda um trabalhador por núcleo (687 s → 199 s), e o toque no fim da vida ficou 2,8× mais rápido no celular
 - [x] Fatia 1.4a: vários filhos. Um filho novo não apaga o outro: cada um tem id próprio, vive o ano, e o conteúdo escrito para "filho" vale para qualquer um. Sem testamento, os filhos dividem a herança, e o testamento escolhe quem continua. Conteúdo novo: mais um filho, o ciúme do irmão, a briga e a mesa cheia. O cabeçalho deixou de esconder a linha do dinheiro
-- [ ] Fatia 1.4b: identidade de pessoas (o ex que continua existindo, o papel que aponta para a pessoa)
+- [x] Fatia 1.4b: identidade de pessoas (o ex que continua existindo, o papel que aponta para a pessoa): feita na camada Ω1 da missão Ω, pela lista de quem ocupou cada papel (abaixo)
 
 **Os blocos do dono (19/10).** O dono pediu atualizações em blocos pequenos, cada uma com o que trouxe e o que não trouxe na página de abertura do repositório (README). A ordem e as ideias de cada bloco estão em `docs/ideias.md › A ordem do dono`. A fatia 1.4b espera os blocos.
 
@@ -50,6 +50,17 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 
 - [x] Bloco F (26/10): o poder que passa. A coroa, o Regime e a ilha passam a quem continua a história, seja quem for (o filho, o par, o amigo, o sobrinho), no primeiro ano ou aos 18 (até lá, a regência), e também quando quem reina morre em vida; quem governava espera a resposta, sem interregno. O poder também se toma: o autogolpe de quem é presidente, o golpe de quem tem influência e a coroa restaurada no plebiscito, com o mundo reagindo lá fora. Quem foi reinar na ilha deixa de governar o Brasil; quem tem cargo não é demitido e larga a carreira com a coroa; sob o Regime não há eleição geral; o resgate do país virou título do Tesouro (I-106, I-107, parte da I-108, D-01, D-03, D-04)
 - [ ] Bloco F2: governar o que você fundou. A ilha e a cidade como territórios, com imposto e obras pagas do próprio bolso (o resto da I-108)
+
+**A missão Ω (26/10).** O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo", e que a `main` só receba o jogo quando ele se comparar a um jogo muito bem construído. O diagnóstico e a decisão estão em `docs/auditoria-omega.md`; as camadas estão em `docs/ideias.md › A missão Ω`. Cada camada vai para o branch de trabalho com o `verificar` passando; a `main` recebe o salto inteiro.
+
+- [x] Ω0 (26/10): a auditoria do repositório e a linha de base medida (o carregamento, o ano no navegador, a vida no motor, a memória, o save, o offline, os testes e o túnel)
+- [x] Ω1 (27/10): a rede. A pessoa tem identidade, não só papel: o amor que vai embora vira ex e continua vivendo (e pode voltar), o namoro sem casamento esfria e quem joga decide, os irmãos nascem com a família e vivem ao fundo (o casamento e o primeiro filho chegam como convite ou como notícia), o colega e o chefe vêm com o trabalho (o chefe pesa na promoção e na demissão), e o colega próximo vira amigo quando o emprego acaba. Na média, 13,8 pessoas por vida, contra cerca de 8 (I-05, I-130, I-131)
+- [ ] Ω2: os verbos sociais (pedir, oferecer, propor, cobrar, contar, apresentar), com a decisão da pessoa e o porquê (I-123)
+- [ ] Ω3: os projetos (o que quem joga quer, com etapas que são ações de verdade) (I-124)
+- [ ] Ω4: os segredos (quem sabe o quê) (I-125)
+- [ ] Ω5: a peneira dos capítulos e o caminho não tomado (I-126, I-127)
+- [ ] Ω6: o ritmo e a diversidade pela estrutura causal (I-128, I-129)
+- [ ] Ω7: integrar, polir, verificar, publicar e o relatório ao dono
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 

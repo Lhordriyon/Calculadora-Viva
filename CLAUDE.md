@@ -94,13 +94,13 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   sucessao.ts          a coroa, o Regime e a ilha passam a quem herda: a fila, a resposta agendada (agora ou aos 18, a regência) e a ilha que passa sozinha, sem interregno
   pesquisa.ts          o Estado pesquisa: o gasto da ciência em reais, a verba das carreiras, as descobertas (a cura, o satélite, a patente) e a fuga de cérebros, com a decisão de causa
   guerra.ts            a defesa: os sistemas de armamento (encomenda e entrega), a ameaça e a dissuasão, a guerra que começa, custa e acaba (vitória, derrota, cessar-fogo) e o pedido de paz
-  origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família
-  familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor, iniciativas
-  relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro), sem estado novo
+  origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família (os irmãos: os mais velhos já nascidos, os mais novos agendados)
+  familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor (e o namoro que esfria), iniciativas; a rede: a vida dos irmãos ao fundo, o colega e o chefe que vêm com o trabalho
+  relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro, somado pela pessoa que ocupava o papel)
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
-  pessoas.ts           criar, promover e matar personagens (luto, herança, viuvez)
+  pessoas.ts           criar, promover e matar personagens (luto, herança, viuvez); a identidade de pessoas (o número e quem ocupou cada papel) e a troca de papel (o amor que vira ex, o colega que vira amigo)
   storylets.ts         elegibilidade, aplicar e apresentar storylets, escolher
   diretor.ts           saliência e o storylet do ano
   acoes.ts             a ficha do ano: verbos e a ação de cada um
@@ -257,3 +257,13 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Sob o Regime, não há eleição geral; quem tem cargo não é demitido, e a carreira para (com a coroa ou o Regime, fica para trás) | agente (bloco F, D-03 e D-04) | dava para ser eleito presidente sob o Regime, e o rei era demitido da carreira de antes |
 | Sob o Regime, quem joga governa com a postura dele lá fora (a Federação esfria, a Celeste esquenta), e a sanção que vier aponta o golpe | agente (bloco F) | o mundo reage ao golpe pela relação, como reage às outras decisões de quem governa |
 | O resgate do país é um título do Tesouro (com cupom, vencimento e calote), não um reembolso sorteado | agente (bloco F) | "o dinheiro que empresto para o Estado não entra como patrimônio e não rende nada" |
+| A pessoa tem identidade, não só papel: um número e a lista de quem ocupou cada papel desde quando; a memória, as lembranças e a opinião são da pessoa | agente (missão Ω1) | o amor novo herdava a memória do antigo, e quem ia embora sumia; o save antigo continua valendo, com a memória pelo papel |
+| O amor que vai embora vira ex (até três) e continua vivendo, e pode voltar, a mesma pessoa; a troca de papel vai para o livro marcada `papel` | agente (missão Ω1) | NPCs vivos e únicos, como o dono pediu; a troca não é chegada, nem afeto, nem dinheiro trocando de mão |
+| O namoro sem casamento esfria (a chance cresce na juventude e com o vínculo baixo), e quem joga decide: salvar, terminar ou deixar morrer | agente (missão Ω1) | só 12% das vidas chegavam a ter um ex; calibrado para o casamento e os filhos ficarem onde estavam (59% e 42%, contra 60% e 41%) |
+| Os irmãos são pessoas: os mais velhos nascem com a família, os mais novos nos primeiros anos (quem escolhe três tem três), e a herança dos pais vai para a conta de cada um | agente (missão Ω1) | os irmãos eram um número que dividia a herança com "os parentes" e nunca apareciam |
+| A vida dos irmãos chega como convite quando eles estão perto (o casamento, o batizado) e como notícia quando estão longe; a cura e o emprego de volta não viram notícia | agente (missão Ω1) | a vida de quem está longe aparece quando importa, sem encher a linha do tempo |
+| O colega e o chefe vêm com o trabalho, se aposentam aos 67 e saem com ele; o chefe pesa na promoção (0,6 a 1,4) e na demissão (0,7 a 1,8) | agente (missão Ω1) | o trabalho não tinha gente; sem aposentadoria, o chefe envelhecia com quem joga e morria no cargo |
+| Até três amigos: o de infância (`de_infancia`) e os da vida adulta (o colega próximo, quando o emprego acaba) | agente (missão Ω1) | a vida adulta também faz amigos |
+| A mesma ação não se repete no ano, nem com outra pessoa | agente (missão Ω1) | com a família maior, o programa com a mãe e o com o irmão faziam do ano a mesma coisa duas vezes |
+| Com ator de um papel de várias pessoas (filho, irmão, ex, amigo), o texto e os efeitos falam do ator, não do primeiro do papel | agente (missão Ω1) | o conteúdo vale para cada pessoa do papel; o validador cobra |
+| Os irmãos não pedem Pix (por enquanto) | agente (missão Ω1) | com cinco pessoas a mais, os robôs pediam Pix a algum irmão quase todo ano e largavam a empresa; volta com os verbos sociais, com a decisão da pessoa |

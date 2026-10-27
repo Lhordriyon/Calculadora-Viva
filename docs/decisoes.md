@@ -1577,6 +1577,52 @@ Os portões que já falhavam continuam falhando, alguns um pouco melhores: a CPU
 - **Governar a ilha e a cidade fica para o bloco F2**, para o bloco ficar pequeno e os defeitos chegarem antes ao dono.
 - **O fechamento do bloco é do dono:** jogar 3 vidas da build e reportar algo inédito na terceira.
 
+## Missão Ω, camada 1: a rede (27/10)
+
+O dono pediu um salto (26/10, `docs/auditoria-omega.md`): "o jogo está muito repetitivo". A auditoria achou o maior limite nas pessoas: cerca de oito, e papéis, não indivíduos (o amor que ia embora sumia, os irmãos eram um número, não havia colega nem chefe). A camada 1 dá identidade às pessoas e põe gente nova na vida: os ex, os irmãos, o colega e o chefe, e os amigos da vida adulta. Vai para o branch de trabalho; a `main` recebe o salto inteiro.
+
+**O que mudou** (`docs/motor.md › A rede`):
+- cada pessoa tem um número, e o estado guarda quem ocupou cada papel e desde quando (`ocupacoes`); a memória, as lembranças e a opinião passam a ser da pessoa, não do papel;
+- o amor que vai embora vira ex (até três) e continua vivendo; o ex pode voltar, a mesma pessoa;
+- o namoro sem casamento esfria (uma regra agenda `namoro_esfriou`), e quem joga decide: salvar, terminar ou deixar morrer;
+- os irmãos nascem com a família (os mais novos, nos primeiros anos), vivem ao fundo (emprego, casamento, filhos, separação, mudança) e dividem a herança como pessoas;
+- o colega e o chefe vêm com o trabalho; o chefe pesa na promoção e na demissão; o colega próximo vira amigo quando o emprego acaba;
+- até três amigos: o de infância e os da vida adulta;
+- 35 storylets novos (11 em `56-ex.json`, 14 em `56-irmaos.json`, 10 em `56-trabalho.json`), 16 ações e iniciativas de relação que passam a valer para os irmãos (o empréstimo ao irmão, que era com um irmão sem nome, passa a ser com o de verdade) e 7 storylets de amigo que passam a falar do ator.
+
+**Medidas** (2.000 vidas do túnel rápido; antes = a auditoria, 10.000 vidas):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Pessoas diferentes por vida | cerca de 8 | 13,8 |
+| Vidas com ex / com irmão (pessoa) | 12% (ex que sumia) / 0% | 30% / 81% |
+| Entradas visíveis com um irmão, um ex, o colega ou o chefe | — | 4,4 por vida |
+| O ex que voltou / o colega que virou amigo / o romance do trabalho | — | 37 / 6 / 16 vezes |
+| Casou alguma vez / com filhos (400 vidas, A/B) | 60% / 41% | 59% / 42% |
+| Saturação V5 / V20 | 55,1% / 90,1% | 53,5% / 88,2% |
+| Assinaturas por 1.000 vidas | 915 | 917 |
+| Falsos dilemas / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+| CPU por vida no A/B (mesma máquina, duas rodadas alternadas de 160 vidas) | 135,7 e 119,1 ms | 149,9 e 134,4 ms (+11% e +13%) |
+| Régua da tela | 52 de 52 | 52 de 52 |
+
+**Decisões tomadas sozinho:**
+- **A identidade entra pelo lado, não por baixo.** Trocar o formato do estado (toda pessoa com id, o livro por pessoa) reescreveria a leitura de caminhos, o livro antigo e a migração de todo save (a estratégia B da auditoria). O livro continua endereçado por papel; uma lista de ocupações diz quem ocupava cada papel em cada entrada, e a memória soma pela pessoa. O save antigo, sem ocupações, cai no comportamento de antes (a memória pelo papel), sem migrar.
+- **A troca de papel tem etiqueta própria.** Quando a mesma pessoa muda de papel (o amor que vira ex), os números dela saem de um papel e entram no outro marcados `papel`: não é chegada (a memória não zera), nem afeto (o chip não mostra +70 de vínculo), nem dinheiro trocando de mão (as contas não cobram contraparte). E a ocupação nova vale a partir da entrada seguinte: o que a entrada da troca mudou ainda é de quem estava (a conversa que fez o ex voltar é lembrança do ex).
+- **O namoro esfria por uma regra, e o fim é escolha.** Só 12% das vidas chegavam a ter um ex: o namoro acabava numa crise rara ou virava casamento. A regra dá ao namoro sem casamento uma chance por ano de esfriar (25% antes dos 21, 15% até os 25, 8% até os 30, 5% até os 40, 4% depois, vezes 1,4 menos o vínculo/100) e agenda o storylet; quem joga salva, termina ou deixa morrer. A primeira calibração (30%, 22%, 15%, 10%, 6%) derrubava o casamento aos 40 de 43% para 29%; com a final, quem casa alguma vez fica em 59% (era 60%) e quem tem filho em 42% (era 41%). "Tentar salvar o namoro" é a primeira opção: o robô que sempre leva a primeira terminava todo namoro.
+- **O ex não é família.** Ele vive ao fundo (saúde, morte, a relação que esfria), mas não espera visita na doença, não guarda vontade da vida a dois (as `quer_…` saem enquanto ele ainda é o amor) e não acha você sumido; morrer longe não deixa remorso, só a mágoa que ficou. A segunda chance (`voltou_com_o_ex`) acaba com o namoro: o epitáfio só vale para quem morreu ao lado de quem voltou.
+- **Os irmãos nascem com sorteio próprio.** A posição de quem joga entre os filhos é sorteada; os mais velhos nascem com a mãe entre os 15 anos e a idade de agora, os mais novos nos primeiros anos, um a cada um a quatro, enquanto a mãe tem até 43 (46 quando quem joga escolheu quantos, e o que não cabe depois vem antes: quem escolhe três tem três). Há 3% de gêmeos. O sorteio sai da semente da vida, à parte: o resto da origem não mudou. São até cinco (a escolha na criação vai até cinco); `eu.irmaos` conta quem já nasceu.
+- **A vida do irmão chega como notícia ou como convite.** Casar (7% ao ano, dos 21 aos 45), ter filho (12%, casado, até três), separar (1,2%) e se mudar para longe (2,5%): com o irmão perto (vínculo 30 ou mais, sem rompimento), o casamento e o primeiro filho viram storylets agendados com escolha (padrinho, discurso, batizado); longe, notícia. A cura e o emprego de volta não viram notícia: a demissão e a doença já viraram.
+- **A herança vai para a conta de cada irmão.** A parte do irmão morto que deixou filhos, e a de quem é só um número (o save antigo), vai para os parentes. O dinheiro dos irmãos é deles e vira enredo (o empréstimo ao irmão passa a ser com o irmão de verdade, com o dinheiro indo e voltando).
+- **Os irmãos não pedem nem recebem Pix.** Com cinco pessoas a mais, os robôs pediam Pix a algum irmão quase todo ano e largavam a empresa (`tocar_empresa`, a ação da empresa de quem joga, caiu de 130 para 50 por 40 vidas); sem o Pix, voltou a 78. Pedir dinheiro a um irmão volta nos verbos sociais (Ω2), com a decisão da pessoa.
+- **A mesma ação não se repete no ano, nem com outra pessoa.** A regra valia por pessoa: com a família maior, o programa com a mãe e o com o irmão no mesmo ano faziam do ano a mesma coisa duas vezes.
+- **A dinastia leva as pessoas.** Quem herda leva os irmãos (os outros filhos vivos de quem morreu) com a parte deles da herança; o sobrinho que herda é filho de um irmão de verdade (o que teve filhos e está vivo, senão o vivo), que vira o pai ou a mãe na vida nova. Na vida nova, todo mundo ganha número de novo.
+- **O colega e o chefe são do trabalho, e só dele.** Chegam no ano em que o emprego começa, ficam na promoção (a ocupação não muda), trocam com o emprego novo, se aposentam aos 67 (antes disso, o chefe contratado mais velho envelhecia com quem joga e morria no cargo: 193 mortes em 300 vidas; com a aposentadoria, 77) e saem quando o trabalho acaba. A doença deles não vira notícia (vira a licença), e a morte dói menos (1 + vínculo × 0,06 de felicidade) e não deixa remorso.
+- **O chefe pesa, sem decidir.** O fator vai de 0,6 a 1,4 na promoção e de 0,7 a 1,8 na demissão (neutro com 50 de vínculo e sem mágoa): o chefe que gosta de você ajuda, o magoado atrapalha, e a carreira continua sendo do talento e da fase do país.
+- **Até três amigos.** O amigo de infância tem a marca `de_infancia` (e fica um pouco mais perto); a vida adulta traz os outros (o colega com vínculo 62 ou mais, quando o emprego acaba). O conteúdo de amigo vale para cada um, e o validador passa a cobrar `{ator}` em todo papel com várias pessoas: sete storylets chamavam o amigo pelo papel e foram corrigidos; a lembrança do recreio só vale para o de infância.
+- **O robô cauteloso vive menos, e fica assim.** Com mais gente, quase sempre há uma ação de família sem risco disponível, e o cauteloso (que leva o menor risco primeiro) cuida da família e não da saúde: morre aos 82,5 em vez de 86. É a heurística do robô diante de mais opções, não uma regra do jogo; os portões de dominância e de dispersão continuam passando.
+- **A CPU sobe 11% a 13%** (cerca de 0,2 ms por ano simulado, no A/B na mesma máquina) para 75% mais pessoas por vida. O motor continua abaixo de 2,2 ms por ano; no navegador, o ano é o desenho da tela (45 ms na auditoria).
+- **O fechamento da camada é do dono**, com o salto inteiro: a `main` só recebe a missão Ω quando as camadas estiverem prontas.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
