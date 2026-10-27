@@ -9,7 +9,7 @@
 import { idadeDe } from './campos.ts';
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
-import { EXES, FILHOS, IRMAOS, ehEx, ehFilho, ehIrmao, papelBase, type Visao } from './constantes.ts';
+import { AMIGOS, EXES, FILHOS, IRMAOS, ehAmigo, ehEx, ehFilho, ehIrmao, papelBase, type Visao } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho, Mundo } from './esquema.ts';
@@ -66,7 +66,7 @@ import type { Entidade, Entrada, EstadoVida, Genero, MemoriaJogador, Mudanca, Qu
  * antes do ano deles); os filhos, na ordem de chegada; os ex, no fim (eles vivem longe: a saúde, a morte e a relação
  * que esfria).
  */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, 'amigo', 'pet', ...EXES, 'colega', 'chefe'] as const;
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, ...AMIGOS, 'pet', ...EXES, 'colega', 'chefe'] as const;
 
 /** Os papéis que vêm com o trabalho de quem joga. */
 const DO_TRABALHO: ReadonlySet<string> = new Set(['colega', 'chefe']);
@@ -122,7 +122,8 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   const en = e.entidades[papel]!;
   if (en.q['ausente']) return 12;
   const traco = c.tracos.get(en.t['traco'] ?? '');
-  if (papel === 'amigo') return 50 + (traco?.vinculo ?? 0);
+  // O amigo de infância fica um pouco mais perto do que o amigo que a vida adulta trouxe.
+  if (ehAmigo(papel)) return 50 + (traco?.vinculo ?? 0) + (en.q['de_infancia'] ? 4 : 0);
   if (papel === 'amor') return 62 + (traco?.vinculo ?? 0);
   if (ehFilho(papel)) return 68 + (traco?.vinculo ?? 0);
   if (papel === 'paixao') return 30;
@@ -440,10 +441,11 @@ export function regrasDosPersonagens(
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
     let dv = (equilibrioVinculo(e, c, papel) - MAGOA_NO_VINCULO * (en.n['magoa'] ?? 0) - v) * RETORNO_VINCULO;
-    if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || papel === 'amigo' || irmao)) {
-      const junto = papel === 'avo' ? en.q['mora_junto'] : irmao ? convivem(e, papel, en) : eu.q['mora_com_pais'];
+    const amigo = ehAmigo(papel);
+    if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || amigo || irmao)) {
+      const junto = papel === 'avo' ? en.q['mora_junto'] : irmao ? convivem(e, papel, en) : amigo ? false : eu.q['mora_com_pais'];
       // Quem se falou no ano não esfria; dois anos ou mais longe esfria mais; quem mora longe, mais ainda.
-      const distancia = DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1) * (en.q['mora_longe'] ? DISTANCIA_DE_QUEM_MORA_LONGE : 1);
+      const distancia = DISTANCIA_ADULTO * (amigo ? 1.6 : 1) * (en.q['mora_longe'] ? DISTANCIA_DE_QUEM_MORA_LONGE : 1);
       if (!junto && longe > 0) dv -= distancia * Math.min(1.5, 0.5 + 0.5 * longe);
     }
     // A rotina gasta o namoro; filho adulto cria a própria vida.
@@ -476,14 +478,23 @@ function genteDoTrabalho(e: EstadoVida, c: Conteudo, regAno: Mudanca[]): void {
     const fica = tipo !== null && (papel === 'colega' || tipo === 'empregado');
     // Quem é do trabalho se aposenta aos 67 e dá lugar a outro.
     if (en && (!fica || en.t['trabalho'] !== trabalho || en.vivo === false || idadeDe(e, en) >= IDADE_DE_SAIR_DO_TRABALHO)) {
-      const amigo = e.entidades['amigo'];
-      const vaga = !amigo || (amigo.vivo === false && e.ano - (amigo.morte ?? e.ano) >= 2);
-      if (papel === 'colega' && en.vivo !== false && (en.n['vinculo'] ?? 0) >= VINCULO_QUE_FICA && vaga) {
-        acontecer(e, c, 'amigo', 'virou_amigo', (reg) => promover(e, c, 'colega', 'amigo', reg));
-      } else partir(e, papel, regAno);
+      const vaga = papel === 'colega' && en.vivo !== false && (en.n['vinculo'] ?? 0) >= VINCULO_QUE_FICA ? lugarDeAmigo(e) : undefined;
+      if (vaga) acontecer(e, c, vaga, 'virou_amigo', (reg) => promover(e, c, 'colega', vaga, reg));
+      else partir(e, papel, regAno);
     }
     if (fica && !e.entidades[papel]) chegar(e, papel, pessoaDoTrabalho(e, c, papel, trabalho), regAno);
   }
+}
+
+/** O lugar de amigo para quem chega na vida adulta: um vago, ou o de quem morreu há dois anos ou mais. */
+function lugarDeAmigo(e: EstadoVida): string | undefined {
+  return (
+    AMIGOS.find((x) => x !== 'amigo' && !e.entidades[x]) ??
+    AMIGOS.find((x) => {
+      const en = e.entidades[x];
+      return !en || (en.vivo === false && e.ano - (en.morte ?? e.ano) >= 2);
+    })
+  );
 }
 
 /** Uma pessoa do trabalho novo: o colega da idade de quem joga, o chefe mais velho; o traço é sorteado. */

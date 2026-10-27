@@ -3,7 +3,7 @@
  * luto e herança). Usado pelos efeitos de storylets e pelas regras anuais.
  */
 import type { Conteudo } from './conteudo.ts';
-import { EXES, FILHOS, IRMAOS, ehEx, ehFilho, ehIrmao, type PapelQueChega } from './constantes.ts';
+import { EXES, FILHOS, IRMAOS, ehAmigo, ehEx, ehFilho, ehIrmao, type PapelQueChega } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
@@ -111,12 +111,12 @@ function garantirPessoa(e: EstadoVida, papel: string, en: Entidade): number {
  * A pessoa do trabalho entra para a vida: vira o amor (quem estava no lugar, vivo, vira ex) ou o melhor amigo (o lugar
  * precisa estar vago: o amigo de antes morreu; quem morreu sai do lugar, e a lembrança fica no livro).
  */
-function virarDaFamilia(e: EstadoVida, de: string, para: 'amor' | 'amigo', reg: Mudanca[]): void {
+function virarDaFamilia(e: EstadoVida, de: string, para: string, reg: Mudanca[]): void {
   const antes = e.entidades[para];
   if (para === 'amor' && antes && arquivarEx(e, reg) === undefined) partir(e, 'amor', reg);
-  if (para === 'amigo' && antes) {
+  if (ehAmigo(para) && antes) {
     if (antes.vivo !== false) return;
-    partir(e, 'amigo', reg);
+    partir(e, para, reg);
   }
   moverPessoa(e, de, para, reg);
 }
@@ -257,7 +257,7 @@ export function promover(e: EstadoVida, c: Conteudo, de: string, para: string, r
     return;
   }
   // O colega (ou o chefe) que vira o amor ou o melhor amigo é a mesma pessoa, com a memória dela.
-  if ((de === 'colega' || de === 'chefe') && (para === 'amor' || para === 'amigo')) {
+  if ((de === 'colega' || de === 'chefe') && (para === 'amor' || ehAmigo(para))) {
     virarDaFamilia(e, de, para, reg);
     return;
   }
@@ -272,7 +272,7 @@ function herdeiro(e: EstadoVida, papel: string): string {
   if (papel === 'mae' && vivo('pai') && !e.entidades['pai']!.q['ausente']) return 'pai';
   if (papel === 'pai' && vivo('mae') && !e.entidades['pai']!.q['ausente']) return 'mae';
   if (papel === 'avo') return vivo('mae') ? 'mae' : vivo('pai') ? 'pai' : 'eu';
-  if (papel === 'amigo' || papel === 'paixao' || papel === 'pet') return '';
+  if (ehAmigo(papel) || papel === 'paixao' || papel === 'pet') return '';
   // O irmão, o ex, o colega e o chefe têm a família deles: o dinheiro fica com ela.
   if (ehIrmao(papel) || ehEx(papel) || papel === 'colega' || papel === 'chefe') return '';
   return 'eu';

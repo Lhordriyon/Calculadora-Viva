@@ -896,6 +896,28 @@ const JOGADAS_DO_PODER: [JogadaDoPoder, string][] = [
 const doPoder = (k: JogadaDoPoder, ps = poderes): [number, number] => ps.reduce<[number, number]>((t, p) => [t[0] + p[k][0], t[1] + p[k][1]], [0, 0]);
 const tentativasDeGolpe = doPoder('golpe')[0] + doPoder('autogolpe')[0];
 const golpesQueDeram = (doPoder('golpe')[1] + doPoder('autogolpe')[1]) / Math.max(1, tentativasDeGolpe);
+// ---- a rede (missão Ω1): as pessoas que passam pela vida
+const redes = vidas.map((v) => v.rede);
+const parteDas = (f: (r: (typeof redes)[number]) => boolean): number => redes.filter(f).length / Math.max(1, redes.length);
+const somaDaRede = (f: (r: (typeof redes)[number]) => number): number => redes.reduce((t, r) => t + f(r), 0);
+const comEx = parteDas((r) => r.exes > 0);
+const comIrmao = parteDas((r) => r.irmaos > 0);
+const pessoasPorVida = media(redes.map((r) => r.pessoas));
+const entradasDaRede = media(redes.map((r) => r.entradas));
+const outroPapel = { ex: somaDaRede((r) => r.exVoltou), amigo: somaDaRede((r) => r.colegaVirouAmigo), romance: somaDaRede((r) => r.romanceNoTrabalho) };
+const portoesOmega1 = [
+  ['A rede vive: ≥ 25% das vidas têm um ex e ≥ 60% têm um irmão', comEx >= 0.25 && comIrmao >= 0.6, `ex em ${pct(comEx)} · irmão em ${pct(comIrmao)}`],
+  [
+    'As pessoas da rede contam a vida: ≥ 3 entradas visíveis por vida com um irmão, um ex, o colega ou o chefe',
+    entradasDaRede >= 3,
+    `${num(entradasDaRede, 1)} entradas por vida, com ${num(pessoasPorVida, 1)} pessoas por vida`,
+  ],
+  [
+    'A mesma pessoa muda de papel: o ex que volta, o colega que vira amigo e o romance do trabalho acontecem (≥ 10 vezes cada)',
+    outroPapel.ex >= 10 && outroPapel.amigo >= 10 && outroPapel.romance >= 10,
+    `ex que voltou ${num(outroPapel.ex, 0)} · colega que virou amigo ${num(outroPapel.amigo, 0)} · romance do trabalho ${num(outroPapel.romance, 0)}`,
+  ],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1162,6 +1184,17 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesF) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## A rede (missão Ω1)');
+l();
+l(
+  `As pessoas passam a ter identidade: o amor que vai embora vira ex, os irmãos nascem e vivem ao fundo, o colega e o chefe vêm com o trabalho (\`docs/auditoria-omega.md\`). ` +
+    `Nas vidas sorteadas, cada vida tem em média ${num(pessoasPorVida, 1)} pessoas diferentes, ${num(media(redes.map((r) => r.exes)), 2)} ex, ${num(media(redes.map((r) => r.irmaos)), 2)} irmãos (${num(media(redes.map((r) => r.irmaosNovos)), 2)} nascidos depois de quem joga) e ${num(media(redes.map((r) => r.doTrabalho)), 2)} pessoas do trabalho.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega1) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1558,6 +1591,7 @@ for (const [nome, ok, detalhe] of portoesC) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoesD) console.log(`${ok ? '✓' : '·'} portão D: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesE) console.log(`${ok ? '✓' : '·'} portão E: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesF) console.log(`${ok ? '✓' : '·'} portão F: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega1) console.log(`${ok ? '✓' : '·'} portão Ω1: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

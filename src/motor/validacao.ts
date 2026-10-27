@@ -7,7 +7,7 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet } from './esquema.ts';
@@ -488,10 +488,12 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     if (tipo === 'npc' && !s.escolhas && !/^\{ator(\.quem)?\}/.test(s.resumo)) {
       aviso(onde, 'storylet de personagem sem escolha: o resumo começa pelo sujeito ({ator.quem} ...)');
     }
-    // Com ator filho, o storylet vale para cada filho, e "filho" é sempre o primeiro: o texto e os efeitos falam do ator.
-    if (s.ator?.includes('filho') && !doIrmaoNovo(s)) {
-      const citados = citacoesDoFilho(s);
-      if (citados.length > 0) erro(onde, `com ator filho, "filho" é o primeiro filho, não o ator (${citados.slice(0, 3).join(', ')}): use {ator} e "ator.x"`);
+    // Com ator filho (ou irmão, ex, amigo), o storylet vale para cada um, e "filho" é sempre o primeiro: o texto e os
+    // efeitos falam do ator.
+    for (const papel of s.ator ?? []) {
+      if (!VARIOS[papel] || (papel === 'filho' && doIrmaoNovo(s))) continue;
+      const citados = citacoesDoPapel(s, papel);
+      if (citados.length > 0) erro(onde, `com ator ${papel}, "${papel}" é o primeiro, não o ator (${citados.slice(0, 3).join(', ')}): use {ator} e "ator.x"`);
     }
     verificarTextos(c, s, onde, marcasDoPapel, erro, aviso);
     verificarRepete(s, onde, erro);
@@ -542,18 +544,20 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
 }
 
 /** Onde o storylet cita o papel "filho" ({filho}, {filho:o|a}, "filho.vinculo", "para": "filho"), fora o ator e quem ele cria. */
-function citacoesDoFilho(s: Storylet): string[] {
+function citacoesDoPapel(s: Storylet, papel: string): string[] {
   const achados = new Set<string>();
+  const caminho = new RegExp(`^${papel}(\\.|$)`);
+  const variavel = new RegExp(`\\{${papel}(?:[.:][^{}]*)?\\}`, 'g');
   const ver = (x: unknown): void => {
     if (typeof x === 'string') {
-      if (/^filho(\.|$)/.test(x)) achados.add(`"${x}"`);
-      for (const m of x.matchAll(/\{filho(?:[.:][^{}]*)?\}/g)) achados.add(m[0]);
+      if (caminho.test(x)) achados.add(`"${x}"`);
+      for (const m of x.matchAll(variavel)) achados.add(m[0]);
     } else if (Array.isArray(x)) {
       for (const y of x) ver(y);
     } else if (x !== null && typeof x === 'object') {
       for (const [k, v] of Object.entries(x)) {
         if (k === 'ator' || k === 'personagens') continue;
-        if (/^filho\./.test(k)) achados.add(`"${k}"`);
+        if (caminho.test(k) && k.includes('.')) achados.add(`"${k}"`);
         ver(v);
       }
     }

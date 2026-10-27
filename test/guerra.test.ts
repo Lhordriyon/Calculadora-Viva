@@ -422,7 +422,7 @@ describe('uma vida com guerra', () => {
       if (h.causa !== 'regra') continue;
       for (const m of h.mudancas ?? []) {
         const [ent, campo] = m.c.split('.') as [string, string];
-        const chave = `${ent.replace(/^(bem|empresa|filho|irmao|ex)\d+$/, '$1').replace(/^(ctr|tit)\d+[a-z]?$/, '$1')}.${campo}`;
+        const chave = `${ent.replace(/^(bem|empresa|filho|irmao|ex|amigo)\d+$/, '$1').replace(/^(ctr|tit)\d+[a-z]?$/, '$1')}.${campo}`;
         if (!declaradas.has(chave)) fora.add(chave);
       }
     }

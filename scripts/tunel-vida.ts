@@ -357,6 +357,45 @@ export interface Vida {
   defesa: HistoriaDaDefesa;
   /** O poder que passa (bloco F): a sucessão que chegou e a resposta, quem reinou, e as jogadas do poder. */
   poder: HistoriaDoPoder;
+  /** A rede (missão Ω): as pessoas que passaram pela vida e o que contaram. */
+  rede: HistoriaDaRede;
+}
+
+/** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
+export interface HistoriaDaRede {
+  /** Pessoas diferentes (por número) que ocuparam algum papel, sem contar quem joga. */
+  pessoas: number;
+  exes: number;
+  irmaos: number;
+  /** Irmãos que nasceram depois de quem joga. */
+  irmaosNovos: number;
+  doTrabalho: number;
+  /** Entradas visíveis com uma pessoa da rede (irmão, ex, colega, chefe) como ator. */
+  entradas: number;
+  /** A mesma pessoa em outro papel: o ex que voltou, o colega que virou amigo, o romance do trabalho. */
+  exVoltou: number;
+  colegaVirouAmigo: number;
+  romanceNoTrabalho: number;
+}
+
+/** Os papéis da rede: os irmãos, os ex, o colega e o chefe. */
+const DA_REDE = /^(irmao\d?|ex\d?|colega|chefe)$/;
+
+function redeDaVida(e: EstadoVida): HistoriaDaRede {
+  const ocup = e.ocupacoes ?? [];
+  const distintas = (f: (papel: string) => boolean): number => new Set(ocup.filter((o) => o.pessoa !== 0 && f(o.papel)).map((o) => o.pessoa)).size;
+  const vistos = apresentados(e);
+  return {
+    pessoas: distintas(() => true),
+    exes: distintas((p) => /^ex\d?$/.test(p)),
+    irmaos: distintas((p) => /^irmao\d?$/.test(p)),
+    irmaosNovos: e.historico.filter((h) => h.ref === 'irmao_nasce').length,
+    doTrabalho: distintas((p) => p === 'colega' || p === 'chefe'),
+    entradas: vistos.filter((h) => h.ator !== undefined && DA_REDE.test(h.ator)).length,
+    exVoltou: e.historico.filter((h) => h.ref === 'voltar_com_o_ex' && h.mudancas?.some((m) => m.c === 'eu.voltou_com_o_ex' && m.q === 1)).length,
+    colegaVirouAmigo: e.historico.filter((h) => h.ref === 'regra:virou_amigo').length,
+    romanceNoTrabalho: e.historico.filter((h) => h.ref === 'romance_no_trabalho' && h.mudancas?.some((m) => m.c === 'eu.namoro' && m.q === 1)).length,
+  };
 }
 
 export interface HistoriaDoPoder {
@@ -952,6 +991,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     pesquisa: pesquisaDaVida(e),
     defesa: defesaDaVida(e),
     poder: poderDaVida(e),
+    rede: redeDaVida(e),
     ...contasDaVida(e),
   };
 }

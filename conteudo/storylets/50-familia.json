@@ -471,24 +471,24 @@
     "tipo": "npc",
     "ator": ["amigo"],
     "idade": [14, 40],
-    "condicoes": { "amigo.vinculo": { "min": 30 } },
-    "texto": "{amigo} vai se mudar para [Portugal|o outro lado do país|uma cidade com nome de santo] por causa de [um emprego|um amor|uma bolsa de estudos].",
+    "condicoes": { "ator.vinculo": { "min": 30 } },
+    "texto": "{ator} vai se mudar para [Portugal|o outro lado do país|uma cidade com nome de santo] por causa de [um emprego|um amor|uma bolsa de estudos].",
     "resumo": "{ator.quem} se mudou para longe",
     "escolhas": [
       {
         "texto": "Prometer manter contato",
-        "resumo": "prometeu manter contato com {amigo}",
+        "resumo": "prometeu manter contato com {ator}",
         "resultado": {
           "texto": "Vocês combinaram ligar todo mês. Ligaram em quatro meses de doze, o que é um recorde mundial.",
-          "efeitos": { "amigo.vinculo": 4, "felicidade": -1 }
+          "efeitos": { "ator.vinculo": 4, "felicidade": -1 }
         }
       },
       {
         "texto": "Deixar a amizade esfriar",
-        "resumo": "deixou a amizade com {amigo} esfriar",
+        "resumo": "deixou a amizade com {ator} esfriar",
         "resultado": {
           "texto": "A distância fez o que a distância faz. Vocês viraram curtidas em foto.",
-          "efeitos": { "amigo.vinculo": -20, "felicidade": -1 }
+          "efeitos": { "ator.vinculo": -20, "felicidade": -1 }
         }
       }
     ]
@@ -498,24 +498,24 @@
     "tipo": "npc",
     "ator": ["amigo"],
     "idade": [23, 42],
-    "condicoes": { "amigo.vinculo": { "min": 45 } },
-    "texto": "{amigo} vai casar e quer você como {padrinho|madrinha}. O traje é [esporte fino|temático anos 80|na praia, de pé descalço].",
+    "condicoes": { "ator.vinculo": { "min": 45 } },
+    "texto": "{ator} vai casar e quer você como {padrinho|madrinha}. O traje é [esporte fino|temático anos 80|na praia, de pé descalço].",
     "resumo": "{ator.quem} chamou você para {padrinho|madrinha} de casamento",
     "escolhas": [
       {
         "texto": "Aceitar e fazer discurso",
-        "resumo": "foi {padrinho|madrinha} do casamento de {amigo}",
+        "resumo": "foi {padrinho|madrinha} do casamento de {ator}",
         "resultado": {
           "texto": "Seu discurso fez metade da festa chorar e a outra metade rir. Ninguém sabe qual era a intenção.",
-          "efeitos": { "dinheiro": -1500, "felicidade": 3, "amigo.vinculo": 10 }
+          "efeitos": { "dinheiro": -1500, "felicidade": 3, "ator.vinculo": 10 }
         }
       },
       {
         "texto": "Inventar uma viagem",
-        "resumo": "inventou uma viagem para fugir do casamento de {amigo}",
+        "resumo": "inventou uma viagem para fugir do casamento de {ator}",
         "resultado": {
-          "texto": "Você mandou um presente da lista e uma mensagem bonita. {amigo} entendeu o recado.",
-          "efeitos": { "amigo.vinculo": -15, "felicidade": -1 }
+          "texto": "Você mandou um presente da lista e uma mensagem bonita. {ator} entendeu o recado.",
+          "efeitos": { "ator.vinculo": -15, "felicidade": -1 }
         }
       }
     ]
@@ -525,39 +525,39 @@
     "tipo": "npc",
     "ator": ["amigo"],
     "idade": [20, 70],
-    "condicoes": { "amigo.vinculo": { "min": 45 } },
+    "condicoes": { "ator.vinculo": { "min": 45 } },
     "tensao": 2,
-    "texto": "{amigo} apareceu na sua porta: [perdeu o emprego|terminou um casamento|está com o nome sujo e vergonha de falar disso]. Precisa de ajuda.",
+    "texto": "{ator} apareceu na sua porta: [perdeu o emprego|terminou um casamento|está com o nome sujo e vergonha de falar disso]. Precisa de ajuda.",
     "resumo": "{ator.quem} pediu ajuda numa fase ruim",
     "escolhas": [
       {
         "texto": "Emprestar dinheiro",
-        "resumo": "emprestou dinheiro para {amigo}",
+        "resumo": "emprestou dinheiro para {ator}",
         "condicoes": { "dinheiro": { "min": 3000 } },
         "bloqueio": "não tem dinheiro sobrando",
         "resultado": {
-          "texto": "Você fez o Pix e não falou mais nisso. {amigo} prometeu devolver.",
+          "texto": "Você fez o Pix e não falou mais nisso. {ator} prometeu devolver.",
           "efeitos": {
             "transferir": { "de": "eu", "para": "ator", "valor": 3000 },
-            "amigo.vinculo": 10,
+            "ator.vinculo": 10,
             "agendar": [{ "evento": "amigo_devolve", "em": [1, 4] }]
           }
         }
       },
       {
         "texto": "Oferecer o sofá e ouvir",
-        "resumo": "ofereceu o sofá e ouviu {amigo}",
+        "resumo": "ofereceu o sofá e ouviu {ator}",
         "resultado": {
-          "texto": "{amigo} ficou duas semanas no seu sofá. Vocês conversaram como nos tempos de escola.",
-          "efeitos": { "felicidade": -0.5, "amigo.vinculo": 7 }
+          "texto": "{ator} ficou duas semanas no seu sofá. Vocês conversaram como nos tempos de escola.",
+          "efeitos": { "felicidade": -0.5, "ator.vinculo": 7 }
         }
       },
       {
         "texto": "Sumir por uns tempos",
-        "resumo": "sumiu quando {amigo} precisou",
+        "resumo": "sumiu quando {ator} precisou",
         "resultado": {
-          "texto": "Você visualizou e não respondeu. {amigo} entendeu, e lembra.",
-          "efeitos": { "amigo.vinculo": -15, "felicidade": -1 }
+          "texto": "Você visualizou e não respondeu. {ator} entendeu, e lembra.",
+          "efeitos": { "ator.vinculo": -15, "felicidade": -1 }
         }
       }
     ]
@@ -567,17 +567,17 @@
     "tipo": "npc",
     "ator": ["amigo"],
     "apenasAgendado": true,
-    "texto": "{amigo} mandou mensagem sobre aquele dinheiro emprestado.",
+    "texto": "{ator} mandou mensagem sobre aquele dinheiro emprestado.",
     "resumo": "{ator.quem} acertou o dinheiro emprestado",
     "teste": { "chance": 0.6 },
     "sucesso": {
       "texto": "Devolveu tudo, com juros de amizade: um churrasco.",
-      "efeitos": { "transferir": { "de": "ator", "para": "eu", "valor": 3000 }, "amigo.vinculo": 5 }
+      "efeitos": { "transferir": { "de": "ator", "para": "eu", "valor": 3000 }, "ator.vinculo": 5 }
     },
     "fracasso": {
       "texto": "Disse que ia pagar mês que vem. Faz três meses que é mês que vem.",
       "resumo": "{ator.quem} sumiu com o dinheiro emprestado",
-      "efeitos": { "amigo.vinculo": -10, "felicidade": -2 }
+      "efeitos": { "ator.vinculo": -10, "felicidade": -2 }
     }
   },
   {
@@ -585,23 +585,23 @@
     "tipo": "npc",
     "ator": ["amigo"],
     "idade": [15, 40],
-    "condicoes": { "marcas": ["zoou_amigo"] },
+    "condicoes": { "marcas": ["zoou_amigo", "ator.de_infancia"] },
     "tensao": 2,
-    "texto": "{amigo} tocou no assunto daquele dia no recreio, quando você riu junto com os outros. Disse que ainda lembra.",
+    "texto": "{ator} tocou no assunto daquele dia no recreio, quando você riu junto com os outros. Disse que ainda lembra.",
     "resumo": "{ator.quem} lembrou da zoeira do recreio",
     "escolhas": [
       {
         "texto": "Pedir desculpas de verdade",
         "resumo": "pediu desculpas pela zoeira de criança",
         "resultado": {
-          "texto": "Demorou vinte anos, mas saiu. {amigo} riu de nervoso e aceitou.",
-          "efeitos": { "amigo.vinculo": 12, "felicidade": 2 }
+          "texto": "Demorou vinte anos, mas saiu. {ator} riu de nervoso e aceitou.",
+          "efeitos": { "ator.vinculo": 12, "felicidade": 2 }
         }
       },
       {
         "texto": "Dizer que era brincadeira",
         "resumo": "disse que a zoeira era só brincadeira",
-        "resultado": { "texto": "\"Para você, né?\" A conversa morreu ali.", "efeitos": { "amigo.vinculo": -10 } }
+        "resultado": { "texto": "\"Para você, né?\" A conversa morreu ali.", "efeitos": { "ator.vinculo": -10 } }
       }
     ]
   },

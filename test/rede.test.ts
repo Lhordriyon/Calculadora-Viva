@@ -295,16 +295,19 @@ describe('o colega e o chefe', () => {
     expect(e.entidades['chefe']).toBeUndefined();
   });
 
-  it('o colega muito próximo vira o melhor amigo quando o emprego acaba, se o lugar estiver vago', () => {
+  it('o colega muito próximo vira amigo quando o emprego acaba, ao lado do amigo de infância', () => {
     const e = empregado(503);
-    delete e.entidades['amigo'];
+    const infancia = e.entidades['amigo']!;
+    expect(infancia.q['de_infancia']).toBeDefined();
     ano(e);
     const colega = e.entidades['colega']!;
     colega.n['vinculo'] = 80;
     e.entidades['eu']!.n['renda'] = 0;
     ano(e);
-    expect(e.entidades['amigo']?.pessoa).toBe(colega.pessoa);
-    expect(e.entidades['amigo']?.nome).toBe(colega.nome);
+    expect(e.entidades['amigo']!.pessoa).toBe(infancia.pessoa);
+    expect(e.entidades['amigo2']?.pessoa).toBe(colega.pessoa);
+    expect(e.entidades['amigo2']?.nome).toBe(colega.nome);
+    expect(e.entidades['amigo2']?.q['de_infancia']).toBeUndefined();
     expect(e.historico.some((h) => h.ref === 'regra:virou_amigo')).toBe(true);
   });
 

@@ -237,7 +237,7 @@
     "ator": ["amigo"],
     "idade": [28, 75],
     "condicoes": { "ator.idade": { "min": 28, "max": 68 }, "ator.vinculo": { "min": 40 }, "semMarcas": ["ator.quer_a_viagem", "ator.rompido"] },
-    "texto": "{ator} mandou um áudio de quatro minutos sobre aquela viagem que vocês planejam desde os vinte anos. [Já tem roteiro.|Já tem até o nome do grupo.|Terminou com: \"esse ano vai\".]",
+    "texto": "{ator} mandou um áudio de quatro minutos sobre aquela viagem que vocês planejam há anos. [Já tem roteiro.|Já tem até o nome do grupo.|Terminou com: \"esse ano vai\".]",
     "resumo": "{ator} chamou você para a viagem de sempre",
     "efeitos": { "marcas": ["ator.quer_a_viagem"] }
   },

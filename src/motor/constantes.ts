@@ -41,6 +41,15 @@ export const IRMAOS = ['irmao', 'irmao2', 'irmao3', 'irmao4', 'irmao5'] as const
 /** Os ex de quem joga, na ordem em que foram embora (`ex` a `ex3`); sem lugar, quem foi embora há mais tempo sai. */
 export const EXES = ['ex', 'ex2', 'ex3'] as const;
 
+/**
+ * Os amigos de quem joga: o de infância (`amigo`, que nasce com a vida e tem a marca `de_infancia`) e os que a vida
+ * adulta traz (`amigo2`, `amigo3`: o colega que ficou depois do emprego).
+ */
+export const AMIGOS = ['amigo', 'amigo2', 'amigo3'] as const;
+
+export function ehAmigo(id: string): boolean {
+  return (AMIGOS as readonly string[]).includes(id);
+}
 export function ehIrmao(id: string): boolean {
   return (IRMAOS as readonly string[]).includes(id);
 }
@@ -49,11 +58,11 @@ export function ehEx(id: string): boolean {
 }
 
 /** Os papéis do conteúdo que valem para várias pessoas: `ator: ["filho"]` vale para cada filho, e o mesmo para irmão e ex. */
-export const VARIOS: Readonly<Record<string, readonly string[]>> = { filho: FILHOS, irmao: IRMAOS, ex: EXES };
+export const VARIOS: Readonly<Record<string, readonly string[]>> = { filho: FILHOS, irmao: IRMAOS, ex: EXES, amigo: AMIGOS };
 
-/** O papel do conteúdo que a pessoa ocupa: `filho2` é um filho, `irmao3` é um irmão, `ex2` é um ex. */
+/** O papel do conteúdo que a pessoa ocupa: `filho2` é um filho, `irmao3` é um irmão, `ex2` é um ex, `amigo2` é um amigo. */
 export function papelBase(id: string): string {
-  return ehFilho(id) ? 'filho' : ehIrmao(id) ? 'irmao' : ehEx(id) ? 'ex' : id;
+  return ehFilho(id) ? 'filho' : ehIrmao(id) ? 'irmao' : ehEx(id) ? 'ex' : ehAmigo(id) ? 'amigo' : id;
 }
 
 /** Os países de fora com quem o Brasil negocia (mundo.json › estrangeiros): entidades que nascem com a vida. */

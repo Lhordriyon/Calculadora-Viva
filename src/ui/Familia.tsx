@@ -4,7 +4,7 @@ import { acoesComPessoa, fichasUsadas } from '../motor/acoes.ts';
 import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
-import { EXES, FILHOS, IRMAOS, VISOES_RUINS, ehEx, ehFilho, ehIrmao, type Humor, type Verbo, type Visao } from '../motor/constantes.ts';
+import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo, type Visao } from '../motor/constantes.ts';
 import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
 import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, semONome, visoesDe } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -62,12 +62,13 @@ function Testamento({ vida, conteudo, aoOperar }: { vida: EstadoVida; conteudo: 
 }
 
 /** Ordem do painel: quem veio antes, quem chegou depois, e por último quem passou (os ex) e quem é do trabalho. */
-const ORDEM = ['mae', 'pai', 'avo', ...IRMAOS, 'amigo', 'amor', ...FILHOS, 'pet', ...EXES, 'colega', 'chefe'] as const;
+const ORDEM = ['mae', 'pai', 'avo', ...IRMAOS, ...AMIGOS, 'amor', ...FILHOS, 'pet', ...EXES, 'colega', 'chefe'] as const;
 
 function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
   const f = en.genero === 'f';
   if (ehFilho(id)) return f ? 'Filha' : 'Filho';
   if (ehIrmao(id)) return f ? 'Irmã' : 'Irmão';
+  if (ehAmigo(id) && id !== 'amigo') return f ? 'Amiga' : 'Amigo';
   if (ehEx(id)) return 'Ex';
   switch (id) {
     case 'colega':

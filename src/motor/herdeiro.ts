@@ -442,7 +442,11 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     copia.n['vinculo'] = Math.round(limitar((avo.n['vinculo'] ?? 60) * 0.8 + 10, 5, 95));
     e.entidades['avo'] = recausar(copia, abertura.id);
   }
-  if (filho.parentesco !== 'amigo') e.entidades['amigo'] = pessoaNova(e, c, 'amigo', filho.nascimento + inteiro(e.rng, -1, 1));
+  if (filho.parentesco !== 'amigo') {
+    const amigo = pessoaNova(e, c, 'amigo', filho.nascimento + inteiro(e.rng, -1, 1));
+    amigo.q['de_infancia'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
+    e.entidades['amigo'] = amigo;
+  }
   const pet = antiga.entidades['pet'];
   if (pet && pet.vivo !== false) e.entidades['pet'] = recausar(structuredClone(pet), abertura.id);
   // Os irmãos de quem herda (os outros filhos vivos de quem morreu) vêm junto, com a parte deles da herança. A relação

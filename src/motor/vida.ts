@@ -5,7 +5,7 @@
  * (mutam o objeto recebido; a interface clona antes).
  */
 import { regraDoPadrao, regraDoTrabalho } from './trabalho.ts';
-import { ATRIBUTOS, FILHOS, type Ativo } from './constantes.ts';
+import { AMIGOS, ATRIBUTOS, FILHOS, type Ativo } from './constantes.ts';
 import { patrimonioTotal } from './campos.ts';
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -61,7 +61,7 @@ const MEMORIA_LINHAS = 15;
 /** A perda do dinheiro parado para a inflação só aparece a partir deste valor. */
 const LIMITE_CHIP_INFLACAO = 200;
 /** Quem está perto pesa na felicidade de base (vínculo médio). */
-const PERTO = ['mae', 'pai', 'avo', 'amigo', 'amor', ...FILHOS] as const;
+const PERTO = ['mae', 'pai', 'avo', ...AMIGOS, 'amor', ...FILHOS] as const;
 
 export interface OpcoesNascimento {
   semente: number;
