@@ -422,5 +422,119 @@
         }
       }
     ]
+  },
+  {
+    "id": "tentacao_no_trabalho",
+    "ator": ["colega"],
+    "idade": [22, 65],
+    "peso": 3,
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["amor.caso_escondido"], "ator.vinculo": { "min": 45 }, "ator.idade": { "min": 20 } },
+    "texto": "Festa de fim de ano da firma. Depois da terceira caipirinha, {ator} disse que sempre teve uma queda por você, e a mão {ator:dele|dela} ficou no seu braço mais tempo do que devia.",
+    "resumo": "teve uma noite de tentação com {ator.quem} na festa da firma",
+    "escolhas": [
+      {
+        "texto": "Ir para casa na hora",
+        "resumo": "foi para casa antes de a noite ir longe com {ator.quem}",
+        "resultado": {
+          "texto": "Você chamou um carro e foi embora. {amor} acordou e perguntou da festa; você disse que foi chata, o que era verdade só até a terceira caipirinha.",
+          "efeitos": { "ator.vinculo": -3, "amor.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Deixar a noite ir longe",
+        "resumo": "deixou a noite ir longe com {ator.quem}",
+        "teste": { "chance": 0.55 },
+        "sucesso": {
+          "texto": "Ninguém viu, ninguém soube. No dia seguinte, {ator} mandou um bom-dia com emoji, e você apagou a conversa no elevador.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 2, "marcas": ["amor.caso_escondido"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 20] }] }
+        },
+        "fracasso": {
+          "texto": "Alguém da firma postou uma foto da festa. {amor} viu antes de você acordar.",
+          "resumo": "foi descobert{o|a} traindo {amor}",
+          "efeitos": { "amor.magoa": 38, "amor.confianca": -25, "felicidade": -6, "ator.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Rir e mudar de assunto",
+        "resumo": "riu e mudou de assunto quando {ator.quem} se declarou",
+        "resultado": {
+          "texto": "Você riu, disse que era a caipirinha falando e foi buscar mais gelo. Na segunda, os dois fingiram que nada tinha acontecido, com muito talento.",
+          "efeitos": { "ator.vinculo": 1, "felicidade": -1, "ator.magoa": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_caso_vem_a_tona",
+    "idade": [22, 85],
+    "peso": 2,
+    "condicoes": { "marcas": ["namoro", "amor.caso_escondido"] },
+    "texto": "{amor} achou a conversa que você apagou do celular e esqueceu de apagar do computador. Leu tudo duas vezes antes de você chegar em casa.",
+    "resumo": "teve um segredo descoberto por {amor}",
+    "escolhas": [
+      {
+        "texto": "Contar tudo e pedir perdão",
+        "resumo": "contou tudo a {amor} e pediu perdão",
+        "efeitos": { "removerMarcas": ["amor.caso_escondido"] },
+        "teste": { "atributo": "amor.vinculo", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "{amor} chorou, gritou e, semanas depois, disse que ia tentar. A confiança vai demorar a voltar, se voltar.",
+          "efeitos": { "amor.magoa": 25, "amor.confianca": -20, "felicidade": -3 }
+        },
+        "fracasso": {
+          "texto": "{amor} ouviu tudo e não disse nada. O silêncio foi pior do que qualquer grito.",
+          "efeitos": { "amor.magoa": 40, "amor.confianca": -30, "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Negar até o fim",
+        "resumo": "negou tudo para {amor}",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "{amor} decidiu acreditar, ou fingir que acreditou. Você dormiu mal do mesmo jeito.",
+          "efeitos": { "amor.confianca": -15, "amor.magoa": 10, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "{amor} tinha os prints. Negar só piorou tudo, inclusive a parte que já não tinha como piorar.",
+          "efeitos": { "amor.magoa": 45, "amor.confianca": -35, "felicidade": -5, "removerMarcas": ["amor.caso_escondido"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "amor_desconfia",
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [22, 85],
+    "peso": 3,
+    "condicoes": { "marcas": ["namoro", "ator.caso_escondido"] },
+    "texto": "{ator} começou a olhar o seu celular quando você vai ao banheiro. Ontem, no meio da novela, perguntou do nada se estava tudo bem entre vocês.",
+    "resumo": "percebeu que {ator.quem} desconfiava de alguma coisa",
+    "escolhas": [
+      {
+        "texto": "Contar a verdade antes que {ator:ele|ela} descubra",
+        "resumo": "contou do caso a {ator.quem} antes que {ator:ele|ela} descobrisse",
+        "resultado": {
+          "texto": "Você contou tudo, sem enfeite. {ator} ouviu até o fim e foi dormir no sofá, o que pelo menos foi decisão {ator:dele|dela}.",
+          "efeitos": { "removerMarcas": ["ator.caso_escondido"], "ator.magoa": 22, "ator.confianca": -15, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Dizer que está tudo ótimo",
+        "resumo": "disse a {ator.quem} que estava tudo ótimo",
+        "resultado": {
+          "texto": "\"Tudo ótimo\", você disse, um pouco rápido demais. {ator} sorriu do jeito de quem vai continuar procurando.",
+          "efeitos": { "ator.confianca": -6, "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [1, 3] }] }
+        }
+      },
+      {
+        "texto": "Encerrar o caso em silêncio e caprichar em casa",
+        "resumo": "encerrou o caso em silêncio e caprichou em casa",
+        "resultado": {
+          "texto": "Você terminou o caso por mensagem, apagou a mensagem e passou a chegar cedo, com flores de posto. {ator} achou estranho, mas um estranho bom.",
+          "efeitos": { "ator.vinculo": 4, "dinheiro": -400, "felicidade": -2 }
+        }
+      }
+    ]
   }
 ]
