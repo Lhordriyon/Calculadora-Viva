@@ -227,6 +227,17 @@ describe('testamento', () => {
     return e;
   }
 
+  it('tudo para o bicho: o advogado liga no ano seguinte, com o testamento de causa', () => {
+    const e = adulto(15, {}, 40);
+    criarPersonagem(e, c, 'pet', []);
+    const entrada = operar(e, c, { tipo: 'testamento', para: 'pet' });
+    expect(e.agenda).toContainEqual({ evento: 'o_bicho_herdeiro', ano: e.ano + 1, origem: entrada.id });
+    // Mudar de ideia e voltar ao bicho não liga duas vezes.
+    operar(e, c, { tipo: 'testamento', para: '' });
+    operar(e, c, { tipo: 'testamento', para: 'pet' });
+    expect(e.agenda.filter((a) => a.evento === 'o_bicho_herdeiro')).toHaveLength(1);
+  });
+
   it('causa: a fortuna sai da família e não há quem continue', () => {
     expect(herdeiroPossivel(velorio(11, 'causa'), c)).toBeNull();
   });

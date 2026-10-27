@@ -827,6 +827,7 @@
     "ator": ["amor"],
     "idade": [18, 95],
     "condicoes": { "marcas": ["namoro"], "ator.magoa": { "min": 45 } },
+    "peso": 4,
     "tensao": 3,
     "repetivel": true,
     "intervalo": 4,

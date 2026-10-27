@@ -507,6 +507,7 @@
     "ator": ["amor"],
     "idade": [22, 85],
     "peso": 3,
+    "tensao": 2,
     "condicoes": { "marcas": ["namoro", "ator.caso_escondido"] },
     "texto": "{ator} começou a olhar o seu celular quando você vai ao banheiro. Ontem, no meio da novela, perguntou do nada se estava tudo bem entre vocês.",
     "resumo": "percebeu que {ator.quem} desconfiava de alguma coisa",

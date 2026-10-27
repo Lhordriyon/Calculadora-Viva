@@ -171,7 +171,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   if (ehOperacaoDeDivida(op)) return lancarCom('divida', (id) => operarDivida(e, c, op, reg, id));
   if (ehOperacaoDeCarreira(op)) return lancarCom('carreira', (id) => operarCarreira(e, c, op, reg, id));
   if (ehOperacaoDePoder(op)) return lancarCom('poder', (id) => operarPoder(e, c, op, reg, id));
-  if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', () => operarTestamento(e, op, reg));
+  if (ehOperacaoDeTestamento(op)) return lancarCom('testamento', (id) => operarTestamento(e, op, reg, id));
   if (ehOperacaoDePais(op)) return lancarCom('pais', () => operarPais(e, c, op, reg));
   if (ehOperacaoDeDiplomacia(op)) return lancarCom('pais', (id) => operarDiplomacia(e, c, op, reg, id));
   // A encomenda leva o sistema na ref: a entrega, anos depois, acha a encomenda pelo livro (guerra.ts).

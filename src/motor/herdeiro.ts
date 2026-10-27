@@ -118,7 +118,11 @@ export function motivoParaNaoOperarTestamento(e: EstadoVida, op: OperacaoTestame
   return null;
 }
 
-export function operarTestamento(e: EstadoVida, op: OperacaoTestamento, reg: Mudanca[]): { texto: string; resumo: string } {
+/** Quem deixa tudo para o bicho recebe a ligação do advogado (o storylet), a partir dos 25. */
+const HERANCA_DO_BICHO = 'o_bicho_herdeiro';
+const IDADE_DA_HERANCA_DO_BICHO = 25;
+
+export function operarTestamento(e: EstadoVida, op: OperacaoTestamento, reg: Mudanca[], origem: number): { texto: string; resumo: string } {
   definirTexto(e, reg, 'eu', 'testamento', op.para);
   const nome = (id: string): string => e.entidades[id]?.nome ?? '';
   switch (op.para) {
@@ -139,6 +143,8 @@ export function operarTestamento(e: EstadoVida, op: OperacaoTestamento, reg: Mud
     case 'causa':
       return { texto: 'Fez testamento: tudo para uma causa. Hospitais, escolas e um bolsista que nunca vai saber o seu nome.', resumo: 'deixou tudo para a caridade em testamento' };
     case 'pet':
+      // A herança do bicho pede fundo e tutor: o advogado liga no ano seguinte (ou quando quem joga fizer 25).
+      if (!e.agenda.some((a) => a.evento === HERANCA_DO_BICHO)) e.agenda.push({ evento: HERANCA_DO_BICHO, ano: e.ano + Math.max(1, IDADE_DA_HERANCA_DO_BICHO - e.idade), origem });
       return { texto: `Fez testamento: tudo para ${nome('pet')}. O cartório riu, mas registrou.`, resumo: `deixou tudo para ${nome('pet')} em testamento` };
     default:
       return { texto: 'Desfez o testamento: fica valendo a lei (os filhos primeiro).', resumo: 'desfez o testamento' };

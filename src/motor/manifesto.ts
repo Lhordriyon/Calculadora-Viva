@@ -242,7 +242,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
