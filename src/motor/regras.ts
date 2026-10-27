@@ -216,6 +216,17 @@ export const DEMISSAO_JOGADOR = 0.025;
 export const VARIACAO_NEGOCIO = 0.05;
 export const CHANCE_APERTO_NEGOCIO = 0.25;
 export const RECOLOCACAO = 0.38;
+/**
+ * A vida dos irmãos ao fundo, por ano: o primeiro emprego (dos 18 aos 35), casar (dos 21 aos 45), ter filho (casado,
+ * dos 23 aos 42, até três), separar e se mudar para longe (dos 20 aos 45). Chega à vida de quem joga como notícia.
+ */
+export const IRMAO_PRIMEIRO_EMPREGO = 0.35;
+export const IRMAO_CASA = 0.07;
+export const IRMAO_TEM_FILHO = 0.12;
+export const IRMAO_SEPARA = 0.012;
+export const IRMAO_MUDA = 0.025;
+/** Quem mora longe esfria mais rápido sem contato. */
+export const DISTANCIA_DE_QUEM_MORA_LONGE = 1.4;
 export const IDADE_APOSENTADORIA = 65;
 /** O padrão de vida aperta quando a reserva cobre menos que estes anos de déficit. */
 export const ANOS_DE_RESERVA = 5;
@@ -270,11 +281,11 @@ export function chanceDeAmor(idade: number): number {
  * com o vínculo de quem acabou de chegar (70), vale 70% disso; com 40, inteira.
  */
 export function chanceDoNamoroEsfriar(idade: number): number {
-  if (idade < 21) return 0.3;
-  if (idade < 26) return 0.22;
-  if (idade < 31) return 0.15;
-  if (idade < 41) return 0.1;
-  return 0.06;
+  if (idade < 21) return 0.25;
+  if (idade < 26) return 0.15;
+  if (idade < 31) return 0.08;
+  if (idade < 41) return 0.05;
+  return 0.04;
 }
 /** Cada ponto de paquera (sair, conhecer gente) aumenta a chance em tanto, até 3 pontos. */
 export const PAQUERA_AMOR = 0.6;

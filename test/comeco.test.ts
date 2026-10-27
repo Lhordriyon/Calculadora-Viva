@@ -37,7 +37,9 @@ describe('criar o personagem', () => {
     expect(e.entidades['lugar']!.nome).toBe('Recife');
     expect(eu.n['classe_origem']).toBe(2);
     expect(eu.t['familia']).toBe('acolhedora');
-    expect(eu.n['irmaos']).toBe(3);
+    // Os irmãos: os que já nasceram contam em `irmaos`; os mais novos estão agendados para nascer.
+    const vemDepois = e.agenda.filter((a) => a.evento === 'irmao_nasce').length;
+    expect(eu.n['irmaos']! + vemDepois).toBe(3);
     expect(eu.t['traco']).toBe('carismatico');
   });
 

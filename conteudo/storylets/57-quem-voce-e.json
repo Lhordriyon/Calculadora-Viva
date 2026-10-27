@@ -367,7 +367,7 @@
   {
     "id": "so_aparece_por_dinheiro",
     "tipo": "npc",
-    "ator": ["mae", "pai", "avo", "amigo"],
+    "ator": ["mae", "pai", "avo", "amigo", "irmao"],
     "idade": [18, 90],
     "condicoes": { "ator.visao": "interesseiro", "semMarcas": ["ator.rompido"] },
     "tensao": 2,
@@ -445,7 +445,7 @@
   {
     "id": "pisa_em_ovos",
     "tipo": "npc",
-    "ator": ["mae", "pai", "amor", "amigo", "filho"],
+    "ator": ["mae", "pai", "amor", "amigo", "irmao", "filho"],
     "idade": [14, 95],
     "condicoes": { "ator.visao": "cabeca_quente", "ator.idade": { "min": 12 }, "semMarcas": ["ator.rompido"] },
     "tensao": 2,
@@ -484,7 +484,7 @@
   {
     "id": "nao_acredita_mais",
     "tipo": "npc",
-    "ator": ["mae", "pai", "amor", "amigo", "filho"],
+    "ator": ["mae", "pai", "amor", "amigo", "irmao", "filho"],
     "idade": [14, 95],
     "condicoes": { "ator.visao": "sem_palavra", "ator.idade": { "min": 10 }, "semMarcas": ["ator.rompido"] },
     "tensao": 2,
@@ -522,7 +522,7 @@
   {
     "id": "voce_mudou",
     "tipo": "npc",
-    "ator": ["mae", "pai", "avo", "amigo"],
+    "ator": ["mae", "pai", "avo", "amigo", "irmao"],
     "idade": [20, 95],
     "condicoes": { "ator.visao": "metido", "semMarcas": ["ator.rompido"] },
     "tensao": 2,
@@ -788,7 +788,7 @@
   {
     "id": "esperou_por_voce",
     "tipo": "npc",
-    "ator": ["mae", "pai", "avo", "amigo", "amor", "filho"],
+    "ator": ["mae", "pai", "avo", "amigo", "irmao", "amor", "filho"],
     "idade": [18, 95],
     "condicoes": { "marcaHa": [{ "marca": "ator.nao_apareceu", "max": 2 }], "semMarcas": ["ator.rompido"] },
     "tensao": 2,

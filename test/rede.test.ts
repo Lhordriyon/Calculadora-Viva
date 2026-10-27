@@ -4,13 +4,14 @@
  */
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { EXES } from '../src/motor/constantes.ts';
+import { EXES, IRMAOS } from '../src/motor/constantes.ts';
 import { ganhar, lancar, novaEntrada, perder } from '../src/motor/livro.ts';
-import { arquivarEx, criarPersonagem, promover } from '../src/motor/pessoas.ts';
+import { arquivarEx, criarPersonagem, morrerPersonagem, promover } from '../src/motor/pessoas.ts';
 import { lembrancasDe, quemOcupava, visoesDe } from '../src/motor/relacoes.ts';
 import { aplicarStorylet } from '../src/motor/storylets.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
-import { nascer } from '../src/motor/vida.ts';
+import { morrer, nascer } from '../src/motor/vida.ts';
+import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import { quemE } from '../src/motor/campos.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { passo } from './apoio.ts';
@@ -143,5 +144,107 @@ describe('a identidade das pessoas', () => {
       expect(new Set(pessoas.map((en) => en.pessoa)).size).toBe(pessoas.length);
     }
     expect(comEx).toBeGreaterThan(0);
+  });
+});
+
+describe('os irmãos', () => {
+  it('os mais velhos nascem com a família, do mais velho ao mais novo; os mais novos ficam para depois', () => {
+    let comVelhos = 0;
+    let comNovos = 0;
+    for (let k = 0; k < 40; k++) {
+      const e = nascer(c, { semente: 300 + k, ano: 2026 });
+      const irmaos = IRMAOS.filter((x) => e.entidades[x]);
+      expect(e.entidades['eu']!.n['irmaos']).toBe(irmaos.length);
+      const nascimentos = irmaos.map((x) => e.entidades[x]!.nascimento!);
+      expect(nascimentos.every((n) => n <= e.ano)).toBe(true);
+      expect([...nascimentos].sort((a, b) => a - b)).toEqual(nascimentos);
+      if (irmaos.length > 0) comVelhos++;
+      if (e.agenda.some((a) => a.evento === 'irmao_nasce' && a.ano > e.ano)) comNovos++;
+    }
+    expect(comVelhos).toBeGreaterThan(5);
+    expect(comNovos).toBeGreaterThan(5);
+  });
+
+  it('quem escolhe três irmãos tem três: os que vieram antes e os que vão nascer', () => {
+    for (let k = 0; k < 20; k++) {
+      const e = nascer(c, { semente: 400 + k, ano: 2026, origem: { irmaos: 3 } });
+      const ja = IRMAOS.filter((x) => e.entidades[x]).length;
+      const vem = e.agenda.filter((a) => a.evento === 'irmao_nasce').length;
+      expect(ja + vem, `semente ${400 + k}`).toBe(3);
+    }
+  });
+
+  it('o irmão mais novo nasce no ano marcado, com número, e conta como irmão', () => {
+    const e = nascer(c, { semente: 410, ano: 2026, origem: { irmaos: 3 } });
+    const robo = criarRng(3);
+    const quando = e.agenda.find((a) => a.evento === 'irmao_nasce')?.ano;
+    if (quando === undefined) return;
+    const antes = e.entidades['eu']!.n['irmaos']!;
+    while (e.vivo && e.ano <= quando) passo(e, c, robo, 'primeira');
+    const novo = IRMAOS.map((x) => e.entidades[x]).find((x) => x?.nascimento === quando);
+    expect(novo).toBeDefined();
+    expect(novo!.pessoa).toBeDefined();
+    expect(e.entidades['eu']!.n['irmaos']).toBe(antes + 1);
+  });
+
+  it('a herança da mãe se divide entre quem joga e os irmãos vivos, cada um na conta dele', () => {
+    const e = nascer(c, { semente: 420, ano: 2026 });
+    for (const x of IRMAOS) delete e.entidades[x];
+    e.agenda = [];
+    e.idade = 40;
+    e.ano = e.anoNascimento + 40;
+    regra(e, (reg) => {
+      criarPersonagem(e, c, 'irmao', reg);
+      criarPersonagem(e, c, 'irmao', reg);
+    });
+    e.entidades['eu']!.n['irmaos'] = 2;
+    e.entidades['pai']!.vivo = false;
+    e.entidades['mae']!.n['dinheiro'] = 300_000;
+    const antes = e.entidades['eu']!.n['dinheiro'] ?? 0;
+    let parte = 0;
+    regra(e, (reg, id) => {
+      parte = morrerPersonagem(e, 'mae', reg, id);
+    });
+    expect(parte).toBeCloseTo(100_000, 0);
+    expect((e.entidades['eu']!.n['dinheiro'] ?? 0) - antes).toBeCloseTo(100_000, 0);
+    expect(e.entidades['irmao']!.n['dinheiro']).toBeCloseTo(100_000, 0);
+    expect(e.entidades['irmao2']!.n['dinheiro']).toBeCloseTo(100_000, 0);
+  });
+
+  it('quem herda leva os irmãos: o outro filho vivo vira irmão na vida nova', () => {
+    const e = nascer(c, { semente: 430, ano: 2026 });
+    e.idade = 62;
+    e.ano = e.anoNascimento + 62;
+    regra(e, (reg) => {
+      criarPersonagem(e, c, 'filho', reg);
+      criarPersonagem(e, c, 'filho', reg);
+    });
+    e.entidades['filho']!.nascimento = e.ano - 34;
+    e.entidades['filho2']!.nascimento = e.ano - 31;
+    morrer(e, c);
+    const h = continuarComoHerdeiro(e, c);
+    expect(h.entidades['eu']!.nome).toBe(e.entidades['filho']!.nome);
+    expect(h.entidades['irmao']?.nome).toBe(e.entidades['filho2']!.nome);
+    expect(h.entidades['eu']!.n['irmaos']).toBe(1);
+    expect(h.entidades['irmao']!.pessoa).toBeDefined();
+  });
+
+  it('o sobrinho é filho de um irmão de verdade, que vira o pai ou a mãe na vida nova', () => {
+    const e = nascer(c, { semente: 440, ano: 2026 });
+    for (const x of IRMAOS) delete e.entidades[x];
+    e.idade = 66;
+    e.ano = e.anoNascimento + 66;
+    regra(e, (reg) => criarPersonagem(e, c, 'irmao', reg));
+    const irmao = e.entidades['irmao']!;
+    irmao.nascimento = e.ano - 63;
+    irmao.n['filhos'] = 2;
+    e.entidades['eu']!.n['irmaos'] = 1;
+    morrer(e, c);
+    const herdeiro = herdeiroPossivel(e, c)!;
+    expect(herdeiro.parentesco).toBe('sobrinho');
+    expect(herdeiro.de).toBe('irmao');
+    expect(e.ano - herdeiro.nascimento).toBeLessThanOrEqual(63 - 16);
+    const h = continuarComoHerdeiro(e, c);
+    expect(h.entidades[irmao.genero === 'f' ? 'mae' : 'pai']!.nome).toBe(irmao.nome);
   });
 });

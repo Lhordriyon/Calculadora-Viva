@@ -3,14 +3,14 @@
  * luto e herança). Usado pelos efeitos de storylets e pelas regras anuais.
  */
 import type { Conteudo } from './conteudo.ts';
-import { EXES, FILHOS, ehEx, ehFilho, type PapelNovo } from './constantes.ts';
+import { EXES, FILHOS, IRMAOS, ehEx, ehFilho, ehIrmao, type PapelQueChega } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
 import { quemEraQuemMudou } from './relacoes.ts';
 import { aoMorrerQuemReina } from './sucessao.ts';
 import { ANOS_REMORSO, ANOS_UNIAO, MAGOA_REMORSO } from './regras.ts';
-import { aleatorio, inteiro, sortear } from './rng.ts';
+import { aleatorio, inteiro, sortear, type Rng } from './rng.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
 export function novaEntidade(parcial: Partial<Entidade> & Pick<Entidade, 'id' | 'tipo' | 'nome'>): Entidade {
@@ -18,15 +18,15 @@ export function novaEntidade(parcial: Partial<Entidade> & Pick<Entidade, 'id' | 
 }
 
 /** Nome que ninguém da vida ainda usa. */
-export function nomeLivre(e: EstadoVida, c: Conteudo, genero: Genero): string {
+export function nomeLivre(e: EstadoVida, c: Conteudo, genero: Genero, rng: Rng = e.rng): string {
   const usados = new Set(Object.values(e.entidades).map((x) => x.nome));
-  let nome = sortear(e.rng, c.mundo.nomes[genero]);
-  for (let i = 0; i < 30 && usados.has(nome); i++) nome = sortear(e.rng, c.mundo.nomes[genero]);
+  let nome = sortear(rng, c.mundo.nomes[genero]);
+  for (let i = 0; i < 30 && usados.has(nome); i++) nome = sortear(rng, c.mundo.nomes[genero]);
   return nome;
 }
 
 /** Papéis que nascem com traço (o traço muda o vínculo, a saúde e as iniciativas). */
-const COM_TRACO = new Set(['amor', 'filho', 'amigo']);
+const COM_TRACO = new Set(['amor', 'filho', 'amigo', 'irmao']);
 
 /** Sorteia um traço de personagem e aplica os ajustes de vínculo e saúde. */
 function darTraco(e: EstadoVida, c: Conteudo, en: Entidade): void {
@@ -122,6 +122,7 @@ function voltarComOEx(e: EstadoVida, de: string, reg: Mudanca[]): void {
     ocupar(e, 'amor', 0, daqui(e));
     return moverPessoa(e, de, 'amor', reg);
   }
+  esquecerVontades(e, 'amor', reg);
   const desde = daqui(e);
   const quemVolta = garantirPessoa(e, de, volta);
   const quemSai = garantirPessoa(e, 'amor', antes);
@@ -133,7 +134,12 @@ function voltarComOEx(e: EstadoVida, de: string, reg: Mudanca[]): void {
   e.entidades[de] = antes;
   ocupar(e, 'amor', quemVolta, desde);
   ocupar(e, de, quemSai, desde);
-  for (const q of Object.keys(antes.q)) if (q.startsWith('quer_')) perder(e, reg, de, q);
+}
+
+/** As vontades eram da vida a dois: saem enquanto a pessoa ainda é o amor (mundo.json › vontades). */
+function esquecerVontades(e: EstadoVida, papel: string, reg: Mudanca[]): void {
+  const en = e.entidades[papel];
+  if (en) for (const q of Object.keys(en.q)) if (q.startsWith('quer_')) perder(e, reg, papel, q);
 }
 
 /** O primeiro lugar de ex livre; sem lugar, quem foi embora há mais tempo sai da vida (o lugar vai para o novo). */
@@ -155,10 +161,9 @@ function lugarDeEx(e: EstadoVida, reg: Mudanca[]): string {
 export function arquivarEx(e: EstadoVida, reg: Mudanca[]): string | undefined {
   const en = e.entidades['amor'];
   if (!en || en.vivo === false || en.tipo !== 'pessoa') return undefined;
+  esquecerVontades(e, 'amor', reg);
   const slot = lugarDeEx(e, reg);
   moverPessoa(e, 'amor', slot, reg);
-  const ex = e.entidades[slot]!;
-  for (const q of Object.keys(ex.q)) if (q.startsWith('quer_')) perder(e, reg, slot, q);
   // A segunda chance era com esta pessoa: acabou junto.
   perder(e, reg, 'eu', 'voltou_com_o_ex');
   return slot;
@@ -186,10 +191,12 @@ function ocuparPapel(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[])
  * não toma o lugar de outro: vai para o próximo lugar livre (`filho2`…), e `eu.filhos` conta. Com os quatro lugares
  * ocupados, não nasce ninguém (devolve undefined).
  */
-export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, reg: Mudanca[]): string | undefined {
+export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelQueChega, reg: Mudanca[]): string | undefined {
   const idadeEu = e.idade;
-  const id = papel === 'filho' ? FILHOS.find((f) => !e.entidades[f]) : papel;
+  const id = papel === 'filho' ? FILHOS.find((f) => !e.entidades[f]) : papel === 'irmao' ? IRMAOS.find((x) => !e.entidades[x]) : papel;
   if (!id) return undefined;
+  // Quem nasce agora (o filho, o irmão mais novo) tem a idade de um bebê.
+  const bebe = papel === 'filho' || papel === 'irmao';
   let en: Entidade;
   if (papel === 'pet') {
     const pet = sortear(e.rng, c.mundo.pets);
@@ -197,15 +204,16 @@ export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, re
     en.n['saude'] = 85;
   } else {
     const genero: Genero = aleatorio(e.rng) < 0.5 ? 'f' : 'm';
-    const nascimento = papel === 'filho' ? e.ano : e.ano - Math.max(16, idadeEu + inteiro(e.rng, -4, 4));
+    const nascimento = bebe ? e.ano : e.ano - Math.max(16, idadeEu + inteiro(e.rng, -4, 4));
     en = novaEntidade({ id, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo: true });
-    en.n['saude'] = papel === 'filho' ? 85 : 75;
-    en.n['vinculo'] = papel === 'filho' ? 80 : papel === 'amor' ? 70 : 55;
+    en.n['saude'] = bebe ? 85 : 75;
+    en.n['vinculo'] = papel === 'filho' ? 80 : papel === 'amor' ? 70 : papel === 'irmao' ? 60 : 55;
     if (papel !== 'filho') en.n['dinheiro'] = 0;
     if (COM_TRACO.has(papel)) darTraco(e, c, en);
   }
   ocuparPapel(e, id, en, reg);
   if (papel === 'filho') somar(e, reg, 'eu', 'filhos', 1);
+  if (papel === 'irmao') somar(e, reg, 'eu', 'irmaos', 1);
   return id;
 }
 
@@ -232,8 +240,8 @@ function herdeiro(e: EstadoVida, papel: string): string {
   if (papel === 'pai' && vivo('mae') && !e.entidades['pai']!.q['ausente']) return 'mae';
   if (papel === 'avo') return vivo('mae') ? 'mae' : vivo('pai') ? 'pai' : 'eu';
   if (papel === 'amigo' || papel === 'paixao' || papel === 'pet') return '';
-  // O ex, o colega e o chefe têm a família deles: o dinheiro fica com eles.
-  if (ehEx(papel) || papel === 'colega' || papel === 'chefe') return '';
+  // O irmão, o ex, o colega e o chefe têm a família deles: o dinheiro fica com ela.
+  if (ehIrmao(papel) || ehEx(papel) || papel === 'colega' || papel === 'chefe') return '';
   return 'eu';
 }
 
@@ -282,14 +290,20 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   const para = herdeiro(e, papel);
   if (dinheiro <= 0 || !para) return 0;
   if (para === 'eu') {
-    // Dos pais e da avó, cada irmão leva a sua parte (os irmãos não são personagens: a parte deles vai para os parentes).
-    const irmaos = papel === 'amor' || ehFilho(papel) ? 0 : (e.entidades['eu']!.n['irmaos'] ?? 0);
-    const parte = dinheiro / (1 + irmaos);
+    // Dos pais e da avó, cada irmão leva a sua parte: o vivo, na conta dele; a do irmão que já morreu e deixou filhos,
+    // e a de quem é só um número (o save de antes dos irmãos), vai para os parentes.
+    const herdam = papel === 'amor' || ehFilho(papel) ? [] : IRMAOS.filter((x) => e.entidades[x] && e.entidades[x]!.vivo !== false);
+    const representados = papel === 'amor' || ehFilho(papel) ? 0 : IRMAOS.filter((x) => e.entidades[x]?.vivo === false && (e.entidades[x]!.n['filhos'] ?? 0) > 0).length;
+    const soNumero = papel === 'amor' || ehFilho(papel) ? 0 : Math.max(0, (e.entidades['eu']!.n['irmaos'] ?? 0) - IRMAOS.filter((x) => e.entidades[x]).length);
+    const parte = dinheiro / (1 + herdam.length + representados + soNumero);
+    const dosParentes = parte * (representados + soNumero);
     somarRepartido(e, reg, papel, 'dinheiro', -dinheiro, [
       { d: -parte, p: 'eu' },
-      { d: -(dinheiro - parte), p: 'parentes' },
+      ...herdam.map((x) => ({ d: -parte, p: x })),
+      ...(dosParentes > 0 ? [{ d: -dosParentes, p: 'parentes' }] : []),
     ]);
     movimentar(e, reg, { dinheiro: parte, contraparte: papel });
+    for (const x of herdam) somar(e, reg, x, 'dinheiro', parte, undefined, papel);
     ganhar(e, reg, 'eu', 'herdou', causa);
     return parte;
   }

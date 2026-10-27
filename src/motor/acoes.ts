@@ -54,12 +54,15 @@ export interface AcaoPossivel {
   ator: string | undefined;
 }
 
-/** As instâncias de ação já feitas neste ano (a mesma ação não se repete no ano). */
+/**
+ * As ações já feitas neste ano (a mesma ação não se repete no ano, nem com outra pessoa: com a família maior, o
+ * programa com a mãe e o programa com o irmão no mesmo ano faziam do ano a mesma coisa duas vezes).
+ */
 export function feitasNoAno(e: EstadoVida): Set<string> {
   const feitas = new Set<string>();
   for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.idade === e.idade; i--) {
     const h = e.historico[i]!;
-    if (h.tipo === 'acao' && h.ref) feitas.add(h.instancia ?? h.ref);
+    if (h.tipo === 'acao' && h.ref) feitas.add(h.ref);
   }
   return feitas;
 }
@@ -71,8 +74,8 @@ export function acoesDoVerbo(e: EstadoVida, c: Conteudo, verbo: Verbo): AcaoPoss
   for (const s of c.acoes.get(verbo) ?? []) {
     if (s.idade && (e.idade < s.idade[0] || e.idade > s.idade[1])) continue;
     let melhor: { ator: string | undefined; nota: number } | null = null;
+    if (feitas.has(s.id)) continue;
     for (const ator of preferidos(s, e, atoresPossiveis(s, e).filter((a) => elegivel(s, e, a)))) {
-      if (feitas.has(instanciaDe(s, ator))) continue;
       const n = nota(s, e, ator);
       if (!melhor || n > melhor.nota + 1e-9) melhor = { ator, nota: n };
     }
@@ -158,7 +161,7 @@ function acaoEscolhida(e: EstadoVida, c: Conteudo, verbo: Verbo, escolha: { id: 
   const ator = escolha.ator;
   if (!s || s.verbo !== verbo || (ator === undefined) !== (s.ator === undefined)) return undefined;
   if (s.idade && (e.idade < s.idade[0] || e.idade > s.idade[1])) return undefined;
-  if (!atoresPossiveis(s, e).includes(ator) || !elegivel(s, e, ator) || feitasNoAno(e).has(instanciaDe(s, ator))) return undefined;
+  if (!atoresPossiveis(s, e).includes(ator) || !elegivel(s, e, ator) || feitasNoAno(e).has(s.id)) return undefined;
   return { verbo, s, ator };
 }
 

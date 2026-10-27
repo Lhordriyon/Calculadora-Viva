@@ -166,40 +166,43 @@
   },
   {
     "id": "emprestimo_ao_irmao",
+    "ator": ["irmao"],
     "idade": [25, 80],
     "condicoes": {
-      "irmaos": { "min": 1 },
       "algumaMarca": ["pais.recessao", "pais.crise"],
       "patrimonio": { "min": 60000 },
-      "mae.vivo": true
+      "mae.vivo": true,
+      "ator.idade": { "min": 22 },
+      "ator.renda": { "max": 60000 },
+      "semMarcas": ["ator.rompido"]
     },
     "peso": 2,
     "trechos": { "fase": [{ "se": { "marcas": ["pais.crise"] }, "texto": "crise" }, { "texto": "recessão" }] },
-    "texto": "Um dos seus irmãos te liga com a voz de quem ensaiou: precisa de um empréstimo \"só até o mês que vem\" para não perder o apartamento na {fase}.",
-    "resumo": "foi pedid{o|a} em empréstimo por um irmão",
+    "texto": "{ator} te liga com a voz de quem ensaiou: precisa de um empréstimo \"só até o mês que vem\" para não perder o apartamento na {fase}.",
+    "resumo": "foi pedid{o|a} em empréstimo por {ator}",
     "escolhas": [
       {
         "texto": "Emprestar",
-        "resumo": "emprestou dinheiro para um irmão na crise",
-        "efeitos": { "dinheiro": -30000 },
+        "resumo": "emprestou dinheiro para {ator} na crise",
+        "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 30000 } },
         "teste": { "chance": 0.4 },
         "sucesso": {
           "texto": "O mês que vem virou o ano que vem, mas o dinheiro voltou, com um churrasco de agradecimento.",
-          "resumo": "emprestou dinheiro para um irmão e recebeu de volta",
-          "efeitos": { "dinheiro": 30000, "felicidade": 3 }
+          "resumo": "emprestou dinheiro para {ator} e recebeu de volta",
+          "efeitos": { "transferir": { "de": "ator", "para": "eu", "valor": 30000 }, "felicidade": 3, "ator.vinculo": 6, "ator.confianca": 8 }
         },
         "fracasso": {
-          "texto": "O dinheiro nunca voltou. O assunto também não; agora ele só aparece no Natal, e evita o seu olhar.",
-          "resumo": "emprestou dinheiro para um irmão e nunca mais viu",
-          "efeitos": { "felicidade": -3 }
+          "texto": "O dinheiro nunca voltou. O assunto também não; agora {ator} só aparece no Natal e evita o seu olhar.",
+          "resumo": "emprestou dinheiro para {ator} e nunca mais viu",
+          "efeitos": { "felicidade": -3, "ator.vinculo": -4, "ator.confianca": -10 }
         }
       },
       {
         "texto": "Negar com jeito",
-        "resumo": "negou um empréstimo para um irmão",
+        "resumo": "negou um empréstimo para {ator}",
         "resultado": {
-          "texto": "Você explicou as suas contas. Ele disse que entendia. A sua mãe ligou dois dias depois para dizer que não entendia.",
-          "efeitos": { "felicidade": -1, "mae.vinculo": -3 }
+          "texto": "Você explicou as suas contas. {ator} disse que entendia. {mae} ligou dois dias depois para dizer que não entendia.",
+          "efeitos": { "felicidade": -1, "mae.vinculo": -3, "ator.magoa": 8 }
         }
       }
     ]

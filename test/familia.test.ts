@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { EXES } from '../src/motor/constantes.ts';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { ganhar } from '../src/motor/livro.ts';
 import { criarPersonagem, morrerPersonagem } from '../src/motor/pessoas.ts';
@@ -36,7 +37,8 @@ describe('família viva', () => {
   });
 
   it('a maioria das vidas tem um amor, e muitas têm filhos', () => {
-    const comAmor = amostra.filter((e) => e.entidades['amor']).length;
+    // O amor que foi embora continua existindo, como ex: também conta como um amor da vida.
+    const comAmor = amostra.filter((e) => e.entidades['amor'] || EXES.some((x) => e.entidades[x])).length;
     const comFilho = amostra.filter((e) => e.entidades['filho']).length;
     expect(comAmor / amostra.length).toBeGreaterThan(0.5);
     // O robô aleatório recusa ou adia filhos em 2 de cada 3 vezes; mesmo assim, uma parte grande chega lá.

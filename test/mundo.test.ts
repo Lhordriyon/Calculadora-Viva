@@ -22,6 +22,8 @@ function adulto(setor: string, fase: 'normal' | 'recessao' | 'crise', semente = 
   const e = nascer(c, { semente, ano: 2026 });
   e.idade = 30;
   e.ano += 30;
+  // Os irmãos mais novos agendados no nascimento já teriam nascido.
+  e.agenda = [];
   const eu = e.entidades['eu']!;
   Object.assign(eu.n, { renda: 40000, custo: 18000, dinheiro: 10000 });
   eu.t['setor'] = setor;

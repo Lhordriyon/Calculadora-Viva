@@ -9,12 +9,12 @@
 import { idadeDe } from './campos.ts';
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
-import { EXES, FILHOS, ehEx, ehFilho, papelBase, type Visao } from './constantes.ts';
+import { EXES, FILHOS, IRMAOS, ehEx, ehFilho, ehIrmao, papelBase, type Visao } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho, Mundo } from './esquema.ts';
 import type { Momento } from './pais.ts';
-import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { arquivarEx, morrerPersonagem } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
@@ -26,10 +26,16 @@ import {
   CONFIANCA_DA_FALTA,
   DESGASTE_CASAL,
   DISTANCIA_ADULTO,
+  DISTANCIA_DE_QUEM_MORA_LONGE,
   DISTANCIA_FILHO,
   DOENCA_POR_ANO,
   DOENCA_QUEDA,
   IDADE_APOSENTADORIA,
+  IRMAO_CASA,
+  IRMAO_MUDA,
+  IRMAO_PRIMEIRO_EMPREGO,
+  IRMAO_SEPARA,
+  IRMAO_TEM_FILHO,
   MAGOA_DA_FALTA,
   MAGOA_DA_VONTADE,
   MAGOA_NO_VINCULO,
@@ -56,10 +62,11 @@ import { capitalizar, renderizar } from './texto.ts';
 import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca, Qualidade } from './tipos.ts';
 
 /**
- * Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada;
- * os ex, no fim (eles vivem longe: a saúde, a morte e a relação que esfria).
+ * Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes, e a dos pais chega aos irmãos
+ * antes do ano deles); os filhos, na ordem de chegada; os ex, no fim (eles vivem longe: a saúde, a morte e a relação
+ * que esfria).
  */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet', ...EXES] as const;
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, 'amigo', 'pet', ...EXES] as const;
 
 const DE_PATRIMONIO = new WeakMap<Conteudo, ReadonlySet<string>>();
 /** A ocupação é de quem vive do que tem (mundo.json › classes › ocupacoes e linhagens › papel, com `patrimonio`): herdeiro, investidor, dono. */
@@ -115,6 +122,8 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   // O ex: o que sobrou é pouco, mais para quem é afetuoso.
   if (ehEx(papel)) return 22 + (traco?.vinculo ?? 0) / 2;
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
+  // O irmão é família, com a briga de quem dividiu o quarto; o gêmeo, mais perto.
+  if (ehIrmao(papel)) return (tipo?.vinculo ?? 60) - 4 + (traco?.vinculo ?? 0) + (en.q['gemeo'] ? 8 : 0);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
 }
 
@@ -285,10 +294,16 @@ export function regrasDosPersonagens(
           somar(e, reg, 'eu', 'felicidade', -(en.n['vinculo'] ?? 50) * 0.04);
         });
       } else if (en.q['doente'] && aleatorio(e.rng) < CHANCE_CURA) {
-        acontecer(e, c, papel, 'curou', (reg) => {
-          perder(e, reg, papel, 'doente');
-          somar(e, reg, papel, 'saude', 6);
-        });
+        // A cura de quem está longe (o irmão, o ex) não vira notícia: a doença virou, e a falta, se houve, também.
+        if (ehIrmao(papel) || ehEx(papel)) {
+          perder(e, regAno, papel, 'doente', 'saude');
+          somar(e, regAno, papel, 'saude', 6, 'saude');
+        } else {
+          acontecer(e, c, papel, 'curou', (reg) => {
+            perder(e, reg, papel, 'doente');
+            somar(e, reg, papel, 'saude', 6);
+          });
+        }
       }
     }
     const risco = papel === 'pet' ? riscoDeMorte(idade * 6, en.n['saude'] ?? 80) : riscoDeMorte(idade, en.n['saude'] ?? 70);
@@ -300,9 +315,16 @@ export function regrasDosPersonagens(
       continue;
     }
 
-    // ---- trabalho e aposentadoria (pais)
-    if ((papel === 'mae' || papel === 'pai') && !en.q['aposentado']) {
-      if (idade >= IDADE_APOSENTADORIA) {
+    // ---- trabalho e aposentadoria (os pais e os irmãos adultos; o primeiro emprego e a aposentadoria do irmão não viram notícia)
+    const irmao = ehIrmao(papel);
+    if ((papel === 'mae' || papel === 'pai' || (irmao && idade >= 18)) && !en.q['aposentado']) {
+      if (irmao && !en.t['ocupacao']) {
+        if (idade <= 35 && aleatorio(e.rng) < IRMAO_PRIMEIRO_EMPREGO) primeiroEmprego(e, c, papel, en, regAno);
+      } else if (irmao && idade >= IDADE_APOSENTADORIA) {
+        ganhar(e, regAno, papel, 'aposentado', null, 'trabalho');
+        perder(e, regAno, papel, 'desempregado', 'trabalho');
+        somar(e, regAno, papel, 'renda', Math.max(18000, (en.n['renda'] ?? 0) * 0.7) - (en.n['renda'] ?? 0), 'trabalho');
+      } else if (idade >= IDADE_APOSENTADORIA) {
         acontecer(e, c, papel, 'aposentou', (reg, id) => {
           ganhar(e, reg, papel, 'aposentado', id);
           perder(e, reg, papel, 'desempregado');
@@ -364,16 +386,22 @@ export function regrasDosPersonagens(
             pelaFase === null ? [] : [pelaFase],
           );
         } else if (en.q['desempregado'] && aleatorio(e.rng) < RECOLOCACAO / desemprego) {
-          acontecer(e, c, papel, 'empregado', (reg) => {
-            perder(e, reg, papel, 'desempregado');
-            somar(e, reg, papel, 'renda', rendaDaClasse(e, c) - (en.n['renda'] ?? 0));
-          });
+          // O irmão que arrumou emprego de novo não vira notícia (a demissão virou).
+          if (irmao) {
+            perder(e, regAno, papel, 'desempregado', 'trabalho');
+            somar(e, regAno, papel, 'renda', rendaDaClasse(e, c) * 0.8 - (en.n['renda'] ?? 0), 'trabalho');
+          } else {
+            acontecer(e, c, papel, 'empregado', (reg) => {
+              perder(e, reg, papel, 'desempregado');
+              somar(e, reg, papel, 'renda', rendaDaClasse(e, c) - (en.n['renda'] ?? 0));
+            });
+          }
         }
       }
     }
 
-    // ---- dinheiro da família
-    if (papel === 'mae' || papel === 'pai' || papel === 'avo') {
+    // ---- dinheiro da família (e o dos irmãos, que guardam do que ganham como a família guardava)
+    if (papel === 'mae' || papel === 'pai' || papel === 'avo' || irmao) {
       const dinheiro = en.n['dinheiro'] ?? 0;
       const trabalhando = idade < IDADE_APOSENTADORIA && !en.q['aposentado'] && !en.q['desempregado'];
       const guarda = trabalhando ? (en.n['renda'] ?? 0) * (classe.poupanca + (traco?.poupanca ?? 0)) : 0;
@@ -395,15 +423,72 @@ export function regrasDosPersonagens(
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
     let dv = (equilibrioVinculo(e, c, papel) - MAGOA_NO_VINCULO * (en.n['magoa'] ?? 0) - v) * RETORNO_VINCULO;
-    if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || papel === 'amigo')) {
-      const junto = papel === 'avo' ? en.q['mora_junto'] : eu.q['mora_com_pais'];
-      // Quem se falou no ano não esfria; dois anos ou mais longe esfria mais.
-      if (!junto && longe > 0) dv -= DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1) * Math.min(1.5, 0.5 + 0.5 * longe);
+    if (e.idade >= 20 && (papel === 'mae' || papel === 'pai' || papel === 'avo' || papel === 'amigo' || irmao)) {
+      const junto = papel === 'avo' ? en.q['mora_junto'] : irmao ? convivem(e, papel, en) : eu.q['mora_com_pais'];
+      // Quem se falou no ano não esfria; dois anos ou mais longe esfria mais; quem mora longe, mais ainda.
+      const distancia = DISTANCIA_ADULTO * (papel === 'amigo' ? 1.6 : 1) * (en.q['mora_longe'] ? DISTANCIA_DE_QUEM_MORA_LONGE : 1);
+      if (!junto && longe > 0) dv -= distancia * Math.min(1.5, 0.5 + 0.5 * longe);
     }
     // A rotina gasta o namoro; filho adulto cria a própria vida.
     if (papel === 'amor') dv -= DESGASTE_CASAL;
     if (ehFilho(papel) && idade >= 18) dv -= DISTANCIA_ADULTO * DISTANCIA_FILHO;
     somar(e, regAno, papel, 'vinculo', dv, 'vinculo');
+
+    // ---- a vida do irmão ao fundo: casar, ter filho, separar, se mudar (chega como notícia)
+    if (irmao) vidaDoIrmao(e, c, papel, en, idade, regAno);
+  }
+}
+
+/** O primeiro emprego do irmão: uma ocupação da classe em que a família está, no começo da carreira. */
+function primeiroEmprego(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, regAno: Mudanca[]): void {
+  const classe = c.mundo.classes[e.entidades['eu']!.n['classe_origem'] ?? 2] ?? c.mundo.classes[2]!;
+  const o = sortear(e.rng, classe.ocupacoes);
+  const f = en.genero === 'f';
+  definirTexto(e, regAno, papel, 'ocupacao', f ? o.f : o.m, 'trabalho');
+  definirTexto(e, regAno, papel, 'setor', typeof o.setor === 'string' ? o.setor : f ? o.setor.f : o.setor.m, 'trabalho');
+  somar(e, regAno, papel, 'renda', rendaDaClasse(e, c) * 0.6 - (en.n['renda'] ?? 0), 'trabalho');
+}
+
+/** Quem está perto de quem joga (afeto e sem rompimento): o casamento e o primeiro filho dele viram parte da sua história. */
+const VINCULO_DE_QUEM_CHAMA = 30;
+
+/**
+ * A vida do irmão acontece sem quem joga: casa, tem filhos (os outros depois do primeiro são só a conta dos
+ * sobrinhos), separa, se muda para longe. Com quem está perto, o casamento e o primeiro filho chegam como convite (os
+ * storylets agendados "casamento_do_irmao" e "padrinho_do_sobrinho", com escolha); com quem está longe, como notícia.
+ */
+function vidaDoIrmao(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, idade: number, regAno: Mudanca[]): void {
+  const casado = (en.q['casado']?.v ?? 0) > 0;
+  const filhos = en.n['filhos'] ?? 0;
+  const perto = (en.n['vinculo'] ?? 0) >= VINCULO_DE_QUEM_CHAMA && !en.q['rompido'] && e.idade >= 12;
+  const convidar = (evento: string): boolean => {
+    if (!perto || !c.porId.has(evento)) return false;
+    if (!e.agenda.some((a) => a.evento === evento && a.ator === papel)) e.agenda.push({ evento, ano: e.ano, origem: null, ator: papel });
+    return true;
+  };
+  if (!casado && idade >= 21 && idade <= 45 && aleatorio(e.rng) < IRMAO_CASA) {
+    if (!convidar('casamento_do_irmao')) {
+      acontecer(e, c, papel, 'casou', (reg, id) => {
+        perder(e, reg, papel, 'separado');
+        ganhar(e, reg, papel, 'casado', id);
+      });
+    }
+  } else if (casado && idade >= 23 && idade <= 42 && filhos < 3 && aleatorio(e.rng) < IRMAO_TEM_FILHO) {
+    if (filhos > 0) somar(e, regAno, papel, 'filhos', 1, 'familia');
+    else if (!convidar('padrinho_do_sobrinho')) {
+      acontecer(e, c, papel, 'teve_filho', (reg, id) => {
+        somar(e, reg, papel, 'filhos', 1);
+        ganhar(e, reg, papel, 'pai_mae', id);
+      });
+    }
+  } else if (casado && aleatorio(e.rng) < IRMAO_SEPARA) {
+    acontecer(e, c, papel, 'separou', (reg, id) => {
+      perder(e, reg, papel, 'casado');
+      ganhar(e, reg, papel, 'separado', id);
+    });
+  }
+  if (!en.q['mora_longe'] && idade >= 20 && idade <= 45 && aleatorio(e.rng) < IRMAO_MUDA) {
+    acontecer(e, c, papel, 'mudou_de_cidade', (reg, id) => ganhar(e, reg, papel, 'mora_longe', id));
   }
 }
 

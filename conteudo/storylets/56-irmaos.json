@@ -1,0 +1,563 @@
+[
+  {
+    "id": "irmao_nasce",
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 1,
+    "condicoes": { "mae.vivo": true },
+    "trechos": {
+      "reacao": [
+        { "se": { "idade": { "max": 2 } }, "texto": "Você ainda não entende direito, mas a casa mudou: tem um berço novo no quarto e {mae} dorme ainda menos." },
+        { "se": { "idade": { "max": 6 } }, "texto": "Você foi apresentad{o|a} ao bebê e perguntou, com toda a educação, quando ele ia embora." },
+        { "texto": "Você segurou o bebê no colo com os dois braços duros, como quem segura uma bomba, e não quis devolver." }
+      ]
+    },
+    "texto": "Nasceu {irmao}, {irmao:o seu irmão mais novo|a sua irmã mais nova}. {reacao}",
+    "resumo": "ganhou {irmao:um irmão|uma irmã}, {irmao}",
+    "efeitos": { "personagens": ["irmao"], "felicidade": 1 }
+  },
+  {
+    "id": "ciume_do_bebe_novo",
+    "ator": ["irmao"],
+    "idade": [3, 10],
+    "peso": 3,
+    "condicoes": { "ator.idade": { "max": 1 }, "mae.vivo": true },
+    "texto": "{ator} chegou, e a casa inteira passou a girar em volta do berço. Ninguém mais repara no seu desenho na geladeira, nem {mae}.",
+    "resumo": "lidou com o ciúme de {ator}, que acabou de nascer",
+    "escolhas": [
+      {
+        "texto": "Ajudar a cuidar de {ator}",
+        "resumo": "ajudou a cuidar de {ator} bebê",
+        "resultado": {
+          "texto": "Você aprendeu a trocar fralda (mal) e a cantar a música que faz {ator} dormir (bem). {mae} contou para a família inteira.",
+          "efeitos": { "ator.vinculo": 10, "mae.vinculo": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Fazer birra até alguém olhar",
+        "resumo": "fez birra por ciúme de {ator}",
+        "resultado": {
+          "texto": "Você chorou, gritou e derrubou um copo de propósito. Funcionou por dez minutos, que é o que birra dura.",
+          "efeitos": { "felicidade": 1, "ator.vinculo": -4, "mae.magoa": 4 }
+        }
+      },
+      {
+        "texto": "Pedir para devolverem {ator}",
+        "resumo": "pediu para devolverem {ator} na maternidade",
+        "resultado": {
+          "texto": "Você perguntou, com toda a seriedade, se dava para devolver {ator} na maternidade. A família conta essa história até hoje, em todo Natal.",
+          "efeitos": { "felicidade": -1, "ator.vinculo": -2, "mae.vinculo": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "briga_com_o_irmao",
+    "ator": ["irmao"],
+    "idade": [6, 17],
+    "condicoes": { "ator.idade": { "min": 4, "max": 25 }, "semMarcas": ["ator.mora_longe", "ator.casado"] },
+    "repetivel": true,
+    "intervalo": 4,
+    "trechos": {
+      "motivo": [
+        { "se": { "ator.traco": "brigao" }, "texto": "porque {ator} pegou a sua roupa sem pedir e ainda devolveu manchada" },
+        { "se": { "ator.traco": "piadista" }, "texto": "porque {ator} espalhou o seu apelido de casa na escola inteira" },
+        { "se": { "ator.traco": "gastador" }, "texto": "pelo carregador do celular, que nunca está onde deveria" },
+        { "se": { "ator.traco": "rigido" }, "texto": "porque {ator} fez uma tabela de quem lava a louça e você não assinou" },
+        { "texto": "pelo controle da TV, como sempre" }
+      ]
+    },
+    "texto": "Briga feia em casa, {motivo}. A porta bateu duas vezes e o vizinho bateu na parede.",
+    "resumo": "brigou com {ator} {motivo}",
+    "escolhas": [
+      {
+        "texto": "Fazer as pazes dividindo o último biscoito",
+        "resumo": "fez as pazes com {ator} dividindo o último biscoito",
+        "resultado": {
+          "texto": "Você dividiu o biscoito no meio, do jeito mais justo que existe: um parte, o outro escolhe. {ator} escolheu o maior, claro.",
+          "efeitos": { "ator.vinculo": 6, "ator.magoa": -8 }
+        }
+      },
+      {
+        "texto": "Brigar até o fim",
+        "resumo": "brigou com {ator} até o fim",
+        "resultado": {
+          "texto": "Você ganhou a briga e perdeu o resto da semana: {ator} passou a fingir que você não existe, com muito talento.",
+          "efeitos": { "ator.magoa": 12, "ator.vinculo": -5, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Contar tudo para a família",
+        "resumo": "dedurou {ator} para a família",
+        "resultado": {
+          "texto": "{ator} ficou de castigo, e você ficou com o controle. {ator:Ele|Ela} jurou vingança, e irmão cumpre.",
+          "efeitos": { "ator.magoa": 10, "ator.confianca": -10, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_mais_velho_defende",
+    "ator": ["irmao"],
+    "idade": [8, 15],
+    "condicoes": { "ator.idade": { "min": 15, "max": 30 }, "ator.vinculo": { "min": 40 }, "semMarcas": ["ator.mora_longe"] },
+    "texto": "Um garoto maior te encurralou na saída da escola. Foi aí que {ator} apareceu, com cara de quem já tinha visto aquela cena antes.",
+    "resumo": "foi defendid{o|a} por {ator} na saída da escola",
+    "escolhas": [
+      {
+        "texto": "Deixar {ator} resolver",
+        "resumo": "deixou {ator} resolver a briga na escola",
+        "resultado": {
+          "texto": "{ator} só olhou para o garoto, que lembrou de um compromisso urgente. Na volta, vocês tomaram sorvete e não contaram nada para ninguém.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Resolver sozinh{o|a}",
+        "resumo": "encarou sozinh{o|a} o valentão da escola",
+        "teste": { "atributo": "saude", "dificuldade": 72 },
+        "sucesso": {
+          "texto": "Você encarou o garoto antes de {ator} chegar perto. Ele recuou, e a escola inteira soube no dia seguinte.",
+          "efeitos": { "felicidade": 4, "ator.vinculo": 4, "ator.confianca": 6 }
+        },
+        "fracasso": {
+          "texto": "Você levou um empurrão, caiu na poça e {ator} teve que te tirar de lá do mesmo jeito.",
+          "efeitos": { "saude": -3, "felicidade": -2, "ator.vinculo": 5 }
+        }
+      },
+      {
+        "texto": "Pedir para {ator} não contar em casa",
+        "resumo": "fez {ator} jurar segredo sobre a briga na escola",
+        "resultado": {
+          "texto": "{ator} jurou segredo, e cumpriu. Foi o primeiro segredo de vocês dois.",
+          "efeitos": { "ator.confianca": 8, "ator.vinculo": 4, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "aniversario_de_gemeos",
+    "ator": ["irmao"],
+    "idade": [5, 16],
+    "condicoes": { "marcas": ["ator.gemeo"] },
+    "trechos": {
+      "festa": [
+        { "se": { "classe_origem": { "min": 4 } }, "texto": "A família alugou um bufê com tobogã e um animador que chamava todo mundo de campeão." },
+        { "texto": "Bolo de chocolate, cachorro-quente no pão de forma e um parabéns cantado duas vezes, uma para cada um." }
+      ]
+    },
+    "texto": "Aniversário de vocês dois, no mesmo dia, como desde sempre. {festa}",
+    "resumo": "fez aniversário junto com {ator}, como todo ano",
+    "escolhas": [
+      {
+        "texto": "Apagar a vela junto, como sempre",
+        "resumo": "apagou a vela junto com {ator}",
+        "resultado": {
+          "texto": "Vocês assopraram ao mesmo tempo e brigaram para saber quem fez o pedido primeiro. Fizeram o mesmo pedido.",
+          "efeitos": { "ator.vinculo": 6, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Exigir um bolo só seu",
+        "resumo": "exigiu um bolo só seu no aniversário dos gêmeos",
+        "resultado": {
+          "texto": "Você ganhou um bolo só seu e comeu a cobertura sozinh{o|a}. {ator} passou a festa calad{ator:o|a}.",
+          "efeitos": { "felicidade": 2, "ator.magoa": 8, "ator.vinculo": -4 }
+        }
+      },
+      {
+        "texto": "Trocar de presente com {ator}",
+        "resumo": "trocou de presente com {ator} no aniversário",
+        "resultado": {
+          "texto": "Você deu o seu presente para {ator} e ficou com o {ator:dele|dela}. Ninguém entendeu, e vocês dois acharam ótimo.",
+          "efeitos": { "ator.vinculo": 4, "ator.confianca": 6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_doente",
+    "ator": ["irmao"],
+    "idade": [18, 95],
+    "peso": 2,
+    "condicoes": { "marcas": ["ator.doente"], "ator.saude": { "max": 65 }, "semMarcas": ["ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator} foi internad{ator:o|a}, e a família montou uma escala no hospital. O seu nome está na planilha: sexta à noite.",
+    "resumo": "soube que {ator} foi internad{ator:o|a}",
+    "escolhas": [
+      {
+        "texto": "Fazer o seu plantão",
+        "resumo": "passou a noite no hospital com {ator}",
+        "resultado": {
+          "texto": "Você passou a noite na poltrona do acompanhante, que não reclina. {ator} acordou às três, e vocês conversaram como na época do beliche.",
+          "efeitos": { "ator.vinculo": 8, "ator.magoa": -10, "felicidade": 1, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Pagar um quarto melhor",
+        "resumo": "pagou um quarto particular para {ator} no hospital",
+        "condicoes": { "dinheiro": { "min": 3000 } },
+        "bloqueio": "o quarto particular custa o que você não tem",
+        "resultado": {
+          "texto": "Quarto particular, com televisão e janela. {ator} agradeceu, e perguntou por que você não veio.",
+          "efeitos": { "dinheiro": -3000, "ator.saude": 4, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Trocar o seu dia e não ir",
+        "resumo": "trocou o plantão no hospital de {ator} e não foi",
+        "resultado": {
+          "texto": "Você trocou com um primo e depois não apareceu em dia nenhum. A família reparou, e {ator} também.",
+          "efeitos": { "ator.magoa": 12, "ator.confianca": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_desempregado",
+    "tipo": "npc",
+    "ator": ["irmao"],
+    "idade": [20, 85],
+    "peso": 2,
+    "condicoes": { "marcas": ["ator.desempregado"], "ator.idade": { "min": 22 }, "semMarcas": ["ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 8,
+    "trechos": {
+      "pedido": [
+        { "se": { "marcas": ["ator.casado"] }, "texto": "Tem família para sustentar e vergonha de pedir, e pediu assim mesmo." },
+        { "texto": "Disse que está tudo bem, do jeito de quem quer que você pergunte." }
+      ]
+    },
+    "texto": "{ator} perdeu o emprego e ligou para você com uma voz que você não ouvia desde a escola. {pedido}",
+    "resumo": "recebeu um pedido de ajuda de {ator}, que perdeu o emprego",
+    "escolhas": [
+      {
+        "texto": "Ajudar com dinheiro",
+        "resumo": "ajudou {ator} com dinheiro depois da demissão",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "o mês também está apertado para você",
+        "resultado": {
+          "texto": "Você fez um Pix e não falou mais do assunto. {ator} falou: no almoço de domingo, para todo mundo ouvir.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 2000 }, "ator.vinculo": 6, "ator.magoa": -5 }
+        }
+      },
+      {
+        "texto": "Indicar para uma vaga",
+        "resumo": "indicou {ator} para uma vaga",
+        "teste": { "chance": 0.45 },
+        "sucesso": {
+          "texto": "Você mexeu os pauzinhos, e {ator} começou na segunda-feira. Chegou uma caixa de bombom na sua casa, sem cartão.",
+          "resumo": "arrumou um emprego para {ator}",
+          "efeitos": { "removerMarcas": ["ator.desempregado"], "ator.renda": 22000, "ator.vinculo": 10, "ator.confianca": 8 }
+        },
+        "fracasso": {
+          "texto": "A vaga foi para o sobrinho do dono. {ator} agradeceu a tentativa, do jeito de quem conta as tentativas.",
+          "efeitos": { "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Dizer que agora não dá",
+        "resumo": "disse a {ator} que agora não dava para ajudar",
+        "resultado": {
+          "texto": "Você explicou as suas contas. {ator} entendeu, mas desligou rápido.",
+          "efeitos": { "ator.magoa": 10, "ator.vinculo": -5 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "casamento_do_irmao",
+    "ator": ["irmao"],
+    "apenasAgendado": true,
+    "condicoes": { "semMarcas": ["ator.casado", "ator.rompido"] },
+    "trechos": {
+      "festa": [
+        { "se": { "ator.traco": "gastador" }, "texto": "A festa vai ter cascata de camarão e trinta e seis parcelas." },
+        { "se": { "ator.traco": "mao_fechada" }, "texto": "A festa vai ser no salão da igreja, com salgadinho contado." },
+        { "texto": "[A festa vai ser no quintal da família, com som alugado e gambiarra de luz.|O convite tem foto dos noivos na praia, de costas, olhando o horizonte.]" }
+      ]
+    },
+    "texto": "{ator} vai casar e quer você no altar, de {padrinho|madrinha}. {festa}",
+    "resumo": "foi chamad{o|a} para {padrinho|madrinha} no casamento de {ator}",
+    "escolhas": [
+      {
+        "texto": "Aceitar e ajudar com a festa",
+        "resumo": "foi {padrinho|madrinha} de {ator} e ajudou a pagar a festa",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "a festa custa mais do que sobra no mês",
+        "efeitos": { "marcas": ["ator.casado"], "removerMarcas": ["ator.separado"] },
+        "resultado": {
+          "texto": "Você pagou o som e o bolo e dançou com a família inteira do outro lado. {ator} chorou no seu ombro na valsa.",
+          "efeitos": { "dinheiro": -2000, "ator.vinculo": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Aceitar e caprichar no discurso",
+        "resumo": "fez o discurso no casamento de {ator}",
+        "efeitos": { "marcas": ["ator.casado"], "removerMarcas": ["ator.separado"] },
+        "teste": { "atributo": "inteligencia", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "O discurso fez a festa rir e chorar, na ordem certa. Até o padre pediu o texto.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "O discurso teve uma piada sobre um namoro antigo de {ator} que só você achou engraçada.",
+          "efeitos": { "ator.magoa": 10, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Inventar um compromisso",
+        "resumo": "inventou um compromisso para não ir ao casamento de {ator}",
+        "efeitos": { "marcas": ["ator.casado"], "removerMarcas": ["ator.separado"] },
+        "resultado": {
+          "texto": "Você disse que tinha um congresso em outra cidade. {ator} viu a sua foto no churrasco do vizinho, no mesmo dia.",
+          "efeitos": { "ator.magoa": 14, "ator.vinculo": -8 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "padrinho_do_sobrinho",
+    "ator": ["irmao"],
+    "apenasAgendado": true,
+    "condicoes": { "semMarcas": ["ator.rompido"] },
+    "texto": "Nasceu o filho de {ator}! Você virou {tio|tia}, e {ator} quer você de {padrinho|madrinha} no batizado de domingo.",
+    "resumo": "virou {tio|tia} e foi chamad{o|a} para {padrinho|madrinha} do filho de {ator}",
+    "escolhas": [
+      {
+        "texto": "Aceitar e dar um presente caro",
+        "resumo": "batizou o filho de {ator} e deu um presente caro",
+        "condicoes": { "dinheiro": { "min": 800 } },
+        "bloqueio": "o presente de {padrinho|madrinha} não cabe no mês",
+        "efeitos": { "ator.filhos": 1, "marcas": ["ator.pai_mae"] },
+        "resultado": {
+          "texto": "Você deu uma correntinha de ouro e segurou o bebê na foto como quem segura um troféu.",
+          "efeitos": { "dinheiro": -800, "ator.vinculo": 10, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Aceitar, com um abraço",
+        "resumo": "batizou o filho de {ator}",
+        "efeitos": { "ator.filhos": 1, "marcas": ["ator.pai_mae"] },
+        "resultado": {
+          "texto": "Você chegou de roupa emprestada e saiu de {padrinho|madrinha}. O bebê chorou a missa inteira, menos no seu colo.",
+          "efeitos": { "ator.vinculo": 7, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Recusar com jeito",
+        "resumo": "recusou ser {padrinho|madrinha} do filho de {ator}",
+        "efeitos": { "ator.filhos": 1, "marcas": ["ator.pai_mae"] },
+        "resultado": {
+          "texto": "Você disse que não leva jeito para a responsabilidade. {ator} disse que entendia e convidou outra pessoa na mesma tarde.",
+          "efeitos": { "ator.magoa": 8, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "sabado_com_os_sobrinhos",
+    "ator": ["irmao"],
+    "idade": [18, 75],
+    "condicoes": { "marcas": ["ator.pai_mae"], "semMarcas": ["ator.mora_longe", "ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 7,
+    "texto": "{ator} precisa de alguém para ficar com as crianças no sábado, e você é a última esperança da lista, segundo {ator} mesm{ator:o|a}.",
+    "resumo": "foi chamad{o|a} para ficar com os sobrinhos",
+    "escolhas": [
+      {
+        "texto": "Ficar com os sobrinhos em casa",
+        "resumo": "passou o sábado com os sobrinhos",
+        "resultado": {
+          "texto": "Você assistiu ao mesmo desenho quatro vezes, perdeu no jogo da memória e foi ensinad{o|a} a fazer slime. Saiu um pouco mais {tio|tia}.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 1, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Levar os sobrinhos ao parque",
+        "resumo": "levou os sobrinhos ao parque",
+        "condicoes": { "dinheiro": { "min": 80 } },
+        "bloqueio": "pipoca, sorvete e algodão-doce não cabem no mês",
+        "resultado": {
+          "texto": "Pipoca, sorvete, um joelho ralado e uma foto que {ator} pôs de fundo de tela. Os sobrinhos dormiram no carro.",
+          "efeitos": { "dinheiro": -80, "ator.vinculo": 6, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Dizer que tem compromisso",
+        "resumo": "disse que tinha compromisso no sábado dos sobrinhos",
+        "resultado": {
+          "texto": "Você disse que tinha compromisso. Tinha: o sofá, o controle e um cochilo de três horas.",
+          "efeitos": { "ator.magoa": 5, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_mora_longe",
+    "ator": ["irmao"],
+    "idade": [20, 90],
+    "condicoes": { "marcas": ["ator.mora_longe"], "ator.sem_contato": { "min": 2 }, "semMarcas": ["ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 6,
+    "trechos": {
+      "sobrinhos": [
+        { "se": { "marcas": ["ator.pai_mae"] }, "texto": "Os sobrinhos já não lembram da sua cara, só do presente do último Natal." },
+        { "texto": "A última foto de vocês juntos ainda é a de três aniversários atrás." }
+      ]
+    },
+    "texto": "{ator} mora longe faz tempo, e as conversas viraram áudio de aniversário. {sobrinhos} Uma passagem em promoção apareceu no seu e-mail, como quem não quer nada.",
+    "resumo": "sentiu saudade de {ator}, que mora longe",
+    "escolhas": [
+      {
+        "texto": "Comprar a passagem e ir",
+        "resumo": "foi visitar {ator}, que mora longe",
+        "condicoes": { "dinheiro": { "min": 900 } },
+        "bloqueio": "a promoção ainda custa mais do que você tem",
+        "resultado": {
+          "texto": "Você passou quatro dias na casa de {ator}, dormindo num colchão inflável que esvaziava às três da manhã. Voltou com saudade antes de chegar.",
+          "efeitos": { "dinheiro": -900, "ator.vinculo": 12, "ator.magoa": -6, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Chamar {ator} para o Natal",
+        "resumo": "chamou {ator} para passar o Natal",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "{ator} veio, com duas malas de presente. A ceia acabou às três da manhã.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que esse ano não dava. No ano que vem, quem sabe.",
+          "efeitos": { "ator.vinculo": 1 }
+        }
+      },
+      {
+        "texto": "Mandar um áudio de dez minutos",
+        "resumo": "mandou um áudio comprido para {ator}",
+        "resultado": {
+          "texto": "Você contou o ano inteiro num áudio só. A resposta veio dois dias depois: \"kkkk que saudade\".",
+          "efeitos": { "ator.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_separou",
+    "tipo": "npc",
+    "ator": ["irmao"],
+    "idade": [20, 90],
+    "condicoes": { "marcaHa": [{ "marca": "ator.separado", "max": 1 }], "ator.idade": { "min": 22 }, "semMarcas": ["ator.rompido"] },
+    "texto": "{ator} se separou e está dormindo no sofá de um amigo. Ligou numa terça à noite \"só para conversar\", o que nunca é só para conversar.",
+    "resumo": "recebeu a ligação de {ator}, que acabou de se separar",
+    "escolhas": [
+      {
+        "texto": "Oferecer o quarto de hóspedes",
+        "resumo": "abrigou {ator} depois da separação",
+        "resultado": {
+          "texto": "{ator} ficou três meses, organizou a sua geladeira por cor e foi embora com outra cara.",
+          "efeitos": { "dinheiro": -1500, "ator.vinculo": 10, "ator.confianca": 6, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Levar para tomar uma cerveja",
+        "resumo": "levou {ator} para tomar uma cerveja depois da separação",
+        "resultado": {
+          "texto": "Vocês fecharam o bar falando mal de quem não estava lá. {ator} riu pela primeira vez em semanas.",
+          "efeitos": { "dinheiro": -100, "ator.vinculo": 6, "ator.magoa": -5 }
+        }
+      },
+      {
+        "texto": "Dizer que você avisou",
+        "resumo": "disse a {ator} que tinha avisado",
+        "resultado": {
+          "texto": "Você avisou, de novo. {ator} desligou antes de você terminar o \"eu bem que te disse\".",
+          "efeitos": { "ator.magoa": 12, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ceia_de_natal",
+    "ator": ["irmao"],
+    "idade": [25, 75],
+    "condicoes": { "mae.vivo": true, "ator.idade": { "min": 22 }, "semMarcas": ["ator.rompido"] },
+    "repetivel": true,
+    "intervalo": 8,
+    "trechos": {
+      "comparacao": [
+        { "se": { "marcas": ["ator.desempregado"] }, "texto": "{ator} desconversou: está procurando emprego, e ninguém podia tocar no assunto, o que todo mundo fez." },
+        { "se": { "ator.renda": { "min": 150000 } }, "texto": "{ator} chegou de carro novo, falou da viagem a Lisboa e pagou a sobremesa de todo mundo sem perguntar." },
+        { "se": { "marcas": ["ator.separado"] }, "texto": "{ator} veio sozinh{ator:o|a} pela primeira vez, e ninguém perguntou nada, de propósito." },
+        { "se": { "ator.filhos": { "min": 2 } }, "texto": "{ator} chegou com as crianças, e a ceia virou parque de diversões, com farofa no chão." },
+        { "se": { "ator.setor": "saude" }, "texto": "{ator} veio direto do plantão e dormiu sentad{ator:o|a} antes da sobremesa." },
+        { "texto": "{ator} contou do trabalho de sempre, do chefe de sempre e da promoção que sempre está para sair." }
+      ]
+    },
+    "texto": "Ceia de Natal na casa de {mae}, e a pergunta de sempre na mesa: \"e o trabalho?\". {comparacao}",
+    "resumo": "passou o Natal com {ator} na casa da família",
+    "escolhas": [
+      {
+        "texto": "Contar vantagem",
+        "resumo": "contou vantagem para {ator} na ceia de Natal",
+        "resultado": {
+          "texto": "Você falou do seu ano com os números arredondados para cima. {ator} riu do jeito de quem te conhece desde o berço.",
+          "efeitos": { "felicidade": 1, "ator.magoa": 4 }
+        }
+      },
+      {
+        "texto": "Contar a verdade sobre o seu ano",
+        "resumo": "contou a {ator} a verdade sobre o seu ano",
+        "resultado": {
+          "texto": "Você contou o que deu certo e o que não deu. {ator} ficou até a louça acabar, conversando.",
+          "efeitos": { "ator.confianca": 6, "ator.vinculo": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Puxar o assunto do futebol",
+        "resumo": "salvou a ceia com o assunto do futebol",
+        "resultado": {
+          "texto": "O futebol salvou a noite, como em todo Natal desde que vocês se entendem por gente.",
+          "efeitos": { "ator.vinculo": 1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "irmao_aposentou",
+    "ator": ["irmao"],
+    "idade": [50, 100],
+    "condicoes": { "marcaHa": [{ "marca": "ator.aposentado", "max": 1 }], "semMarcas": ["ator.rompido"] },
+    "texto": "{ator} se aposentou e descobriu o tempo livre: liga todo dia às nove da manhã para contar o que viu no jornal.",
+    "resumo": "virou {o ouvinte|a ouvinte} oficial de {ator}, que se aposentou",
+    "escolhas": [
+      {
+        "texto": "Atender todo dia",
+        "resumo": "atendeu {ator} todo dia depois da aposentadoria",
+        "resultado": {
+          "texto": "Você virou {o ouvinte oficial|a ouvinte oficial} das notícias de {ator}. Aprendeu muito sobre o preço do tomate.",
+          "efeitos": { "ator.vinculo": 8, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Chamar {ator} para um projeto junto",
+        "resumo": "começou um projeto com {ator}, que se aposentou",
+        "condicoes": { "dinheiro": { "min": 200 } },
+        "bloqueio": "nem a horta cabe no mês",
+        "resultado": {
+          "texto": "Vocês começaram uma horta no quintal de {ator}. A horta não deu nada; a conversa de toda tarde, sim.",
+          "efeitos": { "ator.vinculo": 6, "felicidade": 2, "dinheiro": -200 }
+        }
+      },
+      {
+        "texto": "Deixar cair na caixa postal",
+        "resumo": "deixou as ligações de {ator} caírem na caixa postal",
+        "resultado": {
+          "texto": "Você deixou cair na caixa postal. {ator} deixou recados cada vez mais curtos.",
+          "efeitos": { "ator.magoa": 6, "ator.vinculo": -3 }
+        }
+      }
+    ]
+  }
+]

@@ -219,6 +219,13 @@ function situacao(id: string, en: Entidade, c: Conteudo): string[] {
   if (en.q['doente']) itens.push('doente');
   if (en.q['ausente']) itens.push('ausente');
   if (id === 'avo' && en.q['mora_junto']) itens.push('mora com vocês');
+  // A vida dos irmãos (e dos outros de longe): o casamento, os filhos, a distância.
+  if (en.q['gemeo']) itens.push(o('gêmeo', 'gêmea'));
+  if (en.q['casado']) itens.push(o('casado', 'casada'));
+  else if (en.q['separado']) itens.push(o('separado', 'separada'));
+  const filhos = en.n['filhos'] ?? 0;
+  if (filhos > 0 && id !== 'eu') itens.push(filhos === 1 ? '1 filho' : `${filhos} filhos`);
+  if (en.q['mora_longe']) itens.push('mora longe');
   // O que a pessoa ama: o presente certo, o programa junto.
   if (en.tipo === 'pessoa' && id !== 'eu') {
     const gosto = c.mundo.gostos.find((g) => g.id === gostoDe(en))?.nome;

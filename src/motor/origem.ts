@@ -5,12 +5,12 @@
  * renda, dinheiro, saúde, traço, vínculo), a avó e o amigo de infância.
  */
 import type { Conteudo } from './conteudo.ts';
-import { TIPOS_FAMILIA, type TipoFamilia } from './constantes.ts';
+import { IRMAOS, TIPOS_FAMILIA, type TipoFamilia } from './constantes.ts';
 import type { Classe, TipoFamilia as DefFamilia, Traco } from './esquema.ts';
 import { noGenero } from './carreira.ts';
 import { nomeLivre, novaEntidade } from './pessoas.ts';
 import { CHANCE_LINHAGEM } from './regras.ts';
-import { aleatorio, inteiro, normal, sortear, sortearIndice, type Rng } from './rng.ts';
+import { aleatorio, criarRng, inteiro, misturar, normal, sortear, sortearIndice, type Rng } from './rng.ts';
 import type { Entidade, EstadoVida, Genero } from './tipos.ts';
 
 export interface EscolhaOrigem {
@@ -227,11 +227,13 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   eu.t['familia'] = tipo.id;
   eu.t['ocupacao'] = '';
   eu.n['classe_origem'] = iClasse;
-  // Famílias mais pobres têm, em média, mais filhos.
-  eu.n['irmaos'] =
-    op.irmaos !== undefined && Number.isInteger(op.irmaos)
-      ? limitar(op.irmaos, 0, 6)
-      : Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2, 1.4, 1.3][iClasse] ?? 1.5, 1.1))));
+  // Famílias mais pobres têm, em média, mais filhos. Os irmãos são pessoas: os mais velhos já estão aqui, e os mais
+  // novos nascem nos primeiros anos; `eu.irmaos` conta quem já nasceu.
+  const escolheuIrmaos = op.irmaos !== undefined && Number.isInteger(op.irmaos);
+  const irmaos = escolheuIrmaos
+    ? limitar(op.irmaos!, 0, IRMAOS.length)
+    : Math.max(0, Math.min(6, Math.round(normal(rng, [2.6, 2, 1.5, 1.1, 1, 1.2, 1.4, 1.3][iClasse] ?? 1.5, 1.1))));
+  eu.n['irmaos'] = gerarIrmaos(e, c, Math.min(irmaos, IRMAOS.length), idadeMae, tipo, classe, escolheuIrmaos);
   eu.n['riqueza_origem'] = riqueza;
   // Talento escolhido: o nível dá a média, e sobra um pouco de sorte; sem escolha, o atributo é sorteado como sempre.
   const talentos = talentosValidos(op.talentos);
@@ -253,6 +255,70 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
     eu.q['prematuro'] = { v: 1, ano: e.ano, idade: 0, causa: null };
     eu.n['saude'] = Math.max(30, (eu.n['saude'] ?? 80) - 8);
   }
+}
+
+/** Chance de nascer com um irmão gêmeo (o gêmeo conta entre os irmãos). */
+const CHANCE_GEMEO = 0.03;
+
+/**
+ * Os irmãos de quem joga. A posição de quem joga entre os filhos é sorteada: os mais velhos já estão aqui (nasceram
+ * com a mãe entre os 15 anos e a idade de agora, um a cada um a quatro anos; os adultos já trabalham), e os mais novos
+ * nascem nos primeiros anos, pelo storylet "irmao_nasce" (agendado: se a mãe morrer antes, não nasce). O sorteio é
+ * próprio, da semente da vida: o resto da origem não muda por causa deles. Devolve quantos já nasceram.
+ */
+function gerarIrmaos(e: EstadoVida, c: Conteudo, quantos: number, idadeMae: number, tipo: DefFamilia, classe: Classe, escolhido: boolean): number {
+  const rng = criarRng(misturar(e.semente, 5309));
+  const gemeo = quantos > 0 && aleatorio(rng) < CHANCE_GEMEO;
+  const resto = quantos - (gemeo ? 1 : 0);
+  // As idades dos mais velhos quando quem joga nasce (a mãe tinha pelo menos 15 em cada parto).
+  const idades: number[] = [];
+  let anos = 0;
+  const maisUmVelho = (): boolean => {
+    const a = anos + inteiro(rng, 1, 4);
+    if (idadeMae - a < 15) return false;
+    anos = a;
+    idades.push(a);
+    return true;
+  };
+  const velhos = inteiro(rng, 0, resto);
+  for (let i = 0; i < velhos && maisUmVelho(); i++);
+  // Os mais novos: um a cada um a quatro anos, enquanto a mãe tiver até 43 (46, quando quem joga escolheu quantos).
+  const limite = escolhido ? 46 : 43;
+  const novos: number[] = [];
+  let depois = 0;
+  for (let j = idades.length; j < resto; j++) {
+    const d = depois + inteiro(rng, 1, 4);
+    if (idadeMae + d > limite) break;
+    depois = d;
+    novos.push(d);
+  }
+  // Quem escolheu quantos irmãos tem todos: o que não coube depois vem antes, se a mãe tinha idade para isso.
+  if (escolhido) while (idades.length + novos.length < resto && maisUmVelho());
+  if (gemeo) idades.push(0);
+  // Do mais velho ao mais novo.
+  idades.sort((a, b) => b - a);
+  idades.forEach((idade, i) => {
+    const genero: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
+    const traco = sortearTraco(rng, c, tipo);
+    const en = novaEntidade({ id: IRMAOS[i]!, tipo: 'pessoa', nome: nomeLivre(e, c, genero, rng), genero, nascimento: e.ano - idade, vivo: true });
+    en.t['traco'] = traco.id;
+    // Irmão é família, com a briga de quem divide o quarto; o gêmeo, mais perto.
+    en.n['vinculo'] = Math.round(limitar(tipo.vinculo - 4 + traco.vinculo + (idade === 0 ? 10 : 0) + normal(rng, 0, 8), 4, 96));
+    en.n['saude'] = Math.round(limitar(80 + classe.saude + traco.saude + normal(rng, 0, 6), 20, 98));
+    en.n['dinheiro'] = 0;
+    en.n['renda'] = 0;
+    if (idade === 0) en.q['gemeo'] = { v: 1, ano: e.ano, idade: 0, causa: null };
+    if (idade >= 18) {
+      // O irmão adulto já trabalha, no começo da carreira.
+      const o = sortear(rng, classe.ocupacoes);
+      en.t['ocupacao'] = genero === 'f' ? o.f : o.m;
+      en.t['setor'] = typeof o.setor === 'string' ? o.setor : genero === 'f' ? o.setor.f : o.setor.m;
+      en.n['renda'] = Math.round(naFaixa(rng, classe.renda) * 0.6);
+    }
+    e.entidades[en.id] = en;
+  });
+  for (const d of novos) e.agenda.push({ evento: 'irmao_nasce', ano: e.ano + d, origem: null });
+  return idades.length;
 }
 
 export function tipoDeFamiliaValido(x: string): x is TipoFamilia {

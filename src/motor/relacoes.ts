@@ -12,7 +12,7 @@
  * (storylets.ts). Este módulo só lê.
  */
 import { classeDoPatrimonio, patrimonioTotal, quemE } from './campos.ts';
-import { ehFilho, GOSTOS, papelBase, VISOES_RUINS, type Gosto, type Humor, type Visao } from './constantes.ts';
+import { ehFilho, ehIrmao, GOSTOS, papelBase, VISOES_RUINS, type Gosto, type Humor, type Visao } from './constantes.ts';
 import type { Entidade, Entrada, EstadoVida, Ocupacao } from './tipos.ts';
 
 // ---- quem era quem (a identidade de pessoas)
@@ -100,6 +100,8 @@ export function convivem(e: EstadoVida, id: string, en: Entidade): boolean {
   if (id === 'mae' || id === 'pai') return !tem(en, 'ausente') && (e.idade < 18 || tem(eu, 'mora_com_pais'));
   if (id === 'avo') return tem(en, 'mora_junto') || e.idade < 12;
   if (id === 'amigo') return e.idade < 18;
+  // Os irmãos dividem a casa enquanto quem joga mora com os pais e o irmão ainda não saiu de casa.
+  if (ehIrmao(id)) return (e.idade < 18 || tem(eu, 'mora_com_pais')) && e.ano - (en.nascimento ?? e.ano) < 24 && !tem(en, 'mora_longe') && !tem(en, 'casado');
   return false;
 }
 

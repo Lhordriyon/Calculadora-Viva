@@ -92,12 +92,24 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 
 | Camada | O que entra | Ideias | Estado |
 |---|---|---|---|
-| Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121 | em andamento |
+| Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | em andamento |
 | Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | proposta |
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | proposta |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
 | Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
 | Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
+
+### I-130 · O namoro que esfria e o ex que continua
+- **Problema:** o namoro só acabava numa crise rara, e quem ia embora sumia: o amor de antes ficava no lugar do amor para sempre, sem vida e sem memória. Só 12% das vidas chegavam a ter um ex.
+- **Efeitos causais:** a pessoa tem identidade (um número e quem ocupou cada papel desde quando); o amor que vai embora vira ex, com a memória dele; quem chega no lugar começa do zero. O namoro sem casamento esfria (a chance cresce na juventude e com o vínculo baixo) e quem joga decide: salvar, terminar ou deixar morrer. O ex vive ao fundo (saúde, morte, a relação que esfria) e volta: o reencontro, o convite de casamento, a ligação de madrugada, o hospital, a cobrança, a volta e a segunda chance.
+- **Aceitação:** teste: o amor novo não lembra do antigo, o ex lembra, o ex que volta é a mesma pessoa, o livro fecha; no túnel, um terço das vidas tem ex, e o casamento e os filhos ficam onde estavam (59% e 42% em 400 vidas, contra 60% e 41%).
+- **Estado:** feita (Ω1).
+
+### I-131 · Os irmãos com vida própria
+- **Problema:** os irmãos eram um número: dividiam a herança com "os parentes" e nunca apareciam.
+- **Efeitos causais:** os mais velhos nascem com a família (os adultos já trabalham), os mais novos nascem nos primeiros anos (se a mãe estiver viva), e às vezes há um gêmeo. Cada irmão vive ao fundo: o primeiro emprego, a demissão, o casamento, os filhos (os sobrinhos), a separação, a mudança para longe. Com quem está perto, o casamento e o primeiro filho chegam como convite (padrinho, discurso, batizado); com quem está longe, como notícia. A herança dos pais vai para a conta de cada irmão; quem herda leva os irmãos para a vida nova, e o sobrinho que herda é filho de um irmão de verdade.
+- **Aceitação:** teste: a escolha de três irmãos dá três; o mais novo nasce no ano marcado; a herança da mãe se divide em partes iguais; o herdeiro leva o irmão; o sobrinho tem o irmão como pai ou mãe.
+- **Estado:** feita (Ω1).
 
 ### I-123 · Os verbos sociais
 - **Problema:** com uma pessoa, hoje, só dá para fazer as ações escritas para o papel dela (visitar, ligar, presentear). Não dá para pedir dinheiro, pedir um emprego, oferecer sociedade, cobrar uma dívida ou contar uma verdade, e a pessoa não decide nada: o storylet decide.
@@ -226,6 +238,8 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-121 | NPCs com objetivos próprios | 9 | Média | proposta |
 | I-122 | Descobrir o que não se sabia que existia | 9 | Média | proposta |
 | I-123 | Os verbos sociais: pedir, oferecer, propor, cobrar, contar, apresentar | Ω | Alta | proposta (Ω2) |
+| I-130 | O namoro que esfria e o ex que continua | Ω | Alta | feita (Ω1) |
+| I-131 | Os irmãos com vida própria | Ω | Alta | feita (Ω1) |
 | I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | proposta (Ω3) |
 | I-125 | Os segredos: quem sabe o quê | Ω | Alta | proposta (Ω4) |
 | I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |

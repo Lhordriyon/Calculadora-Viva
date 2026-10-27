@@ -79,10 +79,12 @@ export function gravarEtapas(jogar: () => void): Map<IdEtapa, Gravado> {
       },
     });
 
+  /** O original de cada entidade embrulhada: quem muda alguém de papel (o amor que vira ex) guarda o original, não o embrulho. */
+  const cru = new WeakMap<object, Entidade>();
   const entidade = (en: Entidade): Entidade => {
     const g = generico(en.id);
     const partes = { n: campos(g, en.n), t: campos(g, en.t), q: campos(g, en.q as Record<string, unknown>) };
-    return new Proxy(en, {
+    const p = new Proxy(en, {
       get(t, k) {
         if (k === 'n' || k === 't' || k === 'q') return partes[k];
         if (typeof k === 'string' && META.has(k)) ler(`${g}.${k}`);
@@ -93,6 +95,8 @@ export function gravarEtapas(jogar: () => void): Map<IdEtapa, Gravado> {
         return Reflect.set(t, k, v);
       },
     });
+    cru.set(p, en);
+    return p;
   };
 
   const entidades = (raw: Record<string, Entidade>): Record<string, Entidade> => {
@@ -107,6 +111,9 @@ export function gravarEtapas(jogar: () => void): Map<IdEtapa, Gravado> {
           cache.set(en, p);
         }
         return p;
+      },
+      set(t, k, v) {
+        return Reflect.set(t, k, (v && typeof v === 'object' && cru.get(v)) || v);
       },
     });
   };

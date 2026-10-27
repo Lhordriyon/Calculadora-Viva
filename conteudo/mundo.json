@@ -790,6 +790,39 @@
         "Foi um ano de hospital para {ator.quem}, e de desculpas para você. [Cada semana tinha um motivo.|O trabalho, o trânsito, a vida: tudo era mais urgente.|Você ia no fim de semana. Foram muitos fins de semana.]"
       ],
       "resumo": "você não apareceu quando {ator.quem} estava doente"
+    },
+    "casou": {
+      "textos": [
+        "{ator.quem} casou [no cartório, numa quinta-feira, com churrasco depois|numa festa com DJ, cascata de camarão e três tias chorando|na praia, de pés descalços, com metade dos convidados de areia no sapato|numa igreja lotada, com o padre atrasado e o coral desafinado]. {depois}"
+      ],
+      "resumo": "{ator.quem} casou",
+      "trechos": {
+        "depois": [
+          { "se": { "ator.traco": "gastador" }, "texto": "A festa foi parcelada em doze vezes no cartão." },
+          { "se": { "ator.traco": "mao_fechada" }, "texto": "O bem-casado era contado: um por convidado, e a tia conferia." },
+          { "se": { "ator.traco": "piadista" }, "texto": "O discurso dos noivos teve mais piada do que promessa, e ninguém reclamou." },
+          { "texto": "[Você chorou na hora dos votos e negou depois.|A família ganhou mais um lugar na mesa do Natal.|O buquê caiu na mão da pessoa errada, como sempre.]" }
+        ]
+      }
+    },
+    "teve_filho": {
+      "textos": [
+        "{ator.quem} teve [um menino|uma menina], e você virou {tio|tia}. [O bebê tem a sua cara, segundo a família inteira, e a de todo mundo, segundo o resto.|A primeira foto chegou no grupo da família às quatro da manhã.|O nome saiu de uma votação que ninguém lembra de ter votado.]",
+        "Nasceu o filho de {ator.quem}. [Você segurou o bebê como quem segura uma bomba.|{ator:Ele|Ela} mandou 41 fotos no primeiro dia, todas iguais.|O enxoval foi doado por metade da rua.]"
+      ],
+      "resumo": "{ator.quem} teve um filho"
+    },
+    "mudou_de_cidade": {
+      "textos": [
+        "{ator.quem} se mudou para [outra cidade|outro estado|o interior|a capital|Portugal, \"só por uns anos\"], [atrás de um emprego melhor|atrás de um amor|para fugir do aluguel|sem explicar direito por quê]. [Agora vocês se falam por áudio de três minutos.|A despedida foi na rodoviária, com pão de queijo e choro.|Ficou a promessa de visitar no feriado.]"
+      ],
+      "resumo": "{ator.quem} se mudou para longe"
+    },
+    "separou": {
+      "textos": [
+        "{ator.quem} se separou. [Ninguém se surpreendeu, mas todo mundo fingiu.|A divisão dos móveis levou mais tempo que o casamento.|Agora {ator:ele|ela} fala muito em \"recomeço\" e entrou na academia.|O grupo da família ficou dois dias em silêncio, um recorde.]"
+      ],
+      "resumo": "{ator.quem} se separou"
     }
   },
   "setores": [

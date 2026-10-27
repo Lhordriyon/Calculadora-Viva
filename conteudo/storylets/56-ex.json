@@ -20,14 +20,6 @@
     "resumo": "viu o namoro com {ator} esfriar",
     "escolhas": [
       {
-        "texto": "Terminar numa conversa honesta",
-        "resumo": "terminou o namoro com {ator} numa conversa honesta",
-        "resultado": {
-          "texto": "Vocês conversaram até a pizza acabar, choraram um pouco e combinaram de não virar inimigos. Por enquanto, deu certo.",
-          "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 8, "felicidade": -4 }
-        }
-      },
-      {
         "texto": "Tentar salvar o namoro",
         "resumo": "tentou salvar o namoro com {ator}",
         "efeitos": { "dinheiro": -400 },
@@ -41,6 +33,14 @@
           "texto": "A viagem foi longa e calada. Na volta, {ator} pediu para descer duas quadras antes de casa, e não era pela vaga.",
           "resumo": "tentou salvar o namoro com {ator} e terminou mesmo assim",
           "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 16, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Terminar numa conversa honesta",
+        "resumo": "terminou o namoro com {ator} numa conversa honesta",
+        "resultado": {
+          "texto": "Vocês conversaram até a pizza acabar, choraram um pouco e combinaram de não virar inimigos. Por enquanto, deu certo.",
+          "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 8, "felicidade": -4 }
         }
       },
       {

@@ -17,6 +17,7 @@ import {
   PARCEIROS,
   PERFIS,
   PAPEIS_NOVOS,
+  PAPEIS_QUE_CHEGAM,
   POLITICAS,
   TIPOS_FAMILIA,
   TIPOS_STORYLET,
@@ -159,7 +160,7 @@ const EFEITOS_FIXOS = {
   removerMarcas: z.array(Caminho).optional(),
   /** Soma ao valor de qualidades numéricas ("estudo": 1). */
   qualidades: z.record(Caminho, z.number()).optional(),
-  personagens: z.array(PapelNovo).optional(),
+  personagens: z.array(z.enum(PAPEIS_QUE_CHEGAM)).optional(),
   /** Copia um personagem para outro papel (ex.: o primeiro amor vira o amor atual). */
   /** Copia a pessoa de um papel para outro (a paixão vira o amor); `de: "ator"` é o ator do storylet (o ex que volta). */
   promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: PapelNovo }).optional(),
@@ -453,7 +454,22 @@ export const DefSetor = z.strictObject({
 export type DefSetor = z.infer<typeof DefSetor>;
 
 /** Mudanças que as regras dos personagens produzem sozinhas. */
-export const GATILHOS = ['adoeceu', 'curou', 'demitido', 'empregado', 'aposentou', 'faleceu', 'faliu', 'nao_apareceu', 'perdeu_patrimonio'] as const;
+export const GATILHOS = [
+  'adoeceu',
+  'curou',
+  'demitido',
+  'empregado',
+  'aposentou',
+  'faleceu',
+  'faliu',
+  'nao_apareceu',
+  'perdeu_patrimonio',
+  // a vida de quem está longe (a rede): chega como notícia
+  'casou',
+  'teve_filho',
+  'mudou_de_cidade',
+  'separou',
+] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 
 /**

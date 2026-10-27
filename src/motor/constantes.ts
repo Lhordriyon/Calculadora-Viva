@@ -15,6 +15,9 @@ export const PAPEIS_DA_REDE = ['irmao', 'ex', 'colega', 'chefe'] as const;
 export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS, ...PAPEIS_DA_REDE] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
+/** Quem um efeito do conteúdo faz chegar à vida (`personagens`): os papéis novos e o irmão que nasce depois de quem joga. */
+export const PAPEIS_QUE_CHEGAM = [...PAPEIS_NOVOS, 'irmao'] as const;
+export type PapelQueChega = (typeof PAPEIS_QUE_CHEGAM)[number];
 
 /**
  * Os filhos de quem joga, em ordem de chegada: o primeiro é `filho` (o papel do conteúdo) e os seguintes, `filho2` a
@@ -30,8 +33,11 @@ export function ehFilho(id: string): boolean {
   return (FILHOS as readonly string[]).includes(id);
 }
 
-/** Os irmãos de quem joga, do mais velho ao mais novo na ordem em que chegaram à vida (`irmao` a `irmao4`). */
-export const IRMAOS = ['irmao', 'irmao2', 'irmao3', 'irmao4'] as const;
+/**
+ * Os irmãos de quem joga (`irmao` a `irmao5`): os mais velhos, do mais velho ao mais novo, e depois os que nasceram
+ * depois de quem joga, na ordem em que chegaram.
+ */
+export const IRMAOS = ['irmao', 'irmao2', 'irmao3', 'irmao4', 'irmao5'] as const;
 /** Os ex de quem joga, na ordem em que foram embora (`ex` a `ex3`); sem lugar, quem foi embora há mais tempo sai. */
 export const EXES = ['ex', 'ex2', 'ex3'] as const;
 

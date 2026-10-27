@@ -855,13 +855,14 @@ export function verificarCoerencia(c: Conteudo, problemas: Problema[]): void {
     if ((atores?.includes('amigo') ? RE_AMIGO_DESCONHECIDO_ATOR : RE_AMIGO_DESCONHECIDO).test(texto)) {
       erro(onde, 'apresenta o amigo de infância como desconhecido ("chamado {amigo}", "conheceu {amigo}"), mas ele existe desde que você nasceu: use um trecho pela memória ou um jeito neutro');
     }
-    if (!temIrmao && !atores?.includes('filho') && RE_IRMAO.test(texto)) {
+    if (!temIrmao && !atores?.includes('filho') && !atores?.includes('irmao') && RE_IRMAO.test(texto)) {
       erro(onde, 'fala do irmão de quem joga sem saber se ele existe: ponha "irmaos": { "min": 1 } na condição ou num trecho (e outro texto para filho único)');
     }
   };
   for (const s of c.storylets) {
     const onde = `${c.arquivoDe.get(s.id) ?? '?'} › ${s.id}`;
-    const base = sabeDosIrmaos(s.condicoes);
+    // O storylet que faz o irmão nascer fala dele (irmao_nasce).
+    const base = sabeDosIrmaos(s.condicoes) || (s.efeitos?.personagens ?? []).includes('irmao');
     const at = s.ator;
     conferir(s.texto, `${onde} › texto`, base, at);
     conferir(s.resumo, `${onde} › resumo`, base, at);

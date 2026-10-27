@@ -19,12 +19,14 @@ export interface LeituraMotor {
 
 const de = (papeis: readonly string[], campo: string): string[] => papeis.map((p) => `${p}.${campo}`);
 const PAIS_E_AVO = ['mae', 'pai', 'avo'] as const;
-/** Os papéis da rede (a missão Ω): o ex é o amor que foi embora e continua vivendo. */
-const DA_REDE = ['ex'] as const;
+/** Os papéis da rede (a missão Ω): os irmãos, e o ex, o amor que foi embora e continua vivendo. */
+const DA_REDE = ['irmao', 'ex'] as const;
 const DOENTES = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', ...DA_REDE] as const;
 const TODOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet', ...DA_REDE] as const;
-/** Quem espera a visita na doença (a falta): o ex, não. */
-const PROXIMOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho'] as const;
+/** Quem espera a visita na doença (a falta): o irmão, sim; o ex, não. */
+const PROXIMOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'irmao'] as const;
+/** Quem trabalha e pode perder o emprego: os pais e os irmãos adultos. */
+const TRABALHAM = ['mae', 'pai', 'irmao'] as const;
 /** O bicho não tem vínculo: a alegria dele já está na qualidade de ter um. */
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
@@ -198,9 +200,10 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.negocio_familiar',
   'eu.prematuro',
   ...de(PESSOAS, 'traco'),
-  ...de(['mae', 'pai'], 'ocupacao'),
-  ...de(['mae', 'pai'], 'setor'),
+  ...de(TRABALHAM, 'ocupacao'),
+  ...de(TRABALHAM, 'setor'),
   ...de(['mae', 'pai'], 'dono_do_negocio'),
+  'irmao.gemeo',
   'pai.ausente',
   'avo.mora_junto',
   'lugar.desemprego',
@@ -212,10 +215,16 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...de(TODOS, 'faleceu'),
   // O dinheiro dos pais e da avó anda todo ano; o de qualquer pessoa vai para os herdeiros quando ela morre.
   ...de(PESSOAS, 'dinheiro'),
-  ...de(PAIS_E_AVO, 'renda'),
+  ...de([...PAIS_E_AVO, 'irmao'], 'renda'),
   ...de(DOENTES, 'doente'),
-  ...de(['mae', 'pai'], 'desempregado'),
-  ...de(['mae', 'pai'], 'aposentado'),
+  ...de(TRABALHAM, 'desempregado'),
+  ...de(TRABALHAM, 'aposentado'),
+  // a vida dos irmãos ao fundo: o casamento, os filhos (os sobrinhos), a separação e a mudança para longe
+  'irmao.casado',
+  'irmao.separado',
+  'irmao.filhos',
+  'irmao.pai_mae',
+  'irmao.mora_longe',
 ];
 
 const ler = (caminhos: string[], regra: string, decide: boolean): LeituraMotor[] => caminhos.map((caminho) => ({ caminho, regra, decide }));
@@ -230,7 +239,7 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['eu.saude'], 'mortalidade', true),
@@ -327,14 +336,18 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(PESSOAS, 'traco'), 'iniciativas dos personagens (afinidade) e vínculo', true),
   ...ler(['eu.paquera', 'eu.aparencia', 'eu.traco'], 'chance de alguém aparecer', true),
   ...ler(['amor.vinculo', 'eu.casado'], 'o namoro que esfria (a chance cresce com o vínculo baixo; o casamento não esfria assim)', true),
-  ...ler(de(PAIS_E_AVO, 'renda'), 'poupança dos personagens', false),
+  ...ler(de([...PAIS_E_AVO, 'irmao'], 'renda'), 'poupança dos personagens', false),
   ...ler(de(TODOS, 'dinheiro'), 'herança', false),
   ...ler(de(DOENTES, 'doente'), 'saúde dos personagens', true),
-  ...ler(de(['mae', 'pai'], 'desempregado'), 'recolocação', true),
-  ...ler(de(['mae', 'pai'], 'ocupacao'), 'quem vive de patrimônio não é demitido: na crise, perde parte do que tem', true),
-  ...ler(de(['mae', 'pai'], 'aposentado'), 'aposentadoria', true),
+  ...ler(de(TRABALHAM, 'desempregado'), 'recolocação', true),
+  ...ler(de(TRABALHAM, 'ocupacao'), 'quem vive de patrimônio não é demitido: na crise, perde parte do que tem; o irmão sem ocupação procura o primeiro emprego', true),
+  ...ler(de(TRABALHAM, 'aposentado'), 'aposentadoria', true),
   ...ler(de(['mae', 'pai'], 'dono_do_negocio'), 'demissão (dono não é demitido)', true),
-  ...ler(de(['mae', 'pai'], 'setor'), 'demissão dos pais (o setor sente o ciclo)', true),
+  ...ler(de(TRABALHAM, 'setor'), 'demissão dos pais e dos irmãos (o setor sente o ciclo)', true),
+  ...ler(['irmao.casado'], 'a vida do irmão: quem casou pode ter filhos e se separar; quem casou saiu de casa', true),
+  ...ler(['irmao.filhos'], 'a vida do irmão (até três filhos) e a herança dos pais (a parte do irmão que morreu vai para os filhos dele)', true),
+  ...ler(['irmao.mora_longe'], 'quem mora longe esfria mais rápido e não divide a casa', true),
+  ...ler(['irmao.gemeo'], 'o gêmeo fica mais perto', false),
   ...ler(['eu.setor', 'eu.servidor', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.aposentado'], 'trabalho: salário, demissão e aperto do negócio', true),
   ...ler(['eu.padrao_alto'], 'padrão de vida: a conta chega quando a reserva acaba', true),
   ...ler(['eu.nome_sujo'], 'dívida: com o nome sujo, o banco não empresta mais nem financia', true),

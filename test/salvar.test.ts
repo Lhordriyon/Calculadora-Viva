@@ -43,7 +43,8 @@ describe('save', () => {
 
   it('solta a pendência de um storylet que não existe mais', () => {
     const vida = nascer(c, { semente: 8, ano: 2026 });
-    avancarAno(vida, c);
+    // O primeiro ano com uma escolha pendente (num ano, pode nascer um irmão, que não pede escolha).
+    for (let i = 0; i < 10 && !vida.pendente; i++) avancarAno(vida, c);
     expect(vida.pendente).not.toBeNull();
     vida.pendente!.storylet = 'storylet_removido';
     const lido = lerSave(escreverSave({ ...saveVazio(), vida }), c);
