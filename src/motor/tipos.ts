@@ -35,6 +35,23 @@ export interface Entidade {
   n: Record<string, number>;
   t: Record<string, string>;
   q: Record<string, Qualidade>;
+  /**
+   * A pessoa, de uma vez por todas (a identidade de pessoas): o papel pode mudar de pessoa (o amor de uma vida pode
+   * ter sido três pessoas) e a pessoa pode mudar de papel (o amor que vira ex), mas o número dela não muda. Sem
+   * número, a pessoa é o papel (o save de antes da identidade).
+   */
+  pessoa?: number;
+}
+
+/**
+ * Quem ocupou cada papel e desde quando: a pessoa ocupa o papel a partir da entrada `desde` até a próxima ocupação do
+ * mesmo papel (pessoa 0 é o papel vago). O livro continua escrito por papel (`amor.vinculo`); a ocupação diz de quem
+ * era cada mudança, e a memória e a opinião de cada pessoa saem só do que foi dela.
+ */
+export interface Ocupacao {
+  papel: string;
+  pessoa: number;
+  desde: number;
 }
 
 export interface ItemAgenda {
@@ -146,6 +163,10 @@ export interface EstadoVida {
   proximoId: number;
   /** Quem veio antes, quando a vida continua a de um pai ou mãe (sem isso, é a primeira geração). */
   dinastia?: Dinastia;
+  /** Quem ocupou cada papel (a identidade de pessoas), em ordem; o save de antes não tem. */
+  ocupacoes?: Ocupacao[];
+  /** O número da próxima pessoa que entrar na vida. */
+  proximaPessoa?: number;
 }
 
 export interface Antepassado {

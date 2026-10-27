@@ -265,6 +265,17 @@ export function chanceDeAmor(idade: number): number {
   if (idade < 60) return 0.07;
   return 0.035;
 }
+/**
+ * Chance por ano de um namoro sem casamento esfriar, pela idade (o namoro de adolescente dura pouco), antes do vínculo:
+ * com o vínculo de quem acabou de chegar (70), vale 70% disso; com 40, inteira.
+ */
+export function chanceDoNamoroEsfriar(idade: number): number {
+  if (idade < 21) return 0.3;
+  if (idade < 26) return 0.22;
+  if (idade < 31) return 0.15;
+  if (idade < 41) return 0.1;
+  return 0.06;
+}
 /** Cada ponto de paquera (sair, conhecer gente) aumenta a chance em tanto, até 3 pontos. */
 export const PAQUERA_AMOR = 0.6;
 /** Namoro que dura isso (anos) já é união: a morte de quem você ama deixa você viúv{o|a}. */

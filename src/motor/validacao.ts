@@ -7,7 +7,7 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet } from './esquema.ts';
@@ -615,10 +615,13 @@ function textosDe(s: Storylet): string[] {
 const COM_EMPRESA = '@empresa';
 
 /** Personagens que morrem no meio da vida e que o texto chama pelo nome: o texto precisa saber se estão vivos. */
-export const PAPEIS_QUE_MORREM = ['mae', 'pai', 'avo', 'amigo', 'amor'] as const;
+export const PAPEIS_QUE_MORREM = ['mae', 'pai', 'avo', 'amigo', 'amor', ...PAPEIS_DA_REDE] as const;
 
 /** Marca de mentira que diz "a condição sabe se esse personagem está vivo" (`<papel>.vivo`, ou a qualidade `<papel>.faleceu`). */
 const sabeSeVivo = (papel: string): string => `@vivo:${papel}`;
+/** Marca de mentira que diz "a condição garante que a pessoa da rede existe" (o irmão, o ex, o colega, o chefe). */
+const existe = (papel: string): string => `@existe:${papel}`;
+const DA_REDE: ReadonlySet<string> = new Set(PAPEIS_DA_REDE);
 
 /** Qualidades de quem joga que o motor tira quando o personagem morre (pessoas.ts › morrerPersonagem): exigir uma delas é exigir que ele esteja vivo. */
 const VIVO_PELA_QUALIDADE: Record<string, readonly string[]> = { amor: ['namoro', 'casado'] };
@@ -633,7 +636,9 @@ function qualidadesGarantidas(cond: Condicoes | undefined): string[] {
   const vivos = PAPEIS_QUE_MORREM.filter(
     (p) => (cond !== undefined && `${p}.vivo` in cond) || lidas.has(`${p}.faleceu`) || (VIVO_PELA_QUALIDADE[p] ?? []).some((m) => marcas.includes(m)),
   ).map(sabeSeVivo);
-  return [...marcas, ...(exige ? [COM_EMPRESA] : []), ...vivos];
+  // A pessoa da rede existe quando a condição lê se ela está viva ("ex.vivo") ou exige que tenha morrido.
+  const existem = PAPEIS_DA_REDE.filter((p) => (cond !== undefined && `${p}.vivo` in cond) || marcas.includes(`${p}.faleceu`)).map(existe);
+  return [...marcas, ...(exige ? [COM_EMPRESA] : []), ...vivos, ...existem];
 }
 
 function criadosPor(ef: Efeitos | undefined): Set<string> {
@@ -739,7 +744,7 @@ function verificarModelo(
   }
 
   // Personagem criado no meio da vida (e a empresa) só aparece em texto que exige a qualidade que o garante.
-  const novos = new Set<string>([...PAPEIS_NOVOS, 'empresa']);
+  const novos = new Set<string>([...PAPEIS_NOVOS, ...PAPEIS_DA_REDE, 'empresa']);
   const usados = new Set([...a.variaveis.map((v) => separar(v.includes('.') ? v : `${v}.nome`).ent), ...a.concordancias]);
   if (usados.has('ator')) for (const p of atores ?? []) usados.add(p);
   for (const usado of usados) {
@@ -748,6 +753,10 @@ function verificarModelo(
     if (!novos.has(p) || criadosAqui.has(p) || atores?.includes(p)) continue;
     if (p === 'empresa') {
       if (!marcasExigidas.has(COM_EMPRESA)) erro(onde, 'usa {empresa} sem exigir a empresa (uma condição como "empresa.valor": true)');
+      continue;
+    }
+    if (DA_REDE.has(p)) {
+      if (!marcasExigidas.has(existe(p))) erro(onde, `usa {${usado}} sem saber se a pessoa existe: ponha "${p}.vivo" na condição (ou ${p}.faleceu nas marcas)`);
       continue;
     }
     const garantidoras = marcasDoPapel.get(p) ?? new Set();

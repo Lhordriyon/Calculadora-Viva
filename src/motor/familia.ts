@@ -9,13 +9,13 @@
 import { idadeDe } from './campos.ts';
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
-import { FILHOS, ehFilho, papelBase, type Visao } from './constantes.ts';
+import { EXES, FILHOS, ehEx, ehFilho, papelBase, type Visao } from './constantes.ts';
 import { contexto } from './contexto.ts';
 import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho, Mundo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { morrerPersonagem } from './pessoas.ts';
+import { arquivarEx, morrerPersonagem } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_FALENCIA,
@@ -43,6 +43,7 @@ import {
   VINCULO_DA_FALTA,
   VINCULO_DA_VONTADE,
   chanceDeAmor,
+  chanceDoNamoroEsfriar,
   chanceDoenca,
   derivaSaude,
   riscoDeMorte,
@@ -54,8 +55,11 @@ import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca, Qualidade } from './tipos.ts';
 
-/** Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada. */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet'] as const;
+/**
+ * Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes); os filhos, na ordem de chegada;
+ * os ex, no fim (eles vivem longe: a saúde, a morte e a relação que esfria).
+ */
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', 'amor', ...FILHOS, 'amigo', 'pet', ...EXES] as const;
 
 const DE_PATRIMONIO = new WeakMap<Conteudo, ReadonlySet<string>>();
 /** A ocupação é de quem vive do que tem (mundo.json › classes › ocupacoes e linhagens › papel, com `patrimonio`): herdeiro, investidor, dono. */
@@ -108,6 +112,8 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   if (papel === 'amor') return 62 + (traco?.vinculo ?? 0);
   if (ehFilho(papel)) return 68 + (traco?.vinculo ?? 0);
   if (papel === 'paixao') return 30;
+  // O ex: o que sobrou é pouco, mais para quem é afetuoso.
+  if (ehEx(papel)) return 22 + (traco?.vinculo ?? 0) / 2;
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
 }
@@ -136,7 +142,9 @@ function relacaoNoAno(e: EstadoVida, papel: string, en: Entidade, perdao: number
  */
 function fechoDaMorte(e: EstadoVida, c: Conteudo, papel: string, en: Entidade): string {
   if (!temRelacao(papel, en) || papel === 'paixao') return '';
-  const qual = (en.n['magoa'] ?? 0) >= MAGOA_REMORSO ? 'magoa' : (en.n['sem_contato'] ?? 0) >= ANOS_REMORSO ? 'longe' : (en.n['vinculo'] ?? 0) >= 55 ? 'perto' : null;
+  // A distância do ex não é falta (pessoas.ts › morrerPersonagem): só a mágoa ou o afeto que ficou.
+  const longe = !ehEx(papel) && (en.n['sem_contato'] ?? 0) >= ANOS_REMORSO;
+  const qual = (en.n['magoa'] ?? 0) >= MAGOA_REMORSO ? 'magoa' : longe ? 'longe' : (en.n['vinculo'] ?? 0) >= 55 ? 'perto' : null;
   const ctx = contexto(e, { ator: papel });
   const partes = qual ? [renderizar(sortear(e.rng, c.mundo.despedidas[qual]), ctx)] : [];
   // A vontade que ficou guardada também fica dita.
@@ -253,6 +261,9 @@ export function regrasDosPersonagens(
   const eu = e.entidades['eu']!;
   const lugar = e.entidades['lugar'];
   const classe = c.mundo.classes[eu.n['classe_origem'] ?? 2] ?? c.mundo.classes[2]!;
+  // O amor que foi embora (o namoro acabou e ninguém chegou no lugar) vira ex: continua existindo, com a memória dele.
+  const amor = e.entidades['amor'];
+  if (amor && amor.vivo !== false && (eu.q['namoro']?.v ?? 0) <= 0 && (eu.q['casado']?.v ?? 0) <= 0) arquivarEx(e, regAno);
   for (const papel of PAPEIS_COM_REGRAS) {
     const en = e.entidades[papel];
     if (!en || en.vivo === false) continue;
@@ -374,10 +385,12 @@ export function regrasDosPersonagens(
 
     // ---- a relação: a mágoa passa no ritmo do perdão do traço, a confiança volta devagar, e o ano longe conta (bicho não tem)
     if (papel === 'pet') continue;
-    // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar.
-    vontadesNoAno(e, c, papel, en, regAno);
+    // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar. O ex não guarda
+    // vontade da vida a dois nem espera a visita na doença.
+    const ex = ehEx(papel);
+    if (!ex) vontadesNoAno(e, c, papel, en, regAno);
     const longe = relacaoNoAno(e, papel, en, traco?.perdao ?? PERDAO_BASE, regAno);
-    faltaNoAno(e, c, papel, en, longe, doenteNoAno);
+    if (!ex) faltaNoAno(e, c, papel, en, longe, doenteNoAno);
 
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
@@ -401,12 +414,28 @@ export function regrasDosPersonagens(
  */
 export function regraDoAmor(e: EstadoVida, c: Conteudo): void {
   const eu = e.entidades['eu']!;
-  if (eu.q['namoro'] || !c.porId.has('namoro') || e.agenda.some((a) => a.evento === 'namoro')) return;
+  const namoro = eu.q['namoro'];
+  if (namoro && namoro.v > 0) return namoroEsfria(e, c, namoro);
+  if (namoro || !c.porId.has('namoro') || e.agenda.some((a) => a.evento === 'namoro')) return;
   const paquera = eu.q['paquera'];
   const traco = c.tracosJogador.get(eu.t['traco'] ?? '');
   const aparencia = 0.6 + (eu.n['aparencia'] ?? 50) / 125;
   const chance = chanceDeAmor(e.idade) * (1 + PAQUERA_AMOR * Math.min(3, paquera?.v ?? 0)) * aparencia * (traco?.amor ?? 1);
   if (aleatorio(e.rng) < chance) e.agenda.push({ evento: 'namoro', ano: e.ano, origem: paquera?.causa ?? null });
+}
+
+/**
+ * O namoro que não virou casamento esfria: a chance cresce na juventude e com o vínculo baixo, e a regra agenda o
+ * storylet "namoro_esfriou" com o começo do namoro como causa. O fim é escolha de quem joga (terminar, salvar, deixar
+ * morrer), e quem foi embora vira ex.
+ */
+function namoroEsfria(e: EstadoVida, c: Conteudo, namoro: Qualidade): void {
+  const eu = e.entidades['eu']!;
+  const amor = e.entidades['amor'];
+  if ((eu.q['casado']?.v ?? 0) > 0 || !amor || amor.vivo === false || e.idade - namoro.idade < 1) return;
+  if (!c.porId.has('namoro_esfriou') || e.agenda.some((a) => a.evento === 'namoro_esfriou')) return;
+  const chance = chanceDoNamoroEsfriar(e.idade) * Math.max(0.3, 1.4 - (amor.n['vinculo'] ?? 60) / 100);
+  if (aleatorio(e.rng) < chance) e.agenda.push({ evento: 'namoro_esfriou', ano: e.ano, origem: namoro.causa, ator: 'amor' });
 }
 
 /**

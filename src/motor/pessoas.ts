@@ -3,10 +3,11 @@
  * luto e herança). Usado pelos efeitos de storylets e pelas regras anuais.
  */
 import type { Conteudo } from './conteudo.ts';
-import { FILHOS, ehFilho, type PapelNovo } from './constantes.ts';
+import { EXES, FILHOS, ehEx, ehFilho, type PapelNovo } from './constantes.ts';
 import { quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
+import { quemEraQuemMudou } from './relacoes.ts';
 import { aoMorrerQuemReina } from './sucessao.ts';
 import { ANOS_REMORSO, ANOS_UNIAO, MAGOA_REMORSO } from './regras.ts';
 import { aleatorio, inteiro, sortear } from './rng.ts';
@@ -35,17 +36,149 @@ function darTraco(e: EstadoVida, c: Conteudo, en: Entidade): void {
   en.n['saude'] = Math.max(20, Math.min(98, (en.n['saude'] ?? 75) + traco.saude));
 }
 
+// ---------------------------------------------------------------- a identidade de pessoas
+
+/** Um número novo de pessoa (a identidade não muda com o papel). */
+export function novaPessoa(e: EstadoVida): number {
+  const n = e.proximaPessoa ?? 1;
+  e.proximaPessoa = n + 1;
+  return n;
+}
+
+/** A pessoa passa a ocupar o papel a partir da entrada `desde` (pessoa 0: o papel fica vago). */
+function ocupar(e: EstadoVida, papel: string, pessoa: number, desde: number): void {
+  (e.ocupacoes ??= []).push({ papel, pessoa, desde });
+}
+
+/**
+ * Quando a ocupação muda: a partir da próxima entrada. O que a entrada de agora mudou ainda é de quem estava no papel
+ * (a conversa que fez o ex voltar é lembrança do ex, mesmo que ele saia dela como o amor).
+ */
+const daqui = (e: EstadoVida): number => e.proximoId;
+
+/**
+ * Dá número e ocupação a quem ainda não tem: as pessoas e os bichos do nascimento (desde a entrada 0) e da vida nova
+ * do herdeiro (desde a abertura). Quem chega depois ganha os dois ao ocupar o papel.
+ */
+export function registrarPessoas(e: EstadoVida, desde: number): void {
+  for (const en of Object.values(e.entidades)) {
+    if ((en.tipo !== 'pessoa' && en.tipo !== 'animal') || en.id === 'eu' || en.pessoa !== undefined) continue;
+    en.pessoa = novaPessoa(e);
+    ocupar(e, en.id, en.pessoa, desde);
+  }
+}
+
+/** Os números da pessoa saem de um papel (`saida`) e entram noutro (`nascimento`, o vínculo como o chip mostra). */
+function sairDoPapel(papel: string, en: Entidade, reg: Mudanca[]): void {
+  for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: -v, r: 'saida' });
+}
+function entrarNoPapel(papel: string, en: Entidade, reg: Mudanca[]): void {
+  for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: v, ...(campo === 'vinculo' ? {} : { r: 'nascimento' }) });
+}
+/** A mesma pessoa troca de papel: os números saem de um e entram no outro, marcados `papel` (não é chegada nem afeto). */
+function trocarDePapel(de: string, para: string, en: Entidade, reg: Mudanca[]): void {
+  for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${de}.${campo}`, d: -v, r: 'papel' }, { c: `${para}.${campo}`, d: v, r: 'papel' });
+}
+
+/**
+ * A mesma pessoa muda de papel (o amor que vira ex, o ex que volta a ser o amor), com tudo no livro, e a ocupação
+ * guarda que é a mesma pessoa: a memória e a opinião dela continuam.
+ */
+export function moverPessoa(e: EstadoVida, de: string, para: string, reg: Mudanca[]): void {
+  const en = e.entidades[de];
+  if (!en || de === para || e.entidades[para]) return;
+  const desde = daqui(e);
+  const pessoa = garantirPessoa(e, de, en);
+  trocarDePapel(de, para, en, reg);
+  delete e.entidades[de];
+  en.id = para;
+  e.entidades[para] = en;
+  ocupar(e, de, 0, desde);
+  ocupar(e, para, pessoa, desde);
+}
+
+/** Sem número (o save de antes da identidade), o papel inteiro de antes era desta pessoa: o passado muda de dono. */
+function garantirPessoa(e: EstadoVida, papel: string, en: Entidade): number {
+  if (en.pessoa === undefined) {
+    en.pessoa = novaPessoa(e);
+    ocupar(e, papel, en.pessoa, 0);
+    quemEraQuemMudou();
+  }
+  return en.pessoa;
+}
+
+/**
+ * O ex volta a ser o amor, a mesma pessoa, com a memória dela. Quem estava no lugar do amor troca de lugar com ele
+ * (vivo, vira ex, e as vontades da vida a dois ficam para trás); morto, sai da vida.
+ */
+function voltarComOEx(e: EstadoVida, de: string, reg: Mudanca[]): void {
+  const volta = e.entidades[de];
+  const antes = e.entidades['amor'];
+  if (!volta) return;
+  if (!antes) return moverPessoa(e, de, 'amor', reg);
+  if (antes.vivo === false || antes.tipo !== 'pessoa') {
+    sairDoPapel('amor', antes, reg);
+    delete e.entidades['amor'];
+    ocupar(e, 'amor', 0, daqui(e));
+    return moverPessoa(e, de, 'amor', reg);
+  }
+  const desde = daqui(e);
+  const quemVolta = garantirPessoa(e, de, volta);
+  const quemSai = garantirPessoa(e, 'amor', antes);
+  trocarDePapel(de, 'amor', volta, reg);
+  trocarDePapel('amor', de, antes, reg);
+  volta.id = 'amor';
+  antes.id = de;
+  e.entidades['amor'] = volta;
+  e.entidades[de] = antes;
+  ocupar(e, 'amor', quemVolta, desde);
+  ocupar(e, de, quemSai, desde);
+  for (const q of Object.keys(antes.q)) if (q.startsWith('quer_')) perder(e, reg, de, q);
+}
+
+/** O primeiro lugar de ex livre; sem lugar, quem foi embora há mais tempo sai da vida (o lugar vai para o novo). */
+function lugarDeEx(e: EstadoVida, reg: Mudanca[]): string {
+  const livre = EXES.find((x) => !e.entidades[x]);
+  if (livre) return livre;
+  const desde = (id: string): number => Math.max(-1, ...(e.ocupacoes ?? []).filter((o) => o.papel === id && o.pessoa !== 0).map((o) => o.desde));
+  const slot = [...EXES].sort((a, b) => desde(a) - desde(b))[0]!;
+  sairDoPapel(slot, e.entidades[slot]!, reg);
+  delete e.entidades[slot];
+  ocupar(e, slot, 0, daqui(e));
+  return slot;
+}
+
+/**
+ * O amor que foi embora continua existindo: vira ex. As vontades eram da vida a dois e ficam para trás. Devolve o
+ * lugar de ex, ou undefined quando não havia amor vivo para arquivar.
+ */
+export function arquivarEx(e: EstadoVida, reg: Mudanca[]): string | undefined {
+  const en = e.entidades['amor'];
+  if (!en || en.vivo === false || en.tipo !== 'pessoa') return undefined;
+  const slot = lugarDeEx(e, reg);
+  moverPessoa(e, 'amor', slot, reg);
+  const ex = e.entidades[slot]!;
+  for (const q of Object.keys(ex.q)) if (q.startsWith('quer_')) perder(e, reg, slot, q);
+  // A segunda chance era com esta pessoa: acabou junto.
+  perder(e, reg, 'eu', 'voltou_com_o_ex');
+  return slot;
+}
+
 /**
  * Troca quem ocupa o papel, com tudo no livro: quem sai deixa os números
  * (marcados `saida`) e quem chega entra com os seus (o vínculo como o chip
  * mostra; o resto marcado `nascimento`). Assim, para toda entidade, o começo
- * mais a soma das variações dá o estado de agora.
+ * mais a soma das variações dá o estado de agora. O amor de antes, vivo, vira ex
+ * (não some); a pessoa que chega ganha número e ocupação.
  */
 function ocuparPapel(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[]): void {
   const antes = e.entidades[papel];
-  if (antes) for (const [campo, v] of Object.entries(antes.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: -v, r: 'saida' });
+  const virouEx = papel === 'amor' && antes !== undefined && antes !== en && antes.pessoa !== en.pessoa && arquivarEx(e, reg) !== undefined;
+  if (antes && !virouEx) sairDoPapel(papel, antes, reg);
   e.entidades[papel] = en;
-  for (const [campo, v] of Object.entries(en.n)) if (v) reg.push({ c: `${papel}.${campo}`, d: v, ...(campo === 'vinculo' ? {} : { r: 'nascimento' }) });
+  entrarNoPapel(papel, en, reg);
+  if (en.pessoa === undefined) en.pessoa = novaPessoa(e);
+  ocupar(e, papel, en.pessoa, daqui(e));
 }
 
 /**
@@ -76,10 +209,17 @@ export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelNovo, re
   return id;
 }
 
-/** Copia um personagem para outro papel (o primeiro amor vira o amor atual). */
+/**
+ * Copia um personagem para outro papel (a paixão vira o amor). O ex que volta não é cópia: é a mesma pessoa que sai
+ * do lugar de ex e volta a ser o amor, com a memória dela; quem estava no lugar do amor vai para o lugar de ex.
+ */
 export function promover(e: EstadoVida, c: Conteudo, de: string, para: string, reg: Mudanca[]): void {
   const origem = e.entidades[de];
   if (!origem) return;
+  if (ehEx(de) && para === 'amor') {
+    voltarComOEx(e, de, reg);
+    return;
+  }
   const novo = structuredClone({ ...origem, id: para });
   if (COM_TRACO.has(para) && !novo.t['traco']) darTraco(e, c, novo);
   ocuparPapel(e, para, novo, reg);
@@ -92,6 +232,8 @@ function herdeiro(e: EstadoVida, papel: string): string {
   if (papel === 'pai' && vivo('mae') && !e.entidades['pai']!.q['ausente']) return 'mae';
   if (papel === 'avo') return vivo('mae') ? 'mae' : vivo('pai') ? 'pai' : 'eu';
   if (papel === 'amigo' || papel === 'paixao' || papel === 'pet') return '';
+  // O ex, o colega e o chefe têm a família deles: o dinheiro fica com eles.
+  if (ehEx(papel) || papel === 'colega' || papel === 'chefe') return '';
   return 'eu';
 }
 
@@ -116,7 +258,9 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
     const magoa = en.n['magoa'] ?? 0;
     const longe = en.n['sem_contato'] ?? 0;
     const vontade = Object.entries(en.q).some(([q, v]) => q.startsWith('quer_') && v.v > 0);
-    if (en.tipo === 'pessoa' && vinculo >= 25 && (magoa >= MAGOA_REMORSO || longe >= ANOS_REMORSO || vontade)) {
+    // A distância do ex é o normal de quem se separou: só a mágoa que ficou deixa remorso.
+    const longeDemais = !ehEx(papel) && longe >= ANOS_REMORSO;
+    if (en.tipo === 'pessoa' && vinculo >= 25 && (magoa >= MAGOA_REMORSO || longeDemais || vontade)) {
       somar(e, reg, 'eu', 'felicidade', -(3 + magoa * 0.06 + Math.min(longe, 10) * 0.4 + (vontade ? 2 : 0)));
       perder(e, reg, 'eu', 'despediu');
       perder(e, reg, 'eu', 'remorso');
@@ -131,6 +275,7 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
     const namoro = e.entidades['eu']!.q['namoro'];
     const uniao = namoro !== undefined && e.idade - namoro.idade >= ANOS_UNIAO;
     perder(e, reg, 'eu', 'namoro');
+    perder(e, reg, 'eu', 'voltou_com_o_ex');
     if (perder(e, reg, 'eu', 'casado') || uniao) ganhar(e, reg, 'eu', 'viuvo', causa);
   }
   const dinheiro = en.n['dinheiro'] ?? 0;

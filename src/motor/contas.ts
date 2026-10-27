@@ -17,8 +17,8 @@ import type { Entrada, EstadoVida } from './tipos.ts';
 const SEM_CONTRAPARTE = 'desconhecida';
 const REAVALIACAO = 'reavaliacao';
 const CAMPOS_DE_CAIXA = new Set<string>(['dinheiro', ...ATIVOS, 'divida']);
-/** Quem chega a um papel entra com os números dele, e quem sai leva os seus (pessoas.ts › ocuparPapel): não é dinheiro trocando de mão. */
-const TROCA_DE_PAPEL = new Set(['saida', 'nascimento']);
+/** Quem chega a um papel entra com os números dele, quem sai leva os seus e quem troca de papel leva os dele (pessoas.ts › ocuparPapel, moverPessoa): não é dinheiro trocando de mão. */
+const TROCA_DE_PAPEL = new Set(['saida', 'nascimento', 'papel']);
 const DE_FORA = new Set<string>(CONTAS_DE_FORA);
 
 function separar(c: string): [string, string] {

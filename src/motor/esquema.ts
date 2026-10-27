@@ -161,7 +161,8 @@ const EFEITOS_FIXOS = {
   qualidades: z.record(Caminho, z.number()).optional(),
   personagens: z.array(PapelNovo).optional(),
   /** Copia um personagem para outro papel (ex.: o primeiro amor vira o amor atual). */
-  promover: z.strictObject({ de: z.enum(PAPEIS), para: PapelNovo }).optional(),
+  /** Copia a pessoa de um papel para outro (a paixão vira o amor); `de: "ator"` é o ator do storylet (o ex que volta). */
+  promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: PapelNovo }).optional(),
   agendar: z.array(Agendamento).optional(),
   /** Dinheiro de uma pessoa para outra: valor fixo ou fração do dinheiro de quem dá, com teto. */
   transferir: z

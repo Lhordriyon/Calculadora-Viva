@@ -20,7 +20,7 @@ import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
 import { definirTexto, ganhar, lancar, novaEntrada } from './livro.ts';
-import { criarPersonagem, nomeLivre, novaEntidade } from './pessoas.ts';
+import { criarPersonagem, nomeLivre, novaEntidade, registrarPessoas } from './pessoas.ts';
 import { ANOS_UNIAO, PERDA_SEM_DONO } from './regras.ts';
 import { aleatorio, criarRng, inteiro, misturar, normal, sortear, sortearIndice } from './rng.ts';
 import { capitalizar, formatarDinheiro } from './texto.ts';
@@ -585,6 +585,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
         : `Geração ${geracao} da família ${ultimo}.`;
   abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}${sucessao ? ` ${sucessao}` : ''}`;
   abertura.resumo = espolio.deixou >= 1 ? `herdou ${formatarDinheiro(espolio.deixou)} da família` : 'começou sem herança';
+  // Quem está na vida nova ganha número e ocupação desde o começo dela (a identidade de pessoas).
+  registrarPessoas(e, 0);
   lancar(e, abertura, daAbertura);
   // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.
   eu.n['influencia'] = Math.round(influenciaAlvo(e, c));

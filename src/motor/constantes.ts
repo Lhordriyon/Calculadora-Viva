@@ -6,7 +6,13 @@ export type Atributo = (typeof ATRIBUTOS)[number];
 export const PAPEIS_FIXOS = ['mae', 'pai', 'avo', 'amigo'] as const;
 /** Pessoas e bichos que um efeito cria no meio da vida. */
 export const PAPEIS_NOVOS = ['amor', 'filho', 'paixao', 'pet'] as const;
-export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS] as const;
+/**
+ * A rede (a missão Ω): pessoas que o motor põe e tira da vida, não um efeito do conteúdo. Os irmãos nascem com a
+ * família (os mais novos, depois), o ex é o amor que foi embora e continua existindo, o colega e o chefe vêm com o
+ * trabalho. O conteúdo que fala de um deles pede `"<papel>.vivo"` na condição: sem a pessoa, a condição não vale.
+ */
+export const PAPEIS_DA_REDE = ['irmao', 'ex', 'colega', 'chefe'] as const;
+export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS, ...PAPEIS_DA_REDE] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];
 
@@ -24,9 +30,24 @@ export function ehFilho(id: string): boolean {
   return (FILHOS as readonly string[]).includes(id);
 }
 
-/** O papel do conteúdo que a pessoa ocupa: `filho2` é um filho. */
+/** Os irmãos de quem joga, do mais velho ao mais novo na ordem em que chegaram à vida (`irmao` a `irmao4`). */
+export const IRMAOS = ['irmao', 'irmao2', 'irmao3', 'irmao4'] as const;
+/** Os ex de quem joga, na ordem em que foram embora (`ex` a `ex3`); sem lugar, quem foi embora há mais tempo sai. */
+export const EXES = ['ex', 'ex2', 'ex3'] as const;
+
+export function ehIrmao(id: string): boolean {
+  return (IRMAOS as readonly string[]).includes(id);
+}
+export function ehEx(id: string): boolean {
+  return (EXES as readonly string[]).includes(id);
+}
+
+/** Os papéis do conteúdo que valem para várias pessoas: `ator: ["filho"]` vale para cada filho, e o mesmo para irmão e ex. */
+export const VARIOS: Readonly<Record<string, readonly string[]>> = { filho: FILHOS, irmao: IRMAOS, ex: EXES };
+
+/** O papel do conteúdo que a pessoa ocupa: `filho2` é um filho, `irmao3` é um irmão, `ex2` é um ex. */
 export function papelBase(id: string): string {
-  return ehFilho(id) ? 'filho' : id;
+  return ehFilho(id) ? 'filho' : ehIrmao(id) ? 'irmao' : ehEx(id) ? 'ex' : id;
 }
 
 /** Os países de fora com quem o Brasil negocia (mundo.json › estrangeiros): entidades que nascem com a vida. */

@@ -11,9 +11,69 @@
  * tempo longe esfriar o vínculo, anotam a falta e cuidam das vontades; um storylet com a pessoa é contato
  * (storylets.ts). Este módulo só lê.
  */
-import { classeDoPatrimonio, patrimonioTotal } from './campos.ts';
+import { classeDoPatrimonio, patrimonioTotal, quemE } from './campos.ts';
 import { ehFilho, GOSTOS, papelBase, VISOES_RUINS, type Gosto, type Humor, type Visao } from './constantes.ts';
-import type { Entidade, Entrada, EstadoVida } from './tipos.ts';
+import type { Entidade, Entrada, EstadoVida, Ocupacao } from './tipos.ts';
+
+// ---- quem era quem (a identidade de pessoas)
+
+/** As ocupações de cada papel, montadas uma vez por lista (a lista só cresce; a cópia da vida monta de novo). */
+const POR_PAPEL = new WeakMap<Ocupacao[], { n: number; mapa: Map<string, Ocupacao[]> }>();
+function ocupacoesDe(e: EstadoVida, papel: string): Ocupacao[] | undefined {
+  const lista = e.ocupacoes;
+  if (!lista) return undefined;
+  let idx = POR_PAPEL.get(lista);
+  if (!idx || idx.n !== lista.length) {
+    const mapa = new Map<string, Ocupacao[]>();
+    for (const o of lista) {
+      const l = mapa.get(o.papel);
+      if (l) l.push(o);
+      else mapa.set(o.papel, [o]);
+    }
+    idx = { n: lista.length, mapa };
+    POR_PAPEL.set(lista, idx);
+  }
+  return idx.mapa.get(papel);
+}
+
+/**
+ * Quem ocupava o papel naquela entrada: a chave da pessoa ("#3"); o próprio papel, quando ninguém registrou quem era
+ * (o save de antes da identidade); null, com o papel vago.
+ */
+export function quemOcupava(e: EstadoVida, papel: string, entrada: number): string | null {
+  const lista = ocupacoesDe(e, papel);
+  if (!lista) return papel;
+  let melhor: Ocupacao | undefined;
+  for (const o of lista) if (o.desde <= entrada && (!melhor || o.desde >= melhor.desde)) melhor = o;
+  if (!melhor) return papel;
+  return melhor.pessoa === 0 ? null : `#${melhor.pessoa}`;
+}
+
+/** A chave da pessoa na memória: o número dela, quando ocupou o papel registrado; senão, o papel. */
+export function chaveDaPessoa(e: EstadoVida, id: string, en: Entidade): string {
+  return en.pessoa !== undefined && ocupacoesDe(e, id)?.some((o) => o.pessoa === en.pessoa) ? `#${en.pessoa}` : id;
+}
+
+/** Os papéis que a pessoa ocupou e quando ([de, ate)): o amor de antes que hoje é ex tem os dois. */
+function intervalosDe(e: EstadoVida, pessoa: number): { papel: string; de: number; ate: number }[] {
+  const saida: { papel: string; de: number; ate: number }[] = [];
+  for (const o of e.ocupacoes ?? []) {
+    if (o.pessoa !== pessoa) continue;
+    let ate = Infinity;
+    for (const x of ocupacoesDe(e, o.papel) ?? []) if (x.desde > o.desde && x.desde < ate) ate = x.desde;
+    saida.push({ papel: o.papel, de: o.desde, ate });
+  }
+  return saida;
+}
+
+/**
+ * A mudança de quem joga de lugar nos papéis de um save antigo (`pessoas.ts › moverPessoa` sem número) refaz quem era
+ * quem no passado: as somas guardadas antes disso não valem mais.
+ */
+let refeitas = 0;
+export function quemEraQuemMudou(): void {
+  refeitas++;
+}
 
 /** Quem tem relação com quem joga: as pessoas da vida (o bicho tem vínculo, não mágoa nem confiança). */
 export function temRelacao(id: string, en: Entidade | undefined): en is Entidade {
@@ -76,7 +136,8 @@ export function pesoNaRelacao(h: Entrada, id: string): number {
   if (chegouNela(h, id)) return 0;
   let p = 0;
   for (const m of h.mudancas ?? []) {
-    if (m.d === undefined || !m.c.startsWith(`${id}.`)) continue;
+    // A pessoa que só trocou de papel (o amor que virou ex) leva os números dela: não é algo que quem joga fez.
+    if (m.d === undefined || m.r === 'papel' || !m.c.startsWith(`${id}.`)) continue;
     if (m.c === `${id}.vinculo`) p += m.d;
     else if (m.c === `${id}.magoa`) p -= 1.2 * m.d;
     else if (m.c === `${id}.confianca`) p += 0.5 * m.d;
@@ -107,10 +168,16 @@ const IDADE_DA_LEMBRANCA = 5;
 export function lembrancasDe(e: EstadoVida, id: string): { boa?: Lembranca; ruim?: Lembranca } {
   let boa: Lembranca | undefined;
   let ruim: Lembranca | undefined;
+  // Só o que foi desta pessoa: o amor de hoje não lembra do amor de antes, e o ex lembra de quando era o amor.
+  const en = e.entidades[id];
+  const intervalos = en && chaveDaPessoa(e, id, en) !== id ? intervalosDe(e, en.pessoa!) : null;
   for (const h of e.historico) {
     const texto = feitoPorQuemJoga(h);
     if (!texto || h.idade < IDADE_DA_LEMBRANCA) continue;
-    const peso = pesoNaRelacao(h, id);
+    let peso = 0;
+    if (intervalos) {
+      for (const x of intervalos) if (h.id >= x.de && h.id < x.ate) peso += pesoNaRelacao(h, x.papel);
+    } else peso = pesoNaRelacao(h, id);
     if (peso >= PESO_DA_LEMBRANCA && (!boa || peso >= boa.peso)) boa = { entrada: h.id, idade: h.idade, texto, peso };
     if (peso <= -PESO_DA_LEMBRANCA && (!ruim || peso <= ruim.peso)) ruim = { entrada: h.id, idade: h.idade, texto, peso };
   }
@@ -125,7 +192,9 @@ function nomesDe(id: string, en: Entidade): string[] {
   const ela = en.genero === 'f';
   const nomes = [en.nome];
   if (papel) nomes.push(ela ? papel[1] : papel[0]);
-  if (id === 'amigo') nomes.push(`${ela ? 'sua amiga' : 'seu amigo'} ${en.nome}`);
+  // "sua amiga Ana", "seu irmão Pedro", "sua ex Carla"
+  const comNome = quemE(id, en);
+  if (!nomes.includes(comNome)) nomes.push(comNome);
   return nomes.sort((a, b) => b.length - a.length);
 }
 
@@ -219,14 +288,14 @@ function anotar(v: Visto, eixo: Eixo, entrada: number, peso: number): void {
   if (!p || peso >= p.peso) v.porque[eixo] = { entrada, peso };
 }
 
-function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
+function somarEntrada(e: EstadoVida, mapa: Map<string, Visto>, h: Entrada): void {
   if (h.idade < IDADE_DA_LEMBRANCA || feitoPorQuemJoga(h) === undefined) return;
   const w = 2 ** (h.idade / MEIA_VIDA);
   let meuDinheiro = 0;
   const porPessoa = new Map<string, Record<string, number>>();
   const chegaram = new Set<string>();
   for (const m of h.mudancas ?? []) {
-    if (m.d === undefined) continue;
+    if (m.d === undefined || m.r === 'papel') continue;
     const ponto = m.c.indexOf('.');
     const ent = m.c.slice(0, ponto);
     const campo = m.c.slice(ponto + 1);
@@ -243,12 +312,18 @@ function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
   // A falta só conta como falta (o sumiço): a mágoa dela não faz de ninguém cabeça-quente, e a vontade que passou da
   // idade fica na lembrança, não na opinião.
   if (h.ref !== undefined && OMISSOES.has(h.ref)) {
-    if (h.ref === 'regra:nao_apareceu' && h.ator) anotar(vistoDe(mapa, h.ator), 'faltou', h.id, w);
+    if (h.ref === 'regra:nao_apareceu' && h.ator) {
+      const quem = quemOcupava(e, h.ator, h.id);
+      if (quem) anotar(vistoDe(mapa, quem), 'faltou', h.id, w);
+    }
     return;
   }
   for (const [id, x] of porPessoa) {
     if (chegaram.has(id)) continue;
-    const v = vistoDe(mapa, id);
+    // A soma é da pessoa que ocupava o papel naquela entrada, não do papel.
+    const quem = quemOcupava(e, id, h.id);
+    if (!quem) continue;
+    const v = vistoDe(mapa, quem);
     const vinculo = x['vinculo']!;
     const magoa = x['magoa']!;
     const confianca = x['confianca']!;
@@ -272,7 +347,7 @@ function somarEntrada(mapa: Map<string, Visto>, h: Entrada): void {
  * As somas do livro inteiro, guardadas pela última entrada somada. O livro só cresce e a entrada lançada não muda
  * (livro.ts › copiarVida): a soma de uma entrada vale para toda cópia da vida que a tem, e a próxima parte dela.
  */
-const SOMAS = new WeakMap<Entrada, Map<string, Visto>>();
+const SOMAS = new WeakMap<Entrada, { mapa: Map<string, Visto>; refeitas: number }>();
 
 function copiar(m: Map<string, Visto>): Map<string, Visto> {
   return new Map([...m].map(([k, v]) => [k, { soma: { ...v.soma }, porque: { ...v.porque } }]));
@@ -282,13 +357,14 @@ function vistos(e: EstadoVida): Map<string, Visto> {
   const h = e.historico;
   const ultima = h[h.length - 1];
   if (!ultima) return new Map();
+  const valida = (x: { refeitas: number } | undefined): boolean => x !== undefined && x.refeitas === refeitas;
   const pronta = SOMAS.get(ultima);
-  if (pronta) return pronta;
+  if (valida(pronta)) return pronta!.mapa;
   let i = h.length - 2;
-  while (i >= 0 && !SOMAS.has(h[i]!)) i--;
-  const mapa = i >= 0 ? copiar(SOMAS.get(h[i]!)!) : new Map<string, Visto>();
-  for (let j = i + 1; j < h.length; j++) somarEntrada(mapa, h[j]!);
-  SOMAS.set(ultima, mapa);
+  while (i >= 0 && !valida(SOMAS.get(h[i]!))) i--;
+  const mapa = i >= 0 ? copiar(SOMAS.get(h[i]!)!.mapa) : new Map<string, Visto>();
+  for (let j = i + 1; j < h.length; j++) somarEntrada(e, mapa, h[j]!);
+  SOMAS.set(ultima, { mapa, refeitas });
   return mapa;
 }
 
@@ -315,7 +391,7 @@ export function visoesDe(e: EstadoVida, id: string, en: Entidade): Opiniao[] {
   const familia = papel === 'mae' || papel === 'pai' || papel === 'avo';
   const agora = 2 ** (-e.idade / MEIA_VIDA);
   const somas = vistos(e);
-  const v = somas.get(id);
+  const v = somas.get(chaveDaPessoa(e, id, en));
   const s = (eixo: Eixo): number => (v?.soma[eixo] ?? 0) * agora;
   const por = (eixo: Eixo): number | undefined => v?.porque[eixo]?.entrada;
   const opinioes: Opiniao[] = [];
@@ -335,7 +411,8 @@ export function visoesDe(e: EstadoVida, id: string, en: Entidade): Opiniao[] {
   const longe = en.n['sem_contato'] ?? 0;
   const faltou = s('faltou');
   const sumico = (longe >= 3 ? longe - 1 : 0) + 2.5 * faltou;
-  if (sumico >= 2) dar((familia || papel === 'amigo') && (subiu || famoso) ? 'metido' : 'sumido', sumico, por('faltou'));
+  // O ex não espera você por perto: a distância é o normal de quem se separou.
+  if (sumico >= 2 && papel !== 'ex') dar((familia || papel === 'amigo') && (subiu || famoso) ? 'metido' : 'sumido', sumico, por('faltou'));
   const pediu = s('pediu');
   const deu = s('deu');
   // Pediu e não deu nada, nem afeto: "só aparece por dinheiro".

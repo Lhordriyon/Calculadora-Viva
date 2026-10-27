@@ -57,9 +57,9 @@ describe('validador', () => {
   it('acusa id repetido e caminho inválido', () => {
     expect(errosCom([{ id: 'enem', idade: [1, 2], texto: 'repetido', resumo: 'repetido', efeitos: { felicidade: 1 } }])).toMatch(/repetido/);
     const caminho = errosCom([
-      { id: 'caminho_ruim', idade: [1, 2], condicoes: { 'chefe.saude': { min: 3 } }, texto: 'Um chefe.', resumo: 'teve um chefe', efeitos: { felicidade: 1 } },
+      { id: 'caminho_ruim', idade: [1, 2], condicoes: { 'xerife.saude': { min: 3 } }, texto: 'Um xerife.', resumo: 'teve um xerife', efeitos: { felicidade: 1 } },
     ]);
-    expect(caminho).toMatch(/chefe/);
+    expect(caminho).toMatch(/xerife/);
   });
 
   it('exige que um personagem novo seja garantido por qualidade', () => {

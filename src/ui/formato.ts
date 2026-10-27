@@ -85,7 +85,7 @@ function dinheiro(n: number): string {
 /** Soma as variações numéricas de uma entrada por caminho ("eu.saude", "mae.vinculo"). */
 export function variacoes(h: Entrada): Map<string, number> {
   const d = new Map<string, number>();
-  for (const m of h.mudancas ?? []) if (m.d !== undefined && m.r !== 'saida') d.set(m.c, (d.get(m.c) ?? 0) + m.d);
+  for (const m of h.mudancas ?? []) if (m.d !== undefined && m.r !== 'saida' && m.r !== 'papel') d.set(m.c, (d.get(m.c) ?? 0) + m.d);
   return d;
 }
 

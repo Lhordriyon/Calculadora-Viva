@@ -13,7 +13,7 @@ import { reorganizarGrupo } from './empresa.ts';
 import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
 import { definirNumero, lancar, novaEntrada } from './livro.ts';
 import { morrerSePreciso } from './morte.ts';
-import { FILHOS } from './constantes.ts';
+import { VARIOS } from './constantes.ts';
 import { temRelacao } from './relacoes.ts';
 import { aleatorio } from './rng.ts';
 import { capitalizar, formatarDinheiro, renderizar, type ContextoTexto } from './texto.ts';
@@ -54,8 +54,8 @@ function aceitaMorto(s: Storylet): boolean {
 export function atoresPossiveis(s: Storylet, e: EstadoVida): (string | undefined)[] {
   if (!s.ator) return [undefined];
   const mortos = aceitaMorto(s);
-  // O conteúdo escreve "filho"; com mais de um, o storylet vale para cada um (instâncias diferentes).
-  const papeis = s.ator.includes('filho') ? s.ator.flatMap((p): readonly string[] => (p === 'filho' ? FILHOS : [p])) : s.ator;
+  // O conteúdo escreve "filho" (ou "irmao", "ex"); com mais de um, o storylet vale para cada um (instâncias diferentes).
+  const papeis = s.ator.some((p) => VARIOS[p]) ? s.ator.flatMap((p): readonly string[] => VARIOS[p] ?? [p]) : s.ator;
   return papeis.filter((p) => {
     const en = e.entidades[p];
     return en !== undefined && (mortos || en.vivo !== false);
@@ -108,7 +108,7 @@ export interface Extras {
  */
 function contato(e: EstadoVida, reg: Mudanca[]): void {
   const quem = new Set<string>();
-  for (const m of reg) if (m.d !== undefined && m.d > 0 && m.c.endsWith('.vinculo')) quem.add(m.c.slice(0, -'.vinculo'.length));
+  for (const m of reg) if (m.d !== undefined && m.d > 0 && m.r !== 'papel' && m.c.endsWith('.vinculo')) quem.add(m.c.slice(0, -'.vinculo'.length));
   for (const id of quem) {
     const en = e.entidades[id];
     if (temRelacao(id, en) && en.vivo !== false && (en.n['sem_contato'] ?? 0) > 0) definirNumero(e, reg, id, 'sem_contato', 0);
@@ -146,6 +146,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
     morte ??= r.efeitos?.morte;
   }
   entrada.resumo = renderizar(resumo, contexto(e, op));
+  if (ef.criados?.['ator']) entrada.ator = ef.criados['ator'];
   const causas = [...new Set(extras.causas ?? [])];
   if (causas.length > 0) entrada.causas = causas;
   if (extras.inflacao !== undefined) entrada.inflacao = extras.inflacao;
@@ -246,6 +247,8 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = textoDoDesfecho(e, resultado, ctx);
+  // O ex que voltou é o amor agora: a entrada fala dele pelo papel novo.
+  if (ef.criados?.['ator']) entrada.ator = ef.criados['ator'];
   reorganizarGrupo(e, reg);
   contato(e, reg);
   lancar(e, entrada, reg);

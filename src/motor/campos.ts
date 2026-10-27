@@ -3,7 +3,7 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS } from './constantes.ts';
+import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
@@ -474,11 +474,20 @@ const QUEM: Record<string, [string, string]> = {
   filho: ['seu filho', 'sua filha'],
 };
 
+/** Quem o texto chama pelo papel e pelo nome: "sua amiga Ana", "seu irmão Pedro", "sua ex Carla", "seu chefe Paulo". */
+const QUEM_COM_NOME: Record<string, [string, string]> = {
+  amigo: ['seu amigo', 'sua amiga'],
+  irmao: ['seu irmão', 'sua irmã'],
+  ex: ['seu ex', 'sua ex'],
+  colega: ['seu colega', 'sua colega'],
+  chefe: ['seu chefe', 'sua chefe'],
+};
+
 export function quemE(id: string, en: Entidade): string {
   const fixo = QUEM[id];
   if (fixo) return en.genero === 'f' ? fixo[1] : fixo[0];
-  if (id === 'amigo') return en.genero === 'f' ? `sua amiga ${en.nome}` : `seu amigo ${en.nome}`;
-  if (id === 'pet') return en.nome;
+  const comNome = QUEM_COM_NOME[papelBase(id)];
+  if (comNome) return `${en.genero === 'f' ? comNome[1] : comNome[0]} ${en.nome}`;
   return en.nome;
 }
 

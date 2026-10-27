@@ -162,7 +162,13 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     const id = criarPersonagem(e, c, papel as PapelNovo, reg);
     if (id) (ctx.criados ??= {})[papel] = id;
   }
-  if (ef.promover) promover(e, c, ef.promover.de, ef.promover.para, reg);
+  if (ef.promover) {
+    const de = ef.promover.de === 'ator' ? (ator ?? 'ator') : ef.promover.de;
+    const quem = e.entidades[de];
+    promover(e, c, de, ef.promover.para, reg);
+    // O ex que volta é a mesma pessoa no papel novo: dali em diante, o texto do storylet chama o ator por ele.
+    if (ef.promover.de === 'ator' && quem && e.entidades[ef.promover.para] === quem) (ctx.criados ??= {})['ator'] = ef.promover.para;
+  }
   // O que se agenda junto com o nascimento de um filho (a adolescência, a formatura) é sobre esse filho.
   const sobre = ctx.criados?.['filho'] ?? ator;
   for (const ag of ef.agendar ?? []) {

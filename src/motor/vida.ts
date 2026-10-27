@@ -29,7 +29,7 @@ import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
 import { ETAPAS_DO_ANO, type IdEtapa } from './manifesto.ts';
 import { gerarOrigem, limparNome, type EscolhaOrigem } from './origem.ts';
-import { novaEntidade } from './pessoas.ts';
+import { novaEntidade, registrarPessoas } from './pessoas.ts';
 import {
   FELICIDADE_BASE,
   FELICIDADE_DO_PADRAO,
@@ -109,6 +109,8 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   gerarOrigem(e, c, op.origem);
   paisInicial(e, c);
   exteriorInicial(e, c);
+  // Cada pessoa do nascimento ganha número e ocupação desde a primeira entrada (a identidade de pessoas).
+  registrarPessoas(e, 0);
   e.historico.push({
     id: 0,
     idade: 0,

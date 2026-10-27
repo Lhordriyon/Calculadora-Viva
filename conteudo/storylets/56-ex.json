@@ -1,0 +1,514 @@
+[
+  {
+    "id": "namoro_esfriou",
+    "ator": ["amor"],
+    "apenasAgendado": true,
+    "repetivel": true,
+    "intervalo": 2,
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["casado"] },
+    "trechos": {
+      "sinal": [
+        { "se": { "ator.magoa": { "min": 20 } }, "texto": "A briga de domingo ainda não acabou: só mudou de cômodo." },
+        { "se": { "ator.traco": "ambicioso" }, "texto": "{ator} fala mais do estágio do que de vocês dois." },
+        { "se": { "ator.traco": "ausente" }, "texto": "{ator} some no fim de semana e volta na segunda com uma desculpa nova." },
+        { "se": { "ator.traco": "piadista" }, "texto": "Até as piadas de {ator} ficaram repetidas, e você parou de rir antes do fim." },
+        { "se": { "ator.traco": "gastador" }, "texto": "Toda conversa com {ator} termina na fatura do cartão, e nenhuma termina bem." },
+        { "texto": "As mensagens de {ator} encurtaram até virar \"ok\" e um joinha." }
+      ]
+    },
+    "texto": "O namoro esfriou. {sinal} Numa sexta à noite, com a pizza esfriando também, veio a pergunta: \"a gente ainda está junto?\"",
+    "resumo": "viu o namoro com {ator} esfriar",
+    "escolhas": [
+      {
+        "texto": "Terminar numa conversa honesta",
+        "resumo": "terminou o namoro com {ator} numa conversa honesta",
+        "resultado": {
+          "texto": "Vocês conversaram até a pizza acabar, choraram um pouco e combinaram de não virar inimigos. Por enquanto, deu certo.",
+          "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 8, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Tentar salvar o namoro",
+        "resumo": "tentou salvar o namoro com {ator}",
+        "efeitos": { "dinheiro": -400 },
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Vocês viajaram no fim de semana, sem celular, e voltaram com assunto para mais um ano.",
+          "resumo": "salvou o namoro com {ator}",
+          "efeitos": { "ator.vinculo": 10, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A viagem foi longa e calada. Na volta, {ator} pediu para descer duas quadras antes de casa, e não era pela vaga.",
+          "resumo": "tentou salvar o namoro com {ator} e terminou mesmo assim",
+          "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 16, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Deixar morrer devagar",
+        "resumo": "deixou o namoro com {ator} morrer devagar",
+        "resultado": {
+          "texto": "Ninguém terminou. Vocês pararam de marcar, depois de responder, depois de lembrar. Um dia, já tinha acabado.",
+          "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 14, "ator.confianca": -8, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_reencontro",
+    "ator": ["ex"],
+    "idade": [20, 85],
+    "condicoes": { "ator.sem_contato": { "min": 3 } },
+    "repetivel": true,
+    "intervalo": 10,
+    "trechos": {
+      "como": [
+        { "se": { "marcas": ["ator.casou"] }, "texto": "{ator:Ele|Ela} estava de aliança, com uma sacola de fralda em cada mão." },
+        { "se": { "marcas": ["ator.bloqueado"] }, "texto": "{ator:Ele|Ela} te olhou como quem foi bloquead{ator:o|a} e não esqueceu." },
+        { "se": { "ator.magoa": { "min": 30 } }, "texto": "{ator:Ele|Ela} te viu primeiro e fechou a cara, como quem ainda lembra {ator.magoa_de}." },
+        { "se": { "ator.vinculo": { "min": 40 } }, "texto": "{ator:Ele|Ela} abriu um sorriso antes de você decidir se ia fugir." },
+        { "texto": "Vocês se viram ao mesmo tempo, e os dois fingiram procurar alguma coisa na prateleira." }
+      ]
+    },
+    "texto": "Fila do mercado, sexta à noite: {ator.quem}, {ator.sem_contato} anos depois. {como}",
+    "resumo": "reencontrou {ator.quem} na fila do mercado",
+    "escolhas": [
+      {
+        "texto": "Puxar conversa",
+        "resumo": "puxou conversa com {ator.quem} no reencontro",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 35 },
+        "sucesso": {
+          "texto": "Falaram do preço do café, do síndico e, sem querer, do que deu errado. No fim, riram, o que vocês não faziam havia anos.",
+          "efeitos": { "ator.vinculo": 8, "ator.magoa": -10, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A conversa travou no segundo assunto. {ator:Ele|Ela} olhou o relógio duas vezes, e você lembrou que precisava de pão.",
+          "efeitos": { "ator.confianca": -3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Fingir que não viu",
+        "resumo": "fingiu não ver {ator.quem} no mercado",
+        "resultado": {
+          "texto": "Você deu meia-volta e passou dez minutos escolhendo tomate. {ator:Ele|Ela} viu você fingindo, claro.",
+          "efeitos": { "ator.magoa": 3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Pedir desculpas pelo que passou",
+        "resumo": "pediu desculpas a {ator.quem} pelo que passou",
+        "condicoes": { "ator.magoa": { "min": 15 } },
+        "bloqueio": "não sobrou mágoa para desculpar",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 40 },
+        "sucesso": {
+          "texto": "{ator:Ele|Ela} ouviu sem interromper e disse que já tinha passado. Pela primeira vez, pareceu verdade.",
+          "efeitos": { "ator.magoa": -25, "ator.confianca": 6, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "\"Agora?\", {ator:ele|ela} perguntou, e foi para outro caixa.",
+          "efeitos": { "ator.magoa": -5, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_casou",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["ex"],
+    "idade": [22, 75],
+    "condicoes": { "semMarcas": ["ator.casou"], "ator.magoa": { "max": 25 }, "ator.idade": { "min": 22, "max": 70 } },
+    "texto": "Chegou pelo correio, com o seu nome escrito à mão: {ator.quem} vai casar. Você está na mesa 14, a dos ex e dos primos distantes.",
+    "resumo": "foi convidad{o|a} para o casamento de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Ir e dançar até o fim",
+        "resumo": "foi ao casamento de {ator.quem} e dançou até o fim",
+        "resultado": {
+          "texto": "Você foi, comeu bem-casado, dançou com a tia de alguém e chorou só no banheiro. Na saída, {ator:ele|ela} te abraçou e disse obrigad{ator:o|a}.",
+          "efeitos": { "ator.vinculo": 6, "ator.magoa": -8, "felicidade": -1, "dinheiro": -250, "marcas": ["ator.casou"] }
+        }
+      },
+      {
+        "texto": "Mandar um presente da lista",
+        "resumo": "mandou um presente para o casamento de {ator.quem}",
+        "condicoes": { "dinheiro": { "min": 400 } },
+        "bloqueio": "a lista só tem coisa acima do seu orçamento",
+        "resultado": {
+          "texto": "Você comprou a panela de pressão da lista, a mais cara, e não foi. O agradecimento veio com três corações e uma foto da panela.",
+          "efeitos": { "dinheiro": -400, "ator.vinculo": 3, "marcas": ["ator.casou"] }
+        }
+      },
+      {
+        "texto": "Deixar o convite na gaveta",
+        "resumo": "deixou o convite de casamento de {ator.quem} na gaveta",
+        "resultado": {
+          "texto": "O convite foi parar na gaveta das contas. Na segunda-feira, as fotos estavam em todo lugar, e você olhou todas.",
+          "efeitos": { "ator.magoa": 4, "ator.vinculo": -3, "felicidade": -2, "marcas": ["ator.casou"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_liga_de_madrugada",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["ex"],
+    "idade": [18, 65],
+    "condicoes": { "semMarcas": ["ator.bloqueado", "ator.casou"], "ator.vinculo": { "min": 28 }, "ator.idade": { "min": 18 } },
+    "repetivel": true,
+    "intervalo": 6,
+    "trechos": {
+      "cama": [
+        { "se": { "marcas": ["namoro"] }, "texto": "Do seu lado, alguém resmungou com a luz e virou para a parede." },
+        { "texto": "A cama, como sempre, era só sua." }
+      ]
+    },
+    "texto": "Uma e meia da manhã, o celular acendeu: {ator.quem}. Do outro lado, um suspiro e um \"tá acordad{o|a}?\". {cama}",
+    "resumo": "recebeu uma ligação de {ator.quem} de madrugada",
+    "escolhas": [
+      {
+        "texto": "Atender e conversar até o sol nascer",
+        "resumo": "passou a madrugada no telefone com {ator.quem}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Falaram de tudo e de nada. Quando desligaram, o céu já estava claro, e você sentia falta de alguém que te conhecesse assim.",
+          "efeitos": { "ator.vinculo": 8, "ator.confianca": 5, "felicidade": 1, "saude": -1 }
+        },
+        "fracasso": {
+          "texto": "Às três da manhã, a conversa virou a briga de sempre, com as mesmas frases. Você desligou de coração acelerado e perdeu o dia seguinte.",
+          "efeitos": { "ator.magoa": 8, "felicidade": -2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Atender baixinho, no banheiro",
+        "resumo": "atendeu {ator.quem} escondid{o|a} no banheiro, de madrugada",
+        "condicoes": { "marcas": ["namoro"] },
+        "bloqueio": "não tem ninguém em casa para acordar",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "Você cochichou no banheiro por meia hora e voltou para a cama na ponta dos pés. Ninguém acordou. Você acha.",
+          "efeitos": { "ator.vinculo": 6, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "Quando você abriu a porta do banheiro, {amor} estava sentad{amor:o|a} na cama, de braços cruzados e com a luz acesa.",
+          "resumo": "foi peg{o|a} no banheiro falando com {ator.quem} de madrugada",
+          "efeitos": { "ator.vinculo": 4, "amor.confianca": -15, "amor.magoa": 20, "felicidade": -4 }
+        }
+      },
+      {
+        "texto": "Deixar tocar",
+        "resumo": "deixou o celular tocar quando {ator.quem} ligou de madrugada",
+        "resultado": {
+          "texto": "O celular vibrou mais duas vezes e parou. De manhã, só uma mensagem: \"foi engano\".",
+          "efeitos": { "ator.vinculo": -3, "ator.magoa": 2 }
+        }
+      },
+      {
+        "texto": "Bloquear o número",
+        "resumo": "bloqueou o número de {ator.quem}",
+        "resultado": {
+          "texto": "Você bloqueou o número e dormiu como quem fecha uma porta. Foi a melhor noite de sono do mês.",
+          "efeitos": { "ator.vinculo": -10, "ator.magoa": 10, "felicidade": 1, "marcas": ["ator.bloqueado"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_internado",
+    "ator": ["ex"],
+    "idade": [20, 95],
+    "condicoes": { "marcas": ["ator.doente"], "ator.saude": { "max": 70 }, "ator.vinculo": { "min": 15 } },
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "Um amigo em comum mandou mensagem: {ator.quem} está internad{ator:o|a}, e {ator:ele|ela} perguntou de você entre um exame e outro.",
+    "resumo": "soube que {ator.quem} estava internad{ator:o|a}",
+    "escolhas": [
+      {
+        "texto": "Visitar no hospital",
+        "resumo": "visitou {ator.quem} no hospital",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 30 },
+        "sucesso": {
+          "texto": "{ator:Ele|Ela} abriu um sorriso de quem não esperava. Vocês falaram do passado como quem fala de um filme bom, e a enfermeira pediu silêncio duas vezes.",
+          "efeitos": { "ator.vinculo": 10, "ator.magoa": -15, "ator.saude": 2, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A família {ator:dele|dela} te olhou torto na porta do quarto, e você deixou as flores com a enfermeira.",
+          "efeitos": { "ator.vinculo": 2, "felicidade": -2, "dinheiro": -80 }
+        }
+      },
+      {
+        "texto": "Mandar flores com um cartão",
+        "resumo": "mandou flores para {ator.quem} no hospital",
+        "condicoes": { "dinheiro": { "min": 150 } },
+        "bloqueio": "flor de hospital custa caro",
+        "resultado": {
+          "texto": "O cartão dizia \"melhoras\" e mais nada. Foi o bastante para {ator:ele|ela} guardar.",
+          "efeitos": { "dinheiro": -150, "ator.vinculo": 4, "ator.magoa": -5 }
+        }
+      },
+      {
+        "texto": "Seguir a vida",
+        "resumo": "não foi ver {ator.quem} no hospital",
+        "resultado": {
+          "texto": "Você pensou no assunto a semana inteira e não foi. Ficou a dúvida, que é o que sempre fica.",
+          "efeitos": { "felicidade": -1, "ator.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "voltar_com_o_ex",
+    "peso": 6,
+    "tipo": "npc",
+    "ator": ["ex"],
+    "idade": [18, 80],
+    "condicoes": {
+      "semMarcas": ["namoro", "casado", "ator.bloqueado", "ator.casou"],
+      "ator.vinculo": { "min": 35 },
+      "ator.magoa": { "max": 15 },
+      "ator.idade": { "min": 18 }
+    },
+    "repetivel": true,
+    "intervalo": 6,
+    "texto": "{ator.quem} mandou mensagem: \"tô passando aí perto, tem café?\". Tinha. Duas horas depois, vocês ainda estavam na cozinha, e ninguém tinha tocado no motivo de tudo ter acabado.",
+    "resumo": "tomou um café demorado com {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Tentar de novo, de vez",
+        "resumo": "tentou voltar com {ator.quem}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 50 },
+        "sucesso": {
+          "texto": "Vocês voltaram, dessa vez sem anunciar para ninguém. Os amigos descobriram em uma semana, fizeram piada e torceram, nessa ordem.",
+          "resumo": "voltou com {ator.quem}",
+          "efeitos": { "ator.vinculo": 12, "felicidade": 5, "marcas": ["namoro", "voltou_com_o_ex"], "promover": { "de": "ator", "para": "amor" } }
+        },
+        "fracasso": {
+          "texto": "No terceiro encontro, a briga antiga voltou inteira, com as mesmas frases e o mesmo silêncio no carro. Vocês combinaram, de novo, que era melhor assim.",
+          "efeitos": { "ator.magoa": 10, "ator.vinculo": -8, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Ficar na amizade",
+        "resumo": "ficou só na amizade com {ator.quem}",
+        "resultado": {
+          "texto": "Você disse que gostava {ator:dele|dela} demais para estragar de novo. {ator:Ele|Ela} riu, concordou e virou visita de domingo.",
+          "efeitos": { "ator.vinculo": 6, "ator.confianca": 4 }
+        }
+      },
+      {
+        "texto": "Dizer que não dá",
+        "resumo": "disse a {ator.quem} que não dava mais",
+        "resultado": {
+          "texto": "Você agradeceu o café, que era seu, e levou {ator:ele|ela} até a porta. Fechou devagar.",
+          "efeitos": { "ator.vinculo": -6, "ator.magoa": 6, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "segunda_chance",
+    "tensao": 2,
+    "tipo": "npc",
+    "ator": ["amor"],
+    "idade": [20, 85],
+    "condicoes": { "marcas": ["namoro"], "marcaHa": [{ "marca": "voltou_com_o_ex", "min": 2 }] },
+    "texto": "{ator} achou, numa caixa de sapato, as cartas da primeira vez que vocês terminaram. Leu todas, sentou na beira da cama e perguntou: \"dessa vez é pra valer?\"",
+    "resumo": "ouviu {ator} perguntar se a segunda chance era pra valer",
+    "escolhas": [
+      {
+        "texto": "Jurar que sim",
+        "resumo": "jurou a {ator} que a segunda chance era pra valer",
+        "resultado": {
+          "texto": "Você jurou, e {ator:ele|ela} guardou as cartas de volta na caixa, agora com uma fita.",
+          "efeitos": { "ator.confianca": 8, "ator.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Queimar as cartas juntos",
+        "resumo": "queimou com {ator} as cartas do primeiro fim",
+        "resultado": {
+          "texto": "Vocês queimaram as cartas numa panela velha, no quintal, e o detector de fumaça do vizinho apitou. Riram até a fumaça baixar.",
+          "efeitos": { "ator.vinculo": 8, "ator.magoa": -5, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Dizer que não sabe",
+        "resumo": "disse a {ator} que não sabia se era pra valer",
+        "resultado": {
+          "texto": "A honestidade caiu mal na beira da cama. {ator:Ele|Ela} dormiu no sofá, e você ficou acordad{o|a} olhando o teto.",
+          "efeitos": { "ator.magoa": 12, "ator.confianca": -6, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_nas_redes",
+    "ator": ["ex"],
+    "idade": [16, 75],
+    "condicoes": { "ator.sem_contato": { "min": 2 } },
+    "repetivel": true,
+    "intervalo": 7,
+    "trechos": {
+      "post": [
+        { "se": { "marcas": ["ator.casou"] }, "texto": "no álbum do casamento, com a legenda \"enfim, a pessoa certa\"" },
+        { "se": { "ator.traco": "gastador" }, "texto": "ao lado de um carro alugado em Miami, com a legenda \"conquista\"" },
+        { "se": { "ator.traco": "ambicioso" }, "texto": "anunciando que virou {ator:diretor|diretora}, num textão de agradecimento com foto de terno" },
+        { "se": { "ator.traco": "devoto" }, "texto": "de branco, num retiro espiritual, falando de gratidão e de \"ciclos que se fecham\"" },
+        { "se": { "ator.traco": "piadista" }, "texto": "num vídeo de dancinha com dois milhões de visualizações" },
+        { "se": { "ator.traco": "fragil" }, "texto": "num desabafo longo sobre recomeços, com uma foto do mar" },
+        { "texto": "na praia, bronzead{ator:o|a}, com um sorriso que você conhecia bem" }
+      ]
+    },
+    "texto": "O algoritmo, sem pedir licença, mostrou {ator.quem} {post}.",
+    "resumo": "esbarrou em {ator.quem} nas redes",
+    "escolhas": [
+      {
+        "texto": "Curtir",
+        "resumo": "curtiu uma foto de {ator.quem}",
+        "resultado": {
+          "texto": "Você curtiu e se arrependeu em quatro segundos. Tarde demais: {ator:ele|ela} já tinha visto.",
+          "efeitos": { "ator.vinculo": 3, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Passar a madrugada vendo as fotos",
+        "resumo": "passou a madrugada vendo as fotos de {ator.quem}",
+        "resultado": {
+          "texto": "Três anos de fotos depois, você sabia o nome do cachorro novo e da sogra. Acordou com olheira e sem orgulho nenhum.",
+          "efeitos": { "felicidade": -2, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Silenciar e seguir a vida",
+        "resumo": "silenciou {ator.quem} nas redes",
+        "resultado": {
+          "texto": "Você silenciou o perfil. O algoritmo, ofendido, passou a mostrar receita de bolo de caneca.",
+          "efeitos": { "felicidade": 1, "ator.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_cobra",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["ex"],
+    "afinidade": "briga",
+    "idade": [20, 70],
+    "condicoes": { "ator.magoa": { "min": 6 }, "ator.dinheiro": { "max": 3000 } },
+    "valores": { "conta": 800, "metade": 400 },
+    "texto": "{ator.quem} mandou um Pix de um centavo com a mensagem: \"e os {conta} da viagem que eu paguei sozinh{ator:o|a}?\". Fazia anos, e {ator:ele|ela} lembrava até do centavo.",
+    "resumo": "foi cobrad{o|a} por {ator.quem} por uma conta antiga",
+    "escolhas": [
+      {
+        "texto": "Pagar e encerrar o assunto",
+        "resumo": "pagou a {ator.quem} uma conta antiga",
+        "condicoes": { "dinheiro": { "min": 800 } },
+        "bloqueio": "não tem {conta} sobrando",
+        "resultado": {
+          "texto": "Você pagou, com juros de cortesia. A resposta veio num joinha, o emoji mais frio que existe.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 800 }, "ator.magoa": -12, "ator.confianca": 4 }
+        }
+      },
+      {
+        "texto": "Propor metade",
+        "resumo": "propôs pagar metade da conta antiga a {ator.quem}",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 35 },
+        "sucesso": {
+          "texto": "Fecharam em {metade}, à vista, com um \"se cuida\" no final que você não esperava.",
+          "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 400 }, "ator.magoa": -6 }
+        },
+        "fracasso": {
+          "texto": "\"Metade é o que você sempre deu\", veio a resposta. Doeu mais do que os {conta}.",
+          "efeitos": { "ator.magoa": 6, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Deixar no visto",
+        "resumo": "deixou a cobrança de {ator.quem} no visto",
+        "resultado": {
+          "texto": "Você deixou no visto. {ator:Ele|Ela} contou a história, com detalhes, para metade dos amigos em comum.",
+          "efeitos": { "ator.magoa": 8, "ator.confianca": -4, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_namora_amigo",
+    "ator": ["ex"],
+    "idade": [18, 60],
+    "peso": 0.5,
+    "condicoes": { "amigo.vivo": true, "semMarcas": ["ator.casou", "amigo.rompido", "ex_com_o_amigo"], "ator.idade": { "min": 18 } },
+    "texto": "No churrasco de domingo, {amigo} chegou de mãos dadas com {ator.quem}. Os dois olharam para você ao mesmo tempo, com a mesma cara de quem ensaiou a frase no carro.",
+    "resumo": "descobriu que {ator.quem} estava namorando {amigo}",
+    "escolhas": [
+      {
+        "texto": "Dar a bênção e abrir uma cerveja",
+        "resumo": "deu a bênção ao namoro de {amigo} com {ator.quem}",
+        "resultado": {
+          "texto": "Você abriu uma cerveja, brindou aos dois e foi embora cedo. No carro, ficou um tempo parad{o|a} antes de ligar o motor.",
+          "efeitos": { "amigo.vinculo": 6, "ator.vinculo": 4, "felicidade": -3, "marcas": ["ex_com_o_amigo"] }
+        }
+      },
+      {
+        "texto": "Chamar {amigo} num canto",
+        "resumo": "tirou satisfação com {amigo} por namorar {ator.quem}",
+        "resultado": {
+          "texto": "A conversa no corredor ficou alta o bastante para a festa inteira ouvir. \"Você nem queria mais\", {amigo} disse, e tinha razão, o que piorou tudo.",
+          "efeitos": { "amigo.magoa": 20, "amigo.vinculo": -10, "ator.magoa": 10, "felicidade": -1, "marcas": ["ex_com_o_amigo"] }
+        }
+      },
+      {
+        "texto": "Sorrir e mudar de assunto",
+        "resumo": "fingiu não se importar com o namoro de {amigo} com {ator.quem}",
+        "resultado": {
+          "texto": "Você sorriu, perguntou do trabalho e comeu três pães de alho seguidos. Ninguém acreditou, mas todo mundo agradeceu.",
+          "efeitos": { "felicidade": -2, "amigo.vinculo": 2, "marcas": ["ex_com_o_amigo"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ex_saudade_de_quem_foi",
+    "ator": ["ex"],
+    "idade": [25, 100],
+    "condicoes": { "ator.vivo": false, "marcaHa": [{ "marca": "ator.faleceu", "min": 1, "max": 15 }] },
+    "trechos": {
+      "lembra": [
+        { "se": { "ator.magoa": { "min": 25 } }, "texto": "Veio junto a última briga, inteira, com as palavras que não dá mais para retirar." },
+        { "se": { "ator.vinculo": { "min": 35 } }, "texto": "Você lembrou da risada {ator:dele|dela} e riu sozinh{o|a} no carro." },
+        { "texto": "Você não sabia que ainda lembrava da letra inteira." }
+      ]
+    },
+    "texto": "Tocou no rádio a música que era de vocês. Faz tempo que {ator.quem} morreu. {lembra}",
+    "resumo": "lembrou de {ator.quem} ao ouvir a música de vocês",
+    "escolhas": [
+      {
+        "texto": "Cantar junto, alto",
+        "resumo": "cantou alto a música que era de vocês",
+        "resultado": {
+          "texto": "Você cantou alto, errou o refrão e chorou no sinal vermelho. O motorista do lado fingiu que não viu.",
+          "efeitos": { "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Levar flores no domingo",
+        "resumo": "levou flores para {ator.quem} no cemitério",
+        "condicoes": { "dinheiro": { "min": 60 } },
+        "bloqueio": "não sobra nem para as flores",
+        "resultado": {
+          "texto": "No domingo, você levou girassóis, que {ator:ele|ela} achava exagerados. Ficou um tempo ali, contando as novidades em voz baixa.",
+          "efeitos": { "dinheiro": -60, "felicidade": 3 }
+        }
+      },
+      {
+        "texto": "Mudar de estação",
+        "resumo": "mudou de estação quando tocou a música de vocês",
+        "resultado": {
+          "texto": "Você mudou de estação. Na outra, tocava propaganda de colchão, que é mais fácil.",
+          "efeitos": { "felicidade": -1 }
+        }
+      }
+    ]
+  }
+]

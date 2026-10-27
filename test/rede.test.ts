@@ -1,0 +1,147 @@
+/**
+ * A rede (missão Ω): as pessoas têm identidade, não só papel. O amor que foi embora vira ex e continua existindo, com
+ * a memória dele; quem chega no lugar começa do zero; o ex que volta é a mesma pessoa; e o livro fecha.
+ */
+import { describe, expect, it } from 'vitest';
+import { carregarConteudo } from '../scripts/disco.ts';
+import { EXES } from '../src/motor/constantes.ts';
+import { ganhar, lancar, novaEntrada, perder } from '../src/motor/livro.ts';
+import { arquivarEx, criarPersonagem, promover } from '../src/motor/pessoas.ts';
+import { lembrancasDe, quemOcupava, visoesDe } from '../src/motor/relacoes.ts';
+import { aplicarStorylet } from '../src/motor/storylets.ts';
+import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
+import { nascer } from '../src/motor/vida.ts';
+import { quemE } from '../src/motor/campos.ts';
+import { criarRng } from '../src/motor/rng.ts';
+import { passo } from './apoio.ts';
+
+const c = carregarConteudo();
+
+/** Uma entrada de regra com o que `fazer` mudar (como as regras do ano fazem). */
+function regra(e: EstadoVida, fazer: (reg: Mudanca[], id: number) => void): number {
+  const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'teste', texto: '' });
+  const reg: Mudanca[] = [];
+  fazer(reg, entrada.id);
+  lancar(e, entrada, reg);
+  return entrada.id;
+}
+
+function adulto(semente: number): EstadoVida & { inicio: Map<string, Record<string, number>> } {
+  const e = nascer(c, { semente, ano: 2026 }) as EstadoVida & { inicio: Map<string, Record<string, number>> };
+  e.inicio = new Map(Object.values(e.entidades).map((en) => [en.id, { ...en.n }]));
+  e.idade = 25;
+  e.ano = e.anoNascimento + 25;
+  return e;
+}
+
+function namorar(e: EstadoVida): number {
+  regra(e, (reg, id) => {
+    criarPersonagem(e, c, 'amor', reg);
+    ganhar(e, reg, 'eu', 'namoro', id);
+  });
+  return e.entidades['amor']!.pessoa!;
+}
+
+function terminar(e: EstadoVida): void {
+  regra(e, (reg) => {
+    perder(e, reg, 'eu', 'namoro');
+    arquivarEx(e, reg);
+  });
+}
+
+/** Uma conversa de verdade: o que quem joga fez, que vira lembrança boa. */
+function conversar(e: EstadoVida, papel: string): number {
+  return aplicarStorylet(e, c, c.porId.get('conversar_de_verdade')!, papel, 'acao').id;
+}
+
+describe('a identidade das pessoas', () => {
+  it('o amor que foi embora vira ex: a mesma pessoa, com a lembrança de quando era o amor', () => {
+    const e = adulto(41);
+    const a = namorar(e);
+    const nome = e.entidades['amor']!.nome;
+    const conversa = conversar(e, 'amor');
+    expect(lembrancasDe(e, 'amor').boa?.entrada).toBe(conversa);
+    terminar(e);
+    expect(e.entidades['amor']).toBeUndefined();
+    const ex = e.entidades['ex']!;
+    expect(ex.pessoa).toBe(a);
+    expect(ex.nome).toBe(nome);
+    expect(quemE('ex', ex)).toBe(`${ex.genero === 'f' ? 'sua ex' : 'seu ex'} ${nome}`);
+    expect(quemOcupava(e, 'amor', conversa)).toBe(`#${a}`);
+    expect(lembrancasDe(e, 'ex').boa?.entrada).toBe(conversa);
+  });
+
+  it('quem chega no lugar do amor começa do zero: não lembra nem pensa nada pelo amor de antes', () => {
+    const e = adulto(42);
+    const a = namorar(e);
+    const conversa = conversar(e, 'amor');
+    conversar(e, 'amor');
+    terminar(e);
+    const b = namorar(e);
+    expect(b).not.toBe(a);
+    expect(lembrancasDe(e, 'amor').boa).toBeUndefined();
+    const amor = e.entidades['amor']!;
+    expect(visoesDe(e, 'amor', amor).filter((o) => o.entrada !== undefined && o.entrada <= conversa)).toEqual([]);
+    // E o ex segue lembrando.
+    expect(lembrancasDe(e, 'ex').boa?.entrada).toBeDefined();
+  });
+
+  it('o ex que volta é a mesma pessoa, e quem estava no lugar do amor vira ex', () => {
+    const e = adulto(43);
+    const a = namorar(e);
+    const conversa = conversar(e, 'amor');
+    terminar(e);
+    const b = namorar(e);
+    regra(e, (reg) => promover(e, c, 'ex', 'amor', reg));
+    expect(e.entidades['amor']!.pessoa).toBe(a);
+    expect(e.entidades['ex']!.pessoa).toBe(b);
+    expect(lembrancasDe(e, 'amor').boa?.entrada).toBe(conversa);
+  });
+
+  it('com os três lugares de ex ocupados, quem foi embora há mais tempo sai da vida', () => {
+    const e = adulto(44);
+    const pessoas = [namorar(e)];
+    for (let i = 0; i < EXES.length; i++) {
+      terminar(e);
+      pessoas.push(namorar(e));
+    }
+    terminar(e);
+    const exes = EXES.map((x) => e.entidades[x]!.pessoa);
+    expect(exes).not.toContain(pessoas[0]);
+    expect(new Set(exes)).toEqual(new Set(pessoas.slice(1)));
+  });
+
+  it('o livro fecha: para toda entidade, o começo mais a soma das variações dá o estado final', () => {
+    const e = adulto(45);
+    namorar(e);
+    conversar(e, 'amor');
+    terminar(e);
+    namorar(e);
+    conversar(e, 'amor');
+    regra(e, (reg) => promover(e, c, 'ex', 'amor', reg));
+    terminar(e);
+    const soma = new Map<string, number>();
+    for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.d !== undefined) soma.set(m.c, (soma.get(m.c) ?? 0) + m.d);
+    for (const en of Object.values(e.entidades)) {
+      for (const [campo, fim] of Object.entries(en.n)) {
+        const esperado = (e.inicio.get(en.id)?.[campo] ?? 0) + (soma.get(`${en.id}.${campo}`) ?? 0);
+        expect(Math.abs(esperado - fim), `${en.id}.${campo}`).toBeLessThan(1e-6);
+      }
+    }
+  });
+
+  it('numa vida jogada, o ex aparece, vive ao fundo e o livro continua fechando', () => {
+    let comEx = 0;
+    for (let k = 0; k < 12; k++) {
+      const e = nascer(c, { semente: 900 + k, ano: 2026 });
+      const robo = criarRng(k);
+      while (e.vivo) passo(e, c, robo, 'aleatoria');
+      if (EXES.some((x) => e.entidades[x])) comEx++;
+      // Toda pessoa da vida tem número, e cada número ocupa no máximo um papel por vez.
+      const pessoas = Object.values(e.entidades).filter((en) => en.tipo === 'pessoa' && en.id !== 'eu');
+      expect(pessoas.every((en) => en.pessoa !== undefined)).toBe(true);
+      expect(new Set(pessoas.map((en) => en.pessoa)).size).toBe(pessoas.length);
+    }
+    expect(comEx).toBeGreaterThan(0);
+  });
+});

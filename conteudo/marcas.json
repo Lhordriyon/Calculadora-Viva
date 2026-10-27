@@ -5,6 +5,8 @@
   },
   "familia_completa": { "epitafio": "Decidiu que a família estava completa e nunca jogou o macacão fora." },
   "ex_fumante": { "epitafio": "Largou o cigarro e ganhou fôlego para reclamar de tudo." },
+  "voltou_com_o_ex": { "epitafio": "Morreu ao lado de quem tinha ido embora e voltou." },
+  "ex_com_o_amigo": { "epitafio": "Viu o ex namorar o melhor amigo e sobreviveu ao churrasco." },
   "sedentario": { "porAno": { "saude": -0.3 } },
   "ativo": { "porAno": { "saude": 0.25, "felicidade": 0.3 }, "epitafio": "Correu de tudo, menos da vida." },
   "workaholic": {

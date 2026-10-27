@@ -171,7 +171,7 @@
     "texto": "Hora da pré-escola. Ou não: a família discute se você ainda é pequen{o|a} demais para isso.",
     "resumo": "teve decidido como seria a pré-escola",
     "trechos": {
-      "colega": [
+      "ao_lado": [
         { "se": { "amigo.vivo": true }, "texto": "{amigo} senta do seu lado desde o primeiro dia." },
         { "texto": "No primeiro dia, ninguém senta do seu lado; no segundo, já são três." }
       ]
@@ -183,7 +183,7 @@
         "condicoes": { "classe_origem": { "max": 4 } },
         "bloqueio": "a família quer outra",
         "resultado": {
-          "texto": "Merenda, massinha e uma professora que sabe o nome de trinta crianças. {colega}",
+          "texto": "Merenda, massinha e uma professora que sabe o nome de trinta crianças. {ao_lado}",
           "efeitos": { "inteligencia": 3, "felicidade": 1, "amigo.vinculo": 5, "marcas": ["pre_escola"] }
         }
       },
