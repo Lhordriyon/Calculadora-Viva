@@ -469,6 +469,8 @@ export const GATILHOS = [
   'teve_filho',
   'mudou_de_cidade',
   'separou',
+  // o colega que virou amigo quando o emprego acabou
+  'virou_amigo',
 ] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 

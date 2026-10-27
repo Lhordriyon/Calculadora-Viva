@@ -100,6 +100,8 @@ export function convivem(e: EstadoVida, id: string, en: Entidade): boolean {
   if (id === 'mae' || id === 'pai') return !tem(en, 'ausente') && (e.idade < 18 || tem(eu, 'mora_com_pais'));
   if (id === 'avo') return tem(en, 'mora_junto') || e.idade < 12;
   if (id === 'amigo') return e.idade < 18;
+  // O colega e o chefe são de todo dia: só existem enquanto quem joga trabalha com eles.
+  if (id === 'colega' || id === 'chefe') return true;
   // Os irmãos dividem a casa enquanto quem joga mora com os pais e o irmão ainda não saiu de casa.
   if (ehIrmao(id)) return (e.idade < 18 || tem(eu, 'mora_com_pais')) && e.ano - (en.nascimento ?? e.ano) < 24 && !tem(en, 'mora_longe') && !tem(en, 'casado');
   return false;

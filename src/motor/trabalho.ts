@@ -14,7 +14,7 @@ import type { Conteudo } from './conteudo.ts';
 import { faseDe, type Momento } from './pais.ts';
 import { patrimonioDe } from './campos.ts';
 import { somar } from './livro.ts';
-import { ANOS_DE_RESERVA, CHANCE_APERTO_NEGOCIO, DEMISSAO_JOGADOR, IDADE_APOSENTADORIA, VARIACAO_NEGOCIO } from './regras.ts';
+import { ANOS_DE_RESERVA, CHANCE_APERTO_NEGOCIO, DEMISSAO_JOGADOR, fatorDoChefe, IDADE_APOSENTADORIA, VARIACAO_NEGOCIO } from './regras.ts';
 import { aleatorio, normal } from './rng.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -55,7 +55,10 @@ export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: 
     return;
   }
   const lugar = (e.entidades['lugar']?.n['desemprego'] ?? 0.08) / 0.08;
-  const chance = DEMISSAO_JOGADOR * lugar * (1 + (fase.desemprego - 1) * sente);
+  // O chefe magoado demite mais fácil; o que gosta de você segura o seu nome na lista.
+  const chefe = e.entidades['chefe'];
+  const doChefe = chefe && chefe.vivo !== false ? fatorDoChefe(chefe.n['vinculo'] ?? 50, chefe.n['magoa'] ?? 0).demissao : 1;
+  const chance = DEMISSAO_JOGADOR * lugar * (1 + (fase.desemprego - 1) * sente) * doChefe;
   if (aleatorio(e.rng) < chance) agendarJa(e, c, 'demissao', causaDaFase(e));
 }
 

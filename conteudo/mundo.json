@@ -823,6 +823,12 @@
         "{ator.quem} se separou. [Ninguém se surpreendeu, mas todo mundo fingiu.|A divisão dos móveis levou mais tempo que o casamento.|Agora {ator:ele|ela} fala muito em \"recomeço\" e entrou na academia.|O grupo da família ficou dois dias em silêncio, um recorde.]"
       ],
       "resumo": "{ator.quem} se separou"
+    },
+    "virou_amigo": {
+      "textos": [
+        "Você saiu daquele emprego, e {ator}, que era do trabalho, não saiu da sua vida: [o almoço de quarta virou sagrado|vocês continuam se falando todo dia, agora sem chefe no meio|a amizade sobreviveu ao crachá]. Virou {ator:o seu melhor amigo|a sua melhor amiga}."
+      ],
+      "resumo": "{ator} virou {ator:seu melhor amigo|sua melhor amiga}"
     }
   },
   "setores": [

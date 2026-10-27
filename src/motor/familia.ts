@@ -15,7 +15,7 @@ import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho, Mundo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { arquivarEx, morrerPersonagem } from './pessoas.ts';
+import { arquivarEx, chegar, morrerPersonagem, nomeLivre, novaEntidade, partir, promover } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_FALENCIA,
@@ -55,18 +55,25 @@ import {
   riscoDeMorte,
 } from './regras.ts';
 import { convivem, temRelacao, visaoDe } from './relacoes.ts';
-import { aleatorio, normal, sortear, sortearIndice } from './rng.ts';
+import { aleatorio, inteiro, normal, sortear, sortearIndice } from './rng.ts';
 import { aplicarStorylet, atoresPossiveis, elegivel } from './storylets.ts';
 import { causaDaFase } from './trabalho.ts';
 import { capitalizar, renderizar } from './texto.ts';
-import type { Entidade, Entrada, EstadoVida, MemoriaJogador, Mudanca, Qualidade } from './tipos.ts';
+import type { Entidade, Entrada, EstadoVida, Genero, MemoriaJogador, Mudanca, Qualidade } from './tipos.ts';
 
 /**
  * Ordem em que as regras rodam (os mais velhos primeiro: a herança da avó chega antes, e a dos pais chega aos irmãos
  * antes do ano deles); os filhos, na ordem de chegada; os ex, no fim (eles vivem longe: a saúde, a morte e a relação
  * que esfria).
  */
-export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, 'amigo', 'pet', ...EXES] as const;
+export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, 'amigo', 'pet', ...EXES, 'colega', 'chefe'] as const;
+
+/** Os papéis que vêm com o trabalho de quem joga. */
+const DO_TRABALHO: ReadonlySet<string> = new Set(['colega', 'chefe']);
+/** O vínculo do colega que fica como amigo quando o emprego acaba. */
+const VINCULO_QUE_FICA = 62;
+/** O colega e o chefe se aposentam nessa idade (saem do trabalho de quem joga). */
+const IDADE_DE_SAIR_DO_TRABALHO = 67;
 
 const DE_PATRIMONIO = new WeakMap<Conteudo, ReadonlySet<string>>();
 /** A ocupação é de quem vive do que tem (mundo.json › classes › ocupacoes e linhagens › papel, com `patrimonio`): herdeiro, investidor, dono. */
@@ -124,6 +131,9 @@ function equilibrioVinculo(e: EstadoVida, c: Conteudo, papel: string): number {
   const tipo = c.mundo.familias.find((f) => f.id === e.entidades['eu']!.t['familia']);
   // O irmão é família, com a briga de quem dividiu o quarto; o gêmeo, mais perto.
   if (ehIrmao(papel)) return (tipo?.vinculo ?? 60) - 4 + (traco?.vinculo ?? 0) + (en.q['gemeo'] ? 8 : 0);
+  // O colega é de todo dia, sem ser da família; o chefe, um pouco mais longe.
+  if (papel === 'colega') return 40 + (traco?.vinculo ?? 0);
+  if (papel === 'chefe') return 34 + (traco?.vinculo ?? 0);
   return (tipo?.vinculo ?? 60) + (traco?.vinculo ?? 0);
 }
 
@@ -150,7 +160,7 @@ function relacaoNoAno(e: EstadoVida, papel: string, en: Entidade, perdao: number
  * falar, ou a despedida de quem estava perto. Os textos são de mundo.json › despedidas.
  */
 function fechoDaMorte(e: EstadoVida, c: Conteudo, papel: string, en: Entidade): string {
-  if (!temRelacao(papel, en) || papel === 'paixao') return '';
+  if (!temRelacao(papel, en) || papel === 'paixao' || DO_TRABALHO.has(papel)) return '';
   // A distância do ex não é falta (pessoas.ts › morrerPersonagem): só a mágoa ou o afeto que ficou.
   const longe = !ehEx(papel) && (en.n['sem_contato'] ?? 0) >= ANOS_REMORSO;
   const qual = (en.n['magoa'] ?? 0) >= MAGOA_REMORSO ? 'magoa' : longe ? 'longe' : (en.n['vinculo'] ?? 0) >= 55 ? 'perto' : null;
@@ -273,6 +283,7 @@ export function regrasDosPersonagens(
   // O amor que foi embora (o namoro acabou e ninguém chegou no lugar) vira ex: continua existindo, com a memória dele.
   const amor = e.entidades['amor'];
   if (amor && amor.vivo !== false && (eu.q['namoro']?.v ?? 0) <= 0 && (eu.q['casado']?.v ?? 0) <= 0) arquivarEx(e, regAno);
+  genteDoTrabalho(e, c, regAno);
   for (const papel of PAPEIS_COM_REGRAS) {
     const en = e.entidades[papel];
     if (!en || en.vivo === false) continue;
@@ -288,14 +299,20 @@ export function regrasDosPersonagens(
     somar(e, regAno, papel, 'saude', (deriva < 0 ? deriva * fatorDoenca : deriva) + normal(e.rng, 0, 1.5) - (en.q['doente'] ? DOENCA_POR_ANO : 0), 'saude');
     if (papel !== 'pet') {
       if (!en.q['doente'] && aleatorio(e.rng) < chanceDoenca(idade) * fatorDoenca) {
-        acontecer(e, c, papel, 'adoeceu', (reg, id) => {
-          ganhar(e, reg, papel, 'doente', id);
-          somar(e, reg, papel, 'saude', -DOENCA_QUEDA);
-          somar(e, reg, 'eu', 'felicidade', -(en.n['vinculo'] ?? 50) * 0.04);
-        });
+        if (DO_TRABALHO.has(papel)) {
+          // A doença de quem é do trabalho não vira notícia: vira a licença (o conteúdo responde a ela).
+          ganhar(e, regAno, papel, 'doente', null, 'saude');
+          somar(e, regAno, papel, 'saude', -DOENCA_QUEDA, 'saude');
+        } else {
+          acontecer(e, c, papel, 'adoeceu', (reg, id) => {
+            ganhar(e, reg, papel, 'doente', id);
+            somar(e, reg, papel, 'saude', -DOENCA_QUEDA);
+            somar(e, reg, 'eu', 'felicidade', -(en.n['vinculo'] ?? 50) * 0.04);
+          });
+        }
       } else if (en.q['doente'] && aleatorio(e.rng) < CHANCE_CURA) {
-        // A cura de quem está longe (o irmão, o ex) não vira notícia: a doença virou, e a falta, se houve, também.
-        if (ehIrmao(papel) || ehEx(papel)) {
+        // A cura de quem está longe (o irmão, o ex) ou é do trabalho não vira notícia: a doença virou, e a falta, se houve, também.
+        if (ehIrmao(papel) || ehEx(papel) || DO_TRABALHO.has(papel)) {
           perder(e, regAno, papel, 'doente', 'saude');
           somar(e, regAno, papel, 'saude', 6, 'saude');
         } else {
@@ -413,12 +430,12 @@ export function regrasDosPersonagens(
 
     // ---- a relação: a mágoa passa no ritmo do perdão do traço, a confiança volta devagar, e o ano longe conta (bicho não tem)
     if (papel === 'pet') continue;
-    // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar. O ex não guarda
-    // vontade da vida a dois nem espera a visita na doença.
-    const ex = ehEx(papel);
-    if (!ex) vontadesNoAno(e, c, papel, en, regAno);
+    // As vontades leem o ano que passou (a visita zera os anos sem contato) antes de o ano novo contar. O ex e quem é
+    // do trabalho não guardam vontade da vida com quem joga nem esperam a visita na doença.
+    const deFora = ehEx(papel) || DO_TRABALHO.has(papel);
+    if (!deFora) vontadesNoAno(e, c, papel, en, regAno);
     const longe = relacaoNoAno(e, papel, en, traco?.perdao ?? PERDAO_BASE, regAno);
-    if (!ex) faltaNoAno(e, c, papel, en, longe, doenteNoAno);
+    if (!deFora) faltaNoAno(e, c, papel, en, longe, doenteNoAno);
 
     // ---- vínculo: volta para o jeito da família, menos a mágoa; esfria no ano sem contato da vida adulta
     const v = en.n['vinculo'] ?? 50;
@@ -437,6 +454,49 @@ export function regrasDosPersonagens(
     // ---- a vida do irmão ao fundo: casar, ter filho, separar, se mudar (chega como notícia)
     if (irmao) vidaDoIrmao(e, c, papel, en, idade, regAno);
   }
+}
+
+/** Quem joga trabalha com gente: empregado (colega e chefe) ou dono do negócio (o colega do dia a dia); sem trabalho, ninguém. */
+function trabalhoDeQuemJoga(e: EstadoVida): 'empregado' | 'dono' | null {
+  const eu = e.entidades['eu']!;
+  if (e.idade < 16 || (eu.n['renda'] ?? 0) <= 0 || !eu.t['ocupacao'] || eu.q['aposentado'] || eu.t['cargo']) return null;
+  return eu.q['empreendedor'] || eu.q['socio'] || eu.q['herdeiro_negocio'] ? 'dono' : 'empregado';
+}
+
+/**
+ * O colega e o chefe vêm com o trabalho: chegam no ano em que o emprego começa (cada um guarda o trabalho em que
+ * chegou) e saem quando ele acaba ou muda; quem morreu dá lugar a outro. Na saída, o colega muito próximo vira o
+ * melhor amigo se o lugar estiver vago: a amizade que começou no trabalho e ficou (vira notícia).
+ */
+function genteDoTrabalho(e: EstadoVida, c: Conteudo, regAno: Mudanca[]): void {
+  const tipo = trabalhoDeQuemJoga(e);
+  const trabalho = e.entidades['eu']!.t['ocupacao'] ?? '';
+  for (const papel of DO_TRABALHO) {
+    const en = e.entidades[papel];
+    const fica = tipo !== null && (papel === 'colega' || tipo === 'empregado');
+    // Quem é do trabalho se aposenta aos 67 e dá lugar a outro.
+    if (en && (!fica || en.t['trabalho'] !== trabalho || en.vivo === false || idadeDe(e, en) >= IDADE_DE_SAIR_DO_TRABALHO)) {
+      const amigo = e.entidades['amigo'];
+      const vaga = !amigo || (amigo.vivo === false && e.ano - (amigo.morte ?? e.ano) >= 2);
+      if (papel === 'colega' && en.vivo !== false && (en.n['vinculo'] ?? 0) >= VINCULO_QUE_FICA && vaga) {
+        acontecer(e, c, 'amigo', 'virou_amigo', (reg) => promover(e, c, 'colega', 'amigo', reg));
+      } else partir(e, papel, regAno);
+    }
+    if (fica && !e.entidades[papel]) chegar(e, papel, pessoaDoTrabalho(e, c, papel, trabalho), regAno);
+  }
+}
+
+/** Uma pessoa do trabalho novo: o colega da idade de quem joga, o chefe mais velho; o traço é sorteado. */
+function pessoaDoTrabalho(e: EstadoVida, c: Conteudo, papel: string, trabalho: string): Entidade {
+  const genero: Genero = aleatorio(e.rng) < 0.5 ? 'f' : 'm';
+  const idade = papel === 'chefe' ? Math.max(25, Math.min(70, e.idade + inteiro(e.rng, 4, 22))) : Math.max(18, e.idade + inteiro(e.rng, -6, 8));
+  const en = novaEntidade({ id: papel, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento: e.ano - idade, vivo: true });
+  const traco = sortear(e.rng, c.mundo.tracos);
+  en.t['traco'] = traco.id;
+  en.t['trabalho'] = trabalho;
+  en.n['saude'] = Math.round(Math.max(30, Math.min(95, 76 + traco.saude + normal(e.rng, 0, 6))));
+  en.n['vinculo'] = Math.round(Math.max(5, Math.min(80, (papel === 'chefe' ? 32 : 38) + traco.vinculo + normal(e.rng, 0, 7))));
+  return en;
 }
 
 /** O primeiro emprego do irmão: uma ocupação da classe em que a família está, no começo da carreira. */

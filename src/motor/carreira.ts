@@ -13,7 +13,7 @@ import { momentoDoPais } from './pais.ts';
 import type { DefCarreira } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import { verbaDe } from './pesquisa.ts';
-import { PIRAMIDE, PIRAMIDE_DA_FAMA } from './regras.ts';
+import { fatorDoChefe, PIRAMIDE, PIRAMIDE_DA_FAMA } from './regras.ts';
 import { aleatorio } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Genero, Mudanca } from './tipos.ts';
@@ -188,7 +188,10 @@ export function regraDaCarreira(e: EstadoVida, c: Conteudo, reg: Mudanca[]): voi
   // Pirâmide: cada degrau é mais difícil que o anterior; no palco, muito mais (pouca gente chega ao topo).
   const piramide = Math.pow(def.fama ? PIRAMIDE_DA_FAMA : PIRAMIDE, nivel);
   // Sem verba, ninguém sobe: com a ciência cortada, o laboratório não abre vaga de chefe.
-  const chance = Math.min(0.9, Math.max(0, def.promocao * (1 + (talento - 60) / 80) * piramide * verbaDe(e, def.verba)));
+  // O chefe pesa: quem gosta de você promove mais; magoado, segura a promoção.
+  const chefe = e.entidades['chefe'];
+  const doChefe = chefe && chefe.vivo !== false ? fatorDoChefe(chefe.n['vinculo'] ?? 50, chefe.n['magoa'] ?? 0).promocao : 1;
+  const chance = Math.min(0.9, Math.max(0, def.promocao * (1 + (talento - 60) / 80) * piramide * verbaDe(e, def.verba) * doChefe));
   if (aleatorio(e.rng) >= chance) return;
   const sobe: Mudanca[] = [];
   const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'carreira:promocao', texto: '' });

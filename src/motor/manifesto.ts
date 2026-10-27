@@ -27,6 +27,8 @@ const TODOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet', ...DA_REDE]
 const PROXIMOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'irmao'] as const;
 /** Quem trabalha e pode perder o emprego: os pais e os irmãos adultos. */
 const TRABALHAM = ['mae', 'pai', 'irmao'] as const;
+/** Quem vem com o trabalho de quem joga: o colega e o chefe (a relação, a saúde e a morte; nada de casa, dinheiro ou visita). */
+const DO_TRABALHO = ['colega', 'chefe'] as const;
 /** O bicho não tem vínculo: a alegria dele já está na qualidade de ter um. */
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
@@ -46,8 +48,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.privacao',
   'eu.herdou',
   // a relação com cada pessoa: a mágoa passa, a confiança volta, o ano longe conta; a morte deixa remorso ou despedida
-  ...de(PESSOAS, 'magoa'),
-  ...de(PESSOAS, 'confianca'),
+  ...de([...PESSOAS, ...DO_TRABALHO], 'magoa'),
+  ...de([...PESSOAS, ...DO_TRABALHO], 'confianca'),
   ...de(PESSOAS, 'sem_contato'),
   'eu.remorso',
   'eu.despediu',
@@ -199,7 +201,7 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'eu.traco',
   'eu.negocio_familiar',
   'eu.prematuro',
-  ...de(PESSOAS, 'traco'),
+  ...de([...PESSOAS, ...DO_TRABALHO], 'traco'),
   ...de(TRABALHAM, 'ocupacao'),
   ...de(TRABALHAM, 'setor'),
   ...de(['mae', 'pai'], 'dono_do_negocio'),
@@ -210,13 +212,13 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'lugar.custo_vida',
   'lugar.regiao',
   // regras anuais dos personagens
-  ...de(TODOS, 'saude'),
-  ...de(PESSOAS, 'vinculo'),
-  ...de(TODOS, 'faleceu'),
+  ...de([...TODOS, ...DO_TRABALHO], 'saude'),
+  ...de([...PESSOAS, ...DO_TRABALHO], 'vinculo'),
+  ...de([...TODOS, ...DO_TRABALHO], 'faleceu'),
   // O dinheiro dos pais e da avó anda todo ano; o de qualquer pessoa vai para os herdeiros quando ela morre.
   ...de(PESSOAS, 'dinheiro'),
   ...de([...PAIS_E_AVO, 'irmao'], 'renda'),
-  ...de(DOENTES, 'doente'),
+  ...de([...DOENTES, ...DO_TRABALHO], 'doente'),
   ...de(TRABALHAM, 'desempregado'),
   ...de(TRABALHAM, 'aposentado'),
   // a vida dos irmãos ao fundo: o casamento, os filhos (os sobrinhos), a separação e a mudança para longe
@@ -348,6 +350,14 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['irmao.filhos'], 'a vida do irmão (até três filhos) e a herança dos pais (a parte do irmão que morreu vai para os filhos dele)', true),
   ...ler(['irmao.mora_longe'], 'quem mora longe esfria mais rápido e não divide a casa', true),
   ...ler(['irmao.gemeo'], 'o gêmeo fica mais perto', false),
+  ...ler(['chefe.vinculo', 'chefe.magoa'], 'o chefe pesa na promoção e na demissão de quem joga', true),
+  ...ler(['colega.vinculo'], 'o colega muito próximo vira o melhor amigo quando o emprego acaba', true),
+  ...ler(de(DO_TRABALHO, 'traco'), 'iniciativas e vínculo de quem é do trabalho', true),
+  ...ler(de(DO_TRABALHO, 'saude'), 'mortalidade de quem é do trabalho', true),
+  ...ler(de(DO_TRABALHO, 'doente'), 'saúde de quem é do trabalho', true),
+  ...ler(de(DO_TRABALHO, 'magoa'), 'o vínculo de quem é do trabalho volta para menos com a mágoa', true),
+  ...ler(de(DO_TRABALHO, 'confianca'), 'a confiança volta devagar para a base', false),
+  ...ler(de(DO_TRABALHO, 'faleceu'), 'cartão da vida', false),
   ...ler(['eu.setor', 'eu.servidor', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.aposentado'], 'trabalho: salário, demissão e aperto do negócio', true),
   ...ler(['eu.padrao_alto'], 'padrão de vida: a conta chega quando a reserva acaba', true),
   ...ler(['eu.nome_sujo'], 'dívida: com o nome sujo, o banco não empresta mais nem financia', true),
@@ -472,21 +482,66 @@ export const ETAPAS_DO_ANO = [
     nome: 'a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte',
     // As vontades leem o que as realiza (mundo.json › vontades › feita): o casamento, o filho, o bicho, a visita.
     // A morte de quem reinava (o pai ou a mãe de quem é príncipe ou herdeiro do Regime) agenda a sucessão (sucessao.ts).
-    le: ['ano.fase', 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.genero', 'eu.classe_origem', 'eu.familia', 'eu.irmaos', 'eu.mora_com_pais', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.pai_mae', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'eu.principe', 'eu.herdeiro_regime', 'eu.monarca', 'eu.ditador', 'lugar.custo_vida', 'lugar.desemprego', ...FASE],
+    // O colega e o chefe vêm com o trabalho de quem joga (a ocupação, a renda, o negócio, o cargo), e quem chega ganha um
+    // nome que ninguém da vida tem.
+    le: [
+      'ano.fase',
+      'pessoa.*',
+      ...BOLSO,
+      'ctr.*',
+      'eu.felicidade',
+      'eu.genero',
+      'eu.classe_origem',
+      'eu.familia',
+      'eu.irmaos',
+      'eu.mora_com_pais',
+      'eu.namoro',
+      'eu.casado',
+      'eu.voltou_com_o_ex',
+      'eu.pai_mae',
+      'eu.viuvo',
+      'eu.herdou',
+      'eu.negocio_familiar',
+      'eu.remorso',
+      'eu.despediu',
+      'eu.principe',
+      'eu.herdeiro_regime',
+      'eu.monarca',
+      'eu.ditador',
+      'eu.renda',
+      'eu.ocupacao',
+      'eu.aposentado',
+      'eu.cargo',
+      'eu.empreendedor',
+      'eu.socio',
+      'eu.herdeiro_negocio',
+      'eu.nome',
+      'bem.nome',
+      'empresa.nome',
+      'tit.nome',
+      'fora.nome',
+      'lugar.nome',
+      'pais.nome',
+      'lugar.custo_vida',
+      'lugar.desemprego',
+      ...FASE,
+    ],
     escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
   },
   {
     id: 'trabalho',
     nome: 'o trabalho de quem joga: salário e demissão',
     // Quem tem cargo (mandato, coroa, Regime) vive do cargo: nem o setor nem a demissão o alcançam.
-    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', ...FASE],
+    // O chefe magoado demite mais fácil.
+    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...FASE],
     escreve: ['eu.renda', 'agenda'],
   },
   {
     id: 'carreira',
     nome: 'a carreira: promoção, fama e o fim da carreira',
     // No cargo, a carreira para; com a coroa ou o Regime, ela fica para trás (o cargo vitalício vira o trabalho).
-    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', ...POLITICAS_DO_PAIS],
+    // O chefe que gosta de quem joga promove mais.
+    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
     escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor'],
   },
   {

@@ -15,6 +15,8 @@ import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.t
 import { quemE } from '../src/motor/campos.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { passo } from './apoio.ts';
+import { regrasDosPersonagens } from '../src/motor/familia.ts';
+import { fatorDoChefe } from '../src/motor/regras.ts';
 
 const c = carregarConteudo();
 
@@ -246,5 +248,71 @@ describe('os irmãos', () => {
     expect(e.ano - herdeiro.nascimento).toBeLessThanOrEqual(63 - 16);
     const h = continuarComoHerdeiro(e, c);
     expect(h.entidades[irmao.genero === 'f' ? 'mae' : 'pai']!.nome).toBe(irmao.nome);
+  });
+});
+
+describe('o colega e o chefe', () => {
+  function empregado(semente: number): EstadoVida {
+    const e = nascer(c, { semente, ano: 2026 });
+    e.agenda = [];
+    e.idade = 30;
+    e.ano = e.anoNascimento + 30;
+    const eu = e.entidades['eu']!;
+    eu.t['ocupacao'] = 'analista de sistemas';
+    eu.n['renda'] = 60000;
+    return e;
+  }
+  const ano = (e: EstadoVida): void => {
+    regra(e, (reg) => regrasDosPersonagens(e, c, reg));
+  };
+
+  it('chegam com o emprego, ficam na promoção, trocam com o emprego novo e saem com o fim do trabalho', () => {
+    const e = empregado(501);
+    ano(e);
+    const colega = e.entidades['colega']!;
+    const chefe = e.entidades['chefe']!;
+    expect(colega.t['trabalho']).toBe('analista de sistemas');
+    expect(chefe.nascimento!).toBeLessThan(e.ano - e.idade);
+    e.entidades['eu']!.n['nivel'] = 2;
+    ano(e);
+    expect(e.entidades['colega']!.pessoa).toBe(colega.pessoa);
+    e.entidades['eu']!.t['ocupacao'] = 'gerente de loja';
+    colega.n['vinculo'] = 30;
+    ano(e);
+    expect(e.entidades['colega']!.pessoa).not.toBe(colega.pessoa);
+    expect(e.entidades['chefe']!.pessoa).not.toBe(chefe.pessoa);
+    e.entidades['eu']!.n['renda'] = 0;
+    ano(e);
+    expect(e.entidades['colega']).toBeUndefined();
+    expect(e.entidades['chefe']).toBeUndefined();
+  });
+
+  it('quem é dono do negócio tem colega, não chefe', () => {
+    const e = empregado(502);
+    e.entidades['eu']!.q['empreendedor'] = { v: 1, ano: e.ano, idade: e.idade, causa: null };
+    ano(e);
+    expect(e.entidades['colega']).toBeDefined();
+    expect(e.entidades['chefe']).toBeUndefined();
+  });
+
+  it('o colega muito próximo vira o melhor amigo quando o emprego acaba, se o lugar estiver vago', () => {
+    const e = empregado(503);
+    delete e.entidades['amigo'];
+    ano(e);
+    const colega = e.entidades['colega']!;
+    colega.n['vinculo'] = 80;
+    e.entidades['eu']!.n['renda'] = 0;
+    ano(e);
+    expect(e.entidades['amigo']?.pessoa).toBe(colega.pessoa);
+    expect(e.entidades['amigo']?.nome).toBe(colega.nome);
+    expect(e.historico.some((h) => h.ref === 'regra:virou_amigo')).toBe(true);
+  });
+
+  it('o chefe pesa na promoção e na demissão: neutro com 50 de vínculo, a favor com afeto, contra com mágoa', () => {
+    expect(fatorDoChefe(50, 0)).toEqual({ promocao: 1, demissao: 1 });
+    expect(fatorDoChefe(90, 0).promocao).toBeGreaterThan(1.2);
+    expect(fatorDoChefe(90, 0).demissao).toBeLessThan(0.8);
+    expect(fatorDoChefe(40, 40).promocao).toBeLessThan(0.7);
+    expect(fatorDoChefe(40, 40).demissao).toBeGreaterThan(1.4);
   });
 });

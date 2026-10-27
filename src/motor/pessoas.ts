@@ -108,6 +108,34 @@ function garantirPessoa(e: EstadoVida, papel: string, en: Entidade): number {
 }
 
 /**
+ * A pessoa do trabalho entra para a vida: vira o amor (quem estava no lugar, vivo, vira ex) ou o melhor amigo (o lugar
+ * precisa estar vago: o amigo de antes morreu; quem morreu sai do lugar, e a lembrança fica no livro).
+ */
+function virarDaFamilia(e: EstadoVida, de: string, para: 'amor' | 'amigo', reg: Mudanca[]): void {
+  const antes = e.entidades[para];
+  if (para === 'amor' && antes && arquivarEx(e, reg) === undefined) partir(e, 'amor', reg);
+  if (para === 'amigo' && antes) {
+    if (antes.vivo !== false) return;
+    partir(e, 'amigo', reg);
+  }
+  moverPessoa(e, de, para, reg);
+}
+
+/** Alguém chega à vida num papel (o colega e o chefe do emprego novo), com número e ocupação, e tudo no livro. */
+export function chegar(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[]): void {
+  ocuparPapel(e, papel, en, reg);
+}
+
+/** Alguém sai da vida (o colega do emprego que acabou): os números saem do papel, e o lugar fica vago. */
+export function partir(e: EstadoVida, papel: string, reg: Mudanca[]): void {
+  const en = e.entidades[papel];
+  if (!en) return;
+  sairDoPapel(papel, en, reg);
+  delete e.entidades[papel];
+  ocupar(e, papel, 0, daqui(e));
+}
+
+/**
  * O ex volta a ser o amor, a mesma pessoa, com a memória dela. Quem estava no lugar do amor troca de lugar com ele
  * (vivo, vira ex, e as vontades da vida a dois ficam para trás); morto, sai da vida.
  */
@@ -228,6 +256,11 @@ export function promover(e: EstadoVida, c: Conteudo, de: string, para: string, r
     voltarComOEx(e, de, reg);
     return;
   }
+  // O colega (ou o chefe) que vira o amor ou o melhor amigo é a mesma pessoa, com a memória dela.
+  if ((de === 'colega' || de === 'chefe') && (para === 'amor' || para === 'amigo')) {
+    virarDaFamilia(e, de, para, reg);
+    return;
+  }
   const novo = structuredClone({ ...origem, id: para });
   if (COM_TRACO.has(para) && !novo.t['traco']) darTraco(e, c, novo);
   ocuparPapel(e, para, novo, reg);
@@ -259,7 +292,9 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   // Quem reinava era o pai ou a mãe de quem está na fila: a sucessão vem agora, ou aos 18 (sucessao.ts).
   if (papel === 'mae' || papel === 'pai') aoMorrerQuemReina(e, en, causa);
   const vinculo = en.n['vinculo'] ?? 50;
-  if (papel !== 'paixao') {
+  // Quem é do trabalho dói menos, e não deixa remorso nem despedida de família.
+  if (papel === 'colega' || papel === 'chefe') somar(e, reg, 'eu', 'felicidade', -(1 + vinculo * 0.06));
+  else if (papel !== 'paixao') {
     somar(e, reg, 'eu', 'felicidade', -(3 + vinculo * 0.14));
     // A relação pesa no luto: morrer magoado, longe há anos ou com uma vontade guardada (mundo.json › vontades: as
     // qualidades `quer_…`) deixa remorso; quem estava perto se despediu.

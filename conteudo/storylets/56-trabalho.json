@@ -1,0 +1,426 @@
+[
+  {
+    "id": "chefe_hora_extra",
+    "tipo": "npc",
+    "ator": ["chefe"],
+    "idade": [18, 70],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "ator.magoa": { "max": 40 } },
+    "texto": "Sexta, seis da tarde, {ator} passou na sua mesa com um sorriso que você já conhece: \"tem um minutinho?\". O minutinho é um relatório para segunda.",
+    "resumo": "recebeu um pedido de hora extra de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Ficar até terminar",
+        "resumo": "ficou até tarde para terminar o relatório de {ator.quem}",
+        "resultado": {
+          "texto": "Você saiu às onze, com o prédio apagado e o vigia te chamando pelo nome. Na segunda, {ator} lembrou do seu nome também.",
+          "efeitos": { "saude": -1, "felicidade": -2, "ator.vinculo": 6, "ator.confianca": 5 }
+        }
+      },
+      {
+        "texto": "Negociar uma folga em troca",
+        "resumo": "trocou a hora extra por uma folga com {ator.quem}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "{ator} topou: relatório na segunda e folga na outra sexta. Você ainda não sabe se ganhou ou perdeu.",
+          "efeitos": { "saude": -1, "felicidade": 1, "ator.vinculo": 3 }
+        },
+        "fracasso": {
+          "texto": "\"Folga? A gente conversa depois\". Vocês não conversaram depois, e você fez o relatório do mesmo jeito.",
+          "efeitos": { "saude": -1, "felicidade": -3, "ator.magoa": 4 }
+        }
+      },
+      {
+        "texto": "Dizer que tem compromisso",
+        "resumo": "recusou a hora extra de {ator.quem}",
+        "resultado": {
+          "texto": "Você disse que tinha compromisso e foi para casa. {ator} disse \"claro, claro\", do jeito que quer dizer o contrário.",
+          "efeitos": { "felicidade": 1, "ator.magoa": 6, "ator.confianca": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chefe_elogia",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["chefe"],
+    "afinidade": "ajuda",
+    "idade": [18, 70],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "ator.vinculo": { "min": 44 }, "ator.magoa": { "max": 20 } },
+    "trechos": {
+      "sala": [
+        { "se": { "colega.vivo": true }, "texto": "{colega} bateu palmas meio sem vontade." },
+        { "texto": "A sala inteira olhou para você." }
+      ]
+    },
+    "texto": "Na reunião de segunda, {ator} elogiou o seu trabalho na frente de todo mundo, com nome e sobrenome. {sala}",
+    "resumo": "foi elogiad{o|a} por {ator.quem} na frente da equipe",
+    "escolhas": [
+      {
+        "texto": "Pedir um aumento na mesma semana",
+        "resumo": "pediu aumento a {ator.quem} depois do elogio",
+        "teste": { "atributo": "ator.vinculo", "dificuldade": 62 },
+        "sucesso": {
+          "texto": "{ator} pensou dois dias e voltou com um número. Não era o que você pediu, mas era mais do que você ganhava.",
+          "resumo": "conseguiu um aumento com {ator.quem}",
+          "efeitos": { "renda": 6000, "ator.vinculo": 2, "felicidade": 3 }
+        },
+        "fracasso": {
+          "texto": "\"Elogio não é aumento\", disse {ator}, e a frase ficou na sua cabeça o resto do ano.",
+          "efeitos": { "ator.magoa": 5, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Dividir o mérito com a equipe",
+        "resumo": "dividiu com a equipe o elogio de {ator.quem}",
+        "resultado": {
+          "texto": "Você disse que o trabalho foi da equipe inteira. A equipe gostou; {ator} gostou mais ainda.",
+          "efeitos": { "ator.confianca": 6, "colega.vinculo": 6, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Só agradecer",
+        "resumo": "agradeceu o elogio de {ator.quem}",
+        "resultado": {
+          "texto": "Você agradeceu, ficou vermelh{o|a} e passou o resto do dia trabalhando com mais vontade do que o normal.",
+          "efeitos": { "felicidade": 2, "ator.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chefe_injusto",
+    "peso": 3,
+    "ator": ["chefe"],
+    "idade": [18, 70],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "ator.traco": ["rigido", "brigao", "ambicioso"] },
+    "texto": "{ator} te culpou, na frente da equipe, por um erro que foi {ator:dele|dela}. A planilha errada tem o nome {ator:dele|dela} no histórico de versões.",
+    "resumo": "levou a culpa de um erro de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Mostrar o histórico de versões ali mesmo",
+        "resumo": "mostrou, na reunião, que o erro era de {ator.quem}",
+        "teste": { "atributo": "inteligencia", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Você mostrou a data, a hora e o nome. A sala ficou em silêncio, e {ator} pediu desculpas, baixinho, olhando para a planilha.",
+          "efeitos": { "felicidade": 4, "ator.magoa": 12, "ator.confianca": -4 }
+        },
+        "fracasso": {
+          "texto": "Você se enrolou para achar o histórico, e a bronca dobrou de tamanho.",
+          "efeitos": { "felicidade": -3, "ator.magoa": 15 }
+        }
+      },
+      {
+        "texto": "Procurar o RH",
+        "resumo": "foi ao RH contra {ator.quem}",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "O RH ouviu, anotou e chamou {ator} para conversar. Na semana seguinte, a bronca virou bom-dia.",
+          "efeitos": { "felicidade": 2, "ator.magoa": 18, "ator.confianca": -6 }
+        },
+        "fracasso": {
+          "texto": "O RH almoça com {ator} toda quinta. Você descobriu isso na quinta.",
+          "efeitos": { "felicidade": -3, "ator.magoa": 22 }
+        }
+      },
+      {
+        "texto": "Engolir em seco",
+        "resumo": "engoliu a culpa pelo erro de {ator.quem}",
+        "resultado": {
+          "texto": "Você engoliu, e engolir dá azia. {ator} nunca tocou no assunto, mas te tratou melhor o resto do mês.",
+          "efeitos": { "felicidade": -3, "saude": -1, "ator.vinculo": 3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chefe_magoado_cobra",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["chefe"],
+    "afinidade": "briga",
+    "idade": [18, 70],
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "ator.magoa": { "min": 16 } },
+    "texto": "{ator} marcou uma \"reunião de alinhamento\" com você, às oito da manhã de segunda, com a porta fechada. Ainda lembra {ator.magoa_de}.",
+    "resumo": "foi chamad{o|a} para uma conversa de porta fechada com {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Pedir desculpas e virar a página",
+        "resumo": "pediu desculpas a {ator.quem} numa reunião de porta fechada",
+        "resultado": {
+          "texto": "Você pediu desculpas sem se defender. {ator} disse que valorizava a sua postura, frase de quem fez curso de liderança.",
+          "efeitos": { "ator.magoa": -15, "ator.confianca": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Defender o seu lado",
+        "resumo": "defendeu o seu lado numa reunião com {ator.quem}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 60 },
+        "sucesso": {
+          "texto": "Você explicou com calma e com números. {ator} ficou um tempo calad{ator:o|a} e disse que não tinha visto por esse lado.",
+          "efeitos": { "ator.magoa": -10, "ator.confianca": 6, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "A reunião de alinhamento desalinhou tudo. Você saiu com uma advertência e uma dor de cabeça.",
+          "efeitos": { "ator.magoa": 10, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Atualizar o currículo",
+        "resumo": "atualizou o currículo depois da reunião com {ator.quem}",
+        "resultado": {
+          "texto": "Você ouviu tudo, disse \"entendi\" e passou a noite atualizando o currículo. Dormiu bem, pela primeira vez em semanas.",
+          "efeitos": { "felicidade": 2, "ator.magoa": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "colega_rouba_ideia",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["colega"],
+    "afinidade": "briga",
+    "idade": [18, 70],
+    "condicoes": { "ator.traco": ["ambicioso", "brigao", "gastador"], "ator.magoa": { "max": 40 } },
+    "texto": "{ator} apresentou a sua ideia como {ator:dele|dela} na reunião, palavra por palavra, até a piada do começo.",
+    "resumo": "viu {ator.quem} apresentar a sua ideia como {ator:dele|dela}",
+    "escolhas": [
+      {
+        "texto": "Mandar um e-mail com cópia para a chefia",
+        "resumo": "mandou um e-mail à chefia sobre a ideia roubada por {ator.quem}",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "O e-mail tinha o rascunho com data de três semanas antes. A chefia respondeu \"bem lembrado\", e {ator} parou de te dar bom-dia.",
+          "efeitos": { "felicidade": 3, "ator.magoa": 15, "chefe.confianca": 6 }
+        },
+        "fracasso": {
+          "texto": "O e-mail pareceu ciúme. A chefia respondeu \"vamos alinhar\", e ninguém alinhou nada.",
+          "efeitos": { "felicidade": -2, "ator.magoa": 10 }
+        }
+      },
+      {
+        "texto": "Confrontar depois da reunião",
+        "resumo": "confrontou {ator.quem} pela ideia roubada",
+        "resultado": {
+          "texto": "Você falou na copa, baixo e firme. {ator} jurou que foi coincidência e, na reunião seguinte, citou o seu nome duas vezes.",
+          "efeitos": { "ator.magoa": 10, "ator.confianca": -8, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Deixar pra lá",
+        "resumo": "deixou pra lá a ideia roubada por {ator.quem}",
+        "resultado": {
+          "texto": "Você deixou pra lá. A ideia deu certo, e {ator} ganhou um troféu de acrílico com o seu raciocínio dentro.",
+          "efeitos": { "felicidade": -3, "ator.vinculo": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "colega_happy_hour",
+    "peso": 4,
+    "tipo": "npc",
+    "ator": ["colega"],
+    "afinidade": "ajuda",
+    "idade": [18, 70],
+    "repetivel": true,
+    "intervalo": 4,
+    "condicoes": { "ator.vinculo": { "min": 35 } },
+    "texto": "{ator} chamou para o happy hour de sexta, no boteco da esquina do trabalho, aquele do pastel que ninguém sabe do que é.",
+    "resumo": "foi chamad{o|a} para o happy hour por {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Ir e ficar até fechar",
+        "resumo": "fechou o boteco com {ator.quem}",
+        "condicoes": { "dinheiro": { "min": 80 } },
+        "bloqueio": "o fim do mês chegou antes da sexta",
+        "resultado": {
+          "texto": "Vocês falaram mal da empresa, depois bem, depois de futebol, depois da vida. Saíram amigos e com o garçom chamando de \"chefe\".",
+          "efeitos": { "dinheiro": -80, "felicidade": 2, "ator.vinculo": 7, "saude": -1 }
+        }
+      },
+      {
+        "texto": "Ir, mas sair cedo",
+        "resumo": "passou rapidinho no happy hour com {ator.quem}",
+        "resultado": {
+          "texto": "Uma cerveja, meia porção de batata e um \"já vou, gente\". {ator} disse que da próxima vez você não escapa.",
+          "efeitos": { "dinheiro": -30, "ator.vinculo": 3 }
+        }
+      },
+      {
+        "texto": "Inventar uma desculpa",
+        "resumo": "inventou uma desculpa para não ir ao happy hour",
+        "resultado": {
+          "texto": "Você disse que tinha dentista às sete da noite. {ator} fingiu acreditar, e você foi para casa ver série.",
+          "efeitos": { "ator.vinculo": -2, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "colega_cobre_voce",
+    "peso": 3,
+    "tipo": "npc",
+    "ator": ["colega"],
+    "afinidade": "ajuda",
+    "idade": [18, 70],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "ator.confianca": { "min": 55 } },
+    "texto": "Você esqueceu o prazo do relatório, e {ator} terminou por você, sem ninguém pedir. A chefia nem ficou sabendo.",
+    "resumo": "foi cobert{o|a} por {ator.quem} num prazo esquecido",
+    "escolhas": [
+      {
+        "texto": "Pagar um almoço de verdade",
+        "resumo": "pagou um almoço para {ator.quem} pelo favor",
+        "condicoes": { "dinheiro": { "min": 60 } },
+        "bloqueio": "o almoço de verdade não cabe no mês",
+        "resultado": {
+          "texto": "Almoço com sobremesa e cafezinho. {ator} disse que não precisava, e repetiu a sobremesa.",
+          "efeitos": { "dinheiro": -60, "ator.vinculo": 8, "ator.confianca": 4 }
+        }
+      },
+      {
+        "texto": "Prometer cobrir na próxima",
+        "resumo": "prometeu cobrir {ator.quem} na próxima",
+        "resultado": {
+          "texto": "Você prometeu que a próxima é sua. {ator} anotou, literalmente, num post-it amarelo.",
+          "efeitos": { "ator.vinculo": 4, "ator.confianca": 2 }
+        }
+      },
+      {
+        "texto": "Fingir que não foi nada",
+        "resumo": "fingiu que o favor de {ator.quem} não foi nada",
+        "resultado": {
+          "texto": "Você agradeceu com um joinha no chat. {ator} reparou no joinha.",
+          "efeitos": { "ator.magoa": 5, "ator.confianca": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "romance_no_trabalho",
+    "peso": 3,
+    "ator": ["colega"],
+    "idade": [18, 65],
+    "condicoes": { "semMarcas": ["namoro", "casado"], "ator.vinculo": { "min": 46 }, "ator.idade": { "min": 18, "max": 70 } },
+    "texto": "Faz meses que o café com {ator} dura mais do que o café. Hoje, no elevador, {ator:ele|ela} perguntou se você topa jantar, \"sem ser coisa de trabalho\".",
+    "resumo": "foi chamad{o|a} para jantar por {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Topar o jantar",
+        "resumo": "topou jantar com {ator.quem}",
+        "teste": { "atributo": "ator.confianca", "dificuldade": 55 },
+        "sucesso": {
+          "texto": "Vocês começaram a namorar e combinaram de não contar para ninguém no trabalho. Todo mundo já sabia desde o elevador.",
+          "resumo": "começou a namorar {ator.quem}, que era do trabalho",
+          "efeitos": { "ator.vinculo": 10, "felicidade": 6, "marcas": ["namoro"], "promover": { "de": "ator", "para": "amor" } }
+        },
+        "fracasso": {
+          "texto": "O jantar foi ótimo; o resto, não. O clima no trabalho ficou estranho até o fim do ano.",
+          "efeitos": { "ator.vinculo": -5, "ator.magoa": 4, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Dizer que trabalho e amor não se misturam",
+        "resumo": "disse a {ator.quem} que trabalho e amor não se misturam",
+        "resultado": {
+          "texto": "{ator} disse que entendia e passou a pegar o elevador da direita. Você também.",
+          "efeitos": { "ator.vinculo": -4, "ator.magoa": 5 }
+        }
+      },
+      {
+        "texto": "Fingir que não entendeu",
+        "resumo": "fingiu não entender o convite de {ator.quem}",
+        "resultado": {
+          "texto": "Você respondeu \"jantar de equipe? Boa ideia!\" e chamou mais seis pessoas. {ator} pagou a sua parte, por vingança.",
+          "efeitos": { "ator.vinculo": -2, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "colega_de_licenca",
+    "peso": 3,
+    "ator": ["colega", "chefe"],
+    "idade": [18, 75],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "marcas": ["ator.doente"], "ator.saude": { "max": 70 } },
+    "texto": "{ator} está de licença médica, e o trabalho {ator:dele|dela} caiu no seu colo, junto com o seu.",
+    "resumo": "segurou o trabalho de {ator.quem}, de licença médica",
+    "escolhas": [
+      {
+        "texto": "Segurar tudo e mandar notícia",
+        "resumo": "segurou o trabalho de {ator.quem} e mandou notícias",
+        "resultado": {
+          "texto": "Você segurou as duas mesas e mandou um áudio por semana contando o que acontecia. {ator} disse que foi o melhor remédio.",
+          "efeitos": { "saude": -1, "felicidade": -1, "ator.vinculo": 8, "ator.confianca": 4 }
+        }
+      },
+      {
+        "texto": "Visitar no hospital com a equipe",
+        "resumo": "visitou {ator.quem} no hospital com a equipe",
+        "resultado": {
+          "texto": "A equipe levou um cartão assinado por vinte pessoas e um bolo que não podia comer. {ator} riu da ironia e guardou o cartão.",
+          "efeitos": { "dinheiro": -40, "ator.vinculo": 6, "ator.saude": 1 }
+        }
+      },
+      {
+        "texto": "Deixar o trabalho acumular",
+        "resumo": "deixou o trabalho de {ator.quem} acumular",
+        "resultado": {
+          "texto": "O trabalho de {ator} acumulou na mesa vazia. Quando {ator:ele|ela} voltou, a pilha estava lá esperando, e você também.",
+          "efeitos": { "felicidade": 1, "ator.magoa": 6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "homenagem_no_trabalho",
+    "peso": 4,
+    "ator": ["colega", "chefe"],
+    "idade": [18, 80],
+    "condicoes": { "ator.vivo": false, "marcaHa": [{ "marca": "ator.faleceu", "max": 1 }] },
+    "texto": "A empresa fez um minuto de silêncio por {ator.quem}. A cadeira {ator:dele|dela} ficou vazia a semana inteira, e ninguém teve coragem de mudar a caneca de lugar.",
+    "resumo": "perdeu {ator.quem}, do trabalho",
+    "escolhas": [
+      {
+        "texto": "Organizar uma vaquinha para a família",
+        "resumo": "organizou uma vaquinha para a família de {ator.quem}",
+        "condicoes": { "dinheiro": { "min": 100 } },
+        "bloqueio": "não sobra nem para a sua parte",
+        "resultado": {
+          "texto": "A vaquinha juntou mais do que você esperava, e a família mandou uma foto de agradecimento que ficou no mural.",
+          "efeitos": { "dinheiro": -100, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ir ao velório com a equipe",
+        "resumo": "foi ao velório de {ator.quem} com a equipe",
+        "resultado": {
+          "texto": "Vocês foram de van, de crachá no bolso. No caminho de volta, alguém contou uma história de {ator}, e todo mundo riu e chorou.",
+          "efeitos": { "felicidade": -1, "colega.vinculo": 4 }
+        }
+      },
+      {
+        "texto": "Seguir o expediente",
+        "resumo": "seguiu o expediente depois da morte de {ator.quem}",
+        "resultado": {
+          "texto": "Você seguiu o expediente, porque alguém precisava. À noite, em casa, a ficha caiu.",
+          "efeitos": { "felicidade": -2 }
+        }
+      }
+    ]
+  }
+]

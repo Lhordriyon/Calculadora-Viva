@@ -225,6 +225,14 @@ export const IRMAO_CASA = 0.07;
 export const IRMAO_TEM_FILHO = 0.12;
 export const IRMAO_SEPARA = 0.012;
 export const IRMAO_MUDA = 0.025;
+/**
+ * O chefe pesa no trabalho: com afeto, promove mais e demite menos; magoado, o contrário. O fator da promoção vai de
+ * 0,6 a 1,4, o da demissão de 0,7 a 1,8 (com 50 de vínculo e sem mágoa, 1 nos dois).
+ */
+export function fatorDoChefe(vinculo: number, magoa: number): { promocao: number; demissao: number } {
+  const humor = (vinculo - 50) / 50 - magoa / 40;
+  return { promocao: Math.max(0.6, Math.min(1.4, 1 + humor * 0.4)), demissao: Math.max(0.7, Math.min(1.8, 1 - humor * 0.4)) };
+}
 /** Quem mora longe esfria mais rápido sem contato. */
 export const DISTANCIA_DE_QUEM_MORA_LONGE = 1.4;
 export const IDADE_APOSENTADORIA = 65;
