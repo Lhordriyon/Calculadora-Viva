@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Folha } from './Folha.tsx';
-import { bensDe, credorDe, devedorDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
+import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -9,6 +9,8 @@ import { contratosDe, emAtraso, limiteDeCredito, modalidadeDe, origemDe } from '
 import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
+import { custoDaObra, custoDeExportar, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ocupacaoDe, procura, VERBAS, type Preco, type Salario } from '../motor/negocio.ts';
+import { PARCEIROS } from '../motor/constantes.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe, type JogadaDisponivel } from '../motor/fortuna.ts';
 import { anosParaVencer, chanceDeCalote, cupomDe, precoDoTitulo, taxaDoTitulo, type Prazo } from '../motor/tesouro.ts';
@@ -45,7 +47,7 @@ const FRACOES = [
 
 /** Rótulos curtos para os chips (o nome completo aparece na carteira). */
 const CURTO: Record<Ativo, string> = { renda_fixa: 'Renda fixa', acoes: 'Ações', fii: 'Imóveis', dolar: 'Dólar', cripto: 'Cripto' };
-const RETIRADA_ROTULO = ['Reinvestir tudo', 'Tirar 3% ao ano', 'Tirar 8% ao ano'];
+const RETIRADA_ROTULO = ['Reinvestir tudo', '30% do lucro', '60% do lucro', '90% do lucro'];
 
 function porcento(v: number): string {
   const r = Math.round(v * 10) / 10;
@@ -54,6 +56,72 @@ function porcento(v: number): string {
 
 function sinalDinheiro(v: number): string {
   return `${v > 0 ? '+' : v < 0 ? '−' : ''}${formatarDinheiro(Math.abs(v))}`;
+}
+
+/** Como o mercado está para o que a empresa entrega: a fila de pedido, o ponto e a estrutura parada. */
+const OCUPACAO = (x: number): string => (x >= 1.15 ? 'fila de pedidos' : x >= 0.9 ? 'no ponto' : x >= 0.7 ? 'sobra um pouco' : 'estrutura parada');
+const NOME_DO_PRECO: Record<Preco, string> = { popular: 'Popular', medio: 'De mercado', premium: 'Premium' };
+const NOME_DO_SALARIO: Record<Salario, string> = { piso: 'Piso', mercado: 'Mercado', acima: 'Acima' };
+
+/**
+ * Tocar o negócio (negocio.ts): o preço, o salário, as verbas de marketing e de P&D, a obra que amplia, o corte que
+ * demite e o mercado lá fora. Cada decisão mexe no caixa e volta nos anos seguintes; nenhuma gasta a ficha do ano.
+ */
+function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida; conteudo: Conteudo; emp: Entidade; aoOperar: (op: Operacao) => void }) {
+  const id = emp.id;
+  const n = emp.n;
+  if (n['capacidade'] === undefined) return null;
+  const pode = (op: Operacao) => motivoParaNaoOperar(vida, conteudo, op);
+  const chips = <T extends string | number>(rotulo: string, opcoes: readonly T[], atual: T, nome: (x: T) => string, op: (x: T) => Operacao) => (
+    <div class="escolhas-origem" role="group" aria-label={rotulo}>
+      {opcoes.map((x) => (
+        <button type="button" class="chip-origem" key={String(x)} aria-pressed={x === atual} disabled={x !== atual && pode(op(x)) !== null} onClick={() => x !== atual && aoOperar(op(x))}>
+          {nome(x)}
+        </button>
+      ))}
+    </div>
+  );
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const exporta = emp.t['exporta'] ?? '';
+  return (
+    <>
+      <p class="nota">
+        <b>Tocar o negócio.</b> O preço muda quanto se vende e quanto sobra de cada venda; o salário pesa na estrutura e na qualidade; o marketing faz a marca, e a pesquisa, o produto.
+      </p>
+      {chips('Preço', NIVEIS_DE_PRECO, (emp.t['preco'] as Preco | undefined) ?? 'medio', (x) => NOME_DO_PRECO[x], (x) => ({ tipo: 'preco', nivel: x, empresa: id }))}
+      {chips('Salário', NIVEIS_DE_SALARIO, (emp.t['salario'] as Salario | undefined) ?? 'mercado', (x) => NOME_DO_SALARIO[x], (x) => ({ tipo: 'salario', nivel: x, empresa: id }))}
+      <p class="nota">Marketing, em % das vendas:</p>
+      {chips('Marketing', VERBAS, (VERBAS.find((v) => Math.abs(v - (n['marketing'] ?? 0)) < 1e-9) ?? 0) as (typeof VERBAS)[number], pct, (x) => ({ tipo: 'verbas', marketing: x, pd: n['pd'] ?? 0, empresa: id }))}
+      <p class="nota">Pesquisa e desenvolvimento, em % das vendas:</p>
+      {chips('Pesquisa', VERBAS, (VERBAS.find((v) => Math.abs(v - (n['pd'] ?? 0)) < 1e-9) ?? 0) as (typeof VERBAS)[number], pct, (x) => ({ tipo: 'verbas', marketing: n['marketing'] ?? 0, pd: x, empresa: id }))}
+      <div class="escolhas-origem" role="group" aria-label="Obra">
+        {[0.25, 0.5, 1].map((f) => (
+          <button type="button" class="chip-origem" key={f} disabled={pode({ tipo: 'expandir', fracao: f, empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'expandir', fracao: f, empresa: id })}>
+            Ampliar {pct(f)} · {formatarDinheiro(custoDaObra(conteudo, emp, f))}
+          </button>
+        ))}
+        <button type="button" class="chip-origem" disabled={pode({ tipo: 'cortar', fracao: 0.25, empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'cortar', fracao: 0.25, empresa: id })}>
+          Cortar 25% e demitir
+        </button>
+      </div>
+      <p class="nota">A obra sai do caixa e fica pronta no ano que vem. Cortar vende a estrutura pela metade do que custou.</p>
+      <p class="nota">
+        <b>Lá fora.</b> {exporta ? `Vende para ${vida.entidades[exporta]?.nome ?? exporta}: a relação, o crescimento de lá e o acordo puxam a demanda; uma sanção fecha a porta.` : `Abrir um mercado custa ${formatarDinheiro(custoDeExportar(conteudo, emp))} e pede uma relação morna com o país.`}
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="Exportar">
+        {PARCEIROS.map((p) => (
+          <button type="button" class="chip-origem" key={p} aria-pressed={exporta === p} disabled={exporta !== p && pode({ tipo: 'exportar', para: p, empresa: id }) !== null} onClick={() => exporta !== p && aoOperar({ tipo: 'exportar', para: p, empresa: id })}>
+            {vida.entidades[p]?.nome ?? p}
+          </button>
+        ))}
+        {exporta && (
+          <button type="button" class="chip-origem" onClick={() => aoOperar({ tipo: 'exportar', para: '', empresa: id })}>
+            Só aqui
+          </button>
+        )}
+      </div>
+    </>
+  );
 }
 
 function Quanto({ fracao, aoMudar, rotulo }: { fracao: number; aoMudar: (f: number) => void; rotulo: string }) {
@@ -154,7 +222,7 @@ function CartaoDaEmpresa({
   const venda = vendaDaParte(vida, id);
   const dependencia = n['dependencia'] ?? 0;
   const naEmpresa = principal ? jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s)) : [];
-  const pessoas = funcionariosDe(n['valor'] ?? 0);
+  const pessoas = Math.max(1, Math.round(n['funcionarios'] ?? 1));
   const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir', empresa: id });
   const subsidiarias = vendaDeSubsidiarias(vida, id);
   const motivoBolsa = naBolsa ? null : motivoParaNaoOperar(vida, conteudo, { tipo: 'abrirCapital', empresa: id });
@@ -193,10 +261,28 @@ function CartaoDaEmpresa({
           </dd>
           {idade > 0 && (
             <>
-              <dt>No último ano</dt>
+              <dt>Vendas no ano</dt>
+              <dd>{formatarDinheiro(n['receita'] ?? 0)}</dd>
+              <dt>Lucro no ano</dt>
               <dd class={lucro < 0 ? 'ruim' : ''}>{sinalDinheiro(lucro)}</dd>
+              <dt>Imposto pago</dt>
+              <dd>{formatarDinheiro(n['impostos'] ?? 0)}</dd>
             </>
           )}
+          <dt>Caixa</dt>
+          <dd>{formatarDinheiro(n['caixa'] ?? 0)}</dd>
+          <dt>O mercado pede</dt>
+          <dd>
+            {formatarDinheiro(procura(vida, emp))} por ano · {OCUPACAO(ocupacaoDe(vida, emp))}
+          </dd>
+          <dt>A estrutura entrega</dt>
+          <dd>
+            {formatarDinheiro(n['capacidade'] ?? 0)} por ano{(n['obra'] ?? 0) > 0 ? ` · obra de mais ${formatarDinheiro(n['obra'] ?? 0)}` : ''}
+          </dd>
+          <dt>Produto e nome</dt>
+          <dd>
+            qualidade {Math.round(n['qualidade'] ?? 50)} · marca {Math.round(n['marca'] ?? 50)}
+          </dd>
           <dt>Ritmo</dt>
           <dd class={(n['tracao'] ?? 0) < 0 ? 'ruim' : ''}>{porcento(n['tracao'] ?? 0)} ao ano</dd>
           <dt>Depende de você</dt>
@@ -210,6 +296,11 @@ function CartaoDaEmpresa({
             </>
           )}
         </dl>
+        {idade > 0 && lucro < 0 && (
+          <p class="nota">
+            <b>No vermelho.</b> Se o próximo ano também der prejuízo e o caixa não pagar as contas, a empresa quebra. Aportar, cortar a estrutura ou mexer no preço muda isso.
+          </p>
+        )}
         <p class="nota">
           {principal
             ? 'É desta que você cuida de perto: o “Trabalhar” do ano e as decisões de quem manda vão para ela.'
@@ -225,7 +316,11 @@ function CartaoDaEmpresa({
           <ListaDeJogadas lista={naEmpresa} aoOperar={aoOperar} rotulo="Quem manda na empresa" />
         </>
       )}
-      <div class="escolhas-origem" role="group" aria-label="Retirada">
+      <NegocioDaEmpresa vida={vida} conteudo={conteudo} emp={emp} aoOperar={aoOperar} />
+      <p class="nota">
+        <b>Dividendos.</b> Quanto do lucro do ano vai para os donos; o resto fica no caixa e paga as obras.
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="Dividendos">
         {RETIRADAS.map((r, i) => (
           <button
             type="button"
@@ -240,8 +335,8 @@ function CartaoDaEmpresa({
       </div>
       <p class="nota">
         {(n['retirada'] ?? 0) > 0
-          ? `Cai na sua conta uns ${formatarDinheiro((n['retirada'] ?? 0) * (n['valor'] ?? 0) * parte)} por ano; a empresa cresce menos.`
-          : 'Todo o lucro fica na empresa e cresce junto com ela.'}
+          ? `Com o lucro do último ano, cairiam na sua conta uns ${formatarDinheiro(Math.max(0, lucro) * (n['retirada'] ?? 0) * parte)}; o caixa cresce menos.`
+          : 'Todo o lucro fica no caixa da empresa, para as obras e para a crise.'}
       </p>
       <Quanto fracao={fracao} aoMudar={setFracao} rotulo="Quanto pôr" />
       <button class="botao" type="button" disabled={motivoAporte !== null} onClick={() => aoOperar(aporte)}>
