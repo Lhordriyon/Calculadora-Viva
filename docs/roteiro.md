@@ -60,7 +60,14 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 - [x] Ω4 (01/11): os segredos. O caso, a dívida escondida, a festa que era estudo e o esquema por fora: quem sabe pode contar pelos círculos (a família, os amigos, os ex, o trabalho), quem fica sabendo perde confiança em você, e a notícia que chega a quem não devia vira revelação, com quem contou e o porquê. A chantagem de quem sabe, o desabafo, a confissão; a folha Família mostra quem sabe o quê (I-125)
 - [x] Ω5 (01/11): a peneira dos capítulos e o caminho não tomado. A vida lê os próprios arcos no livro (o plano, o segredo que veio à tona, o amor que voltou, a dívida que virou calote, o favor devolvido, as pazes) e mostra na linha do tempo e no cartão; no cartão, cada escolha que virou ponto de virada pode ser trocada, e a vida que não foi vivida aparece em duas frases, como experimento do modelo (I-126, I-127)
 - [x] Ω6 (01/11): o ritmo e a medida. Depois de um ano pesado, as histórias leves ganham a vez; o túnel mede a variedade das vidas pelo caminho (as causas dos pontos de virada e os capítulos), não só pelo destino, e os elos de causa distintos (I-128, I-129)
-- [ ] Ω7: integrar, polir, verificar, publicar e o relatório ao dono
+- [x] Ω7 (01/11): integrar, polir, verificar, publicar e o relatório ao dono
+
+**O bloco H, a empresa de verdade (01/11).** O dono jogou o salto e pediu um simulador de negócios de verdade: "as empresas não têm caixa, não têm produto, o conselho fala coisas aleatórias, prédios e emissoras não rendem, fama, influência e poder não mudam nada, eu só subo o patrimônio até o limite". O bloco H da segunda lista (o caixa da empresa, o lucro com origem, a pesquisa e desenvolvimento, as fábricas e lojas) passou na frente do F2 (I-132; as decisões e as medidas em `docs/decisoes.md › O bloco H`).
+
+- [x] H1: o motor do negócio (`negocio.ts`): caixa com contraparte, demanda, capacidade e obra, preço, salário, qualidade, marca, verbas, o resultado do ano, os dividendos do lucro, o valor pelos fundamentos e a quebra por causa
+- [x] H2: o mundo reage: o dólar no caixa, a exportação e a sanção que a fecha, os empregos no desemprego da cidade, o imposto na dívida do país, a mídia que vende publicidade e dá influência, o aluguel com vacância, a fama na marca
+- [x] H3: 15 histórias do negócio, a folha Dinheiro com o negócio, os robôs que decidem nele, os testes e o túnel
+- [ ] Depois: o crédito da empresa no banco (a empresa que deve), o lobby, o conselho que propõe (I-12) e as fábricas e lojas como lugares (hoje são a capacidade)
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 

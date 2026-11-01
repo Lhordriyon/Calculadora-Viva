@@ -162,7 +162,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Problema:** "o simulador das empresas não está bom: não tem caixa, não tem produto, o conselho fala coisas aleatórias, prédios e emissoras não rendem, fama, influência e poder não mudam nada, eu só subo o patrimônio até o limite". A empresa é um valor que cresce pela tração e pela sorte; o "lucro" é a variação do valor (I-11).
 - **Efeitos causais:** a empresa vira negócio: demanda (que a tração, o preço, a qualidade e a marca movem), capacidade (que o investimento constrói com um ano de obra e o tempo desgasta), vendas, custos fixos e variáveis, marketing, P&D, impostos ao Tesouro, lucro, caixa e dividendos; o valor sai dos fundamentos. As decisões (o preço, expandir, marketing, P&D, o salário, os dividendos, exportar, o lobby) mexem no caixa e voltam anos depois. O mundo reage: os empregos da cidade, os impostos, a exportação pela relação, pela sanção e pelo dólar, o lobby pela influência (com risco), a mídia que rende e dá influência, os imóveis de renda alugados, a fama que vira marca, o cargo que traz contrato público (com risco). O conselho fala dos números.
 - **Aceitação:** as contas da empresa fecham entrada por entrada (o caixa tem contraparte); teste de cada decisão com a consequência que ela causa; no túnel, a empresa tem lucro e prejuízo, expande, corta e quebra por causa, e nenhuma estratégia domina.
-- **Estado:** feita (bloco N, 01/11). Ficaram de fora o crédito da empresa no banco (a empresa ainda não deve), o lobby e o conselho que propõe (I-12).
+- **Estado:** feita (bloco H, 01/11). Ficaram de fora o crédito da empresa no banco (a empresa ainda não deve), o lobby e o conselho que propõe (I-12).
 
 ## Índice
 
@@ -177,7 +177,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-07 | Comparar cenários ("e se") | 1 | Baixa | proposta |
 | I-08 | Túnel mais barato (CPU por vida) | 1 | Alta | feita no critério (fatia 1.3); o próximo ganho é indexar os storylets |
 | I-10 | Gestor de patrimônio com mandato | 2 | Alta | proposta |
-| I-11 | Caixa da empresa e lucro com origem | 2 | Alta | feita (bloco N, I-132) |
+| I-11 | Caixa da empresa e lucro com origem | 2 | Alta | feita (bloco H, I-132) |
 | I-12 | Diretor executivo e conselho que propõem | 2 | Média | proposta |
 | I-13 | Holding familiar | 2 | Alta | proposta (estava no roteiro) |
 | I-14 | Family office e fundos privados | 2 | Média | proposta |
@@ -196,7 +196,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-32 | Banco central e política monetária | 4 | Média | proposta |
 | I-33 | Moedas por país, regime cambial e moeda de reserva | 4 | Média | proposta |
 | I-34 | Dívida soberana com credores, calote e contágio | 4 | Alta | feita em parte (bloco B, 25/10): o título de quem joga e o calote; faltam a empresa e o contágio |
-| I-35 | Falência, reestruturação e intervenção | 4 | Média | parcial (bloco N): a falência da empresa por causa (dois anos no vermelho sem caixa); reestruturação e intervenção, não |
+| I-35 | Falência, reestruturação e intervenção | 4 | Média | parcial (bloco H): a falência da empresa por causa (dois anos no vermelho sem caixa); reestruturação e intervenção, não |
 | I-36 | Setor privado agregado por país | 4 | Média | proposta |
 | I-40 | Poderes separados | 5 | Alta | proposta |
 | I-41 | Monarquia institucional e Casa Real | 5 | Alta | feita em parte (bloco C, 26/10): a renda da coroa tem forma e regra; falta a legitimidade à parte (I-42) |
@@ -259,7 +259,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
-| I-132 | O negócio de verdade: caixa, produto, mercado e o mundo que reage | N | Alta | feita (bloco N, 01/11): o caixa, a demanda, a capacidade, o preço, a qualidade, a marca, as verbas, o salário, os dividendos, a exportação, a falência por causa, os empregos, o imposto, a mídia e o aluguel; o crédito da empresa e o lobby, não |
+| I-132 | O negócio de verdade: caixa, produto, mercado e o mundo que reage | H | Alta | feita (bloco H, 01/11): o caixa, a demanda, a capacidade, o preço, a qualidade, a marca, as verbas, o salário, os dividendos, a exportação, a falência por causa, os empregos, o imposto, a mídia e o aluguel; o crédito da empresa e o lobby, não |
 
 (os blocos de cada ideia vêm na versão final)
 
