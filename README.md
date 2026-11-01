@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%CE%A9%3A%20vidas%20que%20contam%20uma%20hist%C3%B3ria-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-913-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H%3A%20a%20empresa%20de%20verdade-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-909-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,36 +15,34 @@
 
 ---
 
-## 🆕 Novidades: Ω · Vidas que contam uma história (01/11/2026)
+## 🆕 Novidades: H · A empresa de verdade (01/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o maior salto do jogo até aqui, feito para responder ao "esse jogo está muito repetitivo". Em seis camadas:
-> - **As pessoas são gente.** O amor que vai embora vira ex, continua vivendo e pode voltar (a mesma pessoa). Os irmãos nascem com a família e têm vida própria; o colega e o chefe chegam com o emprego; os amigos da vida adulta aparecem. Cada pessoa lembra do que você fez com ela.
-> - **A pessoa decide, e diz por quê.** Quando você pede dinheiro, perdão, um favor ou outra chance, quem responde pesa o que viveu com você: "disse não, porque lembra de quando você sumiu no hospital, aos 31". O empréstimo entre pessoas virou contrato, com parcela, atraso, mágoa e calote.
-> - **Você quer coisas.** A folha Planos (a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, o diploma…): as etapas são a sua vida de verdade, e o fim (conquista, prazo vencido) entra na linha do tempo com o porquê.
-> - **Os segredos.** O caso, a dívida escondida, a festa que era "estudo", o esquema por fora no trabalho. Quem sabe pode contar; a fofoca corre pela família, pelos amigos e pelo trabalho, e um dia chega a quem não devia, com o nome de quem contou. Há chantagem, confissão e desabafo, e a folha Família mostra quem sabe o quê.
-> - **Os capítulos e o caminho não tomado.** A vida reconhece os próprios arcos (a volta de um amor, o calote, as pazes, o segredo que veio à tona, o plano realizado) e mostra na linha do tempo e no cartão. No cartão, cada escolha que virou ponto de virada tem **"E se tivesse escolhido outra coisa?"**: o jogo refaz a sua vida igual até ali, troca a escolha e mostra a vida que você não viveu.
-> - **O ritmo.** Depois de um ano pesado, as histórias leves ganham a vez.
+> **O que mudou:** a empresa deixou de ser um número que sobe e virou um negócio, como você pediu.
+> - **Caixa de verdade.** Cada real diz de onde veio e para onde foi: as vendas, os custos, o imposto (25% do lucro, para o governo), os dividendos, a obra. Faltou caixa, a empresa vende estrutura pela metade do que custou; dois anos seguidos no prejuízo sem caixa, e ela quebra (a folha avisa no primeiro).
+> - **Produto e mercado.** A empresa tem clientela (o que o mercado quer comprar dela), estrutura (o que ela entrega), qualidade e marca. Você decide o preço, o salário, quanto vai para marketing e P&D, ampliar (a obra fica pronta no ano seguinte), cortar e demitir, exportar e quanto do lucro sai de dividendo.
+> - **O mundo reage.** Os empregos que ela abre baixam o desemprego da sua cidade, e a sua família sente; o imposto baixa a dívida do país; o dólar alto enche o caixa de quem exporta e encarece o de quem importa; a sanção de um país fecha a sua exportação, com a notícia e a causa; a sua fama puxa a marca.
+> - **O que você tem rende.** Rádio, jornal e emissora vendem publicidade e dão influência; o aluguel sente o desemprego.
+> - **15 histórias do negócio** que leem o estado real (a fila de pedidos, a estrutura parada, a greve do piso, o recall, o primeiro container, a licitação de quem tem cargo…). As antigas da empresa agora mexem no caixa e na estrutura, e não num número que voltava sozinho.
 
 > [!TIP]
 > **Para testar:**
-> - Na adolescência, vá à festa dizendo que ia estudar. Se tiver irmão, ele pode ter visto você chegar às seis da manhã.
-> - Com namoro e emprego, deixe a noite ir longe na festa da firma; depois desabafe com um irmão e acompanhe na folha Família quem "sabe do caso".
-> - Peça dinheiro emprestado à mãe e atrase a parcela. Depois peça outra coisa e leia o porquê da resposta.
-> - Toque em "Planos" no palco e ponha na cabeça a casa própria.
-> - No fim da vida, no cartão, toque em "E se tivesse escolhido outra coisa?" num ponto de virada.
+> - Abra uma empresa na folha Dinheiro, passe um ano e leia o resultado: vendas, lucro, imposto e caixa.
+> - Ponha o preço no premium com a qualidade baixa e veja a clientela fugir; invista em P&D e tente de novo.
+> - Quando o mercado pedir mais do que a estrutura entrega, amplie: a obra sai do caixa e fica pronta no ano seguinte.
+> - Abra exportação para um país; se vier uma sanção, a notícia aponta a causa.
+> - Compre uma rádio e veja a publicidade cair na conta e a influência subir.
 
-| ✅ O que o salto trouxe | ⏳ O que ele ainda não trouxe |
+| ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 👥 **Gente de verdade:** 14,6 pessoas por vida (eram cerca de 8), com o ex que volta em 1 de cada 4 vidas e irmãos em 8 de cada 10 | 🏝️ **Governar a ilha e a cidade que você fundou:** continua sendo o próximo bloco da lista do dono, o F2 |
-| 🗣️ **A pessoa decide e diz por quê:** em 67% das vidas alguém decide algo com você, e quase metade das respostas lembra do passado | 🔀 **Trocar uma ação no "E se":** só as escolhas se trocam (a ação pediria escolher qual outra) |
-| 🤝 **O empréstimo entre pessoas como contrato,** com parcela, atraso, mágoa e calote | 🔎 **Descobrir quem espalhou o segredo:** a linha do tempo já diz quem contou a quem |
-| 🎯 **Os planos:** três em cada quatro vidas começam um; 4 em cada 10 viram conquista | 🏦 **O empréstimo aos bancos como contrato** e os bens que rendem: o bloco I |
-| 🤫 **Os segredos:** em uma de cada quatro vidas, com a fofoca, a chantagem e a revelação com o nome de quem contou | 🌍 **Países de verdade e o mapa:** precisam de uma decisão sua (a política do jogo é toda fictícia) |
-| 📖 **Os capítulos** (em 7 de cada 10 vidas) e **o caminho não tomado** no cartão | |
-| 🌬️ **O ritmo:** depois de um ano pesado, a vida respira | |
+| 💰 Caixa, resultado do ano e dividendos tirados do lucro | 🏦 A empresa pegar empréstimo no banco (hoje, quem deve é você) |
+| 🏭 Clientela, estrutura com obra, preço, salário, qualidade, marca, marketing e P&D | 🤝 O lobby e o conselho que propõe com base nos números |
+| 📉 A quebra por causa: 22,8% de quem abre empresa (era 29% por sorteio) | 🏬 Fábricas e lojas como lugares (hoje são a estrutura) |
+| 🌍 O dólar, a exportação e a sanção no caixa | |
+| 👷 Os empregos no desemprego da cidade; o imposto na dívida do país | |
+| 📻 A mídia que vende publicidade e dá influência; o aluguel com vacância | |
 
-No túnel de vento (10.000 vidas), o jogo ficou menos repetitivo onde se mede: a saturação na 5ª vida caiu de 55,1% para 52,3% e na 20ª de 90,1% para 87,6%, com 913 histórias (eram 835) e os mesmos 460 e poucos toques por vida. As assinaturas do destino caíram um pouco (de 592 para 577 por 1.000 vidas), porque os planos levam mais vidas aos mesmos lugares; o caminho até lá é que varia, e o túnel agora mede isso (as causas dos pontos de virada e os capítulos). Contas, dívidas e promissórias fecham entrada por entrada, nenhuma estratégia vence em tudo e nenhum storylet ficou sem aparecer. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o poder que passa).
+No túnel de vento (10.000 vidas), as contas fecharam em todas as 4,09 milhões de entradas, agora com o caixa das empresas dentro. A bolsa voltou a mexer no valor de quem está nela (correlação 0,44, contra 0,00 das fechadas), e o dólar divide os setores (+0,34 no agro, −0,39 no comércio). O bilionário feito ficou mais raro (0,59%, eram 0,81%). A variedade ficou onde estava: saturação de 52,5% na 5ª vida e de 87,7% na 20ª, com 909 histórias por 1.000 vidas (eram 913). Os toques foram a 478,6 por vida (eram 464). A CPU ficou em 124 ms por vida (eram 125). A atualização anterior, o salto Ω, está no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
@@ -79,7 +77,7 @@ flowchart LR
   F2 --> C4["✍️ C4 · O texto revisado"]:::depois
   C4 --> K["👶 K · Filhos quando quiser"]:::depois
   K --> I["💰 I · O dinheiro que rende"]:::depois
-  I --> H["🏭 H · A empresa de verdade"]:::depois
+  I --> H["🏭 H · A empresa de verdade"]:::feito
   H --> J["🧬 J · A vida longa"]:::depois
   classDef feito fill:#2ea043,stroke:#1a7f37,color:#fff
   classDef proximo fill:#bf8700,stroke:#9a6700,color:#fff
@@ -93,7 +91,7 @@ flowchart LR
 | 🟣 **C4** · O texto revisado | a varredura de gramática do conteúdo inteiro, com regras novas no validador | depois |
 | 🟣 **K** · Filhos quando quiser | tentar ter filho, adotar e planejar, com a fertilidade pela idade | depois |
 | 🟣 **I** · O dinheiro que rende | os bens que produzem, a carteira de dívidas do SPC e do Serasa como ativo, o empréstimo aos bancos como contrato | depois |
-| 🟣 **H** · A empresa de verdade | o caixa da empresa, o lucro com origem, a pesquisa e desenvolvimento, as fábricas e lojas | depois |
+| 🟢 **H** · A empresa de verdade | o caixa da empresa, o lucro com origem, a pesquisa e desenvolvimento, as fábricas e lojas | ✅ feito (01/11, antes do F2, a seu pedido): o caixa, o produto, o mercado e a quebra por causa |
 | 🟣 **J** · A vida longa | a ciência da longevidade, com etapas até a reversão do envelhecimento e a continuidade do eu | depois |
 | 🟣 **G**, **L**, **M**, **P**, **N** | os impostos um por um; a escola inteira e mais profissões; a civilização; os gráficos; as formas de governo | depois |
 | ⚪ **O** · O mundo | o mapa-múndi e os países de verdade | pede a sua decisão: hoje governos, partidos e países são fictícios por requisito seu |
@@ -121,7 +119,7 @@ flowchart LR
 - Toda dívida é um contrato com o banco: cheque especial, empréstimo, financiamento com garantia e acordo. Atrasar suja o nome, e o imóvel financiado vai a leilão
 - Emprestar ao governo: o título do Tesouro paga cupom todo ano, vence ou é vendido pelo preço do dia, e o calote leva parte dele
 - 30 bens: morar, alugar, financiar, imóveis de renda, carros, iate, jatinho, emissora de TV
-- Até cinco empresas, com subsidiárias, fusões, bolsa e a mesa de quem manda
+- Até cinco empresas que são negócios: caixa, clientela, estrutura com obra, preço, salário, qualidade, marca, marketing, P&D, exportação e quebra por causa; com subsidiárias, fusões, bolsa e a mesa de quem manda
 - Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte, e a ilha que vira país, com população, PIB e coroa
 - Todo real tem contraparte: o extrato do ano e o da vida fecham entrada por entrada
 </details>
@@ -149,7 +147,7 @@ flowchart LR
 
 ## 🚧 O que o jogo ainda não tem
 
-- 🏢 O título do Tesouro comprado pela empresa (precisa do caixa da empresa) e o orçamento do governo item por item
+- 🏢 O título do Tesouro comprado pela empresa (o caixa dela já existe), a empresa que pega empréstimo no banco e o orçamento do governo item por item
 - ⚖️ A legitimidade de quem governa medida à parte da popularidade
 - 🛡️ A ocupação de território, as alianças militares e a guerra entre os países de fora
 - 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens (a mãe com o pai, o amigo com o par)

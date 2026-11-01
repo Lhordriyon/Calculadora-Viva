@@ -1784,3 +1784,32 @@ A última camada antes de publicar o salto mede o que as outras fizeram e ajusta
 - **O apoio ao arco começado já existia.** A causa de até dois anos pesa o dobro, e o projeto de pé também; não havia o que acrescentar sem repetir.
 - **O ritmo fica, mesmo pequeno.** O problema era menor do que eu supunha: só 5,7% dos anos pesados já vinham colados em outro. A regra baixa para 5,1% e aumenta os elos de causa distintos em 4%, custa uma conta por storylet e vai no sentido certo; fica, com o número dito.
 - **A medida do caminho não tem meta inventada.** Sem linha de base de antes do salto, o portão diz o que importa: vidas que acabam parecidas chegam por caminhos diferentes (o caminho tem mais assinaturas que o destino). A queda das assinaturas do destino (de 603 no começo do salto para perto de 560) vem dos planos, que levam mais vidas aos mesmos lugares; o caminho até lá é que varia.
+
+## O bloco H: a empresa de verdade (01/11)
+
+O dono pediu um simulador de negócios de verdade ("as empresas não têm caixa, não têm produto… eu só subo o patrimônio até o limite"). O bloco H da segunda lista passou na frente do F2 (I-132).
+
+**Medidas** (10.000 vidas; antes = a `main` do salto Ω):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Quebram, de quem abre empresa | 29,3% (sorteio no valor) | 22,8% (dois anos no vermelho sem caixa) |
+| Bilionário feito, de quem nasce sem fortuna | 0,81% | 0,59% |
+| Bolsa: correlação do crescimento com o humor (listadas × fechadas) | 0,37 × 0,00 | 0,44 × 0,00 |
+| Dólar: inclinação no agro × no comércio | 0,35 × −0,31 | 0,34 × −0,39 |
+| Saturação V5 / V20 | 52,3% / 87,6% | 52,5% / 87,7% |
+| Assinaturas por 1.000 vidas (destino) | 913 (577) | 909 (569) |
+| Toques por vida | 464,0 | 478,6 |
+| CPU por vida | 125,3 ms | 124,0 ms |
+
+**Decisões tomadas sozinho:**
+- **O valor segue os fundamentos**, metade do caminho por ano: o caixa, a obra e o maior entre os ativos a preço de venda e o lucro vezes o múltiplo do setor. O passeio aleatório de antes era o "número que sobe".
+- **A fundação a 70/30, com a clientela em 70% da estrutura:** cada setor começa perto do empate, e o começo é decisão. Com 85%, todo negócio nascia lucrando, e só 13% quebravam.
+- **A quebra por causa** (dois anos seguidos no prejuízo, com o caixa sem pagar as contas no segundo), com o aviso na folha no primeiro: um ano para reagir.
+- **O dólar entra no caixa do ano** (metade da variação, vezes o quanto o setor sente o dólar). Antes, ele só mudava o crescimento, e o lucro do ano não o via.
+- **O túnel mede o crescimento pelo valor**, porque o lucro agora é contábil, não a variação do valor.
+- **O valor que o conteúdo mexe passa pelo negócio** (o ganho vira estrutura, a perda sai do caixa), e o dinheiro do bolso é um aporte. Antes, os dois voltavam sozinhos para os fundamentos em dois anos.
+- **Os robôs revisam o negócio de dois em dois anos**, e a qualidade e a marca puxam 7% ao ano, não 8%: os toques e o bilionário feito tinham passado do teto (482 e 1,05% no túnel rápido).
+- **O número e o nome:** a ideia é a I-132 (a I-130 já era do namoro), e o bloco é o H da lista do dono, não o N (as formas de governo).
+- **Ficaram de fora:** o crédito da empresa no banco, o lobby, o conselho que propõe (I-12) e as fábricas e lojas como lugares.
+

@@ -4,6 +4,19 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🏭 H · A empresa de verdade · 01/11/2026
+
+> [!NOTE]
+> O pedido do dono (01/11): um simulador de negócios de verdade, com caixa, produto, mercado, e decisões que mexem na economia, nos personagens e na política.
+
+- 💰 **O negócio** (`negocio.ts`): caixa com contraparte, clientela, estrutura com um ano de obra, preço, salário, qualidade, marca, marketing, P&D, imposto de 25% do lucro, dividendos tirados do lucro e o valor pelos fundamentos (na bolsa, com o humor do mercado).
+- 📉 **A quebra por causa:** dois anos seguidos no prejuízo, com o caixa que não pagou as contas no segundo; a folha avisa no primeiro. Quebram 22,8% de quem abre empresa (eram 29%, por sorteio).
+- 🌍 **O mundo reage:** os empregos no desemprego da cidade, o imposto na dívida do país, o dólar do ano no caixa, a sanção que fecha a exportação com a causa, a fama na marca; a mídia própria vende publicidade e dá influência, e o aluguel sente a vacância.
+- 📖 **15 histórias do negócio**, e o valor que as antigas mexiam agora passa pelo caixa e pela estrutura; pôr dinheiro do bolso é um aporte de verdade.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,09 milhões de entradas; bilionário feito 0,59% (era 0,81%); saturação V5 52,5% e V20 87,7%; 909 histórias por 1.000 vidas (eram 913); toques 478,6 (eram 464); CPU 124 ms por vida (eram 125).
+
+---
+
 ## 🌱 Ω · Vidas que contam uma história · 01/11/2026
 
 > [!NOTE]
