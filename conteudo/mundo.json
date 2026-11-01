@@ -988,12 +988,12 @@
       "etapas": [
         { "texto": "Largar o cigarro", "feita": { "semMarcas": ["fumante"] }, "ajuda": ["saude"] },
         { "texto": "Mexer o corpo", "feita": { "marcas": ["ativo"] }, "ajuda": ["saude"] },
-        { "texto": "A saúde de volta aos 72", "feita": { "saude": { "min": 72 } }, "ajuda": ["saude"] }
+        { "texto": "A saúde de volta aos 66", "feita": { "saude": { "min": 66 } }, "ajuda": ["saude"] }
       ],
-      "meta": { "saude": { "min": 72 }, "semMarcas": ["fumante"] },
-      "prazo": 6,
+      "meta": { "saude": { "min": 66 }, "semMarcas": ["fumante"] },
+      "prazo": 8,
       "conquista": { "texto": "O médico olhou os exames duas vezes e perguntou o que você andava fazendo. Você respondeu com o orgulho de quem subiu a escada sem parar no meio.", "resumo": "recuperou a saúde" },
-      "vencido": { "texto": "Seis anos de segunda-feira que ia começar, e a saúde continua pedindo socorro.", "resumo": "não recuperou a saúde no prazo que se deu" },
+      "vencido": { "texto": "Oito anos de segunda-feira que ia começar, e a saúde continua pedindo socorro.", "resumo": "não recuperou a saúde no prazo que se deu" },
       "desistencia": { "texto": "Você desistiu de cuidar da saúde. O tênis de corrida virou chinelo de ir à padaria.", "resumo": "desistiu de cuidar da saúde" }
     },
     {
