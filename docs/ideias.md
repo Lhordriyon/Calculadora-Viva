@@ -96,7 +96,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | feita (01/11, no branch de trabalho) |
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | feita (01/11, no branch de trabalho) |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | feita (01/11) |
-| Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
+| Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | feita (01/11) |
 | Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
 
 ### I-130 · O namoro que esfria e o ex que continua
@@ -136,13 +136,15 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Problema:** o livro guarda o porquê de tudo, mas a vida aparece como uma lista de anos, e o rastro de uma simulação não é uma história sozinho.
 - **Efeitos causais:** padrões declarados sobre o livro (a amizade que virou sociedade, a volta por cima, a dívida que virou briga, o favor devolvido, o amor reencontrado) reconhecem os arcos de cada vida e os mostram como capítulos, na linha do tempo e no cartão; o diretor apoia o arco começado.
 - **Aceitação:** teste de cada padrão com uma vida montada; no túnel, a parte das vidas com capítulos e a variedade deles.
-- **Estado:** proposta (Ω5).
+- **Como foi feito (Ω5):** seis padrões no código (`capitulos.ts`), lidos do livro e das ocupações: o plano, o segredo que veio à tona, o amor que voltou, a dívida que virou calote, o favor devolvido e as pazes. O título e a frase saem do que o livro já conta (os resumos das duas entradas). "O diretor apoia o arco começado" ficou para o Ω6 (I-128).
+- **Estado:** feita (Ω5, 01/11).
 
 ### I-127 · O caminho não tomado
 - **Problema:** o jogador não tem como saber o peso de uma escolha.
 - **Efeitos causais:** o save guarda os comandos; no fim, o jogador escolhe um ponto de virada e vê a vida que não viveu: a mesma semente, as mesmas decisões até ali, a outra opção naquele ponto e um robô com o jeito dele depois. É um experimento dentro do modelo, não uma previsão, e a tela diz isso.
 - **Aceitação:** teste: refazer sem trocar nada dá a mesma vida; trocar a escolha muda a vida a partir dali.
-- **Estado:** proposta (Ω5).
+- **Como foi feito (Ω5):** a gravação fica no save, ao lado da vida (o começo, a memória do começo e os comandos), e não dentro do estado: o túnel não paga por ela. O robô que segue é o que mais acertou as escolhas de quem joga até ali. Só as escolhas trocam (as ações, não); a vida do herdeiro começa uma gravação nova.
+- **Estado:** feita (Ω5, 01/11).
 
 ### I-128 · O ritmo e o apoio às histórias
 - **Problema:** o diretor não sabe se a vida está agitada ou parada, e o arco começado pode não ter fim.
@@ -246,7 +248,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | feita (Ω3) |
 | I-125 | Os segredos: quem sabe o quê | Ω | Alta | feita (Ω4, 01/11) |
 | I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |
-| I-127 | O caminho não tomado | Ω | Alta | proposta (Ω5) |
+| I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | proposta (Ω6) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | proposta (Ω6) |
 

@@ -101,6 +101,8 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   promissorias.ts      o empréstimo entre pessoas: a promissória (quem emprestou e quem deve, pelo número da pessoa), a parcela, o atraso que magoa, a quitação, o calote e quitar pela folha
   projetos.ts          os projetos (mundo.json › projetos): o que quem joga quer, com etapas que são condições do estado; começar e desistir, e o fim (conquista, prazo vencido, sem tempo) com o começo de causa
   segredos.ts          os segredos (mundo.json › segredos): quem sabe e de quem é escondido, a notícia que corre pelos círculos, a revelação com quem contou ({fonte}) e o segredo que acaba calado
+  capitulos.ts         os capítulos da vida: a peneira que reconhece no livro os arcos com começo e fim (o plano, o segredo que veio à tona, o amor que voltou, o calote, o favor devolvido, as pazes)
+  caminho.ts           o caminho não tomado: a vida como comandos (a gravação), refeita igual; e a outra escolha num ponto de virada, com um robô do jeito de quem joga seguindo dali
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -130,7 +132,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   manifesto.ts         o que as regras do motor leem e escrevem (para o validador) e as etapas do ano, cada uma com o que lê e escreve
   regras.ts            números de equilíbrio (ritmo, mortalidade, juros, família, amor…)
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
-src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
+src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança e a gravação da vida (o caminho não tomado); exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
 src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, Projetos (a folha Planos), CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), voltar.ts (o voltar fecha a folha), Icones (SVG), estilo.css (tema noite e ouro)
 scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
@@ -290,3 +292,5 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | A fofoca corre de lado: quem sabe conta a terceiros duas vezes mais do que ao alvo, cada tema tem o quanto corre, e quem está muito magoado (40) conta direto ao alvo | agente (missão Ω4) | na primeira medida, 25 boatos para 538 segredos: a notícia ia direto ao alvo e não havia fofoca para contar |
 | Quem sabe pesa o segredo no pedido (a gravidade do tema dividida por 24) e diz por quê ("porque sabe do caso"); quem te emprestou dinheiro sabe da dívida sem ninguém contar | agente (missão Ω4) | a pessoa decide pelo que sabe, e quem sabe precisava mudar alguma decisão |
 | A chantagem custa uma fração do patrimônio, não um Pix para quem chantageia; criança conta a partir dos 8 | agente (missão Ω4) | o dinheiro do colega não é lido por ninguém (seria estado morto); o irmão que viu você chegando da festa precisava poder contar à mãe |
+| Os capítulos da vida são padrões lidos do livro (o plano, o segredo que veio à tona, o amor que voltou, o calote, o favor devolvido, as pazes), com título e frase tirados dos resumos; a linha do tempo marca o fim de cada um e o cartão conta os mais longos | agente (missão Ω5, I-126) | o livro guarda o porquê, mas a vida em lista de anos não se lia como história |
+| A interface grava a vida como comandos, com o começo e a memória do começo, no save (fora do estado); no cartão, a escolha que virou ponto de virada pode ser trocada, e a vida que não foi vivida aparece como experimento do modelo, só se a vida refeita for a mesma até o ponto | agente (missão Ω5, I-127) | quem joga não tinha como saber o peso de uma escolha; fora do estado, o túnel não paga e o determinismo não muda |

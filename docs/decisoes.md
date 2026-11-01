@@ -1732,3 +1732,33 @@ As camadas 1 a 3 deram gente, voz e vontade; a 4 dá o que fica escondido. Até 
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
+
+## Missão Ω, camada 5: os capítulos e o caminho não tomado (01/11)
+
+As camadas 1 a 4 encheram o livro de gente, voz, vontade e segredo; a 5 faz o livro contar a história. O livro guardava o porquê de tudo, mas uma vida em lista de anos não se lia como história (I-126), e quem jogava não tinha como saber o peso de uma escolha (I-127).
+
+**O que mudou** (`docs/motor.md › Os capítulos` e `› O caminho não tomado`):
+- a peneira reconhece seis arcos no livro, cada um com começo, fim e uma frase dos dois momentos: o plano (o começo e a conquista, ou a pessoa que morreu antes), o segredo que veio à tona, o amor que voltou ("A volta de Alice: aos 25, você deixou o namoro com Alice morrer devagar; aos 45, voltou com Alice"), a dívida que virou calote, o favor devolvido e as pazes;
+- a linha do tempo marca o capítulo na entrada que o fecha, e o cartão da vida conta os mais longos, um de cada tipo antes de repetir;
+- a interface grava a vida como comandos (o começo, a memória entre vidas do começo e o que quem joga fez); no cartão, cada ponto de virada que foi escolha ganha "E se tivesse escolhido outra coisa?", e o motor refaz a vida igual até ali, toma a outra opção e deixa um robô com o jeito de quem joga seguir até o fim;
+- o plano "cuidar da saúde" ficou possível: a meta passou de 72 para 66, com oito anos em vez de seis (com a meta antiga, 2 conquistas em 3.384 tentativas, e nenhuma na medida do Ω4).
+
+**Medidas** (2.000 vidas do túnel rápido; antes = a camada 4 no mesmo túnel):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Vidas com um capítulo | — | 69,2% (1,48 por vida; 20,8% com dois tipos ou mais) |
+| Capítulos por tipo | — | plano 2.246 · segredo 406 · calote 278 · volta 19 · pazes 11 · favor 3 |
+| Planos conquistados em alguma vida | 8 de 9 | 9 de 9 |
+| Saturação V5 / V20 | 52,6% / 88,0% | 52,8% / 87,9% |
+| Assinaturas por 1.000 vidas (destino) | 908 (567) | 916 (557) |
+| Toques por vida | 464,6 | 464,9 |
+
+**Decisões tomadas sozinho:**
+- **Os padrões são código; as palavras, do livro.** A ideia falava em padrões declarados; seis detectores no código, que leem o livro e as ocupações, cobrem os arcos que o jogo já produz, e o título e a frase saem dos resumos que as entradas já têm. Um padrão novo pede código, mas nenhum texto novo.
+- **O segredo calado não é capítulo.** Ninguém soube: não há história para contar. O capítulo do segredo é o que veio à tona, de qualquer jeito (contado, descoberto, confessado).
+- **O fim do namoro conta a última coisa visível com a pessoa.** O fim do namoro costuma ser regra calada do ano; o capítulo da volta conta a última cena com a pessoa antes dele (o término, o casamento, a briga).
+- **A gravação fica no save, fora do estado.** Assim o túnel não paga por ela e o determinismo do motor não muda: a interface grava o que manda, e o motor só refaz. A gravação que não abre, ou que não é da vida em andamento, cai sozinha, sem levar a vida junto.
+- **A vida refeita precisa ser a mesma até o ponto, ou não há caminho.** Se o jogo mudou desde que a vida começou, ela não se refaz igual; em vez de mostrar uma vida que diverge antes da escolha, o cartão diz que não deu.
+- **Quem segue é um robô com o jeito de quem joga.** Em cada escolha até o ponto, o motor confere qual robô (cauteloso ou arriscado) escolheria o mesmo, e o que mais acertou segue a vida. O cartão diz qual foi e que é um experimento do modelo, não uma previsão.
+- **Só as escolhas se trocam.** As ações do ano também mudam a vida, mas trocá-las pediria escolher qual outra ação; o ponto de virada que é escolha tem a outra opção ali, na tela.
