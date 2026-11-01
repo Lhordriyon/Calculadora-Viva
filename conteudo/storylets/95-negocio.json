@@ -1,0 +1,487 @@
+[
+  {
+    "id": "fila_de_pedidos",
+    "idade": [18, 90],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 4,
+    "condicoes": { "empresa.ocupacao": { "min": 1.15 }, "empresa.obra": { "max": 0 } },
+    "texto": "A fila de pedidos {empresa:do|da} {empresa} passou de três meses: o mercado quer comprar {empresa.demanda} por ano, e a estrutura entrega {empresa.capacidade}. O gerente de operações entrou na sua sala com uma planta de ampliação e um sorriso de quem já sabe a resposta.",
+    "resumo": "viu a fila de pedidos {empresa:do|da} {empresa} passar de três meses",
+    "escolhas": [
+      {
+        "texto": "Ampliar pela metade",
+        "resumo": "mandou ampliar {empresa}",
+        "resultado": {
+          "texto": "A obra começou na segunda, paga com o caixa que havia. Até ficar pronta, a fila continua, mas agora tem data para acabar.",
+          "efeitos": { "negocio": { "expandir": 0.5 }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Subir o preço",
+        "resumo": "subiu o preço {empresa:do|da} {empresa}",
+        "condicoes": { "empresa.preco": ["popular", "medio"] },
+        "bloqueio": "o preço já é o mais alto da praça",
+        "resultado": {
+          "texto": "Você subiu o preço. A fila diminuiu, o lucro por venda aumentou, e uns clientes antigos reclamaram no grupo do bairro.",
+          "efeitos": { "negocio": { "preco": "premium" }, "empresa.marca": -2 }
+        }
+      },
+      {
+        "texto": "Deixar a fila crescer",
+        "resumo": "deixou a fila {empresa:do|da} {empresa} crescer",
+        "resultado": {
+          "texto": "Fila é sinal de sucesso, você disse. Os clientes que desistiram de esperar disseram outra coisa.",
+          "efeitos": { "empresa.marca": -4, "empresa.tracao": -2, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "estrutura_parada",
+    "idade": [18, 90],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 4,
+    "condicoes": { "empresa.ocupacao": { "max": 0.7 }, "empresa.capacidade": { "min": 100000 } },
+    "texto": "Metade das máquinas {empresa:do|da} {empresa} passa o dia desligada. A estrutura custa o mesmo cheia ou vazia, e o financeiro fez questão de mostrar a planilha.",
+    "resumo": "viu metade {empresa:do|da} {empresa} parada",
+    "escolhas": [
+      {
+        "texto": "Fechar um quarto e demitir",
+        "resumo": "fechou um quarto {empresa:do|da} {empresa} e demitiu",
+        "resultado": {
+          "texto": "Você fechou um quarto da estrutura e vendeu as máquinas pela metade do que custaram. A conta melhorou no mês seguinte; a sexta-feira das demissões, você não esquece.",
+          "efeitos": { "negocio": { "cortar": 0.25 }, "felicidade": -3, "empresa.tracao": 3 }
+        }
+      },
+      {
+        "texto": "Baixar o preço para encher",
+        "resumo": "baixou o preço {empresa:do|da} {empresa} para encher a casa",
+        "condicoes": { "empresa.preco": ["medio", "premium"] },
+        "bloqueio": "o preço já é o mais baixo da praça",
+        "resultado": {
+          "texto": "O preço caiu e o movimento voltou. A margem, nem tanto.",
+          "efeitos": { "negocio": { "preco": "popular" }, "felicidade": 1, "empresa.tracao": -1 }
+        }
+      },
+      {
+        "texto": "Apostar no marketing",
+        "resumo": "apostou no marketing {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Campanha nova, outdoor na avenida e um jingle que gruda. Oito por cento das vendas vão para a propaganda daqui em diante.",
+          "efeitos": { "negocio": { "marketing": 0.08 }, "felicidade": -1, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "caixa_sobrando",
+    "idade": [20, 95],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "empresa.caixa": { "min": 3000000 }, "empresa.lucro": { "min": 0 }, "empresa.retirada": { "max": 0.2 } },
+    "texto": "Na reunião do conselho, o diretor financeiro mostrou {empresa.caixa} parados no caixa {empresa:do|da} {empresa}. \"Dinheiro parado é dinheiro triste\", disse, e esperou a sua resposta.",
+    "resumo": "ouviu o conselho {empresa:do|da} {empresa} perguntar o que fazer com o caixa",
+    "escolhas": [
+      {
+        "texto": "Distribuir dividendos",
+        "resumo": "passou a tirar dividendos {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Parte do lucro passa a cair na sua conta todo ano. O conselho aplaudiu; a obra pode esperar.",
+          "efeitos": { "empresa.retirada": { "definir": 0.6 }, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Dobrar a pesquisa",
+        "resumo": "pôs o caixa {empresa:do|da} {empresa} em pesquisa",
+        "resultado": {
+          "texto": "O laboratório ganhou verba e gente nova. Resultado, só daqui a uns anos.",
+          "efeitos": { "negocio": { "pd": 0.08 } }
+        }
+      },
+      {
+        "texto": "Abrir uma unidade nova",
+        "resumo": "abriu uma unidade nova {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Unidade nova, na outra ponta da cidade. A placa vai demorar mais que a obra.",
+          "efeitos": { "negocio": { "expandir": 0.5 } }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ano_no_prejuizo",
+    "idade": [18, 95],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 3,
+    "condicoes": { "empresa.lucro": { "max": -1 } },
+    "texto": "{empresa} fechou o ano no prejuízo: {empresa.lucro}. O contador falou devagar, como quem dá notícia de doença.",
+    "resumo": "viu {empresa} fechar o ano no prejuízo",
+    "escolhas": [
+      {
+        "texto": "Cortar um quarto da estrutura",
+        "resumo": "cortou um quarto {empresa:do|da} {empresa} para estancar o prejuízo",
+        "resultado": {
+          "texto": "Você cortou um quarto da estrutura. O prejuízo encolheu; a equipe, também.",
+          "efeitos": { "negocio": { "cortar": 0.25 }, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Trazer um sócio",
+        "resumo": "trouxe um sócio para {empresa}",
+        "resultado": {
+          "texto": "Um investidor pôs {rodada} no caixa em troca de um quinto da empresa, e de uma cadeira no conselho que ele ocupa com os pés na mesa.",
+          "efeitos": { "rodada": { "parte": 0.2 } }
+        }
+      },
+      {
+        "texto": "Segurar e torcer",
+        "resumo": "segurou {empresa} no prejuízo, torcendo",
+        "resultado": {
+          "texto": "Você cortou o cafezinho, trocou de fornecedor de papel e rezou.",
+          "efeitos": { "felicidade": -1, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "greve_do_piso",
+    "idade": [20, 95],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "empresa.salario": "piso", "empresa.funcionarios": { "min": 12 } },
+    "texto": "Os funcionários {empresa:do|da} {empresa} cruzaram os braços. O piso da categoria, disseram no carro de som, não paga o aluguel de ninguém.",
+    "resumo": "enfrentou a greve {empresa:do|da} {empresa}",
+    "escolhas": [
+      {
+        "texto": "Dar o aumento",
+        "resumo": "deu o aumento que a greve pedia",
+        "resultado": {
+          "texto": "Acordo fechado em dois dias. A estrutura ficou mais cara, e a fábrica voltou a fazer barulho.",
+          "efeitos": { "negocio": { "salario": "mercado" }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Endurecer",
+        "resumo": "endureceu com a greve {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Duas semanas parada. Os pedidos atrasaram, os clientes foram experimentar a concorrente, e você aprendeu o nome de todos os sindicalistas.",
+          "efeitos": { "negocio": { "demanda": -0.12 }, "empresa.marca": -5, "felicidade": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_recall",
+    "idade": [20, 95],
+    "peso": 4,
+    "condicoes": { "empresa.preco": "premium", "empresa.qualidade": { "max": 48 } },
+    "texto": "Um lote {empresa:do|da} {empresa} voltou com defeito, e alguém filmou. O vídeo tem mais visualizações que a sua propaganda.",
+    "resumo": "teve um lote com defeito filmado",
+    "escolhas": [
+      {
+        "texto": "Fazer o recall",
+        "resumo": "fez o recall {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Recall completo, nota pública e verba nova para a engenharia. Doeu nas vendas e salvou o nome.",
+          "efeitos": { "negocio": { "demanda": -0.05, "pd": 0.08 }, "empresa.marca": 3 }
+        }
+      },
+      {
+        "texto": "Abafar",
+        "resumo": "tentou abafar o defeito {empresa:do|da} {empresa}",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O vídeo sumiu da timeline. Desta vez.",
+          "efeitos": { "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A reportagem saiu no domingo. Ninguém lembrava do produto; todo mundo lembra do escândalo.",
+          "efeitos": { "empresa.marca": -20, "negocio": { "demanda": -0.2 }, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "concorrente_de_fora",
+    "idade": [20, 95],
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "empresa.valor": { "min": 500000 } },
+    "texto": "Uma concorrente de fora chegou ao Brasil vendendo o mesmo que {empresa} vende, por trinta por cento menos e com um aplicativo que funciona.",
+    "resumo": "viu uma concorrente de fora chegar com preço menor",
+    "escolhas": [
+      {
+        "texto": "Brigar no preço",
+        "resumo": "brigou no preço com a concorrente de fora",
+        "resultado": {
+          "texto": "Você baixou o preço. A margem encolheu; a fatia ficou.",
+          "efeitos": { "negocio": { "preco": "popular" }, "felicidade": -1, "empresa.tracao": 1 }
+        }
+      },
+      {
+        "texto": "Brigar no produto",
+        "resumo": "brigou no produto com a concorrente de fora",
+        "resultado": {
+          "texto": "Você apostou no que ela não tem: o produto melhor e o nome conhecido. Oito por cento das vendas em pesquisa e mais oito em propaganda.",
+          "efeitos": { "negocio": { "pd": 0.08, "marketing": 0.08 }, "felicidade": -2, "empresa.tracao": 2 }
+        }
+      },
+      {
+        "texto": "Deixar o mercado decidir",
+        "resumo": "deixou o mercado decidir entre {empresa} e a concorrente",
+        "resultado": {
+          "texto": "Parte dos clientes foi experimentar a novidade. Alguns voltaram, reclamando do aplicativo.",
+          "efeitos": { "negocio": { "demanda": -0.15 }, "felicidade": 1, "empresa.tracao": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "primeiro_container",
+    "idade": [20, 95],
+    "peso": 3,
+    "condicoes": { "empresa.exporta": ["federacao", "celeste", "liga", "pacto"] },
+    "texto": "O primeiro container {empresa:do|da} {empresa} saiu do porto. No escritório, alguém pendurou um mapa-múndi e começou a espetar alfinetes.",
+    "resumo": "viu o primeiro container {empresa:do|da} {empresa} sair do porto",
+    "escolhas": [
+      {
+        "texto": "Comemorar com a equipe",
+        "resumo": "comemorou a primeira exportação com a equipe",
+        "resultado": {
+          "texto": "Churrasco no pátio, foto com o container e um discurso seu com a palavra \"globalização\" três vezes.",
+          "efeitos": { "felicidade": 3, "empresa.marca": 2 }
+        }
+      },
+      {
+        "texto": "Já mirar o próximo mercado",
+        "resumo": "mirou o próximo mercado lá fora",
+        "resultado": {
+          "texto": "Você passou a festa olhando o mapa. Os alfinetes, agora, são metas.",
+          "efeitos": { "empresa.tracao": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "marca_em_alta",
+    "idade": [20, 95],
+    "peso": 2,
+    "condicoes": { "empresa.marca": { "min": 75 } },
+    "texto": "{empresa} virou nome de coisa: as pessoas pedem o produto pela marca, mesmo quando compram o da concorrente.",
+    "resumo": "viu {empresa} virar nome de coisa",
+    "escolhas": [
+      {
+        "texto": "Lançar a linha premium",
+        "resumo": "lançou a linha premium {empresa:do|da} {empresa}",
+        "condicoes": { "empresa.preco": ["popular", "medio"] },
+        "bloqueio": "a linha já é premium",
+        "resultado": {
+          "texto": "Embalagem preta, letra dourada e o preço trinta por cento maior. Vendeu.",
+          "efeitos": { "negocio": { "preco": "premium" }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Licenciar a marca",
+        "resumo": "licenciou a marca {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Camiseta, caneca e um chaveiro de gosto duvidoso. A marca foi para a rua sozinha.",
+          "efeitos": { "empresa.tracao": 3, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Deixar como está",
+        "resumo": "deixou a marca {empresa:do|da} {empresa} como estava",
+        "resultado": {
+          "texto": "Marca boa é marca que não precisa de mais nada. Por enquanto.",
+          "efeitos": { "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "imposto_do_ano",
+    "idade": [20, 95],
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 10,
+    "condicoes": { "empresa.impostos": { "min": 500000 } },
+    "texto": "O contador mostrou o papel: {empresa} pagou {empresa.impostos} de imposto no ano. Daria para pagar uma escola pública inteira, e de certa forma pagou.",
+    "resumo": "viu quanto {empresa} pagou de imposto",
+    "escolhas": [
+      {
+        "texto": "Pagar e dormir tranquilo",
+        "resumo": "pagou o imposto {empresa:do|da} {empresa} e dormiu tranquilo",
+        "resultado": {
+          "texto": "Você assinou, pagou e dormiu às dez. É um luxo também.",
+          "efeitos": { "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Planejamento tributário agressivo",
+        "resumo": "fez um planejamento tributário agressivo para {empresa}",
+        "teste": { "chance": 0.6 },
+        "sucesso": {
+          "texto": "O escritório achou três brechas e uma vírgula. O imposto do ano que vem promete ser menor.",
+          "efeitos": { "empresa.tracao": 1, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "A Receita gostou tanto do planejamento que mandou um auditor para conhecer pessoalmente.",
+          "efeitos": { "felicidade": -2, "agendar": [{ "evento": "fiscalizacao", "em": [1, 2] }] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "qualidade_premiada",
+    "idade": [20, 95],
+    "peso": 2,
+    "condicoes": { "empresa.qualidade": { "min": 78 } },
+    "texto": "O produto {empresa:do|da} {empresa} ganhou o prêmio do setor. O troféu é feio; a reportagem, nem tanto.",
+    "resumo": "viu o produto {empresa:do|da} {empresa} ganhar o prêmio do setor",
+    "escolhas": [
+      {
+        "texto": "Pôr o selo na embalagem",
+        "resumo": "pôs o selo do prêmio na embalagem",
+        "resultado": {
+          "texto": "Selo dourado na caixa. As vendas notaram antes de você.",
+          "efeitos": { "empresa.marca": 6 }
+        }
+      },
+      {
+        "texto": "Dividir com a equipe",
+        "resumo": "dividiu o prêmio com a equipe {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Aumento para o laboratório e o troféu na copa, perto do café. A equipe que ganhou não pede demissão tão cedo.",
+          "efeitos": { "negocio": { "salario": "acima" }, "felicidade": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "receita_recorde",
+    "idade": [20, 95],
+    "peso": 2,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "empresa.receita": { "min": 20000000 }, "empresa.lucro": { "min": 1 } },
+    "texto": "{empresa} fechou o ano vendendo {empresa.receita}, com {empresa.lucro} de lucro. O recorde foi comemorado com bolo de padaria e um discurso seu que ninguém pediu.",
+    "resumo": "viu {empresa} bater o recorde de vendas",
+    "escolhas": [
+      {
+        "texto": "Bônus para todo mundo",
+        "resumo": "deu bônus para a equipe {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Bônus no contracheque e salário acima do mercado daqui em diante. O pessoal da concorrente começou a mandar currículo.",
+          "efeitos": { "negocio": { "salario": "acima" }, "felicidade": 2 }
+        }
+      },
+      {
+        "texto": "Reinvestir",
+        "resumo": "reinvestiu o recorde {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "Obra nova, paga com o caixa do recorde. O bolo de padaria foi o único luxo.",
+          "efeitos": { "negocio": { "expandir": 0.3 }, "empresa.tracao": 2 }
+        }
+      },
+      {
+        "texto": "Guardar no caixa",
+        "resumo": "guardou o recorde no caixa {empresa:do|da} {empresa}",
+        "resultado": {
+          "texto": "O dinheiro ficou no caixa, esperando a crise que sempre vem.",
+          "efeitos": { "felicidade": 1, "empresa.tracao": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_engenheira_saiu",
+    "idade": [20, 95],
+    "peso": 3,
+    "condicoes": { "empresa.pd": { "max": 0.001 }, "empresa.qualidade": { "max": 45 } },
+    "texto": "A melhor engenheira {empresa:do|da} {empresa} pediu demissão. Disse que foi para uma empresa \"que ainda pesquisa alguma coisa\".",
+    "resumo": "perdeu a melhor engenheira {empresa:do|da} {empresa}",
+    "escolhas": [
+      {
+        "texto": "Voltar a investir em pesquisa",
+        "resumo": "voltou a pôr dinheiro em pesquisa",
+        "resultado": {
+          "texto": "Três por cento das vendas voltam para o laboratório. A engenheira não volta; a próxima talvez fique.",
+          "efeitos": { "negocio": { "pd": 0.03 } }
+        }
+      },
+      {
+        "texto": "Contratar alguém mais barato",
+        "resumo": "contratou alguém mais barato no lugar dela",
+        "resultado": {
+          "texto": "O substituto custa a metade e sabe um terço. A conta fecha; o produto, aos poucos, não.",
+          "efeitos": { "empresa.qualidade": -4, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ninguem_conhece",
+    "idade": [18, 95],
+    "peso": 3,
+    "condicoes": { "empresa.marketing": { "max": 0.001 }, "empresa.marca": { "max": 40 } },
+    "texto": "Numa feira do setor, ninguém tinha ouvido falar {empresa:do|da} {empresa}. Um cliente em potencial confundiu com uma marca de detergente.",
+    "resumo": "descobriu que ninguém conhecia {empresa}",
+    "escolhas": [
+      {
+        "texto": "Contratar uma agência",
+        "resumo": "contratou uma agência para {empresa}",
+        "resultado": {
+          "texto": "Três por cento das vendas vão para a propaganda. A agência mandou um logo novo, que você achou igual ao antigo.",
+          "efeitos": { "negocio": { "marketing": 0.03 } }
+        }
+      },
+      {
+        "texto": "Confiar no boca a boca",
+        "resumo": "confiou no boca a boca para {empresa}",
+        "resultado": {
+          "texto": "Boca a boca funciona, você disse. Funciona devagar.",
+          "efeitos": { "empresa.tracao": -1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_licitacao",
+    "idade": [25, 95],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "cargo": ["prefeito", "governador", "presidente"], "empresa.valor": { "min": 100000 } },
+    "texto": "Saiu o edital de uma obra grande do governo, e {empresa} tem tudo para ganhar: preço, estrutura e um dono que conhece muito bem quem vai julgar a licitação. Você.",
+    "resumo": "viu {empresa} ter chance numa licitação do próprio governo",
+    "escolhas": [
+      {
+        "texto": "Deixar a empresa concorrer",
+        "resumo": "deixou {empresa} concorrer na licitação do próprio governo",
+        "teste": { "chance": 0.65 },
+        "sucesso": {
+          "texto": "{empresa} ganhou o contrato, com o menor preço e um parecer impecável. A oposição leu o parecer três vezes.",
+          "efeitos": { "negocio": { "demanda": 0.25 }, "felicidade": 2 }
+        },
+        "fracasso": {
+          "texto": "{empresa} ganhou, e o jornal descobriu quem é o dono na mesma semana. Conflito de interesses virou manchete.",
+          "efeitos": { "negocio": { "demanda": 0.25 }, "eu.popularidade": -12, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Proibir a empresa de concorrer",
+        "resumo": "proibiu {empresa} de concorrer no próprio governo",
+        "resultado": {
+          "texto": "Você assinou a proibição com a caneta do cargo. A concorrente ganhou o contrato; a sua biografia, um parágrafo.",
+          "efeitos": { "eu.popularidade": 4, "felicidade": 1 }
+        }
+      }
+    ]
+  }
+]
