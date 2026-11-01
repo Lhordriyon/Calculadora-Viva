@@ -102,7 +102,7 @@ A origem é procedural: **8 classes** (extrema pobreza a trilionária; as duas �
    1. agendados vencidos (o primeiro que ainda cabe; os outros esperam um ano);
    2. **marcos** (`marco: true`) elegíveis: a espinha da vida não depende de sorteio;
    3. personagem em crise (tensão ≥ 2);
-   4. sorteio com chance de `ritmo(idade)` (30% na primeira infância, 85% dos 13 aos 29, 78% dos 30 aos 49, 68% dos 50 aos 64, 52% depois) entre eventos e iniciativas, por **saliência** = peso × especificidade (1 + 0,25 por cláusula + 0,25 se tem ator) × novidade (memória entre vidas e vezes nesta vida) × tensão × 2 se a causa consultada surgiu há até 2 anos.
+   4. sorteio com chance de `ritmo(idade)` (30% na primeira infância, 85% dos 13 aos 29, 78% dos 30 aos 49, 68% dos 50 aos 64, 52% depois) entre eventos e iniciativas, por **saliência** = peso × especificidade (1 + 0,25 por cláusula + 0,25 se tem ator) × novidade (memória entre vidas e vezes nesta vida) × tensão × 2 se a causa consultada surgiu há até 2 anos × 2 se lê um projeto de pé × o ritmo do ano: depois de um ano pesado (o que aconteceu tirou 8 de felicidade ou mais), a história leve (a média da felicidade dos desfechos ≥ 1) pesa 1,6 e a pesada (≤ −2), 0,6 (`diretor.ts › ritmoDoAno`, missão Ω6).
 14. Sem nada visível no ano, uma **linha curta** de `linhas.json` (por idade e condições, sem repetir as 15 últimas).
 
 Elegível = idade na faixa, ator possível (vivo, salvo storylets sobre quem morreu), condições atendidas e, se não for repetível, nunca visto nesta vida (repetível: respeita o intervalo).

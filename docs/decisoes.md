@@ -1762,3 +1762,25 @@ As camadas 1 a 4 encheram o livro de gente, voz, vontade e segredo; a 5 faz o li
 - **A vida refeita precisa ser a mesma até o ponto, ou não há caminho.** Se o jogo mudou desde que a vida começou, ela não se refaz igual; em vez de mostrar uma vida que diverge antes da escolha, o cartão diz que não deu.
 - **Quem segue é um robô com o jeito de quem joga.** Em cada escolha até o ponto, o motor confere qual robô (cauteloso ou arriscado) escolheria o mesmo, e o que mais acertou segue a vida. O cartão diz qual foi e que é um experimento do modelo, não uma previsão.
 - **Só as escolhas se trocam.** As ações do ano também mudam a vida, mas trocá-las pediria escolher qual outra ação; o ponto de virada que é escolha tem a outra opção ali, na tela.
+
+## Missão Ω, camada 6: o ritmo e a medida do caminho (01/11)
+
+A última camada antes de publicar o salto mede o que as outras fizeram e ajusta o passo do diretor (I-128, I-129).
+
+**O que mudou:**
+- o diretor respira: depois de um ano pesado (o que aconteceu tirou 8 de felicidade ou mais), a história leve (a média da felicidade dos desfechos de pelo menos +1) pesa 1,6 e a pesada (−2 ou menos), 0,6;
+- o túnel mede a variedade pelo caminho: a assinatura do caminho de cada vida (as causas dos pontos de virada e os tipos de capítulo) ao lado da do destino, e os elos de causa distintos (o storylet que causou e o que aconteceu); e o ritmo (quantos anos pesados vêm colados em outro).
+
+**Medidas** (2.000 vidas do túnel rápido, em A/B na mesma máquina; antes = sem o ritmo):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Anos pesados colados em outro | 5,7% | 5,1% |
+| Elos de causa distintos no túnel | 1.842 | 1.911 |
+| Assinaturas por 1.000 vidas: caminho / destino | 665 / 557 | 655 / 560 |
+| Saturação V5 / V20 | 52,8% / 87,9% | 52,1% / 88,3% |
+
+**Decisões tomadas sozinho:**
+- **O apoio ao arco começado já existia.** A causa de até dois anos pesa o dobro, e o projeto de pé também; não havia o que acrescentar sem repetir.
+- **O ritmo fica, mesmo pequeno.** O problema era menor do que eu supunha: só 5,7% dos anos pesados já vinham colados em outro. A regra baixa para 5,1% e aumenta os elos de causa distintos em 4%, custa uma conta por storylet e vai no sentido certo; fica, com o número dito.
+- **A medida do caminho não tem meta inventada.** Sem linha de base de antes do salto, o portão diz o que importa: vidas que acabam parecidas chegam por caminhos diferentes (o caminho tem mais assinaturas que o destino). A queda das assinaturas do destino (de 603 no começo do salto para perto de 560) vem dos planos, que levam mais vidas aos mesmos lugares; o caminho até lá é que varia.

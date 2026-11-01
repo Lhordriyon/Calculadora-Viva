@@ -97,7 +97,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | feita (01/11, no branch de trabalho) |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | feita (01/11) |
 | Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | feita (01/11) |
-| Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
+| Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | feita (01/11) |
 
 ### I-130 · O namoro que esfria e o ex que continua
 - **Problema:** o namoro só acabava numa crise rara, e quem ia embora sumia: o amor de antes ficava no lugar do amor para sempre, sem vida e sem memória. Só 12% das vidas chegavam a ter um ex.
@@ -149,12 +149,14 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 ### I-128 · O ritmo e o apoio às histórias
 - **Problema:** o diretor não sabe se a vida está agitada ou parada, e o arco começado pode não ter fim.
 - **Efeitos causais:** anos tranquilos depois de anos pesados; o storylet que dá continuidade a um arco começado ganha peso.
-- **Estado:** proposta (Ω6).
+- **Como foi feito (Ω6):** o apoio às histórias começadas já existia (a causa de até dois anos pesa o dobro; o projeto de pé, também). O ritmo entrou no diretor: depois de um ano pesado, a história leve pesa 1,6 e a pesada 0,6. Medido em A/B, o problema era menor do que parecia: sem a regra, só 5,7% dos anos pesados vinham colados em outro; com ela, 5,1%.
+- **Estado:** feita (Ω6, 01/11).
 
 ### I-129 · A diversidade pela estrutura causal
 - **Problema:** a assinatura de vida mede o destino (classe, carreira, estado civil), não o caminho. Duas vidas com os mesmos números e causas diferentes contam igual.
 - **Efeitos causais:** o túnel mede a diversidade pelas cadeias de causa (quem levou a quê) e pelos capítulos, ao lado da saturação.
-- **Estado:** proposta (Ω6).
+- **Como foi feito (Ω6):** o túnel mede a assinatura do caminho (as causas dos pontos de virada e os tipos de capítulo de cada vida) ao lado da do destino, e os elos de causa distintos (o storylet que causou e o que aconteceu). Vidas que acabam parecidas chegam por caminhos diferentes: o caminho tem mais assinaturas por 1.000 vidas que o destino.
+- **Estado:** feita (Ω6, 01/11).
 
 ## Índice
 
@@ -249,8 +251,8 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-125 | Os segredos: quem sabe o quê | Ω | Alta | feita (Ω4, 01/11) |
 | I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
-| I-128 | O ritmo e o apoio às histórias | Ω | Média | proposta (Ω6) |
-| I-129 | A diversidade pela estrutura causal | Ω | Média | proposta (Ω6) |
+| I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
+| I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
 
 (os blocos de cada ideia vêm na versão final)
 
