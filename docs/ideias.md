@@ -94,7 +94,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 |---|---|---|---|
 | Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | feita (27/10, no branch de trabalho) |
 | Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | feita (01/11, no branch de trabalho) |
-| Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | proposta |
+| Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | feita (01/11, no branch de trabalho) |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
 | Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
 | Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
@@ -123,12 +123,13 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Efeitos causais:** o jogador escolhe até três projetos (sair das dívidas, reparar uma relação, ter um filho, mudar de cidade, abrir uma empresa, chegar a um cargo, comprar a casa, cuidar da saúde, a independência financeira). Cada um mostra as etapas possíveis, que são ações, operações e verbos que já existem; o progresso é lido do estado; o projeto dá histórias próprias e termina em conquista, desistência ou prazo vencido, com a causa no livro.
 - **Aceitação:** teste de cada projeto do começo ao fim; no túnel, os robôs perseguem projetos e a saturação cai.
 - **Desenho (Ω3):** os projetos são conteúdo (`mundo.json › projetos`), não código: cada um tem quando ele faz sentido (uma condição), as etapas (cada etapa é uma condição do estado, com o texto e o que ajuda: os verbos, as ações e as folhas que já existem), a meta, o prazo e os textos da conquista, da desistência e do prazo vencido. O projeto ativo é uma qualidade de quem joga (`projeto_<id>`, com o ano e a entrada que o começou), até três; o de reparar uma relação guarda a pessoa (pelo número) e lê as condições com ela de ator. Começar e desistir são operações (não gastam a ficha); uma etapa do ano confere as etapas e a meta: a etapa cumprida é notícia quando muda a história, a meta vira conquista com o começo e as etapas de causa, o prazo vencido vira fracasso. O conteúdo escreve storylets do projeto (a visita ao apartamento decorado, o teste de gravidez) lendo a qualidade, e o diretor dá peso a eles enquanto o projeto vive. Os robôs escolhem projetos pelo jeito de cada um e dão preferência ao que ajuda. A interface: uma linha no palco com os projetos e o andamento (etapas cumpridas), e uma folha para escolher, ver o que ajuda e desistir.
-- **Estado:** proposta (Ω3).
+- **Estado:** feita (Ω3, 01/11).
 
 ### I-125 · Os segredos
 - **Problema:** todo mundo sabe o que a vida de quem joga mostra; nada fica escondido, nada é descoberto.
 - **Efeitos causais:** algumas escolhas criam segredos (o caso, a dívida escondida, o crime, o filho fora do casamento); cada pessoa sabe o que viu, ouviu ou descobriu; a informação corre pela rede pelo traço e pela proximidade; a opinião só usa o que a pessoa sabe; a revelação e a chantagem são consequências; descobrir quem espalhou vira projeto.
 - **Aceitação:** teste: o segredo que ninguém sabe não muda opinião nenhuma; o que a irmã sabe pode chegar à mãe, não ao chefe sem caminho.
+- **Desenho (Ω4):** o segredo é uma entidade (`sgr<entrada>`): o tema (o caso, a dívida escondida, o dinheiro por fora, o diploma de mentira), a entrada que o criou, de quem ele é escondido (o alvo, pelo número da pessoa) e quem sabe (os números de quem sabe). Nasce de um efeito do conteúdo (`segredo`), como a festa da firma que dá certo. Todo ano, quem sabe pode contar a alguém do mesmo círculo (a família e o par; os amigos e o par; o colega e o chefe; os ex e os amigos), mais quem tem a língua solta (o piadista, o brigão), quem está magoado e quem gosta pouco de você; a discreta conta menos. Quem fica sabendo perde confiança em você na hora (a opinião só usa o que a pessoa sabe); quando chega ao alvo, vem a revelação (um storylet por tema, agendado, com a entrada de quem contou de causa). Quem sabe e gosta pouco de você pode fazer chantagem (pagar, recusar e ver contar, ou confessar antes). E quem joga pode contar: confessar ao alvo (a pessoa decide se perdoa) ou desabafar com alguém (que passa a saber).
 - **Estado:** proposta (Ω4).
 
 ### I-126 · A peneira: os capítulos da vida
@@ -242,7 +243,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-123 | Os verbos sociais: pedir, oferecer, propor, cobrar, contar, apresentar | Ω | Alta | feita (Ω2) |
 | I-130 | O namoro que esfria e o ex que continua | Ω | Alta | feita (Ω1) |
 | I-131 | Os irmãos com vida própria | Ω | Alta | feita (Ω1) |
-| I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | proposta (Ω3) |
+| I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | feita (Ω3) |
 | I-125 | Os segredos: quem sabe o quê | Ω | Alta | proposta (Ω4) |
 | I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |
 | I-127 | O caminho não tomado | Ω | Alta | proposta (Ω5) |

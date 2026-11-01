@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { conteudo } from '../src/conteudo.ts';
 import { entreVoceE, lerCaminho, patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
-import { conferirContas, conferirDividas, conferirPromissorias } from '../src/motor/contas.ts';
+import { conferirContas, conferirDividas, conferirPromissorias, devedoresDasPromissorias } from '../src/motor/contas.ts';
 import { decidir, porqueDaResposta } from '../src/motor/decisao.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
 import type { Efeitos } from '../src/motor/esquema.ts';
@@ -49,9 +49,10 @@ function umAno(e: EstadoVida): Entrada[] {
 }
 
 function contasFecham(e: EstadoVida): void {
+  const devedores = devedoresDasPromissorias(e);
   for (const h of e.historico) {
     expect(conferirContas(e, h), `entrada #${h.id} ${h.ref ?? ''}`).toEqual([]);
-    expect(conferirPromissorias(h), `entrada #${h.id} ${h.ref ?? ''}`).toEqual([]);
+    expect(conferirPromissorias(h, devedores), `entrada #${h.id} ${h.ref ?? ''}`).toEqual([]);
   }
   expect(conferirDividas(e)).toEqual([]);
 }
@@ -160,6 +161,17 @@ describe('o empréstimo entre pessoas (Ω2)', () => {
     expect(promissoriasDe(e)).toHaveLength(0);
     expect(Number(lerCaminho(e, 'mae.confianca'))).toBeGreaterThan(confianca);
     expect(lembrancasDe(e, 'mae').boa?.entrada).toBe(h.id);
+    contasFecham(e);
+  });
+
+  it('dever e ter a receber da mesma pessoa no mesmo ano: as parcelas se compensam no livro, e a conta fecha', () => {
+    const e = adulto(17, 50_000);
+    escolha(e, 'pegou dinheiro emprestado com sua mãe', { emprestar: { de: 'ator', para: 'eu', valor: 15_000, anos: 1 } });
+    escolha(e, 'emprestou dinheiro a sua mãe', { emprestar: { de: 'eu', para: 'ator', valor: 4_200, anos: 1 } });
+    const fim = umAno(e).find((x) => x.ref === 'regra:ano')!;
+    // As duas parcelas com a mãe viram uma mudança só no dinheiro de quem joga (−15 mil + 4,2 mil).
+    expect(fim.mudancas!.filter((m) => m.c === 'eu.dinheiro' && m.r === 'parcela')).toHaveLength(1);
+    expect(promissoriasDe(e)).toHaveLength(0);
     contasFecham(e);
   });
 

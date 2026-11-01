@@ -1658,6 +1658,40 @@ A camada 1 pôs gente na vida; a 2 dá a essa gente voz. Antes, o que alguém re
 - **Quem morre leva a dívida.** Nos dois sentidos, com notícia; quem sai da vida (o colega do emprego que acabou) leva calado. A herança continua sendo do banco e dos bens: simples, e coerente com o resto.
 - **A pessoa diz como está, não a conta.** A folha mostra "deve dizer sim", "pode ser que sim", "difícil" ou "não tem como": dá para ler a pessoa antes de pedir sem fazer da relação uma planilha.
 
+## Missão Ω, camada 3: os planos (01/11)
+
+A camada 2 deu voz às pessoas; a 3 dá vontade a quem joga. Até aqui, a vida era uma sequência de respostas: o jogo perguntava "o que acontece agora?" e não havia como querer uma coisa e ir atrás dela por anos (I-124). Agora quem joga põe na cabeça um plano, e a vida mostra o caminho e conta o fim.
+
+**O que mudou** (`docs/motor.md › Os projetos`):
+- nove planos como conteúdo (`mundo.json › projetos`): sair das dívidas, a casa própria, ter um filho, o negócio próprio, reparar a relação com alguém, cuidar da saúde, o primeiro milhão, casar e o diploma;
+- cada etapa é uma condição do estado (juntar R$ 50 mil, o nome limpo, a chave na mão), com o que ajuda nela: um verbo, uma ação ou uma folha que já existem;
+- a folha Planos (aberta por "Planos" na linha das escolhas do palco): os planos de pé, com cada etapa feita ou por fazer e o que ajuda, e os que dá para começar agora; começar e desistir não gastam a ficha, e desistir pede um segundo toque;
+- uma etapa do ano confere a meta e o prazo: a conquista (+6 de felicidade), o prazo vencido (−4) e a pessoa que morreu antes viram acontecimento, com o começo de causa ("Porque aos 30, você pôs na cabeça comprar a casa própria");
+- 14 storylets novos (`58-projetos.json`), que só existem com o plano de pé e pesam o dobro para o diretor: a visita ao apartamento decorado, a planilha das dívidas, o plano de negócios, a ligação de quem você quer reconciliar, a academia de janeiro, as contas do milhão, o casamento dos outros, tentar um filho (o bebê chega um ou dois anos depois), pedir em casamento, a faculdade à noite e a formatura depois dos 30.
+
+**Medidas** (2.000 vidas do túnel rápido; antes = a camada 2 no mesmo túnel):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Vidas que começam um plano | — | 74,6% (2,9 planos por vida) |
+| Dos planos que acabam: conquista / prazo vencido / desistência | — | 41% / 48% / 11% |
+| Planos conquistados em alguma vida | — | 9 de 9 |
+| Vidas com ex / com irmão | 26,8% / 80,8% | 26,1% / 80,8% |
+| Saturação V5 / V20 | 53,6% / 87,5% | 53,8% / 87,8% |
+| Assinaturas por 1.000 vidas (destino) | 919 (603) | 909 (566) |
+| Toques por vida | 455,5 | 468,0 |
+| Contas e dívidas entrada por entrada | 0 problemas | 0 problemas |
+| Falsos dilemas / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+
+**Decisões tomadas sozinho:**
+- **O plano é conteúdo, e o andamento é a vida.** Projeto novo não pede código: é uma lista de condições, textos e o que ajuda. A etapa não guarda progresso; ela vale quando a vida chega lá, e a folha mostra isso. O plano de pé é uma qualidade de quem joga (o começo é a causa); o que é com alguém marca a pessoa com a mesma qualidade, e a marca segue a pessoa se ela mudar de papel.
+- **O fim é um acontecimento, não uma regra escondida.** A conquista, o prazo vencido e a falta de tempo entram como acontecimento com o começo de causa: assim a linha do tempo mostra o porquê e o cartão da vida pode contar o arco ("aos 30, pôs na cabeça comprar a casa própria; aos 41, conquistou").
+- **O mundo apoia a história começada.** O storylet que só existe com o plano de pé pesa o dobro: quem quer a casa visita o apartamento decorado; quem quer reparar uma relação recebe a ligação.
+- **Pedir em casamento é parte do plano de casar.** Aberto a todo mundo, o pedido fez a parte das vidas com ex cair de 27% para 20%: quem casa não termina namoro. Dentro do plano, casar continua sendo escolha de quem quer, e o resto da vida amorosa fica como era.
+- **Os robôs querem coisas plausíveis.** Na primeira medida, começavam sete planos por vida e só 19% viravam conquista (o milhão para quem não tinha nada, a saúde aos 75 para quem estava aos 50). Agora cada jeito tem a sua lista (a cautelosa quer segurança; a arriscada, o negócio e o milhão), sorteia entre os três primeiros que dão, olha o bolso antes, nunca repete um plano na mesma vida e, um terço das vezes, escolhe uma ação que ajuda, sem repetir a do ano anterior. A meta de cuidar da saúde ficou em 72, com seis anos de prazo: com 75 em cinco, ninguém chegava.
+- **Tocar a empresa ajuda nos planos de dinheiro.** Sem isso, o robô que perseguia o primeiro milhão largava a empresa, e o que ela causa sumia das vidas (de 50% para 41% das vidas com empresa).
+- **A variedade de destinos caiu um pouco**, porque planos cumpridos levam vidas para lugares parecidos (a casa, o diploma, o casamento): as assinaturas de destino foram de 603 para 566 por 1.000 vidas. Fica para a camada 6, que mede a diversidade pelo caminho, não pelo destino.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

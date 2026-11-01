@@ -119,25 +119,35 @@ export function conferirContratos(h: Entrada, garantias: ReadonlyMap<string, str
 /** O saldo da promissória que anda com dinheiro entre as duas pessoas (promissorias.ts); o resto (perdão, calote, morte) fecha sem. */
 const PROMISSORIA_COM_DINHEIRO = new Set(['emprestimo', 'parcela', 'quitacao']);
 
+/** Quem deve em cada promissória que já existiu na vida (o livro guarda: a abertura escreve o devedor; a quitada já saiu do estado). */
+export function devedoresDasPromissorias(e: EstadoVida): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const h of e.historico) for (const m of h.mudancas ?? []) if (m.t !== undefined && /^prm\w*\.devedor$/.test(m.c)) out.set(m.c.slice(0, m.c.indexOf('.')), m.t);
+  for (const en of Object.values(e.entidades)) if (en.tipo === 'promissoria' && en.t['devedor']) out.set(en.id, en.t['devedor']);
+  return out;
+}
+
 /**
  * Confere os empréstimos entre pessoas numa entrada (missão Ω2): o que mudou no saldo das promissórias, quando a mudança
  * é com dinheiro (o empréstimo, a parcela, a quitação), é o dinheiro que andou entre quem joga e a outra pessoa, com ela
- * de contraparte. O perdão, o calote, a morte e quem saiu da vida fecham sem dinheiro, marcados.
+ * de contraparte. A conta é com sinal (o saldo do que você deve anda com o seu dinheiro; o do que te devem, contra ele):
+ * no mesmo ano, a parcela que você paga à mãe e a que ela te paga se compensam no livro. O perdão, o calote, a morte e
+ * quem saiu da vida fecham sem dinheiro, marcados.
  */
-export function conferirPromissorias(h: Entrada): string[] {
-  let saldo = 0;
+export function conferirPromissorias(h: Entrada, devedores: ReadonlyMap<string, string>): string[] {
+  let esperado = 0;
   let dinheiro = 0;
   let escala = 1;
   for (const m of h.mudancas ?? []) {
     if (m.d === undefined || m.r === undefined || !PROMISSORIA_COM_DINHEIRO.has(m.r)) continue;
     const [ent, campo] = separar(m.c);
-    if (ent.startsWith('prm') && campo === 'saldo') saldo += Math.abs(m.d);
-    else if (ent === 'eu' && campo === 'dinheiro' && m.p !== undefined && !DE_FORA.has(m.p)) dinheiro += Math.abs(m.d);
+    if (ent.startsWith('prm') && campo === 'saldo') esperado += (devedores.get(ent) === 'eu' ? 1 : -1) * m.d;
+    else if (ent === 'eu' && campo === 'dinheiro' && m.p !== undefined && !DE_FORA.has(m.p)) dinheiro += m.d;
     else continue;
     escala = Math.max(escala, Math.abs(m.d));
   }
   const tolerancia = 0.5 + escala * 1e-9;
-  return Math.abs(saldo - dinheiro) > tolerancia ? [`as promissórias e o dinheiro entre as pessoas não batem: ${saldo.toFixed(2)} contra ${dinheiro.toFixed(2)}`] : [];
+  return Math.abs(esperado - dinheiro) > tolerancia ? [`as promissórias e o dinheiro entre as pessoas não batem: ${esperado.toFixed(2)} contra ${dinheiro.toFixed(2)}`] : [];
 }
 
 /**

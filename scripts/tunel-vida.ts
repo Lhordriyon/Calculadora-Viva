@@ -22,7 +22,7 @@ import { alvoDaTracao, cargaDaMesa, empresaDe } from '../src/motor/empresa.ts';
 import { parceirosDe } from '../src/motor/diplomacia.ts';
 import { ameacaDeGuerra } from '../src/motor/guerra.ts';
 import { inimigoDe } from '../src/motor/campos.ts';
-import { conferirContas, conferirContratos, conferirDividas, conferirPromissorias, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
+import { conferirContas, conferirContratos, conferirDividas, conferirPromissorias, devedoresDasPromissorias, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
 
 export const ANO = 2026;
 
@@ -1081,11 +1081,12 @@ export function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entra
   let dividasErradas = 0;
   let exemploDeDivida = '';
   const garantias = garantiasDosContratos(e);
+  const devedores = devedoresDasPromissorias(e);
   for (const h of e.historico) {
     const problemas = conferirContas(e, h);
     if (problemas.length > 0 && !exemploDeConta) exemploDeConta = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${problemas[0]}`;
     contasErradas += problemas.length;
-    const dasDividas = [...conferirContratos(h, garantias), ...conferirPromissorias(h)];
+    const dasDividas = [...conferirContratos(h, garantias), ...conferirPromissorias(h, devedores)];
     if (dasDividas.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${dasDividas[0]}`;
     dividasErradas += dasDividas.length;
   }
