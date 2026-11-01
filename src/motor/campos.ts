@@ -58,6 +58,10 @@ const PESSOA: Record<string, DefCampo> = {
   magoa_de: { tipo: 'texto', sistema: 'historia', derivado: true },
   /** O que a pessoa acha de quem joga (VISOES), tirado do que ela viu e do que se sabe: '' enquanto não tem opinião. */
   visao: { tipo: 'texto', sistema: 'relacoes', derivado: true },
+  /** O que a pessoa deve a quem joga, e o que quem joga deve a ela (as promissórias, promissorias.ts), e os anos de atraso entre vocês. */
+  te_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
+  voce_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
+  atraso_da_divida: { tipo: 'num', sistema: 'relacoes', derivado: true },
   dinheiro: { tipo: 'num', sistema: 'dinheiro', reais: true },
   /** O que está investido, por classe (rende conforme a fase do país). */
   renda_fixa: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
@@ -270,6 +274,26 @@ const TITULO: Record<string, DefCampo> = {
   origem: { tipo: 'texto', sistema: 'historia' },
 };
 
+/**
+ * Um empréstimo entre quem joga e outra pessoa (promissorias.ts): `prm<entrada>` é o dinheiro que aquela entrada do livro
+ * emprestou. Quem emprestou e quem deve vão pelo número da pessoa ("eu" para quem joga).
+ */
+const PROMISSORIA: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  credor: { tipo: 'texto', sistema: 'relacoes' },
+  devedor: { tipo: 'texto', sistema: 'relacoes' },
+  /** A entrada do livro que fez a dívida: o porquê do atraso, da quitação e do calote. */
+  origem: { tipo: 'texto', sistema: 'historia' },
+  /** O que falta pagar. */
+  saldo: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** A parcela do ano. */
+  parcela: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** O ano combinado para acabar de pagar. */
+  vencimento: { tipo: 'num', sistema: 'dinheiro' },
+  /** Anos seguidos sem pagar a parcela (0 = em dia). */
+  atraso: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
+};
+
 const EMPRESA: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
   /** Anos desde a fundação. */
@@ -306,6 +330,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent.startsWith('bem')) return BEM;
   if (ent.startsWith('ctr')) return CONTRATO;
   if (ent.startsWith('tit')) return TITULO;
+  if (ent.startsWith('prm')) return PROMISSORIA;
   return PESSOA;
 }
 
@@ -447,7 +472,94 @@ export function valorDosTitulos(e: EstadoVida): number {
 
 /** Patrimônio de quem joga: o de fora, os títulos, a parte nas empresas e os bens. */
 export function patrimonioTotal(e: EstadoVida): number {
-  return patrimonioDe(e.entidades['eu']!) + valorDosTitulos(e) + parteNasEmpresas(e) + valorDosBens(e);
+  return patrimonioDe(e.entidades['eu']!) + valorDosTitulos(e) + parteNasEmpresas(e) + valorDosBens(e) + saldoEntrePessoas(e);
+}
+
+// ---- o empréstimo entre pessoas (promissorias.ts): as consultas, aqui porque o patrimônio e os campos derivados leem
+
+/** Quem joga, na promissória (as outras pessoas vão pelo número). */
+export const QUEM_JOGA = 'eu';
+
+/** A pessoa de um papel, para a promissória: "eu" ou o número dela. */
+export function numeroDaPessoa(e: EstadoVida, papel: string): string | undefined {
+  if (papel === 'eu') return QUEM_JOGA;
+  const n = e.entidades[papel]?.pessoa;
+  return n === undefined ? undefined : String(n);
+}
+
+/** O papel que a pessoa ocupa hoje (viva ou não); undefined se ela saiu da vida (o colega do emprego que acabou). */
+export function papelDaPessoa(e: EstadoVida, quem: string | undefined): string | undefined {
+  if (quem === undefined) return undefined;
+  if (quem === QUEM_JOGA) return 'eu';
+  const n = Number(quem);
+  for (const id in e.entidades) {
+    const en = e.entidades[id]!;
+    if (en.pessoa === n && en.tipo === 'pessoa') return id;
+  }
+  return undefined;
+}
+
+/** As promissórias da vida, da mais antiga para a mais nova. */
+export function promissoriasDe(e: EstadoVida): Entidade[] {
+  const saida: Entidade[] = [];
+  for (const id in e.entidades) {
+    if (!id.startsWith('prm')) continue;
+    const x = e.entidades[id]!;
+    if (x.tipo === 'promissoria') saida.push(x);
+  }
+  return saida.sort((a, b) => Number(a.t['origem'] ?? 0) - Number(b.t['origem'] ?? 0) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+}
+
+export function credorDe(e: EstadoVida, ct: Entidade): string | undefined {
+  return papelDaPessoa(e, ct.t['credor']);
+}
+
+export function devedorDe(e: EstadoVida, ct: Entidade): string | undefined {
+  return papelDaPessoa(e, ct.t['devedor']);
+}
+
+/** O que corre entre quem joga e a pessoa do papel: o que ela deve, o que você deve a ela, o maior atraso e a dívida mais antiga. */
+export interface Entre {
+  teDeve: number;
+  voceDeve: number;
+  atraso: number;
+  origem?: number;
+}
+
+export function entreVoceE(e: EstadoVida, papel: string): Entre {
+  const r: Entre = { teDeve: 0, voceDeve: 0, atraso: 0 };
+  const quem = numeroDaPessoa(e, papel);
+  if (!quem || quem === QUEM_JOGA) return r;
+  for (const ct of promissoriasDe(e)) {
+    const minha = ct.t['credor'] === QUEM_JOGA && ct.t['devedor'] === quem;
+    const dela = ct.t['devedor'] === QUEM_JOGA && ct.t['credor'] === quem;
+    if (!minha && !dela) continue;
+    if (minha) r.teDeve += ct.n['saldo'] ?? 0;
+    else r.voceDeve += ct.n['saldo'] ?? 0;
+    r.atraso = Math.max(r.atraso, ct.n['atraso'] ?? 0);
+    if (r.origem === undefined && ct.t['origem'] !== undefined) r.origem = Number(ct.t['origem']);
+  }
+  return r;
+}
+
+/** As promissórias no patrimônio de quem joga: o que tem a receber menos o que deve. */
+export function saldoEntrePessoas(e: EstadoVida): number {
+  let s = 0;
+  for (const id in e.entidades) {
+    if (!id.startsWith('prm')) continue;
+    const ct = e.entidades[id]!;
+    if (ct.tipo !== 'promissoria') continue;
+    if (ct.t['credor'] === QUEM_JOGA) s += ct.n['saldo'] ?? 0;
+    else if (ct.t['devedor'] === QUEM_JOGA) s -= ct.n['saldo'] ?? 0;
+  }
+  return s;
+}
+
+/** As promissórias entre quem joga e a pessoa do papel (as duas direções). */
+export function promissoriasCom(e: EstadoVida, papel: string): Entidade[] {
+  const quem = numeroDaPessoa(e, papel);
+  if (!quem || quem === QUEM_JOGA) return [];
+  return promissoriasDe(e).filter((ct) => ct.t['credor'] === quem || ct.t['devedor'] === quem);
 }
 
 /** Gente empregada pelo tamanho da empresa: uma pessoa a cada R$ 150 mil enquanto ela é pequena, saturando nas maiores do mundo. */
@@ -527,6 +639,12 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return deQuando(e, ent, en, 'ruim');
       case 'visao':
         return visaoDe(e, ent, en);
+      case 'te_deve':
+        return entreVoceE(e, ent).teDeve;
+      case 'voce_deve':
+        return entreVoceE(e, ent).voceDeve;
+      case 'atraso_da_divida':
+        return entreVoceE(e, ent).atraso;
       case 'eleicao':
         return e.ano % 4 === 2;
       case 'guerra':

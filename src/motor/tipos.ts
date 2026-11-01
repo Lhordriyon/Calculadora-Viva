@@ -14,7 +14,7 @@ export interface Qualidade {
   causa: number | null;
 }
 
-export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao' | 'empresa' | 'bem' | 'contrato' | 'titulo';
+export type TipoEntidade = 'pessoa' | 'animal' | 'lugar' | 'jurisdicao' | 'empresa' | 'bem' | 'contrato' | 'titulo' | 'promissoria';
 
 /**
  * Um formato de estado: pessoa, bicho, lugar, país e empresa são entidades
@@ -106,6 +106,8 @@ export interface Entrada {
   resumo?: string;
   escolha?: { indice: number; texto: string; resumo: string };
   resultado?: string;
+  /** A resposta da pessoa, quando ela decidiu (o teste "decide", decisao.ts): o porquê é a primeira causa, se tiver entrada. */
+  resposta?: 'sim' | 'nao';
   /** Entradas anteriores que tornaram esta possível (qualidades consultadas, agendamentos). */
   causas?: number[];
   mudancas?: Mudanca[];

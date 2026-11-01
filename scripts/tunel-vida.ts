@@ -22,7 +22,7 @@ import { alvoDaTracao, cargaDaMesa, empresaDe } from '../src/motor/empresa.ts';
 import { parceirosDe } from '../src/motor/diplomacia.ts';
 import { ameacaDeGuerra } from '../src/motor/guerra.ts';
 import { inimigoDe } from '../src/motor/campos.ts';
-import { conferirContas, conferirContratos, conferirDividas, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
+import { conferirContas, conferirContratos, conferirDividas, conferirPromissorias, extrato, garantiasDosContratos } from '../src/motor/contas.ts';
 
 export const ANO = 2026;
 
@@ -359,6 +359,7 @@ export interface Vida {
   poder: HistoriaDoPoder;
   /** A rede (missão Ω): as pessoas que passaram pela vida e o que contaram. */
   rede: HistoriaDaRede;
+  pedidos: HistoriaDosPedidos;
 }
 
 /** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
@@ -395,6 +396,53 @@ function redeDaVida(e: EstadoVida): HistoriaDaRede {
     exVoltou: e.historico.filter((h) => h.ref === 'voltar_com_o_ex' && h.mudancas?.some((m) => m.c === 'eu.voltou_com_o_ex' && m.q === 1)).length,
     colegaVirouAmigo: e.historico.filter((h) => h.ref === 'regra:virou_amigo').length,
     romanceNoTrabalho: e.historico.filter((h) => h.ref === 'romance_no_trabalho' && h.mudancas?.some((m) => m.c === 'eu.namoro' && m.q === 1)).length,
+  };
+}
+
+/** Os verbos sociais (missão Ω2): o que se pediu às pessoas, o que elas responderam, e os empréstimos entre pessoas. */
+export interface HistoriaDosPedidos {
+  /** Respostas de alguém a um pedido (o teste "decide"), e quantas foram sim. */
+  respostas: number;
+  sins: number;
+  /** Respostas cujo porquê cita o passado: a lembrança com a idade ou a dívida em aberto. */
+  comLembranca: number;
+  /** Os empréstimos entre pessoas: abertos (quem joga pegando e emprestando), quitados, em calote e com a parcela atrasada. */
+  pegou: number;
+  emprestou: number;
+  quitados: number;
+  calotes: number;
+  atrasos: number;
+}
+
+function pedidosDaVida(e: EstadoVida): HistoriaDosPedidos {
+  let respostas = 0;
+  let sins = 0;
+  let comLembranca = 0;
+  let pegou = 0;
+  let emprestou = 0;
+  const ref = (r: string): number => e.historico.filter((h) => h.ref === r).length;
+  for (const h of e.historico) {
+    if (h.resposta) {
+      respostas++;
+      if (h.resposta === 'sim') sins++;
+      // O porquê que cita o passado: a lembrança com a idade ("…, aos 31") ou a dívida em aberto.
+      if (/aos \d+|ainda deve R\$/.test(h.resultado ?? '')) comLembranca++;
+    }
+    for (const m of h.mudancas ?? []) {
+      if (m.r !== 'emprestimo' || !m.c.startsWith('prm') || !m.c.endsWith('.saldo')) continue;
+      if (h.mudancas!.some((x) => x.c === 'eu.dinheiro' && x.r === 'emprestimo' && (x.d ?? 0) > 0)) pegou++;
+      else emprestou++;
+    }
+  }
+  return {
+    respostas,
+    sins,
+    comLembranca,
+    pegou,
+    emprestou,
+    quitados: ref('regra:divida_quitada') + ref('regra:quitou_com_voce') + ref('promissoria:quitar_promissoria'),
+    calotes: ref('regra:calote'),
+    atrasos: ref('regra:parcela_atrasada') + ref('regra:devedor_atrasou'),
   };
 }
 
@@ -992,6 +1040,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     defesa: defesaDaVida(e),
     poder: poderDaVida(e),
     rede: redeDaVida(e),
+    pedidos: pedidosDaVida(e),
     ...contasDaVida(e),
   };
 }
@@ -1010,7 +1059,7 @@ export function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entra
     const problemas = conferirContas(e, h);
     if (problemas.length > 0 && !exemploDeConta) exemploDeConta = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${problemas[0]}`;
     contasErradas += problemas.length;
-    const dasDividas = conferirContratos(h, garantias);
+    const dasDividas = [...conferirContratos(h, garantias), ...conferirPromissorias(h)];
     if (dasDividas.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, aos ${h.idade}, ${h.tipo} ${h.ref ?? ''}: ${dasDividas[0]}`;
     dividasErradas += dasDividas.length;
   }

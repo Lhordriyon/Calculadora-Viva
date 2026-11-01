@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Folha } from './Folha.tsx';
-import { bensDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe } from '../motor/campos.ts';
+import { bensDe, credorDe, devedorDe, empresasDe, funcionariosDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -23,6 +23,7 @@ import {
   PRAZO_ACORDO,
   PRAZOS_DO_TITULO,
 } from '../motor/regras.ts';
+import { ANOS_ATE_O_CALOTE } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { anos } from './formato.ts';
@@ -920,6 +921,51 @@ function Dividas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/**
+ * O que corre entre quem joga e as pessoas (as promissórias): quem deve a quem, a parcela do ano, o atraso e de onde
+ * veio. O que você deve dá para quitar de uma vez, com o dinheiro da conta.
+ */
+function EntrePessoas({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
+  const lista = promissoriasDe(vida);
+  if (lista.length === 0) return null;
+  return (
+    <fieldset class="grupo">
+      <legend>Entre pessoas</legend>
+      <p class="nota">Sem juros e sem banco: a parcela sai sozinha todo ano, se o dinheiro dá. Quem atrasa magoa quem emprestou; {anos(ANOS_ATE_O_CALOTE)} sem pagar é calote.</p>
+      {lista.map((ct) => {
+        const devo = devedorDe(vida, ct) === 'eu';
+        const outro = devo ? credorDe(vida, ct) : devedorDe(vida, ct);
+        const en = outro ? vida.entidades[outro] : undefined;
+        if (!outro || !en) return null;
+        const quem = quemE(outro, en);
+        const atraso = ct.n['atraso'] ?? 0;
+        const h = vida.historico.find((x) => x.id === Number(ct.t['origem']));
+        const veio = h ? `aos ${h.idade}, ${h.escolha?.resumo ?? h.resumo ?? ''}` : '';
+        const quitar: Operacao = { tipo: 'quitar_promissoria', id: ct.id };
+        const motivo = devo ? motivoParaNaoOperar(vida, conteudo, quitar) : null;
+        return (
+          <div class="bem-meu" key={ct.id}>
+            <p>
+              <b>{devo ? `Você deve a ${quem}` : `${capitalizar(quem)} te deve`}</b> · {formatarDinheiro(ct.n['saldo'] ?? 0)} · parcela de {formatarDinheiro(ct.n['parcela'] ?? 0)} por ano
+            </p>
+            <p class="nota">
+              <span class={atraso > 0 ? 'atrasada' : ''}>{atraso > 0 ? `Atrasada há ${anos(atraso)}` : 'Em dia'}</span>
+              {veio ? ` · ${veio}` : ''}
+            </p>
+            {devo && (
+              <div class="escolhas-origem">
+                <button type="button" class="chip-origem" disabled={motivo !== null} onClick={() => aoOperar(quitar)}>
+                  {motivo === null ? `Quitar (${formatarDinheiro(ct.n['saldo'] ?? 0)})` : capitalizar(motivo)}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </fieldset>
+  );
+}
+
 function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   // As do poder (o golpe, a coroa) ficam na folha Carreira e poder.
   const lista = jogadasDe(vida, conteudo).filter((j) => !ehDaEmpresa(j.s) && !ehDoPoder(j.s));
@@ -948,6 +994,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
         </p>
         <Extrato vida={vida} />
         <Dividas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
+        <EntrePessoas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}

@@ -116,6 +116,30 @@ export function conferirContratos(h: Entrada, garantias: ReadonlyMap<string, str
   return problemas;
 }
 
+/** O saldo da promissória que anda com dinheiro entre as duas pessoas (promissorias.ts); o resto (perdão, calote, morte) fecha sem. */
+const PROMISSORIA_COM_DINHEIRO = new Set(['emprestimo', 'parcela', 'quitacao']);
+
+/**
+ * Confere os empréstimos entre pessoas numa entrada (missão Ω2): o que mudou no saldo das promissórias, quando a mudança
+ * é com dinheiro (o empréstimo, a parcela, a quitação), é o dinheiro que andou entre quem joga e a outra pessoa, com ela
+ * de contraparte. O perdão, o calote, a morte e quem saiu da vida fecham sem dinheiro, marcados.
+ */
+export function conferirPromissorias(h: Entrada): string[] {
+  let saldo = 0;
+  let dinheiro = 0;
+  let escala = 1;
+  for (const m of h.mudancas ?? []) {
+    if (m.d === undefined || m.r === undefined || !PROMISSORIA_COM_DINHEIRO.has(m.r)) continue;
+    const [ent, campo] = separar(m.c);
+    if (ent.startsWith('prm') && campo === 'saldo') saldo += Math.abs(m.d);
+    else if (ent === 'eu' && campo === 'dinheiro' && m.p !== undefined && !DE_FORA.has(m.p)) dinheiro += Math.abs(m.d);
+    else continue;
+    escala = Math.max(escala, Math.abs(m.d));
+  }
+  const tolerancia = 0.5 + escala * 1e-9;
+  return Math.abs(saldo - dinheiro) > tolerancia ? [`as promissórias e o dinheiro entre as pessoas não batem: ${saldo.toFixed(2)} contra ${dinheiro.toFixed(2)}`] : [];
+}
+
 /**
  * Confere as dívidas agora: a dívida de quem joga é a soma dos contratos sem garantia, o financiado de cada bem é o
  * saldo do financiamento dele, todo contrato tem credor e todo financiamento tem o bem em garantia.
@@ -134,6 +158,14 @@ export function conferirDividas(e: EstadoVida): string[] {
     } else {
       semGarantia += en.n['saldo'] ?? 0;
     }
+  }
+  // Toda promissória é entre quem joga e outra pessoa: um dos lados é "eu", o outro tem número.
+  for (const en of Object.values(e.entidades)) {
+    if (en.tipo !== 'promissoria') continue;
+    const k = en.t['credor'];
+    const d = en.t['devedor'];
+    if (!k || !d || (k === 'eu') === (d === 'eu')) problemas.push(`${en.id}: a promissória precisa de quem joga de um lado e de uma pessoa do outro`);
+    if ((en.n['saldo'] ?? 0) < 0.5) problemas.push(`${en.id}: promissória sem saldo continua aberta`);
   }
   const divida = e.entidades['eu']?.n['divida'] ?? 0;
   if (Math.abs(divida - semGarantia) > 1 + divida * 1e-9) problemas.push(`a dívida de quem joga (${divida.toFixed(2)}) não é a soma dos contratos (${semGarantia.toFixed(2)})`);

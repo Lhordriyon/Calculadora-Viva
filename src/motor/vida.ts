@@ -18,6 +18,7 @@ import { anoDoExterior, exteriorInicial, type Exterior } from './diplomacia.ts';
 import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDasDividas } from './dividas.ts';
+import { anoDasPromissorias } from './promissorias.ts';
 import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCoroa } from './coroa.ts';
 import { regraDaPesquisa } from './pesquisa.ts';
@@ -219,6 +220,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   tesouro: (x) => regraDoTesouro(x.e, x.reg),
   // As dívidas no fim do ano (dividas.ts): a parcela do acordo, o limite, o que caduca e o nome.
   dividas: (x) => regraDasDividas(x.e, x.c, x.reg),
+  // Os empréstimos entre pessoas (promissorias.ts): a parcela, o atraso que magoa, a quitação, o calote.
+  promissorias: (x) => anoDasPromissorias(x.e, x.c, x.reg),
   privacao: (x) => {
     if (x.economia!.privacao) {
       somar(x.e, x.reg, 'eu', 'felicidade', -PRIVACAO_FELICIDADE, 'economia');

@@ -163,6 +163,14 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'tit.vencimento',
   'tit.origem',
   'pais.calote',
+  // o empréstimo entre pessoas (promissorias.ts): quem emprestou e quem deve, o saldo, a parcela, o vencimento e o atraso
+  'prm.credor',
+  'prm.devedor',
+  'prm.origem',
+  'prm.saldo',
+  'prm.parcela',
+  'prm.vencimento',
+  'prm.atraso',
   // o país vivo: as estatísticas andam, governos se alternam na eleição e quem governa muda as políticas
   'pais.crescimento',
   'pais.desemprego',
@@ -273,6 +281,8 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['pais.calote'], 'país: depois do calote, a Selic paga um prêmio que some em seis anos (e o título rende mais)', true),
   ...ler(['tit.valor', 'tit.taxa', 'tit.vencimento'], 'Tesouro: o cupom do ano, o vencimento, o preço de venda e o patrimônio', true),
   ...ler(['tit.origem'], 'Tesouro: a compra (ou a herança) é a causa do vencimento', false),
+  ...ler(['prm.credor', 'prm.devedor', 'prm.saldo', 'prm.parcela', 'prm.vencimento', 'prm.atraso'], 'promissórias: a parcela que sai, o atraso que magoa, o calote, o patrimônio e a decisão de quem emprestou', true),
+  ...ler(['prm.origem'], 'promissórias: o empréstimo é a causa do atraso, da quitação e do calote', false),
   ...ler(['pais.coroa', 'ilha.coroa'], 'coroa: a dotação de quem tem coroa e o ponto para onde a aprovação anda', true),
   ...ler(['ilha.populacao', 'ilha.pib'], 'coroa: a ilha do ano seguinte parte da deste; a parte dos impostos e a taxa da coroa', true),
   ...ler(['eu.pais_reconhecido'], 'coroa: a ilha reconhecida cresce mais', true),
@@ -388,8 +398,8 @@ export interface EtapaDoAno {
 
 /** O bolso de quem joga: o dinheiro, a dívida e as classes da carteira (quem paga saca delas, na ordem de liquidez). */
 const BOLSO = ['eu.dinheiro', 'eu.divida', ...ATIVOS.map((a) => `eu.${a}`)];
-/** O patrimônio (campos.ts › patrimonioTotal): o bolso, os títulos do Tesouro, a parte nas empresas e os bens. */
-const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item'];
+/** O patrimônio (campos.ts › patrimonioTotal): o bolso, os títulos do Tesouro, a parte nas empresas, os bens e o que corre entre pessoas. */
+const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item', 'prm.saldo', 'prm.credor', 'prm.devedor'];
 const POLITICAS_DO_PAIS = POLITICAS.map((p) => `pais.pol_${p}`);
 const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
 /** A fase do ciclo, que as regras do ano leem pelo nome. */
@@ -467,6 +477,13 @@ export const ETAPAS_DO_ANO = [
     escreve: ['ctr.*', ...BOLSO, 'eu.nome_sujo', 'agenda'],
   },
   {
+    id: 'promissorias',
+    nome: 'os empréstimos entre pessoas: a parcela, o atraso que magoa, a quitação e o calote',
+    // Quem emprestou e quem deve vão pelo número da pessoa (pessoa.pessoa); a notícia concorda com ela e com quem joga.
+    le: ['prm.*', ...BOLSO, 'ctr.*', 'pessoa.pessoa', 'pessoa.dinheiro', 'pessoa.vivo', 'pessoa.nome', 'pessoa.genero', 'pessoa.magoa', 'pessoa.confianca', 'pessoa.vinculo', 'eu.genero'],
+    escreve: ['prm.*', ...BOLSO, 'ctr.*', 'pessoa.dinheiro', 'pessoa.magoa', 'pessoa.confianca', 'pessoa.vinculo'],
+  },
+  {
     id: 'privacao',
     nome: 'a privação: o buraco que nem o crédito cobriu',
     le: ['ano.economia', 'eu.felicidade', 'eu.privacao'],
@@ -521,6 +538,7 @@ export const ETAPAS_DO_ANO = [
       'bem.nome',
       'empresa.nome',
       'tit.nome',
+      'prm.nome',
       'fora.nome',
       'lugar.nome',
       'pais.nome',

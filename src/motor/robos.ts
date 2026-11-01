@@ -16,7 +16,7 @@ import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
 import { chanceDeEleicao } from './poder.ts';
 import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
-import { bensDe, empresasDe, entidadeDe, investidoDe, parteNaEmpresa, patrimonioDe, separar, titulosDe } from './campos.ts';
+import { bensDe, devedorDe, empresasDe, entidadeDe, entreVoceE, investidoDe, parteNaEmpresa, patrimonioDe, promissoriasDe, separar, titulosDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { FORMAS_DA_COROA, PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type FormaDaCoroa, type Parceiro, type Politica, type Verbo } from './constantes.ts';
 import { propostaDeAcordo } from './dividas.ts';
@@ -145,6 +145,18 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
     if (para === 'eu') v += valor / REAIS_POR_PONTO;
     if (de === 'eu') v -= valor / REAIS_POR_PONTO;
   }
+  // O empréstimo entre pessoas: o dinheiro de agora volta (ou sai) depois, sem juros. Pegar é ter o dinheiro na mão um
+  // tempo; emprestar é correr o risco de não ver de volta (a conta do robô põe um terço).
+  if (ef.emprestar) {
+    const valor = valorDoEmprestimo(ef.emprestar, e, ator);
+    if (entidadeDe(ef.emprestar.para, ator) === 'eu') v += (valor * 0.1) / REAIS_POR_PONTO;
+    if (entidadeDe(ef.emprestar.de, ator) === 'eu') v -= (valor * 0.33) / REAIS_POR_PONTO;
+  }
+  // Perdoar é abrir mão do que tinha a receber; ser perdoado, deixar de dever.
+  if (ef.perdoar) {
+    const x = entreVoceE(e, entidadeDe(ef.perdoar, ator));
+    v += (x.voceDeve - x.teDeve) / REAIS_POR_PONTO;
+  }
   for (const m of ef.marcas ?? []) {
     const porAno = c.marcas[m]?.porAno;
     if (porAno && !(m in eu.q)) v += valorAtributos(porAno) * HORIZONTE_MARCA;
@@ -162,10 +174,17 @@ export interface Avaliacao {
   risco: number;
 }
 
-/** Exposição de um conjunto de efeitos: saúde perdida (inclusive por qualidade), dívida, morte. */
-function exposicao(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo): number {
+/** O que um efeito `emprestar` move: valor fixo, ou fração do dinheiro de quem empresta, com teto. */
+function valorDoEmprestimo(t: NonNullable<Efeitos['emprestar']>, e: EstadoVida, ator: string | undefined): number {
+  const valor = t.valor ?? Math.max(0, dinheiroDe(e, entidadeDe(t.de, ator))) * (t.fracao ?? 0);
+  return t.max !== undefined ? Math.min(valor, t.max) : valor;
+}
+
+/** Exposição de um conjunto de efeitos: saúde perdida (inclusive por qualidade), dívida (com o banco ou com alguém), morte. */
+function exposicao(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo, ator?: string): number {
   if (!ef) return 0;
   let x = Math.max(0, -(ef.saude ?? 0)) * 1.2 + Math.max(0, ef.divida ?? 0) / REAIS_POR_PONTO;
+  if (ef.emprestar && entidadeDe(ef.emprestar.para, ator) === 'eu') x += (valorDoEmprestimo(ef.emprestar, e, ator) * 0.5) / REAIS_POR_PONTO;
   if (ef.patrimonioFator !== undefined && ef.patrimonioFator < 1) {
     const eu = e.entidades['eu']!;
     x += ((1 - ef.patrimonioFator) * (Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu))) / REAIS_POR_PONTO;
@@ -184,13 +203,13 @@ type Corpo = Pick<Escolha, 'efeitos' | 'teste' | 'sucesso' | 'fracasso' | 'resul
 
 export function avaliarEscolha(esc: Corpo, e: EstadoVida, c: Conteudo, ator?: string): Avaliacao {
   const base = valorEfeitos(esc.efeitos, e, c, ator);
-  const baseX = exposicao(esc.efeitos, e, c);
+  const baseX = exposicao(esc.efeitos, e, c, ator);
   const desfechos: { p: number; v: number; x: number }[] = esc.teste
     ? [
         { p: chanceDeSucesso(esc.teste, e, ator, c, esc.sucesso), r: esc.sucesso },
         { p: 1 - chanceDeSucesso(esc.teste, e, ator, c, esc.sucesso), r: esc.fracasso },
-      ].map(({ p, r }) => ({ p, v: base + valorEfeitos(r?.efeitos, e, c, ator), x: baseX + exposicao(r?.efeitos, e, c) }))
-    : [{ p: 1, v: base + valorEfeitos(esc.resultado?.efeitos, e, c, ator), x: baseX + exposicao(esc.resultado?.efeitos, e, c) }];
+      ].map(({ p, r }) => ({ p, v: base + valorEfeitos(r?.efeitos, e, c, ator), x: baseX + exposicao(r?.efeitos, e, c, ator) }))
+    : [{ p: 1, v: base + valorEfeitos(esc.resultado?.efeitos, e, c, ator), x: baseX + exposicao(esc.resultado?.efeitos, e, c, ator) }];
   const esperado = desfechos.reduce((s, d) => s + d.p * d.v, 0);
   const variancia = desfechos.reduce((s, d) => s + d.p * (d.v - esperado) ** 2, 0);
   const expo = desfechos.reduce((s, d) => s + d.p * d.x, 0);
@@ -494,10 +513,19 @@ function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
  * caducar (cinco anos de nome sujo, sem crédito novo nem financiamento).
  */
 function decidirDividas(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const ops: Operacao[] = [];
   const op: Operacao = { tipo: 'renegociar' };
-  if (estrategia === 'arriscada' || !pode(e, c, op)) return [];
-  if (estrategia === 'cautelosa' || aleatorio(rng) < 0.3) return [op];
-  return [];
+  if (estrategia !== 'arriscada' && pode(e, c, op) && (estrategia === 'cautelosa' || aleatorio(rng) < 0.3)) ops.push(op);
+  // Quem deve a alguém da família e tem o dobro na conta paga de uma vez (a cautelosa sempre; a aleatória, às vezes).
+  if (estrategia === 'cautelosa' || estrategia === 'aleatoria') {
+    const conta = Math.max(0, e.entidades['eu']!.n['dinheiro'] ?? 0);
+    for (const ct of promissoriasDe(e)) {
+      if (devedorDe(e, ct) !== 'eu' || conta < 2 * (ct.n['saldo'] ?? 0)) continue;
+      const quitar: Operacao = { tipo: 'quitar_promissoria', id: ct.id };
+      if ((estrategia === 'cautelosa' || aleatorio(rng) < 0.2) && pode(e, c, quitar)) ops.push(quitar);
+    }
+  }
+  return ops;
 }
 
 /** O imóvel de morar mais caro que dá para financiar agora (a entrada na mão, a parcela até 40% da renda, o nome limpo). */

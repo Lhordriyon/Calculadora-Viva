@@ -151,6 +151,14 @@ export function pesoNaRelacao(h: Entrada, id: string): number {
 
 /** As faltas de quem joga que a regra anota (familia.ts): a pessoa lembra delas como coisa que você fez. */
 export const OMISSOES: ReadonlySet<string> = new Set(['regra:nao_apareceu', 'regra:vontade_perdida']);
+/**
+ * O que a regra do empréstimo conta de quem joga com a pessoa (promissorias.ts): a parcela que atrasou, o calote e a
+ * quitação (a última parcela, ou a de uma vez pela folha). Ela lembra como coisa que você fez, e pesa na opinião como o
+ * resto (a mágoa, a confiança).
+ */
+export const FEITOS_DA_REGRA: ReadonlySet<string> = new Set(['regra:parcela_atrasada', 'regra:calote', 'regra:divida_quitada', 'promissoria:quitar_promissoria']);
+/** Pagar o que se deve não é dar: a parcela e a quitação não entram no "deu" de ninguém. */
+const PAGAMENTO: ReadonlySet<string> = new Set(['parcela', 'quitacao']);
 
 /**
  * Só o que quem joga escolheu, fez ou deixou de fazer vira lembrança: o resumo dessas entradas completa "você…" (o da
@@ -159,7 +167,7 @@ export const OMISSOES: ReadonlySet<string> = new Set(['regra:nao_apareceu', 'reg
 function feitoPorQuemJoga(h: Entrada): string | undefined {
   if (h.escolha?.resumo) return h.escolha.resumo;
   if (h.tipo === 'acao' && h.causa === 'acao' && h.resumo) return h.resumo;
-  if (h.ref !== undefined && OMISSOES.has(h.ref) && h.resumo) return h.resumo.replace(/^você /, '');
+  if (h.ref !== undefined && (OMISSOES.has(h.ref) || FEITOS_DA_REGRA.has(h.ref)) && h.resumo) return h.resumo.replace(/^você /, '');
   return undefined;
 }
 
@@ -303,6 +311,7 @@ function somarEntrada(e: EstadoVida, mapa: Map<string, Visto>, h: Entrada): void
     const ponto = m.c.indexOf('.');
     const ent = m.c.slice(0, ponto);
     const campo = m.c.slice(ponto + 1);
+    if (campo === 'dinheiro' && m.r !== undefined && PAGAMENTO.has(m.r)) continue;
     if (m.r !== undefined && CHEGADA.has(m.r)) chegaram.add(ent);
     if (ent === 'eu') {
       if (campo === 'dinheiro') meuDinheiro += m.d;

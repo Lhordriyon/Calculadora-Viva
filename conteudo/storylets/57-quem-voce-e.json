@@ -291,7 +291,7 @@
       "texto": "{ator} mandou {transferido} na hora, com um \"juízo, hein\" na mensagem. Mandou {porque}.",
       "repete": "{ator} mandou de novo. O \"juízo, hein\" veio mais comprido.",
       "resumo": "pediu dinheiro a {ator} e recebeu",
-      "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.15, "max": 20000 }, "ator.vinculo": -2, "ator.confianca": -2 }
+      "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.1, "max": 5000 }, "ator.vinculo": -2, "ator.confianca": -2 }
     },
     "fracasso": {
       "texto": "{ator} [disse que não ia dar|visualizou e demorou um dia para responder que não], {porque}.",

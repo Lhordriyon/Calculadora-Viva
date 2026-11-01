@@ -184,17 +184,9 @@
       {
         "texto": "Emprestar",
         "resumo": "emprestou dinheiro para {ator} na crise",
-        "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 30000 } },
-        "teste": { "chance": 0.4 },
-        "sucesso": {
-          "texto": "O mês que vem virou o ano que vem, mas o dinheiro voltou, com um churrasco de agradecimento.",
-          "resumo": "emprestou dinheiro para {ator} e recebeu de volta",
-          "efeitos": { "transferir": { "de": "ator", "para": "eu", "valor": 30000 }, "felicidade": 3, "ator.vinculo": 6, "ator.confianca": 8 }
-        },
-        "fracasso": {
-          "texto": "O dinheiro nunca voltou. O assunto também não; agora {ator} só aparece no Natal e evita o seu olhar.",
-          "resumo": "emprestou dinheiro para {ator} e nunca mais viu",
-          "efeitos": { "felicidade": -3, "ator.vinculo": -4, "ator.confianca": -10 }
+        "resultado": {
+          "texto": "Você emprestou {emprestado}, para {ator} devolver em duas parcelas, uma por ano. O \"mês que vem\" virou contrato de família, com a mãe de testemunha.",
+          "efeitos": { "emprestar": { "de": "eu", "para": "ator", "valor": 30000, "anos": 2 }, "ator.vinculo": 6 }
         }
       },
       {

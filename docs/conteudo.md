@@ -220,6 +220,7 @@ As pessoas da rede existem só quando a vida as trouxe: os irmãos (os mais novo
 - **Qualidades da rede que o motor escreve e o conteúdo lê:** `irmao.gemeo`, `irmao.casado`, `irmao.separado`, `irmao.pai_mae`, `irmao.mora_longe`, `irmao.desempregado`, `irmao.aposentado`, `amigo.de_infancia` e o número `irmao.filhos` (os sobrinhos); `ex.casou` e `ex.bloqueado` são do conteúdo.
 - **Notícias** (`mundo.json › acontecimentos`): `casou`, `teve_filho`, `mudou_de_cidade`, `separou` (a vida dos irmãos longe de quem joga) e `virou_amigo` (o colega que ficou).
 - **Agendados pelo motor:** `namoro_esfriou` (o namoro que esfria), `irmao_nasce`, `casamento_do_irmao` e `padrinho_do_sobrinho` (com o irmão perto).
+- **O que corre entre vocês:** `ator.te_deve` e `ator.voce_deve` (em reais) e `ator.atraso_da_divida` (anos) são os empréstimos entre quem joga e a pessoa; condições como `{ "ator.voce_deve": { "min": 1 }, "ator.atraso_da_divida": { "min": 1 } }` acham quem está cobrando. Notícias da regra (`mundo.json › acontecimentos`): `divida_quitada`, `parcela_atrasada`, `calote`, `quitou_com_voce`, `devedor_atrasou`, `divida_foi_junto` e `morreu_devendo` (com `{parcela}` e `{saldo}`).
 - **O agendado é sobre o ator de agora** (ou o filho que acabou de nascer); `"sobre": "amor"` no agendamento diz outra pessoa: a festa da firma (com o colega de ator) agenda a conversa achada no computador sobre o par.
 
 ## Efeitos
@@ -231,6 +232,10 @@ As pessoas da rede existem só quando a vida as trouxe: os irmãos (os mais novo
 | `dinheiro` | `-1500` | faltando, resgata investimento e depois vira dívida |
 | `investir` | `10000` | move da conta para o investido (o que houver) |
 | `divida` | `35000` | um empréstimo do banco que nasce desta entrada (o porquê, se ele atrasar); negativo é desconto do banco, o atrasado primeiro |
+| `emprestar` | `{ "de": "ator", "para": "eu", "fracao": 0.25, "max": 150000, "anos": 4 }` | empréstimo entre quem joga e outra pessoa (um dos lados é `eu`): o dinheiro anda (`valor`, ou `fracao` do dinheiro de quem empresta, com `max`) e nasce a promissória, em `anos` parcelas sem juros; `{emprestado}` no texto |
+| `acertar` | `"ator"` | quem deve paga tudo agora (quem joga, nem que seja no cheque especial); `{acertado}` no texto. Pede `ator.te_deve` ou `ator.voce_deve` na condição |
+| `perdoar` | `"ator"` | quem tem a receber perdoa o que falta (você perdoa quem te deve, ou a pessoa perdoa você); `{perdoado}` no texto |
+| `prorrogar` | `{ "com": "ator", "anos": 2 }` | mais prazo: o vencimento anda e o atraso zera |
 | `dividaFator` | `0.4` | multiplica a dívida sem garantia (a venda do carro que abateu, os cortes que pagaram); o banco perdoa a diferença |
 | `renegociar` | `{}` ou `{ "desconto": 0.6 }` | fecha um acordo com o banco: as dívidas sem garantia viram uma só, com parcela, e o nome limpa se nada mais atrasar. Sem `desconto`, vale o do banco pelos anos de atraso (até 70%) |
 | `patrimonioFator` | `0.5` | multiplica conta e investido (golpe, sociedade que quebrou) |

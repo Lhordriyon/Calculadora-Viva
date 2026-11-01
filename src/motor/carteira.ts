@@ -25,6 +25,7 @@ import { ehOperacaoDeDiplomacia, motivoParaNaoOperarDiplomacia, operarDiplomacia
 import { ehOperacaoDeTestamento, motivoParaNaoOperarTestamento, operarTestamento, type OperacaoTestamento } from './herdeiro.ts';
 import { ehOperacaoDeTesouro, motivoParaNaoOperarTesouro, operarTesouro, type OperacaoTesouro } from './tesouro.ts';
 import { ehOperacaoDeCoroa, motivoParaNaoOperarCoroa, operarCoroa, type OperacaoCoroa } from './coroa.ts';
+import { ehOperacaoDePromissoria, motivoParaNaoOperarPromissoria, operarPromissoria, type OperacaoPromissoria } from './promissorias.ts';
 import { ehOperacaoDeDefesa, motivoParaNaoOperarDefesa, operarDefesa, REF_DA_ENCOMENDA, REF_DA_PAZ, type OperacaoDefesa } from './guerra.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
@@ -99,7 +100,8 @@ export type Operacao =
   | OperacaoPais
   | OperacaoDiplomacia
   | OperacaoDefesa
-  | OperacaoCoroa;
+  | OperacaoCoroa
+  | OperacaoPromissoria;
 
 /** Como cada padrão aparece no texto ("viver com um padrão simples"). */
 export const NOMES_PADRAO: Record<Padrao, string> = { simples: 'simples', confortavel: 'confortável', luxo: 'de luxo' };
@@ -128,6 +130,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (ehOperacaoDeDiplomacia(op)) return motivoParaNaoOperarDiplomacia(e, c, op);
   if (ehOperacaoDeDefesa(op)) return motivoParaNaoOperarDefesa(e, c, op);
   if (ehOperacaoDeCoroa(op)) return motivoParaNaoOperarCoroa(e, op);
+  if (ehOperacaoDePromissoria(op)) return motivoParaNaoOperarPromissoria(e, op);
   if (e.idade < 16) return 'só a partir dos 16 anos';
   const eu = e.entidades['eu']!;
   if (op.tipo === 'aplicar') {
@@ -177,6 +180,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   // A encomenda leva o sistema na ref: a entrega, anos depois, acha a encomenda pelo livro (guerra.ts).
   if (ehOperacaoDeDefesa(op)) return lancarCom('defesa', () => operarDefesa(e, c, op, reg), op.tipo === 'paz' ? REF_DA_PAZ : `${REF_DA_ENCOMENDA}${op.sistema}`);
   if (ehOperacaoDeCoroa(op)) return lancarCom('coroa', (id) => operarCoroa(e, c, op, reg, id));
+  if (ehOperacaoDePromissoria(op)) return lancarCom('promissoria', () => operarPromissoria(e, op, reg));
   let texto: string;
   let resumo: string;
   if (op.tipo === 'aplicar') {

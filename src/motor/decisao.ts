@@ -9,12 +9,13 @@
  * porquê da resposta é o motivo que mais pesou para o lado dela: vira o {porque} do texto e a primeira causa da
  * entrada (o livro fica sabendo que o empréstimo de hoje saiu do conserto do carro que você pagou aos 31).
  */
-import { entidadeDe, lerCaminho } from './campos.ts';
+import { entidadeDe, entreVoceE, lerCaminho } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Pedido, Visao } from './constantes.ts';
 import type { Efeitos } from './esquema.ts';
 import { fraseDaEntrada, historiaCom, ROTULO_DA_VISAO, temRelacao, visoesDe } from './relacoes.ts';
 import { PERDAO_BASE } from './regras.ts';
+import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** O que a decisão lê da pessoa (o validador conta como leitura que decide). */
@@ -51,7 +52,10 @@ type TipoMotivo =
   | 'doente'
   | 'precisa'
   | 'longe'
-  | 'repetido';
+  | 'repetido'
+  | 'deve'
+  | 'esperou'
+  | 'te_deve';
 
 export interface Decisao {
   chance: number;
@@ -165,6 +169,17 @@ export function decidir(e: EstadoVida, c: Conteudo, id: string, pedido: Pedido, 
   if (deu > 0) somar({ tipo: 'deu', peso: deu, ...(historia.porque.deu !== undefined ? { entrada: historia.porque.deu } : {}) });
   if (pediu < 0) somar({ tipo: 'pediu', peso: pediu, ...(historia.porque.pediu !== undefined ? { entrada: historia.porque.pediu } : {}) });
 
+  // O que corre entre vocês (as promissórias): quem você ainda não pagou não empresta de novo, e espera menos; quem te
+  // deve faz o favor mais fácil. O que ela deve é o dinheiro em jogo quando você cobra.
+  const entre = entreVoceE(e, id);
+  const daDivida = entre.origem !== undefined ? { entrada: entre.origem } : {};
+  if (entre.voceDeve > 0) {
+    if (pedido === 'dinheiro') somar({ tipo: 'deve', peso: entre.atraso > 0 ? -2.6 : -1.6, ...daDivida });
+    else if (pedido === 'favor') somar({ tipo: 'deve', peso: -0.4, ...daDivida });
+    else if (pedido === 'prazo' && entre.atraso > 0) somar({ tipo: 'esperou', peso: -0.6 * entre.atraso, anos: entre.atraso, ...daDivida });
+  }
+  if (entre.teDeve > 0 && pedido === 'favor') somar({ tipo: 'te_deve', peso: 0.4, ...daDivida });
+  if (pedido === 'pagar' && valor === undefined && entre.teDeve > 0) valor = entre.teDeve;
   // Quem não tem não dá: o dinheiro que falta fecha a porta, por mais que a pessoa queira.
   let semDinheiro = false;
   if (valor !== undefined && valor > 0 && (pedido === 'dinheiro' || pedido === 'pagar')) {
@@ -296,6 +311,15 @@ export function porqueDaResposta(e: EstadoVida, c: Conteudo, id: string, pedido:
       break;
     case 'repetido':
       texto = 'porque você pediu a mesma coisa faz pouco tempo';
+      break;
+    case 'deve':
+      texto = `porque você ainda deve ${formatarDinheiro(entreVoceE(e, id).voceDeve)} a ${f ? 'ela' : 'ele'}`;
+      break;
+    case 'esperou':
+      texto = m.anos === 1 ? 'porque já esperou um ano' : `porque já esperou ${m.anos} anos`;
+      break;
+    case 'te_deve':
+      texto = 'porque ainda está te devendo';
       break;
   }
   return { texto, ...(m.entrada !== undefined ? { entrada: m.entrada } : {}) };

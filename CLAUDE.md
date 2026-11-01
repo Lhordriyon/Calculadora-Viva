@@ -98,6 +98,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor (e o namoro que esfria), iniciativas; a rede: a vida dos irmãos ao fundo, o colega e o chefe que vêm com o trabalho
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro, somado pela pessoa que ocupava o papel)
   decisao.ts           a pessoa decide: o pedido (dinheiro, favor, perdão, outra chance, pagar, prazo, aceitar, ouvir) pelo estado e pela memória dela, e o porquê, que aponta a entrada que pesou
+  promissorias.ts      o empréstimo entre pessoas: a promissória (quem emprestou e quem deve, pelo número da pessoa), a parcela, o atraso que magoa, a quitação, o calote e quitar pela folha
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -273,3 +274,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem não tem o dinheiro não empresta: a chance é zero, e o porquê diz isso | agente (missão Ω2) | com a mágoa zerada e a confiança alta, a mãe sem dinheiro ainda "emprestava" uma vez em dez |
 | O tamanho do pedido é do storylet (`ajuste`, de −3 a 3) | agente (missão Ω2) | com a mesma conta, pedir aumento saía mais fácil que pedir folga, e perdoar um caso, mais fácil que um aniversário esquecido |
 | A folha mostra como a pessoa está para o pedido ("deve dizer sim", "pode ser que sim", "difícil", "não tem como"), não a chance | agente (missão Ω2) | dá para ler a pessoa antes de pedir sem transformar a relação em planilha |
+| O empréstimo entre pessoas é uma promissória: credor e devedor pela pessoa, saldo, parcela, vencimento e atraso; sem juros, fora de `eu.divida` e do nome sujo; entra no patrimônio; cada mudança de saldo com dinheiro anda com o dinheiro entre os dois, na mesma entrada (o túnel confere junto com as dívidas) | dono (missão Ω2, I-123: "o empréstimo entre pessoas é um contrato") | o Pix da mãe virava presente, e o empréstimo ao irmão voltava ou não por sorteio |
+| A parcela atrasada magoa quem emprestou (a primeira vez é notícia); três anos sem pagar é calote, que vira a pior lembrança; a última parcela vira confiança | agente (missão Ω2) | o calote vira mágoa, e o favor pago, confiança, como o dono pediu; notícia todo ano encheria a linha do tempo |
+| Quem morre leva a dívida, nos dois sentidos, e a herança não paga nem recebe promissória | agente (missão Ω2) | simples e coerente com "quem morre leva"; a partilha continua sendo do banco e dos bens |
+| Pagar o que se deve não conta como dar na opinião da pessoa; atrasar, dar calote e quitar contam como coisa que você fez | agente (missão Ω2) | sem isso, devolver o dinheiro da mãe fazia você "generoso" aos olhos dela |

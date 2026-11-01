@@ -23,7 +23,7 @@ const META = new Set(['nome', 'genero', 'nascimento', 'vivo', 'morte']);
 /** O que toda etapa recebe para trabalhar (a vida, o conteúdo, o registro do ano): o resto do que passa entre as etapas é `ano.*`. */
 const DO_ANO = new Set(['e', 'c', 'memoria', 'reg', 'inicio', 'idRegras', 'fim']);
 
-/** "mae" → "pessoa", "ex2" → "pessoa", "empresa3" → "empresa", "bem12" → "bem", "ctr0" → "ctr", "tit57" → "tit", "celeste" → "fora". */
+/** "mae" → "pessoa", "ex2" → "pessoa", "empresa3" → "empresa", "bem12" → "bem", "ctr0" → "ctr", "tit57" → "tit", "prm40" → "prm", "celeste" → "fora". */
 export function generico(id: string): string {
   if (PESSOAS.has(papelBase(id))) return 'pessoa';
   if (FORA.has(id)) return 'fora';
@@ -31,6 +31,7 @@ export function generico(id: string): string {
   if (/^bem\d/.test(id)) return 'bem';
   if (id.startsWith('ctr')) return 'ctr';
   if (/^tit\d/.test(id)) return 'tit';
+  if (/^prm\d/.test(id)) return 'prm';
   return id;
 }
 

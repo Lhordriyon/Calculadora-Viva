@@ -47,7 +47,7 @@ const Qualidade = z.object({ v: z.number(), ano: z.number(), idade: z.number(), 
 
 const Entidade = z.object({
   id: z.string(),
-  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao', 'empresa', 'bem', 'contrato', 'titulo']),
+  tipo: z.enum(['pessoa', 'animal', 'lugar', 'jurisdicao', 'empresa', 'bem', 'contrato', 'titulo', 'promissoria']),
   nome: z.string(),
   genero: z.optional(Genero),
   nascimento: z.optional(z.number()),
@@ -84,6 +84,7 @@ const Entrada = z.object({
   resumo: z.optional(z.string()),
   escolha: z.optional(z.object({ indice: z.number(), texto: z.string(), resumo: z.string() })),
   resultado: z.optional(z.string()),
+  resposta: z.optional(z.enum(['sim', 'nao'])),
   causas: z.optional(z.array(z.number())),
   mudancas: z.optional(z.array(Mudanca)),
   inflacao: z.optional(z.number()),

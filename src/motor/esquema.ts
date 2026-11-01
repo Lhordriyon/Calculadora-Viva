@@ -178,6 +178,27 @@ const EFEITOS_FIXOS = {
       max: z.number().positive().optional(),
     })
     .optional(),
+  /**
+   * Um empréstimo entre quem joga e outra pessoa (promissorias.ts): o dinheiro anda (valor fixo, ou fração do dinheiro
+   * de quem empresta, com teto) e nasce a promissória, para pagar em `anos` parcelas, sem juros. Um dos lados é quem joga.
+   */
+  emprestar: z
+    .strictObject({
+      de: Ref,
+      para: Ref,
+      valor: z.number().positive().optional(),
+      fracao: z.number().gt(0).max(1).optional(),
+      max: z.number().positive().optional(),
+      anos: z.number().int().min(1).max(10),
+    })
+    .refine((t) => (t.de === 'eu') !== (t.para === 'eu'), 'um dos lados do empréstimo é quem joga')
+    .optional(),
+  /** Acerta tudo o que quem joga e a pessoa devem um ao outro: quem deve paga agora (quem joga, nem que seja no cheque especial). */
+  acertar: Ref.optional(),
+  /** Quem tem a receber perdoa o que falta: você perdoa quem te deve, ou a pessoa perdoa você. */
+  perdoar: Ref.optional(),
+  /** Mais prazo para o que se deve entre quem joga e a pessoa: o vencimento anda e o atraso zera. */
+  prorrogar: z.strictObject({ com: Ref, anos: z.number().int().min(1).max(5) }).optional(),
   /** A ilha nasce (a jogada "fundar um país"): o país de quem joga, com população, PIB e imposto (coroa.ts). */
   fundarIlha: z.literal(true).optional(),
   /** Vende essa fração de cada título do Tesouro de quem joga pelo preço do dia (o medo do calote, a conta que apertou): 1 vende todos. */
@@ -482,6 +503,14 @@ export const GATILHOS = [
   'separou',
   // o colega que virou amigo quando o emprego acabou
   'virou_amigo',
+  // o empréstimo entre pessoas (promissorias.ts)
+  'divida_quitada',
+  'parcela_atrasada',
+  'calote',
+  'quitou_com_voce',
+  'devedor_atrasou',
+  'divida_foi_junto',
+  'morreu_devendo',
 ] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 

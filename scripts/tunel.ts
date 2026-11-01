@@ -918,6 +918,35 @@ const portoesOmega1 = [
     `ex que voltou ${num(outroPapel.ex, 0)} · colega que virou amigo ${num(outroPapel.amigo, 0)} · romance do trabalho ${num(outroPapel.romance, 0)}`,
   ],
 ] as const;
+// ---- os verbos sociais (missão Ω2): as pessoas decidem, e o empréstimo entre pessoas é contrato
+const pedidos = vidas.map((v) => v.pedidos);
+const somaDosPedidos = (f: (p: (typeof pedidos)[number]) => number): number => pedidos.reduce((t, p) => t + f(p), 0);
+const comResposta = pedidos.filter((p) => p.respostas > 0).length / Math.max(1, pedidos.length);
+const respostas = somaDosPedidos((p) => p.respostas);
+const parteDosSins = somaDosPedidos((p) => p.sins) / Math.max(1, respostas);
+const parteComLembranca = somaDosPedidos((p) => p.comLembranca) / Math.max(1, respostas);
+const emprestimos = somaDosPedidos((p) => p.pegou + p.emprestou);
+const comEmprestimo = pedidos.filter((p) => p.pegou + p.emprestou > 0).length / Math.max(1, pedidos.length);
+const quitados = somaDosPedidos((p) => p.quitados);
+const calotes = somaDosPedidos((p) => p.calotes);
+const fechados = quitados + calotes;
+const portoesOmega2 = [
+  [
+    'A pessoa decide: ≥ 60% das vidas têm um pedido respondido por alguém, e o sim fica entre 30% e 80% das respostas',
+    comResposta >= 0.6 && parteDosSins >= 0.3 && parteDosSins <= 0.8,
+    `${pct(comResposta)} das vidas · ${num(respostas / Math.max(1, pedidos.length), 1)} respostas por vida · sim em ${pct(parteDosSins)}`,
+  ],
+  [
+    'O porquê cita o passado: ≥ 25% das respostas dizem a lembrança que pesou ("…, aos 31") ou a dívida em aberto',
+    parteComLembranca >= 0.25,
+    `${pct(parteComLembranca)} das respostas`,
+  ],
+  [
+    'O empréstimo entre pessoas acontece e acaba dos dois jeitos: em ≥ 10% das vidas, e dos que acabam, ≥ 50% quitados e ≥ 3% em calote',
+    comEmprestimo >= 0.1 && quitados / Math.max(1, fechados) >= 0.5 && calotes / Math.max(1, fechados) >= 0.03,
+    `em ${pct(comEmprestimo)} das vidas (${num(emprestimos, 0)} empréstimos: ${num(somaDosPedidos((p) => p.pegou), 0)} pegos, ${num(somaDosPedidos((p) => p.emprestou), 0)} feitos) · ${num(quitados, 0)} quitados, ${num(calotes, 0)} calotes, ${num(somaDosPedidos((p) => p.atrasos), 0)} parcelas atrasadas`,
+  ],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1195,6 +1224,17 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega1) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Os verbos sociais (missão Ω2)');
+l();
+l(
+  `Quando a resposta é de uma pessoa, ela decide pelo estado e pela memória dela e diz por quê (\`decisao.ts\`); o empréstimo entre pessoas é uma promissória, com parcela, atraso, quitação e calote (\`promissorias.ts\`). ` +
+    `Nas vidas sorteadas: ${num(respostas / Math.max(1, pedidos.length), 1)} respostas por vida, sim em ${pct(parteDosSins)}, e ${pct(parteComLembranca)} delas com o porquê apontando um ano anterior.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1592,6 +1632,7 @@ for (const [nome, ok, detalhe] of portoesD) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoesE) console.log(`${ok ? '✓' : '·'} portão E: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesF) console.log(`${ok ? '✓' : '·'} portão F: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega1) console.log(`${ok ? '✓' : '·'} portão Ω1: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega2) console.log(`${ok ? '✓' : '·'} portão Ω2: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

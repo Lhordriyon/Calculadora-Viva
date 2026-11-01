@@ -829,6 +829,48 @@
         "Você saiu daquele emprego, e {ator}, que era do trabalho, não saiu da sua vida: [o almoço de quarta virou sagrado|vocês continuam se falando todo dia, agora sem chefe no meio|a amizade sobreviveu ao crachá]. Virou {ator:o seu melhor amigo|a sua melhor amiga}."
       ],
       "resumo": "{ator} virou {ator:seu melhor amigo|sua melhor amiga}"
+    },
+    "divida_quitada": {
+      "textos": [
+        "Você pagou a última parcela do que devia a {ator.quem}. [{ator:Ele|Ela} não disse nada, só mandou um joinha, o que vindo {ator:dele|dela} é festa.|{ator:Ele|Ela} disse que nunca duvidou. Duvidou duas vezes, mas disse.|No almoço de domingo, {ator:ele|ela} contou para a mesa inteira que você pagou tudo.]"
+      ],
+      "resumo": "você pagou até o fim o que devia a {ator.quem}"
+    },
+    "parcela_atrasada": {
+      "textos": [
+        "A parcela de {parcela} que você devia a {ator.quem} não coube no ano. [{ator:Ele|Ela} não cobrou, e não cobrar foi pior.|{ator:Ele|Ela} perguntou se estava tudo bem, do jeito de quem sabe a resposta.|Você mandou um áudio explicando. {ator:Ele|Ela} ouviu duas vezes e respondeu com um \"tá\".]"
+      ],
+      "resumo": "você atrasou a parcela que devia a {ator.quem}"
+    },
+    "calote": {
+      "textos": [
+        "Faz três anos que você não paga {ator.quem}. {ator:Ele|Ela} parou de cobrar os {saldo} que faltavam. [Não tocou mais no assunto, o que é pior do que tocar.|No Natal, sentou do outro lado da mesa.|Disse para a família que \"dinheiro a gente perdoa, o resto a gente lembra\".]"
+      ],
+      "resumo": "você deu calote em {ator.quem}"
+    },
+    "quitou_com_voce": {
+      "textos": [
+        "{ator.quem} pagou a última parcela do que devia a você. [Veio com um bilhete de agradecimento e um pote de doce.|Veio sem bilhete, mas veio.|{ator:Ele|Ela} fez questão de arredondar para cima.]"
+      ],
+      "resumo": "{ator.quem} pagou até o fim o que devia a você"
+    },
+    "devedor_atrasou": {
+      "textos": [
+        "{ator.quem} não pagou a parcela de {parcela} deste ano. [Disse que no ano que vem acerta, com juros de consideração.|Mandou foto do boleto de luz para explicar.|Sumiu do grupo da família por umas semanas.]"
+      ],
+      "resumo": "{ator.quem} atrasou a parcela que devia a você"
+    },
+    "divida_foi_junto": {
+      "textos": [
+        "Com {ator.quem} foi também a dívida de {saldo} que você tinha com {ator:ele|ela}. [Ninguém cobrou, e você não esqueceu.|Ficou um recibo que nunca vai ser assinado.]"
+      ],
+      "resumo": "a dívida com {ator.quem} acabou na morte {ator:dele|dela}"
+    },
+    "morreu_devendo": {
+      "textos": [
+        "{ator.quem} morreu devendo {saldo} a você. [Você não falou disso no velório, nem depois.|O dinheiro foi o de menos, e você sabia disso desde o começo.]"
+      ],
+      "resumo": "{ator.quem} morreu devendo a você"
     }
   },
   "setores": [

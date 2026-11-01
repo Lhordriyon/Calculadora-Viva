@@ -177,6 +177,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
       const p = porqueDaResposta(e, c, ator, s.teste.decide, d, sim);
       op.textos = { porque: p.texto };
       porque = p.entrada;
+      entrada.resposta = sim ? 'sim' : 'nao';
     }
     aplicarEfeitos(e, c, r.efeitos, ef);
     entrada.resultado = textoDoDesfecho(e, r, contexto(e, op));
@@ -284,7 +285,10 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   if (esc.teste) {
     const sim = aleatorio(e.rng) < (d ? d.chance : chanceDeSucesso(esc.teste, e, ator));
     resultado = (sim ? esc.sucesso : esc.fracasso)!;
-    if (d && esc.teste.decide && ator) porque = porqueDaResposta(e, c, ator, esc.teste.decide, d, sim);
+    if (d && esc.teste.decide && ator) {
+      porque = porqueDaResposta(e, c, ator, esc.teste.decide, d, sim);
+      entrada.resposta = sim ? 'sim' : 'nao';
+    }
   } else resultado = esc.resultado!;
   aplicarEfeitos(e, c, resultado.efeitos, ef);
   if (porque?.entrada !== undefined) entrada.causas = [...new Set([porque.entrada, ...(entrada.causas ?? [])])];

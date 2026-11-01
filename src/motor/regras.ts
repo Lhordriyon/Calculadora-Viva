@@ -272,6 +272,19 @@ export const ANOS_REMORSO = 4;
 export const VINCULO_DA_FALTA = 35;
 export const MAGOA_DA_FALTA = 12;
 export const CONFIANCA_DA_FALTA = 10;
+/**
+ * O empréstimo entre pessoas (promissorias.ts): a parcela atrasada magoa quem emprestou e tira a confiança (a primeira
+ * vez é notícia; os anos seguintes de atraso pesam calados); ANOS_ATE_O_CALOTE anos sem pagar é calote; pagar até o fim
+ * devolve a confiança.
+ */
+export const MAGOA_DA_PARCELA = 8;
+export const CONFIANCA_DA_PARCELA = 8;
+export const MAGOA_POR_ANO_DE_ATRASO = 4;
+export const ANOS_ATE_O_CALOTE = 3;
+export const MAGOA_DO_CALOTE = 18;
+export const CONFIANCA_DO_CALOTE = 22;
+export const CONFIANCA_DA_QUITACAO = 8;
+export const VINCULO_DA_QUITACAO = 3;
 /** A vontade realizada: o afeto que ela traz e a mágoa que ela leva. */
 export const VINCULO_DA_VONTADE = 8;
 export const MAGOA_DA_VONTADE = 10;

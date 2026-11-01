@@ -116,7 +116,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Efeitos causais:** um verbo (pedir, oferecer, propor, cobrar, contar, apresentar) com um objeto (dinheiro, ajuda, emprego, perdão, sociedade, casamento, morar junto) vale para qualquer pessoa. Ela decide pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo dinheiro que tem, pelo que acha de você e pelo momento, e diz o porquê. O empréstimo entre pessoas é um contrato com ela de credora; o calote vira mágoa, e o favor pago, confiança. As pessoas também pedem a você.
 - **Aceitação:** teste: a mesma pergunta, com a mesma pessoa, sai diferente com a mágoa alta e com a confiança alta; o empréstimo fecha as contas e aparece nas dívidas; o porquê aponta a entrada que pesou.
 - **Desenho (Ω2):** em três partes. (a) A decisão (`decisao.ts`): um teste novo, `"decide": <pedido>`, que vale para o conteúdo inteiro; os 14 testes que davam um dado no vínculo ou na confiança de alguém (o perdão, o Pix, a última chance, a folga, o aumento, a volta do ex) passam a ser a pessoa decidindo, com o `{porque}` no texto. (b) A promissória: o empréstimo entre pessoas como contrato próprio (credor e devedor pela pessoa, saldo, parcela, vencimento, atraso), fora da dívida com o banco e do nome sujo; a parcela atrasada vira mágoa, a quitação vira confiança, o calote vira a pior lembrança; quem morre leva a dívida. (c) Os verbos que faltam: oferecer ajuda (o orgulho decide), cobrar o que devem, pedir mais prazo, e as pessoas pedindo a você.
-- **Estado:** em andamento (Ω2): (a) feita.
+- **Estado:** em andamento (Ω2): (a) e (b) feitas.
 
 ### I-124 · Os projetos
 - **Problema:** o jogador não pode querer nada. A vida é uma sequência de respostas.

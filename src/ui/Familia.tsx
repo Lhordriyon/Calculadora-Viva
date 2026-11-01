@@ -5,7 +5,7 @@ import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
 import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo } from '../motor/constantes.ts';
-import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
+import { entreVoceE, idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
 import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, ROTULO_DA_VISAO, semONome, visoesDe } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
@@ -190,7 +190,7 @@ function escolhasDoAno(vida: EstadoVida): string {
 }
 
 /** O que está acontecendo com a pessoa agora, em poucas palavras. */
-function situacao(id: string, en: Entidade, c: Conteudo): string[] {
+function situacao(vida: EstadoVida, id: string, en: Entidade, c: Conteudo): string[] {
   const f = en.genero === 'f';
   const o = (m: string, fem: string) => (f ? fem : m);
   const itens: string[] = [];
@@ -210,6 +210,10 @@ function situacao(id: string, en: Entidade, c: Conteudo): string[] {
   const filhos = en.n['filhos'] ?? 0;
   if (filhos > 0 && id !== 'eu') itens.push(filhos === 1 ? '1 filho' : `${filhos} filhos`);
   if (en.q['mora_longe']) itens.push('mora longe');
+  // O que corre entre vocês (as promissórias).
+  const entre = entreVoceE(vida, id);
+  if (entre.voceDeve >= 1) itens.push(`você deve ${formatarDinheiro(entre.voceDeve)}${entre.atraso > 0 ? ', atrasado' : ''}`);
+  if (entre.teDeve >= 1) itens.push(`te deve ${formatarDinheiro(entre.teDeve)}${entre.atraso > 0 ? ', atrasado' : ''}`);
   // O que a pessoa ama: o presente certo, o programa junto.
   if (en.tipo === 'pessoa' && id !== 'eu') {
     const gosto = c.mundo.gostos.find((g) => g.id === gostoDe(en))?.nome;
@@ -289,7 +293,7 @@ export function Familia({ vida, conteudo, aoOperar, aoAgir, aoFechar }: Props) {
           {pessoas.map(([id, en]) => {
             const viva = en.vivo !== false;
             const idade = idadeDe(vida, en);
-            const itens = situacao(id, en, conteudo);
+            const itens = situacao(vida, id, en, conteudo);
             const dinheiro = id === 'mae' || id === 'pai' || id === 'avo' ? patrimonioDe(en) : null;
             return (
               <li class={`pessoa${viva ? '' : ' falecida'}`} key={id}>

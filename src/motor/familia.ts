@@ -91,7 +91,7 @@ function vivePatrimonio(c: Conteudo, en: Entidade): boolean {
 }
 
 /** Uma mudança notável vira entrada visível na linha do tempo, com a regra como causa. */
-function acontecer(
+export function acontecer(
   e: EstadoVida,
   c: Conteudo,
   papel: string,

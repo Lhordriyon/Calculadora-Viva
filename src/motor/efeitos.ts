@@ -14,6 +14,7 @@ import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodada
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { criarPersonagem, morrerPersonagem, promover } from './pessoas.ts';
+import { abrirPromissoria, fecharPromissoria, pagarPromissoria, promissoriasCom, prorrogarPromissoria } from './promissorias.ts';
 import { inteiro } from './rng.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
 
@@ -134,6 +135,45 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
       ctx.valores['transferido'] = valor;
     }
   }
+
+  // O empréstimo entre pessoas: o dinheiro anda como na transferência, e nasce a promissória (promissorias.ts).
+  if (ef.emprestar) {
+    const t = ef.emprestar;
+    const de = entidadeDe(t.de, ator);
+    const para = entidadeDe(t.para, ator);
+    const quem = e.entidades[de];
+    if (quem && e.entidades[para]) {
+      const disponivel = Math.max(0, de === 'eu' ? patrimonioDe(quem) : (quem.n['dinheiro'] ?? 0));
+      let valor = t.valor ?? disponivel * (t.fracao ?? 0);
+      if (t.max !== undefined) valor = Math.min(valor, t.max);
+      valor = Math.round(Math.min(valor, disponivel) / 50) * 50;
+      if (valor > 0) {
+        if (de === 'eu') movimentar(e, reg, { dinheiro: -valor, contraparte: para }, 'eu', 'emprestimo');
+        else somar(e, reg, de, 'dinheiro', -valor, 'emprestimo', para);
+        if (para === 'eu') movimentar(e, reg, { dinheiro: valor, contraparte: de }, 'eu', 'emprestimo');
+        else somar(e, reg, para, 'dinheiro', valor, 'emprestimo', de);
+        abrirPromissoria(e, reg, de, para, valor, t.anos, origem);
+      }
+      ctx.valores['emprestado'] = valor;
+    }
+  }
+  if (ef.acertar) {
+    let total = 0;
+    for (const ct of promissoriasCom(e, entidadeDe(ef.acertar, ator))) {
+      total += pagarPromissoria(e, reg, ct, ct.n['saldo'] ?? 0, 'quitacao');
+      fecharPromissoria(e, reg, ct, 'quitada');
+    }
+    ctx.valores['acertado'] = total;
+  }
+  if (ef.perdoar) {
+    let total = 0;
+    for (const ct of promissoriasCom(e, entidadeDe(ef.perdoar, ator))) {
+      total += ct.n['saldo'] ?? 0;
+      fecharPromissoria(e, reg, ct, 'perdao');
+    }
+    ctx.valores['perdoado'] = total;
+  }
+  if (ef.prorrogar) for (const ct of promissoriasCom(e, entidadeDe(ef.prorrogar.com, ator))) prorrogarPromissoria(e, reg, ct, ef.prorrogar.anos);
 
   // Vender ou fechar vem depois dos caminhos: a empresa ainda existe para o que o bloco muda nela.
   if (ef.venderEmpresa) ctx.valores['venda'] = venderParte(e, reg, ef.venderEmpresa.fracao, ef.venderEmpresa.premio ?? 1);

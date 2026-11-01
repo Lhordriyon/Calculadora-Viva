@@ -155,6 +155,18 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
       for (const c of concretos(`${lado}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
     }
   }
+  // O empréstimo entre pessoas: o dinheiro dos dois e a promissória, que é relação (a mágoa do atraso, a confiança da quitação).
+  if (ef.emprestar) {
+    for (const lado of [ef.emprestar.de, ef.emprestar.para]) {
+      for (const c of concretos(`${lado}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
+    }
+    out.push({ caminho: '', sistema: 'relacoes' });
+  }
+  for (const com of [ef.acertar, ef.perdoar, ef.prorrogar?.com]) {
+    if (!com) continue;
+    for (const c of concretos(`${com}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
+    out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: '', sistema: 'relacoes' });
+  }
   // Caminho vazio: mexe no sistema sem escrever um campo (o bicho não tem vínculo; a agenda não é campo).
   for (const p of ef.personagens ?? []) out.push({ caminho: p === 'pet' ? '' : `${p}.vinculo`, sistema: 'relacoes' });
   if (ef.matar) for (const c of concretos(`${ef.matar}.faleceu`, atores)) out.push({ caminho: c, sistema: 'relacoes' });
@@ -353,6 +365,13 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         for (const m of ef.marcas ?? []) set.add(m);
         marcasDoPapel.set(papel, set);
       }
+      // Acertar, perdoar e prorrogar pedem uma dívida entre vocês: a condição do storylet (ou da escolha) precisa dizer.
+      for (const com of [ef.acertar, ef.perdoar, ef.prorrogar?.com]) {
+        if (!com) continue;
+        const ler = (cond: Condicoes | undefined): boolean => ['te_deve', 'voce_deve', 'atraso_da_divida'].some((k) => cond !== undefined && `${com}.${k}` in cond);
+        const daEscolha = s.escolhas?.find((esc) => [esc.efeitos, esc.resultado?.efeitos, esc.sucesso?.efeitos, esc.fracasso?.efeitos].includes(ef));
+        if (!ler(s.condicoes) && !ler(daEscolha?.condicoes)) erro(b.onde, `acertar, perdoar ou prorrogar com ${com} pede "${com}.te_deve" ou "${com}.voce_deve" na condição`);
+      }
       for (const ag of ef.agendar ?? []) {
         agendados.add(ag.evento);
         agendadoPor.set(ag.evento, [...(agendadoPor.get(ag.evento) ?? []), { s, ef }]);
@@ -529,8 +548,16 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   }
   c.mundo.nascimento.forEach((n, i) => verificarModelo(n.texto, `mundo.json › nascimento[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
   c.mundo.epitafios.forEach((t, i) => verificarModelo(t, `mundo.json › epitafios[${i}]`, new Set(), new Set(todosVivos), marcasDoPapel, erro, undefined));
+  // Os textos que a regra passa para a notícia: o como e o fecho (a morte), a parcela e o saldo (o empréstimo entre pessoas).
+  const DA_REGRA: Partial<Record<string, readonly string[]>> = {
+    parcela_atrasada: ['parcela'],
+    devedor_atrasou: ['parcela'],
+    calote: ['saldo'],
+    divida_foi_junto: ['saldo'],
+    morreu_devendo: ['saldo'],
+  };
   for (const [g, ac] of Object.entries(c.mundo.acontecimentos)) {
-    const extras = new Set(['como', 'fecho', ...Object.keys(ac.trechos ?? {})]);
+    const extras = new Set(['como', 'fecho', ...(DA_REGRA[g] ?? []), ...Object.keys(ac.trechos ?? {})]);
     const trechos = Object.values(ac.trechos ?? {}).flatMap((l) => l.map((t) => t.texto));
     for (const t of [...ac.textos, ac.resumo, ...trechos]) verificarModelo(t, `mundo.json › acontecimentos.${g}`, extras, new Set(), marcasDoPapel, erro, PAPEIS);
   }
@@ -675,6 +702,10 @@ function verificarTextos(
   const extras = new Set([...Object.keys(s.valores ?? {}), ...Object.keys(s.trechos ?? {})]);
   const blocos = blocosDe(s, onde);
   if (blocos.some((b) => b.efeitos.transferir)) extras.add('transferido');
+  // O empréstimo entre pessoas: quanto foi emprestado, acertado ou perdoado.
+  if (blocos.some((b) => b.efeitos.emprestar)) extras.add('emprestado');
+  if (blocos.some((b) => b.efeitos.acertar)) extras.add('acertado');
+  if (blocos.some((b) => b.efeitos.perdoar)) extras.add('perdoado');
   // Valores calculados pelos efeitos da empresa: com quanto ela abriu, quanto a rodada pôs, por quanto vendeu, o que sobrou.
   if (blocos.some((b) => b.efeitos.abrirEmpresa)) extras.add('capital');
   if (blocos.some((b) => b.efeitos.rodada)) extras.add('rodada');
