@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-F%3A%20O%20poder%20que%20passa-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-835-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%CE%A9%3A%20vidas%20que%20contam%20uma%20hist%C3%B3ria-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-913-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,37 +15,36 @@
 
 ---
 
-## 🆕 Novidades: Bloco F · O poder que passa (26/10/2026)
+## 🆕 Novidades: Ω · Vidas que contam uma história (01/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a coroa, o Regime e a ilha agora passam de verdade. Quem continua a história herda o trono, seja quem for: o filho, o par, o amigo ou o sobrinho. A resposta vem no primeiro ano da vida nova, ou aos 18 (até lá, a regência governa). E vem também quando o pai ou a mãe que reinava morre durante a sua vida. Enquanto você pensa, o governo espera: ninguém toma o seu lugar no meio do caminho.
->
-> E o poder também se toma. Na folha Carreira e poder, a seção nova "Tomar o poder" mostra o que não passa pela urna:
-> - ficar no poder: quem é presidente fecha o Congresso (uma aposta na popularidade) ou muda a Constituição para mais quatro anos (uma aposta na influência);
-> - tomar o poder: quem tem influência lidera os quartéis (se for coronel ou general) ou financia os generais (R$ 20 bilhões);
-> - restaurar a monarquia: quem é famoso e rico banca o plebiscito e, se o povo quiser, é coroado.
->
-> Dá certo: o cargo para a vida inteira, e quem herda entra na fila. Dá errado: o impeachment ou a cadeia. Lá fora, o mundo reage: a Federação do Norte esfria, a República Celeste se aproxima, e a sanção que vier aponta o golpe.
+> **O que mudou:** o maior salto do jogo até aqui, feito para responder ao "esse jogo está muito repetitivo". Em seis camadas:
+> - **As pessoas são gente.** O amor que vai embora vira ex, continua vivendo e pode voltar (a mesma pessoa). Os irmãos nascem com a família e têm vida própria; o colega e o chefe chegam com o emprego; os amigos da vida adulta aparecem. Cada pessoa lembra do que você fez com ela.
+> - **A pessoa decide, e diz por quê.** Quando você pede dinheiro, perdão, um favor ou outra chance, quem responde pesa o que viveu com você: "disse não, porque lembra de quando você sumiu no hospital, aos 31". O empréstimo entre pessoas virou contrato, com parcela, atraso, mágoa e calote.
+> - **Você quer coisas.** A folha Planos (a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, o diploma…): as etapas são a sua vida de verdade, e o fim (conquista, prazo vencido) entra na linha do tempo com o porquê.
+> - **Os segredos.** O caso, a dívida escondida, a festa que era "estudo", o esquema por fora no trabalho. Quem sabe pode contar; a fofoca corre pela família, pelos amigos e pelo trabalho, e um dia chega a quem não devia, com o nome de quem contou. Há chantagem, confissão e desabafo, e a folha Família mostra quem sabe o quê.
+> - **Os capítulos e o caminho não tomado.** A vida reconhece os próprios arcos (a volta de um amor, o calote, as pazes, o segredo que veio à tona, o plano realizado) e mostra na linha do tempo e no cartão. No cartão, cada escolha que virou ponto de virada tem **"E se tivesse escolhido outra coisa?"**: o jogo refaz a sua vida igual até ali, troca a escolha e mostra a vida que você não viveu.
+> - **O ritmo.** Depois de um ano pesado, as histórias leves ganham a vez.
 
 > [!TIP]
 > **Para testar:**
-> - Comece na família real ("Nova vida", linhagem). Quando o pai ou a mãe que reina morrer, o Palácio espera a sua resposta: aceitar, abdicar ou propor o fim da monarquia. Com menos de 18, a regência governa, e a resposta vem no seu aniversário.
-> - Reine e morra com alguém para continuar (o filho ou, pelo testamento, o par ou o amigo): a vida nova começa na fila, e a coroa chega no primeiro ano.
-> - Chegue a presidente e abra "Tomar o poder" na folha Carreira e poder. Com a popularidade alta, o autogolpe tende a dar certo; depois, o país vira Regime, não há mais eleição geral e você governa até morrer.
-> - Funde um país sendo presidente: você deixa o cargo daqui na hora, e quem assume o governo aponta a fundação como causa.
-> - Salve o país da crise comprando títulos: os R$ 200 bilhões viram um título do Tesouro, que paga juro todo ano (e pode levar calote).
+> - Na adolescência, vá à festa dizendo que ia estudar. Se tiver irmão, ele pode ter visto você chegar às seis da manhã.
+> - Com namoro e emprego, deixe a noite ir longe na festa da firma; depois desabafe com um irmão e acompanhe na folha Família quem "sabe do caso".
+> - Peça dinheiro emprestado à mãe e atrase a parcela. Depois peça outra coisa e leia o porquê da resposta.
+> - Toque em "Planos" no palco e ponha na cabeça a casa própria.
+> - No fim da vida, no cartão, toque em "E se tivesse escolhido outra coisa?" num ponto de virada.
 
-| ✅ O que este bloco trouxe | ⏳ O que ele ainda não trouxe |
+| ✅ O que o salto trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 👑 **A sucessão que passa:** a coroa, o Regime e a ilha vão para quem herda, seja quem for, no primeiro ano ou aos 18, e também quando quem reina morre em vida | 🏝️ **Governar a ilha e a cidade que você fundou** (o imposto e as obras pagas do próprio bolso): é o próximo bloco, o F2 |
-| 🏛️ **Sem interregno:** enquanto você responde, quem governava continua; quem abdica devolve o governo no ano seguinte | 🏦 **O empréstimo aos bancos como contrato** e os bens que rendem: o bloco I |
-| ⚔️ **Tomar o poder:** o autogolpe, o golpe (pelos quartéis ou pelo dinheiro) e a coroa restaurada no plebiscito, com o teste e o preço à vista | 🌍 **Países de verdade e o mapa:** precisam de uma decisão sua (hoje a política do jogo é toda fictícia) |
-| 🌐 **O mundo reage ao golpe:** sob o Regime, a Federação esfria e a Celeste se aproxima, e a sanção aponta o golpe | |
-| 🏝️ **Quem vai reinar na ilha deixa o Brasil:** o cargo daqui acaba na hora, e o governo de transição aponta a fundação | |
-| 💼 **Quem tem cargo vive dele:** não é demitido, e a coroa leva a carreira de antes; sob o Regime, não há eleição geral | |
-| 💰 **O resgate do país vira título:** os R$ 200 bilhões entram no patrimônio, pagam cupom e podem levar calote | |
+| 👥 **Gente de verdade:** 14,5 pessoas por vida (eram cerca de 8), com o ex que volta em 1 de cada 4 vidas e irmãos em 8 de cada 10 | 🏝️ **Governar a ilha e a cidade que você fundou:** continua sendo o próximo bloco da lista do dono, o F2 |
+| 🗣️ **A pessoa decide e diz por quê:** em 63% das vidas alguém decide algo com você, e metade das respostas lembra do passado | 🔀 **Trocar uma ação no "E se":** só as escolhas se trocam (a ação pediria escolher qual outra) |
+| 🤝 **O empréstimo entre pessoas como contrato,** com parcela, atraso, mágoa e calote | 🔎 **Descobrir quem espalhou o segredo:** a linha do tempo já diz quem contou a quem |
+| 🎯 **Os planos:** três em cada quatro vidas começam um; 4 em cada 10 viram conquista | 🏦 **O empréstimo aos bancos como contrato** e os bens que rendem: o bloco I |
+| 🤫 **Os segredos:** em uma de cada quatro vidas, com a fofoca, a chantagem e a revelação com o nome de quem contou | 🌍 **Países de verdade e o mapa:** precisam de uma decisão sua (a política do jogo é toda fictícia) |
+| 📖 **Os capítulos** (em 7 de cada 10 vidas) e **o caminho não tomado** no cartão | |
+| 🌬️ **O ritmo:** depois de um ano pesado, a vida respira | |
 
-No túnel de vento, todas as 516 sucessões que chegaram a um adulto tiveram resposta (404 em vida, 112 na herança), e 79% de quem começou a vida na fila reinou. Os anos em que quem joga governa o país quase dobraram (de 6.742 para 12.587 nas 10.000 vidas). Das 69 tentativas de golpe e autogolpe, 68% deram certo; das 40 de restaurar a monarquia, 30%. Nenhuma estratégia passou a vencer em tudo, e a CPU não mudou. Os outros pedidos da lista de 26/10 (as empresas com caixa e pesquisa, os filhos quando quiser, a vida longa, os impostos, a escola inteira, os gráficos) estão em ordem logo abaixo. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (a defesa).
+No túnel de vento (10.000 vidas), o jogo ficou menos repetitivo onde se mede: a saturação na 5ª vida caiu de 55,1% para 52,3% e na 20ª de 90,1% para 87,6%, com 913 histórias (eram 835) e os mesmos 460 e poucos toques por vida. As assinaturas do destino caíram um pouco (de 592 para 574 por 1.000 vidas), porque os planos levam mais vidas aos mesmos lugares; o caminho até lá é que varia, e o túnel agora mede isso (as causas dos pontos de virada e os capítulos). Contas, dívidas e promissórias fecham entrada por entrada, nenhuma estratégia vence em tudo e nenhum storylet ficou sem aparecer. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o poder que passa).
 
 ## 🗺️ Os blocos do dono
 
@@ -107,7 +106,11 @@ flowchart LR
 - Nascer numa cidade brasileira, em 8 classes sociais (do barraco ao trilionário), 4 tipos de família e 9 linhagens (família real, Regime, futebol, circo, agro, políticos…), ou criar o personagem escolhendo tudo
 - Primeira infância com causa e efeito: o que acontece até os 4 anos volta dos 5 aos 12
 - ENEM, curso, 49 profissões com cargos e promoção, concurso, aposentadoria
-- Família viva: mãe, pai, avó, amigo, amor e até quatro filhos, cada um com saúde, dinheiro, jeito e vínculo, que envelhecem, adoecem, ajudam ou atrapalham
+- Família viva: mãe, pai, avó, amor e até quatro filhos, cada um com saúde, dinheiro, jeito e vínculo, que envelhecem, adoecem, ajudam ou atrapalham
+- Gente com identidade: os irmãos, o ex que pode voltar, o colega e o chefe que vêm com o emprego, os amigos de infância e os da vida adulta; cada pessoa lembra do que você fez e tem opinião sobre você
+- A pessoa decide: quem responde a um pedido pesa o que viveu com você e diz por quê; o empréstimo entre pessoas é contrato, com parcela, atraso e calote
+- Os planos: a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, com etapas que são a vida de verdade
+- Os segredos: o caso, a dívida escondida, a festa que era estudo, o esquema no trabalho; a fofoca que corre, a chantagem e a revelação
 - Fichas de ação por ano: estudar, trabalhar, cuidar da saúde, ver a família, sair, poupar
 </details>
 
@@ -138,7 +141,8 @@ flowchart LR
 <details>
 <summary><b>🏰 A dinastia</b></summary>
 
-- Ao morrer, o cartão mostra os três pontos de virada da vida, para compartilhar
+- Ao morrer, o cartão mostra os três pontos de virada e os capítulos da vida, para compartilhar
+- O caminho não tomado: em cada ponto de virada que foi escolha sua, o cartão mostra a vida que você não viveu
 - A história continua com quem herda: filho, sobrinho, o par ou um amigo, pelo testamento escolhido em vida
 - Sem testamento, os filhos dividem a herança
 </details>

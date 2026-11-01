@@ -4,6 +4,33 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌱 Ω · Vidas que contam uma história · 01/11/2026
+
+> [!NOTE]
+> O pedido do dono (26/10): "faça o que for preciso e só atualize o jogo quando voltar com algo que de fato se compare com um jogo muito bem construído… me surpreenda, esse jogo está muito repetitivo". A auditoria (`docs/auditoria-omega.md`) achou o limite nas pessoas, na voz delas e na falta de vontade e de segredo; o salto veio em seis camadas, e a `main` recebe todas juntas.
+
+- 👥 **Ω1 · A rede** (`pessoas.ts`, `relacoes.ts`, `familia.ts`):
+  - a pessoa tem identidade (um número e quem ocupou cada papel desde quando): o amor que vai embora vira ex (até três), continua vivendo e pode voltar; a memória e a opinião são da pessoa;
+  - os irmãos nascem com a família (os mais novos nos primeiros anos) e vivem ao fundo (o casamento, os filhos, a mudança), como convite quando estão perto e como notícia quando estão longe;
+  - o colega e o chefe chegam com o emprego e saem com ele; o chefe pesa na promoção e na demissão; até três amigos, o de infância e os da vida adulta;
+  - o namoro sem casamento esfria, e quem joga decide: salvar, terminar ou deixar morrer.
+- 🗣️ **Ω2 · A pessoa decide** (`decisao.ts`, `promissorias.ts`):
+  - quando a resposta é de uma pessoa (`"teste": { "decide": … }`), ela decide pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo que acha de você, pelo que você já deu e pediu, pelo dinheiro que tem e pela distância, e o desfecho diz o porquê, apontando a entrada que pesou;
+  - o empréstimo entre pessoas é uma promissória: parcela, vencimento, atraso que magoa, calote que vira a pior lembrança e quitação que vira confiança;
+  - os verbos sociais: dar uma força, pedir socorro, o cupido, a mudança.
+- 🎯 **Ω3 · Os planos** (`projetos.ts`, a folha Planos): nove planos como conteúdo, com etapas que são o estado da vida, o que ajuda em cada uma, a meta e o prazo; o fim vai para a linha do tempo com o começo de causa, e o mundo apoia o plano de pé com histórias próprias.
+- 🤫 **Ω4 · Os segredos** (`segredos.ts`, `59-segredos.json`):
+  - o caso, a dívida escondida, a festa que era estudo e o esquema por fora: o alvo leva `escondido_<tema>` e quem sabe, `sabe_<tema>`;
+  - todo ano, quem sabe pode contar pelos círculos (a família e o par; os amigos, o par e os irmãos; os ex e os amigos; o colega e o chefe), e quem fica sabendo perde confiança em você;
+  - a notícia que chega ao alvo vira revelação no mesmo ano, com quem contou (`{fonte}`) e o porquê; a chantagem, a confissão e o desabafo; quem sabe pesa o segredo nas decisões.
+- 📖 **Ω5 · Os capítulos e o caminho não tomado** (`capitulos.ts`, `caminho.ts`):
+  - a peneira reconhece seis arcos no livro (o plano, o segredo que veio à tona, o amor que voltou, o calote, o favor devolvido, as pazes), que a linha do tempo e o cartão mostram;
+  - a interface grava a vida como comandos; no cartão, "E se tivesse escolhido outra coisa?" refaz a vida igual até a escolha, troca a opção e deixa um robô com o jeito de quem joga seguir dali.
+- 🌬️ **Ω6 · O ritmo e a medida:** depois de um ano pesado, as histórias leves ganham a vez; o túnel mede a variedade pelo caminho (as causas dos pontos de virada e os capítulos) e os elos de causa distintos.
+- 🔧 **Defeitos corrigidos:** o plano "cuidar da saúde" era impossível (2 conquistas em 3.384 tentativas) e virou 66 em oito anos; o falso dilema do casamento dos outros; a conferência das promissórias que se compensam.
+
+---
+
 ## 👑 Bloco F · O poder que passa · 26/10/2026
 
 > [!NOTE]
