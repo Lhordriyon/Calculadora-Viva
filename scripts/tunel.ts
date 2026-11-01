@@ -1013,6 +1013,21 @@ const portoesOmega4 = [
     `${temasVivos.length} de ${idsDosSegredos.length}${temasVivos.length < idsDosSegredos.length ? ` (faltam ${idsDosSegredos.filter((id) => !temasVivos.includes(id)).join(', ')})` : ''}`,
   ],
 ] as const;
+// ---- os capítulos (missão Ω5): os arcos que a peneira reconhece no livro de cada vida
+const TIPOS_DE_CAPITULO = ['plano', 'segredo', 'volta', 'calote', 'favor', 'pazes'] as const;
+const capitulosDasVidas = vidas.map((v) => v.capitulos);
+const comCapitulo = capitulosDasVidas.filter((k) => Object.keys(k).length > 0).length / Math.max(1, capitulosDasVidas.length);
+const capitulosPorTipo = Object.fromEntries(TIPOS_DE_CAPITULO.map((t) => [t, capitulosDasVidas.reduce((a, k) => a + (k[t] ?? 0), 0)])) as Record<(typeof TIPOS_DE_CAPITULO)[number], number>;
+const totalDeCapitulos = Object.values(capitulosPorTipo).reduce((a, b) => a + b, 0);
+const comDoisTipos = capitulosDasVidas.filter((k) => Object.keys(k).length >= 2).length / Math.max(1, capitulosDasVidas.length);
+const portoesOmega5 = [
+  ['A vida tem capítulos: ≥ 50% das vidas têm um arco reconhecido no livro', comCapitulo >= 0.5, `${pct(comCapitulo)} das vidas · ${num(totalDeCapitulos / Math.max(1, capitulosDasVidas.length), 2)} por vida · ${pct(comDoisTipos)} com dois tipos ou mais`],
+  [
+    'Todo tipo de capítulo acontece (o plano, o segredo, a volta, o calote, o favor e as pazes)',
+    TIPOS_DE_CAPITULO.every((t) => capitulosPorTipo[t] > 0),
+    TIPOS_DE_CAPITULO.map((t) => `${t} ${num(capitulosPorTipo[t], 0)}`).join(' · '),
+  ],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1323,6 +1338,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega4) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Os capítulos (missão Ω5)');
+l();
+l('A peneira lê o livro de cada vida e reconhece os arcos com começo e fim, que a linha do tempo e o cartão mostram (`capitulos.ts`).');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega5) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1723,6 +1746,7 @@ for (const [nome, ok, detalhe] of portoesOmega1) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesOmega2) console.log(`${ok ? '✓' : '·'} portão Ω2: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega3) console.log(`${ok ? '✓' : '·'} portão Ω3: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega4) console.log(`${ok ? '✓' : '·'} portão Ω4: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega5) console.log(`${ok ? '✓' : '·'} portão Ω5: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

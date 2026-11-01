@@ -7,6 +7,7 @@
  * Causas podem ser do jogador (escolha, ação) ou do mundo (o pai que perdeu o
  * emprego, a avó que morreu).
  */
+import { type Capitulo, capitulosDe, capitulosDoCartao } from './capitulos.ts';
 import { defCampo, patrimonioTotal } from './campos.ts';
 import { herdeiroPossivel, type Parentesco } from './herdeiro.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -313,6 +314,8 @@ export interface ResumoVida {
   antepassados: Antepassado[];
   /** Quem pode continuar a história (filho ou filha viva; sem filho, sobrinho ou sobrinha), com a idade de agora. */
   herdeiro: { nome: string; idade: number; genero: Genero; parentesco: Parentesco } | null;
+  /** Os capítulos que o cartão conta (capitulos.ts): os arcos mais longos, um de cada tipo antes de repetir. */
+  capitulos: Capitulo[];
 }
 
 /** "família pobre e acolhedora", "classe média, família religiosa". */
@@ -363,5 +366,6 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
       const h = herdeiroPossivel(e, c);
       return h ? { nome: h.nome, idade: e.ano - h.nascimento, genero: h.genero, parentesco: h.parentesco } : null;
     })(),
+    capitulos: capitulosDoCartao(capitulosDe(e, c)),
   };
 }

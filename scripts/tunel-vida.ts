@@ -6,6 +6,7 @@
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import { REF_SOUBE } from '../src/motor/segredos.ts';
+import { capitulosDe, type TipoDeCapitulo } from '../src/motor/capitulos.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, type Fase } from '../src/motor/constantes.ts';
@@ -363,6 +364,8 @@ export interface Vida {
   pedidos: HistoriaDosPedidos;
   projetos: HistoriaDosProjetos;
   segredos: HistoriaDosSegredos;
+  /** Os capítulos da vida (missão Ω5, capitulos.ts): quantos de cada tipo. */
+  capitulos: Partial<Record<TipoDeCapitulo, number>>;
 }
 
 /** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
@@ -1106,6 +1109,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     pedidos: pedidosDaVida(e),
     projetos: projetosDaVida(e),
     segredos: segredosDaVida(e, c),
+    capitulos: capitulosDe(e, c).reduce<Partial<Record<TipoDeCapitulo, number>>>((m, k) => ({ ...m, [k.tipo]: (m[k.tipo] ?? 0) + 1 }), {}),
     ...contasDaVida(e),
   };
 }

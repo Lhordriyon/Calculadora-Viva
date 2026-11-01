@@ -3,6 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { NOMES_VERBO } from '../motor/acoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Entrada, EstadoVida } from '../motor/tipos.ts';
+import { capitulosDe, type Capitulo } from '../motor/capitulos.ts';
 import { porqueDe } from '../motor/virada.ts';
 import { conteudo } from '../conteudo.ts';
 import { avisosDeInflacao, chipDoBalanco, chipDosAlugueis, chipsDe, visivel, type Chip } from './formato.ts';
@@ -31,9 +32,11 @@ interface PropsItem {
   balanco: Chip[];
   /** A causa de um ano anterior, no que aconteceu com quem joga (eventos, iniciativas dos outros, a morte). */
   porque: { idade: number; texto: string } | null;
+  /** O capítulo da vida que esta entrada fecha (capitulos.ts). */
+  capitulo: Capitulo | undefined;
 }
 
-function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) {
+function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque, capitulo }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
@@ -54,6 +57,11 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque }: PropsItem) 
         <p>{h.texto}</p>
         {h.escolha && <p class="escolhida">→ {h.escolha.texto}</p>}
         {h.resultado && <p class="resultado">{h.resultado}</p>}
+        {capitulo && (
+          <p class="capitulo">
+            <span class="etiqueta">capítulo</span> {capitulo.titulo}, {capitulo.de === capitulo.ate ? `aos ${capitulo.de}` : `dos ${capitulo.de} aos ${capitulo.ate}`}
+          </p>
+        )}
         {porque && (
           <p class="porque">
             Porque aos {porque.idade}, {porque.texto}.
@@ -102,7 +110,8 @@ const Item = memo(
     a.inflacao === b.inflacao &&
     mesmosChips(a.balanco, b.balanco) &&
     a.porque?.idade === b.porque?.idade &&
-    a.porque?.texto === b.porque?.texto,
+    a.porque?.texto === b.porque?.texto &&
+    a.capitulo?.fim === b.capitulo?.fim,
 );
 
 /** O porquê de cada entrada, calculado uma vez: ele só olha as causas, que são entradas mais antigas. */
@@ -137,6 +146,8 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
     .join(',');
   const participacao = useMemo(() => Object.fromEntries(partes.split(',').filter(Boolean).map((p) => [p.split(':')[0]!, Number(p.split(':')[1])])), [partes]);
   const porId = useMemo(() => new Map(historico.map((h) => [h.id, h])), [historico]);
+  // O capítulo que cada entrada fecha: a peneira lê o livro inteiro uma vez por mudança dele.
+  const capitulos = useMemo(() => new Map(capitulosDe(vida, conteudo).map((k) => [k.fim, k])), [historico.length, historico.at(-1)]);
   // Cada ano tem uma entrada invisível com as regras (salário, rendimentos, inflação, empresa): o balanço dela vai na primeira entrada visível do ano.
   const balancos = useMemo(() => {
     const m = new Map<number, Chip[]>();
@@ -162,6 +173,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
             nomeDe={nomeDe}
             balanco={balancos.get(h.id) ?? []}
             porque={porqueGuardado(h, porId)}
+            capitulo={capitulos.get(h.id)}
             key={h.id}
           />
         ),
