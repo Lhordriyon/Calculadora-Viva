@@ -360,6 +360,7 @@ export interface Vida {
   /** A rede (missão Ω): as pessoas que passaram pela vida e o que contaram. */
   rede: HistoriaDaRede;
   pedidos: HistoriaDosPedidos;
+  projetos: HistoriaDosProjetos;
 }
 
 /** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
@@ -444,6 +445,30 @@ function pedidosDaVida(e: EstadoVida): HistoriaDosPedidos {
     calotes: ref('regra:calote'),
     atrasos: ref('regra:parcela_atrasada') + ref('regra:devedor_atrasou'),
   };
+}
+
+/** Os projetos (missão Ω3): os começados e como acabaram, por projeto. */
+export interface HistoriaDosProjetos {
+  comecados: string[];
+  conquistas: string[];
+  vencidos: string[];
+  desistencias: string[];
+  semTempo: string[];
+}
+
+function projetosDaVida(e: EstadoVida): HistoriaDosProjetos {
+  const r: HistoriaDosProjetos = { comecados: [], conquistas: [], vencidos: [], desistencias: [], semTempo: [] };
+  const deQual = (h: Entrada): string => h.instancia?.slice('projeto:'.length).split('#')[0] ?? '';
+  // O começo e a desistência são operações: o projeto sai da qualidade que a entrada ganhou ou perdeu.
+  const daQualidade = (h: Entrada): string => (h.mudancas ?? []).find((m) => m.c.startsWith('eu.projeto_'))?.c.slice('eu.projeto_'.length) ?? '';
+  for (const h of e.historico) {
+    if (h.ref === 'projeto:comecar_projeto') r.comecados.push(daQualidade(h));
+    else if (h.ref === 'projeto:desistir_projeto') r.desistencias.push(daQualidade(h));
+    else if (h.ref === 'regra:projeto_conquista') r.conquistas.push(deQual(h));
+    else if (h.ref === 'regra:projeto_vencido') r.vencidos.push(deQual(h));
+    else if (h.ref === 'regra:projeto_semTempo') r.semTempo.push(deQual(h));
+  }
+  return r;
 }
 
 export interface HistoriaDoPoder {
@@ -1041,6 +1066,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     poder: poderDaVida(e),
     rede: redeDaVida(e),
     pedidos: pedidosDaVida(e),
+    projetos: projetosDaVida(e),
     ...contasDaVida(e),
   };
 }

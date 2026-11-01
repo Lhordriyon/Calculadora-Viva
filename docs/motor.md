@@ -315,6 +315,14 @@ Quando a vida acaba, a história continua com quem herda: pelo testamento, o par
 
 **Na folha.** As ações com `decide` mostram como a pessoa está (`acoes.ts › dicaDaChance`: "deve dizer sim", "pode ser que sim", "difícil", "não tem como"), não a conta. Os robôs avaliam a ação pela mesma chance (`chanceDeSucesso` com o conteúdo e o desfecho bom).
 
+## Os projetos (`projetos.ts`; missão Ω3)
+
+**O que quem joga quer.** O projeto é conteúdo (`mundo.json › projetos`): a idade e a condição em que faz sentido (`quando`), as etapas (cada uma é uma condição do estado, com o texto e o que ajuda: um verbo, o id de uma ação ou `folha:<nome>`), a meta, o prazo e os textos dos fins. O andamento sai da vida (a etapa feita é a condição que vale agora), não de uma barra que o projeto guarda. O projeto de pé é a qualidade `projeto_<id>` de quem joga, com o ano e a entrada que o começou; o que é com alguém (`com`: reparar uma relação) marca a pessoa com a mesma qualidade e lê as condições com ela de ator, e a marca segue a pessoa se ela mudar de papel. No máximo três de pé (`regras.ts › MAX_PROJETOS`).
+
+**Começar, andar, acabar.** Começar e desistir são operações (`comecar_projeto`, `desistir_projeto`, na folha Planos; não gastam a ficha): "você pôs na cabeça comprar a casa própria". A etapa `projetos` do ano (depois do poder e do padrão) confere cada um: a meta alcançada vira conquista (+6 de felicidade), o prazo passado vira fracasso (−4), a pessoa que morreu antes leva o projeto (`semTempo`), e quem saiu da vida encerra calado. O fim é um acontecimento (`tipo: 'evento'`, `causa: 'regra'`, `ref: regra:projeto_<fim>`) com o começo de causa: a linha do tempo mostra "Porque aos 30, você pôs na cabeça…", e o cartão da vida pode contar o arco.
+
+**O mundo apoia a história começada.** O storylet que lê `projeto_…` só existe com o projeto de pé e pesa o dobro para o diretor (`regras.ts › PESO_DO_PROJETO`): a visita ao apartamento decorado, a planilha das dívidas, a academia de janeiro, a ligação de quem você quer reconciliar. Os robôs escolhem projetos pelo jeito de cada um (`robos.ts › PROJETOS_DA_ESTRATEGIA`) e, metade das vezes, escolhem a ação entre as que ajudam nas etapas que faltam.
+
 ## Linhagens (`origem.ts`)
 
 No começo em um toque, 20% das vidas nascem numa linhagem (`mundo.json › linhagens`): família real (neste mundo, o plebiscito de 1993 deu monarquia), família do Regime, família famosa, do futebol, de políticos, do agro, de circo, imigrante, militar. A linhagem fixa a classe, dá qualidades a quem nasce e ao pai ou à mãe que a carrega, ao país (monarquia, regime), influência e fama iniciais e um texto de nascimento próprio. Quem escolhe a origem escolhe a linhagem (ou nenhuma).

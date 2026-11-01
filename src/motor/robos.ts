@@ -27,7 +27,8 @@ import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
-import { chanceDeSucesso, custoDaEscolha, elegivel, opcoesDe } from './storylets.ts';
+import { chanceDeSucesso, custoDaEscolha, elegivel, instanciaDe, opcoesDe } from './storylets.ts';
+import { etapasDe, projetosAtivos, projetosPossiveis } from './projetos.ts';
 import { precoDoTitulo, taxaDoTitulo, type Prazo } from './tesouro.ts';
 import { formaDaCoroa, paisDaCoroa } from './coroa.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
@@ -267,8 +268,14 @@ export function decidirAcao(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
   const primeira = porVerbo.find((l) => l.length > 0)?.[0];
   if (!primeira) return null;
   if (estrategia === 'primeira') return { verbo: primeira.verbo };
-  // Como quem joga: todas as ações de todos os verbos estão na mesa.
-  const todas = porVerbo.flat();
+  // Como quem joga: todas as ações de todos os verbos estão na mesa. Com um projeto de pé, um terço das vezes o robô
+  // escolhe entre as que ajudam nele (as etapas que faltam dizem quais), e varia: a que fez no ano passado fica de fora.
+  let todas = porVerbo.flat();
+  const ajuda = oQueAjuda(e, c);
+  if (ajuda.size > 0) {
+    const ajudam = todas.filter((a) => (ajuda.has(a.s.id) || ajuda.has(a.verbo)) && e.vistos[instanciaDe(a.s, a.ator)]?.at(-1) !== e.idade - 1);
+    if (ajudam.length > 0 && aleatorio(rng) < 0.35) todas = ajudam;
+  }
   if (estrategia === 'aleatoria') {
     if (aleatorio(rng) < 0.15) return null;
     const a = sortear(rng, todas);
@@ -311,6 +318,7 @@ export function decidirDinheiro(estrategia: Estrategia, e: EstadoVida, c: Conteu
     ...decidirCoroa(estrategia, e, c, rng),
     ...venderTituloParaPagar(e),
     ...decidirDividas(estrategia, e, c, rng),
+    ...decidirProjetos(estrategia, e, c, rng),
     ...decidirJogada(estrategia, e, c, rng),
     ...decidirQuemManda(estrategia, e, c, rng),
     ...decidirGolpe(estrategia, e, c, rng),
@@ -512,6 +520,53 @@ function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
  * Dívida atrasada: a cautelosa renegocia assim que o banco aceita; a aleatória, às vezes; a arriscada espera a dívida
  * caducar (cinco anos de nome sujo, sem crédito novo nem financiamento).
  */
+/** O que cada jeito de jogar quer da vida, na ordem: a cautelosa quer segurança; a arriscada, o negócio e o milhão. */
+const PROJETOS_DA_ESTRATEGIA: Partial<Record<Estrategia, readonly string[]>> = {
+  cautelosa: ['sair_das_dividas', 'casa_propria', 'cuidar_da_saude', 'reparar_relacao', 'diploma', 'casar', 'ter_um_filho', 'primeiro_milhao', 'negocio_proprio'],
+  arriscada: ['negocio_proprio', 'primeiro_milhao', 'casa_propria', 'sair_das_dividas', 'ter_um_filho'],
+};
+
+/** O que o robô acha que dá para fazer, olhando o bolso e a vida (quem joga também olha antes de pôr na cabeça). */
+function plausivel(e: EstadoVida, id: string): boolean {
+  const eu = e.entidades['eu']!;
+  const patrimonio = patrimonioDe(eu);
+  if (id === 'primeiro_milhao') return patrimonio >= 100_000;
+  if (id === 'casa_propria') return patrimonio >= 15_000;
+  if (id === 'negocio_proprio') return patrimonio >= 10_000;
+  if (id === 'ter_um_filho' || id === 'casar') return (eu.q['namoro']?.v ?? 0) > 0;
+  if (id === 'diploma') return e.idade <= 45;
+  return true;
+}
+
+/**
+ * Os projetos do robô: com lugar livre, a cautelosa e a arriscada começam um dos três primeiros da sua lista que fazem
+ * sentido e são plausíveis (uma vez a cada cinco anos, em média); a aleatória sorteia qualquer um, e às vezes desiste de
+ * um. Ninguém começa de novo um projeto que já teve nesta vida.
+ */
+function decidirProjetos(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
+  const ativos = projetosAtivos(e, c);
+  if (estrategia === 'aleatoria' && ativos.length > 0 && aleatorio(rng) < 0.05) return [{ tipo: 'desistir_projeto', id: sortear(rng, ativos).def.id }];
+  if (ativos.length >= 2 || aleatorio(rng) >= 0.2) return [];
+  const jaTeve = new Set(e.historico.filter((h) => h.ref === 'projeto:comecar_projeto').flatMap((h) => (h.mudancas ?? []).filter((m) => m.c.startsWith('eu.projeto_')).map((m) => m.c.slice('eu.projeto_'.length))));
+  const possiveis = projetosPossiveis(e, c).filter((p) => !jaTeve.has(p.def.id) && plausivel(e, p.def.id));
+  if (possiveis.length === 0) return [];
+  // Cada jeito tem as suas preferências, mas não uma fila: sorteia entre as três primeiras que dão (vidas iguais demais
+  // perseguiam a mesma sequência de planos).
+  const ordem = PROJETOS_DA_ESTRATEGIA[estrategia];
+  const preferidos = ordem ? ordem.flatMap((id) => possiveis.filter((x) => x.def.id === id)).slice(0, 3) : possiveis;
+  const p = preferidos.length > 0 ? sortear(rng, preferidos) : undefined;
+  if (!p) return [];
+  const op: Operacao = { tipo: 'comecar_projeto', id: p.def.id, ...(p.com ? { com: p.com } : {}) };
+  return pode(e, c, op) ? [op] : [];
+}
+
+/** O que ajuda nos projetos de pé, nas etapas que faltam: os verbos e as ações (o robô dá preferência a elas). */
+function oQueAjuda(e: EstadoVida, c: Conteudo): Set<string> {
+  const ajuda = new Set<string>();
+  for (const p of projetosAtivos(e, c)) for (const x of etapasDe(e, p)) if (!x.feita) for (const a of x.ajuda) ajuda.add(a);
+  return ajuda;
+}
+
 function decidirDividas(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   const ops: Operacao[] = [];
   const op: Operacao = { tipo: 'renegociar' };

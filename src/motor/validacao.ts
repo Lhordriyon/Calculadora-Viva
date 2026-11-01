@@ -7,13 +7,13 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS, papelBase } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS, VERBOS, papelBase } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CAMPOS_DA_DECISAO } from './decisao.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet, type Teste } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
-import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VONTADES, VOTOS } from './manifesto.ts';
+import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, PROJETOS, VONTADES, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
 import { verificarPortugues } from './portugues.ts';
 import { IDADE_MAXIMA } from './regras.ts';
@@ -257,6 +257,11 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     escrever(k, 'motor');
     ler(k, { sistema: 'motor', decide: true, onde: 'motor › vontades: a vida realiza, a pressa vira mágoa, a idade leva, a morte deixa remorso' });
   }
+  // Os projetos: o motor escreve a qualidade (começar, terminar) e lê (o prazo, a pessoa, o peso dos storylets dele).
+  for (const k of PROJETOS(c.mundo.projetos)) {
+    escrever(k, 'motor');
+    ler(k, { sistema: 'motor', decide: true, onde: 'motor › projetos: o prazo, a pessoa e o peso das histórias do projeto' });
+  }
   for (const v of c.mundo.vontades) {
     const onde = `mundo.json › vontades › ${v.id}`;
     if (v.feita && !v.realizada) erro(onde, 'vontade que a vida realiza ("feita") precisa dos textos de "realizada"');
@@ -423,6 +428,21 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   }
   // A condição que realiza a vontade lê o estado e decide quando a vida a realiza.
   for (const v of c.mundo.vontades) if (v.feita) conferirCondicao(v.feita, `mundo.json › vontades › ${v.id}`, v.papeis, { sistema: 'motor', decide: true });
+  // As condições dos projetos leem o estado e decidem quando ele começa, anda e acaba; o que ajuda precisa existir.
+  const FOLHAS = new Set(['folha:dinheiro', 'folha:familia', 'folha:carreira', 'folha:pais']);
+  for (const p of c.mundo.projetos) {
+    const onde = `mundo.json › projetos › ${p.id}`;
+    conferirCondicao(p.quando, `${onde} › quando`, p.com, { sistema: 'motor', decide: true });
+    conferirCondicao(p.meta, `${onde} › meta`, p.com, { sistema: 'motor', decide: true });
+    p.etapas.forEach((x, i) => {
+      conferirCondicao(x.feita, `${onde} › etapa ${i + 1}`, p.com, { sistema: 'texto', decide: false });
+      for (const a of x.ajuda ?? []) {
+        const s = c.porId.get(a);
+        if (!(VERBOS as readonly string[]).includes(a) && !FOLHAS.has(a) && !(s && tipoDe(s) === 'acao')) erro(`${onde} › etapa ${i + 1}`, `"${a}" não é verbo, ação nem folha`);
+      }
+    });
+    if (!c.storylets.some((s) => JSON.stringify(s.condicoes ?? {}).includes(`projeto_${p.id}`))) aviso(onde, 'nenhum storylet lê o projeto: ele vive sem histórias próprias');
+  }
   // Requisitos das profissões leem o estado e decidem quem pode tentar a vaga.
   for (const k of c.mundo.carreiras) {
     const onde = `mundo.json › carreiras › ${k.id}`;
@@ -569,6 +589,13 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     const onde = `mundo.json › vontades › ${v.id}`;
     for (const t of [v.quer, v.nunca, ...(v.realizada ?? []), ...(v.perdida?.textos ?? []), ...(v.perdida ? [v.perdida.resumo] : [])]) {
       verificarModelo(t, onde, new Set(), new Set(), marcasDoPapel, erro, v.papeis);
+    }
+  }
+  for (const p of c.mundo.projetos) {
+    const onde = `mundo.json › projetos › ${p.id}`;
+    const fins = [p.conquista, p.vencido, p.desistencia, ...(p.semTempo ? [p.semTempo] : [])];
+    for (const t of [p.nome, p.objetivo, p.descricao, ...p.etapas.map((x) => x.texto), ...fins.flatMap((f) => [f.texto, f.resumo])]) {
+      verificarModelo(t, onde, new Set(), new Set(), marcasDoPapel, erro, p.com);
     }
   }
   for (const [g, n] of Object.entries(c.mundo.noticias)) {

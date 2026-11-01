@@ -248,6 +248,9 @@ export const VOTOS = (governos: readonly { id: string; eleito: boolean }[]): str
  * perdida com a idade, a pressa que vira mágoa, o remorso na morte (familia.ts › vontadesNoAno, pessoas.ts).
  */
 export const VONTADES = (vontades: readonly { id: string; papeis: readonly string[] }[]): string[] => vontades.flatMap((v) => v.papeis.map((p) => `${p}.${v.id}`));
+/** A qualidade de cada projeto (projetos.ts): em quem joga e, no que é com alguém, na pessoa. */
+export const PROJETOS = (projetos: readonly { id: string; com?: readonly string[] | undefined }[]): string[] =>
+  projetos.flatMap((p) => [`eu.projeto_${p.id}`, ...(p.com ?? []).map((papel) => `${papel}.projeto_${p.id}`)]);
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
@@ -539,6 +542,7 @@ export const ETAPAS_DO_ANO = [
       'empresa.nome',
       'tit.nome',
       'prm.nome',
+      'ilha.nome',
       'fora.nome',
       'lugar.nome',
       'pais.nome',
@@ -582,6 +586,13 @@ export const ETAPAS_DO_ANO = [
     nome: 'o padrão de vida: a conta que chega quando a reserva acaba',
     le: ['ano.economia', ...BOLSO, 'eu.padrao_alto'],
     escreve: ['agenda'],
+  },
+  {
+    id: 'projetos',
+    nome: 'os projetos: a meta alcançada vira conquista, o prazo passado vira fracasso',
+    // A meta e as etapas são condições do conteúdo (mundo.json › projetos), que podem ler qualquer coisa da vida.
+    le: ['*'],
+    escreve: ['eu.projeto_*', 'pessoa.projeto_*', 'eu.felicidade'],
   },
   {
     id: 'regras',

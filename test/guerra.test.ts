@@ -13,7 +13,7 @@ import { POLITICAS } from '../src/motor/constantes.ts';
 import { anoDoExterior } from '../src/motor/diplomacia.ts';
 import { continuarComoHerdeiro } from '../src/motor/herdeiro.ts';
 import { ameacaDeGuerra, chanceDeGuerra, chancesDoFim, encomendasPendentes, regraDaGuerra } from '../src/motor/guerra.ts';
-import { ESCRITAS_DO_MOTOR, ETAPAS_DO_ANO, VONTADES } from '../src/motor/manifesto.ts';
+import { ESCRITAS_DO_MOTOR, ETAPAS_DO_ANO, PROJETOS, VONTADES } from '../src/motor/manifesto.ts';
 import { anoDoPais, defGoverno, primarioDe, rumoDoPais } from '../src/motor/pais.ts';
 import { criarPersonagem, novaEntidade } from '../src/motor/pessoas.ts';
 import { DEFESA, VERBA_DA_CARREIRA } from '../src/motor/regras.ts';
@@ -416,7 +416,7 @@ describe('uma vida com guerra', () => {
 
   it('as regras da guerra só escrevem o que o manifesto declara, e a etapa só lê e escreve o que declarou', () => {
     const { e } = jogada();
-    const declaradas = new Set([...ESCRITAS_DO_MOTOR, ...VONTADES(c.mundo.vontades)]);
+    const declaradas = new Set([...ESCRITAS_DO_MOTOR, ...VONTADES(c.mundo.vontades), ...PROJETOS(c.mundo.projetos)]);
     const fora = new Set<string>();
     for (const h of e.historico) {
       if (h.causa !== 'regra') continue;

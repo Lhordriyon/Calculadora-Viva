@@ -947,6 +947,34 @@ const portoesOmega2 = [
     `em ${pct(comEmprestimo)} das vidas (${num(emprestimos, 0)} empréstimos: ${num(somaDosPedidos((p) => p.pegou), 0)} pegos, ${num(somaDosPedidos((p) => p.emprestou), 0)} feitos) · ${num(quitados, 0)} quitados, ${num(calotes, 0)} calotes, ${num(somaDosPedidos((p) => p.atrasos), 0)} parcelas atrasadas`,
   ],
 ] as const;
+// ---- os projetos (missão Ω3): o que quem joga quer, e como acaba
+const projetosDasVidas = vidas.map((v) => v.projetos);
+const comProjeto = projetosDasVidas.filter((p) => p.comecados.length > 0).length / Math.max(1, projetosDasVidas.length);
+const contar = (f: (p: (typeof projetosDasVidas)[number]) => string[]): Map<string, number> => {
+  const m = new Map<string, number>();
+  for (const p of projetosDasVidas) for (const id of f(p)) m.set(id, (m.get(id) ?? 0) + 1);
+  return m;
+};
+const comecados = contar((p) => p.comecados);
+const conquistados = contar((p) => p.conquistas);
+const totalDe = (m: Map<string, number>): number => [...m.values()].reduce((a, b) => a + b, 0);
+const fins = { conquista: totalDe(conquistados), vencido: totalDe(contar((p) => p.vencidos)), desistencia: totalDe(contar((p) => p.desistencias)), semTempo: totalDe(contar((p) => p.semTempo)) };
+const acabados = fins.conquista + fins.vencido + fins.desistencia + fins.semTempo;
+const idsDosProjetos = c.mundo.projetos.map((p) => p.id);
+const projetosVivos = idsDosProjetos.filter((id) => (comecados.get(id) ?? 0) > 0 && (conquistados.get(id) ?? 0) > 0);
+const portoesOmega3 = [
+  ['Os planos existem: ≥ 40% das vidas começam um plano', comProjeto >= 0.4, `${pct(comProjeto)} das vidas · ${num(totalDe(comecados) / Math.max(1, projetosDasVidas.length), 2)} planos por vida`],
+  [
+    'Os planos acabam dos dois jeitos: dos que acabam, as conquistas ficam entre 20% e 80%',
+    acabados > 0 && fins.conquista / acabados >= 0.2 && fins.conquista / acabados <= 0.8,
+    `${num(fins.conquista, 0)} conquistas, ${num(fins.vencido, 0)} prazos vencidos, ${num(fins.desistencia, 0)} desistências, ${num(fins.semTempo, 0)} sem tempo (conquista em ${pct(fins.conquista / Math.max(1, acabados))})`,
+  ],
+  [
+    'Todo plano acontece: cada um é começado e conquistado em alguma vida',
+    projetosVivos.length === idsDosProjetos.length,
+    `${projetosVivos.length} de ${idsDosProjetos.length}${projetosVivos.length < idsDosProjetos.length ? ` (faltam ${idsDosProjetos.filter((id) => !projetosVivos.includes(id)).join(', ')})` : ''}`,
+  ],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1235,6 +1263,17 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Os projetos (missão Ω3)');
+l();
+l(
+  `Quem joga declara o que quer da vida; as etapas são condições do estado, e o fim vai para o livro com o começo de causa (\`projetos.ts\`). ` +
+    `Por projeto, começados / conquistados: ${idsDosProjetos.map((id) => `${id} ${num(comecados.get(id) ?? 0, 0)} / ${num(conquistados.get(id) ?? 0, 0)}`).join(' · ')}.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega3) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1633,6 +1672,7 @@ for (const [nome, ok, detalhe] of portoesE) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoesF) console.log(`${ok ? '✓' : '·'} portão F: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega1) console.log(`${ok ? '✓' : '·'} portão Ω1: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega2) console.log(`${ok ? '✓' : '·'} portão Ω2: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega3) console.log(`${ok ? '✓' : '·'} portão Ω3: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

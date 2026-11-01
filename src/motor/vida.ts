@@ -19,6 +19,7 @@ import { regraDaEmpresa } from './empresa.ts';
 import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDasDividas } from './dividas.ts';
 import { anoDasPromissorias } from './promissorias.ts';
+import { anoDosProjetos } from './projetos.ts';
 import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCoroa } from './coroa.ts';
 import { regraDaPesquisa } from './pesquisa.ts';
@@ -238,6 +239,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   // A coroa: a ilha anda e quem tem coroa recebe a dotação da forma escolhida (coroa.ts).
   coroa: (x) => regraDaCoroa(x.e, x.c, x.reg),
   padrao: (x) => regraDoPadrao(x.e, x.c, x.economia!.deficit),
+  // Os projetos (projetos.ts): a meta alcançada é conquista; o prazo passado, fracasso; com o ano já vivido.
+  projetos: (x) => anoDosProjetos(x.e, x.c),
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   regras: (x) => {
     x.e.somaFelicidade += x.e.entidades['eu']!.n['felicidade'] ?? 0;

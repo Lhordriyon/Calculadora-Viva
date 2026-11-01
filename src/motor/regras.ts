@@ -285,6 +285,13 @@ export const MAGOA_DO_CALOTE = 18;
 export const CONFIANCA_DO_CALOTE = 22;
 export const CONFIANCA_DA_QUITACAO = 8;
 export const VINCULO_DA_QUITACAO = 3;
+/** Os projetos (projetos.ts): quantos ao mesmo tempo, e o que o fim faz com o humor de quem joga. */
+export const MAX_PROJETOS = 3;
+export const FELICIDADE_DA_CONQUISTA = 6;
+export const FELICIDADE_DO_PRAZO_VENCIDO = -4;
+export const FELICIDADE_DA_DESISTENCIA = -1;
+/** O storylet que lê um projeto vivo pesa tanto a mais para o diretor: a vida apoia a história começada. */
+export const PESO_DO_PROJETO = 2;
 /** A vontade realizada: o afeto que ela traz e a mágoa que ela leva. */
 export const VINCULO_DA_VONTADE = 8;
 export const MAGOA_DA_VONTADE = 10;

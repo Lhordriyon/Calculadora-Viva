@@ -223,6 +223,35 @@ As pessoas da rede existem só quando a vida as trouxe: os irmãos (os mais novo
 - **O que corre entre vocês:** `ator.te_deve` e `ator.voce_deve` (em reais) e `ator.atraso_da_divida` (anos) são os empréstimos entre quem joga e a pessoa; condições como `{ "ator.voce_deve": { "min": 1 }, "ator.atraso_da_divida": { "min": 1 } }` acham quem está cobrando. Notícias da regra (`mundo.json › acontecimentos`): `divida_quitada`, `parcela_atrasada`, `calote`, `quitou_com_voce`, `devedor_atrasou`, `divida_foi_junto` e `morreu_devendo` (com `{parcela}` e `{saldo}`).
 - **O agendado é sobre o ator de agora** (ou o filho que acabou de nascer); `"sobre": "amor"` no agendamento diz outra pessoa: a festa da firma (com o colega de ator) agenda a conversa achada no computador sobre o par.
 
+## Os projetos (missão Ω3)
+
+Os projetos ficam em `mundo.json › projetos` e são escritos como o resto do conteúdo: condições e textos.
+
+```json
+{
+  "id": "casa_propria",
+  "nome": "A casa própria",
+  "objetivo": "comprar a casa própria",
+  "descricao": "Sair do aluguel e ter a chave de um lugar seu.",
+  "idade": [20, 75],
+  "quando": { "semMarcas": ["casa_propria"] },
+  "etapas": [
+    { "texto": "Juntar R$ 50 mil para a entrada", "feita": { "patrimonio": { "min": 50000 } }, "ajuda": ["poupar", "trabalhar"] },
+    { "texto": "A chave na mão", "feita": { "marcas": ["casa_propria"] }, "ajuda": ["folha:dinheiro"] }
+  ],
+  "meta": { "marcas": ["casa_propria"] },
+  "prazo": 15,
+  "conquista": { "texto": "…", "resumo": "conquistou a casa própria" },
+  "vencido": { "texto": "…", "resumo": "…" },
+  "desistencia": { "texto": "…", "resumo": "…" }
+}
+```
+
+- `objetivo` completa "você pôs na cabeça…"; os `resumo` dos fins completam "aos N, você…".
+- Com alguém: `"com": ["mae", "pai", "irmao", …]`, e `quando`, as etapas e a meta leem a pessoa como `ator` (`"ator.magoa": { "max": 10 }`); `nome`, `objetivo` e os textos aceitam `{ator}` e `{ator.quem}`; `semTempo` é o fim de quando a pessoa morre antes.
+- `ajuda` lista o que leva à etapa: um verbo (`poupar`), o id de uma ação (`faculdade_a_noite`) ou uma folha (`folha:dinheiro`, `folha:familia`, `folha:carreira`, `folha:pais`). A folha Planos mostra; os robôs dão preferência.
+- **Storylets do projeto:** a condição `"marcas": ["projeto_casa_propria"]` (ou `"ator.projeto_reparar_relacao"` na pessoa) faz o storylet existir só com o projeto de pé, com peso dobrado. Todo projeto precisa de pelo menos um (o validador avisa).
+
 ## Efeitos
 
 | Efeito | Exemplo | Nota |

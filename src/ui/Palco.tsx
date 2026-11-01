@@ -20,12 +20,14 @@ interface Props {
   aoEscolher: (indice: number) => void;
   aoVerCartao: () => void;
   aoNovaVida: () => void;
+  /** Os planos de quem joga (a folha Planos): começar, ver as etapas, desistir. */
+  aoAbrirPlanos: () => void;
   /** Quem pode continuar a história depois da morte (filho ou filha viva; sem filho, sobrinho ou sobrinha). */
   herdeiro: { nome: string; idade: number; genero: 'f' | 'm'; parentesco: Parentesco } | null;
   aoContinuar: () => void;
 }
 
-export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida, herdeiro, aoContinuar }: Props) {
+export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao, aoNovaVida, aoAbrirPlanos, herdeiro, aoContinuar }: Props) {
   const p = vida.pendente;
   // A carência: logo depois que um evento aparece ou fecha, ou que a lista de um verbo abre ou fecha, os toques
   // são ignorados (o segundo toque de um toque duplo não pode escolher nem passar o ano por você). Um ano novo
@@ -101,6 +103,8 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
 
   const lista = aberto ? acoes.find((a) => a.verbo === aberto) : undefined;
   const restantes = fichasDoAno(vida.idade) - fichasUsadas(vida);
+  // Os planos de pé: as qualidades `projeto_…` de quem joga (projetos.ts).
+  const planos = Object.entries(vida.entidades['eu']!.q).filter(([k, q]) => k.startsWith('projeto_') && q.v > 0).length;
   if (vida.vivo && lista) {
     return (
       <div class="palco">
@@ -145,6 +149,14 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
               <b>Suas escolhas</b> ·{' '}
               {fichasUsadas(vida) > 0 ? 'mais ' : ''}
               {restantes === 1 ? 'uma' : restantes} este ano
+              {vida.idade >= 17 && (
+                <>
+                  {' · '}
+                  <button class="link-planos" type="button" onClick={aoAbrirPlanos}>
+                    {planos > 0 ? `Planos (${planos})` : 'Planos'}
+                  </button>
+                </>
+              )}
             </p>
             {/* O verbo é um botão curto; tocar abre a lista das ações dele (o ponto marca o que é novo).
                 O ícone só aparece quando cabe sem cortar o nome. */}

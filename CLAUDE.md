@@ -99,6 +99,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro, somado pela pessoa que ocupava o papel)
   decisao.ts           a pessoa decide: o pedido (dinheiro, favor, perdão, outra chance, pagar, prazo, aceitar, ouvir) pelo estado e pela memória dela, e o porquê, que aponta a entrada que pesou
   promissorias.ts      o empréstimo entre pessoas: a promissória (quem emprestou e quem deve, pelo número da pessoa), a parcela, o atraso que magoa, a quitação, o calote e quitar pela folha
+  projetos.ts          os projetos (mundo.json › projetos): o que quem joga quer, com etapas que são condições do estado; começar e desistir, e o fim (conquista, prazo vencido, sem tempo) com o começo de causa
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -130,7 +131,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
 src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança; exportar e importar pelo menu
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), voltar.ts (o voltar fecha a folha), Icones (SVG), estilo.css (tema noite e ouro)
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, Projetos (a folha Planos), CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), voltar.ts (o voltar fecha a folha), Icones (SVG), estilo.css (tema noite e ouro)
 scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
 android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
 test/                  Vitest
@@ -279,4 +280,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Quem morre leva a dívida, nos dois sentidos, e a herança não paga nem recebe promissória | agente (missão Ω2) | simples e coerente com "quem morre leva"; a partilha continua sendo do banco e dos bens |
 | A parcela da promissória sai da conta e, faltando, do que quem joga tem investido | agente (missão Ω2) | com a parcela só da conta, quem investia a sobra dava calote na mãe: 836 calotes para 976 quitações em 2.000 vidas (com o investido, 287 para 1.953) |
 | No porquê, entre motivos quase do mesmo tamanho, a lembrança de verdade ganha do estado ("lembra de quando você…" antes de "gosta de você") | agente (missão Ω2) | com o motivo mais pesado puro, só 13% das respostas citavam o passado; com a preferência, 48% |
+| Quem joga declara o que quer (os projetos, até três): as etapas são condições do estado e o que ajuda são verbos, ações e folhas que já existem; o fim (conquista, prazo vencido, a pessoa que morreu antes, a desistência) vai para o livro com o começo de causa | dono (missão Ω3, I-124: "o jogador não pode querer nada") | a vida era uma sequência de respostas; o projeto dá direção e um arco que o cartão conta |
+| Os projetos são conteúdo (`mundo.json › projetos`), e o storylet que lê um projeto de pé pesa o dobro para o diretor | agente (missão Ω3) | projeto novo sem código, e o mundo apoia a história começada (a visita ao apartamento quando você quer a casa) |
+| Começar e desistir de um plano não gastam a ficha do ano; o caminho até lá, sim | agente (missão Ω3) | o plano é intenção, não o que se vive no ano; o custo de oportunidade fica nas ações que ajudam |
 | Pagar o que se deve não conta como dar na opinião da pessoa; atrasar, dar calote e quitar contam como coisa que você fez | agente (missão Ω2) | sem isso, devolver o dinheiro da mãe fazia você "generoso" aos olhos dela |

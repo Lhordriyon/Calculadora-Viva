@@ -14,7 +14,7 @@ import { causasDe, clausulas, idadeDaCausaMaisRecente } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Storylet } from './esquema.ts';
 import { fatorNovidade } from './memoria.ts';
-import { ritmo } from './regras.ts';
+import { PESO_DO_PROJETO, ritmo } from './regras.ts';
 import { aleatorio, sortearIndice } from './rng.ts';
 import { atoresPossiveis, elegivel, instanciaDe } from './storylets.ts';
 import type { EstadoVida, MemoriaJogador } from './tipos.ts';
@@ -30,13 +30,17 @@ export interface Candidato {
   urgente: boolean;
 }
 
+/** O storylet que só existe com um projeto de pé (lê `projeto_…`): a vida apoia a história começada (projetos.ts). */
+const doProjeto = (s: Storylet): boolean => (s.condicoes?.marcas ?? []).some((m) => m.startsWith('projeto_') || m.startsWith('ator.projeto_'));
+
 export function saliencia(s: Storylet, e: EstadoVida, ator: string | undefined, memoria: MemoriaJogador | undefined): number {
   const instancia = instanciaDe(s, ator);
   const especificidade = 1 + 0.25 * clausulas(s.condicoes) + (ator ? 0.25 : 0);
   const vezes = e.vistos[instancia]?.length ?? 0;
   const recente = idadeDaCausaMaisRecente(s.condicoes, e, ator);
   const fresca = recente !== undefined && e.idade - recente <= 2 ? 2 : 1;
-  return (s.peso ?? 1) * especificidade * fatorNovidade(memoria, instancia) * (1 / (1 + vezes)) * (s.tensao ?? 1) * fresca;
+  const apoio = doProjeto(s) ? PESO_DO_PROJETO : 1;
+  return (s.peso ?? 1) * especificidade * fatorNovidade(memoria, instancia) * (1 / (1 + vezes)) * (s.tensao ?? 1) * fresca * apoio;
 }
 
 /** Entre vários atores possíveis, o preferido pelo storylet (ou todos, se ele não prefere). */

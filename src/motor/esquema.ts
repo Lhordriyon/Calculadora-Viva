@@ -906,5 +906,38 @@ export const Mundo = z.strictObject({
       pressa: z.strictObject({ anos: z.number().int().min(1), magoa: z.number().min(0) }).optional(),
     }),
   ),
+  /**
+   * Os projetos (projetos.ts; missão Ω3): o que quem joga quer da vida. As etapas são condições do estado (o andamento
+   * sai da vida, não de uma barra), cada uma com o que ajuda (um verbo, o id de uma ação ou `folha:<nome>`); a meta e o
+   * prazo dizem quando acaba. O projeto ativo é a qualidade `projeto_<id>` de quem joga; o que é com alguém (`com`:
+   * reparar uma relação) marca a pessoa com `reparando` e lê as condições com ela de ator.
+   */
+  projetos: z.array(
+    z.strictObject({
+      id: z.string().regex(/^[a-z_]+$/),
+      /** "A casa própria": o título na folha (com alguém, aceita {ator.quem}). */
+      nome: z.string(),
+      /** "comprar a casa própria": completa "você pôs na cabeça…" (com alguém, aceita {ator.quem}). */
+      objetivo: z.string(),
+      /** Uma frase para quem escolhe. */
+      descricao: z.string(),
+      /** A idade de quem joga em que dá para começar. */
+      idade: FaixaIdade,
+      /** Com quem: os papéis possíveis (a condição `quando` vale para a pessoa, de ator). */
+      com: z.array(z.enum(PAPEIS)).min(1).optional(),
+      /** Quando dá para começar. */
+      quando: Condicoes,
+      etapas: z.array(z.strictObject({ texto: z.string(), feita: Condicoes, ajuda: z.array(z.string()).optional() })).min(1),
+      meta: Condicoes,
+      /** Anos para chegar lá; passou, o projeto vence. */
+      prazo: z.number().int().min(1).max(40),
+      /** Os fins: a conquista, o prazo vencido, a desistência e, com alguém, a pessoa que morreu antes; o resumo completa "aos N, você…". */
+      conquista: z.strictObject({ texto: z.string(), resumo: z.string() }),
+      vencido: z.strictObject({ texto: z.string(), resumo: z.string() }),
+      desistencia: z.strictObject({ texto: z.string(), resumo: z.string() }),
+      semTempo: z.strictObject({ texto: z.string(), resumo: z.string() }).optional(),
+    }),
+  ),
 });
 export type Mundo = z.infer<typeof Mundo>;
+export type DefProjeto = Mundo['projetos'][number];

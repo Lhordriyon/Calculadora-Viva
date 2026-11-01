@@ -19,6 +19,7 @@ import { CartaoVida } from './CartaoVida.tsx';
 import { Familia } from './Familia.tsx';
 import { Folha } from './Folha.tsx';
 import { Pais } from './Pais.tsx';
+import { Projetos } from './Projetos.tsx';
 import { LinhaDoTempo } from './LinhaDoTempo.tsx';
 import { Menu } from './Menu.tsx';
 import { Palco } from './Palco.tsx';
@@ -53,7 +54,7 @@ const endereco = (() => {
   }
 })();
 
-type Folha = 'cartao' | 'menu' | 'familia' | 'dinheiro' | 'carreira' | 'pais' | null;
+type Folha = 'cartao' | 'menu' | 'familia' | 'dinheiro' | 'carreira' | 'pais' | 'planos' | null;
 
 export function App() {
   const [save, setSave] = useState<Save>(() => carregar(conteudo));
@@ -231,6 +232,7 @@ export function App() {
         aoEscolher={responder}
         aoVerCartao={() => setFolha('cartao')}
         aoNovaVida={pedirNovaVida}
+        aoAbrirPlanos={() => setFolha('planos')}
         herdeiro={resumo?.herdeiro ?? null}
         aoContinuar={continuar}
       />
@@ -252,6 +254,7 @@ export function App() {
       {folha === 'dinheiro' && <Dinheiro vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'carreira' && <Carreira vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'pais' && <Pais vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
+      {folha === 'planos' && <Projetos vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'menu' && <Menu viva={vida.vivo} save={save} conteudo={conteudo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoImportar={importar} />}
       {save.aviso && folha === null && (
         <Folha id="titulo-aviso" titulo="Aviso" aoFechar={entendiAviso}>

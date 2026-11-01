@@ -873,6 +873,172 @@
       "resumo": "{ator.quem} morreu devendo a você"
     }
   },
+  "projetos": [
+    {
+      "id": "sair_das_dividas",
+      "nome": "Sair das dívidas",
+      "objetivo": "sair das dívidas",
+      "descricao": "Pagar o banco, limpar o nome e dormir sem fazer conta de cabeça.",
+      "idade": [18, 90],
+      "quando": { "divida": { "min": 2000 } },
+      "etapas": [
+        { "texto": "A dívida abaixo de R$ 20 mil", "feita": { "divida": { "max": 20000 } }, "ajuda": ["poupar", "trabalhar"] },
+        { "texto": "O nome limpo", "feita": { "semMarcas": ["nome_sujo"] }, "ajuda": ["folha:dinheiro"] },
+        { "texto": "Nenhum real devendo ao banco", "feita": { "divida": { "max": 0 } }, "ajuda": ["poupar", "folha:dinheiro"] }
+      ],
+      "meta": { "divida": { "max": 0 }, "semMarcas": ["nome_sujo"] },
+      "prazo": 8,
+      "conquista": { "texto": "Você pagou o último boleto e ficou olhando o saldo zerado por um tempo, sem acreditar. Dormiu como não dormia fazia anos.", "resumo": "saiu das dívidas" },
+      "vencido": { "texto": "Oito anos depois de prometer que ia sair das dívidas, você ainda deve. O banco nunca esquece o seu aniversário.", "resumo": "não saiu das dívidas no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu de sair das dívidas, por enquanto. A planilha ficou numa aba esquecida do navegador.", "resumo": "desistiu de sair das dívidas" }
+    },
+    {
+      "id": "casa_propria",
+      "nome": "A casa própria",
+      "objetivo": "comprar a casa própria",
+      "descricao": "Sair do aluguel e ter a chave de um lugar seu.",
+      "idade": [20, 75],
+      "quando": { "semMarcas": ["casa_propria"] },
+      "etapas": [
+        { "texto": "Juntar R$ 50 mil para a entrada", "feita": { "patrimonio": { "min": 50000 } }, "ajuda": ["poupar", "trabalhar"] },
+        { "texto": "O nome limpo, para o banco financiar", "feita": { "semMarcas": ["nome_sujo"] }, "ajuda": ["folha:dinheiro"] },
+        { "texto": "A chave na mão", "feita": { "marcas": ["casa_propria"] }, "ajuda": ["folha:dinheiro"] }
+      ],
+      "meta": { "marcas": ["casa_propria"] },
+      "prazo": 15,
+      "conquista": { "texto": "Você girou a chave na porta, e foi o barulho mais bonito que você já ouviu. A primeira noite foi num colchão no chão da sala, e foi perfeita.", "resumo": "conquistou a casa própria" },
+      "vencido": { "texto": "Quinze anos de planos e de anúncios salvos no celular, e a casa própria continua no anúncio.", "resumo": "não chegou à casa própria no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu da casa própria. O aluguel é caro, mas o boleto do financiamento assustava mais.", "resumo": "desistiu da casa própria" }
+    },
+    {
+      "id": "ter_um_filho",
+      "nome": "Ter um filho",
+      "objetivo": "ter um filho",
+      "descricao": "Aumentar a família, quando a vida deixar.",
+      "idade": [20, 44],
+      "quando": { "semMarcas": ["pai_mae", "sem_filhos"] },
+      "etapas": [
+        { "texto": "Alguém para dividir a vida", "feita": { "marcas": ["namoro"] }, "ajuda": ["sair"] },
+        { "texto": "Um canto para a criança (R$ 15 mil guardados)", "feita": { "patrimonio": { "min": 15000 } }, "ajuda": ["poupar"] },
+        { "texto": "O filho nos braços", "feita": { "marcas": ["pai_mae"] }, "ajuda": ["tentar_um_filho"] }
+      ],
+      "meta": { "marcas": ["pai_mae"] },
+      "prazo": 10,
+      "conquista": { "texto": "A primeira noite em casa com o bebê foi a mais longa da sua vida, e você não trocaria por nenhuma outra.", "resumo": "realizou o sonho de ter um filho" },
+      "vencido": { "texto": "Dez anos querendo um filho, e a vida não deixou. O quarto de visitas continua de visitas.", "resumo": "não teve o filho que queria" },
+      "desistencia": { "texto": "Você deixou o filho para depois, ou para nunca. Doeu menos do que você esperava, e mais do que você conta.", "resumo": "desistiu de ter um filho" }
+    },
+    {
+      "id": "negocio_proprio",
+      "nome": "O negócio próprio",
+      "objetivo": "abrir o próprio negócio",
+      "descricao": "Ter a própria empresa e ver ela valer alguma coisa.",
+      "idade": [18, 70],
+      "quando": { "semMarcas": ["empreendedor"] },
+      "etapas": [
+        { "texto": "Juntar R$ 30 mil de capital", "feita": { "patrimonio": { "min": 30000 } }, "ajuda": ["poupar", "trabalhar"] },
+        { "texto": "Abrir a empresa", "feita": { "marcas": ["empreendedor"] }, "ajuda": ["folha:dinheiro"] },
+        { "texto": "A empresa valendo R$ 500 mil", "feita": { "empresa.valor": { "min": 500000 } }, "ajuda": ["tocar_empresa", "tocar_o_negocio", "folha:dinheiro"] }
+      ],
+      "meta": { "marcas": ["empreendedor"], "empresa.valor": { "min": 500000 } },
+      "prazo": 12,
+      "conquista": { "texto": "A empresa que começou como um rabisco num guardanapo vale meio milhão. Você ainda passa o café da equipe, por superstição.", "resumo": "fez o negócio próprio dar certo" },
+      "vencido": { "texto": "Doze anos de planilha e de \"agora vai\", e o negócio próprio não foi. A planilha, pelo menos, ficou ótima.", "resumo": "não fez o negócio próprio dar certo no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu do negócio próprio. Carteira assinada também é um jeito de viver, e com décimo terceiro.", "resumo": "desistiu do negócio próprio" }
+    },
+    {
+      "id": "reparar_relacao",
+      "nome": "Reparar a relação com {ator.quem}",
+      "objetivo": "reparar a relação com {ator.quem}",
+      "descricao": "Fazer as pazes com quem você magoou, antes que seja tarde.",
+      "idade": [12, 100],
+      "com": ["mae", "pai", "avo", "irmao", "amigo", "filho", "amor"],
+      "quando": { "ator.magoa": { "min": 25 } },
+      "etapas": [
+        { "texto": "A primeira conversa (a mágoa abaixo de 40)", "feita": { "ator.magoa": { "max": 40 } }, "ajuda": ["pedir_desculpas", "fazer_as_pazes"] },
+        { "texto": "A mágoa passando", "feita": { "ator.magoa": { "max": 15 } }, "ajuda": ["pedir_desculpas", "presente_certo"] },
+        { "texto": "A confiança de volta", "feita": { "ator.confianca": { "min": 60 } }, "ajuda": ["folha:familia"] }
+      ],
+      "meta": { "ator.magoa": { "max": 10 }, "ator.confianca": { "min": 60 }, "semMarcas": ["ator.rompido"] },
+      "prazo": 6,
+      "conquista": { "texto": "{ator} riu de uma piada sua, das antigas, e foi riso de verdade. O que estava quebrado entre vocês colou, com a marca aparecendo, como tudo que cola.", "resumo": "reparou a relação com {ator.quem}" },
+      "vencido": { "texto": "Seis anos tentando, e o que ficou entre você e {ator} continua lá, no meio da mesa.", "resumo": "não conseguiu reparar a relação com {ator.quem}" },
+      "desistencia": { "texto": "Você parou de tentar com {ator}. Às vezes a distância é o único acordo possível.", "resumo": "desistiu de reparar a relação com {ator.quem}" },
+      "semTempo": { "texto": "{ator} morreu antes de vocês acertarem tudo. Ficou um assunto pela metade, para sempre.", "resumo": "não teve tempo de reparar a relação com {ator.quem}" }
+    },
+    {
+      "id": "cuidar_da_saude",
+      "nome": "Cuidar da saúde",
+      "objetivo": "cuidar da saúde de verdade",
+      "descricao": "Largar o que faz mal e chegar inteir{o|a} aos próximos anos.",
+      "idade": [25, 85],
+      "quando": { "saude": { "max": 62 } },
+      "etapas": [
+        { "texto": "Largar o cigarro", "feita": { "semMarcas": ["fumante"] }, "ajuda": ["saude"] },
+        { "texto": "Mexer o corpo", "feita": { "marcas": ["ativo"] }, "ajuda": ["saude"] },
+        { "texto": "A saúde de volta aos 72", "feita": { "saude": { "min": 72 } }, "ajuda": ["saude"] }
+      ],
+      "meta": { "saude": { "min": 72 }, "semMarcas": ["fumante"] },
+      "prazo": 6,
+      "conquista": { "texto": "O médico olhou os exames duas vezes e perguntou o que você andava fazendo. Você respondeu com o orgulho de quem subiu a escada sem parar no meio.", "resumo": "recuperou a saúde" },
+      "vencido": { "texto": "Seis anos de segunda-feira que ia começar, e a saúde continua pedindo socorro.", "resumo": "não recuperou a saúde no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu de cuidar da saúde. O tênis de corrida virou chinelo de ir à padaria.", "resumo": "desistiu de cuidar da saúde" }
+    },
+    {
+      "id": "primeiro_milhao",
+      "nome": "O primeiro milhão",
+      "objetivo": "juntar o primeiro milhão",
+      "descricao": "Um milhão de reais, dos de hoje, no seu nome.",
+      "idade": [18, 70],
+      "quando": { "patrimonio": { "max": 999999 } },
+      "etapas": [
+        { "texto": "Os primeiros R$ 100 mil", "feita": { "patrimonio": { "min": 100000 } }, "ajuda": ["poupar", "folha:dinheiro"] },
+        { "texto": "Meio milhão", "feita": { "patrimonio": { "min": 500000 } }, "ajuda": ["tocar_empresa", "tocar_o_negocio", "folha:dinheiro"] },
+        { "texto": "Um milhão", "feita": { "patrimonio": { "min": 1000000 } }, "ajuda": ["tocar_empresa", "tocar_o_negocio", "folha:dinheiro"] }
+      ],
+      "meta": { "patrimonio": { "min": 1000000 } },
+      "prazo": 25,
+      "conquista": { "texto": "Você abriu o extrato e contou os zeros três vezes. Um milhão. Ninguém soube, e você jantou miojo para comemorar, por hábito.", "resumo": "juntou o primeiro milhão" },
+      "vencido": { "texto": "Vinte e cinco anos atrás do primeiro milhão, e ele continua um pouco mais adiante, como o horizonte.", "resumo": "não chegou ao primeiro milhão no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu do primeiro milhão. Descobriu que o que queria mesmo era não ter que pensar nele.", "resumo": "desistiu do primeiro milhão" }
+    },
+    {
+      "id": "casar",
+      "nome": "Casar",
+      "objetivo": "casar",
+      "descricao": "Encontrar alguém e dizer sim, no altar ou no cartório.",
+      "idade": [20, 70],
+      "quando": { "semMarcas": ["casado"] },
+      "etapas": [
+        { "texto": "Alguém especial", "feita": { "marcas": ["namoro"] }, "ajuda": ["sair"] },
+        { "texto": "Um ano juntos", "feita": { "marcaHa": [{ "marca": "namoro", "min": 1 }] }, "ajuda": ["familia"] },
+        { "texto": "O sim", "feita": { "marcas": ["casado"] }, "ajuda": ["pedido_de_casamento"] }
+      ],
+      "meta": { "marcas": ["casado"] },
+      "prazo": 10,
+      "conquista": { "texto": "Teve choro, teve tio dançando sozinho e teve sim. Você casou, e ainda acha estranho dizer \"meu marido\" ou \"minha mulher\" em voz alta.", "resumo": "casou, como queria" },
+      "vencido": { "texto": "Dez anos querendo casar, e a vida foi passando com convite dos outros na geladeira.", "resumo": "não casou no prazo que se deu" },
+      "desistencia": { "texto": "Você desistiu de casar. Descobriu que dá para viver bem dos dois jeitos, e escolheu o outro.", "resumo": "desistiu de casar" }
+    },
+    {
+      "id": "diploma",
+      "nome": "O diploma",
+      "objetivo": "tirar o diploma",
+      "descricao": "Terminar uma faculdade, nem que seja tarde.",
+      "idade": [17, 65],
+      "quando": { "semMarcas": ["formado"] },
+      "etapas": [
+        { "texto": "Entrar na faculdade", "feita": { "algumaMarca": ["cursando", "formado"] }, "ajuda": ["faculdade_a_noite", "voltar_a_estudar", "estudar"] },
+        { "texto": "Seguir até o fim", "feita": { "marcaHa": [{ "marca": "cursando", "min": 2 }] }, "ajuda": ["estudar_faculdade", "estudar"] },
+        { "texto": "O diploma na parede", "feita": { "marcas": ["formado"] }, "ajuda": ["estudar"] }
+      ],
+      "meta": { "marcas": ["formado"] },
+      "prazo": 8,
+      "conquista": { "texto": "Você subiu no palco da formatura de beca, e a família gritou o seu nome como em final de campeonato. O diploma foi para a parede, torto, e ficou torto.", "resumo": "tirou o diploma" },
+      "vencido": { "texto": "Oito anos depois de decidir, o diploma continua só uma ideia. A mochila ficou no armário, pronta.", "resumo": "não tirou o diploma no prazo que se deu" },
+      "desistencia": { "texto": "Você trancou o sonho do diploma, como quem tranca a matrícula. Talvez um dia.", "resumo": "desistiu do diploma" }
+    }
+  ],
   "setores": [
     {
       "id": "comercio",

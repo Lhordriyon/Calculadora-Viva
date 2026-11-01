@@ -1,0 +1,278 @@
+[
+  {
+    "id": "tentar_um_filho",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "um filho com {ator}",
+    "ator": ["amor"],
+    "idade": [20, 44],
+    "condicoes": { "marcas": ["namoro", "projeto_ter_um_filho"], "semMarcas": ["pai_mae", "sem_filhos"], "ator.idade": { "max": 50 } },
+    "intervalo": 1,
+    "texto": "Você puxou o assunto de ter um filho com {ator}, num domingo à noite. [Sem rodeio.|Com uma lista de nomes pronta.|Depois de ensaiar no espelho do banheiro.]",
+    "resumo": "falou de ter um filho com {ator}",
+    "teste": { "decide": "favor", "ajuste": -0.3 },
+    "sucesso": {
+      "texto": "{ator} topou, {porque}. Vocês começaram a tentar, e o calendário da cozinha ganhou umas bolinhas misteriosas.",
+      "repete": "{ator} topou continuar tentando, {porque}.",
+      "resumo": "decidiu com {ator} tentar um filho",
+      "efeitos": { "ator.vinculo": 3, "felicidade": 2, "agendar": [{ "evento": "o_bebe_chegou", "em": [1, 2] }] }
+    },
+    "fracasso": {
+      "texto": "{ator} disse que ainda não, {porque}. Vocês voltaram para a série, cada um pensando numa coisa.",
+      "repete": "Ainda não, {porque}.",
+      "efeitos": { "felicidade": -2 }
+    }
+  },
+  {
+    "id": "o_bebe_chegou",
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["pai_mae", "sem_filhos"] },
+    "texto": "Nasceu {filho}, depois de um ano de tentativa, de teste de farmácia e de reza da avó. Você nunca mais dormiu oito horas seguidas e nunca se importou tão pouco com isso.",
+    "resumo": "teve {filho}",
+    "efeitos": {
+      "felicidade": 6,
+      "saude": -2,
+      "custo": 12000,
+      "personagens": ["filho"],
+      "marcas": ["pai_mae"],
+      "agendar": [{ "evento": "filho_adolescente", "em": 14 }, { "evento": "filho_formatura", "em": [21, 24] }]
+    }
+  },
+  {
+    "id": "pedido_de_casamento",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "casar com {ator}",
+    "ator": ["amor"],
+    "idade": [20, 80],
+    "condicoes": { "marcas": ["namoro", "projeto_casar"], "marcaHa": [{ "marca": "namoro", "min": 1 }], "semMarcas": ["casado", "ator.rompido"], "ator.idade": { "min": 18 } },
+    "intervalo": 2,
+    "texto": "Você pediu {ator} em casamento. [No restaurante de sempre, com o garçom fingindo que não via.|Em casa, de pijama, que era como vocês eram de verdade.|No meio do almoço de domingo, na frente da família inteira, o que foi coragem ou loucura.]",
+    "resumo": "pediu {ator} em casamento",
+    "teste": { "decide": "chance", "ajuste": 0.8 },
+    "sucesso": {
+      "texto": "{ator} disse sim, {porque}. O casamento foi [no cartório, numa quinta, com churrasco depois|no quintal, com gambiarra de luz e som alugado|na igreja do bairro, com o padre atrasado].",
+      "repete": "{ator} disse sim, {porque}.",
+      "resumo": "casou com {ator}",
+      "efeitos": { "marcas": ["casado"], "felicidade": 6, "ator.vinculo": 8, "dinheiro": -1500 }
+    },
+    "fracasso": {
+      "texto": "{ator} disse que ainda não, {porque}. O anel voltou para a caixinha, e a caixinha para o fundo da gaveta.",
+      "repete": "Ainda não, {porque}.",
+      "efeitos": { "felicidade": -4, "ator.magoa": 4 }
+    }
+  },
+  {
+    "id": "faculdade_a_noite",
+    "tipo": "acao",
+    "verbo": "estudar",
+    "rotulo": "faculdade à noite",
+    "idade": [20, 65],
+    "condicoes": { "marcas": ["projeto_diploma"], "semMarcas": ["cursando", "formado"] },
+    "intervalo": 1,
+    "texto": "Você fez o vestibular da faculdade da esquina, a do turno da noite, com uma caneta emprestada e o coração na boca.",
+    "resumo": "fez vestibular para a faculdade à noite",
+    "teste": { "atributo": "inteligencia", "dificuldade": 45 },
+    "sucesso": {
+      "texto": "Passou. A turma tem gente de vinte e de sessenta anos, e todo mundo chega cansado e sai mais acordado.",
+      "repete": "Passou de novo, agora sem nervoso.",
+      "resumo": "entrou na faculdade à noite",
+      "efeitos": { "marcas": ["cursando"], "inteligencia": 1, "dinheiro": -1500 }
+    },
+    "fracasso": {
+      "texto": "Não passou dessa vez. A redação pediu um tema que você não lia desde a escola.",
+      "repete": "Não deu de novo; ano que vem tem outro.",
+      "efeitos": { "felicidade": -2 }
+    }
+  },
+  {
+    "id": "formatura_tardia",
+    "idade": [31, 85],
+    "condicoes": { "marcaHa": [{ "marca": "cursando", "min": 4 }], "semMarcas": ["formado"] },
+    "texto": "A turma da noite se formou. Você subiu no palco de beca, e a família gritou o seu nome como em final de campeonato.",
+    "resumo": "se formou na faculdade depois dos 30",
+    "escolhas": [
+      {
+        "texto": "Fazer festa",
+        "resumo": "fez festa de formatura depois dos 30",
+        "efeitos": { "marcas": ["formado"], "removerMarcas": ["cursando"] },
+        "resultado": { "texto": "A festa foi no salão do prédio, com bolo de padaria e o seu nome errado no topo. Ninguém ligou.", "efeitos": { "felicidade": 5, "dinheiro": -1000 } }
+      },
+      {
+        "texto": "Só a foto de beca",
+        "resumo": "guardou a foto de beca da formatura",
+        "efeitos": { "marcas": ["formado"], "removerMarcas": ["cursando"] },
+        "resultado": { "texto": "A foto de beca foi para a estante, e você passa por ela todo dia de propósito.", "efeitos": { "felicidade": 3 } }
+      }
+    ]
+  },
+  {
+    "id": "planilha_das_dividas",
+    "idade": [18, 90],
+    "condicoes": { "marcas": ["projeto_sair_das_dividas"], "divida": { "min": 1 } },
+    "peso": 2,
+    "texto": "Num domingo, você sentou com todas as faturas, uma planilha e um café forte. A soma do fim deu um susto, e depois um plano.",
+    "resumo": "fez a planilha de todas as dívidas",
+    "escolhas": [
+      {
+        "texto": "Cortar o que der",
+        "resumo": "cortou gastos para sair das dívidas",
+        "resultado": { "texto": "Saiu o streaming, saiu o delivery, saiu a academia que você não ia. A vida ficou mais sem graça e mais leve.", "efeitos": { "custoFator": 0.92, "felicidade": -2 } }
+      },
+      {
+        "texto": "Fazer bico no fim de semana",
+        "resumo": "fez bico no fim de semana para pagar as dívidas",
+        "resultado": { "texto": "Você virou motorista de aplicativo aos sábados. O dinheiro veio; o sábado foi embora.", "efeitos": { "dinheiro": 2400, "saude": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "apartamento_decorado",
+    "idade": [20, 75],
+    "condicoes": { "marcas": ["projeto_casa_propria"], "semMarcas": ["casa_propria"] },
+    "peso": 2,
+    "texto": "Você visitou o apartamento decorado de um lançamento. Os móveis eram menores do que os de verdade, e o corretor sorria maior do que o normal.",
+    "resumo": "visitou um apartamento decorado",
+    "escolhas": [
+      {
+        "texto": "Fazer as contas com calma",
+        "resumo": "fez as contas do apartamento com calma",
+        "resultado": { "texto": "Em casa, com a calculadora do celular, a varanda encolheu e o financiamento cresceu. Melhor saber agora.", "efeitos": { "inteligencia": 1, "felicidade": 1 } }
+      },
+      {
+        "texto": "Sonhar acordad{o|a} com a varanda",
+        "resumo": "sonhou com a varanda do apartamento decorado",
+        "resultado": { "texto": "Você passou a semana imaginando o café da manhã na varanda. Ainda não é sua, mas já tem lugar para a planta.", "efeitos": { "felicidade": 3 } }
+      }
+    ]
+  },
+  {
+    "id": "plano_de_negocios",
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["projeto_negocio_proprio"], "semMarcas": ["empreendedor"] },
+    "peso": 2,
+    "texto": "Você passou três noites escrevendo um plano de negócios. Tem tabela, tem logotipo e tem uma página inteira só sobre o nome.",
+    "resumo": "escreveu um plano de negócios",
+    "escolhas": [
+      {
+        "texto": "Mostrar o plano a quem entende",
+        "resumo": "mostrou o plano de negócios a quem entende",
+        "resultado": { "texto": "A pessoa riscou metade do plano com caneta vermelha. A outra metade ficou muito melhor.", "efeitos": { "inteligencia": 2, "felicidade": -1 } }
+      },
+      {
+        "texto": "Fazer um curso de empreendedorismo",
+        "resumo": "fez um curso de empreendedorismo",
+        "condicoes": { "dinheiro": { "min": 1500 } },
+        "bloqueio": "o curso custa mais do que sobra no mês",
+        "resultado": { "texto": "Oito sábados de curso, um certificado e um grupo de mensagens com quarenta futuros donos de negócio.", "efeitos": { "dinheiro": -1500, "inteligencia": 3 } }
+      },
+      {
+        "texto": "Guardar na gaveta mais um pouco",
+        "resumo": "guardou o plano de negócios na gaveta",
+        "resultado": { "texto": "O plano foi para a gaveta, ao lado do manual da geladeira. Os dois esperam.", "efeitos": { "felicidade": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "a_conversa_que_faltava",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "avo", "irmao", "amigo", "filho", "amor"],
+    "idade": [12, 100],
+    "tensao": 2,
+    "condicoes": { "marcas": ["projeto_reparar_relacao", "ator.projeto_reparar_relacao"] },
+    "texto": "{ator} ligou do nada, numa terça. Disse que andava pensando em vocês, e ficou um silêncio do tamanho de um ano.",
+    "resumo": "recebeu uma ligação de {ator.quem}, que andava pensando em vocês",
+    "escolhas": [
+      {
+        "texto": "Ir até lá conversar",
+        "resumo": "foi conversar com {ator.quem} sobre o que ficou entre vocês",
+        "resultado": { "texto": "Vocês conversaram até o café esfriar duas vezes. Não resolveram tudo, mas falaram do que nunca tinham falado.", "efeitos": { "ator.magoa": -15, "ator.vinculo": 6, "ator.confianca": 4, "ator.sem_contato": { "definir": 0 } } }
+      },
+      {
+        "texto": "Mandar uma mensagem longa depois",
+        "resumo": "escreveu uma mensagem longa para {ator.quem}",
+        "resultado": { "texto": "Você escreveu e apagou três vezes. A quarta foi. {ator} respondeu com uma frase só, e era uma frase boa.", "efeitos": { "ator.magoa": -6, "ator.vinculo": 2 } }
+      },
+      {
+        "texto": "Pedir para falar outro dia",
+        "resumo": "pediu para {ator.quem} falar outro dia",
+        "resultado": { "texto": "Você disse que estava no meio de uma coisa. {ator} disse \"claro\", e o silêncio voltou ao tamanho de antes.", "efeitos": { "ator.magoa": 4 } }
+      }
+    ]
+  },
+  {
+    "id": "casamento_dos_outros",
+    "idade": [20, 70],
+    "condicoes": { "marcas": ["projeto_casar"], "semMarcas": ["casado"] },
+    "peso": 2,
+    "texto": "Mais um casamento de amigo, o terceiro do ano. Você chegou de roupa nova e com o presente da lista, o mais barato que ainda não tinham dado.",
+    "resumo": "foi a mais um casamento de amigo",
+    "escolhas": [
+      {
+        "texto": "Disputar o buquê",
+        "resumo": "disputou o buquê num casamento de amigo",
+        "resultado": { "texto": "Você pulou mais alto que a prima do noivo e saiu com o buquê e um arranhão. Na pista, alguém pediu o seu número.", "efeitos": { "felicidade": 2, "qualidades": { "paquera": 1 } } }
+      },
+      {
+        "texto": "Dançar até o fim da festa",
+        "resumo": "dançou até o fim num casamento de amigo",
+        "resultado": { "texto": "Você dançou até o DJ desligar o som e conversou com metade dos convidados. A outra metade ficou para o próximo casamento.", "efeitos": { "felicidade": 4, "qualidades": { "paquera": 2 }, "saude": -2 } }
+      },
+      {
+        "texto": "Ir embora antes do bolo",
+        "resumo": "foi embora antes do bolo num casamento de amigo",
+        "resultado": { "texto": "Você saiu de fininho antes do bolo, comeu em casa o bem-casado que guardou no bolso e dormiu cedo.", "efeitos": { "felicidade": -1, "saude": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "academia_de_janeiro",
+    "idade": [25, 85],
+    "condicoes": { "marcas": ["projeto_cuidar_da_saude"], "semMarcas": ["ativo"] },
+    "peso": 2,
+    "texto": "Você fez a matrícula na academia do bairro, com a determinação de quem já fez isso outras vezes.",
+    "resumo": "se matriculou na academia",
+    "escolhas": [
+      {
+        "texto": "Ir todo dia por um mês",
+        "resumo": "foi à academia todo dia por um mês",
+        "resultado": { "texto": "No décimo dia, o corpo reclamou; no vigésimo, pediu mais. Você virou a pessoa que fala de treino no almoço.", "efeitos": { "marcas": ["ativo"], "saude": 3, "felicidade": 1 } }
+      },
+      {
+        "texto": "Trocar pela caminhada no parque",
+        "resumo": "trocou a academia pela caminhada no parque",
+        "resultado": { "texto": "Você cancelou a academia e passou a caminhar no parque, de graça, com os aposentados do bairro, que andam mais rápido que você.", "efeitos": { "marcas": ["ativo"], "saude": 2 } }
+      },
+      {
+        "texto": "Pagar o ano e ir duas vezes",
+        "resumo": "pagou o ano da academia e foi duas vezes",
+        "resultado": { "texto": "Foram duas vezes, uma delas só para pegar a garrafinha que você tinha esquecido. A academia agradece.", "efeitos": { "dinheiro": -1200, "felicidade": -1 } }
+      }
+    ]
+  },
+  {
+    "id": "contas_do_milhao",
+    "idade": [18, 70],
+    "condicoes": { "marcas": ["projeto_primeiro_milhao"], "patrimonio": { "min": 50000, "max": 999999 } },
+    "peso": 2,
+    "texto": "Você fez as contas de quanto falta para o primeiro milhão. O número assustou, e depois deu vontade.",
+    "resumo": "fez as contas do primeiro milhão",
+    "escolhas": [
+      {
+        "texto": "Arriscar mais nos investimentos",
+        "resumo": "arriscou mais nos investimentos atrás do primeiro milhão",
+        "resultado": { "texto": "Metade da renda fixa foi para as ações. Agora você confere o mercado antes do café, e às vezes no lugar dele.", "efeitos": { "realocar": { "de": "renda_fixa", "para": "acoes", "fracao": 0.5 } } }
+      },
+      {
+        "texto": "Cortar o padrão de vida",
+        "resumo": "cortou o padrão de vida atrás do primeiro milhão",
+        "resultado": { "texto": "Você cortou o que dava e o que não dava. O milhão ficou mais perto, e a pizza de sexta mais longe.", "efeitos": { "custoFator": 0.9, "felicidade": -2 } }
+      },
+      {
+        "texto": "Seguir no ritmo",
+        "resumo": "seguiu no ritmo atrás do primeiro milhão",
+        "resultado": { "texto": "Você decidiu que o milhão vem quando vier, e que até lá dá para viver.", "efeitos": { "felicidade": 1 } }
+      }
+    ]
+  }
+]
