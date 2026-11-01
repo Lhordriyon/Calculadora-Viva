@@ -36,15 +36,15 @@
 
 | ✅ O que o salto trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 👥 **Gente de verdade:** 14,5 pessoas por vida (eram cerca de 8), com o ex que volta em 1 de cada 4 vidas e irmãos em 8 de cada 10 | 🏝️ **Governar a ilha e a cidade que você fundou:** continua sendo o próximo bloco da lista do dono, o F2 |
-| 🗣️ **A pessoa decide e diz por quê:** em 63% das vidas alguém decide algo com você, e metade das respostas lembra do passado | 🔀 **Trocar uma ação no "E se":** só as escolhas se trocam (a ação pediria escolher qual outra) |
+| 👥 **Gente de verdade:** 14,6 pessoas por vida (eram cerca de 8), com o ex que volta em 1 de cada 4 vidas e irmãos em 8 de cada 10 | 🏝️ **Governar a ilha e a cidade que você fundou:** continua sendo o próximo bloco da lista do dono, o F2 |
+| 🗣️ **A pessoa decide e diz por quê:** em 67% das vidas alguém decide algo com você, e quase metade das respostas lembra do passado | 🔀 **Trocar uma ação no "E se":** só as escolhas se trocam (a ação pediria escolher qual outra) |
 | 🤝 **O empréstimo entre pessoas como contrato,** com parcela, atraso, mágoa e calote | 🔎 **Descobrir quem espalhou o segredo:** a linha do tempo já diz quem contou a quem |
 | 🎯 **Os planos:** três em cada quatro vidas começam um; 4 em cada 10 viram conquista | 🏦 **O empréstimo aos bancos como contrato** e os bens que rendem: o bloco I |
 | 🤫 **Os segredos:** em uma de cada quatro vidas, com a fofoca, a chantagem e a revelação com o nome de quem contou | 🌍 **Países de verdade e o mapa:** precisam de uma decisão sua (a política do jogo é toda fictícia) |
 | 📖 **Os capítulos** (em 7 de cada 10 vidas) e **o caminho não tomado** no cartão | |
 | 🌬️ **O ritmo:** depois de um ano pesado, a vida respira | |
 
-No túnel de vento (10.000 vidas), o jogo ficou menos repetitivo onde se mede: a saturação na 5ª vida caiu de 55,1% para 52,3% e na 20ª de 90,1% para 87,6%, com 913 histórias (eram 835) e os mesmos 460 e poucos toques por vida. As assinaturas do destino caíram um pouco (de 592 para 574 por 1.000 vidas), porque os planos levam mais vidas aos mesmos lugares; o caminho até lá é que varia, e o túnel agora mede isso (as causas dos pontos de virada e os capítulos). Contas, dívidas e promissórias fecham entrada por entrada, nenhuma estratégia vence em tudo e nenhum storylet ficou sem aparecer. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o poder que passa).
+No túnel de vento (10.000 vidas), o jogo ficou menos repetitivo onde se mede: a saturação na 5ª vida caiu de 55,1% para 52,3% e na 20ª de 90,1% para 87,6%, com 913 histórias (eram 835) e os mesmos 460 e poucos toques por vida. As assinaturas do destino caíram um pouco (de 592 para 577 por 1.000 vidas), porque os planos levam mais vidas aos mesmos lugares; o caminho até lá é que varia, e o túnel agora mede isso (as causas dos pontos de virada e os capítulos). Contas, dívidas e promissórias fecham entrada por entrada, nenhuma estratégia vence em tudo e nenhum storylet ficou sem aparecer. O histórico está no [📜 CHANGELOG](CHANGELOG.md), com o bloco anterior (o poder que passa).
 
 ## 🗺️ Os blocos do dono
 
