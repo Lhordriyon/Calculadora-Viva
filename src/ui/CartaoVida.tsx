@@ -5,15 +5,52 @@ import { baixar, compartilhar, desenharCartao, nomeDoArquivo, podeCompartilharAr
 import { anos, parentesco } from './formato.ts';
 import { Folha } from './Folha.tsx';
 
+/** A vida que não foi vivida (caminho.ts), já resumida para o cartão. */
+export interface VidaNaoVivida {
+  idade: number;
+  escolhida: string;
+  outra: string;
+  estrategia: string;
+  ate: number;
+  vivo: boolean;
+  causa: string | null;
+  patrimonio: number;
+  felicidadeMedia: number;
+  capitulos: string[];
+}
+
 interface Props {
   resumo: ResumoVida;
   endereco: string;
   aoFechar: () => void;
   aoNovaVida: () => void;
   aoContinuar: () => void;
+  /** As entradas das escolhas gravadas: só elas têm caminho não tomado. */
+  gravadas?: ReadonlySet<number>;
+  aoImaginar?: (entrada: number) => VidaNaoVivida | { erro: string };
 }
 
-export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar }: Props) {
+/** "Se aos 17 você tivesse escolhido…": a outra vida em duas frases, e o aviso de que é um experimento. */
+function NaoVivida({ v, genero }: { v: VidaNaoVivida | { erro: string }; genero: string }) {
+  if ('erro' in v) return <p class="nota">Não deu para refazer: {v.erro}.</p>;
+  const fim = v.vivo ? `ainda viv${genero === 'f' ? 'a' : 'o'} aos ${v.ate}` : `até os ${v.ate} anos`;
+  return (
+    <div class="nao-vivida">
+      <p>
+        Se aos {v.idade} você tivesse escolhido <b>“{v.outra}”</b> em vez de “{v.escolhida}”: {fim}, com {formatarDinheiro(v.patrimonio)} e felicidade média{' '}
+        {Math.round(v.felicidadeMedia)}
+        {v.causa ? `; morreria ${v.causa}` : ''}.
+      </p>
+      {v.capitulos.length > 0 && <p>Teria vivido: {v.capitulos.join(' · ')}.</p>}
+      <p class="meta">
+        Um robô {v.estrategia === 'arriscada' ? 'arriscado' : 'cauteloso'}, com o seu jeito, seguiu dali. É um experimento dentro do modelo, não uma previsão.
+      </p>
+    </div>
+  );
+}
+
+export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar, gravadas, aoImaginar }: Props) {
+  const [naoVividas, setNaoVividas] = useState<Record<number, VidaNaoVivida | { erro: string }>>({});
   const [imagem, setImagem] = useState<{ blob: Blob; url: string } | null>(null);
   const [aviso, setAviso] = useState('');
   const titulo = useRef<HTMLHeadingElement>(null);
@@ -76,9 +113,32 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
               <div class="para">
                 → aos {p.consequenciaIdade}, {p.consequencia}
               </div>
+              {naoVividas[p.origemId] ? (
+                <NaoVivida v={naoVividas[p.origemId]!} genero={resumo.genero} />
+              ) : (
+                p.doJogador &&
+                aoImaginar &&
+                gravadas?.has(p.origemId) && (
+                  <button class="botao secundario e-se" type="button" onClick={() => setNaoVividas({ ...naoVividas, [p.origemId]: aoImaginar(p.origemId) })}>
+                    E se tivesse escolhido outra coisa?
+                  </button>
+                )
+              )}
             </li>
           ))}
         </ol>
+        {resumo.capitulos.length > 0 && (
+          <ol class="capitulos" aria-label="Capítulos da vida">
+            {resumo.capitulos.map((k) => (
+              <li key={k.fim}>
+                <div class="titulo-capitulo">
+                  {k.titulo} <span>{k.de === k.ate ? `aos ${k.de}` : `dos ${k.de} aos ${k.ate}`}</span>
+                </div>
+                <div class="texto-capitulo">{k.texto}</div>
+              </li>
+            ))}
+          </ol>
+        )}
         <p class="epitafio">“{resumo.epitafio}”</p>
         {resumo.antepassados.length > 0 && (
           <ol class="dinastia" aria-label="A família, de geração em geração">

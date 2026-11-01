@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, escreverSave, gravarJa, importarSave, salvarDepois, lerComCopia, lerSave, saveVazio, VERSAO_SAVE } from '../src/jogo/salvar.ts';
 import { lembrarVida } from '../src/motor/memoria.ts';
+import { novaGravacao } from '../src/motor/caminho.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { avancarAno, nascer } from '../src/motor/vida.ts';
 import { passo, viverAteOFim } from './apoio.ts';
@@ -18,6 +19,18 @@ describe('save', () => {
     viverAteOFim(vida, c, 3);
     const fim = { ...saveVazio(), vida, memoria: lembrarVida(saveVazio().memoria, vida), vidas: 3 };
     expect(lerSave(escreverSave(fim), c)).toEqual(fim);
+  });
+
+  it('a gravação da vida (o caminho não tomado) volta igual, com os comandos inteiros; a de outra vida fica de fora', () => {
+    const inicio = nascer(c, { semente: 12, ano: 2026 });
+    const vida = structuredClone(inicio);
+    avancarAno(vida, c);
+    const gravacao = novaGravacao(inicio, saveVazio().memoria);
+    gravacao.comandos.push({ t: 'ano' }, { t: 'operar', op: { tipo: 'comecar_projeto', id: 'casa_propria' } }, { t: 'escolher', i: 1, entrada: 7 });
+    const save = { ...saveVazio(), vida, gravacao };
+    expect(lerSave(escreverSave(save), c)).toEqual(save);
+    const outra = { ...save, gravacao: novaGravacao(nascer(c, { semente: 13, ano: 2026 }), saveVazio().memoria) };
+    expect(lerSave(escreverSave(outra), c).gravacao).toBeUndefined();
   });
 
   it('cabe com folga no localStorage', () => {

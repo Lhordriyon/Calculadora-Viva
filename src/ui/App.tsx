@@ -11,11 +11,12 @@ import { jaAgiu } from '../motor/acoes.ts';
 import { acoesDisponiveis, agir, avancarAno, escolher, nascer } from '../motor/vida.ts';
 import { continuarComoHerdeiro } from '../motor/herdeiro.ts';
 import { resumirVida } from '../motor/virada.ts';
+import { caminhoNaoTomado, escolhasGravadas, novaGravacao, type Comando } from '../motor/caminho.ts';
 import { Abertura } from './Abertura.tsx';
 import { Cabecalho } from './Cabecalho.tsx';
 import { Carreira } from './Carreira.tsx';
 import { Dinheiro } from './Dinheiro.tsx';
-import { CartaoVida } from './CartaoVida.tsx';
+import { CartaoVida, type VidaNaoVivida } from './CartaoVida.tsx';
 import { Familia } from './Familia.tsx';
 import { Folha } from './Folha.tsx';
 import { Pais } from './Pais.tsx';
@@ -94,6 +95,28 @@ export function App() {
   useVoltar(folha !== null, () => setFolha(null));
 
   const resumo = useMemo(() => (vida && !vida.vivo ? resumirVida(vida, conteudo) : null), [vida]);
+  // As escolhas que ficaram gravadas (o caminho não tomado só troca o que a gravação desta vida tem).
+  const gravacao = save.gravacao;
+  const gravadas = useMemo(() => new Set(gravacao && vida && !vida.vivo ? escolhasGravadas(gravacao) : []), [gravacao, vida]);
+  /** A vida que não foi vivida, trocando a escolha da entrada (refeita do começo, num experimento do modelo). */
+  function imaginar(entrada: number): VidaNaoVivida | { erro: string } {
+    if (!gravacao) return { erro: 'esta vida começou antes de o jogo guardar os passos' };
+    const r = caminhoNaoTomado(conteudo, gravacao, entrada);
+    if ('erro' in r) return r;
+    const outro = resumirVida(r.vida, conteudo);
+    return {
+      idade: r.idade,
+      escolhida: r.escolhida,
+      outra: r.outra,
+      estrategia: r.estrategia,
+      ate: outro.idade,
+      vivo: outro.vivo,
+      causa: outro.causa,
+      patrimonio: outro.patrimonio,
+      felicidadeMedia: outro.felicidadeMedia,
+      capitulos: outro.capitulos.slice(0, 2).map((k) => k.titulo),
+    };
+  }
   const acoes = useMemo(() => (vida?.vivo && !vida.pendente ? acoesDisponiveis(vida, conteudo, save.memoria) : []), [vida, save.memoria]);
 
   // O save grava depois que a tela responde (o toque não espera ~250 KB de JSON); sair do app ou trocar de aba grava já.
@@ -116,7 +139,7 @@ export function App() {
     setEscolhendoVida(false);
     const nova = nascer(conteudo, { semente: sementeNova(), ano: new Date().getFullYear(), ...(origem ? { origem } : {}) });
     vistas.current = 0;
-    guardar({ versao: save.versao, vida: nova, memoria: save.memoria, vidas: save.vidas });
+    guardar({ versao: save.versao, vida: nova, memoria: save.memoria, vidas: save.vidas, gravacao: novaGravacao(nova, save.memoria) });
     setFolha(null);
   }
 
@@ -147,16 +170,19 @@ export function App() {
       return;
     }
     vistas.current = 0;
-    guardar({ ...save, vida: nova });
+    guardar({ ...save, vida: nova, gravacao: novaGravacao(nova, save.memoria) });
     setFolha(null);
   }
 
-  function concluir(nova: EstadoVida) {
+  /** Guarda a vida e o comando que a levou até ali (a gravação do caminho não tomado; caminho.ts). */
+  function concluir(nova: EstadoVida, comando: Comando) {
+    const gravacao = save.gravacao ? { ...save.gravacao, comandos: [...save.gravacao.comandos, comando] } : undefined;
+    const comGravacao = gravacao ? { gravacao } : {};
     if (!nova.vivo && save.vida?.vivo) {
-      guardar({ ...save, vida: nova, memoria: lembrarVida(save.memoria, nova), vidas: save.vidas + 1 });
+      guardar({ ...save, vida: nova, memoria: lembrarVida(save.memoria, nova), vidas: save.vidas + 1, ...comGravacao });
       setFolha('cartao');
     } else {
-      guardar({ ...save, vida: nova });
+      guardar({ ...save, vida: nova, ...comGravacao });
     }
   }
 
@@ -164,7 +190,7 @@ export function App() {
     if (!vida?.vivo || vida.pendente) return;
     const nova = copiarVida(vida);
     avancarAno(nova, conteudo, save.memoria);
-    concluir(nova);
+    concluir(nova, { t: 'ano' });
   }
 
   /** Gasta uma ficha do ano na ação escolhida; quando as fichas acabam, o ano passa. */
@@ -173,7 +199,7 @@ export function App() {
     const nova = copiarVida(vida);
     agir(nova, conteudo, verbo, escolha);
     if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
-    concluir(nova);
+    concluir(nova, { t: 'agir', verbo, ...(escolha ? { escolha } : {}) });
   }
 
   /** Mexer no dinheiro, comprar, tentar vaga e se candidatar não gastam a ficha do ano nem passam o tempo. */
@@ -187,14 +213,16 @@ export function App() {
     }
     // A jogada conta uma história: a folha fecha para ela aparecer na linha do tempo (e uma ida à Lua pode acabar a vida).
     if (op.tipo === 'jogada') setFolha(null);
-    concluir(nova);
+    concluir(nova, { t: 'operar', op });
   }
 
   function responder(indice: number) {
     if (!vida?.pendente) return;
     const nova = copiarVida(vida);
+    // A entrada que a escolha vai fazer: o ponto em que o caminho não tomado troca a opção.
+    const entrada = nova.proximoId;
     escolher(nova, conteudo, indice);
-    concluir(nova);
+    concluir(nova, { t: 'escolher', i: indice, entrada });
   }
 
   if (!vida || escolhendoVida) {
@@ -237,7 +265,15 @@ export function App() {
         aoContinuar={continuar}
       />
       {folha === 'cartao' && resumo && (
-        <CartaoVida resumo={resumo} endereco={endereco} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoContinuar={continuar} />
+        <CartaoVida
+          resumo={resumo}
+          endereco={endereco}
+          aoFechar={() => setFolha(null)}
+          aoNovaVida={pedirNovaVida}
+          aoContinuar={continuar}
+          gravadas={gravadas}
+          aoImaginar={imaginar}
+        />
       )}
       {folha === 'familia' && (
         <Familia

@@ -1247,6 +1247,56 @@ button {
   color: var(--texto-suave);
 }
 
+.capitulos {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.capitulos li {
+  padding: 12px 14px;
+  border-radius: 15px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+
+.capitulos .titulo-capitulo {
+  font-weight: 700;
+}
+
+.capitulos .titulo-capitulo span {
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.capitulos .texto-capitulo {
+  margin-top: 4px;
+  color: var(--texto-suave);
+}
+
+.viradas .e-se {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.nao-vivida {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--borda);
+}
+
+.nao-vivida p {
+  margin: 4px 0 0;
+}
+
+.entrada .capitulo {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
 .numeros {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -9,6 +9,7 @@
 import * as z from 'zod/mini';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { EstadoVida, MemoriaJogador } from '../motor/tipos.ts';
+import type { Comando, Gravacao } from '../motor/caminho.ts';
 import { migrarFinanciamentos } from '../motor/bens.ts';
 import { migrarExterior } from '../motor/diplomacia.ts';
 import { migrarDividaSemContrato } from '../motor/dividas.ts';
@@ -31,6 +32,8 @@ export interface Save {
   vidas: number;
   /** Aviso para mostrar uma vez (save de uma versão antiga do jogo). Não é gravado. */
   aviso?: string;
+  /** A vida em andamento como comandos (caminho.ts): o começo, a memória do começo e o que quem joga fez. */
+  gravacao?: Gravacao;
 }
 
 export const AVISO_SAVE_ANTIGO =
@@ -144,7 +147,30 @@ const EsquemaSave = z.object({
   vida: z.unknown(),
   memoria: z.unknown(),
   vidas: z.optional(z.number()),
+  gravacao: z.optional(z.unknown()),
 });
+
+/** A gravação da vida (caminho.ts): o começo no esquema da vida, a memória e os comandos (o resto de cada um fica). */
+const EsquemaGravacao = z.object({
+  inicio: z.unknown(),
+  memoria: z.unknown(),
+  comandos: z.array(z.looseObject({ t: z.enum(['ano', 'agir', 'operar', 'escolher']) })),
+});
+
+/** A gravação que não abre (ou que é de outra vida) só tira o caminho não tomado: a vida e a memória seguem. */
+function lerGravacao(bruta: unknown): Gravacao | undefined {
+  if (bruta === undefined) return undefined;
+  const g = EsquemaGravacao.safeParse(bruta);
+  if (!g.success) return undefined;
+  const inicio = Vida.safeParse(g.data.inicio);
+  const memoria = Memoria.safeParse(g.data.memoria);
+  if (!inicio.success || !memoria.success) return undefined;
+  return {
+    inicio: inicio.data as EstadoVida,
+    memoria: { vidas: memoria.data.vidas, recencia: memoria.data.recencia, acoes: memoria.data.acoes ?? {} },
+    comandos: g.data.comandos as unknown as Comando[],
+  };
+}
 
 export function saveVazio(): Save {
   return { versao: VERSAO_SAVE, vida: null, memoria: novaMemoria(), vidas: 0 };
@@ -210,11 +236,14 @@ function lerCasca(casca: z.infer<typeof EsquemaSave>, conteudo: Conteudo): Save 
   for (const a of v.agenda) if ((a.evento === 'filho_adolescente' || a.evento === 'filho_formatura') && !(a.ator && ehFilho(a.ator)) && v.entidades['filho']) a.ator = 'filho';
   // O conteúdo pode ter mudado desde o save: uma pendência que não bate mais com o storylet é descartada.
   if (v.pendente && conteudo.porId.get(v.pendente.storylet)?.escolhas?.length !== v.pendente.opcoes.length) v.pendente = null;
-  return { ...base, vida: v };
+  // A gravação é da mesma vida (a mesma semente e o mesmo nascimento); senão, fica de fora.
+  const gravacao = lerGravacao(casca.gravacao);
+  const daVida = gravacao && gravacao.inicio.semente === v.semente && gravacao.inicio.anoNascimento === v.anoNascimento;
+  return { ...base, vida: v, ...(daVida ? { gravacao } : {}) };
 }
 
 export function escreverSave(save: Save): string {
-  return JSON.stringify({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas });
+  return JSON.stringify({ versao: save.versao, vida: save.vida, memoria: save.memoria, vidas: save.vidas, ...(save.gravacao ? { gravacao: save.gravacao } : {}) });
 }
 
 /**
