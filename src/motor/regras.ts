@@ -311,7 +311,7 @@ export const MAGOA_DA_VINGANCA = 40;
 /** Quem sabe conta mais a terceiros do que ao alvo: cada outra pessoa do círculo pesa isto; o alvo, 1. */
 export const PESO_DE_QUEM_NAO_E_O_ALVO = 2;
 /**
- * O negócio (negocio.ts, bloco N): na fundação, a parte do capital que vira capacidade (o resto fica no caixa) e a
+ * O negócio (negocio.ts, bloco H): na fundação, a parte do capital que vira capacidade (o resto fica no caixa) e a
  * demanda que a clientela já tem, como fração da capacidade; o imposto sobre o lucro; o quanto a qualidade e a marca
  * puxam o crescimento da demanda; a maior fatia do mercado do setor que uma empresa alcança; a parte da demanda que um
  * país de fora compra; a relação mínima para abrir mercado lá; o que vale o ativo vendido (fração do custo); e a

@@ -4,7 +4,7 @@ import { operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
-import { economiaDo } from '../src/motor/negocio.ts';
+import { decidirNoNegocio, economiaDo, valorNaEmpresa } from '../src/motor/negocio.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -31,7 +31,7 @@ function ano(e: EstadoVida, fase: Parameters<typeof momentoTipico>[0] = 'normal'
   return conferirContas(e, entrada);
 }
 
-describe('o negócio de verdade (bloco N)', () => {
+describe('o negócio de verdade (bloco H)', () => {
   it('as contas da empresa fecham entrada por entrada: abrir, a obra, as verbas, o preço, o corte, os dividendos e os anos', () => {
     const e = adulto();
     const problemas: string[] = [];
@@ -140,5 +140,27 @@ describe('o negócio de verdade (bloco N)', () => {
     const publicidade = reg.find((m) => m.c === 'eu.dinheiro' && m.r === 'publicidade');
     expect(publicidade?.d ?? 0).toBeGreaterThan(1_000_000);
     expect(e.entidades['eu']!.n['influencia']!).toBeGreaterThan(influencia);
+  });
+
+  it('o conteúdo que mexe no valor mexe no negócio: o ganho vira estrutura, a perda sai do caixa e o aporte entra nele', () => {
+    const e = adulto();
+    operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 500_000 });
+    const emp = empresaDe(e)!;
+    const eu = e.entidades['eu']!;
+    const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'teste:valor', texto: '' });
+    const reg: Mudanca[] = [];
+    const caixa = emp.n['caixa']!;
+    valorNaEmpresa(e, c, reg, emp.id, -50_000);
+    expect(emp.n['caixa']).toBeCloseTo(caixa - 50_000);
+    const capacidade = emp.n['capacidade']!;
+    valorNaEmpresa(e, c, reg, emp.id, emp.n['valor']! * 0.5);
+    expect(emp.n['capacidade']).toBeCloseTo(capacidade * 1.5);
+    const dinheiro = eu.n['dinheiro']!;
+    const caixaAntes = emp.n['caixa']!;
+    decidirNoNegocio(e, c, reg, { aporte: 20_000 });
+    expect(emp.n['caixa']).toBeCloseTo(caixaAntes + 20_000);
+    expect(eu.n['dinheiro']).toBeCloseTo(dinheiro - 20_000);
+    lancar(e, entrada, reg);
+    expect(conferirContas(e, entrada)).toEqual([]);
   });
 });

@@ -118,6 +118,8 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
     if (a.fracao !== undefined && a.de !== undefined && entidadeDe(a.de, ator) !== 'eu') v += (Math.max(0, dinheiroDe(e, entidadeDe(a.de, ator))) * a.fracao * 0.5) / REAIS_POR_PONTO;
   }
   if (ef.empresaFator !== undefined) v += ((ef.empresaFator - 1) * parte) / REAIS_POR_PONTO;
+  // O aporte troca dinheiro da conta por caixa da empresa: quem joga só perde a parte que é dos sócios.
+  if (ef.negocio?.aporte && emp) v -= (ef.negocio.aporte * (1 - (emp.n['participacao'] ?? 1))) / REAIS_POR_PONTO;
   if (ef.venderEmpresa) v += (((ef.venderEmpresa.premio ?? 1) - 1) * parte * ef.venderEmpresa.fracao) / REAIS_POR_PONTO;
   if (ef.fecharEmpresa) v -= ((1 - ef.fecharEmpresa.sobra) * parte) / REAIS_POR_PONTO;
   if (ef.venderSubsidiarias && emp) {

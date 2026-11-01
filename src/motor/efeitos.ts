@@ -11,7 +11,7 @@ import type { Conteudo } from './conteudo.ts';
 import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
 import { movimentar } from './economia.ts';
 import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
-import { decidirNoNegocio } from './negocio.ts';
+import { decidirNoNegocio, valorNaEmpresa } from './negocio.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { criarPersonagem, morrerPersonagem, promover } from './pessoas.ts';
@@ -95,6 +95,8 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
       else abaterDivida(e, reg, -valor);
     } else if (typeof valor === 'number') {
       if (ent === 'eu' && def.sistema === 'dinheiro' && campo === 'dinheiro') movimentar(e, reg, { dinheiro: valor, contraparte });
+      // O valor da empresa que já é negócio anda pelo negócio (negocio.ts): o ganho vira estrutura, a perda sai do caixa.
+      else if (campo === 'valor' && e.entidades[ent]!.tipo === 'empresa' && e.entidades[ent]!.n['capacidade'] !== undefined) valorNaEmpresa(e, c, reg, ent, valor);
       else somar(e, reg, ent, campo, valor, undefined, p);
     } else if (typeof valor === 'object' && 'definir' in valor) {
       if (typeof valor.definir === 'string') definirTexto(e, reg, ent, campo, valor.definir);

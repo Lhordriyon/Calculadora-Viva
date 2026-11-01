@@ -1,5 +1,5 @@
 /**
- * O negócio (bloco N, I-130). A empresa de quem joga deixa de ser um valor que cresce pela sorte e vira negócio:
+ * O negócio (bloco H, I-132). A empresa de quem joga deixa de ser um valor que cresce pela sorte e vira negócio:
  *
  * - a **demanda** (o que o mercado quer comprar dela por ano, em reais, ao preço médio) anda com a tração (o momento
  *   do negócio, que o conteúdo empurra), o ciclo do setor, o mundo lá fora, a qualidade e a marca, e trava perto do
@@ -409,11 +409,21 @@ export function decidirNoNegocio(
   e: EstadoVida,
   c: Conteudo,
   reg: Mudanca[],
-  d: { preco?: Preco | undefined; salario?: Salario | undefined; marketing?: number | undefined; pd?: number | undefined; expandir?: number | undefined; cortar?: number | undefined; demanda?: number | undefined },
+  d: {
+    preco?: Preco | undefined;
+    salario?: Salario | undefined;
+    marketing?: number | undefined;
+    pd?: number | undefined;
+    expandir?: number | undefined;
+    cortar?: number | undefined;
+    demanda?: number | undefined;
+    aporte?: number | undefined;
+  },
 ): void {
   const emp = e.entidades['empresa'];
   if (!emp || emp.tipo !== 'empresa' || emp.vivo === false || emp.n['capacidade'] === undefined) return;
   const id = emp.id;
+  if (d.aporte !== undefined && d.aporte > 0) aportarNoNegocio(e, reg, emp, d.aporte);
   if (d.preco) definirTexto(e, reg, id, 'preco', d.preco);
   if (d.salario) definirTexto(e, reg, id, 'salario', d.salario);
   if (d.marketing !== undefined) somar(e, reg, id, 'marketing', d.marketing - (emp.n['marketing'] ?? 0), 'negocio');
@@ -434,4 +444,39 @@ export function decidirNoNegocio(
     somar(e, reg, id, 'capacidade', -corte, 'corte');
     somar(e, reg, id, 'caixa', corte * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS, 'venda_de_ativos', 'mercado');
   }
+}
+
+/** O dinheiro do bolso de quem joga entra no caixa (o aporte do conteúdo): o valor cresce e, com sócios, a parte dele também. */
+function aportarNoNegocio(e: EstadoVida, reg: Mudanca[], emp: Entidade, valor: number): void {
+  const id = emp.id;
+  const antes = emp.n['valor'] ?? 0;
+  const parte = emp.n['participacao'] ?? 1;
+  movimentar(e, reg, { dinheiro: -valor, contraparte: id }, 'eu', 'aporte');
+  somar(e, reg, id, 'caixa', valor, 'aporte', 'eu');
+  somar(e, reg, id, 'valor', valor, 'empresa');
+  if (parte < 1) somar(e, reg, id, 'participacao', (parte * antes + valor) / (antes + valor) - parte);
+}
+
+/**
+ * O conteúdo que mexe no valor da empresa mexe no negócio: o ganho (o contrato, a filial, a concorrente comprada) vira
+ * clientela e estrutura, que os fundamentos sustentam; a perda (o acordo, a multa) sai do caixa e, faltando, da
+ * estrutura. Sem isso, o valor voltava sozinho para os fundamentos: o ganho sumia, e a conta paga pela empresa também.
+ */
+export function valorNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, delta: number): void {
+  const emp = e.entidades[id]!;
+  const n = emp.n;
+  const valor = n['valor'] ?? 0;
+  if (delta > 0) {
+    const f = valor > 0 ? delta / valor : 0;
+    for (const campo of ['capacidade', 'demanda']) if (f > 0) somar(e, reg, id, campo, (n[campo] ?? 0) * f, 'negocio');
+  } else if (delta < 0) {
+    const paga = Math.min(-delta, Math.max(0, n['caixa'] ?? 0));
+    if (paga > 0) somar(e, reg, id, 'caixa', -paga, 'despesa', 'mercado');
+    const resto = -delta - paga;
+    if (resto > 0) {
+      const porReal = economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro * VALOR_DE_VENDA_DOS_ATIVOS;
+      somar(e, reg, id, 'capacidade', -Math.min(n['capacidade'] ?? 0, resto / porReal), 'corte');
+    }
+  }
+  somar(e, reg, id, 'valor', Math.max(-valor, delta), 'empresa');
 }

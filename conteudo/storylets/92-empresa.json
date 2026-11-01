@@ -14,7 +14,7 @@
         "resumo": "pôs dinheiro do bolso para salvar a empresa",
         "condicoes": { "dinheiro": { "min": 20000 } },
         "bloqueio": "não tem R$ 20 mil na conta",
-        "efeitos": { "dinheiro": -20000, "empresa.valor": 20000 },
+        "efeitos": { "negocio": { "aporte": 20000 } },
         "teste": { "chance": 0.5 },
         "sucesso": {
           "texto": "O dinheiro segurou as pontas até o movimento voltar. Você nunca mais reclamou de segunda-feira.",
@@ -526,7 +526,7 @@
         "bloqueio": "não tem R$ 20 mil na conta",
         "resultado": {
           "texto": "Você tirou da conta e pôs no caixa. Dinheiro de dono, risco de dono.",
-          "efeitos": { "dinheiro": -20000, "empresa.valor": 20000, "felicidade": -1 }
+          "efeitos": { "negocio": { "aporte": 20000 }, "felicidade": -1 }
         }
       }
     ]

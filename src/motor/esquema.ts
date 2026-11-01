@@ -247,6 +247,7 @@ const EFEITOS_FIXOS = {
       expandir: z.number().gt(0).max(1).optional(),
       cortar: z.number().gt(0).max(0.9).optional(),
       demanda: z.number().min(-0.9).max(2).optional(),
+      aporte: z.number().positive().optional(),
     })
     .optional(),
   /** Investidores compram esta parte da empresa pelo valor de agora: o dinheiro deles entra na empresa e a parte de quem joga encolhe. */

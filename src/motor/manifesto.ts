@@ -81,7 +81,7 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'empresa.setor',
   'empresa.valor',
   'empresa.lucro',
-  // o negócio (negocio.ts, bloco N)
+  // o negócio (negocio.ts, bloco H)
   'empresa.caixa',
   'empresa.receita',
   'empresa.impostos',
