@@ -1028,6 +1028,22 @@ const portoesOmega5 = [
     TIPOS_DE_CAPITULO.map((t) => `${t} ${num(capitulosPorTipo[t], 0)}`).join(' · '),
   ],
 ] as const;
+// ---- o caminho (missão Ω6): a variedade das vidas pela estrutura causal, e o ritmo dos anos pesados
+const caminhos = assinaturasPorBloco(vidas.map((v) => v.caminho));
+const todosOsElos = new Set<string>();
+for (const v of vidas) for (const x of v.elos) todosOsElos.add(x);
+const elosPorVida = media(vidas.map((v) => v.elos.length));
+const anosPesados = vidas.reduce((a, v) => a + v.anosPesados, 0);
+const pesadosSeguidos = vidas.reduce((a, v) => a + v.pesadosSeguidos, 0);
+const parteSeguida = pesadosSeguidos / Math.max(1, anosPesados);
+const portoesOmega6 = [
+  [
+    'O caminho varia mais que o destino: as assinaturas do caminho (as causas dos pontos de virada e os capítulos) passam as do destino',
+    caminhos > destinos,
+    `caminho ${num(caminhos, 0)} · destino ${num(destinos, 0)} por 1.000 vidas · ${num(elosPorVida, 1)} elos causais por vida, ${num(todosOsElos.size, 0)} distintos no túnel`,
+  ],
+  ['A vida respira: depois de um ano pesado, o seguinte também é pesado em ≤ 10% das vezes', parteSeguida <= 0.1, `${pct(parteSeguida)} de ${num(anosPesados, 0)} anos pesados`],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1346,6 +1362,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega5) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O caminho e o ritmo (missão Ω6)');
+l();
+l('A variedade das vidas medida pela estrutura causal (as causas dos pontos de virada e os capítulos, ao lado da assinatura do destino), os elos de causa distintos e o ritmo: depois de um ano pesado, as histórias leves ganham a vez (`diretor.ts › ritmoDoAno`).');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1747,6 +1771,7 @@ for (const [nome, ok, detalhe] of portoesOmega2) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesOmega3) console.log(`${ok ? '✓' : '·'} portão Ω3: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega4) console.log(`${ok ? '✓' : '·'} portão Ω4: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega5) console.log(`${ok ? '✓' : '·'} portão Ω5: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega6) console.log(`${ok ? '✓' : '·'} portão Ω6: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

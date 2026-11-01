@@ -366,6 +366,13 @@ export interface Vida {
   segredos: HistoriaDosSegredos;
   /** Os capítulos da vida (missão Ω5, capitulos.ts): quantos de cada tipo. */
   capitulos: Partial<Record<TipoDeCapitulo, number>>;
+  /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
+  caminho: string;
+  /** Os elos causais distintos da vida ("storylet que causou>storylet que aconteceu"). */
+  elos: string[];
+  /** O ritmo: os anos pesados (o que aconteceu tirou 8 de felicidade ou mais) e quantos deles vieram logo depois de outro. */
+  anosPesados: number;
+  pesadosSeguidos: number;
 }
 
 /** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
@@ -488,6 +495,32 @@ export interface HistoriaDosSegredos {
   chegaram: string[];
   fins: { contado: string[]; descoberto: string[]; confessado: string[]; calado: string[] };
   chantagens: number;
+}
+
+/** O caminho da vida (missão Ω6): a assinatura causal, os elos distintos e o ritmo dos anos pesados. */
+function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[]): { caminho: string; elos: string[]; anosPesados: number; pesadosSeguidos: number } {
+  const porId = new Map(e.historico.map((h) => [h.id, h]));
+  const refDe = (h: Entrada | undefined): string => (h?.ref ?? h?.tipo ?? '?').replace(/#.*$/, '');
+  const viradas = pontos.map((p) => refDe(porId.get(p.origemId))).sort();
+  const tipos = [...new Set(capitulosDe(e, c).map((k) => k.tipo))].sort();
+  const elos = new Set<string>();
+  const perdaPorIdade = new Map<number, number>();
+  for (const h of e.historico) {
+    if (h.tipo === 'regra') continue;
+    for (const id of h.causas ?? []) {
+      const causa = porId.get(id);
+      if (causa && causa.tipo !== 'regra') elos.add(`${refDe(causa)}>${refDe(h)}`);
+    }
+    for (const m of h.mudancas ?? []) if (m.c === 'eu.felicidade' && (m.d ?? 0) < 0) perdaPorIdade.set(h.idade, (perdaPorIdade.get(h.idade) ?? 0) - m.d!);
+  }
+  let anosPesados = 0;
+  let pesadosSeguidos = 0;
+  for (const [idade, perda] of perdaPorIdade) {
+    if (perda < 8) continue;
+    anosPesados++;
+    if ((perdaPorIdade.get(idade - 1) ?? 0) >= 8) pesadosSeguidos++;
+  }
+  return { caminho: `${viradas.join(',')}|${tipos.join(',')}`, elos: [...elos], anosPesados, pesadosSeguidos };
 }
 
 function segredosDaVida(e: EstadoVida, c: Conteudo): HistoriaDosSegredos {
@@ -1110,6 +1143,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     projetos: projetosDaVida(e),
     segredos: segredosDaVida(e, c),
     capitulos: capitulosDe(e, c).reduce<Partial<Record<TipoDeCapitulo, number>>>((m, k) => ({ ...m, [k.tipo]: (m[k.tipo] ?? 0) + 1 }), {}),
+    ...caminhoDaVida(e, c, pontos),
     ...contasDaVida(e),
   };
 }
