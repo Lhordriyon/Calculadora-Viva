@@ -4,9 +4,9 @@ import { acoesComPessoa, fichasUsadas } from '../motor/acoes.ts';
 import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
-import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo, type Visao } from '../motor/constantes.ts';
+import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo } from '../motor/constantes.ts';
 import { idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
-import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, semONome, visoesDe } from '../motor/relacoes.ts';
+import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, ROTULO_DA_VISAO, semONome, visoesDe } from '../motor/relacoes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
@@ -105,23 +105,6 @@ const HUMOR: Record<Humor, { m: string; f: string; tom: 'ruim' | 'bom' | 'saudad
   distancia: { m: 'distante', f: 'distante', tom: 'neutro' },
 };
 
-/** O que a pessoa acha de quem joga, no gênero de quem joga ("acha você generosa"). */
-const VISAO: Record<Visao, { m: string; f: string }> = {
-  orgulho: { m: 'um orgulho', f: 'um orgulho' },
-  presente: { m: 'presente', f: 'presente' },
-  carinhoso: { m: 'carinhoso', f: 'carinhosa' },
-  de_palavra: { m: 'de palavra', f: 'de palavra' },
-  generoso: { m: 'generoso', f: 'generosa' },
-  cuida_dos_filhos: { m: 'um pai presente', f: 'uma mãe presente' },
-  sumido: { m: 'sumido', f: 'sumida' },
-  metido: { m: 'metido', f: 'metida' },
-  interesseiro: { m: 'interesseiro', f: 'interesseira' },
-  cabeca_quente: { m: 'cabeça-quente', f: 'cabeça-quente' },
-  sem_palavra: { m: 'sem palavra', f: 'sem palavra' },
-  longe_dos_filhos: { m: 'um pai ausente', f: 'uma mãe ausente' },
-  casado_com_o_trabalho: { m: 'casado com o trabalho', f: 'casada com o trabalho' },
-  perdido: { m: 'perdido', f: 'perdida' },
-};
 const DOI: ReadonlySet<string> = new Set(VISOES_RUINS);
 
 /** "Acha você generosa, mas sumida", e o porquê da primeira opinião que tem um. */
@@ -135,11 +118,11 @@ function Opiniao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
   return (
     <>
       <p class={`visao ${DOI.has(a!.visao) ? 'ruim' : 'bom'}`}>
-        Acha você <b>{VISAO[a!.visao][g]}</b>
+        Acha você <b>{ROTULO_DA_VISAO[a!.visao][g]}</b>
         {b && (
           <>
             {liga}
-            <b>{VISAO[b.visao][g]}</b>
+            <b>{ROTULO_DA_VISAO[b.visao][g]}</b>
           </>
         )}
         .
@@ -274,6 +257,7 @@ function Juntos({ vida, conteudo, id, nome, aoAgir }: { vida: EstadoVida; conteu
           {opcoes.map((o) => (
             <button class="opcao" type="button" key={o.s.id} onClick={() => aoAgir('familia', { id: o.s.id, ator: id })}>
               {o.rotulo}
+              {o.dica && <small>{o.dica}</small>}
             </button>
           ))}
         </div>

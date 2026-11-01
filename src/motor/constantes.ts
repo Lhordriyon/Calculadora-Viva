@@ -99,6 +99,13 @@ export const FORMAS_DA_COROA = ['salario', 'impostos', 'taxa'] as const;
 export type FormaDaCoroa = (typeof FORMAS_DA_COROA)[number];
 export type IdEntidade = (typeof ENTIDADES)[number];
 
+/**
+ * O que quem joga pede a uma pessoa (e ela decide, decisao.ts): dinheiro, um favor, o perdão, outra chance, que ela
+ * pague o que deve, mais prazo para o que você deve, que aceite a sua ajuda, que ouça uma verdade.
+ */
+export const PEDIDOS = ['dinheiro', 'favor', 'perdao', 'chance', 'pagar', 'prazo', 'aceitar', 'ouvir'] as const;
+export type Pedido = (typeof PEDIDOS)[number];
+
 /** Os verbos da ficha do ano. */
 export const VERBOS = ['estudar', 'trabalhar', 'saude', 'familia', 'sair', 'poupar'] as const;
 export type Verbo = (typeof VERBOS)[number];

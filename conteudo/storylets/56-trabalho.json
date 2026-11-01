@@ -22,13 +22,13 @@
       {
         "texto": "Negociar uma folga em troca",
         "resumo": "trocou a hora extra por uma folga com {ator.quem}",
-        "teste": { "atributo": "ator.confianca", "dificuldade": 55 },
+        "teste": { "decide": "favor", "ajuste": 0.3 },
         "sucesso": {
-          "texto": "{ator} topou: relatório na segunda e folga na outra sexta. Você ainda não sabe se ganhou ou perdeu.",
+          "texto": "{ator} topou, {porque}: relatório na segunda e folga na outra sexta. Você ainda não sabe se ganhou ou perdeu.",
           "efeitos": { "saude": -1, "felicidade": 1, "ator.vinculo": 3 }
         },
         "fracasso": {
-          "texto": "\"Folga? A gente conversa depois\". Vocês não conversaram depois, e você fez o relatório do mesmo jeito.",
+          "texto": "Não rolou, {porque}: \"folga? A gente conversa depois\". Vocês não conversaram depois, e você fez o relatório do mesmo jeito.",
           "efeitos": { "saude": -1, "felicidade": -3, "ator.magoa": 4 }
         }
       },
@@ -64,14 +64,14 @@
       {
         "texto": "Pedir um aumento na mesma semana",
         "resumo": "pediu aumento a {ator.quem} depois do elogio",
-        "teste": { "atributo": "ator.vinculo", "dificuldade": 62 },
+        "teste": { "decide": "favor", "ajuste": -1.2 },
         "sucesso": {
-          "texto": "{ator} pensou dois dias e voltou com um número. Não era o que você pediu, mas era mais do que você ganhava.",
+          "texto": "{ator} pensou dois dias e voltou com um número, {porque}. Não era o que você pediu, mas era mais do que você ganhava.",
           "resumo": "conseguiu um aumento com {ator.quem}",
           "efeitos": { "renda": 6000, "ator.vinculo": 2, "felicidade": 3 }
         },
         "fracasso": {
-          "texto": "\"Elogio não é aumento\", disse {ator}, e a frase ficou na sua cabeça o resto do ano.",
+          "texto": "\"Elogio não é aumento\", disse {ator}. Não deu, {porque}, e a frase ficou na sua cabeça o resto do ano.",
           "efeitos": { "ator.magoa": 5, "felicidade": -2 }
         }
       },
@@ -164,13 +164,13 @@
       {
         "texto": "Defender o seu lado",
         "resumo": "defendeu o seu lado numa reunião com {ator.quem}",
-        "teste": { "atributo": "ator.confianca", "dificuldade": 60 },
+        "teste": { "decide": "ouvir", "ajuste": 1 },
         "sucesso": {
-          "texto": "Você explicou com calma e com números. {ator} ficou um tempo calad{ator:o|a} e disse que não tinha visto por esse lado.",
+          "texto": "Você explicou com calma e com números, e {ator} ouviu, {porque}. Disse que não tinha visto por esse lado.",
           "efeitos": { "ator.magoa": -10, "ator.confianca": 6, "felicidade": 2 }
         },
         "fracasso": {
-          "texto": "A reunião de alinhamento desalinhou tudo. Você saiu com uma advertência e uma dor de cabeça.",
+          "texto": "A reunião de alinhamento desalinhou tudo: {ator} não quis ouvir, {porque}. Você saiu com uma advertência e uma dor de cabeça.",
           "efeitos": { "ator.magoa": 10, "felicidade": -3 }
         }
       },
@@ -446,7 +446,7 @@
         "teste": { "chance": 0.55 },
         "sucesso": {
           "texto": "Ninguém viu, ninguém soube. No dia seguinte, {ator} mandou um bom-dia com emoji, e você apagou a conversa no elevador.",
-          "efeitos": { "ator.vinculo": 8, "felicidade": 2, "marcas": ["amor.caso_escondido"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 20] }] }
+          "efeitos": { "ator.vinculo": 8, "felicidade": 2, "marcas": ["amor.caso_escondido"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 20], "sobre": "amor" }] }
         },
         "fracasso": {
           "texto": "Alguém da firma postou uma foto da festa. {amor} viu antes de você acordar.",
@@ -466,37 +466,38 @@
   },
   {
     "id": "o_caso_vem_a_tona",
+    "ator": ["amor"],
     "idade": [22, 85],
     "peso": 2,
-    "condicoes": { "marcas": ["namoro", "amor.caso_escondido"] },
-    "texto": "{amor} achou a conversa que você apagou do celular e esqueceu de apagar do computador. Leu tudo duas vezes antes de você chegar em casa.",
-    "resumo": "teve um segredo descoberto por {amor}",
+    "condicoes": { "marcas": ["namoro", "ator.caso_escondido"] },
+    "texto": "{ator} achou a conversa que você apagou do celular e esqueceu de apagar do computador. Leu tudo duas vezes antes de você chegar em casa.",
+    "resumo": "teve um segredo descoberto por {ator}",
     "escolhas": [
       {
         "texto": "Contar tudo e pedir perdão",
-        "resumo": "contou tudo a {amor} e pediu perdão",
-        "efeitos": { "removerMarcas": ["amor.caso_escondido"] },
-        "teste": { "atributo": "amor.vinculo", "dificuldade": 60 },
+        "resumo": "contou tudo a {ator} e pediu perdão",
+        "efeitos": { "removerMarcas": ["ator.caso_escondido"] },
+        "teste": { "decide": "perdao", "ajuste": -1.5 },
         "sucesso": {
-          "texto": "{amor} chorou, gritou e, semanas depois, disse que ia tentar. A confiança vai demorar a voltar, se voltar.",
-          "efeitos": { "amor.magoa": 25, "amor.confianca": -20, "felicidade": -3 }
+          "texto": "{ator} chorou, gritou e, semanas depois, disse que ia tentar, {porque}. A confiança vai demorar a voltar, se voltar.",
+          "efeitos": { "ator.magoa": 25, "ator.confianca": -20, "felicidade": -3 }
         },
         "fracasso": {
-          "texto": "{amor} ouviu tudo e não disse nada. O silêncio foi pior do que qualquer grito.",
-          "efeitos": { "amor.magoa": 40, "amor.confianca": -30, "felicidade": -5 }
+          "texto": "{ator} ouviu tudo e não disse nada, {porque}. O silêncio foi pior do que qualquer grito.",
+          "efeitos": { "ator.magoa": 40, "ator.confianca": -30, "felicidade": -5 }
         }
       },
       {
         "texto": "Negar até o fim",
-        "resumo": "negou tudo para {amor}",
+        "resumo": "negou tudo para {ator}",
         "teste": { "chance": 0.3 },
         "sucesso": {
-          "texto": "{amor} decidiu acreditar, ou fingir que acreditou. Você dormiu mal do mesmo jeito.",
-          "efeitos": { "amor.confianca": -15, "amor.magoa": 10, "felicidade": -2 }
+          "texto": "{ator} decidiu acreditar, ou fingir que acreditou. Você dormiu mal do mesmo jeito.",
+          "efeitos": { "ator.confianca": -15, "ator.magoa": 10, "felicidade": -2 }
         },
         "fracasso": {
-          "texto": "{amor} tinha os prints. Negar só piorou tudo, inclusive a parte que já não tinha como piorar.",
-          "efeitos": { "amor.magoa": 45, "amor.confianca": -35, "felicidade": -5, "removerMarcas": ["amor.caso_escondido"] }
+          "texto": "{ator} tinha os prints. Negar só piorou tudo, inclusive a parte que já não tinha como piorar.",
+          "efeitos": { "ator.magoa": 45, "ator.confianca": -35, "felicidade": -5, "removerMarcas": ["ator.caso_escondido"] }
         }
       }
     ]

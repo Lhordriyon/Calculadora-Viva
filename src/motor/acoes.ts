@@ -14,7 +14,7 @@ import { preferidos } from './diretor.ts';
 import type { Storylet } from './esquema.ts';
 import { fichasDoAno } from './regras.ts';
 import { criarRng } from './rng.ts';
-import { aplicarStorylet, atoresPossiveis, elegivel, instanciaDe } from './storylets.ts';
+import { aplicarStorylet, atoresPossiveis, decisaoDoTeste, elegivel, instanciaDe } from './storylets.ts';
 import { renderizar } from './texto.ts';
 import type { Entrada, EstadoVida, MemoriaJogador } from './tipos.ts';
 
@@ -25,6 +25,8 @@ export interface OpcaoDeAcao {
   rotulo: string;
   /** Nunca feita, nem nesta vida nem nas anteriores (a partir da segunda vida). */
   novo: boolean;
+  /** Quando a pessoa decide (o teste "decide"): como ela está agora para o pedido ("deve dizer sim", "difícil"). */
+  dica?: string;
 }
 
 export interface AcaoDisponivel extends OpcaoDeAcao {
@@ -127,8 +129,16 @@ export function acoesPossiveis(e: EstadoVida, c: Conteudo): AcaoPossivel[] {
   return saida;
 }
 
-function opcao(e: EstadoVida, a: AcaoPossivel, memoria?: MemoriaJogador): OpcaoDeAcao {
-  return {
+/** Como a pessoa está para o pedido, em palavras: quem joga vê a disposição, não a conta. */
+export function dicaDaChance(chance: number): string {
+  if (chance <= 0) return 'não tem como';
+  if (chance >= 0.65) return 'deve dizer sim';
+  if (chance >= 0.35) return 'pode ser que sim';
+  return 'difícil';
+}
+
+function opcao(e: EstadoVida, c: Conteudo, a: AcaoPossivel, memoria?: MemoriaJogador): OpcaoDeAcao {
+  const o: OpcaoDeAcao = {
     s: a.s,
     ator: a.ator,
     // O rótulo não pode gastar o sorteio da vida: usa um gerador à parte (e o validador proíbe alternâncias nele).
@@ -136,6 +146,8 @@ function opcao(e: EstadoVida, a: AcaoPossivel, memoria?: MemoriaJogador): OpcaoD
     // Na primeira vida tudo é novo: o selo só aparece depois, para o que nunca foi feito.
     novo: (memoria?.vidas ?? 0) > 0 && !memoria?.acoes[a.s.id] && !e.vistos[instanciaDe(a.s, a.ator)],
   };
+  if (a.s.teste?.decide && a.ator) o.dica = dicaDaChance(decisaoDoTeste(e, c, a.s.teste, a.ator, a.s.sucesso, instanciaDe(a.s, a.ator)).chance);
+  return o;
 }
 
 /** Para a interface: os verbos com a ação do botão, todas as opções de cada um e a marca de novidade. */
@@ -145,7 +157,7 @@ export function acoesDisponiveis(e: EstadoVida, c: Conteudo, memoria?: MemoriaJo
   for (const verbo of VERBOS) {
     const todas = acoesDoVerbo(e, c, verbo);
     if (todas.length === 0) continue;
-    const opcoes = todas.map((a) => opcao(e, a, memoria));
+    const opcoes = todas.map((a) => opcao(e, c, a, memoria));
     saida.push({ verbo, ...opcoes[0]!, opcoes });
   }
   return saida;
@@ -174,7 +186,7 @@ export function acoesComPessoa(e: EstadoVida, c: Conteudo, ator: string, memoria
   const saida: OpcaoDeAcao[] = [];
   for (const s of c.acoes.get('familia') ?? []) {
     const a = acaoEscolhida(e, c, 'familia', { id: s.id, ator });
-    if (a) saida.push(opcao(e, a, memoria));
+    if (a) saida.push(opcao(e, c, a, memoria));
   }
   return saida;
 }

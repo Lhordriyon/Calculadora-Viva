@@ -258,7 +258,7 @@ export function deQuando(e: EstadoVida, id: string, en: Entidade, qual: 'boa' | 
 /** O que é antigo pesa menos na opinião, mas não some: metade do peso a cada tantos anos. */
 const MEIA_VIDA = 12;
 
-type Eixo = 'afeto' | 'ferida' | 'palavraBem' | 'palavraMal' | 'deu' | 'pediu' | 'faltou' | 'filhosBem' | 'filhosMal';
+export type Eixo = 'afeto' | 'ferida' | 'palavraBem' | 'palavraMal' | 'deu' | 'pediu' | 'faltou' | 'filhosBem' | 'filhosMal';
 const EIXOS: readonly Eixo[] = ['afeto', 'ferida', 'palavraBem', 'palavraMal', 'deu', 'pediu', 'faltou', 'filhosBem', 'filhosMal'];
 
 /**
@@ -372,12 +372,48 @@ function vistos(e: EstadoVida): Map<string, Visto> {
   return mapa;
 }
 
+/** O que a pessoa viu quem joga fazer com ela, em pesos de hoje, e a entrada que mais pesou em cada eixo (decisao.ts lê). */
+export interface Historia {
+  soma: Record<Eixo, number>;
+  porque: Partial<Record<Eixo, number>>;
+}
+
+export function historiaCom(e: EstadoVida, id: string, en: Entidade): Historia {
+  const agora = 2 ** (-e.idade / MEIA_VIDA);
+  const v = vistos(e).get(chaveDaPessoa(e, id, en));
+  const soma = Object.fromEntries(EIXOS.map((x) => [x, (v?.soma[x] ?? 0) * agora])) as Record<Eixo, number>;
+  const porque: Partial<Record<Eixo, number>> = {};
+  for (const x of EIXOS) {
+    const p = v?.porque[x];
+    if (p) porque[x] = p.entrada;
+  }
+  return { soma, porque };
+}
+
 export interface Opiniao {
   visao: Visao;
   peso: number;
   /** A entrada que mais pesou (o porquê); sem ela, o porquê é o tempo longe. */
   entrada?: number;
 }
+
+/** O que a pessoa acha de quem joga, no gênero de quem joga ("acha você generosa"). */
+export const ROTULO_DA_VISAO: Record<Visao, { m: string; f: string }> = {
+  orgulho: { m: 'um orgulho', f: 'um orgulho' },
+  presente: { m: 'presente', f: 'presente' },
+  carinhoso: { m: 'carinhoso', f: 'carinhosa' },
+  de_palavra: { m: 'de palavra', f: 'de palavra' },
+  generoso: { m: 'generoso', f: 'generosa' },
+  cuida_dos_filhos: { m: 'um pai presente', f: 'uma mãe presente' },
+  sumido: { m: 'sumido', f: 'sumida' },
+  metido: { m: 'metido', f: 'metida' },
+  interesseiro: { m: 'interesseiro', f: 'interesseira' },
+  cabeca_quente: { m: 'cabeça-quente', f: 'cabeça-quente' },
+  sem_palavra: { m: 'sem palavra', f: 'sem palavra' },
+  longe_dos_filhos: { m: 'um pai ausente', f: 'uma mãe ausente' },
+  casado_com_o_trabalho: { m: 'casado com o trabalho', f: 'casada com o trabalho' },
+  perdido: { m: 'perdido', f: 'perdida' },
+};
 
 const RUINS: ReadonlySet<string> = new Set(VISOES_RUINS);
 /** O que machuca pesa mais na opinião do que o que agrada. */
@@ -454,14 +490,28 @@ export function visaoDe(e: EstadoVida, id: string, en: Entidade): Visao | '' {
   return visoesDe(e, id, en)[0]?.visao ?? '';
 }
 
+/** A entrada do livro com esse id (as recentes, que são as mais citadas, primeiro). */
+function entradaDe(e: EstadoVida, id: number): Entrada | undefined {
+  for (let i = e.historico.length - 1; i >= 0; i--) if (e.historico[i]!.id === id) return e.historico[i];
+  return undefined;
+}
+
+/** Uma entrada do livro do ponto de vista da pessoa ("você pagou o conserto do carro dela, aos 31"); '' sem frase. */
+export function fraseDaEntrada(e: EstadoVida, id: string, en: Entidade, entrada: number): string {
+  const h = entradaDe(e, entrada);
+  if (!h) return '';
+  // Como na linha do tempo: o que quem joga fez, e o que uma regra contou dele (o nome que sujou), vêm sem sujeito.
+  const feito = feitoPorQuemJoga(h) ?? (h.tipo === 'acao' || h.tipo === 'dinheiro' || h.tipo === 'regra' ? h.resumo : undefined);
+  if (feito) return `você ${semONome(feito, id, en)}, aos ${h.idade}`;
+  // O que todo mundo soube (a formatura, a condenação) vem com o sujeito.
+  if (h.resumo) return `${semONome(h.resumo, id, en)}, aos ${h.idade}`;
+  return '';
+}
+
 /** O porquê da opinião, do ponto de vista da pessoa ("você pagou o conserto do carro dela, aos 31"). */
 export function porqueDe(e: EstadoVida, id: string, en: Entidade, o: Opiniao): string {
-  const h = o.entrada === undefined ? undefined : e.historico.find((x) => x.id === o.entrada);
-  // Como na linha do tempo: o que quem joga fez, e o que uma regra contou dele (o nome que sujou), vêm sem sujeito.
-  const feito = h && (feitoPorQuemJoga(h) ?? (h.tipo === 'acao' || h.tipo === 'dinheiro' || h.tipo === 'regra' ? h.resumo : undefined));
-  if (h && feito) return `você ${semONome(feito, id, en)}, aos ${h.idade}`;
-  // O que todo mundo soube (a formatura, a condenação) vem com o sujeito.
-  if (h?.resumo) return `${semONome(h.resumo, id, en)}, aos ${h.idade}`;
+  const frase = o.entrada === undefined ? '' : fraseDaEntrada(e, id, en, o.entrada);
+  if (frase) return frase;
   const longe = en.n['sem_contato'] ?? 0;
   if ((o.visao === 'sumido' || o.visao === 'metido') && longe >= 2) return `faz ${longe} anos que vocês não se falam`;
   return '';

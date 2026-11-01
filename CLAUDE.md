@@ -97,6 +97,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   origem.ts            origem procedural: classe × tipo de família × traços, linhagem, cidade e família (os irmãos: os mais velhos já nascidos, os mais novos agendados)
   familia.ts           regras anuais dos personagens (e a relação no ano), regra do amor (e o namoro que esfria), iniciativas; a rede: a vida dos irmãos ao fundo, o colega e o chefe que vêm com o trabalho
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro, somado pela pessoa que ocupava o papel)
+  decisao.ts           a pessoa decide: o pedido (dinheiro, favor, perdão, outra chance, pagar, prazo, aceitar, ouvir) pelo estado e pela memória dela, e o porquê, que aponta a entrada que pesou
   pais.ts              o país vivo: estatísticas, governos, eleição, políticas, a fase do ciclo e o país na vida
   diplomacia.ts        o mundo lá fora: países fictícios, relação, sanções, acordos, o dólar e o ato de quem governa
   trabalho.ts          salário e demissão pelo setor e pela fase; a conta do padrão de vida
@@ -267,3 +268,8 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | A mesma ação não se repete no ano, nem com outra pessoa | agente (missão Ω1) | com a família maior, o programa com a mãe e o com o irmão faziam do ano a mesma coisa duas vezes |
 | Com ator de um papel de várias pessoas (filho, irmão, ex, amigo), o texto e os efeitos falam do ator, não do primeiro do papel | agente (missão Ω1) | o conteúdo vale para cada pessoa do papel; o validador cobra |
 | Os irmãos não pedem Pix (por enquanto) | agente (missão Ω1) | com cinco pessoas a mais, os robôs pediam Pix a algum irmão quase todo ano e largavam a empresa; volta com os verbos sociais, com a decisão da pessoa |
+| Quando a resposta é de uma pessoa, ela decide (`"teste": { "decide": … }`): pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo que acha de você, pelo que você já deu e já pediu a ela, pelo dinheiro que tem, pelo aperto e pela distância; o desfecho diz o porquê ({porque}) e aponta a entrada que pesou | dono (missão Ω2, I-123) | "NPCs que identificam a personalidade do player, lembram do que ele fez ou deixou de fazer e se comportam segundo o que sabem": o dado no vínculo não sabia de nada disso |
+| A lembrança e a opinião que nasceu dela (o presente e o "acha você generosa") contam uma vez só na decisão | agente (missão Ω2) | a mesma evidência contada duas vezes fazia de um único presente um cheque em branco |
+| Quem não tem o dinheiro não empresta: a chance é zero, e o porquê diz isso | agente (missão Ω2) | com a mágoa zerada e a confiança alta, a mãe sem dinheiro ainda "emprestava" uma vez em dez |
+| O tamanho do pedido é do storylet (`ajuste`, de −3 a 3) | agente (missão Ω2) | com a mesma conta, pedir aumento saía mais fácil que pedir folga, e perdoar um caso, mais fácil que um aniversário esquecido |
+| A folha mostra como a pessoa está para o pedido ("deve dizer sim", "pode ser que sim", "difícil", "não tem como"), não a chance | agente (missão Ω2) | dá para ler a pessoa antes de pedir sem transformar a relação em planilha |

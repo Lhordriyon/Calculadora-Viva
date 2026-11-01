@@ -93,7 +93,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | Camada | O que entra | Ideias | Estado |
 |---|---|---|---|
 | Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | feita (27/10, no branch de trabalho) |
-| Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | proposta |
+| Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | em andamento (a decisão da pessoa feita) |
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | proposta |
 | Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
 | Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
@@ -115,7 +115,8 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Problema:** com uma pessoa, hoje, só dá para fazer as ações escritas para o papel dela (visitar, ligar, presentear). Não dá para pedir dinheiro, pedir um emprego, oferecer sociedade, cobrar uma dívida ou contar uma verdade, e a pessoa não decide nada: o storylet decide.
 - **Efeitos causais:** um verbo (pedir, oferecer, propor, cobrar, contar, apresentar) com um objeto (dinheiro, ajuda, emprego, perdão, sociedade, casamento, morar junto) vale para qualquer pessoa. Ela decide pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo dinheiro que tem, pelo que acha de você e pelo momento, e diz o porquê. O empréstimo entre pessoas é um contrato com ela de credora; o calote vira mágoa, e o favor pago, confiança. As pessoas também pedem a você.
 - **Aceitação:** teste: a mesma pergunta, com a mesma pessoa, sai diferente com a mágoa alta e com a confiança alta; o empréstimo fecha as contas e aparece nas dívidas; o porquê aponta a entrada que pesou.
-- **Estado:** proposta (Ω2).
+- **Desenho (Ω2):** em três partes. (a) A decisão (`decisao.ts`): um teste novo, `"decide": <pedido>`, que vale para o conteúdo inteiro; os 14 testes que davam um dado no vínculo ou na confiança de alguém (o perdão, o Pix, a última chance, a folga, o aumento, a volta do ex) passam a ser a pessoa decidindo, com o `{porque}` no texto. (b) A promissória: o empréstimo entre pessoas como contrato próprio (credor e devedor pela pessoa, saldo, parcela, vencimento, atraso), fora da dívida com o banco e do nome sujo; a parcela atrasada vira mágoa, a quitação vira confiança, o calote vira a pior lembrança; quem morre leva a dívida. (c) Os verbos que faltam: oferecer ajuda (o orgulho decide), cobrar o que devem, pedir mais prazo, e as pessoas pedindo a você.
+- **Estado:** em andamento (Ω2): (a) feita.
 
 ### I-124 · Os projetos
 - **Problema:** o jogador não pode querer nada. A vida é uma sequência de respostas.
@@ -237,7 +238,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-120 | O texto revisado: a gramática do conteúdo inteiro | 9 | Alta | proposta (correção C4) |
 | I-121 | NPCs com objetivos próprios | 9 | Média | proposta |
 | I-122 | Descobrir o que não se sabia que existia | 9 | Média | proposta |
-| I-123 | Os verbos sociais: pedir, oferecer, propor, cobrar, contar, apresentar | Ω | Alta | proposta (Ω2) |
+| I-123 | Os verbos sociais: pedir, oferecer, propor, cobrar, contar, apresentar | Ω | Alta | em andamento (Ω2) |
 | I-130 | O namoro que esfria e o ex que continua | Ω | Alta | feita (Ω1) |
 | I-131 | Os irmãos com vida própria | Ω | Alta | feita (Ω1) |
 | I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | proposta (Ω3) |

@@ -71,7 +71,9 @@ Uma ação precisa mexer em pelo menos dois sistemas (ex.: inteligência e felic
 - `resumo` completa "aos 17, você …". Minúscula, no passado.
 - Sem sorte: `resultado`. Com sorte: `teste` + `sucesso` + `fracasso`.
   - `{ "chance": 0.3 }`: sorte pura.
-  - `{ "atributo": "inteligencia", "dificuldade": 60 }`: chance de `0,5 + (valor − dificuldade)/50`, entre 5% e 95%. O atributo pode ser qualquer caminho numérico (`ator.vinculo`).
+  - `{ "atributo": "inteligencia", "dificuldade": 60 }`: chance de `0,5 + (valor − dificuldade)/50`, entre 5% e 95%. O atributo pode ser qualquer caminho numérico.
+  - `{ "decide": "perdao" }`: **a pessoa decide** (o ator do storylet; missão Ω2). O pedido é um de `dinheiro`, `favor`, `perdao`, `chance` (outra chance para a relação), `pagar` (o que ela deve), `prazo` (para o que você deve), `aceitar` (a sua ajuda) e `ouvir` (uma verdade, o seu lado). Ela responde pelo vínculo, pela confiança, pela mágoa, pelo traço, pelo que acha de você, pelo que você já deu e já pediu a ela (do livro), pelo dinheiro que tem (quem não tem não empresta), pelo aperto (desemprego, doença) e pela distância; pedir de novo em dois anos pesa contra. `"ajuste"` (−3 a 3) diz o tamanho do pedido: pedir aumento (`-1.2`) não é pedir folga (`0.3`), e perdoar um caso (`-1.5`) não é perdoar um aniversário esquecido. Use quando a resposta é da pessoa; quando é da sorte ou do momento (a conversa que flui, a família na porta do hospital), use `chance` ou `atributo`.
+  - No desfecho de um `decide`, `{porque}` é o motivo que mais pesou, do ponto de vista da pessoa e pronto para depois de uma vírgula: "porque lembra de quando você pagou o conserto do carro dela, aos 31", "porque não tem esse dinheiro", "sem fazer muitas perguntas". A entrada que sustenta o motivo vira a primeira causa da entrada (o porquê da linha do tempo e da crônica). Escreva o texto para os dois casos: "{ator} topou, {porque}." e "Não deu, {porque}."
 - Um desfecho pode ter `resumo` próprio quando o resultado é o que importa.
 - Opção com condição não atendida aparece desabilitada, com o `bloqueio`.
 
@@ -218,6 +220,7 @@ As pessoas da rede existem só quando a vida as trouxe: os irmãos (os mais novo
 - **Qualidades da rede que o motor escreve e o conteúdo lê:** `irmao.gemeo`, `irmao.casado`, `irmao.separado`, `irmao.pai_mae`, `irmao.mora_longe`, `irmao.desempregado`, `irmao.aposentado`, `amigo.de_infancia` e o número `irmao.filhos` (os sobrinhos); `ex.casou` e `ex.bloqueado` são do conteúdo.
 - **Notícias** (`mundo.json › acontecimentos`): `casou`, `teve_filho`, `mudou_de_cidade`, `separou` (a vida dos irmãos longe de quem joga) e `virou_amigo` (o colega que ficou).
 - **Agendados pelo motor:** `namoro_esfriou` (o namoro que esfria), `irmao_nasce`, `casamento_do_irmao` e `padrinho_do_sobrinho` (com o irmão perto).
+- **O agendado é sobre o ator de agora** (ou o filho que acabou de nascer); `"sobre": "amor"` no agendamento diz outra pessoa: a festa da firma (com o colega de ator) agenda a conversa achada no computador sobre o par.
 
 ## Efeitos
 

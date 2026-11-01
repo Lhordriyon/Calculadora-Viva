@@ -23,14 +23,14 @@
         "texto": "Tentar salvar o namoro",
         "resumo": "tentou salvar o namoro com {ator}",
         "efeitos": { "dinheiro": -400 },
-        "teste": { "atributo": "ator.vinculo", "dificuldade": 55 },
+        "teste": { "decide": "chance" },
         "sucesso": {
-          "texto": "Vocês viajaram no fim de semana, sem celular, e voltaram com assunto para mais um ano.",
+          "texto": "{ator} topou tentar, {porque}. Vocês viajaram no fim de semana, sem celular, e voltaram com assunto para mais um ano.",
           "resumo": "salvou o namoro com {ator}",
           "efeitos": { "ator.vinculo": 10, "felicidade": 2 }
         },
         "fracasso": {
-          "texto": "A viagem foi longa e calada. Na volta, {ator} pediu para descer duas quadras antes de casa, e não era pela vaga.",
+          "texto": "{ator} foi na viagem, mas não quis tentar, {porque}. Na volta, pediu para descer duas quadras antes de casa, e não era pela vaga.",
           "resumo": "tentou salvar o namoro com {ator} e terminou mesmo assim",
           "efeitos": { "removerMarcas": ["namoro"], "ator.magoa": 16, "felicidade": -6 }
         }
@@ -98,13 +98,13 @@
         "resumo": "pediu desculpas a {ator.quem} pelo que passou",
         "condicoes": { "ator.magoa": { "min": 15 } },
         "bloqueio": "não sobrou mágoa para desculpar",
-        "teste": { "atributo": "ator.vinculo", "dificuldade": 40 },
+        "teste": { "decide": "perdao" },
         "sucesso": {
-          "texto": "{ator:Ele|Ela} ouviu sem interromper e disse que já tinha passado. Pela primeira vez, pareceu verdade.",
+          "texto": "{ator:Ele|Ela} ouviu sem interromper e disse que já tinha passado, {porque}. Pela primeira vez, pareceu verdade.",
           "efeitos": { "ator.magoa": -25, "ator.confianca": 6, "felicidade": 2 }
         },
         "fracasso": {
-          "texto": "\"Agora?\", {ator:ele|ela} perguntou, e foi para outro caixa.",
+          "texto": "\"Agora?\", {ator:ele|ela} perguntou, e foi para outro caixa, {porque}.",
           "efeitos": { "ator.magoa": -5, "felicidade": -2 }
         }
       }
@@ -276,14 +276,14 @@
       {
         "texto": "Tentar de novo, de vez",
         "resumo": "tentou voltar com {ator.quem}",
-        "teste": { "atributo": "ator.confianca", "dificuldade": 50 },
+        "teste": { "decide": "chance", "ajuste": 1.2 },
         "sucesso": {
-          "texto": "Vocês voltaram, dessa vez sem anunciar para ninguém. Os amigos descobriram em uma semana, fizeram piada e torceram, nessa ordem.",
+          "texto": "{ator:Ele|Ela} topou, {porque}. Vocês voltaram, dessa vez sem anunciar para ninguém; os amigos descobriram em uma semana, fizeram piada e torceram, nessa ordem.",
           "resumo": "voltou com {ator.quem}",
           "efeitos": { "ator.vinculo": 12, "felicidade": 5, "marcas": ["namoro", "voltou_com_o_ex"], "promover": { "de": "ator", "para": "amor" } }
         },
         "fracasso": {
-          "texto": "No terceiro encontro, a briga antiga voltou inteira, com as mesmas frases e o mesmo silêncio no carro. Vocês combinaram, de novo, que era melhor assim.",
+          "texto": "No terceiro encontro, a briga antiga voltou inteira, com as mesmas frases e o mesmo silêncio no carro. {ator:Ele|Ela} desistiu primeiro, {porque}.",
           "efeitos": { "ator.magoa": 10, "ator.vinculo": -8, "felicidade": -2 }
         }
       },
@@ -413,9 +413,9 @@
       {
         "texto": "Propor metade",
         "resumo": "propôs pagar metade da conta antiga a {ator.quem}",
-        "teste": { "atributo": "ator.vinculo", "dificuldade": 35 },
+        "teste": { "decide": "favor", "ajuste": 1 },
         "sucesso": {
-          "texto": "Fecharam em {metade}, à vista, com um \"se cuida\" no final que você não esperava.",
+          "texto": "{ator:Ele|Ela} aceitou, {porque}. Fecharam em {metade}, à vista, com um \"se cuida\" no final que você não esperava.",
           "efeitos": { "transferir": { "de": "eu", "para": "ator", "valor": 400 }, "ator.magoa": -6 }
         },
         "fracasso": {

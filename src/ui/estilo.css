@@ -904,6 +904,15 @@ button {
   line-height: 1.25;
 }
 
+/* Como a pessoa está para o pedido ("deve dizer sim", "difícil"), quando ela decide. */
+.verbo .dica {
+  max-width: 100%;
+  color: var(--texto-suave);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
 .verbo:active {
   border-color: var(--texto-suave);
   background: var(--superficie-2);

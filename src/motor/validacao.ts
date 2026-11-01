@@ -7,10 +7,11 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS, papelBase } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
-import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet } from './esquema.ts';
+import { CAMPOS_DA_DECISAO } from './decisao.ts';
+import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet, type Teste } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
 import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, VONTADES, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
@@ -356,12 +357,24 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         agendados.add(ag.evento);
         agendadoPor.set(ag.evento, [...(agendadoPor.get(ag.evento) ?? []), { s, ef }]);
         if (!c.porId.has(ag.evento)) erro(b.onde, `agenda storylet inexistente "${ag.evento}"`);
+        const alvo = c.porId.get(ag.evento);
+        if (ag.sobre && alvo && !(alvo.ator ?? []).some((a) => a === papelBase(ag.sobre!))) erro(b.onde, `agenda "${ag.evento}" sobre ${ag.sobre}, que não é ator dele`);
         if (Array.isArray(ag.em) && ag.em[0] > ag.em[1]) erro(b.onde, `faixa de agendamento invertida para "${ag.evento}"`);
       }
     }
   }
 
   // ---- leitores do conteúdo
+  // A pessoa que decide (decisao.ts) lê o vínculo, a confiança, a mágoa, o traço, o dinheiro, o aperto e a distância
+  // dela; o aperto (desemprego, doença) só de quem pode ter um.
+  const lerDaDecisao = (atores: readonly string[] | undefined, sistema: string, onde: string): void => {
+    for (const campo of CAMPOS_DA_DECISAO) {
+      for (const k of concretos(`ator.${campo}`, atores)) {
+        const { ent } = separar(k);
+        if (defCampo(ent, campo) || escritores.has(k)) ler(k, { sistema, decide: true, onde });
+      }
+    }
+  };
   for (const s of c.storylets) {
     const onde = nomeDe(s);
     const tipo = tipoDe(s);
@@ -375,6 +388,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     if (s.teste?.atributo && conferirCaminho(s.teste.atributo, onde, atores)) {
       for (const k of concretos(s.teste.atributo, atores)) ler(k, { sistema: tipo, decide: true, onde });
     }
+    if (s.teste?.decide) lerDaDecisao(atores, tipo, onde);
     for (const [nome, trechos] of Object.entries(s.trechos ?? {})) {
       trechos.forEach((t, i) => conferirCondicao(t.se, `${onde} › trechos.${nome}[${i}]`, atores, { sistema: 'texto', decide: false }));
       if (trechos[trechos.length - 1]!.se) erro(onde, `trechos.${nome}: o último trecho não pode ter condição (é o padrão)`);
@@ -385,6 +399,7 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       if (esc.teste?.atributo && conferirCaminho(esc.teste.atributo, o, atores)) {
         for (const k of concretos(esc.teste.atributo, atores)) ler(k, { sistema: 'escolha', decide: true, onde: o });
       }
+      if (esc.teste?.decide) lerDaDecisao(atores, 'escolha', o);
     });
   }
   // A condição que realiza a vontade lê o estado e decide quando a vida a realiza.
@@ -668,8 +683,15 @@ function verificarTextos(
   const exigidasStorylet = new Set(qualidadesGarantidas(s.condicoes));
   const usados = new Set<string>();
   const atores = s.ator;
-  const ver = (texto: string, o: string, criados: Set<string> = new Set(), exigidas = exigidasStorylet): void => {
-    for (const v of verificarModelo(texto, o, extras, exigidas, marcasDoPapel, erro, atores, criados)) usados.add(v);
+  // O porquê da resposta ({porque}) só existe no desfecho de um teste em que a pessoa decide; e quem decide é o ator.
+  const comPorque = new Set([...extras, 'porque']);
+  const decide = (t: Teste | undefined, o: string): boolean => {
+    if (!t?.decide) return false;
+    if (!atores?.length) erro(o, `o teste "decide: ${t.decide}" precisa de um ator (quem decide)`);
+    return true;
+  };
+  const ver = (texto: string, o: string, criados: Set<string> = new Set(), exigidas = exigidasStorylet, comOPorque = false): void => {
+    for (const v of verificarModelo(texto, o, comOPorque ? comPorque : extras, exigidas, marcasDoPapel, erro, atores, criados)) usados.add(v);
   };
   ver(s.texto, `${onde} › texto`, criadosPor(s.efeitos));
   ver(s.resumo, `${onde} › resumo`, criadosPor(s.efeitos));
@@ -678,11 +700,12 @@ function verificarTextos(
   for (const [nome, trechos] of Object.entries(s.trechos ?? {})) {
     trechos.forEach((t, i) => ver(t.texto, `${onde} › trechos.${nome}[${i}]`, new Set(), new Set([...exigidasStorylet, ...qualidadesGarantidas(t.se)])));
   }
+  const decideAqui = decide(s.teste, onde);
   for (const [nome, r] of [['sucesso', s.sucesso], ['fracasso', s.fracasso]] as const) {
     if (!r) continue;
     const criados = new Set([...criadosPor(s.efeitos), ...criadosPor(r.efeitos)]);
-    ver(r.texto, `${onde} › ${nome}`, criados);
-    if (r.repete) ver(r.repete, `${onde} › ${nome} › repete`, criados);
+    ver(r.texto, `${onde} › ${nome}`, criados, exigidasStorylet, decideAqui);
+    if (r.repete) ver(r.repete, `${onde} › ${nome} › repete`, criados, exigidasStorylet, decideAqui);
   }
   const tamanho = comprimentoMaximo(s.texto);
   if (tamanho > LIMITE_TEXTO) aviso(onde, `texto pode chegar a ${tamanho} caracteres (limite ${LIMITE_TEXTO})`);
@@ -700,11 +723,12 @@ function verificarTextos(
     if (comprimentoMaximo(esc.resumo) > LIMITE_RESUMO) aviso(o, `resumo longo (${comprimentoMaximo(esc.resumo)} caracteres)`);
     if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(esc.resumo)) aviso(o, 'resumo completa "aos N você ..."; comece com minúscula');
     const daEscolha = criadosPor(esc.efeitos);
+    const decideNaEscolha = decide(esc.teste, o);
     for (const [nome, r] of [['sucesso', esc.sucesso], ['fracasso', esc.fracasso], ['resultado', esc.resultado]] as const) {
       if (!r) continue;
       const criados = new Set([...daEscolha, ...criadosPor(r.efeitos)]);
-      ver(r.texto, `${o} › ${nome}`, criados, exigidas);
-      if (r.repete) ver(r.repete, `${o} › ${nome} › repete`, criados, exigidas);
+      ver(r.texto, `${o} › ${nome}`, criados, exigidas, decideNaEscolha && nome !== 'resultado');
+      if (r.repete) ver(r.repete, `${o} › ${nome} › repete`, criados, exigidas, decideNaEscolha && nome !== 'resultado');
       if (r.resumo) ver(r.resumo, `${o} › ${nome} › resumo`, criados, exigidas);
       else ver(esc.resumo, `${o} › resumo`, criados, exigidas);
     }

@@ -18,6 +18,7 @@ import {
   PERFIS,
   PAPEIS_NOVOS,
   PAPEIS_QUE_CHEGAM,
+  PEDIDOS,
   POLITICAS,
   TIPOS_FAMILIA,
   TIPOS_STORYLET,
@@ -98,6 +99,8 @@ const Agendamento = z.strictObject({
   evento: id,
   /** Anos a partir de agora: fixo ou faixa sorteada. */
   em: z.union([z.number().int().min(1), z.tuple([z.number().int().min(1), z.number().int().min(1)])]),
+  /** De quem o storylet agendado vai tratar (o ator dele); sem isso, o ator de agora (ou o filho que acabou de nascer). */
+  sobre: z.enum(PAPEIS).optional(),
 });
 
 /** Como a empresa de quem joga nasce: o setor, de onde vem o valor e quanto é de quem joga. */
@@ -262,15 +265,23 @@ export const Teste = z
     atributo: Caminho.optional(),
     dificuldade: z.number().min(0).max(100).optional(),
     chance: z.number().gt(0).lt(1).optional(),
+    /**
+     * A pessoa decide (decisao.ts): o ator do storylet responde ao pedido pelo estado e pela memória dela, e o
+     * desfecho ganha o porquê ({porque}) e a entrada que pesou como causa.
+     */
+    decide: z.enum(PEDIDOS).optional(),
+    /** O tamanho do pedido, na conta da pessoa (−3 a 3): pedir aumento pesa mais que pedir folga. Só com `decide`. */
+    ajuste: z.number().min(-3).max(3).optional(),
   })
   .superRefine((t, ctx) => {
     const porAtributo = t.atributo !== undefined || t.dificuldade !== undefined;
     if (porAtributo && (t.atributo === undefined || t.dificuldade === undefined)) {
       ctx.addIssue({ code: 'custom', message: 'teste por atributo precisa de atributo e dificuldade' });
     }
-    if (porAtributo === (t.chance !== undefined)) {
-      ctx.addIssue({ code: 'custom', message: 'use { chance } ou { atributo, dificuldade }' });
+    if ([porAtributo, t.chance !== undefined, t.decide !== undefined].filter(Boolean).length !== 1) {
+      ctx.addIssue({ code: 'custom', message: 'use { chance }, { atributo, dificuldade } ou { decide }' });
     }
+    if (t.ajuste !== undefined && t.decide === undefined) ctx.addIssue({ code: 'custom', message: 'ajuste só vale com decide' });
   });
 export type Teste = z.infer<typeof Teste>;
 

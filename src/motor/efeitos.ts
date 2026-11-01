@@ -173,7 +173,8 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   const sobre = ctx.criados?.['filho'] ?? ator;
   for (const ag of ef.agendar ?? []) {
     const anos = typeof ag.em === 'number' ? ag.em : inteiro(e.rng, ag.em[0], ag.em[1]);
-    e.agenda.push(sobre ? { evento: ag.evento, ano: e.ano + anos, origem, ator: sobre } : { evento: ag.evento, ano: e.ano + anos, origem });
+    const quem = ag.sobre ?? sobre;
+    e.agenda.push(quem ? { evento: ag.evento, ano: e.ano + anos, origem, ator: quem } : { evento: ag.evento, ano: e.ano + anos, origem });
   }
   if (ef.matar) {
     const papel = entidadeDe(ef.matar, ator);

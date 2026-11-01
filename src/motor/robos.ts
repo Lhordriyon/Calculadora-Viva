@@ -187,8 +187,8 @@ export function avaliarEscolha(esc: Corpo, e: EstadoVida, c: Conteudo, ator?: st
   const baseX = exposicao(esc.efeitos, e, c);
   const desfechos: { p: number; v: number; x: number }[] = esc.teste
     ? [
-        { p: chanceDeSucesso(esc.teste, e, ator), r: esc.sucesso },
-        { p: 1 - chanceDeSucesso(esc.teste, e, ator), r: esc.fracasso },
+        { p: chanceDeSucesso(esc.teste, e, ator, c, esc.sucesso), r: esc.sucesso },
+        { p: 1 - chanceDeSucesso(esc.teste, e, ator, c, esc.sucesso), r: esc.fracasso },
       ].map(({ p, r }) => ({ p, v: base + valorEfeitos(r?.efeitos, e, c, ator), x: baseX + exposicao(r?.efeitos, e, c) }))
     : [{ p: 1, v: base + valorEfeitos(esc.resultado?.efeitos, e, c, ator), x: baseX + exposicao(esc.resultado?.efeitos, e, c) }];
   const esperado = desfechos.reduce((s, d) => s + d.p * d.v, 0);

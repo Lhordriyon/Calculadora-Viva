@@ -8,6 +8,7 @@ import { atende, motivoBloqueio } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { tipoDe } from './conteudo.ts';
 import { contexto } from './contexto.ts';
+import { comRepeticao, decidir, porqueDaResposta, valorDoPedido, type Decisao } from './decisao.ts';
 import { aplicarEfeitos, type ContextoEfeito } from './efeitos.ts';
 import { reorganizarGrupo } from './empresa.ts';
 import type { Escolha, Resultado, Storylet, Teste } from './esquema.ts';
@@ -82,7 +83,30 @@ export function marcarVisto(e: EstadoVida, s: Storylet, ator: string | undefined
   (e.vistos[instanciaDe(s, ator)] ??= []).push(e.idade);
 }
 
-export function chanceDeSucesso(teste: Teste, e: EstadoVida, ator?: string): number {
+/**
+ * A decisão da pessoa num teste `decide` (decisao.ts): o estado e a memória dela, o dinheiro que o desfecho bom tira
+ * dela e a insistência (o mesmo pedido, à mesma pessoa, nos últimos dois anos).
+ */
+export function decisaoDoTeste(e: EstadoVida, c: Conteudo, teste: Teste, ator: string, sucesso: Resultado | undefined, instancia?: string): Decisao {
+  const pedido = teste.decide!;
+  const d = decidir(e, c, ator, pedido, valorDoPedido(sucesso?.efeitos, e, ator), teste.ajuste ?? 0);
+  if (instancia === undefined) return d;
+  const antes = (e.vistos[instancia] ?? []).filter((i) => i < e.idade && i >= e.idade - 2).length;
+  if (antes === 0) return d;
+  let ultima: number | undefined;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.instancia === instancia && h.idade < e.idade) {
+      ultima = h.id;
+      break;
+    }
+  }
+  return comRepeticao(d, pedido, antes, ultima);
+}
+
+/** A chance do desfecho bom: a sorte, um atributo contra a dificuldade, ou a pessoa que decide (com o conteúdo e o ator). */
+export function chanceDeSucesso(teste: Teste, e: EstadoVida, ator?: string, c?: Conteudo, sucesso?: Resultado): number {
+  if (teste.decide) return c && ator ? decisaoDoTeste(e, c, teste, ator, sucesso).chance : 0.5;
   if (teste.chance !== undefined) return teste.chance;
   const v = lerCaminho(e, teste.atributo ?? 'saude', ator);
   const valor = typeof v === 'number' ? v : 0;
@@ -132,14 +156,28 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   const reg: Mudanca[] = [];
   const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
   aplicarEfeitos(e, c, s.efeitos, ef);
-  const op = { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados };
+  const op: { ator: string | undefined; valores: Record<string, number> | undefined; trechos: Storylet['trechos']; apelidos: Record<string, string> | undefined; textos?: Record<string, string> } = {
+    ator,
+    valores: ef.valores,
+    trechos: s.trechos,
+    apelidos: ef.criados,
+  };
   entrada.texto = extras.repeticao
     ? `${capitalizar(renderizar(s.resumo, contexto(e, op)))}, mais um ano.`
     : capitalizar(renderizar(s.texto, contexto(e, op)));
   let resumo = s.resumo;
   let morte = s.efeitos?.morte;
+  let porque: number | undefined;
   if (s.teste) {
-    const r: Resultado = (aleatorio(e.rng) < chanceDeSucesso(s.teste, e, ator) ? s.sucesso : s.fracasso)!;
+    const d = s.teste.decide && ator ? decisaoDoTeste(e, c, s.teste, ator, s.sucesso, instanciaDe(s, ator)) : null;
+    const sim = aleatorio(e.rng) < (d ? d.chance : chanceDeSucesso(s.teste, e, ator));
+    const r: Resultado = (sim ? s.sucesso : s.fracasso)!;
+    // O porquê é decidido antes dos efeitos: é o que a pessoa pesou ao responder, não o que mudou depois.
+    if (d && s.teste.decide && ator) {
+      const p = porqueDaResposta(e, c, ator, s.teste.decide, d, sim);
+      op.textos = { porque: p.texto };
+      porque = p.entrada;
+    }
     aplicarEfeitos(e, c, r.efeitos, ef);
     entrada.resultado = textoDoDesfecho(e, r, contexto(e, op));
     if (r.resumo) resumo = r.resumo;
@@ -147,7 +185,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
   }
   entrada.resumo = renderizar(resumo, contexto(e, op));
   if (ef.criados?.['ator']) entrada.ator = ef.criados['ator'];
-  const causas = [...new Set(extras.causas ?? [])];
+  const causas = [...new Set([...(porque !== undefined ? [porque] : []), ...(extras.causas ?? [])])];
   if (causas.length > 0) entrada.causas = causas;
   if (extras.inflacao !== undefined) entrada.inflacao = extras.inflacao;
   // Depois do texto (que ainda fala da empresa que saiu), outra do grupo toma o lugar dela.
@@ -238,12 +276,19 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   });
   const reg: Mudanca[] = [];
   const ef: ContextoEfeito = { origem: entrada.id, ator, reg, valores: { ...s.valores } };
+  // A pessoa decide pelo que viveu até aqui: antes dos efeitos certos da escolha (o pedido em si não pesa na resposta).
+  const d = esc.teste?.decide && ator ? decisaoDoTeste(e, c, esc.teste, ator, esc.sucesso, base.instancia) : null;
   aplicarEfeitos(e, c, esc.efeitos, ef);
-  const resultado: Resultado = esc.teste
-    ? (aleatorio(e.rng) < chanceDeSucesso(esc.teste, e, ator) ? esc.sucesso : esc.fracasso)!
-    : esc.resultado!;
+  let porque: { texto: string; entrada?: number } | undefined;
+  let resultado: Resultado;
+  if (esc.teste) {
+    const sim = aleatorio(e.rng) < (d ? d.chance : chanceDeSucesso(esc.teste, e, ator));
+    resultado = (sim ? esc.sucesso : esc.fracasso)!;
+    if (d && esc.teste.decide && ator) porque = porqueDaResposta(e, c, ator, esc.teste.decide, d, sim);
+  } else resultado = esc.resultado!;
   aplicarEfeitos(e, c, resultado.efeitos, ef);
-  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados });
+  if (porque?.entrada !== undefined) entrada.causas = [...new Set([porque.entrada, ...(entrada.causas ?? [])])];
+  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados, ...(porque ? { textos: { porque: porque.texto } } : {}) });
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = textoDoDesfecho(e, resultado, ctx);

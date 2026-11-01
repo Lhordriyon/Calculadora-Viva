@@ -286,15 +286,15 @@
     "intervalo": 2,
     "texto": "Você pediu dinheiro a {ator}. [Disse que era uma emergência.|Prometeu devolver no mês que vem.|Explicou a situação com detalhes demais, o que nunca é bom sinal.]",
     "resumo": "pediu dinheiro a {ator}",
-    "teste": { "atributo": "ator.vinculo", "dificuldade": 40 },
+    "teste": { "decide": "dinheiro" },
     "sucesso": {
-      "texto": "{ator} mandou {transferido} na hora, com um \"juízo, hein\" na mensagem.",
+      "texto": "{ator} mandou {transferido} na hora, com um \"juízo, hein\" na mensagem. Mandou {porque}.",
       "repete": "{ator} mandou de novo. O \"juízo, hein\" veio mais comprido.",
       "resumo": "pediu dinheiro a {ator} e recebeu",
       "efeitos": { "transferir": { "de": "ator", "para": "eu", "fracao": 0.15, "max": 20000 }, "ator.vinculo": -2, "ator.confianca": -2 }
     },
     "fracasso": {
-      "texto": "{ator} disse que não tem, do jeito de quem tem mas cansou.",
+      "texto": "{ator} [disse que não ia dar|visualizou e demorou um dia para responder que não], {porque}.",
       "repete": "{ator} disse que não, de novo.",
       "efeitos": { "ator.vinculo": -1, "felicidade": -1 }
     }
@@ -845,14 +845,14 @@
       {
         "texto": "Pedir uma última chance",
         "resumo": "pediu a {ator} uma última chance",
-        "teste": { "atributo": "ator.vinculo", "dificuldade": 45 },
+        "teste": { "decide": "chance", "ajuste": 2 },
         "sucesso": {
-          "texto": "{ator} sentou na mala e chorou. Desfez a mala no dia seguinte, devagar, uma peça por vez.",
+          "texto": "{ator} sentou na mala e chorou, e ficou, {porque}. Desfez a mala no dia seguinte, devagar, uma peça por vez.",
           "repete": "{ator} ficou de novo. Até quando, ninguém sabe.",
           "efeitos": { "ator.magoa": -25, "ator.confianca": -5 }
         },
         "fracasso": {
-          "texto": "{ator} disse que a última chance foi a penúltima. E foi.",
+          "texto": "{ator} disse que a última chance foi a penúltima, {porque}. E foi.",
           "repete": "{ator} foi, dessa vez de verdade.",
           "efeitos": { "felicidade": -10, "removerMarcas": ["namoro", "casado"], "marcas": ["separado"] }
         }

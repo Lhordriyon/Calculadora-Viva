@@ -124,6 +124,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
                   {o.rotulo}
                   {o.novo && <span class="novo">novo</span>}
                 </b>
+                {o.dica && <small class="dica">{o.dica}</small>}
               </button>
             ))}
           </div>
