@@ -264,9 +264,8 @@ describe('bolsa', () => {
       regraDaEmpresa(copia, c, momentoTipico('normal'), [], { acoes: esperado + humor });
       return copia.entidades['empresa']!.n['valor']!;
     };
-    const valor = empresaDe(e)!.n['valor']!;
-    // Mesma sorte nos dois mundos: a diferença é só o humor da bolsa.
-    expect((ano(0.2) - ano(-0.2)) / valor).toBeCloseTo(PESO_DA_BOLSA * 0.4, 2);
+    // Mesma sorte nos dois mundos: a diferença é só o humor da bolsa, sobre o valor que os fundamentos deram no ano.
+    expect((ano(0.2) - ano(-0.2)) / ano(0)).toBeCloseTo(PESO_DA_BOLSA * 0.4, 2);
   });
 });
 
@@ -294,7 +293,8 @@ describe('a mesa de quem manda', () => {
     const afundando = empresaDe(e, 'empresa2')!;
     const nome = afundando.nome;
     const fundacao = afundando.q['fundada']!.causa;
-    afundando.n['valor'] = 100;
+    // Sem estrutura (vendida para fechar as contas), sem caixa e sem cliente, ela afunda.
+    Object.assign(afundando.n, { valor: 100, capacidade: 10, caixa: 0, demanda: 10, obra: 0 });
     regraDaEmpresa(e, c, momentoTipico('normal'), []);
     expect(empresaDe(e)!.nome).toBe(nome);
     const quebra = e.agenda.find((a) => a.evento === 'empresa_quebrou');

@@ -310,6 +310,30 @@ export const IDADE_DE_CONTAR = 8;
 export const MAGOA_DA_VINGANCA = 40;
 /** Quem sabe conta mais a terceiros do que ao alvo: cada outra pessoa do círculo pesa isto; o alvo, 1. */
 export const PESO_DE_QUEM_NAO_E_O_ALVO = 2;
+/**
+ * O negócio (negocio.ts, bloco N): na fundação, a parte do capital que vira capacidade (o resto fica no caixa) e a
+ * demanda que a clientela já tem, como fração da capacidade; o imposto sobre o lucro; o quanto a qualidade e a marca
+ * puxam o crescimento da demanda; a maior fatia do mercado do setor que uma empresa alcança; a parte da demanda que um
+ * país de fora compra; a relação mínima para abrir mercado lá; o que vale o ativo vendido (fração do custo); e a
+ * população que trabalha numa capital e numa cidade do interior (os empregos da empresa mexem no desemprego dela).
+ */
+export const CAPACIDADE_DA_FUNDACAO = 0.7;
+export const DEMANDA_DA_FUNDACAO = 0.7;
+export const IMPOSTO_DA_EMPRESA = 0.25;
+export const ATRATIVIDADE_NO_CRESCIMENTO = 0.07;
+export const FATIA_MAXIMA_DO_MERCADO = 0.3;
+export const FATIA_DA_EXPORTACAO = 0.35;
+export const RELACAO_PARA_EXPORTAR = 40;
+export const VALOR_DE_VENDA_DOS_ATIVOS = 0.5;
+export const PEA_DA_CAPITAL = 1_500_000;
+export const PEA_DA_CIDADE = 300_000;
+/** O dólar do ano no caixa da empresa: a fração da variação do câmbio que muda o que quem exporta recebe em reais e o que quem importa paga (vezes o quanto o setor sente o dólar). */
+export const DOLAR_NO_CAIXA = 0.5;
+/** O ano de cada negócio: a sorte na demanda, como fração da volatilidade de antes (o valor agora segue os fundamentos). */
+export const SORTE_DO_NEGOCIO = 0.5;
+/** A mídia própria (bens.ts): a publicidade que ela vende por ano (fração do valor, num ano normal) e a influência que dá a quem é dono, por veículo. */
+export const PUBLICIDADE_DA_MIDIA = 0.11;
+export const INFLUENCIA_DA_MIDIA = 1.5;
 /** O segredo que a pessoa sabe pesa contra o pedido: a gravidade do tema dividida por isto (o caso, 12, tira 0,5). */
 export const PESO_DO_SEGREDO = 24;
 /** A vontade realizada: o afeto que ela traz e a mágoa que ela leva. */

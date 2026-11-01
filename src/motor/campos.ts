@@ -302,16 +302,43 @@ const EMPRESA: Record<string, DefCampo> = {
   setor: { tipo: 'texto', sistema: 'carreira' },
   /** Quanto a empresa vale inteira (a parte de quem joga é valor × participacao). */
   valor: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
-  /** Quanto o valor andou no último ano (negativo é prejuízo). */
+  /** O lucro do último ano, depois do imposto (negativo é prejuízo): vendas − custos − marketing − P&D − imposto (negocio.ts). */
   lucro: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  /** O dinheiro da empresa: entra o que ela vende, saem os custos, o imposto, as obras e os dividendos (nunca fica negativo no fim do ano). */
+  caixa: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  /** O que ela vendeu no último ano. */
+  receita: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  /** O imposto que ela pagou no último ano (vai para o Tesouro e baixa a dívida do país). */
+  impostos: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  /** O que o mercado quer comprar dela por ano, ao preço médio: anda com a tração, o ciclo, a qualidade e a marca. */
+  demanda: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** O que ela consegue entregar por ano, ao preço médio: só cresce com obra. */
+  capacidade: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** A capacidade em construção (fica pronta no ano seguinte). */
+  obra: { tipo: 'num', sistema: 'dinheiro', reais: true, limites: [0, Infinity] },
+  /** Quanto do que ela entrega o mercado quer (acima de 1, fila de pedido; abaixo, estrutura parada), no fim do último ano. */
+  ocupacao: { tipo: 'num', sistema: 'carreira', limites: [0, 10] },
+  /** O produto (0 a 100): anda com o P&D, a tecnologia do país e o salário. */
+  qualidade: { tipo: 'num', sistema: 'carreira', limites: [0, 100] },
+  /** O nome na praça (0 a 100): anda com o marketing, a qualidade, a fama de quem manda e a mídia própria. */
+  marca: { tipo: 'num', sistema: 'carreira', limites: [0, 100] },
+  /** As verbas, como fração das vendas: marketing e pesquisa e desenvolvimento. */
+  marketing: { tipo: 'num', sistema: 'dinheiro', limites: [0, 0.1] },
+  pd: { tipo: 'num', sistema: 'dinheiro', limites: [0, 0.1] },
+  /** O preço: popular, medio ou premium (negocio.ts › PRECOS). */
+  preco: { tipo: 'texto', sistema: 'dinheiro' },
+  /** O salário: piso, mercado ou acima (negocio.ts › SALARIOS). */
+  salario: { tipo: 'texto', sistema: 'carreira' },
+  /** O país de fora para onde ela vende ('' = só aqui). */
+  exporta: { tipo: 'texto', sistema: 'mundo' },
   /** O ritmo em que ela vem crescendo, em % ao ano: muda devagar, e tocar a empresa empurra para cima. */
   tracao: { tipo: 'num', sistema: 'carreira', limites: [-30, 80] },
   /** A parte de quem joga (1 = toda; sócios e investidores ficam com o resto). */
   participacao: { tipo: 'num', sistema: 'dinheiro', limites: [0, 1] },
-  /** Quanto do valor sai por ano para os donos (0 = reinveste tudo). */
-  retirada: { tipo: 'num', sistema: 'dinheiro', limites: [0, 0.2] },
-  /** Gente trabalhando lá (pelo tamanho), para o texto. */
-  funcionarios: { tipo: 'num', sistema: 'carreira', derivado: true },
+  /** Quanto do lucro do ano vai para os donos como dividendo (0 = reinveste tudo no caixa). */
+  retirada: { tipo: 'num', sistema: 'dinheiro', limites: [0, 1] },
+  /** Gente trabalhando lá: as vendas pela produtividade do setor (os empregos mexem no desemprego da cidade). */
+  funcionarios: { tipo: 'num', sistema: 'carreira', limites: [0, 3_000_000] },
   /**
    * Quanto ela depende de quem manda nela (0 = anda sozinha; 100 = tudo passa pela sua mesa): o talento de quem manda pesa
    * na tração nessa proporção, a morte de quem manda custa valor e quem compra desconta.
@@ -621,8 +648,6 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return investidoDe(en);
       case 'classe':
         return classeDoPatrimonio(ent === 'eu' ? patrimonioTotal(e) : patrimonioDe(en));
-      case 'funcionarios':
-        return funcionariosDe(en.n['valor'] ?? 0);
       case 'nome':
         return en.nome;
       case 'genero':

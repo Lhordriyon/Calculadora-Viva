@@ -1061,7 +1061,13 @@
       "risco": 1,
       "empresas": ["Empório {sobrenome}", "Casa {sobrenome}", "Mercadinho d{o|a} {nome}", "{sobrenome} Atacado"],
       "cambio": -0.4,
-      "protecao": -0.5
+      "protecao": -0.5,
+      "margem": 0.32,
+      "fixo": 0.14,
+      "giro": 0.5,
+      "multiplo": 9,
+      "produtividade": 250000,
+      "peso": 0.12
     },
     {
       "id": "servicos",
@@ -1070,7 +1076,13 @@
       "crescimento": 0.003,
       "tracao": 5,
       "risco": 1,
-      "empresas": ["{sobrenome} Serviços", "Lavanderia d{o|a} {nome}", "{sobrenome} & Associados", "Studio {nome}"]
+      "empresas": ["{sobrenome} Serviços", "Lavanderia d{o|a} {nome}", "{sobrenome} & Associados", "Studio {nome}"],
+      "margem": 0.45,
+      "fixo": 0.26,
+      "giro": 0.35,
+      "multiplo": 10,
+      "produtividade": 150000,
+      "peso": 0.16
     },
     {
       "id": "industria",
@@ -1087,7 +1099,13 @@
       ],
       "cambio": 0.4,
       "protecao": 1,
-      "pesquisa": 0.02
+      "pesquisa": 0.02,
+      "margem": 0.36,
+      "fixo": 0.17,
+      "giro": 1.1,
+      "multiplo": 9,
+      "produtividade": 450000,
+      "peso": 0.12
     },
     {
       "id": "construcao",
@@ -1102,7 +1120,13 @@
         "Reformas d{o|a} {nome}",
         "{sobrenome} Empreendimentos"
       ],
-      "cambio": -0.1
+      "cambio": -0.1,
+      "margem": 0.3,
+      "fixo": 0.14,
+      "giro": 0.7,
+      "multiplo": 7,
+      "produtividade": 200000,
+      "peso": 0.05
     },
     {
       "id": "agro",
@@ -1114,7 +1138,13 @@
       "empresas": ["Fazenda {sobrenome}", "Agropecuária {sobrenome}", "Grãos {sobrenome}", "Sítio d{o|a} {nome}"],
       "cambio": 0.8,
       "protecao": -0.5,
-      "pesquisa": 0.015
+      "pesquisa": 0.015,
+      "margem": 0.36,
+      "fixo": 0.15,
+      "giro": 1.6,
+      "multiplo": 8,
+      "produtividade": 600000,
+      "peso": 0.07
     },
     {
       "id": "tecnologia",
@@ -1126,7 +1156,13 @@
       "empresas": ["{sobrenome} Tech", "{nome}.app", "Nuvem {sobrenome}", "{sobrenome} Labs"],
       "cambio": -0.3,
       "protecao": -0.5,
-      "pesquisa": 0.04
+      "pesquisa": 0.04,
+      "margem": 0.68,
+      "fixo": 0.38,
+      "giro": 0.45,
+      "multiplo": 16,
+      "produtividade": 700000,
+      "peso": 0.05
     },
     {
       "id": "saude",
@@ -1138,7 +1174,13 @@
       "empresas": ["Clínica {sobrenome}", "Farmácia {sobrenome}", "Instituto {sobrenome}", "Laboratório {sobrenome}"],
       "cambio": -0.3,
       "protecao": -0.2,
-      "pesquisa": 0.02
+      "pesquisa": 0.02,
+      "margem": 0.46,
+      "fixo": 0.25,
+      "giro": 0.9,
+      "multiplo": 13,
+      "produtividade": 300000,
+      "peso": 0.08
     },
     {
       "id": "educacao",
@@ -1152,7 +1194,13 @@
         "Escola d{o|a} {nome}",
         "Cursinho {sobrenome}",
         "Instituto de Idiomas {sobrenome}"
-      ]
+      ],
+      "margem": 0.5,
+      "fixo": 0.3,
+      "giro": 0.8,
+      "multiplo": 11,
+      "produtividade": 180000,
+      "peso": 0.05
     },
     { "id": "publico", "nome": "serviço público", "ciclo": 0, "crescimento": 0.008, "estavel": true },
     {
@@ -1168,7 +1216,13 @@
         "Entregas d{o|a} {nome}",
         "Expresso {sobrenome}"
       ],
-      "cambio": -0.2
+      "cambio": -0.2,
+      "margem": 0.32,
+      "fixo": 0.15,
+      "giro": 1.2,
+      "multiplo": 8,
+      "produtividade": 300000,
+      "peso": 0.05
     },
     {
       "id": "financas",
@@ -1178,7 +1232,13 @@
       "tracao": 7,
       "risco": 1.1,
       "empresas": ["{sobrenome} Investimentos", "{sobrenome} Capital", "Banco {sobrenome}", "{sobrenome} Seguros"],
-      "cambio": 0.1
+      "cambio": 0.1,
+      "margem": 0.58,
+      "fixo": 0.3,
+      "giro": 0.4,
+      "multiplo": 11,
+      "produtividade": 900000,
+      "peso": 0.08
     },
     {
       "id": "cultura",
@@ -1187,7 +1247,13 @@
       "crescimento": 0.01,
       "tracao": 6,
       "risco": 1.3,
-      "empresas": ["Produtora {sobrenome}", "{sobrenome} Filmes", "Estúdio d{o|a} {nome}", "{sobrenome} Eventos"]
+      "empresas": ["Produtora {sobrenome}", "{sobrenome} Filmes", "Estúdio d{o|a} {nome}", "{sobrenome} Eventos"],
+      "margem": 0.46,
+      "fixo": 0.27,
+      "giro": 0.5,
+      "multiplo": 12,
+      "produtividade": 200000,
+      "peso": 0.02
     }
   ],
   "estrangeiros": [

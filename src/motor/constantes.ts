@@ -160,4 +160,5 @@ export const PADROES = ['simples', 'confortavel', 'luxo'] as const;
 export type Padrao = (typeof PADROES)[number];
 export const PADRAO_PADRAO: Padrao = 'confortavel';
 /** Quanto do valor da empresa vira dinheiro na conta de quem joga, por ano (reinvestir tudo, tirar um pouco, tirar bastante). */
-export const RETIRADAS = [0, 0.03, 0.08] as const;
+/** Quanto do lucro do ano vira dividendo para os donos (negocio.ts): reinvestir tudo, um terço, mais da metade, quase tudo. */
+export const RETIRADAS = [0, 0.3, 0.6, 0.9] as const;

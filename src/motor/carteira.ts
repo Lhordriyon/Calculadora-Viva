@@ -17,7 +17,7 @@ import { acertarCaixaDeQuemJoga, anotarCaixa, caixaDe, distribuir, padraoDe, res
 import { ehOperacaoDeBem, motivoParaNaoOperarBem, operarBem, type OperacaoBem } from './bens.ts';
 import { ehOperacaoDeDivida, motivoParaNaoOperarDivida, operarDivida, type OperacaoDivida } from './dividas.ts';
 import { ehOperacaoDeCarreira, motivoParaNaoOperarCarreira, operarCarreira, type OperacaoCarreira } from './carreira.ts';
-import { ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
+import { aEmpresa, empresaDe, ehOperacaoDeEmpresa, motivoParaNaoOperarEmpresa, operarEmpresa, type OperacaoEmpresa } from './empresa.ts';
 import { ehOperacaoDeJogada, jogar, motivoParaNaoOperarJogada, type OperacaoJogada } from './fortuna.ts';
 import { ehOperacaoDePoder, motivoParaNaoOperarPoder, operarPoder, type OperacaoPoder } from './poder.ts';
 import { ehOperacaoDePais, juroReal, motivoParaNaoOperarPais, operarPais, type OperacaoPais } from './pais.ts';
@@ -27,6 +27,7 @@ import { ehOperacaoDeTesouro, motivoParaNaoOperarTesouro, operarTesouro, type Op
 import { ehOperacaoDeCoroa, motivoParaNaoOperarCoroa, operarCoroa, type OperacaoCoroa } from './coroa.ts';
 import { ehOperacaoDePromissoria, motivoParaNaoOperarPromissoria, operarPromissoria, type OperacaoPromissoria } from './promissorias.ts';
 import { ehOperacaoDeProjeto, motivoParaNaoOperarProjeto, operarProjeto, type OperacaoProjeto } from './projetos.ts';
+import { ehOperacaoDeNegocio, motivoParaNaoOperarNegocio, operarNegocio, type OperacaoNegocio } from './negocio.ts';
 import { ehOperacaoDeDefesa, motivoParaNaoOperarDefesa, operarDefesa, REF_DA_ENCOMENDA, REF_DA_PAZ, type OperacaoDefesa } from './guerra.ts';
 import { anotar, definirTexto, lancar, novaEntrada, somar } from './livro.ts';
 import { CORTE_DE_PADRAO_FELICIDADE, JURO_REAL_NEUTRO } from './regras.ts';
@@ -81,8 +82,15 @@ export function realocar(e: EstadoVida, reg: Mudanca[], de: 'dinheiro' | Ativo, 
 
 // ---------------------------------------------------------------- operações do jogador
 
+/** O nome da empresa com o artigo, para a frase da decisão ("A Hamburgueria Silva"). */
+function nomeDaEmpresaDe(e: EstadoVida, id?: string): string {
+  const emp = empresaDe(e, id);
+  return emp ? aEmpresa(emp, 'A') : 'A empresa';
+}
+
 export type Operacao =
   | OperacaoEmpresa
+  | OperacaoNegocio
   /** Da conta para os investimentos: numa classe, ou pelo perfil. */
   | { tipo: 'aplicar'; valor: number; ativo?: Ativo }
   /** Dos investimentos para a conta: de uma classe, ou na ordem de liquidez. */
@@ -121,6 +129,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (!e.vivo) return 'esta vida já terminou';
   if (e.pendente) return 'responda o cartão do ano primeiro';
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
+  if (ehOperacaoDeNegocio(op)) return motivoParaNaoOperarNegocio(e, c, op);
   if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
   if (ehOperacaoDeTesouro(op)) return motivoParaNaoOperarTesouro(e, op);
   if (ehOperacaoDeDivida(op)) return motivoParaNaoOperarDivida(e, op);
@@ -172,6 +181,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
     return lancar(e, entrada, reg);
   };
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
+  if (ehOperacaoDeNegocio(op)) return lancarCom('negocio', () => operarNegocio(e, c, op, reg, nomeDaEmpresaDe(e, op.empresa)));
   if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));
   if (ehOperacaoDeTesouro(op)) return lancarCom('tesouro', (id) => operarTesouro(e, op, reg, id));
   if (ehOperacaoDeDivida(op)) return lancarCom('divida', (id) => operarDivida(e, c, op, reg, id));

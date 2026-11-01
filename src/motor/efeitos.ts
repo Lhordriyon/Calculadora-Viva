@@ -11,6 +11,7 @@ import type { Conteudo } from './conteudo.ts';
 import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
 import { movimentar } from './economia.ts';
 import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
+import { decidirNoNegocio } from './negocio.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
 import { criarPersonagem, morrerPersonagem, promover } from './pessoas.ts';
@@ -75,6 +76,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   // A empresa nasce antes dos caminhos: "empresa.tracao" no mesmo bloco já vale para ela.
   if (ef.abrirEmpresa) ctx.valores['capital'] = abrirPorEfeito(e, c, reg, ef.abrirEmpresa, ator, origem);
   if (ef.empresaFator !== undefined) multiplicarEmpresa(e, reg, ef.empresaFator);
+  if (ef.negocio) decidirNoNegocio(e, c, reg, ef.negocio);
   if (ef.rodada) ctx.valores['rodada'] = rodadaDeInvestimento(e, reg, ef.rodada.parte);
 
   // Campos por caminho ("mae.vinculo": 10, "ator.ocupacao": {"definir": "..."}).

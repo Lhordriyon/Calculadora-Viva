@@ -56,15 +56,14 @@ import {
   PERDA_SEM_DONO,
   PENALIDADE_PORTE,
   PESO_DA_BOLSA,
-  PIOR_ANO_EMPRESA,
   PISO_EMPRESA,
   PORTE_GRANDE,
   PREMIO_DA_BOLSA,
   REVERSAO_TRACAO,
+  SORTE_DO_NEGOCIO,
   SINERGIA_DA_FUSAO,
   TALENTO_MINIMO,
   TALENTO_TRACAO,
-  TETO_EMPRESA,
   TRACAO_DA_EQUIPE,
   TRACAO_DA_FUSAO,
   fracaoDeUmaSubsidiaria,
@@ -74,6 +73,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { normal, sortear } from './rng.ts';
+import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, ocupacaoDe, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -183,6 +183,8 @@ interface Fundacao {
   valor: number;
   participacao?: number | undefined;
   tracao?: number | undefined;
+  /** De onde veio o capital (quem joga, outra pessoa, o mercado): a contraparte do caixa que nasce. */
+  de?: string | undefined;
 }
 
 /** A empresa nasce no lugar `id` (o valor já veio de algum lugar): tudo vai para o livro, e a fundação vira a causa do que ela causar. */
@@ -199,6 +201,8 @@ function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, origem:
   // Nasce dependendo de quem abriu; com sócios, eles dividem o comando.
   somar(e, reg, id, 'dependencia', DEPENDENCIA_INICIAL * (f.participacao ?? 1));
   ganhar(e, reg, id, 'fundada', origem);
+  // O capital vira negócio: uma parte compra a estrutura (a loja, a máquina), o resto fica no caixa.
+  garantirFundamentos(e, c, reg, emp, f.valor, f.de ?? 'mercado');
   return emp;
 }
 
@@ -207,7 +211,11 @@ export function abrirPorEfeito(e: EstadoVida, c: Conteudo, reg: Mudanca[], a: Ab
   if (empresaDe(e)) return 0;
   const setor = a.setor ?? String(lerCaminho(e, a.copiarSetor ?? '', ator) ?? '');
   let valor = a.valor ?? 0;
-  if (a.capital !== undefined) valor = tirarDeQuemJoga(e, reg, a.capital, PRINCIPAL);
+  let origemDoCapital = 'mercado';
+  if (a.capital !== undefined) {
+    valor = tirarDeQuemJoga(e, reg, a.capital, PRINCIPAL);
+    origemDoCapital = 'eu';
+  }
   if (a.fracao !== undefined) {
     const de = entidadeDe(a.de ?? 'eu', ator);
     if (de === 'eu') {
@@ -216,15 +224,25 @@ export function abrirPorEfeito(e: EstadoVida, c: Conteudo, reg: Mudanca[], a: Ab
       valor = Math.max(0, e.entidades[de]?.n['dinheiro'] ?? 0) * a.fracao;
       somar(e, reg, de, 'dinheiro', -valor, undefined, PRINCIPAL);
     }
+    origemDoCapital = de;
   }
   const setorValido = c.setores.has(setor) ? setor : 'comercio';
-  return fundar(e, c, reg, { setor: setorValido, valor, participacao: a.participacao, tracao: a.tracao }, origem, PRINCIPAL) ? valor : 0;
+  return fundar(e, c, reg, { setor: setorValido, valor, participacao: a.participacao, tracao: a.tracao, de: origemDoCapital }, origem, PRINCIPAL) ? valor : 0;
 }
 
-/** O valor da empresa multiplicado (o contrato grande, o escândalo). */
+/** O contrato grande, o escândalo, a crise do setor: a demanda (os clientes) e o valor andam juntos. */
 export function multiplicarEmpresa(e: EstadoVida, reg: Mudanca[], fator: number, id = PRINCIPAL): void {
   const emp = empresaDe(e, id);
-  if (emp) somar(e, reg, id, 'valor', (emp.n['valor'] ?? 0) * (fator - 1));
+  if (!emp) return;
+  somar(e, reg, id, 'valor', (emp.n['valor'] ?? 0) * (fator - 1));
+  if (emp.n['demanda'] !== undefined) somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * (fator - 1), 'negocio');
+}
+
+/** O negócio cresce `fracao` de uma vez (a concorrente comprada traz a estrutura e os clientes dela). */
+function crescerNegocio(e: EstadoVida, reg: Mudanca[], id: string, fracao: number): void {
+  const emp = empresaDe(e, id);
+  if (!emp || !(fracao > 0)) return;
+  for (const campo of ['capacidade', 'demanda']) if (emp.n[campo] !== undefined) somar(e, reg, id, campo, (emp.n[campo] ?? 0) * fracao, 'negocio');
 }
 
 /** Investidores compram `parte` da empresa pelo valor de agora: o dinheiro deles entra nela, e a parte de quem joga encolhe. Devolve quanto entrou. */
@@ -234,6 +252,8 @@ export function rodadaDeInvestimento(e: EstadoVida, reg: Mudanca[], parte: numbe
   const valor = emp.n['valor'] ?? 0;
   const entrou = valor * (parte / (1 - parte));
   somar(e, reg, id, 'valor', entrou);
+  // O dinheiro dos investidores entra no caixa: é dele que sai a obra que a rodada promete.
+  somar(e, reg, id, 'caixa', entrou, 'rodada', 'mercado');
   somar(e, reg, id, 'participacao', -(emp.n['participacao'] ?? 1) * parte);
   return entrou;
 }
@@ -243,9 +263,10 @@ export function rodadaDeInvestimento(e: EstadoVida, reg: Mudanca[], parte: numbe
 /** Leva a empresa do lugar `de` para o lugar `para` (vazio): o livro tira tudo de um e põe no outro. */
 function mover(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
   const en = e.entidades[de]!;
+  // Mudar de lugar no grupo não é dinheiro trocando de mão: as mudanças vão marcadas `papel` (o caixa vai junto).
   for (const [campo, v] of Object.entries(en.n)) {
-    anotar(reg, `${de}.${campo}`, -v);
-    anotar(reg, `${para}.${campo}`, v);
+    anotar(reg, `${de}.${campo}`, -v, 'papel');
+    anotar(reg, `${para}.${campo}`, v, 'papel');
   }
   for (const [campo, v] of Object.entries(en.t)) reg.push({ c: `${para}.${campo}`, t: v });
   for (const q of Object.keys(en.q)) reg.push({ c: `${de}.${q}`, q: -1 }, { c: `${para}.${q}`, q: 1 });
@@ -259,8 +280,8 @@ function trocar(e: EstadoVida, reg: Mudanca[], a: string, b: string): void {
   const eb = e.entidades[b]!;
   for (const campo of new Set([...Object.keys(ea.n), ...Object.keys(eb.n)])) {
     const d = (eb.n[campo] ?? 0) - (ea.n[campo] ?? 0);
-    anotar(reg, `${a}.${campo}`, d);
-    anotar(reg, `${b}.${campo}`, -d);
+    anotar(reg, `${a}.${campo}`, d, 'papel');
+    anotar(reg, `${b}.${campo}`, -d, 'papel');
   }
   for (const [campo, v] of Object.entries(eb.t)) if (ea.t[campo] !== v) reg.push({ c: `${a}.${campo}`, t: v });
   for (const [campo, v] of Object.entries(ea.t)) if (eb.t[campo] !== v) reg.push({ c: `${b}.${campo}`, t: v });
@@ -303,7 +324,10 @@ function encerrar(e: EstadoVida, reg: Mudanca[], id = PRINCIPAL, sustento?: { pa
   const emp = e.entidades[id];
   if (!emp) return;
   const sustentava = Boolean(emp.q['sustenta']);
-  for (const [campo, v] of Object.entries(emp.n)) if (v !== 0) reg.push({ c: `${id}.${campo}`, d: -v });
+  // O caixa que sobrou paga quem a empresa devia (a rescisão, o fornecedor) ou vai junto com quem a comprou.
+  const caixa = emp.n['caixa'] ?? 0;
+  if (caixa !== 0) reg.push({ c: `${id}.caixa`, d: -caixa, r: 'encerramento', p: 'mercado' });
+  for (const [campo, v] of Object.entries(emp.n)) if (v !== 0 && campo !== 'caixa') reg.push({ c: `${id}.${campo}`, d: -v });
   for (const q of Object.keys(emp.q)) reg.push({ c: `${id}.${q}`, q: -1 });
   emp.n = {};
   emp.t = {};
@@ -345,8 +369,11 @@ export function venderSubsidiarias(e: EstadoVida, reg: Mudanca[], premio: number
   const subs = emp?.n['subsidiarias'] ?? 0;
   if (!emp || subs < 1) return { preco: 0, vendidas: 0 };
   const vendidas = Math.min(subs, quantas ?? subsidiariasPorVenda(subs));
-  const fatia = Math.max(0, emp.n['valor'] ?? 0) * vendidas * fracaoDeUmaSubsidiaria(subs);
+  const fracao = vendidas * fracaoDeUmaSubsidiaria(subs);
+  const fatia = Math.max(0, emp.n['valor'] ?? 0) * fracao;
   somar(e, reg, id, 'valor', -fatia);
+  // A subsidiária vendida leva a estrutura e os clientes dela.
+  for (const campo of ['capacidade', 'demanda']) if (emp.n[campo] !== undefined) somar(e, reg, id, campo, -(emp.n[campo] ?? 0) * Math.min(1, fracao), 'negocio');
   somar(e, reg, id, 'subsidiarias', -vendidas);
   const preco = fatia * (emp.n['participacao'] ?? 1) * premio;
   if (preco > 0) movimentar(e, reg, { dinheiro: preco, contraparte: 'mercado' });
@@ -377,28 +404,53 @@ function humorDaBolsa(c: Conteudo, fase: Momento, mercado: Partial<Record<Ativo,
   return acoes && rendeu !== undefined ? rendeu - acoes.retorno[fase.id] : 0;
 }
 
-/** O ano de uma empresa: cresce (ou encolhe) pela tração, pela fase e por sorte; paga a retirada; e a tração volta devagar para a do setor. */
-function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, reg: Mudanca[], carga: number, humor: number): void {
+/**
+ * O ano de uma empresa (negocio.ts): o negócio anda (a demanda, as vendas, os custos, o imposto, o caixa, os
+ * dividendos, a qualidade, a marca e o valor pelos fundamentos); na bolsa, o valor anda também com o humor do
+ * mercado; e a tração (o momento do negócio, que a demanda segue) volta devagar para a do setor.
+ */
+function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, reg: Mudanca[], carga: number, humor: number): AnoDoNegocio {
   const id = emp.id;
   const n = emp.n;
   const setor = c.setores.get(emp.t['setor'] ?? '');
+  garantirFundamentos(e, c, reg, emp);
   const valor = n['valor'] ?? 0;
   const tracao = n['tracao'] ?? 0;
-  const sorte = normal(e.rng, 0, volatilidadeDaEmpresa(valor) * (setor?.risco ?? 1)) + (emp.q['na_bolsa'] ? PESO_DA_BOLSA * humor : 0);
+  const sorte = normal(e.rng, 0, volatilidadeDaEmpresa(valor) * (setor?.risco ?? 1) * SORTE_DO_NEGOCIO);
   // O mundo lá fora: o dólar (quem exporta ganha, quem importa perde), a tarifa na fronteira e a sanção ou o acordo de quem compra do setor.
   const fora = exteriorNaEmpresa(e, c, emp.t['setor'] ?? '', fase.cambio ?? 0);
-  const bruto = Math.max(PIOR_ANO_EMPRESA, tracao / 100 + fase.empresa * (setor?.ciclo ?? 1) + sorte + fora);
-  // O mercado tem tamanho: o ganho encolhe perto do teto e some acima dele; a perda vale inteira.
-  const crescimento = bruto > 0 ? bruto * Math.max(0, 1 - valor / TETO_EMPRESA) : bruto;
-  somar(e, reg, id, 'valor', valor * crescimento, 'empresa');
-  definirNumero(e, reg, id, 'lucro', valor * crescimento, 'empresa');
-  const retirada = (n['retirada'] ?? 0) * (n['valor'] ?? 0);
-  if (retirada > 0) {
-    somar(e, reg, id, 'valor', -retirada, 'empresa');
-    movimentar(e, reg, { dinheiro: retirada * (n['participacao'] ?? 1), contraparte: id }, 'eu', 'empresa');
-  }
+  const ano = anoDoNegocio(e, c, emp, fase, reg, fora, sorte);
+  if (emp.q['na_bolsa'] && humor !== 0) somar(e, reg, id, 'valor', (n['valor'] ?? 0) * PESO_DA_BOLSA * humor, 'bolsa');
+  definirNumero(e, reg, id, 'ocupacao', Math.min(10, ocupacaoDe(e, emp)), 'negocio');
+  definirNumero(e, reg, id, 'funcionarios', Math.min(3_000_000, empregosDe(c, emp)), 'negocio');
   const alvo = alvoDaTracao(e, c, emp, carga);
   somar(e, reg, id, 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
+  return ano;
+}
+
+/**
+ * A sanção que um país de fora impôs fecha o mercado de quem exportava para lá: a notícia vem no ano da sanção (ou no
+ * seguinte), com a sanção de causa (a decisão que levou até ela está no porquê dela).
+ */
+function exportacaoBarrada(e: EstadoVida, emp: Entidade): void {
+  const para = emp.t['exporta'];
+  const pais = para ? e.entidades[para] : undefined;
+  const sancao = pais?.q['sancao'];
+  if (!pais || !sancao || sancao.ano < e.ano - 1 || e.historico.some((h) => h.ref === 'regra:exportacao_barrada' && h.ano >= sancao.ano && h.instancia === `regra:exportacao_barrada#${emp.id}`)) return;
+  const texto = `A sanção ${pais.genero === 'f' ? 'da' : 'do'} ${pais.nome} fechou o mercado ${aEmpresa(emp, 'da')}: os containers voltaram para o pátio, e a demanda de lá sumiu da planilha.`;
+  lancar(
+    e,
+    novaEntrada(e, {
+      tipo: 'mundo',
+      causa: 'regra',
+      ref: 'regra:exportacao_barrada',
+      instancia: `regra:exportacao_barrada#${emp.id}`,
+      texto,
+      resumo: `a sanção fechou o mercado lá fora ${aEmpresa(emp, 'da')}`,
+      ...(sancao.causa !== null ? { causas: [sancao.causa] } : {}),
+    }),
+    [],
+  );
 }
 
 /**
@@ -435,9 +487,28 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   if (empresas.length === 0) return;
   const carga = cargaDaMesa(e);
   const humor = humorDaBolsa(c, fase, mercado);
-  for (const emp of empresas) anoDaEmpresa(e, c, emp, fase, reg, carga, humor);
+  let antes = 0;
+  let depois = 0;
+  let impostos = 0;
+  /** As que fecharam o segundo ano seguido no prejuízo sem caixa para pagar as contas (venderam estrutura): a falência. */
+  const insolventes = new Set<string>();
+  for (const emp of empresas) {
+    const noVermelho = emp.n['capacidade'] !== undefined && (emp.n['lucro'] ?? 0) < 0;
+    const ano = anoDaEmpresa(e, c, emp, fase, reg, carga, humor);
+    if (noVermelho && ano.cortou > 0) insolventes.add(emp.id);
+    antes += ano.empregosAntes;
+    depois += ano.empregosDepois;
+    impostos += ano.imposto;
+    exportacaoBarrada(e, emp);
+  }
+  // Os empregos que as empresas abriram e fecharam mexem no desemprego da cidade (o trabalho de quem joga e o da família leem).
+  empregosNaCidade(e, reg, antes, depois);
+  // O imposto que elas pagaram entra no Tesouro e baixa a dívida pública (em pontos do PIB).
+  const pib = e.entidades['pais']?.n['pib'] ?? 0;
+  if (impostos > 0 && pib > 0) somar(e, reg, 'pais', 'divida', -(impostos / pib) * 100, 'impostos_das_empresas');
   if (!c.porId.has(QUEBRA) || e.agenda.some((a) => a.evento === QUEBRA)) return;
-  const afundando = empresasDe(e).find((x) => (x.n['valor'] ?? 0) < PISO_EMPRESA);
+  // Afunda a empresa que não pagou as contas dois anos seguidos, a que ficou sem estrutura ou a que está abaixo do piso de valor.
+  const afundando = empresasDe(e).find((x) => insolventes.has(x.id) || (x.n['valor'] ?? 0) < PISO_EMPRESA || (x.n['capacidade'] !== undefined && (x.n['capacidade'] ?? 0) < PISO_EMPRESA));
   if (!afundando) return;
   if (afundando.id !== PRINCIPAL) trocar(e, reg, PRINCIPAL, afundando.id);
   e.agenda.push({ evento: QUEBRA, ano: e.ano, origem: e.entidades[PRINCIPAL]!.q['fundada']?.causa ?? null });
@@ -468,7 +539,7 @@ export type OperacaoEmpresa =
   | { tipo: 'abrir'; setor: string; valor: number }
   /** Põe mais dinheiro na empresa. */
   | { tipo: 'aportar'; valor: number; empresa?: string }
-  /** Quanto do valor sai por ano para os donos (RETIRADAS). */
+  /** Quanto do lucro do ano sai para os donos como dividendo (RETIRADAS). */
   | { tipo: 'retirada'; fracao: number; empresa?: string }
   /** Vende a parte de quem joga, pelo preço da fase do país. */
   | { tipo: 'vender'; empresa?: string }
@@ -570,16 +641,19 @@ export function custoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
 }
 
 /** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */
-function porNaEmpresa(e: EstadoVida, reg: Mudanca[], id: string, valor: number, ganho: number): void {
+/** O dinheiro de quem joga entra na empresa (no caixa, ou na concorrente que ela comprou): o valor e a parte dele crescem. */
+function porNaEmpresa(e: EstadoVida, reg: Mudanca[], id: string, valor: number, ganho: number, noCaixa: boolean): void {
   const emp = empresaDe(e, id)!;
   const antes = emp.n['valor'] ?? 0;
   const parte = emp.n['participacao'] ?? 1;
   somar(e, reg, id, 'valor', ganho);
+  if (noCaixa) somar(e, reg, id, 'caixa', valor, 'aporte', 'eu');
+  else crescerNegocio(e, reg, id, antes > 0 ? ganho / antes : 0);
   if (parte < 1) somar(e, reg, id, 'participacao', (parte * antes + valor) / (antes + ganho) - parte);
 }
 
 const RETIRADA_TEXTO = (fracao: number): string =>
-  fracao <= 0 ? 'reinvestir todo o lucro' : fracao < 0.05 ? 'tirar um pouco do valor por ano' : 'tirar bastante do valor por ano';
+  fracao <= 0 ? 'reinvestir todo o lucro' : `tirar ${Math.round(fracao * 100)}% do lucro de dividendo`;
 
 const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sexta'];
 
@@ -590,7 +664,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   if (op.tipo === 'abrir') {
     const lugar = lugarLivre(e)!;
     const valor = tirarDeQuemJoga(e, reg, op.valor, lugar);
-    const emp = fundar(e, c, reg, { setor: op.setor, valor }, origem, lugar)!;
+    const emp = fundar(e, c, reg, { setor: op.setor, valor, de: 'eu' }, origem, lugar)!;
     const ramo = c.setores.get(op.setor)?.nome ?? op.setor;
     const quantas = empresasDe(e).length;
     const qual = quantas > 1 ? `, a sua ${ORDINAL[quantas] ?? 'nova'} empresa` : '';
@@ -601,14 +675,14 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   if (op.tipo === 'aportar') {
     // Dinheiro novo de quem joga aumenta a parte dele (os outros sócios não puseram nada).
     const valor = tirarDeQuemJoga(e, reg, op.valor, id);
-    porNaEmpresa(e, reg, id, valor, valor);
+    porNaEmpresa(e, reg, id, valor, valor, true);
     return { texto: `Pôs ${formatarDinheiro(valor)} ${aEmpresa(emp, 'na')}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
   }
   if (op.tipo === 'adquirir') {
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
     const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e, id), 'mercado');
     // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
-    porNaEmpresa(e, reg, id, custo, custo * 0.95);
+    porNaEmpresa(e, reg, id, custo, custo * 0.95, false);
     somar(e, reg, id, 'tracao', 2);
     // Ela vira subsidiária, com as subsidiárias que já tinha.
     const delas = subsidiariasDoRival(custo);
@@ -677,6 +751,16 @@ function fundir(e: EstadoVida, c: Conteudo, reg: Mudanca[], alvo: string, absorv
   definirNumero(e, reg, alvo, 'dependencia', media('dependencia', 0));
   definirNumero(e, reg, alvo, 'tracao', media('tracao', 0) + (mesmoRamo ? TRACAO_DA_FUSAO : 0));
   definirNumero(e, reg, alvo, 'valor', soma * (1 + sinergia));
+  // O negócio da absorvida vem junto: o caixa (dinheiro trocando de mão dentro do grupo), a estrutura, a obra e os
+  // clientes (a sinergia mexe na demanda); a qualidade e a marca viram a média pelo valor.
+  const caixaDela = b.n['caixa'] ?? 0;
+  if (caixaDela !== 0) {
+    somar(e, reg, absorvida, 'caixa', -caixaDela, 'fusao', alvo);
+    somar(e, reg, alvo, 'caixa', caixaDela, 'fusao', absorvida);
+  }
+  for (const campo of ['capacidade', 'obra']) if ((b.n[campo] ?? 0) > 0) somar(e, reg, alvo, campo, b.n[campo]!, 'negocio');
+  if ((b.n['demanda'] ?? 0) > 0) somar(e, reg, alvo, 'demanda', b.n['demanda']! * (1 + sinergia), 'negocio');
+  for (const campo of ['qualidade', 'marca']) if (a.n[campo] !== undefined || b.n[campo] !== undefined) definirNumero(e, reg, alvo, campo, media(campo, 50), 'negocio');
   somar(e, reg, alvo, 'subsidiarias', 1 + (b.n['subsidiarias'] ?? 0));
   // Uma bolsa basta: se a absorvida estava listada, a empresa que fica passa a estar.
   if (b.q['na_bolsa']) ganhar(e, reg, alvo, 'na_bolsa', origem);

@@ -232,6 +232,23 @@ const EFEITOS_FIXOS = {
   abrirEmpresa: AberturaEmpresa.optional(),
   /** Multiplica o valor da empresa (o contrato grande, o escândalo, a crise do setor). */
   empresaFator: z.number().min(0).max(5).optional(),
+  /**
+   * Uma decisão do negócio da empresa que quem joga cuida de perto (negocio.ts): o preço, o salário, as verbas de
+   * marketing e de P&D (fração das vendas), a obra (`expandir`, fração da capacidade; o caixa paga o que der), o corte
+   * (`cortar`, fração da capacidade, vendida pela metade) e a demanda que ganha ou perde (`demanda`, fração: o contrato,
+   * o boicote).
+   */
+  negocio: z
+    .strictObject({
+      preco: z.enum(['popular', 'medio', 'premium']).optional(),
+      salario: z.enum(['piso', 'mercado', 'acima']).optional(),
+      marketing: z.number().min(0).max(0.1).optional(),
+      pd: z.number().min(0).max(0.1).optional(),
+      expandir: z.number().gt(0).max(1).optional(),
+      cortar: z.number().gt(0).max(0.9).optional(),
+      demanda: z.number().min(-0.9).max(2).optional(),
+    })
+    .optional(),
   /** Investidores compram esta parte da empresa pelo valor de agora: o dinheiro deles entra na empresa e a parte de quem joga encolhe. */
   rodada: z.strictObject({ parte: z.number().gt(0).lt(1) }).optional(),
   /** Vende esta fração da parte de quem joga (1 = tudo), pelo valor de agora vezes o prêmio (1,5 = 50% acima do que vale). */
@@ -487,6 +504,17 @@ export const DefSetor = z.strictObject({
   protecao: z.number().min(-1).max(1).optional(),
   /** Pontos de tração por ponto de tecnologia do país acima de 50 (pesquisa.ts): a tecnologia puxa mais, a saúde e o agro menos. */
   pesquisa: z.number().min(0).max(0.2).optional(),
+  /**
+   * O negócio do setor (negocio.ts): o que sobra de cada venda antes da estrutura (`margem`), a estrutura por ano como
+   * fração da capacidade (`fixo`), o custo de cada real de capacidade (`giro`), quantas vezes o lucro o mercado paga
+   * (`multiplo`), vendas por pessoa por ano (`produtividade`) e a parte do PIB que o setor vende (`peso`).
+   */
+  margem: z.number().min(0.05).max(0.9).optional(),
+  fixo: z.number().min(0).max(0.6).optional(),
+  giro: z.number().min(0.1).max(3).optional(),
+  multiplo: z.number().min(2).max(40).optional(),
+  produtividade: z.number().min(10_000).max(5_000_000).optional(),
+  peso: z.number().min(0.005).max(0.3).optional(),
 });
 export type DefSetor = z.infer<typeof DefSetor>;
 

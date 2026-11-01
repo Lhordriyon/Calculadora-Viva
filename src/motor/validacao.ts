@@ -128,7 +128,17 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
       for (const c of concretos(`${a.de}.dinheiro`, atores)) out.push({ caminho: c, sistema: 'dinheiro' });
     }
   }
-  if (ef.empresaFator !== undefined) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' });
+  if (ef.empresaFator !== undefined) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.demanda', sistema: 'dinheiro' });
+  if (ef.negocio) {
+    const n = ef.negocio;
+    if (n.preco) out.push({ caminho: 'empresa.preco', sistema: 'dinheiro' });
+    if (n.salario) out.push({ caminho: 'empresa.salario', sistema: 'carreira' });
+    if (n.marketing !== undefined) out.push({ caminho: 'empresa.marketing', sistema: 'dinheiro' });
+    if (n.pd !== undefined) out.push({ caminho: 'empresa.pd', sistema: 'dinheiro' });
+    if (n.demanda !== undefined) out.push({ caminho: 'empresa.demanda', sistema: 'dinheiro' });
+    if (n.expandir !== undefined) out.push({ caminho: 'empresa.obra', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' });
+    if (n.cortar !== undefined) out.push({ caminho: 'empresa.capacidade', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' });
+  }
   if (ef.rodada) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
   if (ef.venderEmpresa || ef.fecharEmpresa) {
     // Vender tudo ou fechar tira a empresa da vida (e a renda de quem vivia dela).

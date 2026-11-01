@@ -75,23 +75,26 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     expect(motivoParaNaoOperar(e, c, { tipo: 'aportar', valor: 1000 })).toMatch(/cartão/);
   });
 
-  it('aportar aumenta o valor e, com sócios, a parte de quem joga; a retirada paga a parte de quem joga todo ano', () => {
+  it('aportar põe o dinheiro no caixa e, com sócios, aumenta a parte de quem joga; o dividendo é a parte dele no lucro do ano', () => {
     const e = adulto();
     operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 50000 });
     const emp = empresaDe(e)!;
     emp.n['participacao'] = 0.5;
+    const caixa = emp.n['caixa']!;
     operar(e, c, { tipo: 'aportar', valor: 50000 });
     expect(emp.n['valor']).toBeCloseTo(100000);
+    expect(emp.n['caixa']).toBeCloseTo(caixa + 50000);
     expect(emp.n['participacao']).toBeCloseTo(0.75);
-    operar(e, c, { tipo: 'retirada', fracao: 0.08 });
+    operar(e, c, { tipo: 'retirada', fracao: 0.3 });
     const antes = e.entidades['eu']!.n['dinheiro']!;
     e.rng = criarRng(3);
     const reg: Mudanca[] = [];
     regraDaEmpresa(e, c, momentoTipico('normal'), reg);
     const pago = (e.entidades['eu']!.n['dinheiro'] ?? 0) - antes;
-    expect(pago).toBeGreaterThan(0);
-    expect(pago).toBeCloseTo((emp.n['valor']! / 0.92) * 0.08 * 0.75, -1);
-    expect(reg.find((m) => m.c === 'eu.dinheiro')?.r).toBe('empresa');
+    const lucro = emp.n['lucro']!;
+    expect(lucro).toBeGreaterThan(0);
+    expect(pago).toBeCloseTo(lucro * 0.3 * 0.75, -1);
+    expect(reg.find((m) => m.c === 'eu.dinheiro')?.r).toBe('dividendos');
   });
 
   it('vender paga o valor com o prêmio ou o desconto da fase, menos o desconto da dependência; a empresa sai da vida e fica só o nome', () => {
@@ -118,7 +121,7 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
 });
 
 describe('o ano da empresa', () => {
-  it('quem toca a empresa a faz crescer mais, em média, do que quem a deixa sozinha', () => {
+  it('quem toca a empresa faz a demanda dela crescer mais, em média, do que quem a deixa sozinha', () => {
     const crescer = (dedicacao: boolean): number => {
       let total = 0;
       for (let i = 0; i < 300; i++) {
@@ -129,7 +132,7 @@ describe('o ano da empresa', () => {
           if (dedicacao) efeitos(e, { 'empresa.tracao': 1.5 });
           regraDaEmpresa(e, c, momentoTipico('normal'), []);
         }
-        total += Math.log(Math.max(1000, parteNaEmpresa(e)));
+        total += Math.log(Math.max(1000, empresaDe(e)?.n['demanda'] ?? 0));
       }
       return total / 300;
     };

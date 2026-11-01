@@ -16,7 +16,7 @@ import type { Entrada, EstadoVida } from './tipos.ts';
 /** Contraparte que o código esqueceu de dizer (economia.ts › SEM_CONTRAPARTE): a conferência acusa. */
 const SEM_CONTRAPARTE = 'desconhecida';
 const REAVALIACAO = 'reavaliacao';
-const CAMPOS_DE_CAIXA = new Set<string>(['dinheiro', ...ATIVOS, 'divida']);
+const CAMPOS_DE_CAIXA = new Set<string>(['dinheiro', ...ATIVOS, 'divida', 'caixa']);
 /** Quem chega a um papel entra com os números dele, quem sai leva os seus e quem troca de papel leva os dele (pessoas.ts › ocuparPapel, moverPessoa): não é dinheiro trocando de mão. */
 const TROCA_DE_PAPEL = new Set(['saida', 'nascimento', 'papel']);
 const DE_FORA = new Set<string>(CONTAS_DE_FORA);
@@ -48,8 +48,9 @@ export function conferirContas(e: EstadoVida, h: Entrada): string[] {
   for (const m of h.mudancas ?? []) {
     if (m.d === undefined || TROCA_DE_PAPEL.has(m.r ?? '')) continue;
     const [ent, campo] = separar(m.c);
-    // Só pessoas têm caixa (a dívida do país é um percentual do PIB; a empresa e o bem têm valor).
-    if (e.entidades[ent]?.tipo !== 'pessoa') continue;
+    // Pessoas e empresas têm caixa (a dívida do país é um percentual do PIB; o bem tem valor).
+    const tipo = e.entidades[ent]?.tipo;
+    if (tipo !== 'pessoa' && !(tipo === 'empresa' && campo === 'caixa')) continue;
     const v = noPatrimonio(campo, m.d);
     if (v === null) continue;
     escala = Math.max(escala, Math.abs(v));

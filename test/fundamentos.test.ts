@@ -5,6 +5,8 @@
  * mostra as regras que contam algo.
  */
 import { describe, expect, it } from 'vitest';
+import { economiaDo, mercadoDoSetor } from '../src/motor/negocio.ts';
+import { FATIA_MAXIMA_DO_MERCADO } from '../src/motor/regras.ts';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { funcionariosDe } from '../src/motor/campos.ts';
 import { defCargo, chanceDeEleicao } from '../src/motor/poder.ts';
@@ -12,7 +14,7 @@ import { economiaDoAno } from '../src/motor/economia.ts';
 import { regraDaEmpresa, empresaDe } from '../src/motor/empresa.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { ESCRITAS_DO_MOTOR, PROJETOS, SEGREDOS, VONTADES } from '../src/motor/manifesto.ts';
-import { CAPACIDADE_DO_MERCADO, MAX_FUNCIONARIOS, TETO_EMPRESA } from '../src/motor/regras.ts';
+import { CAPACIDADE_DO_MERCADO, MAX_FUNCIONARIOS } from '../src/motor/regras.ts';
 import { misturar } from '../src/motor/rng.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { nascer } from '../src/motor/vida.ts';
@@ -79,16 +81,19 @@ describe('o mundo tem tamanho', () => {
     expect(funcionariosDe(Number.MAX_VALUE)).toBeLessThanOrEqual(MAX_FUNCIONARIOS);
   });
 
-  it('a empresa não cresce acima do teto do mercado (pode cair, e abaixo dele volta a crescer)', () => {
+  it('a demanda da empresa não passa do tamanho do mercado do setor (pode cair, e abaixo dele volta a crescer)', () => {
     const e = nascer(c, { semente: 3, ano: 2026, origem: { classe: 7 } });
     const reg: Mudanca[] = [];
-    e.entidades['empresa'] = { id: 'empresa', tipo: 'empresa', nome: 'Teste', vivo: true, n: { valor: 2 * TETO_EMPRESA, tracao: 60, participacao: 1 }, t: { setor: 'tecnologia' }, q: {} };
+    const eco = economiaDo(c.setores.get('tecnologia'));
+    const teto = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
+    e.entidades['empresa'] = { id: 'empresa', tipo: 'empresa', nome: 'Teste', vivo: true, n: { valor: 1e12, tracao: 60, participacao: 1, demanda: 2 * teto, capacidade: 2 * teto, caixa: 0 }, t: { setor: 'tecnologia' }, q: {} };
     expect(empresaDe(e)).toBeTruthy();
     for (let ano = 0; ano < 30; ano++) {
-      const antes = e.entidades['empresa']!.n['valor']!;
+      const antes = e.entidades['empresa']!.n['demanda']!;
+      const tetoDoAno = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
       regraDaEmpresa(e, c, momentoTipico('expansao'), reg);
-      // Acima do teto, só cai; abaixo, o ganho encolhe perto dele (passa no máximo uma fração mínima).
-      expect(e.entidades['empresa']!.n['valor']!).toBeLessThanOrEqual(Math.max(antes + 1, TETO_EMPRESA * 1.01));
+      // Acima do teto, só cai; abaixo, o ganho encolhe perto dele.
+      expect(e.entidades['empresa']!.n['demanda']!).toBeLessThanOrEqual(Math.max(antes + 1, tetoDoAno * 1.01));
     }
   });
 

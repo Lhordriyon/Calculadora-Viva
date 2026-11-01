@@ -29,7 +29,7 @@ import {
   LANCE_DO_LEILAO,
   PARCELA_FINANCIAMENTO,
   PISO_VEICULO,
-} from './regras.ts';
+ INFLUENCIA_DA_MIDIA, PUBLICIDADE_DA_MIDIA } from './regras.ts';
 import { normal } from './rng.ts';
 
 import { formatarDinheiro } from './texto.ts';
@@ -236,6 +236,12 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const medio = mercadoMedioDeImoveis(c);
   let aluguel = 0;
   let manutencao = 0;
+  let publicidade = 0;
+  let midias = 0;
+  // Com desemprego alto, sobra sala vazia: a vacância come uma parte do aluguel (até 30%).
+  const vacancia = Math.max(0, Math.min(0.3, ((e.entidades['pais']?.n['desemprego'] ?? 8) - 6) / 30));
+  // A publicidade anda com a economia: o anunciante corta primeiro na crise.
+  const anunciantes = Math.max(0.4, 1 + (e.entidades['pais']?.n['crescimento'] ?? 2) / 25);
   for (const b of bens) {
     const def = defDoBem(c, b);
     if (!def) continue;
@@ -247,9 +253,17 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
     if (def.categoria === 'veiculo') novo = Math.max(novo, def.preco * PISO_VEICULO);
     somar(e, reg, b.id, 'valor', novo - valor, 'bens');
     manutencao += novo * def.manutencao;
-    if (b.q['alugado']) aluguel += novo * taxaDeAluguel(def);
+    if (b.q['alugado']) aluguel += novo * taxaDeAluguel(def) * (1 - vacancia);
+    if (def.categoria === 'midia') {
+      publicidade += novo * PUBLICIDADE_DA_MIDIA * anunciantes;
+      midias++;
+    }
   }
   if (aluguel >= 1) movimentar(e, reg, { dinheiro: aluguel, contraparte: 'mercado' }, 'eu', 'aluguel');
+  // A mídia própria vende anúncio e põe quem é dono na conversa do país: rende e dá influência (até 100).
+  if (publicidade >= 1) movimentar(e, reg, { dinheiro: publicidade, contraparte: 'mercado' }, 'eu', 'publicidade');
+  const influencia = e.entidades['eu']!.n['influencia'] ?? 0;
+  if (midias > 0 && influencia < 100) somar(e, reg, 'eu', 'influencia', Math.min(100 - influencia, INFLUENCIA_DA_MIDIA * midias), 'midia');
   if (manutencao >= 1) movimentar(e, reg, { dinheiro: -manutencao, contraparte: 'mercado' }, 'eu', 'manutencao');
   regraDosFinanciamentos(e, c, reg);
 }
