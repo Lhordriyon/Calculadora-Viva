@@ -79,7 +79,7 @@ function anotarFora(
   f.repasse.push([variacao, pais.n['inflacao'] ?? 0]);
   for (const emp of empresasDe(e)) {
     const a = empresasAntes.get(emp.id);
-    if (a && a.nome === emp.nome && a.valor >= 1e5) f.setores.push([emp.t['setor'] ?? '', (emp.n['lucro'] ?? 0) / a.valor, variacao]);
+    if (a && a.nome === emp.nome && a.valor >= 1e5) f.setores.push([emp.t['setor'] ?? '', ((emp.n['valor'] ?? 0) - a.valor) / a.valor, variacao]);
   }
   const g = (f.porGoverno[governoAtual(e)] ??= { anos: 0, sancoes: 0, acordos: 0, sancoesDaCeleste: 0 });
   g.anos++;
@@ -124,7 +124,7 @@ function anotarGrupo(e: EstadoVida, c: Conteudo, antes: Map<string, { nome: stri
   const talento = (e.entidades['eu']!.n['inteligencia'] ?? 50) >= 65;
   for (const emp of grupo) {
     const a = antes.get(emp.id);
-    if (a && a.nome === emp.nome && a.valor >= 1e5) (emp.q['na_bolsa'] ? g.listadas : g.fechadas).push([(emp.n['lucro'] ?? 0) / a.valor, humor]);
+    if (a && a.nome === emp.nome && a.valor >= 1e5) (emp.q['na_bolsa'] ? g.listadas : g.fechadas).push([((emp.n['valor'] ?? 0) - a.valor) / a.valor, humor]);
     if (carga > 1.2 && talento) g.mesa.push(alvoDaTracao(e, c, emp, 1) - alvoDaTracao(e, c, emp, carga));
   }
 }
