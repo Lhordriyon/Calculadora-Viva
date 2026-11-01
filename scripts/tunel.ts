@@ -975,6 +975,44 @@ const portoesOmega3 = [
     `${projetosVivos.length} de ${idsDosProjetos.length}${projetosVivos.length < idsDosProjetos.length ? ` (faltam ${idsDosProjetos.filter((id) => !projetosVivos.includes(id)).join(', ')})` : ''}`,
   ],
 ] as const;
+// ---- os segredos (missão Ω4): quem sabe o quê, a notícia que corre e como cada um acaba
+const segredosDasVidas = vidas.map((v) => v.segredos);
+const comSegredo = segredosDasVidas.filter((x) => x.nascidos.length > 0).length / Math.max(1, segredosDasVidas.length);
+const nascidosPorTema = new Map<string, number>();
+for (const x of segredosDasVidas) for (const id of x.nascidos) nascidosPorTema.set(id, (nascidosPorTema.get(id) ?? 0) + 1);
+const chegaramPorTema = new Map<string, number>();
+for (const x of segredosDasVidas) for (const id of x.chegaram) chegaramPorTema.set(id, (chegaramPorTema.get(id) ?? 0) + 1);
+const somaDosSegredos = (f: (x: (typeof segredosDasVidas)[number]) => number): number => segredosDasVidas.reduce((a, x) => a + f(x), 0);
+const totalDeSegredos = somaDosSegredos((x) => x.nascidos.length);
+const boatos = somaDosSegredos((x) => x.boatos);
+const finsDosSegredos = {
+  contado: somaDosSegredos((x) => x.fins.contado.length),
+  descoberto: somaDosSegredos((x) => x.fins.descoberto.length),
+  confessado: somaDosSegredos((x) => x.fins.confessado.length),
+  calado: somaDosSegredos((x) => x.fins.calado.length),
+};
+const segredosAcabados = Object.values(finsDosSegredos).reduce((a, b) => a + b, 0);
+const parteDoFim = (n: number): string => pct(n / Math.max(1, segredosAcabados));
+const idsDosSegredos = c.mundo.segredos.map((x) => x.id);
+const temasVivos = idsDosSegredos.filter((id) => (nascidosPorTema.get(id) ?? 0) > 0 && (chegaramPorTema.get(id) ?? 0) > 0);
+const portoesOmega4 = [
+  ['Os segredos existem: ≥ 15% das vidas guardam um', comSegredo >= 0.15, `${pct(comSegredo)} das vidas · ${num(totalDeSegredos / Math.max(1, segredosDasVidas.length), 2)} por vida`],
+  [
+    'A notícia corre: um boato (alguém que soube pela boca de outro) para cada 4 segredos ou mais',
+    boatos * 4 >= totalDeSegredos,
+    `${num(boatos, 0)} boatos para ${num(totalDeSegredos, 0)} segredos · ${num(somaDosSegredos((x) => x.chegaram.length), 0)} chegaram a quem não devia · ${num(somaDosSegredos((x) => x.chantagens), 0)} chantagens`,
+  ],
+  [
+    'Os segredos acabam de todo jeito: contados, descobertos, confessados e calados, cada um em ≥ 5% dos que acabam',
+    segredosAcabados > 0 && Object.values(finsDosSegredos).every((n) => n / segredosAcabados >= 0.05),
+    `contados ${parteDoFim(finsDosSegredos.contado)} · descobertos ${parteDoFim(finsDosSegredos.descoberto)} · confessados ${parteDoFim(finsDosSegredos.confessado)} · calados ${parteDoFim(finsDosSegredos.calado)} (de ${num(segredosAcabados, 0)})`,
+  ],
+  [
+    'Todo segredo chega a quem não devia: cada tema nasce e é contado ao alvo em alguma vida',
+    temasVivos.length === idsDosSegredos.length,
+    `${temasVivos.length} de ${idsDosSegredos.length}${temasVivos.length < idsDosSegredos.length ? ` (faltam ${idsDosSegredos.filter((id) => !temasVivos.includes(id)).join(', ')})` : ''}`,
+  ],
+] as const;
 const portoesF = [
   [
     'A coroa passa: toda coroa, Regime ou ilha que chega a quem joga com 18 anos ou mais tem resposta, em vida e na herança (≥ 20 casos de cada)',
@@ -1274,6 +1312,17 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega3) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## Os segredos (missão Ω4)');
+l();
+l(
+  `Quem joga esconde coisas de alguém; quem sabe pode contar pelos círculos (a família e o par, os amigos, os ex, o trabalho), e a notícia que chega ao alvo vira revelação, com quem contou e a causa (\`segredos.ts\`). ` +
+    `Por tema, nascidos / contados ao alvo: ${idsDosSegredos.map((id) => `${id} ${num(nascidosPorTema.get(id) ?? 0, 0)} / ${num(chegaramPorTema.get(id) ?? 0, 0)}`).join(' · ')}.`,
+);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesOmega4) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1673,6 +1722,7 @@ for (const [nome, ok, detalhe] of portoesF) console.log(`${ok ? '✓' : '·'} po
 for (const [nome, ok, detalhe] of portoesOmega1) console.log(`${ok ? '✓' : '·'} portão Ω1: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega2) console.log(`${ok ? '✓' : '·'} portão Ω2: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega3) console.log(`${ok ? '✓' : '·'} portão Ω3: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesOmega4) console.log(`${ok ? '✓' : '·'} portão Ω4: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

@@ -7,6 +7,7 @@ import type { Destino } from '../motor/herdeiro.ts';
 import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo } from '../motor/constantes.ts';
 import { entreVoceE, idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
 import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, ROTULO_DA_VISAO, semONome, visoesDe } from '../motor/relacoes.ts';
+import { segredosDaPessoa } from '../motor/segredos.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
@@ -214,6 +215,10 @@ function situacao(vida: EstadoVida, id: string, en: Entidade, c: Conteudo): stri
   const entre = entreVoceE(vida, id);
   if (entre.voceDeve >= 1) itens.push(`você deve ${formatarDinheiro(entre.voceDeve)}${entre.atraso > 0 ? ', atrasado' : ''}`);
   if (entre.teDeve >= 1) itens.push(`te deve ${formatarDinheiro(entre.teDeve)}${entre.atraso > 0 ? ', atrasado' : ''}`);
+  // Os segredos (segredos.ts): o que a pessoa sabe de você, e o que você esconde dela.
+  const { sabe, naoSabe } = segredosDaPessoa(vida, c, id);
+  for (const s of sabe) itens.push(`sabe ${s.de}`);
+  for (const s of naoSabe) itens.push(`não sabe ${s.de}`);
   // O que a pessoa ama: o presente certo, o programa junto.
   if (en.tipo === 'pessoa' && id !== 'eu') {
     const gosto = c.mundo.gostos.find((g) => g.id === gostoDe(en))?.nome;

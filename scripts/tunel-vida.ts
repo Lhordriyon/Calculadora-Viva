@@ -5,6 +5,7 @@
  */
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
+import { REF_SOUBE } from '../src/motor/segredos.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
 import { ATIVOS, type Fase } from '../src/motor/constantes.ts';
@@ -361,6 +362,7 @@ export interface Vida {
   rede: HistoriaDaRede;
   pedidos: HistoriaDosPedidos;
   projetos: HistoriaDosProjetos;
+  segredos: HistoriaDosSegredos;
 }
 
 /** A rede (missão Ω): quantas pessoas passaram pela vida, os ex, os irmãos, quem foi do trabalho e o que contaram. */
@@ -467,6 +469,42 @@ function projetosDaVida(e: EstadoVida): HistoriaDosProjetos {
     else if (h.ref === 'regra:projeto_conquista') r.conquistas.push(deQual(h));
     else if (h.ref === 'regra:projeto_vencido') r.vencidos.push(deQual(h));
     else if (h.ref === 'regra:projeto_semTempo') r.semTempo.push(deQual(h));
+  }
+  return r;
+}
+
+/**
+ * Os segredos (missão Ω4): os que nasceram, por tema; quantas vezes alguém ficou sabendo pela boca de outra pessoa;
+ * quantas vezes a notícia chegou a quem não devia (a revelação do tema); e como cada um acabou: contado (a revelação),
+ * descoberto (a prova, a chantagem, a desconfiança), confessado (a ação de quem joga) ou calado (sem alvo, ou deixou de
+ * importar). As chantagens são as iniciativas de quem sabe.
+ */
+export interface HistoriaDosSegredos {
+  nascidos: string[];
+  boatos: number;
+  chegaram: string[];
+  fins: { contado: string[]; descoberto: string[]; confessado: string[]; calado: string[] };
+  chantagens: number;
+}
+
+function segredosDaVida(e: EstadoVida, c: Conteudo): HistoriaDosSegredos {
+  const revelacoes = new Map(c.mundo.segredos.map((s) => [s.revelacao, s.id]));
+  const r: HistoriaDosSegredos = { nascidos: [], boatos: 0, chegaram: [], fins: { contado: [], descoberto: [], confessado: [], calado: [] }, chantagens: 0 };
+  for (const h of e.historico) {
+    if (h.ref === REF_SOUBE) r.boatos++;
+    if (h.ref?.startsWith('chantagem_')) r.chantagens++;
+    const tema = h.ref ? revelacoes.get(h.ref) : undefined;
+    if (tema) r.chegaram.push(tema);
+    for (const m of h.mudancas ?? []) {
+      const i = m.c.indexOf('.escondido_');
+      if (i < 0 || m.c.startsWith('eu.')) continue;
+      const id = m.c.slice(i + '.escondido_'.length);
+      if (m.q === 1) r.nascidos.push(id);
+      else if (m.q === -1) {
+        const fim = h.ref === 'regra:segredo_acabou' ? 'calado' : tema ? 'contado' : h.tipo === 'acao' ? 'confessado' : 'descoberto';
+        r.fins[fim].push(id);
+      }
+    }
   }
   return r;
 }
@@ -1067,6 +1105,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     rede: redeDaVida(e),
     pedidos: pedidosDaVida(e),
     projetos: projetosDaVida(e),
+    segredos: segredosDaVida(e, c),
     ...contasDaVida(e),
   };
 }
