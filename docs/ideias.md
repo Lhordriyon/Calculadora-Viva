@@ -95,7 +95,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | Ω1 · A rede | irmãos, ex, amigos novos, colegas e chefe como pessoas com vida própria, em duas escalas; a notícia quando importa | I-05, I-21, I-121, I-130, I-131 | feita (27/10, no branch de trabalho) |
 | Ω2 · Os verbos sociais | pedir, oferecer, propor, cobrar, contar e apresentar, para qualquer pessoa, que decide pelo estado e pela memória e diz por quê | I-123 | feita (01/11, no branch de trabalho) |
 | Ω3 · Os projetos | o que você quer, com etapas que são ações de verdade e o progresso tirado do estado | I-124, I-113 | feita (01/11, no branch de trabalho) |
-| Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | proposta |
+| Ω4 · Os segredos | quem sabe o quê, o boato, a revelação, a chantagem | I-125 | feita (01/11) |
 | Ω5 · A história reconhecida e o caminho não tomado | a peneira que reconhece os arcos no livro (os capítulos) e a vida que não foi | I-126, I-127 | proposta |
 | Ω6 · O ritmo e a medida | os anos tranquilos, o apoio às histórias começadas e a diversidade pela estrutura causal | I-128, I-129 | proposta |
 
@@ -129,8 +129,8 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Problema:** todo mundo sabe o que a vida de quem joga mostra; nada fica escondido, nada é descoberto.
 - **Efeitos causais:** algumas escolhas criam segredos (o caso, a dívida escondida, o crime, o filho fora do casamento); cada pessoa sabe o que viu, ouviu ou descobriu; a informação corre pela rede pelo traço e pela proximidade; a opinião só usa o que a pessoa sabe; a revelação e a chantagem são consequências; descobrir quem espalhou vira projeto.
 - **Aceitação:** teste: o segredo que ninguém sabe não muda opinião nenhuma; o que a irmã sabe pode chegar à mãe, não ao chefe sem caminho.
-- **Desenho (Ω4):** o segredo é uma entidade (`sgr<entrada>`): o tema (o caso, a dívida escondida, o dinheiro por fora, o diploma de mentira), a entrada que o criou, de quem ele é escondido (o alvo, pelo número da pessoa) e quem sabe (os números de quem sabe). Nasce de um efeito do conteúdo (`segredo`), como a festa da firma que dá certo. Todo ano, quem sabe pode contar a alguém do mesmo círculo (a família e o par; os amigos e o par; o colega e o chefe; os ex e os amigos), mais quem tem a língua solta (o piadista, o brigão), quem está magoado e quem gosta pouco de você; a discreta conta menos. Quem fica sabendo perde confiança em você na hora (a opinião só usa o que a pessoa sabe); quando chega ao alvo, vem a revelação (um storylet por tema, agendado, com a entrada de quem contou de causa). Quem sabe e gosta pouco de você pode fazer chantagem (pagar, recusar e ver contar, ou confessar antes). E quem joga pode contar: confessar ao alvo (a pessoa decide se perdoa) ou desabafar com alguém (que passa a saber).
-- **Estado:** proposta (Ω4).
+- **Desenho (Ω4), como foi feito:** o segredo não virou entidade: quem sabe e de quem é escondido são qualidades da pessoa (`sabe_<tema>` e `escondido_<tema>`, com a entrada de causa), e o tema é conteúdo (`mundo.json › segredos`), como os projetos. O conteúdo cria o segredo numa escolha (a festa da firma, o café com o ex, a fatura escondida, a bet escondida, a festa que era estudo, o esquema do colega). Todo ano, quem sabe pode contar pelos círculos (a família e o par; os amigos, o par e os irmãos; os ex e os amigos; o colega e o chefe), mais quem tem a língua solta, está magoado ou gosta pouco de você, e a fofoca corre de lado antes de chegar ao alvo; muito magoada, a pessoa conta direto ao alvo. Quem fica sabendo perde confiança em você na hora, numa entrada que conta como coisa que você fez. Quando chega ao alvo, a revelação do tema vem no mesmo ano, com quem contou de `{fonte}` e a entrada em que essa pessoa soube de causa. Quem sabe pesa o segredo nas decisões ("porque sabe do caso"); quem te emprestou dinheiro sabe da dívida sem ninguém contar. A chantagem é a iniciativa de quem sabe e gosta pouco de você: pagar, pagar para ver (a pessoa decide, e se contar, a revelação vem no ano seguinte) ou confessar antes. Quem joga pode confessar (uma ação; a pessoa decide se perdoa) ou desabafar (alívio e uma pessoa a mais sabendo). "Descobrir quem espalhou" ficou de fora: a linha do tempo já diz quem contou.
+- **Estado:** feita (Ω4, 01/11).
 
 ### I-126 · A peneira: os capítulos da vida
 - **Problema:** o livro guarda o porquê de tudo, mas a vida aparece como uma lista de anos, e o rastro de uma simulação não é uma história sozinho.
@@ -244,7 +244,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-130 | O namoro que esfria e o ex que continua | Ω | Alta | feita (Ω1) |
 | I-131 | Os irmãos com vida própria | Ω | Alta | feita (Ω1) |
 | I-124 | Os projetos: o que o jogador quer, com etapas de verdade | Ω | Alta | feita (Ω3) |
-| I-125 | Os segredos: quem sabe o quê | Ω | Alta | proposta (Ω4) |
+| I-125 | Os segredos: quem sabe o quê | Ω | Alta | feita (Ω4, 01/11) |
 | I-126 | A peneira: os capítulos da vida reconhecidos no livro | Ω | Alta | proposta (Ω5) |
 | I-127 | O caminho não tomado | Ω | Alta | proposta (Ω5) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | proposta (Ω6) |

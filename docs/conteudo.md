@@ -252,6 +252,32 @@ Os projetos ficam em `mundo.json › projetos` e são escritos como o resto do c
 - `ajuda` lista o que leva à etapa: um verbo (`poupar`), o id de uma ação (`faculdade_a_noite`) ou uma folha (`folha:dinheiro`, `folha:familia`, `folha:carreira`, `folha:pais`). A folha Planos mostra; os robôs dão preferência.
 - **Storylets do projeto:** a condição `"marcas": ["projeto_casa_propria"]` (ou `"ator.projeto_reparar_relacao"` na pessoa) faz o storylet existir só com o projeto de pé, com peso dobrado. Todo projeto precisa de pelo menos um (o validador avisa).
 
+## Os segredos (missão Ω4)
+
+O tema do segredo fica em `mundo.json › segredos`; quem sabe e de quem é escondido são qualidades que o conteúdo grava como qualquer marca.
+
+```json
+{
+  "id": "caso",
+  "nome": "o caso",
+  "de": "do caso",
+  "alvos": ["amor"],
+  "gravidade": 12,
+  "fofoca": 1,
+  "revelacao": "contaram_do_caso",
+  "acaba": { "…": "quando o segredo deixa de importar (opcional)" },
+  "sabem": { "ator.voce_deve": { "min": 1 } },
+  "soube": { "textos": ["{ator} ficou sabendo do caso. Quem contou foi {fonte.quem}…"], "resumo": "você viu o caso chegar aos ouvidos de {ator.quem}" }
+}
+```
+
+- **Criar:** a escolha que cria o segredo marca o alvo e quem já sabe: `"marcas": ["amor.escondido_caso", "ator.sabe_caso"]`. Quem fica sabendo depois (o desabafo, o irmão que viu você chegando) ganha `ator.sabe_<tema>`.
+- **Ler:** `"marcas": ["ator.sabe_caso"]` (a chantagem de quem sabe), `"ator.escondido_caso"` (confessar, a desconfiança do par), `"semMarcas": ["ator.sabe_caso"]` (o desabafo com quem ainda não sabe).
+- **A revelação** (`revelacao`) é um storylet `apenasAgendado` com o alvo de ator; o motor agenda quando a notícia chega a ele, e o texto chama quem contou de `{fonte}` (`{fonte.quem}`, `{fonte:o|a}`). Cada escolha diz se o segredo acaba (`"removerMarcas": ["ator.escondido_caso"]`) ou se a mentira colou.
+- **A chantagem recusada** agenda a revelação com quem chantageou de fonte: `"agendar": [{ "evento": "contaram_do_caso", "em": 1, "sobre": "amor", "fonte": "ator" }]`.
+- **A prova** (a conversa esquecida no computador, a auditoria, a foto marcada) é um storylet agendado na criação, como qualquer consequência.
+- `soube` é a notícia que chega a quem não é o alvo: `{ator}` ficou sabendo e `{fonte}` contou; o resumo começa com "você " (conta como coisa que você fez).
+
 ## Efeitos
 
 | Efeito | Exemplo | Nota |

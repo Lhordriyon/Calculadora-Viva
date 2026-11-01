@@ -1692,6 +1692,43 @@ A camada 2 deu voz às pessoas; a 3 dá vontade a quem joga. Até aqui, a vida e
 - **Tocar a empresa ajuda nos planos de dinheiro.** Sem isso, o robô que perseguia o primeiro milhão largava a empresa, e o que ela causa sumia das vidas (de 50% para 41% das vidas com empresa).
 - **A variedade de destinos caiu um pouco**, porque planos cumpridos levam vidas para lugares parecidos (a casa, o diploma, o casamento): as assinaturas de destino foram de 603 para 566 por 1.000 vidas. Fica para a camada 6, que mede a diversidade pelo caminho, não pelo destino.
 
+
+## Missão Ω, camada 4: os segredos (01/11)
+
+As camadas 1 a 3 deram gente, voz e vontade; a 4 dá o que fica escondido. Até aqui, todo mundo sabia de tudo o que a vida de quem joga mostrava, e nada era descoberto (I-125). Agora há o que você esconde de alguém, quem sabe, a notícia que corre e o dia em que ela chega a quem não devia.
+
+**O que mudou** (`docs/motor.md › Os segredos`):
+- quatro segredos como conteúdo (`mundo.json › segredos`), um para cada fase da vida: a festa que era "estudo" (escondida da mãe, dos 14 aos 17), o caso (do par: a festa da firma, o café com o ex), a dívida escondida (do par: a fatura de mais de R$ 5 mil, a perda na bet) e o esquema por fora (do chefe: o contrato do fornecedor que o colega propõe);
+- uma etapa do ano faz a notícia correr: quem sabe pode contar a alguém dos círculos dele, pela língua do traço, pela mágoa e pelo quanto gosta de você; quem fica sabendo perde confiança em você, e a linha do tempo conta quem contou a quem;
+- quando a notícia chega ao alvo, a revelação vem no mesmo ano, com o nome de quem contou e o porquê ("Porque aos 38, você desabafou com sua irmã");
+- 18 storylets novos (`59-segredos.json`): criar (o café com o ex, a fatura, a bet, a festa, o esquema), contar (a revelação de cada tema), provar (a foto da festa, a ligação do banco, a auditoria), cobrar (a chantagem do caso e a do esquema, o irmão que viu você chegando) e decidir (confessar o caso, a dívida e o esquema; desabafar com alguém);
+- quem sabe pesa o segredo quando você pede alguma coisa ("disse não, porque sabe do caso"); quem te emprestou dinheiro sabe da dívida sem ninguém contar;
+- a folha Família mostra, em cada pessoa, o que ela sabe e o que você esconde dela.
+
+**Medidas** (2.000 vidas do túnel rápido; antes = a camada 3 no mesmo túnel):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Vidas que guardam um segredo | — | 26,8% (0,29 por vida) |
+| Boatos (alguém que soube pela boca de outro) | — | 174 para 586 segredos |
+| Notícias que chegaram a quem não devia / chantagens | — | 70 / 62 |
+| Dos segredos que acabam: contados / descobertos / confessados / calados | — | 12% / 50% / 18% / 20% |
+| Por tema, nascidos / contados ao alvo | — | caso 32 / 5 · dívida 37 / 0 · festa 261 / 10 · esquema 256 / 55 |
+| Saturação V5 / V20 | 53,8% / 87,8% | 52,6% / 88,0% |
+| Assinaturas por 1.000 vidas (destino) | 909 (566) | 908 (567) |
+| Toques por vida | 468,0 | 464,6 |
+| Contas entrada por entrada | 0 problemas | 0 problemas |
+
+**Decisões tomadas sozinho:**
+- **O segredo é qualidade, não entidade.** O desenho previa uma entidade por segredo; ficou mais simples guardar quem sabe e de quem é escondido como qualidades da própria pessoa, com a entrada de causa: o conteúdo lê e grava como qualquer marca (`ator.sabe_caso`), a marca segue a pessoa quando ela muda de papel (o colega que virou amigo continua sabendo), e o tema é conteúdo como os projetos.
+- **Um segredo por vez de cada tema, e só enquanto o alvo está no papel.** O par que virou ex leva o segredo junto, calado: sem isso, o segredo de um casamento antigo se misturava com o do novo.
+- **A fofoca corre de lado.** Na primeira medida, 25 boatos para 538 segredos: o amigo da festa não tinha com quem falar, e o colega do esquema só falava com o chefe, que era o alvo. O irmão entrou no círculo dos amigos (o amigo conta ao irmão, o irmão conta à mãe), quem sabe conta a terceiros duas vezes mais do que ao alvo, e cada tema tem o quanto corre: a dívida vira assunto no almoço de domingo (2,5), o esquema o cúmplice guarda (0,7).
+- **A revelação diz quem contou.** O texto chama a pessoa de `{fonte}`, e a causa é a entrada em que ela soube: o porquê aponta a escolha de quem joga quando foi ela (o desabafo, o caso em si). Se quem contou saiu da vida antes, a revelação não acontece.
+- **Quem sabe muda decisões.** A regra do projeto pede que todo estado mude alguma decisão: quem sabe pesa o segredo no pedido, pela gravidade do tema ("porque sabe do caso"). É também o que o desenho pedia: a pessoa decide pelo que sabe.
+- **A dívida escondida é a que dura.** Com o cheque especial, o segredo sumia em um ano; agora nasce da fatura de mais de R$ 5 mil ou da perda na bet, acaba quando a dívida é paga, e quem te emprestou dinheiro sabe sem ninguém contar. Mesmo assim, é o segredo mais raro de ser contado ao par: quase sempre ele acaba pago, confessado ou descoberto pelo banco.
+- **A chantagem custa patrimônio, não um Pix para quem chantageia.** O dinheiro do colega não é lido por nenhum sistema: o pagamento seria estado morto. Pagar leva uma fração do que você tem, como um golpe.
+- **Criança também conta.** A partir dos 8 anos: o irmão que viu você chegando da festa às seis da manhã é a fofoca mais brasileira que existe.
+- **Ficou de fora "descobrir quem espalhou".** A linha do tempo já conta quem contou a quem; um projeto para descobrir seria uma tela para o que o jogo já mostra.
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.
