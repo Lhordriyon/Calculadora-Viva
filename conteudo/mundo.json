@@ -494,7 +494,8 @@
       "doenca": 1,
       "emprego": 1,
       "poupanca": 0, "perdao": 0.3,
-      "herdeiro": "otimista"
+      "herdeiro": "otimista",
+      "lingua": 0.6
     },
     {
       "id": "generoso",
@@ -506,7 +507,8 @@
       "doenca": 1,
       "emprego": 1,
       "poupanca": -0.03, "perdao": 0.38,
-      "herdeiro": "carismatico"
+      "herdeiro": "carismatico",
+      "lingua": 0.8
     },
     {
       "id": "mao_fechada",
@@ -518,7 +520,8 @@
       "doenca": 1,
       "emprego": 1,
       "poupanca": 0.06, "perdao": 0.14,
-      "herdeiro": "teimoso"
+      "herdeiro": "teimoso",
+      "lingua": 1.0
     },
     {
       "id": "brigao",
@@ -530,7 +533,8 @@
       "doenca": 1.1,
       "emprego": 1.3,
       "poupanca": 0, "perdao": 0.12,
-      "herdeiro": "teimoso"
+      "herdeiro": "teimoso",
+      "lingua": 1.5
     },
     {
       "id": "ausente",
@@ -542,7 +546,8 @@
       "doenca": 1,
       "emprego": 1,
       "poupanca": 0, "perdao": 0.22,
-      "herdeiro": "timido"
+      "herdeiro": "timido",
+      "lingua": 0.5
     },
     {
       "id": "trabalhador",
@@ -554,7 +559,8 @@
       "doenca": 1.1,
       "emprego": 0.5,
       "poupanca": 0.04, "perdao": 0.2,
-      "herdeiro": "forte"
+      "herdeiro": "forte",
+      "lingua": 0.8
     },
     {
       "id": "gastador",
@@ -566,7 +572,8 @@
       "doenca": 1,
       "emprego": 1.1,
       "poupanca": -0.08, "perdao": 0.25,
-      "herdeiro": "carismatico"
+      "herdeiro": "carismatico",
+      "lingua": 1.2
     },
     {
       "id": "fragil",
@@ -578,7 +585,8 @@
       "doenca": 2.2,
       "emprego": 1.2,
       "poupanca": 0, "perdao": 0.25,
-      "herdeiro": "ansioso"
+      "herdeiro": "ansioso",
+      "lingua": 1.0
     },
     {
       "id": "rigido",
@@ -590,7 +598,8 @@
       "doenca": 1,
       "emprego": 0.8,
       "poupanca": 0.03, "perdao": 0.08,
-      "herdeiro": "teimoso"
+      "herdeiro": "teimoso",
+      "lingua": 1.3
     },
     {
       "id": "piadista",
@@ -602,7 +611,8 @@
       "doenca": 1,
       "emprego": 1,
       "poupanca": 0, "perdao": 0.32,
-      "herdeiro": "otimista"
+      "herdeiro": "otimista",
+      "lingua": 1.8
     },
     {
       "id": "devoto",
@@ -614,7 +624,8 @@
       "doenca": 0.9,
       "emprego": 0.9,
       "poupanca": 0.02, "perdao": 0.34,
-      "herdeiro": "otimista"
+      "herdeiro": "otimista",
+      "lingua": 1.1
     },
     {
       "id": "ambicioso",
@@ -626,7 +637,8 @@
       "doenca": 1.1,
       "emprego": 0.7,
       "poupanca": 0.05, "perdao": 0.15,
-      "herdeiro": "esperto"
+      "herdeiro": "esperto",
+      "lingua": 1.3
     }
   ],
   "tracosJogador": [
@@ -3341,6 +3353,75 @@
         "textos": ["{ator.quem} fez 80 anos num almoço de domingo comum. Disse que não queria festa mesmo. Ninguém acreditou."],
         "resumo": "você não fez a festa de 80 anos de {ator.quem}",
         "magoa": 6
+      }
+    }
+  ],
+  "segredos": [
+    {
+      "id": "caso",
+      "nome": "o caso",
+      "de": "do caso",
+      "alvos": ["amor"],
+      "gravidade": 12,
+      "revelacao": "contaram_do_caso",
+      "soube": {
+        "textos": [
+          "{ator} ficou sabendo do caso. Quem contou foi {fonte.quem}, [num café que era para ser rápido|baixinho, num aniversário de família|por mensagem, com três pontos de exclamação].",
+          "{fonte} não aguentou e contou do caso a {ator}. {ator:Ele|Ela} não disse nada a você, mas [o abraço de domingo veio mais curto|mudou de assunto quando você chegou|passou a olhar o seu celular de longe].",
+          "O caso chegou aos ouvidos de {ator}, pela boca de {fonte.quem}. [Agora são mais dois olhos em cima de você.|Ninguém falou nada no almoço, e o silêncio falou por todo mundo.]"
+        ],
+        "resumo": "você viu o caso chegar aos ouvidos de {ator.quem}"
+      }
+    },
+    {
+      "id": "divida",
+      "nome": "a dívida",
+      "de": "da dívida",
+      "alvos": ["amor"],
+      "gravidade": 6,
+      "revelacao": "contaram_da_divida",
+      "fofoca": 2.5,
+      "acaba": { "divida": { "max": 0 } },
+      "sabem": { "ator.voce_deve": { "min": 1 } },
+      "soube": {
+        "textos": [
+          "{ator} ficou sabendo da sua dívida. {fonte} comentou achando que todo mundo já sabia, [e o resto do jantar foi de garfo batendo no prato|e você virou assunto no grupo da família].",
+          "{fonte} contou a {ator} quanto você deve. {ator} [mandou o link de um curso de finanças, sem nenhum texto|perguntou se estava tudo bem, no tom de quem já sabe que não]."
+        ],
+        "resumo": "você viu a dívida chegar aos ouvidos de {ator.quem}"
+      }
+    },
+    {
+      "id": "festa",
+      "nome": "a festa",
+      "de": "da festa",
+      "alvos": ["mae"],
+      "gravidade": 4,
+      "revelacao": "contaram_da_festa",
+      "fofoca": 1.3,
+      "acaba": { "idade": { "min": 19 } },
+      "soube": {
+        "textos": [
+          "{ator} ficou sabendo da festa que era estudo. Foi {fonte.quem} quem contou, [com detalhes que nem você lembrava|rindo, o que não ajudou ninguém].",
+          "A história da festa chegou a {ator}, por {fonte}. [Agora tem mais gente de olho na sua mochila.|{ator} riu na hora, mas guardou.]"
+        ],
+        "resumo": "você viu a história da festa chegar a {ator.quem}"
+      }
+    },
+    {
+      "id": "esquema",
+      "nome": "o esquema",
+      "de": "do esquema",
+      "alvos": ["chefe"],
+      "gravidade": 14,
+      "revelacao": "contaram_do_esquema",
+      "fofoca": 0.7,
+      "soube": {
+        "textos": [
+          "{ator} ficou sabendo do dinheiro por fora. Quem contou foi {fonte.quem}, [no cafezinho|no happy hour, depois da segunda cerveja].",
+          "{fonte} comentou com {ator} sobre o esquema do fornecedor. {ator} [não disse nada, mas passou a conferir as suas notas|fez uma piada sobre CPI de que ninguém riu]."
+        ],
+        "resumo": "você viu o esquema chegar aos ouvidos de {ator.quem}"
       }
     }
   ]

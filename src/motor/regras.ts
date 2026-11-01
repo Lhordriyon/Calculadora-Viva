@@ -292,6 +292,19 @@ export const FELICIDADE_DO_PRAZO_VENCIDO = -4;
 export const FELICIDADE_DA_DESISTENCIA = -1;
 /** O storylet que lê um projeto vivo pesa tanto a mais para o diretor: a vida apoia a história começada. */
 export const PESO_DO_PROJETO = 2;
+/**
+ * Os segredos (segredos.ts): a chance anual de quem sabe contar a alguém (antes do traço, da mágoa e do vínculo), o
+ * teto dela, a idade a partir da qual se conta e se ouve, e a mágoa com que quem sabe conta direto ao alvo, mesmo fora
+ * do círculo (a vingança).
+ */
+export const CHANCE_DE_CONTAR = 0.22;
+export const MAX_CHANCE_DE_CONTAR = 0.5;
+export const IDADE_DE_CONTAR = 8;
+export const MAGOA_DA_VINGANCA = 40;
+/** Quem sabe conta mais a terceiros do que ao alvo: cada outra pessoa do círculo pesa isto; o alvo, 1. */
+export const PESO_DE_QUEM_NAO_E_O_ALVO = 2;
+/** O segredo que a pessoa sabe pesa contra o pedido: a gravidade do tema dividida por isto (o caso, 12, tira 0,5). */
+export const PESO_DO_SEGREDO = 24;
 /** A vontade realizada: o afeto que ela traz e a mágoa que ela leva. */
 export const VINCULO_DA_VONTADE = 8;
 export const MAGOA_DA_VONTADE = 10;

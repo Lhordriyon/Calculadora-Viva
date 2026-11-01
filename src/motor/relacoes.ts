@@ -154,9 +154,10 @@ export const OMISSOES: ReadonlySet<string> = new Set(['regra:nao_apareceu', 'reg
 /**
  * O que a regra do empréstimo conta de quem joga com a pessoa (promissorias.ts): a parcela que atrasou, o calote e a
  * quitação (a última parcela, ou a de uma vez pela folha). Ela lembra como coisa que você fez, e pesa na opinião como o
- * resto (a mágoa, a confiança).
+ * resto (a mágoa, a confiança). E o segredo que chegou à pessoa pela boca de outra (segredos.ts): ela passa a saber o
+ * que você fez.
  */
-export const FEITOS_DA_REGRA: ReadonlySet<string> = new Set(['regra:parcela_atrasada', 'regra:calote', 'regra:divida_quitada', 'promissoria:quitar_promissoria']);
+export const FEITOS_DA_REGRA: ReadonlySet<string> = new Set(['regra:parcela_atrasada', 'regra:calote', 'regra:divida_quitada', 'promissoria:quitar_promissoria', 'regra:soube_do_segredo']);
 /** Pagar o que se deve não é dar: a parcela e a quitação não entram no "deu" de ninguém. */
 const PAGAMENTO: ReadonlySet<string> = new Set(['parcela', 'quitacao']);
 

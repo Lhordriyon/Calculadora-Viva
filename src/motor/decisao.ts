@@ -14,7 +14,8 @@ import type { Conteudo } from './conteudo.ts';
 import type { Pedido, Visao } from './constantes.ts';
 import type { Efeitos } from './esquema.ts';
 import { fraseDaEntrada, historiaCom, ROTULO_DA_VISAO, temRelacao, visoesDe } from './relacoes.ts';
-import { PERDAO_BASE } from './regras.ts';
+import { PERDAO_BASE, PESO_DO_SEGREDO } from './regras.ts';
+import { sabeDe, segredosAtivos } from './segredos.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
@@ -33,6 +34,8 @@ export interface Motivo {
   visao?: Visao;
   /** Os anos sem contato, quando o motivo é a distância. */
   anos?: number;
+  /** "do caso": o segredo que a pessoa sabe, quando o motivo é ele. */
+  segredo?: string;
 }
 
 type TipoMotivo =
@@ -55,7 +58,8 @@ type TipoMotivo =
   | 'repetido'
   | 'deve'
   | 'esperou'
-  | 'te_deve';
+  | 'te_deve'
+  | 'sabe';
 
 export interface Decisao {
   chance: number;
@@ -181,6 +185,12 @@ export function decidir(e: EstadoVida, c: Conteudo, id: string, pedido: Pedido, 
     else if (pedido === 'prazo' && entre.atraso > 0) somar({ tipo: 'esperou', peso: -0.6 * entre.atraso, anos: entre.atraso, ...daDivida });
   }
   if (entre.teDeve > 0 && pedido === 'favor') somar({ tipo: 'te_deve', peso: 0.4, ...daDivida });
+  // O segredo que a pessoa sabe (segredos.ts): pesa o que ela sabe, pela gravidade, com a entrada de quando ficou sabendo.
+  for (const sg of segredosAtivos(e, c)) {
+    if (!sg.sabem.includes(id)) continue;
+    const quando = en.q[sabeDe(sg.def.id)]?.causa;
+    somar({ tipo: 'sabe', peso: -sg.def.gravidade / PESO_DO_SEGREDO, segredo: sg.def.de, ...(quando !== null && quando !== undefined ? { entrada: quando } : {}) });
+  }
   if (pedido === 'pagar' && valor === undefined && entre.teDeve > 0) valor = entre.teDeve;
   // Quem não tem não dá: o dinheiro que falta fecha a porta, por mais que a pessoa queira.
   let semDinheiro = false;
@@ -333,6 +343,9 @@ export function porqueDaResposta(e: EstadoVida, c: Conteudo, id: string, pedido:
       break;
     case 'te_deve':
       texto = 'porque ainda está te devendo';
+      break;
+    case 'sabe':
+      texto = `porque sabe ${m.segredo ?? 'do que você esconde'}`;
       break;
   }
   return { texto, ...(m.entrada !== undefined ? { entrada: m.entrada } : {}) };

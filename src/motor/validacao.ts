@@ -7,13 +7,13 @@
  * - variáveis e personagens dos textos; sinais de texto ruim.
  */
 import { camposDe, defCampo, entidadeValida, separar, type Sistema } from './campos.ts';
-import { ATIVOS, ATRIBUTOS, CACULA, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS, VERBOS, papelBase } from './constantes.ts';
+import { ATIVOS, ATRIBUTOS, CACULA, FONTE, PADROES, PAPEIS, PAPEIS_DA_REDE, PAPEIS_NOVOS, PARCEIROS, PERFIS, TIPOS_FAMILIA, VARIOS, VERBOS, papelBase } from './constantes.ts';
 import { REGIOES_DO_BRASIL } from './origem.ts';
 import { tipoDe, type Conteudo, type Problema } from './conteudo.ts';
 import { CAMPOS_DA_DECISAO } from './decisao.ts';
 import { CHAVES_CONDICAO, type Condicoes, type Efeitos, type Resultado, type Storylet, type Teste } from './esquema.ts';
 import { lerConteudo, type FontesConteudo } from './leitura.ts';
-import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, PROJETOS, VONTADES, VOTOS } from './manifesto.ts';
+import { AGENDADOS_PELO_MOTOR, ESCRITAS_DO_MOTOR, LEITURAS_DO_MOTOR, PAPEIS_DOS_SEGREDOS, PROJETOS, SEGREDOS, VONTADES, VOTOS } from './manifesto.ts';
 import { DESTINOS } from './herdeiro.ts';
 import { verificarPortugues } from './portugues.ts';
 import { IDADE_MAXIMA } from './regras.ts';
@@ -85,6 +85,8 @@ export function blocosDe(s: Storylet, onde: string): BlocoEfeitos[] {
 function concretos(caminho: string, atores: readonly string[] | undefined): string[] {
   const { ent, campo } = separar(caminho);
   if (ent === 'ator') return (atores ?? []).map((a) => `${a}.${campo}`);
+  // Quem contou o segredo pode ser qualquer pessoa: o texto da revelação lê o nome dela, não um campo de alguém.
+  if (ent === FONTE) return [];
   return [`${ent}.${campo}`];
 }
 
@@ -262,6 +264,11 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
     escrever(k, 'motor');
     ler(k, { sistema: 'motor', decide: true, onde: 'motor › projetos: o prazo, a pessoa e o peso das histórias do projeto' });
   }
+  // Os segredos: o motor escreve quem sabe e tira de quem era escondido (o segredo que acabou), e lê quem conta a quem.
+  for (const k of SEGREDOS(c.mundo.segredos)) {
+    escrever(k, 'motor');
+    ler(k, { sistema: 'motor', decide: true, onde: 'motor › segredos: quem sabe conta, e a notícia que chega ao alvo vira revelação' });
+  }
   for (const v of c.mundo.vontades) {
     const onde = `mundo.json › vontades › ${v.id}`;
     if (v.feita && !v.realizada) erro(onde, 'vontade que a vida realiza ("feita") precisa dos textos de "realizada"');
@@ -325,7 +332,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
 
   // ---- personagens que um efeito cria e as qualidades que os garantem
   const marcasDoPapel = new Map<string, Set<string>>();
-  const agendados = new Set<string>(AGENDADOS_PELO_MOTOR);
+  // A revelação de cada segredo: o motor agenda quando a notícia chega ao alvo.
+  const agendados = new Set<string>([...AGENDADOS_PELO_MOTOR, ...c.mundo.segredos.map((x) => x.revelacao)]);
   /** Quem agenda cada storylet: o storylet e o bloco de efeitos do agendamento. */
   const agendadoPor = new Map<string, { s: Storylet; ef: Efeitos }[]>();
   for (const s of c.storylets) {
@@ -383,6 +391,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (!c.porId.has(ag.evento)) erro(b.onde, `agenda storylet inexistente "${ag.evento}"`);
         const alvo = c.porId.get(ag.evento);
         if (ag.sobre && alvo && !(alvo.ator ?? []).some((a) => a === papelBase(ag.sobre!))) erro(b.onde, `agenda "${ag.evento}" sobre ${ag.sobre}, que não é ator dele`);
+        if (ag.fonte && (!ag.sobre || !atores?.length)) erro(b.onde, `agenda "${ag.evento}" com quem contou ("fonte") pede "sobre" e um ator no storylet`);
+        if (ag.fonte && !c.mundo.segredos.some((x) => x.revelacao === ag.evento)) erro(b.onde, `"fonte" só vale para a revelação de um segredo, e "${ag.evento}" não é`);
         if (Array.isArray(ag.em) && ag.em[0] > ag.em[1]) erro(b.onde, `faixa de agendamento invertida para "${ag.evento}"`);
       }
     }
@@ -398,6 +408,8 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
         if (defCampo(ent, campo) || escritores.has(k)) ler(k, { sistema, decide: true, onde });
       }
     }
+    // O segredo que a pessoa sabe pesa na resposta (decisao.ts).
+    for (const sg of c.mundo.segredos) for (const k of concretos(`ator.sabe_${sg.id}`, atores)) ler(k, { sistema: 'relacoes', decide: true, onde: `${onde} (quem sabe do segredo)` });
   };
   for (const s of c.storylets) {
     const onde = nomeDe(s);
@@ -442,6 +454,19 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
       }
     });
     if (!c.storylets.some((s) => JSON.stringify(s.condicoes ?? {}).includes(`projeto_${p.id}`))) aviso(onde, 'nenhum storylet lê o projeto: ele vive sem histórias próprias');
+  }
+  // Os segredos: a revelação existe, só acontece agendada e tem o alvo de ator; quando acaba é condição do estado.
+  for (const sg of c.mundo.segredos) {
+    const onde = `mundo.json › segredos › ${sg.id}`;
+    const r = c.porId.get(sg.revelacao);
+    if (!r) erro(onde, `revelação desconhecida "${sg.revelacao}"`);
+    else {
+      if (!r.apenasAgendado) erro(onde, `a revelação "${sg.revelacao}" só acontece agendada (apenasAgendado: true)`);
+      if (!sg.alvos.every((p) => r.ator?.includes(p))) erro(onde, `a revelação "${sg.revelacao}" precisa ter cada alvo (${sg.alvos.join(', ')}) de ator`);
+    }
+    if (sg.acaba) conferirCondicao(sg.acaba, `${onde} › acaba`, undefined, { sistema: 'motor', decide: true });
+    if (sg.sabem) conferirCondicao(sg.sabem, `${onde} › sabem`, PAPEIS_DOS_SEGREDOS, { sistema: 'motor', decide: true });
+    if (!sg.soube.resumo.startsWith('você ')) erro(onde, 'o resumo de quem ficou sabendo conta o que você fez: comece com "você "');
   }
   // Requisitos das profissões leem o estado e decidem quem pode tentar a vaga.
   for (const k of c.mundo.carreiras) {
@@ -601,6 +626,10 @@ export function verificarReferencias(c: Conteudo, problemas: Problema[]): void {
   for (const [g, n] of Object.entries(c.mundo.noticias)) {
     for (const t of [...n.textos, n.resumo]) verificarModelo(t, `mundo.json › noticias.${g}`, new Set(), new Set(), marcasDoPapel, erro, PARCEIROS);
   }
+  // Quem ficou sabendo é o ator (qualquer pessoa dos círculos) e quem contou, {fonte}.
+  for (const sg of c.mundo.segredos) {
+    for (const t of [...sg.soube.textos, sg.soube.resumo]) verificarModelo(t, `mundo.json › segredos › ${sg.id}`, new Set([FONTE]), new Set(), marcasDoPapel, erro, PAPEIS_DOS_SEGREDOS);
+  }
   for (const est of c.mundo.estrangeiros) {
     const onde = `mundo.json › estrangeiros › ${est.id}`;
     if (est.rival && est.rival === est.id) erro(onde, 'o rival não pode ser ele mesmo');
@@ -727,6 +756,8 @@ function verificarTextos(
   aviso: Reporter,
 ): void {
   const extras = new Set([...Object.keys(s.valores ?? {}), ...Object.keys(s.trechos ?? {})]);
+  // A revelação de um segredo sabe quem contou: o texto chama essa pessoa de {fonte}.
+  if (c.mundo.segredos.some((x) => x.revelacao === s.id)) extras.add(FONTE);
   const blocos = blocosDe(s, onde);
   if (blocos.some((b) => b.efeitos.transferir)) extras.add('transferido');
   // O empréstimo entre pessoas: quanto foi emprestado, acertado ou perdoado.
@@ -818,6 +849,10 @@ function verificarModelo(
     }
     if (v.includes('.')) {
       const { ent, campo } = separar(v);
+      if (ent === FONTE && extras.has(FONTE)) {
+        if (!camposDe('mae')[campo]) erro(onde, `{${v}}: "${campo}" não é campo de pessoa`);
+        continue;
+      }
       if (ent === 'ator' && !atores) erro(onde, `{${v}} sem ator no storylet`);
       else if (!entidadeValida(ent) || ent === 'pessoa') erro(onde, `entidade desconhecida em {${v}}`);
       else if (!camposDe(modeloDe(ent, atores))[campo]) erro(onde, `{${v}}: "${campo}" não é campo (qualidades não aparecem no texto)`);
@@ -826,6 +861,7 @@ function verificarModelo(
     if (!globais.has(v) && !papeis.has(v) && !extras.has(v)) erro(onde, `variável desconhecida {${v}}`);
   }
   for (const p of a.concordancias) {
+    if (p === FONTE && extras.has(FONTE)) continue;
     if (p === 'ator' ? !atores : !papeis.has(p)) erro(onde, `personagem desconhecido em {${p}:...}`);
   }
 

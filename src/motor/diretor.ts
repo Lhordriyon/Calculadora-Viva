@@ -28,6 +28,8 @@ export interface Candidato {
   saliencia: number;
   /** Agendado, marco ou tensão alta: acontece sem depender do ritmo do ano. */
   urgente: boolean;
+  /** Quem contou (a revelação de um segredo agendada com a fonte): o texto chama essa pessoa de {fonte}. */
+  fonte?: string;
 }
 
 /** O storylet que só existe com um projeto de pé (lê `projeto_…`): a vida apoia a história começada (projetos.ts). */
@@ -89,12 +91,14 @@ export function escolherDoAno(e: EstadoVida, c: Conteudo, memoria: MemoriaJogado
   for (const item of devidos) {
     const s = c.porId.get(item.evento);
     const ator = item.ator;
-    if (!agendado && s && elegivel(s, e, ator) && (!ator || e.entidades[ator]?.vivo !== false)) {
+    // Quem contou o segredo precisa ainda estar na vida para a revelação falar dela; sem isso, ela não acontece.
+    const comFonte = !item.fonte || e.entidades[item.fonte] !== undefined;
+    if (!agendado && s && comFonte && elegivel(s, e, ator) && (!ator || e.entidades[ator]?.vivo !== false)) {
       e.agenda.splice(e.agenda.indexOf(item), 1);
       const causas = causasDe(s.condicoes, e, ator);
       if (item.origem !== null) causas.unshift(item.origem);
-      agendado = { s, ator, causa: 'diretor', causas, saliencia: 1, urgente: true };
-    } else if (agendado && s && elegivel(s, e, ator)) {
+      agendado = { s, ator, causa: 'diretor', causas, saliencia: 1, urgente: true, ...(item.fonte ? { fonte: item.fonte } : {}) };
+    } else if (agendado && s && comFonte && elegivel(s, e, ator)) {
       item.ano = e.ano + 1;
     } else {
       e.agenda.splice(e.agenda.indexOf(item), 1);

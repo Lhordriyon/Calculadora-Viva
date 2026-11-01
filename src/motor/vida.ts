@@ -20,6 +20,7 @@ import { confortoDosBens, regraDosBens } from './bens.ts';
 import { regraDasDividas } from './dividas.ts';
 import { anoDasPromissorias } from './promissorias.ts';
 import { anoDosProjetos } from './projetos.ts';
+import { anoDosSegredos } from './segredos.ts';
 import { regraDoTesouro } from './tesouro.ts';
 import { regraDaCoroa } from './coroa.ts';
 import { regraDaPesquisa } from './pesquisa.ts';
@@ -241,6 +242,7 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   padrao: (x) => regraDoPadrao(x.e, x.c, x.economia!.deficit),
   // Os projetos (projetos.ts): a meta alcançada é conquista; o prazo passado, fracasso; com o ano já vivido.
   projetos: (x) => anoDosProjetos(x.e, x.c),
+  segredos: (x) => anoDosSegredos(x.e, x.c),
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   regras: (x) => {
     x.e.somaFelicidade += x.e.entidades['eu']!.n['felicidade'] ?? 0;
@@ -262,11 +264,11 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
     const { e, c } = x;
     const escolhido = escolherDoAno(e, c, x.memoria, x.dePersonagens);
     if (escolhido?.s.escolhas) {
-      apresentarStorylet(e, escolhido.s, escolhido.ator, escolhido.causa, escolhido.causas, x.inflacao);
+      apresentarStorylet(e, escolhido.s, escolhido.ator, escolhido.causa, escolhido.causas, x.inflacao, escolhido.fonte);
       return;
     }
     if (escolhido) {
-      aplicarStorylet(e, c, escolhido.s, escolhido.ator, escolhido.causa, { causas: escolhido.causas, inflacao: x.inflacao });
+      aplicarStorylet(e, c, escolhido.s, escolhido.ator, escolhido.causa, { causas: escolhido.causas, inflacao: x.inflacao, ...(escolhido.fonte ? { fonte: escolhido.fonte } : {}) });
       return;
     }
     const visiveis = e.historico.slice(x.inicio).filter((h) => h.tipo !== 'regra');

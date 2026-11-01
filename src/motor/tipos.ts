@@ -59,6 +59,8 @@ export interface ItemAgenda {
   ano: number;
   origem: number | null;
   ator?: string;
+  /** Quem contou (a revelação de um segredo, segredos.ts): o texto do storylet chama essa pessoa de {fonte}. */
+  fonte?: string;
 }
 
 /** Quem causou as mudanças de uma entrada do livro-razão. */
@@ -131,6 +133,8 @@ export interface Pendente {
   causas: number[];
   opcoes: OpcaoPendente[];
   inflacao?: number;
+  /** Quem contou, na revelação de um segredo ({fonte} no texto do desfecho). */
+  fonte?: string;
 }
 
 export interface Morte {

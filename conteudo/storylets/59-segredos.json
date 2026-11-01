@@ -1,0 +1,669 @@
+[
+  {
+    "id": "o_ex_quer_um_cafe",
+    "tipo": "npc",
+    "ator": ["ex"],
+    "idade": [22, 70],
+    "peso": 5,
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["amor.escondido_caso", "ator.bloqueado", "ator.casou"], "ator.vinculo": { "min": 38 }, "ator.magoa": { "max": 20 }, "ator.idade": { "min": 20 } },
+    "texto": "{ator} mandou mensagem: está na cidade por uns dias e queria te ver. \"Só um café, pelos velhos tempos.\" Você leu três vezes, o que já é uma resposta.",
+    "resumo": "recebeu um convite de {ator.quem} para um café",
+    "escolhas": [
+      {
+        "texto": "Ir ao café e deixar a noite decidir",
+        "resumo": "foi ao café com {ator.quem} e deixou a noite decidir",
+        "teste": { "chance": 0.5 },
+        "sucesso": {
+          "texto": "O café virou jantar, e o jantar virou o que vocês dois sabiam que ia virar. Na volta, você apagou as mensagens e ensaiou a cara de quem foi a uma reunião.",
+          "resumo": "teve um caso com {ator.quem}",
+          "efeitos": { "ator.vinculo": 10, "felicidade": 2, "marcas": ["amor.escondido_caso", "ator.sabe_caso"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 15], "sobre": "amor" }] }
+        },
+        "fracasso": {
+          "texto": "Foi só um café mesmo. Riram das mesmas coisas de antes e se despediram com um abraço comprido demais para um café.",
+          "efeitos": { "ator.vinculo": 4, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Ir, mas voltar cedo",
+        "resumo": "tomou um café com {ator.quem} e voltou cedo",
+        "resultado": {
+          "texto": "Um café, meia hora de lembranças e um \"se cuida\" na porta. Em casa, {amor} perguntou onde você estava, e você contou. Quase tudo.",
+          "efeitos": { "ator.vinculo": 3, "ator.magoa": -3 }
+        }
+      },
+      {
+        "texto": "Dizer que agora não dá",
+        "resumo": "recusou o café com {ator.quem}",
+        "resultado": {
+          "texto": "\"Agora não dá\", você escreveu, e mostrou a mensagem para {amor} antes de mandar. {amor} fingiu que não se importava, com um sorriso que dizia o contrário.",
+          "efeitos": { "ator.vinculo": -3, "amor.vinculo": 2, "amor.confianca": 2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "contaram_do_caso",
+    "ator": ["amor"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["namoro", "ator.escondido_caso"] },
+    "texto": "{ator} chegou em casa e sentou sem tirar o casaco. {fonte.quem} tinha contado do caso, com data, lugar e o nome da pessoa.",
+    "resumo": "viu {fonte.quem} contar do caso a {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Contar tudo e pedir perdão",
+        "resumo": "contou tudo a {ator.quem} e pediu perdão",
+        "efeitos": { "removerMarcas": ["ator.escondido_caso"] },
+        "teste": { "decide": "perdao", "ajuste": -1.5 },
+        "sucesso": {
+          "texto": "{ator} ouviu até o fim e, semanas depois, disse que ia tentar, {porque}. Com {fonte}, {ator:ele|ela} nunca mais tocou no assunto; com você, tocou todo dia.",
+          "efeitos": { "ator.magoa": 25, "ator.confianca": -20, "felicidade": -3 }
+        },
+        "fracasso": {
+          "texto": "{ator} ouviu tudo e foi dormir fora, {porque}. Levou a escova de dente, o que diz muito.",
+          "efeitos": { "ator.magoa": 42, "ator.confianca": -30, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Dizer que é tudo invenção",
+        "resumo": "disse a {ator.quem} que o caso era invenção",
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "{ator} preferiu acreditar em você. {fonte} nunca mais foi convidad{fonte:o|a} para nada, e sabe muito bem por quê.",
+          "efeitos": { "ator.confianca": -8, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "{ator} tinha os prints que {fonte} mandou. Negar só piorou tudo, inclusive a parte que já não tinha como piorar.",
+          "efeitos": { "ator.magoa": 45, "ator.confianca": -35, "felicidade": -6, "removerMarcas": ["ator.escondido_caso"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chantagem_do_caso",
+    "tipo": "npc",
+    "ator": ["colega", "ex", "amigo", "irmao"],
+    "idade": [20, 80],
+    "peso": 4,
+    "tensao": 2,
+    "condicoes": { "marcas": ["namoro", "ator.sabe_caso", "amor.escondido_caso"], "ator.vinculo": { "max": 45 }, "ator.idade": { "min": 18 }, "dinheiro": { "min": 3000 } },
+    "texto": "{ator} mandou uma mensagem curta: sabe do caso, acha que {amor} merece saber e acha também que esse silêncio vale um dinheiro.",
+    "resumo": "foi chantagead{o|a} por {ator.quem} por causa do caso",
+    "escolhas": [
+      {
+        "texto": "Pagar pelo silêncio",
+        "resumo": "pagou {ator.quem} para não contar do caso",
+        "resultado": {
+          "texto": "Você pagou o que {ator} pediu e apagou a conversa. {ator} respondeu com um joinha, o que foi pior do que qualquer ameaça.",
+          "efeitos": { "patrimonioFator": 0.9, "ator.vinculo": -4, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Mandar contar, se tiver coragem",
+        "resumo": "desafiou {ator.quem} a contar do caso",
+        "teste": { "decide": "favor", "ajuste": -0.5 },
+        "sucesso": {
+          "texto": "{ator} pensou melhor e não contou, {porque}. Mas também não apagou a mensagem.",
+          "efeitos": { "ator.magoa": 6, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "{ator} não respondeu, {porque}. Você passou o resto do ano olhando o celular de {amor} de longe.",
+          "efeitos": { "ator.magoa": 10, "felicidade": -3, "agendar": [{ "evento": "contaram_do_caso", "em": 1, "sobre": "amor", "fonte": "ator" }] }
+        }
+      },
+      {
+        "texto": "Contar tudo a {amor} antes",
+        "resumo": "contou do caso a {amor} antes que {ator.quem} contasse",
+        "resultado": {
+          "texto": "Você sentou com {amor} e contou tudo, inclusive a chantagem. {amor} chorou, depois perguntou quem mais sabia. A lista era maior do que você queria.",
+          "efeitos": { "removerMarcas": ["amor.escondido_caso"], "amor.magoa": 24, "amor.confianca": -14, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "confessar_o_caso",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "confessar o caso",
+    "ator": ["amor"],
+    "idade": [18, 90],
+    "condicoes": { "marcas": ["namoro", "ator.escondido_caso"] },
+    "texto": "Você desligou a TV, pediu para {ator} sentar e contou do caso. Sem enfeite e sem desculpa pronta.",
+    "resumo": "confessou o caso a {ator.quem}",
+    "efeitos": { "removerMarcas": ["ator.escondido_caso"] },
+    "teste": { "decide": "perdao", "ajuste": 0.5 },
+    "sucesso": {
+      "texto": "{ator} ficou um tempo enorme em silêncio. Depois disse que ia tentar, {porque}, e que a confiança ia demorar.",
+      "repete": "{ator} ouviu de novo, {porque}. Disse que ia tentar de novo, mais devagar.",
+      "efeitos": { "ator.magoa": 18, "ator.confianca": -10, "felicidade": -2 }
+    },
+    "fracasso": {
+      "texto": "{ator} ouviu tudo e disse que precisava de um tempo, {porque}. O tempo começou naquela noite, no sofá.",
+      "repete": "{ator} disse que já tinha ouvido isso antes, {porque}.",
+      "efeitos": { "ator.magoa": 32, "ator.confianca": -22, "felicidade": -4 }
+    }
+  },
+  {
+    "id": "desabafar_o_caso",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "desabafar com {ator}",
+    "ator": ["amigo", "irmao", "mae"],
+    "idade": [18, 90],
+    "condicoes": { "marcas": ["namoro", "amor.escondido_caso"], "semMarcas": ["ator.sabe_caso", "ator.rompido"], "ator.vinculo": { "min": 40 }, "ator.idade": { "min": 16 } },
+    "texto": "Você chamou {ator} para um café e contou do caso. Precisava contar a alguém, e {ator} era a pessoa menos pior para isso.",
+    "resumo": "desabafou com {ator.quem} sobre o caso",
+    "teste": { "decide": "ouvir" },
+    "sucesso": {
+      "texto": "{ator} ouviu sem julgar, {porque}, e prometeu não contar a ninguém. Você saiu mais leve, e com uma pessoa a mais sabendo.",
+      "repete": "{ator} ouviu de novo, {porque}.",
+      "efeitos": { "marcas": ["ator.sabe_caso"], "ator.vinculo": 3, "felicidade": 3 }
+    },
+    "fracasso": {
+      "texto": "{ator} ficou do lado de {amor}, {porque}, e disse isso com todas as letras. Prometeu não contar. Prometeu.",
+      "repete": "{ator} ouviu de cara fechada, {porque}.",
+      "efeitos": { "marcas": ["ator.sabe_caso"], "ator.confianca": -8, "felicidade": 1 }
+    }
+  },
+  {
+    "id": "a_divida_escondida",
+    "ator": ["amor"],
+    "idade": [20, 75],
+    "peso": 7,
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["ator.escondido_divida"], "divida": { "min": 5000 } },
+    "texto": "A fatura chegou, e o número era maior do que o seu salário. {ator} perguntou, de passagem, se estava tudo certo com as contas.",
+    "resumo": "ouviu {ator.quem} perguntar das contas",
+    "escolhas": [
+      {
+        "texto": "Abrir o jogo",
+        "resumo": "abriu o jogo sobre a dívida com {ator.quem}",
+        "teste": { "decide": "ouvir" },
+        "sucesso": {
+          "texto": "{ator} pegou papel e caneta e fez as contas com você até meia-noite, {porque}. A dívida continuou do mesmo tamanho; o peso, não.",
+          "efeitos": { "ator.vinculo": 3, "ator.confianca": 4, "felicidade": 1 }
+        },
+        "fracasso": {
+          "texto": "{ator} ficou brav{ator:o|a} com o tamanho do buraco, {porque}, e mais ainda com o tempo que você levou para contar.",
+          "efeitos": { "ator.magoa": 10, "ator.confianca": -4, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Dizer que está tudo sob controle",
+        "resumo": "escondeu a dívida de {ator.quem}",
+        "resultado": {
+          "texto": "\"Tudo sob controle\", você disse, e guardou a fatura dentro do livro que ninguém lê. Por enquanto, funcionou.",
+          "efeitos": { "felicidade": 2, "marcas": ["ator.escondido_divida"], "agendar": [{ "evento": "a_divida_vem_a_tona", "em": [2, 6] }] }
+        }
+      },
+      {
+        "texto": "Esconder, mas desabafar com a mãe",
+        "resumo": "escondeu a dívida de {ator.quem} e contou a {mae}",
+        "condicoes": { "mae.vivo": true },
+        "bloqueio": "a sua mãe já não está aqui para isso",
+        "resultado": {
+          "texto": "{mae} ouviu a história inteira, suspirou e disse que não ia contar a ninguém. Você dormiu melhor, mesmo sem pagar nada.",
+          "efeitos": { "felicidade": 3, "mae.vinculo": 3, "marcas": ["ator.escondido_divida", "mae.sabe_divida"], "agendar": [{ "evento": "a_divida_vem_a_tona", "em": [2, 6] }] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_aposta_escondida",
+    "ator": ["amor"],
+    "idade": [18, 75],
+    "peso": 6,
+    "condicoes": { "marcas": ["namoro", "apostador"], "semMarcas": ["ator.escondido_divida"] },
+    "texto": "O cartão foi recusado no mercado, na frente de {ator}. Você sabe por quê: a bet de madrugada levou o que tinha e um pouco do que não tinha.",
+    "resumo": "teve o cartão recusado na frente de {ator.quem} por causa da bet",
+    "escolhas": [
+      {
+        "texto": "Contar da bet",
+        "resumo": "contou da bet a {ator.quem}",
+        "teste": { "decide": "ouvir", "ajuste": -0.5 },
+        "sucesso": {
+          "texto": "{ator} pediu para ver o aplicativo e apagou junto com você, {porque}. Ficou a dívida e um pouco mais de vergonha.",
+          "efeitos": { "ator.vinculo": 2, "ator.confianca": 2, "felicidade": -1, "removerMarcas": ["apostador"] }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que não ia sustentar vício de ninguém, {porque}, e foi dormir cedo.",
+          "efeitos": { "ator.magoa": 12, "ator.confianca": -8, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Dizer que o banco errou",
+        "resumo": "escondeu de {ator.quem} a dívida da bet",
+        "resultado": {
+          "texto": "\"Esse banco vive errando\", você disse, e pagou o mercado no Pix de um amigo. Em casa, apagou o aplicativo. Por uma semana.",
+          "efeitos": { "divida": 3000, "felicidade": 1, "marcas": ["ator.escondido_divida"], "agendar": [{ "evento": "a_divida_vem_a_tona", "em": [2, 6] }] }
+        }
+      },
+      {
+        "texto": "Esconder, mas pedir ajuda à mãe",
+        "resumo": "escondeu a bet de {ator.quem} e pediu ajuda a {mae}",
+        "condicoes": { "mae.vivo": true },
+        "bloqueio": "a sua mãe já não está aqui para isso",
+        "resultado": {
+          "texto": "{mae} ouviu tudo, fez o sinal da cruz e prometeu não contar a ninguém. Também prometeu rezar, o que ninguém pediu.",
+          "efeitos": { "divida": 3000, "felicidade": 2, "mae.vinculo": 2, "marcas": ["ator.escondido_divida", "mae.sabe_divida"], "agendar": [{ "evento": "a_divida_vem_a_tona", "em": [2, 6] }] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_divida_vem_a_tona",
+    "ator": ["amor"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["namoro", "ator.escondido_divida"] },
+    "texto": "O banco ligou no fixo de casa, e quem atendeu foi {ator}. A moça da cobrança foi muito educada e muito específica.",
+    "resumo": "teve a dívida descoberta por {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Mostrar a fatura e as contas",
+        "resumo": "mostrou a {ator.quem} a fatura e as contas",
+        "efeitos": { "removerMarcas": ["ator.escondido_divida"] },
+        "teste": { "decide": "perdao", "ajuste": 0.5 },
+        "sucesso": {
+          "texto": "{ator} sentou com você e montou uma planilha, {porque}. Disse que o problema não era a dívida, era o segredo. Era a dívida também.",
+          "efeitos": { "ator.magoa": 8, "ator.confianca": -6, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "{ator} quis saber o que mais você escondia, {porque}. A pergunta ficou no ar por semanas.",
+          "efeitos": { "ator.magoa": 18, "ator.confianca": -12, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Dizer que foi engano do banco",
+        "resumo": "disse a {ator.quem} que a cobrança era engano",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "\"Esses bancos erram muito\", disse {ator}, sem muita convicção. A fatura mudou de livro.",
+          "efeitos": { "ator.confianca": -4, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "{ator} ligou de volta para o banco, no viva-voz. A moça confirmou tudo, com o mesmo bom humor.",
+          "efeitos": { "ator.magoa": 20, "ator.confianca": -16, "felicidade": -4, "removerMarcas": ["ator.escondido_divida"] }
+        }
+      }
+    ]
+  },
+  {
+    "id": "contaram_da_divida",
+    "ator": ["amor"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["namoro", "ator.escondido_divida"] },
+    "texto": "{ator} chegou com cara de quem já sabia. {fonte.quem} tinha comentado da sua dívida, achando que {ator:ele|ela} sabia.",
+    "resumo": "viu {fonte.quem} contar da dívida a {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Abrir as contas de uma vez",
+        "resumo": "abriu as contas para {ator.quem}",
+        "efeitos": { "removerMarcas": ["ator.escondido_divida"] },
+        "teste": { "decide": "perdao" },
+        "sucesso": {
+          "texto": "{ator} leu tudo, respirou fundo e disse que a dívida a gente paga, {porque}. A mentira, demora mais.",
+          "efeitos": { "ator.magoa": 10, "ator.confianca": -8, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que soube pela boca dos outros, {porque}, e que isso doía mais que o número.",
+          "efeitos": { "ator.magoa": 20, "ator.confianca": -15, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Brigar com quem contou",
+        "resumo": "brigou com quem contou da dívida a {ator.quem}",
+        "resultado": {
+          "texto": "Você passou meia hora falando mal de {fonte}. {ator} achou estranho você ficar mais brav{o|a} com {fonte} do que com a dívida, e disse.",
+          "efeitos": { "removerMarcas": ["ator.escondido_divida"], "ator.magoa": 14, "ator.confianca": -10, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "confessar_a_divida",
+    "tipo": "acao",
+    "verbo": "poupar",
+    "rotulo": "confessar a dívida",
+    "ator": ["amor"],
+    "idade": [20, 85],
+    "condicoes": { "marcas": ["namoro", "ator.escondido_divida"] },
+    "texto": "Você pôs a fatura em cima da mesa, antes que alguém pusesse por você, e contou a {ator} quanto deve.",
+    "resumo": "confessou a dívida a {ator.quem}",
+    "efeitos": { "removerMarcas": ["ator.escondido_divida"] },
+    "teste": { "decide": "perdao", "ajuste": 1 },
+    "sucesso": {
+      "texto": "{ator} suspirou e puxou uma cadeira, {porque}. Fizeram as contas juntos, e o número ficou menor só de ser dito.",
+      "repete": "{ator} puxou a cadeira de novo, {porque}.",
+      "efeitos": { "ator.magoa": 5, "ator.confianca": -3, "ator.vinculo": 2, "felicidade": 1 }
+    },
+    "fracasso": {
+      "texto": "{ator} perguntou desde quando, {porque}. A resposta não ajudou.",
+      "repete": "{ator} perguntou desde quando, de novo, {porque}.",
+      "efeitos": { "ator.magoa": 14, "ator.confianca": -10, "felicidade": -2 }
+    }
+  },
+  {
+    "id": "a_festa_escondida",
+    "ator": ["amigo"],
+    "idade": [14, 17],
+    "peso": 2,
+    "condicoes": { "mae.vivo": true, "semMarcas": ["mae.escondido_festa"], "ator.idade": { "min": 13 } },
+    "texto": "{ator} chamou para uma festa no sábado, numa casa que ninguém sabe direito de quem é. Para {mae}, a ideia era você passar a noite estudando na casa {ator:dele|dela}.",
+    "resumo": "foi chamad{o|a} por {ator.quem} para uma festa",
+    "escolhas": [
+      {
+        "texto": "Ir e manter a história do estudo",
+        "resumo": "foi à festa dizendo que ia estudar",
+        "resultado": {
+          "texto": "A festa foi tudo o que prometia, e mais um pouco. Você entrou em casa às seis da manhã, com o tênis na mão, e {mae} dormia.",
+          "efeitos": { "felicidade": 4, "ator.vinculo": 4, "marcas": ["mae.escondido_festa", "ator.sabe_festa"], "agendar": [{ "evento": "a_foto_da_festa", "em": [2, 4], "sobre": "mae" }] }
+        }
+      },
+      {
+        "texto": "Pedir para ir de verdade",
+        "resumo": "pediu a {mae} para ir à festa",
+        "teste": { "atributo": "mae.confianca", "dificuldade": 62 },
+        "sucesso": {
+          "texto": "{mae} deixou, com hora para voltar e três ligações no meio. Você voltou na hora. Quase.",
+          "efeitos": { "felicidade": 3, "mae.confianca": 3, "ator.vinculo": 2 }
+        },
+        "fracasso": {
+          "texto": "{mae} disse não, e o assunto morreu ali, junto com o seu sábado.",
+          "efeitos": { "felicidade": -2, "ator.vinculo": -2 }
+        }
+      },
+      {
+        "texto": "Ficar em casa",
+        "resumo": "ficou em casa no sábado da festa",
+        "resultado": {
+          "texto": "Você viu a festa pelos stories. Parecia ótima, o que piorou tudo.",
+          "efeitos": { "felicidade": -1, "ator.vinculo": -2, "mae.confianca": 1 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_irmao_viu",
+    "tipo": "npc",
+    "ator": ["irmao"],
+    "idade": [14, 18],
+    "peso": 8,
+    "tensao": 2,
+    "condicoes": { "marcas": ["mae.escondido_festa"], "semMarcas": ["ator.sabe_festa"], "ator.idade": { "min": 8 } },
+    "texto": "{ator} viu você entrando pela janela às seis da manhã, com o tênis na mão. Não disse nada. Sorriu, o que foi pior.",
+    "resumo": "foi vist{o|a} por {ator.quem} chegando da festa",
+    "escolhas": [
+      {
+        "texto": "Comprar o silêncio com a sobremesa",
+        "resumo": "comprou o silêncio de {ator.quem} com a sobremesa do mês",
+        "resultado": {
+          "texto": "{ator} aceitou a sobremesa de um mês e a louça de duas semanas. Negociou como gente grande.",
+          "efeitos": { "marcas": ["ator.sabe_festa"], "ator.vinculo": 2, "felicidade": -1 }
+        }
+      },
+      {
+        "texto": "Ameaçar contar o que {ator:ele|ela} apronta",
+        "resumo": "ameaçou {ator.quem} para não contar da festa",
+        "resultado": {
+          "texto": "{ator} jurou que não ia contar. Jurou de dedos cruzados, mas jurou.",
+          "efeitos": { "marcas": ["ator.sabe_festa"], "ator.magoa": 8, "ator.vinculo": -3 }
+        }
+      },
+      {
+        "texto": "Pedir com jeitinho",
+        "resumo": "pediu com jeitinho para {ator.quem} guardar segredo",
+        "teste": { "decide": "favor" },
+        "sucesso": {
+          "texto": "{ator} prometeu guardar, {porque}. Vocês viraram cúmplices, coisa que dura mais que qualquer festa.",
+          "efeitos": { "marcas": ["ator.sabe_festa"], "ator.vinculo": 3 }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que ia pensar, {porque}. Você passou a semana sendo muito simpátic{o|a}.",
+          "efeitos": { "marcas": ["ator.sabe_festa"], "ator.magoa": 4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_foto_da_festa",
+    "ator": ["mae"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["ator.escondido_festa"] },
+    "texto": "Uma prima marcou você numa foto da festa. Às duas da tarde, {ator} já tinha visto, salvado e mandado para o grupo da família.",
+    "resumo": "teve a festa descoberta por {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Contar a verdade",
+        "resumo": "contou a verdade da festa a {ator.quem}",
+        "resultado": {
+          "texto": "Um mês sem celular e sem sábado. {ator} disse que o pior não foi a festa, foi a mentira, e você entendeu as duas coisas.",
+          "efeitos": { "removerMarcas": ["ator.escondido_festa"], "ator.confianca": -5, "felicidade": -2 }
+        }
+      },
+      {
+        "texto": "Dizer que a foto é antiga",
+        "resumo": "disse a {ator.quem} que a foto da festa era antiga",
+        "teste": { "chance": 0.3 },
+        "sucesso": {
+          "texto": "{ator} olhou a foto, olhou para você e deixou passar. Desta vez.",
+          "efeitos": { "ator.confianca": -2 }
+        },
+        "fracasso": {
+          "texto": "A foto tinha data, hora e a sua camiseta nova. Castigo dobrado.",
+          "efeitos": { "removerMarcas": ["ator.escondido_festa"], "ator.confianca": -10, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "contaram_da_festa",
+    "ator": ["mae"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["ator.escondido_festa"] },
+    "texto": "{ator} esperou você na cozinha, com a luz acesa. {fonte.quem} tinha contado da festa, com detalhes que nem você lembrava.",
+    "resumo": "viu {fonte.quem} contar da festa a {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Assumir e aceitar o castigo",
+        "resumo": "assumiu a festa e aceitou o castigo",
+        "resultado": {
+          "texto": "Um mês sem sábado. {ator} disse que preferia ter sabido por você, e que da próxima vez é para pedir.",
+          "efeitos": { "removerMarcas": ["ator.escondido_festa"], "ator.confianca": -4, "felicidade": -3 }
+        }
+      },
+      {
+        "texto": "Dizer que é exagero",
+        "resumo": "disse a {ator.quem} que a história da festa era exagero",
+        "teste": { "chance": 0.4 },
+        "sucesso": {
+          "texto": "{ator} olhou para você, depois para {fonte}, e resolveu não brigar com ninguém. Por enquanto.",
+          "efeitos": { "ator.confianca": -2, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "{ator} já tinha ligado para a mãe {fonte:do|da} {fonte}. Castigo dobrado, e a fama junto.",
+          "efeitos": { "removerMarcas": ["ator.escondido_festa"], "ator.confianca": -8, "felicidade": -4 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_esquema_do_colega",
+    "ator": ["colega"],
+    "idade": [22, 65],
+    "peso": 2,
+    "condicoes": { "chefe.vivo": true, "semMarcas": ["chefe.escondido_esquema", "ator.sabe_esquema"], "ator.idade": { "min": 20 } },
+    "texto": "{ator} chamou você para um café fora da firma e explicou, baixinho, como dá para tirar um dinheiro por fora do contrato com o fornecedor. Só falta a sua assinatura.",
+    "resumo": "ouviu {ator.quem} propor um dinheiro por fora",
+    "escolhas": [
+      {
+        "texto": "Entrar no esquema",
+        "resumo": "entrou no esquema do fornecedor com {ator.quem}",
+        "resultado": {
+          "texto": "Você assinou. No fim do mês, chegou um Pix com a descrição \"consultoria\". Ninguém perguntou nada, e você não perguntou de onde vinha.",
+          "efeitos": { "dinheiro": 6000, "felicidade": 1, "ator.vinculo": 6, "marcas": ["chefe.escondido_esquema", "ator.sabe_esquema"], "agendar": [{ "evento": "a_auditoria", "em": [3, 10], "sobre": "chefe" }] }
+        }
+      },
+      {
+        "texto": "Recusar",
+        "resumo": "recusou o esquema de {ator.quem}",
+        "resultado": {
+          "texto": "{ator} riu, disse que era brincadeira e nunca mais te chamou para café.",
+          "efeitos": { "ator.vinculo": -4, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Contar ao chefe",
+        "resumo": "contou ao chefe o esquema de {ator.quem}",
+        "resultado": {
+          "texto": "{chefe} agradeceu e chamou {ator} para uma conversa de portas fechadas. {ator} continuou na firma e nunca mais te olhou do mesmo jeito.",
+          "efeitos": { "chefe.confianca": 8, "chefe.vinculo": 4, "ator.magoa": 20, "ator.vinculo": -15 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "chantagem_do_esquema",
+    "tipo": "npc",
+    "ator": ["colega"],
+    "idade": [22, 70],
+    "peso": 4,
+    "tensao": 2,
+    "condicoes": { "chefe.vivo": true, "marcas": ["ator.sabe_esquema", "chefe.escondido_esquema"], "ator.vinculo": { "max": 50 }, "dinheiro": { "min": 2000 } },
+    "texto": "{ator} apareceu na sua mesa com um papel dobrado: a cópia do contrato, com a sua assinatura. Disse que a parte {ator:dele|dela} anda pequena.",
+    "resumo": "foi chantagead{o|a} por {ator.quem} por causa do esquema",
+    "escolhas": [
+      {
+        "texto": "Dar a parte que pede",
+        "resumo": "pagou {ator.quem} para não contar do esquema",
+        "resultado": {
+          "texto": "Você pagou o que {ator} pediu. {ator} guardou o papel no bolso de dentro do paletó, onde dá para ver.",
+          "efeitos": { "patrimonioFator": 0.88, "felicidade": -2, "ator.vinculo": -2 }
+        }
+      },
+      {
+        "texto": "Mandar contar, se tiver coragem",
+        "resumo": "desafiou {ator.quem} a contar do esquema",
+        "teste": { "decide": "favor", "ajuste": -0.5 },
+        "sucesso": {
+          "texto": "{ator} guardou o papel, {porque}. Guardou, não rasgou.",
+          "efeitos": { "ator.magoa": 6, "felicidade": -1 }
+        },
+        "fracasso": {
+          "texto": "{ator} não respondeu, {porque}. Na semana seguinte, entrou na sala do chefe e demorou.",
+          "efeitos": { "ator.magoa": 12, "felicidade": -3, "agendar": [{ "evento": "contaram_do_esquema", "em": 1, "sobre": "chefe", "fonte": "ator" }] }
+        }
+      },
+      {
+        "texto": "Contar tudo ao chefe antes",
+        "resumo": "contou do esquema ao chefe antes que {ator.quem} contasse",
+        "resultado": {
+          "texto": "Você devolveu o que recebeu e contou tudo a {chefe}. Ficou com o emprego e sem a confiança. {ator} levou uma advertência e a fama; você, só a fama.",
+          "efeitos": { "removerMarcas": ["chefe.escondido_esquema"], "dinheiro": -4000, "chefe.confianca": -18, "chefe.magoa": 12, "ator.magoa": 15, "felicidade": -3 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "contaram_do_esquema",
+    "ator": ["chefe"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["ator.escondido_esquema"] },
+    "texto": "{ator} chamou você na sala e fechou a porta. Em cima da mesa, a cópia do contrato com o fornecedor. {fonte.quem} tinha contado tudo.",
+    "resumo": "viu {fonte.quem} contar do esquema a {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Devolver tudo e pedir uma chance",
+        "resumo": "devolveu o dinheiro do esquema e pediu uma chance a {ator.quem}",
+        "efeitos": { "removerMarcas": ["ator.escondido_esquema"], "dinheiro": -4000 },
+        "teste": { "decide": "chance", "ajuste": -1 },
+        "sucesso": {
+          "texto": "{ator} aceitou o dinheiro de volta e deu a chance, {porque}. Você vai passar anos sendo a pessoa mais honesta do andar.",
+          "efeitos": { "ator.confianca": -20, "ator.magoa": 10, "felicidade": -3 }
+        },
+        "fracasso": {
+          "texto": "{ator} aceitou o dinheiro de volta e não deu a chance, {porque}. O seu nome saiu da lista de promoção e entrou na de quem é bom vigiar.",
+          "efeitos": { "ator.confianca": -32, "ator.magoa": 25, "ator.vinculo": -15, "felicidade": -6 }
+        }
+      },
+      {
+        "texto": "Negar tudo",
+        "resumo": "negou o esquema para {ator.quem}",
+        "teste": { "chance": 0.25 },
+        "sucesso": {
+          "texto": "{ator} não tinha como provar. Ficou o contrato, a dúvida e uma câmera nova no corredor.",
+          "efeitos": { "ator.confianca": -12, "felicidade": -2 }
+        },
+        "fracasso": {
+          "texto": "{ator} tinha o extrato do Pix, que {fonte} fez o favor de imprimir. Você saiu da sala sem o esquema e sem o chefe do seu lado.",
+          "efeitos": { "removerMarcas": ["ator.escondido_esquema"], "dinheiro": -4000, "ator.confianca": -35, "ator.magoa": 30, "ator.vinculo": -20, "felicidade": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_auditoria",
+    "ator": ["chefe"],
+    "peso": 1,
+    "apenasAgendado": true,
+    "condicoes": { "marcas": ["ator.escondido_esquema"] },
+    "texto": "A auditoria chegou numa segunda-feira, com pastas, café e perguntas. Na quarta, {ator} chamou você para explicar uma nota de \"consultoria\".",
+    "resumo": "teve o esquema descoberto pela auditoria",
+    "escolhas": [
+      {
+        "texto": "Assumir e devolver",
+        "resumo": "assumiu o esquema para {ator.quem} e devolveu o dinheiro",
+        "efeitos": { "removerMarcas": ["ator.escondido_esquema"], "dinheiro": -4000 },
+        "teste": { "decide": "chance" },
+        "sucesso": {
+          "texto": "{ator} disse que a auditoria ia constar no seu histórico e você ia continuar, {porque}. Constou.",
+          "efeitos": { "ator.confianca": -18, "ator.magoa": 8, "felicidade": -3 }
+        },
+        "fracasso": {
+          "texto": "{ator} disse que não dava para fingir que não viu, {porque}. Você continuou na firma, numa mesa perto da porta.",
+          "efeitos": { "ator.confianca": -30, "ator.magoa": 22, "ator.vinculo": -12, "felicidade": -5 }
+        }
+      },
+      {
+        "texto": "Dizer que não sabia de nada",
+        "resumo": "disse a {ator.quem} que não sabia do esquema",
+        "teste": { "chance": 0.35 },
+        "sucesso": {
+          "texto": "A assinatura era sua, mas a ideia não parecia. A auditoria anotou e foi embora.",
+          "efeitos": { "ator.confianca": -10, "felicidade": -2, "removerMarcas": ["ator.escondido_esquema"] }
+        },
+        "fracasso": {
+          "texto": "A auditoria tinha a mensagem em que você combinava a \"consultoria\". Ninguém mais acreditou em nada que você disse naquele ano.",
+          "efeitos": { "removerMarcas": ["ator.escondido_esquema"], "dinheiro": -4000, "ator.confianca": -35, "ator.magoa": 28, "ator.vinculo": -18, "felicidade": -6 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "confessar_o_esquema",
+    "tipo": "acao",
+    "verbo": "trabalhar",
+    "rotulo": "confessar o esquema",
+    "ator": ["chefe"],
+    "idade": [22, 75],
+    "condicoes": { "marcas": ["ator.escondido_esquema"] },
+    "texto": "Você bateu na porta de {ator}, sentou e contou do dinheiro por fora, do começo ao fim.",
+    "resumo": "confessou o esquema a {ator.quem}",
+    "efeitos": { "removerMarcas": ["ator.escondido_esquema"], "dinheiro": -4000 },
+    "teste": { "decide": "chance", "ajuste": 0.5 },
+    "sucesso": {
+      "texto": "{ator} ficou um tempo olhando pela janela. Disse que valorizava a coragem, {porque}, e que o dinheiro ia voltar para a firma até o último centavo.",
+      "repete": "{ator} ouviu de novo, {porque}, e descontou de novo.",
+      "efeitos": { "ator.confianca": -10, "ator.magoa": 5, "felicidade": 1 }
+    },
+    "fracasso": {
+      "texto": "{ator} agradeceu a sinceridade, {porque}, e disse que ia ter de pensar no que fazer com ela. Pensou por meses.",
+      "repete": "{ator} ouviu de novo, {porque}, e pensou de novo, por mais tempo.",
+      "efeitos": { "ator.confianca": -22, "ator.magoa": 15, "ator.vinculo": -8, "felicidade": -2 }
+    }
+  }
+]

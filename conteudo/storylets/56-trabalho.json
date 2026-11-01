@@ -428,7 +428,7 @@
     "ator": ["colega"],
     "idade": [22, 65],
     "peso": 3,
-    "condicoes": { "marcas": ["namoro"], "semMarcas": ["amor.caso_escondido"], "ator.vinculo": { "min": 45 }, "ator.idade": { "min": 20 } },
+    "condicoes": { "marcas": ["namoro"], "semMarcas": ["amor.escondido_caso"], "ator.vinculo": { "min": 45 }, "ator.idade": { "min": 20 } },
     "texto": "Festa de fim de ano da firma. Depois da terceira caipirinha, {ator} disse que sempre teve uma queda por você, e a mão {ator:dele|dela} ficou no seu braço mais tempo do que devia.",
     "resumo": "teve uma noite de tentação com {ator.quem} na festa da firma",
     "escolhas": [
@@ -446,7 +446,7 @@
         "teste": { "chance": 0.55 },
         "sucesso": {
           "texto": "Ninguém viu, ninguém soube. No dia seguinte, {ator} mandou um bom-dia com emoji, e você apagou a conversa no elevador.",
-          "efeitos": { "ator.vinculo": 8, "felicidade": 2, "marcas": ["amor.caso_escondido"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 20], "sobre": "amor" }] }
+          "efeitos": { "ator.vinculo": 8, "felicidade": 2, "marcas": ["amor.escondido_caso", "ator.sabe_caso"], "agendar": [{ "evento": "o_caso_vem_a_tona", "em": [2, 20], "sobre": "amor" }] }
         },
         "fracasso": {
           "texto": "Alguém da firma postou uma foto da festa. {amor} viu antes de você acordar.",
@@ -469,14 +469,14 @@
     "ator": ["amor"],
     "idade": [22, 85],
     "peso": 2,
-    "condicoes": { "marcas": ["namoro", "ator.caso_escondido"] },
+    "condicoes": { "marcas": ["namoro", "ator.escondido_caso"] },
     "texto": "{ator} achou a conversa que você apagou do celular e esqueceu de apagar do computador. Leu tudo duas vezes antes de você chegar em casa.",
     "resumo": "teve um segredo descoberto por {ator}",
     "escolhas": [
       {
         "texto": "Contar tudo e pedir perdão",
         "resumo": "contou tudo a {ator} e pediu perdão",
-        "efeitos": { "removerMarcas": ["ator.caso_escondido"] },
+        "efeitos": { "removerMarcas": ["ator.escondido_caso"] },
         "teste": { "decide": "perdao", "ajuste": -1.5 },
         "sucesso": {
           "texto": "{ator} chorou, gritou e, semanas depois, disse que ia tentar, {porque}. A confiança vai demorar a voltar, se voltar.",
@@ -497,7 +497,7 @@
         },
         "fracasso": {
           "texto": "{ator} tinha os prints. Negar só piorou tudo, inclusive a parte que já não tinha como piorar.",
-          "efeitos": { "ator.magoa": 45, "ator.confianca": -35, "felicidade": -5, "removerMarcas": ["ator.caso_escondido"] }
+          "efeitos": { "ator.magoa": 45, "ator.confianca": -35, "felicidade": -5, "removerMarcas": ["ator.escondido_caso"] }
         }
       }
     ]
@@ -509,7 +509,7 @@
     "idade": [22, 85],
     "peso": 3,
     "tensao": 2,
-    "condicoes": { "marcas": ["namoro", "ator.caso_escondido"] },
+    "condicoes": { "marcas": ["namoro", "ator.escondido_caso"] },
     "texto": "{ator} começou a olhar o seu celular quando você vai ao banheiro. Ontem, no meio da novela, perguntou do nada se estava tudo bem entre vocês.",
     "resumo": "percebeu que {ator.quem} desconfiava de alguma coisa",
     "escolhas": [
@@ -518,7 +518,7 @@
         "resumo": "contou do caso a {ator.quem} antes que {ator:ele|ela} descobrisse",
         "resultado": {
           "texto": "Você contou tudo, sem enfeite. {ator} ouviu até o fim e foi dormir no sofá, o que pelo menos foi decisão {ator:dele|dela}.",
-          "efeitos": { "removerMarcas": ["ator.caso_escondido"], "ator.magoa": 22, "ator.confianca": -15, "felicidade": -3 }
+          "efeitos": { "removerMarcas": ["ator.escondido_caso"], "ator.magoa": 22, "ator.confianca": -15, "felicidade": -3 }
         }
       },
       {

@@ -101,6 +101,11 @@ const Agendamento = z.strictObject({
   em: z.union([z.number().int().min(1), z.tuple([z.number().int().min(1), z.number().int().min(1)])]),
   /** De quem o storylet agendado vai tratar (o ator dele); sem isso, o ator de agora (ou o filho que acabou de nascer). */
   sobre: z.enum(PAPEIS).optional(),
+  /**
+   * Quem contou (segredos.ts): o ator de agora, que o storylet agendado chama de {fonte} (a chantagem recusada que vira
+   * revelação). Só com `sobre`, e o agendado precisa ser a revelação de um segredo.
+   */
+  fonte: z.literal('ator').optional(),
 });
 
 /** Como a empresa de quem joga nasce: o setor, de onde vem o valor e quanto é de quem joga. */
@@ -658,6 +663,8 @@ export const Traco = z.strictObject({
   herdeiro: z.string().optional(),
   /** Quanto da mágoa com quem joga passa por ano (0 a 1; sem isso, PERDAO_BASE): o generoso perdoa, o rígido guarda. */
   perdao: z.number().min(0).max(1).optional(),
+  /** Quanto a pessoa conta o que sabe (segredos.ts; 1 = normal): o piadista solta, o carinhoso guarda. */
+  lingua: z.number().min(0).max(3).optional(),
 });
 export type Traco = z.infer<typeof Traco>;
 
@@ -938,6 +945,36 @@ export const Mundo = z.strictObject({
       semTempo: z.strictObject({ texto: z.string(), resumo: z.string() }).optional(),
     }),
   ),
+  /**
+   * Os segredos (segredos.ts; missão Ω4): o que quem joga esconde de alguém. O alvo leva `escondido_<id>` e quem sabe,
+   * `sabe_<id>` (o conteúdo grava as duas na escolha que cria o segredo). Todo ano a notícia pode correr pelos círculos
+   * da pessoa que sabe; quem fica sabendo perde a `gravidade` de confiança em quem joga, e quando chega ao alvo vem a
+   * `revelacao` (o storylet agendado para o mesmo ano, com quem contou de {fonte}).
+   */
+  segredos: z.array(
+    z.strictObject({
+      id: z.string().regex(/^[a-z]+$/),
+      /** "o caso": o nome do segredo. */
+      nome: z.string(),
+      /** "do caso": completa "sabe…" e "não sabe…" (a folha Família). */
+      de: z.string(),
+      /** De quem é escondido: quando o alvo sai desses papéis (o amor que virou ex), o segredo perde o sentido e acaba calado. */
+      alvos: z.array(z.enum(PAPEIS)).min(1),
+      /** A confiança em quem joga que perde quem fica sabendo pela boca de outra pessoa. */
+      gravidade: z.number().min(0).max(40),
+      /** Quanto o segredo corre (1 = normal): a dívida vira assunto no almoço de domingo; o esquema, o cúmplice guarda. */
+      fofoca: z.number().min(0).max(3).optional(),
+      /** O storylet de quando a notícia chega ao alvo (só agendado; o ator é o alvo e {fonte} é quem contou). */
+      revelacao: id,
+      /** Quando vale, o segredo deixa de importar e acaba calado (a dívida paga antes de alguém descobrir). */
+      acaba: Condicoes.optional(),
+      /** Quem sabe sem ninguém contar: a pessoa (de ator) para quem a condição vale passa a saber (quem te emprestou sabe que você deve). */
+      sabem: Condicoes.optional(),
+      /** A notícia que chega a quem não é o alvo: {ator} ficou sabendo e {fonte} contou; o resumo completa "aos N, você…". */
+      soube: z.strictObject({ textos: z.array(z.string()).min(2), resumo: z.string() }),
+    }),
+  ),
 });
 export type Mundo = z.infer<typeof Mundo>;
 export type DefProjeto = Mundo['projetos'][number];
+export type DefSegredo = Mundo['segredos'][number];

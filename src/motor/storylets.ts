@@ -123,6 +123,8 @@ export interface Extras {
   inflacao?: number | undefined;
   /** A mesma ação do ano passado: o texto vira uma linha curta ("Estudou para as provas, mais um ano."). */
   repeticao?: boolean;
+  /** Quem contou o segredo (a revelação agendada com a fonte): o texto chama essa pessoa de {fonte}. */
+  fonte?: string;
 }
 
 /**
@@ -160,7 +162,7 @@ export function aplicarStorylet(e: EstadoVida, c: Conteudo, s: Storylet, ator: s
     ator,
     valores: ef.valores,
     trechos: s.trechos,
-    apelidos: ef.criados,
+    apelidos: extras.fonte ? { fonte: extras.fonte, ...ef.criados } : ef.criados,
   };
   entrada.texto = extras.repeticao
     ? `${capitalizar(renderizar(s.resumo, contexto(e, op)))}, mais um ano.`
@@ -231,9 +233,10 @@ export function apresentarStorylet(
   causa: 'diretor' | 'npc',
   causas: number[],
   inflacao?: number,
+  fonte?: string,
 ): void {
   marcarVisto(e, s, ator);
-  const ctx = contexto(e, { ator, valores: s.valores, trechos: s.trechos });
+  const ctx = contexto(e, { ator, valores: s.valores, trechos: s.trechos, apelidos: fonte ? { fonte } : undefined });
   const opcoes = opcoesDe(e, s, ator, ctx);
   if (opcoes.length > 0 && !opcoes.some((o) => o.disponivel)) opcoes[0]!.disponivel = true;
   e.pendente = {
@@ -245,6 +248,7 @@ export function apresentarStorylet(
     opcoes,
     ...(ator ? { ator } : {}),
     ...(inflacao !== undefined ? { inflacao } : {}),
+    ...(fonte ? { fonte } : {}),
   };
 }
 
@@ -259,6 +263,8 @@ export interface BaseDaEscolha {
   ator?: string | undefined;
   causas?: number[];
   inflacao?: number | undefined;
+  /** Quem contou o segredo, na revelação ({fonte} no desfecho). */
+  fonte?: string | undefined;
 }
 
 /** Aplica a escolha (efeitos certos, teste e desfecho) e lança a entrada no livro, com a causa do jogador. */
@@ -292,7 +298,8 @@ export function aplicarEscolha(e: EstadoVida, c: Conteudo, s: Storylet, indice: 
   } else resultado = esc.resultado!;
   aplicarEfeitos(e, c, resultado.efeitos, ef);
   if (porque?.entrada !== undefined) entrada.causas = [...new Set([porque.entrada, ...(entrada.causas ?? [])])];
-  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos: ef.criados, ...(porque ? { textos: { porque: porque.texto } } : {}) });
+  const apelidos = base.fonte ? { fonte: base.fonte, ...ef.criados } : ef.criados;
+  const ctx = contexto(e, { ator, valores: ef.valores, trechos: s.trechos, apelidos, ...(porque ? { textos: { porque: porque.texto } } : {}) });
   entrada.resumo = renderizar(s.resumo, ctx);
   entrada.escolha = { indice, texto: base.opcao, resumo: renderizar(resultado.resumo ?? esc.resumo, ctx) };
   entrada.resultado = textoDoDesfecho(e, resultado, ctx);
@@ -328,5 +335,6 @@ export function escolher(e: EstadoVida, c: Conteudo, indice: number): void {
     ator: p.ator,
     causas: p.causas,
     inflacao: p.inflacao,
+    fonte: p.fonte,
   });
 }

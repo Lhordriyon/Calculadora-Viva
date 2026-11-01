@@ -214,7 +214,9 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   for (const ag of ef.agendar ?? []) {
     const anos = typeof ag.em === 'number' ? ag.em : inteiro(e.rng, ag.em[0], ag.em[1]);
     const quem = ag.sobre ?? sobre;
-    e.agenda.push(quem ? { evento: ag.evento, ano: e.ano + anos, origem, ator: quem } : { evento: ag.evento, ano: e.ano + anos, origem });
+    // Quem contou o segredo é o ator de agora (a chantagem recusada): a revelação agendada fala dele como {fonte}.
+    const fonte = ag.fonte === 'ator' && ator ? { fonte: ator } : {};
+    e.agenda.push(quem ? { evento: ag.evento, ano: e.ano + anos, origem, ator: quem, ...fonte } : { evento: ag.evento, ano: e.ano + anos, origem });
   }
   if (ef.matar) {
     const papel = entidadeDe(ef.matar, ator);

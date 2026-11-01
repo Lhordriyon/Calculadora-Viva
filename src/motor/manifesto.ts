@@ -252,6 +252,15 @@ export const VONTADES = (vontades: readonly { id: string; papeis: readonly strin
 export const PROJETOS = (projetos: readonly { id: string; com?: readonly string[] | undefined }[]): string[] =>
   projetos.flatMap((p) => [`eu.projeto_${p.id}`, ...(p.com ?? []).map((papel) => `${papel}.projeto_${p.id}`)]);
 
+/**
+ * Os segredos (mundo.json › segredos, segredos.ts): quem sabe (`sabe_<id>`, em quem fala dos círculos) e de quem é
+ * escondido (`escondido_<id>`, nos papéis do alvo). O motor escreve as duas (quem ficou sabendo, o segredo que acabou) e
+ * lê (quem conta, a quem, e quando chega ao alvo).
+ */
+export const PAPEIS_DOS_SEGREDOS = ['mae', 'pai', 'avo', 'irmao', 'amor', 'filho', 'amigo', 'ex', 'colega', 'chefe'] as const;
+export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string[] }[]): string[] =>
+  segredos.flatMap((s) => [...PAPEIS_DOS_SEGREDOS.map((p) => `${p}.sabe_${s.id}`), ...s.alvos.map((p) => `${p}.escondido_${s.id}`)]);
+
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
@@ -593,6 +602,13 @@ export const ETAPAS_DO_ANO = [
     // A meta e as etapas são condições do conteúdo (mundo.json › projetos), que podem ler qualquer coisa da vida.
     le: ['*'],
     escreve: ['eu.projeto_*', 'pessoa.projeto_*', 'eu.felicidade'],
+  },
+  {
+    id: 'segredos',
+    nome: 'os segredos: quem sabe pode contar, e a notícia que chega ao alvo agenda a revelação',
+    // Quando o segredo deixa de importar é condição do conteúdo (mundo.json › segredos › acaba), que pode ler qualquer coisa.
+    le: ['*'],
+    escreve: ['pessoa.sabe_*', 'pessoa.escondido_*', 'pessoa.confianca', 'agenda'],
   },
   {
     id: 'regras',
