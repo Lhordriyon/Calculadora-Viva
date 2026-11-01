@@ -293,6 +293,13 @@ export const FELICIDADE_DA_DESISTENCIA = -1;
 /** O storylet que lê um projeto vivo pesa tanto a mais para o diretor: a vida apoia a história começada. */
 export const PESO_DO_PROJETO = 2;
 /**
+ * O ritmo (diretor.ts): o ano em que o que aconteceu tirou isto de felicidade é pesado; no ano seguinte, a história
+ * leve (a que dá felicidade, na média dos desfechos) pesa tanto a mais, e a pesada, tanto a menos.
+ */
+export const PESO_DO_ANO_PESADO = 8;
+export const RESPIRO_LEVE = 1.6;
+export const RESPIRO_PESADO = 0.6;
+/**
  * Os segredos (segredos.ts): a chance anual de quem sabe contar a alguém (antes do traço, da mágoa e do vínculo), o
  * teto dela, a idade a partir da qual se conta e se ouve, e a mágoa com que quem sabe conta direto ao alvo, mesmo fora
  * do círculo (a vingança).

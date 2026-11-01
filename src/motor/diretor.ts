@@ -14,7 +14,7 @@ import { causasDe, clausulas, idadeDaCausaMaisRecente } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { Storylet } from './esquema.ts';
 import { fatorNovidade } from './memoria.ts';
-import { PESO_DO_PROJETO, ritmo } from './regras.ts';
+import { PESO_DO_ANO_PESADO, PESO_DO_PROJETO, RESPIRO_LEVE, RESPIRO_PESADO, ritmo } from './regras.ts';
 import { aleatorio, sortearIndice } from './rng.ts';
 import { atoresPossiveis, elegivel, instanciaDe } from './storylets.ts';
 import type { EstadoVida, MemoriaJogador } from './tipos.ts';
@@ -42,7 +42,48 @@ export function saliencia(s: Storylet, e: EstadoVida, ator: string | undefined, 
   const recente = idadeDaCausaMaisRecente(s.condicoes, e, ator);
   const fresca = recente !== undefined && e.idade - recente <= 2 ? 2 : 1;
   const apoio = doProjeto(s) ? PESO_DO_PROJETO : 1;
-  return (s.peso ?? 1) * especificidade * fatorNovidade(memoria, instancia) * (1 / (1 + vezes)) * (s.tensao ?? 1) * fresca * apoio;
+  return (s.peso ?? 1) * especificidade * fatorNovidade(memoria, instancia) * (1 / (1 + vezes)) * (s.tensao ?? 1) * fresca * apoio * ritmoDoAno(s, e);
+}
+
+/**
+ * O ritmo (missão Ω6, I-128): depois de um ano pesado (a felicidade que o que aconteceu tirou passou de
+ * `regras.ts › PESO_DO_ANO_PESADO`), a vida respira: as histórias leves ganham a vez e as pesadas esperam. A leveza
+ * de um storylet é a média da felicidade que os desfechos dele dão.
+ */
+const LEVEZA = new WeakMap<Storylet, number>();
+function leveza(s: Storylet): number {
+  let v = LEVEZA.get(s);
+  if (v === undefined) {
+    const blocos = [s.efeitos, s.sucesso?.efeitos, s.fracasso?.efeitos, ...(s.escolhas ?? []).flatMap((x) => [x.efeitos, x.resultado?.efeitos, x.sucesso?.efeitos, x.fracasso?.efeitos])];
+    const fel = blocos.flatMap((b) => (b && typeof b.felicidade === 'number' ? [b.felicidade] : b ? [0] : []));
+    v = fel.length > 0 ? fel.reduce((a, b) => a + b, 0) / fel.length : 0;
+    LEVEZA.set(s, v);
+  }
+  return v;
+}
+
+/** A felicidade que o ano passado tirou, no que aconteceu (sem a deriva do ano); guardada pela última entrada do livro. */
+const PESO_DO_ANO = new WeakMap<object, number>();
+export function pesoDoAnoPassado(e: EstadoVida): number {
+  const ultima = e.historico[e.historico.length - 1];
+  if (!ultima) return 0;
+  const pronto = PESO_DO_ANO.get(ultima);
+  if (pronto !== undefined) return pronto;
+  let perdeu = 0;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.idade < e.idade - 1) break;
+    if (h.idade !== e.idade - 1 || h.tipo === 'regra') continue;
+    for (const m of h.mudancas ?? []) if (m.c === 'eu.felicidade' && (m.d ?? 0) < 0) perdeu -= m.d!;
+  }
+  PESO_DO_ANO.set(ultima, perdeu);
+  return perdeu;
+}
+
+function ritmoDoAno(s: Storylet, e: EstadoVida): number {
+  if (pesoDoAnoPassado(e) < PESO_DO_ANO_PESADO) return 1;
+  const l = leveza(s);
+  return l >= 1 ? RESPIRO_LEVE : l <= -2 ? RESPIRO_PESADO : 1;
 }
 
 /** Entre vários atores possíveis, o preferido pelo storylet (ou todos, se ele não prefere). */
