@@ -1,0 +1,115 @@
+[
+  {
+    "id": "oferecer_ajuda",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "dar uma força a {ator}",
+    "ator": ["mae", "pai", "avo", "irmao", "amigo", "filho"],
+    "preferir": "-ator.dinheiro",
+    "idade": [18, 95],
+    "condicoes": { "ator.idade": { "min": 18 }, "ator.dinheiro": { "max": 4000 }, "dinheiro": { "min": 6000 }, "semMarcas": ["ator.rompido", "ator.ausente"] },
+    "intervalo": 4,
+    "texto": "Você percebeu que o dinheiro de {ator} anda curto [pela geladeira|pelo celular de tela trincada|pelo jeito de mudar de assunto] e ofereceu ajuda, sem rodeio.",
+    "resumo": "ofereceu ajuda a {ator}",
+    "teste": { "decide": "aceitar" },
+    "sucesso": {
+      "texto": "{ator} aceitou, {porque}. Você mandou {transferido} e não tocou mais no assunto, que é o jeito certo de ajudar.",
+      "repete": "{ator} aceitou de novo, {porque}.",
+      "resumo": "ajudou {ator} com dinheiro quando o mês apertou",
+      "efeitos": { "transferir": { "de": "eu", "para": "ator", "fracao": 0.05, "max": 10000 }, "ator.vinculo": 6, "ator.confianca": 3, "felicidade": 2 }
+    },
+    "fracasso": {
+      "texto": "{ator} agradeceu e recusou, {porque}. Mas guardou a oferta, dava para ver.",
+      "repete": "Recusou de novo, {porque}.",
+      "efeitos": { "ator.vinculo": 2 }
+    }
+  },
+  {
+    "id": "socorro_com_as_criancas",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "pedir socorro a {ator}",
+    "ator": ["mae", "pai", "avo", "irmao", "amigo"],
+    "preferir": "+ator.vinculo",
+    "idade": [20, 60],
+    "condicoes": { "marcas": ["pai_mae"], "filho.idade": { "max": 10 }, "ator.idade": { "min": 16, "max": 80 }, "semMarcas": ["ator.rompido", "ator.ausente"] },
+    "intervalo": 2,
+    "texto": "Você pediu a {ator} para ficar com as crianças no fim de semana. [Era isso ou desmaiar no trabalho.|Fazia três meses que você não dormia uma noite inteira.|Você precisava de um sábado sem ninguém pedindo nada.]",
+    "resumo": "pediu socorro a {ator} com as crianças",
+    "teste": { "decide": "favor" },
+    "sucesso": {
+      "texto": "{ator} ficou com as crianças o fim de semana inteiro, {porque}. Você dormiu doze horas e acordou outra pessoa.",
+      "repete": "{ator} ficou com as crianças de novo, {porque}.",
+      "resumo": "teve um fim de semana de descanso graças a {ator}",
+      "efeitos": { "saude": 2, "felicidade": 3, "ator.vinculo": 2 }
+    },
+    "fracasso": {
+      "texto": "{ator} disse que não ia dar, {porque}. Você fez o fim de semana sozinh{o|a}, com um café na mão e outro esperando.",
+      "repete": "Não deu de novo, {porque}.",
+      "efeitos": { "felicidade": -2, "saude": -1 }
+    }
+  },
+  {
+    "id": "pede_um_favor_a_voce",
+    "tipo": "npc",
+    "ator": ["mae", "pai", "irmao", "amigo", "filho"],
+    "idade": [16, 85],
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "ator.idade": { "min": 18, "max": 85 }, "semMarcas": ["ator.rompido", "ator.ausente"] },
+    "texto": "{ator} vai se mudar no sábado e perguntou, com a voz de quem já sabe a resposta, se você ajuda a carregar as caixas. [São três andares sem elevador.|A geladeira não passa na porta, e todo mundo sabe disso menos {ator:ele|ela}.|O caminhão do frete cancelou na véspera.]",
+    "resumo": "recebeu um pedido de ajuda de {ator.quem} com a mudança",
+    "escolhas": [
+      {
+        "texto": "Ajudar o sábado inteiro",
+        "resumo": "ajudou {ator.quem} na mudança o sábado inteiro",
+        "resultado": {
+          "texto": "Você carregou caixa até as costas pedirem arrego. No fim, pizza no chão da casa nova, sem cadeira, e {ator} dizendo que nunca ia esquecer.",
+          "efeitos": { "saude": -1, "felicidade": -1, "ator.vinculo": 6, "ator.confianca": 3 }
+        }
+      },
+      {
+        "texto": "Pagar um frete e não ir",
+        "resumo": "pagou o frete da mudança de {ator.quem}",
+        "condicoes": { "dinheiro": { "min": 800 } },
+        "bloqueio": "o frete custa mais do que sobra no mês",
+        "resultado": {
+          "texto": "Você pagou o frete e mandou um áudio animado. {ator} agradeceu; a família comentou que você não apareceu.",
+          "efeitos": { "dinheiro": -600, "ator.vinculo": 2 }
+        }
+      },
+      {
+        "texto": "Dizer que não vai dar",
+        "resumo": "disse a {ator.quem} que não dava para ajudar na mudança",
+        "resultado": {
+          "texto": "Você disse que tinha compromisso. {ator} disse \"tranquilo\", e a palavra ficou meio torta no ar.",
+          "efeitos": { "ator.magoa": 7, "ator.vinculo": -2 }
+        }
+      }
+    ]
+  },
+  {
+    "id": "cupido_do_irmao",
+    "tipo": "acao",
+    "verbo": "familia",
+    "rotulo": "cupido para {ator}",
+    "ator": ["irmao"],
+    "idade": [20, 70],
+    "condicoes": { "ator.idade": { "min": 22, "max": 50 }, "semMarcas": ["ator.casado", "ator.rompido"] },
+    "intervalo": 5,
+    "texto": "Você armou um churrasco só para apresentar {ator} a uma pessoa do seu trabalho. [Disse que era coincidência, e ninguém acreditou.|Colocou os dois lado a lado na mesa, com a sutileza de um elefante.|Combinou com o resto da turma de ir embora cedo.]",
+    "resumo": "bancou o cupido de {ator}",
+    "teste": { "chance": 0.35 },
+    "sucesso": {
+      "texto": "Os dois conversaram até o carvão apagar, e você ficou com a louça. Na semana seguinte, {ator} te ligou só para dizer \"obrigad{ator:o|a}\", meio sem graça.",
+      "repete": "Deu certo de novo: os dois não largaram o celular.",
+      "resumo": "apresentou {ator} a quem viria a ser o par {ator:dele|dela}",
+      "efeitos": { "ator.vinculo": 4, "felicidade": 2, "agendar": [{ "evento": "casamento_do_irmao", "em": [1, 3] }] }
+    },
+    "fracasso": {
+      "texto": "O encontro durou um café e meio. No dia seguinte, {ator} te mandou uma mensagem curta: \"nunca mais\".",
+      "repete": "Mais um café e meio, e mais um \"nunca mais\".",
+      "efeitos": { "ator.vinculo": -1, "felicidade": -1 }
+    }
+  }
+]

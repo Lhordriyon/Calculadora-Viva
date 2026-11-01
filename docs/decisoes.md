@@ -1623,6 +1623,41 @@ O dono pediu um salto (26/10, `docs/auditoria-omega.md`): "o jogo está muito re
 - **A CPU sobe 11% a 13%** (cerca de 0,2 ms por ano simulado, no A/B na mesma máquina) para 75% mais pessoas por vida. O motor continua abaixo de 2,2 ms por ano; no navegador, o ano é o desenho da tela (45 ms na auditoria).
 - **O fechamento da camada é do dono**, com o salto inteiro: a `main` só recebe a missão Ω quando as camadas estiverem prontas.
 
+## Missão Ω, camada 2: os verbos sociais (01/11)
+
+A camada 1 pôs gente na vida; a 2 dá a essa gente voz. Antes, o que alguém respondia a quem joga era um dado no vínculo ou na confiança (`"teste": { "atributo": "ator.vinculo", "dificuldade": 45 }`): a mãe magoada e a mãe que você ajudou na semana passada respondiam igual. Agora a pessoa decide, pelo que viveu com você, e diz por quê; e o empréstimo entre pessoas é um contrato, com a mágoa do atraso e a confiança da quitação. Vai para o branch de trabalho, como a camada 1.
+
+**O que mudou** (`docs/motor.md › A pessoa decide`):
+- um teste novo para o conteúdo inteiro, `"decide": <pedido>` (`decisao.ts`): dinheiro, favor, perdão, outra chance, pagar, prazo, aceitar a ajuda, ouvir uma verdade; pesam o vínculo, a confiança, a mágoa, o traço, a opinião, o que você deu e pediu (do livro), o dinheiro que a pessoa tem, o aperto, a distância, a insistência e a dívida entre vocês;
+- o desfecho ganha `{porque}`, do ponto de vista da pessoa ("…, porque lembra de quando você pagou o conserto do carro dela, aos 31"), e a entrada da lembrança vira a primeira causa;
+- os 14 testes que davam um dado em alguém viram decisão (o perdão, as pazes, o Pix, as verdades, se defender, a última chance, o namoro que esfria, a volta do ex, a folga, o aumento, a metade da conta, o caso que vem à tona), com o tamanho de cada pedido (`ajuste`);
+- a promissória (`promissorias.ts`): o empréstimo entre quem joga e outra pessoa, com parcela, atraso, quitação, calote e morte, fora do banco e dentro do patrimônio; a folha Dinheiro mostra "Entre pessoas" e quita de uma vez;
+- 9 storylets novos (`57-emprestimos.json`: pegar emprestado, alguém pede a você, cobrar, ser cobrado, o devedor que some; `57-pedidos.json`: dar uma força a quem está apertado, pedir socorro com as crianças, ajudar na mudança, bancar o cupido do irmão); o empréstimo ao irmão vira contrato;
+- na folha, a ação em que a pessoa decide mostra como ela está ("deve dizer sim", "pode ser que sim", "difícil", "não tem como").
+
+**Medidas** (2.000 vidas do túnel rápido; antes = a camada 1 no mesmo túnel):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Vidas com um pedido respondido por alguém | — (o dado não era resposta) | 62,9% (15,6 respostas por vida, sim em 38%) |
+| Respostas cujo porquê cita o passado ("…, aos 31", a dívida em aberto) | — | 48,1% |
+| Vidas com empréstimo entre pessoas | 0% (o Pix era presente; o empréstimo ao irmão voltava ou não por sorteio) | 36,6% (2.625 empréstimos: 1.953 quitados, 287 calotes, 767 parcelas atrasadas) |
+| Saturação V5 / V20 | 53,3% / 88,3% | 53,6% / 87,5% |
+| Assinaturas por 1.000 vidas | 906 | 919 |
+| Contas e dívidas entrada por entrada | 0 problemas | 0 problemas (938 mil entradas, com as promissórias) |
+| Falsos dilemas / estratégia dominante | 0 / nenhuma | 0 / nenhuma |
+
+**Decisões tomadas sozinho:**
+- **Um teste a mais, não um sistema a mais.** Os verbos sociais podiam ser uma tela nova; são o mesmo storylet de sempre com um teste em que a pessoa decide. Vale para ação, iniciativa e evento, o validador cobra o ator, e a decisão lê o que a relação já guardava (o livro, a opinião, a mágoa): nenhum estado novo além da promissória.
+- **A conta é uma soma de motivos, e o porquê é o maior deles.** A logística da soma dá a chance (entre 3% e 97%); quem não tem o dinheiro pedido não empresta (zero). A opinião que nasceu da mesma lembrança (o presente e o "acha você generosa") conta uma vez só. Entre motivos quase do mesmo tamanho, a lembrança de verdade ganha na hora de dizer o porquê: com o motivo mais pesado puro, só 13% das respostas citavam o passado ("gosta de você" ganhava de "lembra de quando você…").
+- **O tamanho do pedido é do storylet.** Com a mesma conta, pedir aumento saía mais fácil que pedir folga, e perdoar um caso, mais fácil que um aniversário esquecido. O `ajuste` (−3 a 3) acerta isso no conteúdo: o aumento −1,2, a folga +0,3, o caso −1,5, a última chance +2 (quem faz as malas tem mágoa de 45 ou mais: sem o ajuste, ninguém ficava).
+- **A calibração seguiu o jogo.** Medi, nos estados de 300 vidas jogadas, a chance antiga e a nova de cada teste convertido; os pesos-base subiram onde a decisão saía muito mais dura do que o dado (o dinheiro, o perdão, o ouvir), e o resto ficou com a nova conta (pedir Pix toda hora agora cansa: a chance média caiu de 77% para 58%).
+- **O empréstimo entre pessoas não é do banco.** Sem juros, fora de `eu.divida`, sem nome sujo; credor e devedor pela pessoa (o número), para a dívida seguir quem muda de papel. Entra no patrimônio (o que tem a receber menos o que deve): pegar emprestado com a mãe não deixa ninguém mais rico.
+- **A parcela sai sozinha, e pode sair do investido.** Na primeira medida, a parcela só olhava a conta, e quem investia a sobra dava calote na mãe (836 calotes para 976 quitações); com a conta mais o investido (o resgate sai junto, como numa conta de verdade), 287 para 1.953.
+- **Atrasar magoa, calote marca, quitar devolve.** A primeira parcela atrasada é notícia (mágoa 8, confiança −8); os anos seguintes pesam calados (mágoa 4 por ano), para a linha do tempo não virar cobrança; três anos é calote (mágoa 18, confiança −22), que vira a pior lembrança; a última parcela devolve a confiança (+8). A pessoa lembra disso como coisa que você fez, e pagar o que se deve não conta como dar (sem isso, devolver o dinheiro da mãe fazia você "generoso").
+- **Quem morre leva a dívida.** Nos dois sentidos, com notícia; quem sai da vida (o colega do emprego que acabou) leva calado. A herança continua sendo do banco e dos bens: simples, e coerente com o resto.
+- **A pessoa diz como está, não a conta.** A folha mostra "deve dizer sim", "pode ser que sim", "difícil" ou "não tem como": dá para ler a pessoa antes de pedir sem fazer da relação uma planilha.
+
 ## Próximos passos (núcleo)
 
 - Ver `docs/roteiro.md`: a fase 2 substitui os próximos passos da fase 1.

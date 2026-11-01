@@ -147,8 +147,10 @@ export function decidir(e: EstadoVida, c: Conteudo, id: string, pedido: Pedido, 
   const confianca = Number(lerCaminho(e, `${id}.confianca`) ?? 60);
   const magoa = en.n['magoa'] ?? 0;
 
+  // O afeto e a distância também têm lembrança: a entrada que mais aproximou, e a falta que mais afastou.
   const pv = (w.vinculo * (vinculo - 50)) / 20;
-  somar({ tipo: pv >= 0 ? 'gosta' : 'distante', peso: pv });
+  const porqueDoVinculo = pv >= 0 ? historia.porque.afeto : historia.porque.faltou;
+  somar({ tipo: pv >= 0 ? 'gosta' : 'distante', peso: pv, ...(porqueDoVinculo !== undefined ? { entrada: porqueDoVinculo } : {}) });
   const pc = (w.confianca * (confianca - 60)) / 20;
   const porquePalavra = pc >= 0 ? historia.porque.palavraBem : historia.porque.palavraMal;
   somar({ tipo: pc >= 0 ? 'confia' : 'desconfia', peso: pc, ...(porquePalavra !== undefined ? { entrada: porquePalavra } : {}) });
@@ -222,12 +224,23 @@ export function valorDoPedido(ef: Efeitos | undefined, e: EstadoVida, ator: stri
   return Math.min(tem * (t.fracao ?? 0), t.max ?? Infinity);
 }
 
-/** O motivo que mais pesou para o lado da resposta (o maior a favor no sim, o maior contra no não). */
+/**
+ * Quanto uma lembrança de verdade vale a mais na hora de dizer o porquê: entre motivos quase do mesmo tamanho, a pessoa
+ * fala do que aconteceu ("lembra de quando você…"), não de um estado ("gosta de você").
+ */
+const PESO_DA_LEMBRANCA_NO_PORQUE = 0.35;
+
+/** O motivo que mais pesou para o lado da resposta (o maior a favor no sim, o maior contra no não), com a lembrança na frente. */
 export function motivoDaResposta(d: Decisao, sim: boolean): Motivo | undefined {
   let melhor: Motivo | undefined;
+  let nota = -Infinity;
   for (const m of d.motivos) {
     if (sim ? m.peso <= 0 : m.peso >= 0) continue;
-    if (!melhor || (sim ? m.peso > melhor.peso : m.peso < melhor.peso)) melhor = m;
+    const n = Math.abs(m.peso) + (m.entrada !== undefined ? PESO_DA_LEMBRANCA_NO_PORQUE : 0);
+    if (n > nota) {
+      melhor = m;
+      nota = n;
+    }
   }
   return melhor;
 }
@@ -260,13 +273,13 @@ export function porqueDaResposta(e: EstadoVida, c: Conteudo, id: string, pedido:
   let texto: string;
   switch (m.tipo) {
     case 'gosta':
-      texto = 'porque gosta muito de você';
+      texto = lembra ? `porque lembra de quando ${lembra}` : 'porque gosta muito de você';
       break;
     case 'distante':
-      texto = 'porque vocês andam distantes';
+      texto = lembra ? `porque não esqueceu de quando ${lembra}` : 'porque vocês andam distantes';
       break;
     case 'confia':
-      texto = 'porque confia em você';
+      texto = lembra ? `porque confia em você desde que ${lembra}` : 'porque confia em você';
       break;
     case 'desconfia':
       texto = lembra ? `porque não esqueceu de quando ${lembra}` : 'porque não confia mais em você';
@@ -280,7 +293,7 @@ export function porqueDaResposta(e: EstadoVida, c: Conteudo, id: string, pedido:
       break;
     }
     case 'visao':
-      texto = `porque acha você ${ROTULO_DA_VISAO[m.visao!][g]}`;
+      texto = `porque acha você ${ROTULO_DA_VISAO[m.visao!][g]}${lembra ? ` desde que ${lembra}` : ''}`;
       break;
     case 'deu':
       texto = lembra ? `porque lembra de quando ${lembra}` : 'porque você ajudou quando precisou';

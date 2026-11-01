@@ -13,7 +13,7 @@
  * Toda mudança de saldo anda com o dinheiro entre os dois, na mesma entrada (contas.ts › conferirPromissorias); o
  * perdão, o calote e a morte fecham sem dinheiro, com a mudança marcada.
  */
-import { credorDe, devedorDe, numeroDaPessoa, promissoriasDe, quemE } from './campos.ts';
+import { credorDe, devedorDe, investidoDe, numeroDaPessoa, promissoriasDe, quemE } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { idLivre } from './contratos.ts';
 import { movimentar } from './economia.ts';
@@ -155,7 +155,9 @@ export function anoDasPromissorias(e: EstadoVida, c: Conteudo, regAno: Mudanca[]
     // O primeiro ano é o do empréstimo: a parcela começa no seguinte.
     if (e.ano <= (ct.nascimento ?? e.ano)) continue;
     const devido = Math.min(ct.n['saldo'] ?? 0, ct.n['parcela'] ?? 0);
-    const caixa = Math.max(0, e.entidades[devedor]!.n['dinheiro'] ?? 0);
+    // Quem joga paga com a conta e, faltando, com o que tem investido (o resgate sai junto); os outros, com o que têm na conta.
+    const quem = e.entidades[devedor]!;
+    const caixa = Math.max(0, quem.n['dinheiro'] ?? 0) + (devedor === 'eu' ? investidoDe(quem) : 0);
     if (caixa + 0.5 >= devido) {
       pagarPromissoria(e, regAno, ct, devido);
       if (ct.n['atraso']) somar(e, regAno, ct.id, 'atraso', -ct.n['atraso']!);

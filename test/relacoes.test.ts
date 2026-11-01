@@ -151,7 +151,9 @@ describe('a relação com cada pessoa', () => {
   });
 
   it('numa vida inteira, a relação anda: mágoa, confiança e anos sem contato mudam, e o livro fecha', () => {
-    const e = viverAteOFim(nascer(c, { semente: 31, ano: 2026 }), c, 31, 'aleatoria');
+    // Uma vida inteira de verdade: a primeira das sementes que passa dos 50 (a violência leva alguns cedo).
+    const e = [31, 32, 33, 34, 35, 36].map((s) => viverAteOFim(nascer(c, { semente: s, ano: 2026 }), c, s, 'aleatoria')).find((x) => x.idade >= 50)!;
+    expect(e).toBeDefined();
     const caminhos = new Set(e.historico.flatMap((h) => (h.mudancas ?? []).map((m) => m.c.split('.')[1])));
     expect(caminhos.has('magoa')).toBe(true);
     expect(caminhos.has('confianca')).toBe(true);
