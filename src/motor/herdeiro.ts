@@ -470,7 +470,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   // O lugar, o país e o mundo lá fora continuam como estavam (a sanção em vigor, a relação, a crise de lá, o dólar).
   for (const id of ['lugar', 'pais', ...PARCEIROS, ...Object.keys(antiga.entidades).filter((k) => k.startsWith('setor_'))]) {
     const en = antiga.entidades[id];
-    if (en) e.entidades[id] = recausar(structuredClone(en), abertura.id);
+    if (en) e.entidades[id] = recausar(copiaDe(en), abertura.id);
   }
   // O armamento que quem governava encomendou e ainda não chegou entra na capacidade do país herdado: o livro novo não
   // tem a encomenda, e o que foi pago não se perde (guerra.ts).
@@ -480,7 +480,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   // A primeira é a que ele toca de perto.
   const herdadas = empresasDe(antiga).filter((x) => (espolio.participacoes[x.id] ?? 0) > 0.001);
   herdadas.forEach((empresa, i) => {
-    const copia = recausar(structuredClone(empresa), abertura.id);
+    const copia = recausar(copiaDe(empresa), abertura.id);
     copia.id = SLOTS[i]!;
     copia.n['participacao'] = espolio.participacoes[empresa.id]!;
     e.entidades[copia.id] = copia;
@@ -638,3 +638,9 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   abrirContas(e);
   return e;
 }
+
+/** A cópia de uma entidade (só dados): pelo JSON, que lê através de quem a observa (o gravador das etapas, nos testes). */
+function copiaDe<T>(x: T): T {
+  return JSON.parse(JSON.stringify(x)) as T;
+}
+

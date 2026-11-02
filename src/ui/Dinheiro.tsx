@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, ofertaDe, precoDoSetor, textoDaConcorrencia, textoDoSetor } from '../motor/negocio.ts';
+import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
@@ -9,7 +9,7 @@ import { comPreposicao, extrato } from '../motor/contas.ts';
 import { contratosDe, emAtraso, limiteDeCredito, modalidadeDe, origemDe } from '../motor/contratos.ts';
 import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
-import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
+import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { custoDaObra, custoDeExportar, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ocupacaoDe, procura, VERBAS, type Preco, type Salario } from '../motor/negocio.ts';
 import { PARCEIROS } from '../motor/constantes.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
@@ -300,7 +300,12 @@ function CartaoDaEmpresa({
               <dt>Concorrência</dt>
               <dd class={forcaDaConcorrente(emp) > atratividade(emp) || emp.q['guerra'] ? 'ruim' : ''}>{textoDaConcorrencia(emp)}</dd>
               <dt>O setor</dt>
-              <dd class={precoDoSetor(ofertaDe(vida, emp.t['setor'])) < 0.96 ? 'ruim' : ''}>{textoDoSetor(vida, emp.t['setor'])}</dd>
+              <dd class={precoDoSetor(ofertaDe(vida, emp.t['setor'])) < 0.96 ? 'ruim' : ''}>
+                {textoDoSetor(vida, emp.t['setor'])}
+                {previsaoDoSetor(vida, emp.t['setor']) && <small>{previsaoDoSetor(vida, emp.t['setor'])}</small>}
+              </dd>
+              <dt>Fatia do mercado</dt>
+              <dd>{(fatiaDoMercado(vida, conteudo, emp) * 100).toFixed(fatiaDoMercado(vida, conteudo, emp) < 0.001 ? 3 : 1).replace('.', ',')}% do que o país compra do setor</dd>
             </>
           )}
           {(n['divida'] ?? 0) >= 1 && (
@@ -372,7 +377,7 @@ function CartaoDaEmpresa({
       </button>
       {motivoAporte && <p class="nota">Agora não: {motivoAporte}.</p>}
       <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir', empresa: id })}>
-        Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida, id))})
+        Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida, id))}, {Math.round(precoDaAquisicao(vida, id) * 100)}% do preço justo)
       </button>
       <p class="nota">
         {motivoCompra

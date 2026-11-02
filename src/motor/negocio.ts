@@ -646,3 +646,18 @@ export function anoDosSetores(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void 
   }
 }
 
+/** A fatia do mercado do setor que a empresa tem (a demanda dela sobre o que o país compra do setor). */
+export function fatiaDoMercado(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  return (emp.n['demanda'] ?? 0) / mercadoDoSetor(e, economiaDo(c.setores.get(emp.t['setor'] ?? '')));
+}
+
+/** O que vem por aí: a obra em andamento no setor fica pronta no ano que vem e diz para onde o preço vai. */
+export function previsaoDoSetor(e: EstadoVida, setor: string | undefined): string {
+  const en = e.entidades[`setor_${setor ?? ''}`];
+  if (!en) return '';
+  const agora = precoDoSetor(en.n['oferta'] ?? 100);
+  const depois = precoDoSetor((en.n['oferta'] ?? 100) * (1 + (en.n['obra'] ?? 0) / 100));
+  const d = Math.round((depois - agora) * 100);
+  return d <= -2 ? `o setor está construindo: o preço deve cair uns ${-d}% no ano que vem` : d >= 2 ? `o setor está fechando portas: o preço deve subir uns ${d}% no ano que vem` : 'sem obra grande no setor: o preço deve ficar onde está';
+}
+

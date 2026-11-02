@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { conteudo } from '../src/conteudo.ts';
 import { operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
-import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
+import { custoDaAquisicao, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
 import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, ofertaDe, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
@@ -242,6 +242,25 @@ describe('o negócio de verdade (bloco H)', () => {
     const e = structuredClone(base);
     e.entidades['setor_industria']!.n['oferta'] = 120;
     expect(apertoDoSetor(e, 'industria')).toBeGreaterThan(1.5);
+  });
+
+  it('a concorrente sai barata na baixa do setor e quando está fraca, e comprá-la dá o negócio inteiro e fecha o mercado', () => {
+    const e = adulto(30, 50_000_000);
+    operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 20_000_000 });
+    const emp = empresaDe(e)!;
+    emp.n['concorrente'] = 50;
+    e.entidades['setor_comercio']!.n['oferta'] = 100;
+    const normal = custoDaAquisicao(e);
+    e.entidades['setor_comercio']!.n['oferta'] = 125;
+    emp.n['concorrente'] = 25;
+    expect(custoDaAquisicao(e)).toBeLessThan(normal * 0.75);
+    const capacidade = emp.n['capacidade']!;
+    const dinheiro = e.entidades['eu']!.n['dinheiro']!;
+    operar(e, c, { tipo: 'adquirir' });
+    expect(dinheiro - e.entidades['eu']!.n['dinheiro']!).toBeLessThan(normal * 0.75);
+    // O negócio que entra é o do preço justo (28,5% a mais de estrutura), pago pelo preço do dia.
+    expect(emp.n['capacidade']! / capacidade - 1).toBeCloseTo(0.285, 2);
+    expect(emp.n['concorrente']).toBe(10);
   });
 });
 

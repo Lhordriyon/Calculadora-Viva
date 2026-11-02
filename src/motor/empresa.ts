@@ -73,7 +73,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { normal, sortear } from './rng.ts';
-import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, ocupacaoDe, type AnoDoNegocio } from './negocio.ts';
+import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -645,7 +645,17 @@ export const MINIMO_AQUISICAO = 1_000_000;
 
 /** O preço de uma concorrente: uma fração do valor da própria empresa. */
 export function custoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
-  return (empresaDe(e, id)?.n['valor'] ?? 0) * CUSTO_AQUISICAO;
+  return (empresaDe(e, id)?.n['valor'] ?? 0) * CUSTO_AQUISICAO * precoDaAquisicao(e, id);
+}
+
+/**
+ * O preço do dia de uma concorrente, como fração do justo: o preço do setor (na sobra, todo mundo vende barato) vezes a
+ * força dela (a concorrente fraca, de 25, sai por 80%; a forte, de 75, por 120%).
+ */
+export function precoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
+  const emp = empresaDe(e, id);
+  if (!emp) return 1;
+  return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (0.6 + (0.8 * (emp.n['concorrente'] ?? 50)) / 100);
 }
 
 /** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */
@@ -688,10 +698,14 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   }
   if (op.tipo === 'adquirir') {
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
+    // O negócio que entra vale o preço justo; o que se paga é o do dia (barato na baixa, caro na alta).
+    const justo = (emp.n['valor'] ?? 0) * CUSTO_AQUISICAO;
     const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e, id), 'mercado');
     // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
-    porNaEmpresa(e, reg, id, custo, custo * 0.95, false);
+    porNaEmpresa(e, reg, id, custo, justo * 0.95, false);
     somar(e, reg, id, 'tracao', 2);
+    // O mercado fica mais fechado: a concorrente principal perde força.
+    if (emp.n['concorrente'] !== undefined) definirNumero(e, reg, id, 'concorrente', Math.max(0, (emp.n['concorrente'] ?? 50) - 15), 'negocio');
     // Ela vira subsidiária, com as subsidiárias que já tinha.
     const delas = subsidiariasDoRival(custo);
     somar(e, reg, id, 'subsidiarias', 1 + delas);

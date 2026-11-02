@@ -23,7 +23,7 @@ import { FORMAS_DA_COROA, PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Fo
 import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
-import { abrirPorEfeito, empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
+import { abrirPorEfeito, custoDaAquisicao, empresaDe, liquidoDe, precoDaAquisicao, setoresDeEmpresa } from './empresa.ts';
 import { custoDaObra, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ofertaDe, VERBAS } from './negocio.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
@@ -819,7 +819,8 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     return [];
   }
   if (estrategia !== 'arriscada') return [];
-  if (pode(e, c, { tipo: 'adquirir' }) && (emp.n['valor'] ?? 0) * 0.3 <= liquido * 0.5) return [{ tipo: 'adquirir' }];
+  // Compra a concorrente quando ela sai pelo preço justo ou abaixo (a baixa do setor, a rival fraca).
+  if (pode(e, c, { tipo: 'adquirir' }) && custoDaAquisicao(e) <= liquido * 0.5 && precoDaAquisicao(e) <= 1) return [{ tipo: 'adquirir' }];
   if (momentoDoPais(e).id === 'expansao') {
     const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
     if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];
