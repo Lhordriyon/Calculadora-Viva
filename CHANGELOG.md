@@ -4,6 +4,32 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌐 ★ · A influência que importa · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): o sistema de influência no centro, com as esferas pessoal, política e de negócios, que quem joga sinta que importa, e conquistas baseadas nela.
+
+- 🌐 **Três esferas** (`influencia.ts`), tiradas do estado, sem número novo: a pessoal (6 por laço forte e 0,7 da fama), a política (o poder do cargo, 0,3 da popularidade, o lobby, a mídia própria e a linhagem) e a de negócios (o tamanho da maior empresa, o truste e as empresas a mais).
+- ⚙️ **Cada uma muda uma decisão:** a vaga, a eleição e o lobby, o crédito da empresa e o preço da concorrente.
+- 🏅 **Nove conquistas**, três por esfera (40, 70 e 90), uma vez só: em dourado na linha do tempo, no epitáfio e no cartão da vida, com três histórias que elas abrem (o bairro pede a sua opinião, os partidos batem na porta, os conselhos te chamam). Em 500 vidas dos robôs, o primeiro degrau vem em 28% a 33% (6% no de negócios), o segundo em 1% a 3%, e o terceiro é raro (até 0,4%).
+- 🧾 **A folha Carreira** com a influência, a fama, as três esferas e a conquista que está perto.
+- 📊 **No túnel** (10.000 vidas, com o H5 junto): as contas fecham em 4,10 milhões de entradas; bilionário feito 0,51%; quebram 24,7% de quem abre empresa; saturação V5 52,6% e V20 86,9%; 904 histórias por 1.000 vidas; toques 479,2.
+
+---
+
+## 🔗 H5 · O capitalismo integrado · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): o núcleo da nova grande atualização, o simulador de capitalismo.
+
+- 🔗 **A cadeia de fornecimento** (`mundo.json › setores`: `insumo` e `parteDoInsumo`): cada setor compra de outro, e o preço do setor fornecedor entra no custo.
+- 🏭 **A integração vertical:** com empresa no setor fornecedor, quem joga compra a preço de custo e fica fora do ciclo de lá.
+- 👷 **A mão de obra:** a folha sobe 3% por ponto de desemprego abaixo do natural, e a falta de gente vira história.
+- 🏛️ **O imposto pela política de impostos** de quem governa (de 0,8 a 1,25 vezes) e **o lobby** (2% do valor): pode baixar os impostos de um governo que não é o de quem joga, uma vez, com o lobby de causa e o risco do escândalo.
+- 📊 Medido junto com o bloco ★, publicado na mesma atualização.
+
+---
+
 ## 🛒 H4 · Comprar no tempo certo · 02/11/2026
 
 > [!NOTE]

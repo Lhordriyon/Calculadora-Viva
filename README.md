@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H4%3A%20comprar%20no%20tempo%20certo-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-906-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%E2%98%85%20a%20influ%C3%AAncia%20%2B%20H5%20o%20capitalismo-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-904-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,26 +15,29 @@
 
 ---
 
-## 🆕 Novidades: H4 · Comprar no tempo certo (02/11/2026)
+## 🆕 Novidades: ★ A influência que importa + H5 O capitalismo integrado (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a empresa ganhou o que um executivo de verdade usa para decidir.
-> - **Ler o ciclo antes dele chegar.** A folha Dinheiro mostra o que a obra em andamento no setor diz do preço do ano que vem ("o setor está construindo: o preço deve cair uns 6%"). O ciclo vira previsão, e a previsão vira decisão.
-> - **A sua fatia do mercado:** quanto do que o país compra do setor é da sua empresa.
-> - **Comprar a concorrente pelo preço do dia.** O preço sobe e desce com o setor e com a força da concorrente: na sobra, ou com a rival fraca, ela sai por bem menos que o justo. O negócio que entra vale o preço justo, e a concorrente principal perde força (o mercado fecha). Na alta, quem compra paga caro. O botão mostra o preço em % do justo.
+> **O que mudou:** a influência virou o centro da vida, e a empresa passou a viver no meio da economia.
+> - **Três esferas de influência**, tiradas do que você fez: a **pessoal** (as pessoas que gostam muito de você e a fama), a **política** (o poder do cargo, a popularidade, o lobby, a mídia própria e a família) e a **de negócios** (o tamanho do grupo, o truste e as empresas). A folha Carreira mostra as três.
+> - **Cada esfera muda uma coisa de verdade:** quem conhece gente entra mais fácil na vaga; a política pesa na eleição e faz o lobby andar; a de negócios faz o banco emprestar mais e baixa o preço da concorrente.
+> - **Nove conquistas**, três por esfera: de "Gente querida no bairro" a "Um nome que abre portas", de "Uma voz que se escuta" a "O poder por trás do trono", de "Respeito no mercado" a "Uma potência da economia". Elas entram em dourado na linha do tempo, no epitáfio e no cartão da vida, e abrem histórias (o bairro pede a sua opinião, os partidos batem na porta, os conselhos te chamam). A primeira de cada esfera vem em uma vida a cada três ou quatro; a última é lenda.
+> - **O capitalismo integrado (H5):** cada setor compra insumo de outro, e o preço do fornecedor entra no seu custo; com uma empresa no setor fornecedor, você compra a preço de custo. A folha de pagamento sobe quando falta gente, o imposto da empresa segue a política de impostos de quem governa, e o lobby (2% do valor) pode baixar os impostos do país, com o risco do escândalo.
 
 > [!TIP]
 > **Para testar:**
-> - Com uma empresa, acompanhe "O setor" e a previsão: quando o setor está construindo, segure a obra; quando está fechando portas, amplie.
-> - Espere a sobra do setor ou a concorrente fraca e compre uma concorrente: veja o preço em % do justo e a concorrência depois.
+> - Abra a folha Carreira e veja as três esferas; o "quase lá" aparece quando uma conquista está a 5 pontos.
+> - Siga um caminho e espere a conquista em dourado: cuide da família e da fama, ou se eleja (vereador é o começo; a voz que se escuta vem do prefeito para cima), ou faça a empresa crescer.
+> - Com uma empresa, veja "Custos de fora" na folha Dinheiro; abra outra no setor fornecedor e veja o custo cair; faça lobby quando o governo não for o seu.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🔮 A previsão do preço do setor pela obra em andamento | 🏬 Várias concorrentes com nome e marca próprios |
-| 📊 A fatia do mercado | 🤝 O lobby e o conselho que propõe com base nos números |
-| 🛒 A compra da concorrente pelo preço do dia, que fecha o mercado | 🏭 Fábricas e lojas como lugares |
+| 🌐 Três esferas de influência com efeito de verdade | 🧭 A influência como verbo (pedir um favor ao prefeito, emplacar um aliado) |
+| 🏅 Nove conquistas em escada, em dourado, no epitáfio e no cartão | 🏆 O placar das conquistas entre vidas |
+| 🔗 A cadeia de fornecimento e a integração vertical | 🏬 Várias concorrentes com nome e marca próprios |
+| 💼 A folha que sente o desemprego, o imposto pela política e o lobby | 🏭 Fábricas e lojas como lugares |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas, e nenhuma estratégia domina. O bilionário feito ficou em 0,69% (era 0,74%), e 26,6% de quem abre empresa quebra (eram 26,0%). A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 87,4% na 20ª, com 906 histórias por 1.000 vidas. Os toques ficaram em 477,2 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. O bilionário feito ficou em 0,51% (era 0,69%), e 24,7% de quem abre empresa quebra (eram 26,6%). A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 86,9% na 20ª, com 904 histórias por 1.000 vidas. Os toques ficaram em 479,2 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

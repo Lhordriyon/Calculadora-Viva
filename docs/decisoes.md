@@ -1904,3 +1904,33 @@ O dono pediu mais melhorias para a empresa (I-136). Com o ciclo de cada setor no
 - **A arriscada só compra pelo justo ou abaixo:** os robôs passam a esperar a hora.
 - **A cópia das entidades da herança passa pelo JSON:** o gravador das etapas dos testes observa as entidades, e o `structuredClone` não as copiava; o defeito só aparecia com empresa na herança.
 
+
+## O bloco H5: o capitalismo integrado (02/11)
+
+O dono pediu que o núcleo da nova grande atualização fosse o simulador de capitalismo (I-137). A empresa era uma ilha: vendia, pagava a própria folha e o imposto fixo, e nada de fora entrava na conta. Agora o fornecedor, o trabalhador e o governo entram, e quem joga pode mexer em cada um.
+
+**Medidas:** o H5 foi publicado junto com o bloco ★, e os dois foram medidos juntos (a seção do ★, abaixo).
+
+**Decisões tomadas sozinho:**
+- **A cadeia tem um elo por setor**, em `mundo.json › setores` (`insumo` e `parteDoInsumo`): conteúdo, sem código por setor. O preço do setor fornecedor (o ciclo do H3) entra na parte do custo que é insumo; o resto do custo não muda.
+- **Comprar do próprio grupo tira a margem do fornecedor** (5% da parte do insumo) e livra do ciclo do setor de lá: é a razão para comprar a concorrente do setor de cima, e não só a do mesmo setor.
+- **A mão de obra é um mercado:** a folha anda 3% por ponto de desemprego abaixo do natural (e barateia acima). A falta de gente vira história (`faltou_gente`).
+- **O imposto da empresa segue a política de impostos** de quem governa (0,8, 1 ou 1,25 vezes): a eleição e a reforma chegam ao caixa.
+- **O lobby custa 2% do valor (no mínimo R$ 1 milhão)** e só anda contra um governo que não é o de quem joga, uma vez por lobby e por até três anos; a chance é de 15% mais a influência política dividida por 200 (no máximo 50%). Quem governa não faz lobby consigo mesmo, e o lobby que sempre desse certo seria a resposta certa.
+- **A arriscada compra a concorrente até 1,15 do preço justo** (era o justo, no H4): com o justo, a investigação do Cade, que olha a compra cara de quem já é grande, não aparecia no túnel.
+
+## O bloco ★: a influência que importa (02/11)
+
+O dono pediu o sistema de influência no centro, com as esferas pessoal, política e de negócios, que quem joga sinta que importa, e conquistas baseadas nela (I-138). Antes, a influência era um número só, que pesava na eleição e em pouco mais.
+
+**Medidas** (10.000 vidas; antes = o bloco H4; com o H5 junto): bilionário feito de 0,69% para 0,51%; quebram de 26,6% para 24,7% de quem abre empresa; saturação V5/V20 de 52,6%/87,4% para 52,6%/86,9%; assinaturas de 906 para 904 por 1.000 vidas (o portão antigo de 918, só informativo, já falhava no H4); toques de 477,2 para 479,2; as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina. As histórias da influência: o bairro pede a sua opinião em 6,1% das vidas, os partidos batem na porta em 5,0% (eram 16,1% na primeira versão, com a voz para quase todos) e os conselhos chamam em 0,4%.
+
+**Decisões tomadas sozinho:**
+- **As esferas saem do estado na hora, sem número novo** (`influencia.ts`): o save antigo vale sem migrar, e não há nada a mais no livro. A pessoal soma 6 por laço forte (vínculo de 70 ou mais) e 0,7 da fama; a política, o poder do cargo (o de `mundo.json › cargos`: 8 de quem é vereador, 50 de quem preside), 0,3 da popularidade, o lobby, a mídia própria e a linhagem; a de negócios, 12 por zero do valor da maior empresa acima de R$ 100 mil, o truste e as empresas a mais.
+- **Cada esfera muda uma decisão:** a pessoal, a vaga (vezes 1 + pessoal ÷ 200); a política, a eleição (mais política ÷ 14 no logit) e o lobby; a de negócios, o crédito da empresa (vezes 1 + negócios ÷ 100) e o preço da concorrente (até 20% menos). Esfera que só aparecesse na folha seria um número morto.
+- **As conquistas são uma escada:** a primeira versão dava 35 pontos a qualquer cargo, e quem se elegia vereador ganhava "Uma voz que se escuta" na hora (93,5% das vidas dos robôs); quatro das nove conquistas não vieram em 400 vidas. Com o cargo pesando pelo poder dele e a fama em 0,7, em 500 vidas dos robôs (cautelosa e arriscada): o degrau 40 vem em 28% a 33% (6% na de negócios), o 70 em 1% a 3% e o 90 em até 0,4% (o "Um nome que abre portas" pede a fama de quem é estrela e quatro laços fortes, e não veio nas 500). Metade das vidas faz ao menos uma conquista.
+- **A conquista vem uma vez, no ano do poder,** como entrada de regra (em dourado na linha do tempo), com a qualidade que o epitáfio (`marcas.json`), o cartão e o conteúdo leem. As três histórias novas pedem a primeira conquista de cada esfera.
+- **As esferas deixaram de ser campos calculados:** nada no conteúdo as lia, e a política precisa do conteúdo (o poder do cargo), que a leitura de caminhos não tem. O conteúdo lê as conquistas.
+- **A folha Carreira** mostra a influência e a fama numa linha e as três esferas na seguinte, de borda a borda, e só diz "quase lá" quando falta 5 ou menos: a régua da tela pede a folha em até duas telas na letra 1,15, e a primeira versão media 3,4.
+- **O teste do tamanho do save subiu de 600 para 700 KB:** a vida longa com empresa, setores e contas do país passou de 619 KB. O teto do teste é uma guarda contra o crescimento sem controle, não o limite do navegador (uns 5 MB).
+- **Duas histórias não apareceram no túnel de 10.000 vidas da primeira versão:** a fofoca da dívida escondida subiu para 3 (o máximo do esquema) e o convite para ministro passou a pedir influência 50 (era 60).
