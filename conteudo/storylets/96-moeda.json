@@ -1,0 +1,89 @@
+[
+  {
+    "id": "o_preco_remarcado",
+    "idade": [16, 99],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "pais.moeda": { "min": 6 } },
+    "texto": "O mercado remarcou de novo: o arroz, o gás e o aluguel subiram juntos. No jornal, um economista explica que tem dinheiro demais correndo atrás de coisa de menos; na fila do caixa, ninguém precisou da explicação.",
+    "resumo": "viu os preços subirem com o dinheiro sobrando no país",
+    "escolhas": [
+      {
+        "texto": "Encher a despensa antes que suba mais",
+        "resumo": "encheu a despensa antes da próxima remarcação",
+        "resultado": { "texto": "Arroz para três meses e óleo para seis. A despensa virou cofre, e o cofre virou despensa.", "efeitos": { "dinheiro": -1500, "felicidade": 2 } }
+      },
+      {
+        "texto": "Tirar a sobra da conta parada",
+        "resumo": "tirou a sobra da conta antes que a inflação comesse",
+        "condicoes": { "dinheiro": { "min": 5000 } },
+        "bloqueio": "não sobra nada para tirar da conta",
+        "resultado": { "texto": "Você aplicou o que estava parado. Rende menos do que os memes da inflação prometem, mais do que o colchão.", "efeitos": { "investir": 5000, "felicidade": -1 } }
+      },
+      {
+        "texto": "Cortar o supérfluo e esperar passar",
+        "resumo": "cortou o supérfluo e esperou os preços pararem",
+        "resultado": { "texto": "Marca própria, cinema em casa, a pizza de sexta vira de mês em mês. Sobra no fim do mês; falta no humor.", "efeitos": { "dinheiro": 800, "felicidade": -2 } }
+      }
+    ]
+  },
+  {
+    "id": "a_impressora_ligada",
+    "idade": [18, 99],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "pais.pol_moeda": { "min": 2 } },
+    "texto": "O Banco Central voltou a imprimir dinheiro para o governo pagar as contas. Na televisão, chamam de \"estímulo\"; na padaria, o seu Zé já anota o preço do pão a lápis.",
+    "resumo": "viveu o ano em que o Banco Central ligou a impressora",
+    "escolhas": [
+      {
+        "texto": "Gastar antes que encolha",
+        "resumo": "gastou o dinheiro antes que a inflação o comesse",
+        "resultado": { "texto": "Você trocou a geladeira, o sofá e a ideia de guardar dinheiro. A loja agradeceu; a inflação também.", "efeitos": { "dinheiro": -3000, "felicidade": 3 } }
+      },
+      {
+        "texto": "Passar o que tem para o dólar",
+        "resumo": "passou as economias para o dólar quando a impressora ligou",
+        "condicoes": { "dinheiro": { "min": 4000 } },
+        "bloqueio": "não tem economias para converter",
+        "resultado": { "texto": "Você comprou dólar com cara de quem lê os jornais. Se o real derreter, você derrete menos.", "efeitos": { "realocar": { "de": "renda_fixa", "para": "dolar", "fracao": 0.5 }, "investir": 4000, "felicidade": -1 } }
+      },
+      {
+        "texto": "Guardar e torcer",
+        "resumo": "guardou o dinheiro e torceu para a inflação não vir",
+        "resultado": { "texto": "Você deixou tudo onde estava. Já viu esse filme; talvez desta vez o final seja outro.", "efeitos": { "felicidade": -1, "inteligencia": 1 } }
+      }
+    ]
+  },
+  {
+    "id": "o_credito_sumiu",
+    "idade": [18, 99],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "pais.moeda": { "max": -6 } },
+    "texto": "O dinheiro ficou curto na praça: o gerente que te ligava toda semana parou de ligar, e a loja do bairro já não parcela em dez vezes. Quem tem dinheiro na mão manda na conversa.",
+    "resumo": "viveu o ano em que o crédito sumiu",
+    "escolhas": [
+      {
+        "texto": "Pagar à vista e pedir desconto",
+        "resumo": "pagou à vista e arrancou desconto no aperto do crédito",
+        "condicoes": { "dinheiro": { "min": 2000 } },
+        "bloqueio": "não tem dinheiro na mão para pagar à vista",
+        "resultado": { "texto": "Com o dinheiro na mão, você conseguiu 15% e um cafezinho. O vendedor sorriu como quem perde.", "efeitos": { "dinheiro": 600, "felicidade": 1, "inteligencia": 1 } }
+      },
+      {
+        "texto": "Adiar o que dá para adiar",
+        "resumo": "adiou as compras até o crédito voltar",
+        "resultado": { "texto": "O sofá velho aguenta mais um ano. A paciência, nem tanto.", "efeitos": { "felicidade": -2, "dinheiro": 300 } }
+      },
+      {
+        "texto": "Pegar emprestado mesmo assim",
+        "resumo": "pegou empréstimo caro no meio do aperto",
+        "resultado": { "texto": "O banco emprestou com cara de favor e juro de agiota. Pelo menos a obra da cozinha saiu.", "efeitos": { "divida": 4000, "felicidade": 3 } }
+      }
+    ]
+  }
+]

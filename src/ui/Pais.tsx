@@ -12,6 +12,7 @@ import { gastoEmPesquisa } from '../motor/pesquisa.ts';
 import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna, motivoParaNaoGovernar, nivelDe, nomeDoGoverno, proximaEleicaoGeral, rumoDoPais, type Estatistica } from '../motor/pais.ts';
 import { ACORDO, ATO, DEFESA, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
+import { dinheiroDoAno } from '../motor/moeda.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
 interface Props {
@@ -167,6 +168,7 @@ function Numeros({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
     { nome: 'IDH', valor: `${idh.toFixed(2).replace('.', ',')} (${faixaDoIdh(idh)})`, nota: 'saúde, educação e renda numa nota de 0 a 1' },
     // Num save de antes do país ter tamanho, o PIB nasce no primeiro ano: até lá, a dívida e a pesquisa em reais não aparecem.
     ...(dividaEmReais(vida) !== undefined ? [{ nome: 'Dívida pública', valor: formatarDinheiro(dividaEmReais(vida)!), nota: quemEmpresta(vida) }] : []),
+    ...(vida.entidades['mercado'] ? linhasDaMoeda(vida) : []),
     ...(n['pib'] !== undefined ? [{ nome: 'Pesquisa pública', valor: `${formatarDinheiro(gastoEmPesquisa(vida, conteudo).reais)} por ano`, nota: `${num(gastoEmPesquisa(vida, conteudo).pontos)}% do PIB, pagos pelo Tesouro; vira tecnologia em uma década` }] : []),
   ];
   return (
@@ -188,6 +190,18 @@ function Numeros({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
       ))}
     </dl>
   );
+}
+
+/** O dinheiro do país (moeda.ts): o que circula contra o que a economia precisa, e o que o Banco Central fez no ano. */
+function linhasDaMoeda(vida: EstadoVida): { nome: string; valor: string; nota: string }[] {
+  const x = vida.entidades['pais']!.n['moeda'] ?? 0;
+  const { emitido, inflacao } = dinheiroDoAno(vida);
+  const medida = x >= 6 ? `${num(x)}% acima do que a economia precisa: os preços sobem` : x <= -6 ? `${num(-x)}% abaixo do que a economia precisa: o crédito some` : 'na medida do que a economia precisa';
+  const bc = emitido > 0 ? `emitiu ${formatarDinheiro(emitido)}` : emitido < 0 ? `enxugou ${formatarDinheiro(-emitido)}` : 'não emitiu';
+  return [
+    { nome: 'Dinheiro circulando', valor: formatarDinheiro(vida.entidades['mercado']!.n['dinheiro'] ?? 0), nota: `nas mãos das empresas e das famílias; ${medida}` },
+    { nome: 'Banco Central', valor: `${bc} no ano`, nota: `a inflação levou ${formatarDinheiro(inflacao)} do dinheiro de todo mundo, e foi para quem emitiu` },
+  ];
 }
 
 /** Quanto o dólar andou no último ano (a regra do ano o escreve com o mundo lá fora). */
