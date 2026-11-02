@@ -4,6 +4,18 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🛒 H4 · Comprar no tempo certo · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): mais melhorias para a empresa.
+
+- 🔮 **A previsão do setor:** a folha mostra para onde o preço do setor vai no ano que vem, pela obra em andamento (o indicador antecedente do ciclo).
+- 📊 **A fatia do mercado** da empresa, na folha.
+- 🛒 **A concorrente pelo preço do dia** (o preço do setor vezes a força dela): barata na sobra e quando está fraca, cara na alta; o negócio entra pelo preço justo, e a concorrente perde 15 pontos. A arriscada só compra pelo justo ou abaixo.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,09 milhões de entradas; bilionário feito 0,69%; quebram 26,6% de quem abre empresa; saturação V5 52,6% e V20 87,4%; 906 histórias por 1.000 vidas; toques 477,2.
+
+---
+
 ## 🌀 H3 · Os mercados de cada setor · 02/11/2026
 
 > [!NOTE]

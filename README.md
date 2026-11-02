@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H3%3A%20os%20mercados%20de%20cada%20setor-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-905-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H4%3A%20comprar%20no%20tempo%20certo-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-906-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,29 +15,26 @@
 
 ---
 
-## 🆕 Novidades: H3 · Os mercados de cada setor (02/11/2026)
+## 🆕 Novidades: H4 · Comprar no tempo certo (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** cada setor da economia virou um mercado com ciclo próprio.
-> - **A teia de aranha.** Quando o preço de um setor está bom, todo mundo constrói. A estrutura nova fica pronta, sobra oferta e o preço cai; com o preço baixo, as portas fecham até faltar de novo. São ciclos de uns oito anos, um para cada setor, que a sorte mantém vivos.
-> - **A sua empresa sente o setor.** O preço do setor entra na receita: o lucro e o valor sobem na alta e descem na sobra. A obra também custa o preço do setor, e na baixa a estrutura sai barata. Comprar na baixa e não construir no pico vira estratégia que se descobre.
-> - **A concorrência e o emprego também.** Na sobra, a concorrente fraca sai do mercado; na falta, chega concorrente nova. Quem trabalha num setor que construiu demais (você e a sua família) é mais demitido.
-> - **Três histórias:** o setor aquecido, o setor que afundou e o ramo do seu emprego em crise. A folha Dinheiro diz como está o setor da sua empresa, e a folha País mostra o setor mais acima e o mais abaixo do preço normal.
+> **O que mudou:** a empresa ganhou o que um executivo de verdade usa para decidir.
+> - **Ler o ciclo antes dele chegar.** A folha Dinheiro mostra o que a obra em andamento no setor diz do preço do ano que vem ("o setor está construindo: o preço deve cair uns 6%"). O ciclo vira previsão, e a previsão vira decisão.
+> - **A sua fatia do mercado:** quanto do que o país compra do setor é da sua empresa.
+> - **Comprar a concorrente pelo preço do dia.** O preço sobe e desce com o setor e com a força da concorrente: na sobra, ou com a rival fraca, ela sai por bem menos que o justo. O negócio que entra vale o preço justo, e a concorrente principal perde força (o mercado fecha). Na alta, quem compra paga caro. O botão mostra o preço em % do justo.
 
 > [!TIP]
 > **Para testar:**
-> - Olhe "Setores" na folha País e abra uma empresa no setor em baixa: a estrutura sai barata e o ciclo vira a seu favor.
-> - Com a empresa aberta, acompanhe "O setor" na folha Dinheiro. Quando falta oferta, a tentação é ampliar; quem amplia no pico encontra a sobra dois anos depois.
-> - Trabalhando num setor em sobra, espere a história do ramo em crise e escolha.
+> - Com uma empresa, acompanhe "O setor" e a previsão: quando o setor está construindo, segure a obra; quando está fechando portas, amplie.
+> - Espere a sobra do setor ou a concorrente fraca e compre uma concorrente: veja o preço em % do justo e a concorrência depois.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🌀 O ciclo de oferta e preço de cada setor, com a obra que demora a ficar pronta | 🏬 Várias concorrentes com nome e marca próprios |
-| 💵 O preço do setor na receita e no custo da obra | 🤝 O lobby e o conselho que propõe com base nos números |
-| 🥊 A sobra que tira a concorrente fraca; a falta que chama a nova | 🏭 Fábricas e lojas como lugares |
-| 👷 O emprego da família que sente o setor | |
+| 🔮 A previsão do preço do setor pela obra em andamento | 🏬 Várias concorrentes com nome e marca próprios |
+| 📊 A fatia do mercado | 🤝 O lobby e o conselho que propõe com base nos números |
+| 🛒 A compra da concorrente pelo preço do dia, que fecha o mercado | 🏭 Fábricas e lojas como lugares |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas e nenhuma estratégia domina. As histórias novas aparecem bem: o setor aquecido em 2,7% das vidas, o ramo em crise em 2,1% e o setor que afundou em 0,9%; a concorrente que quebra passou a aparecer em 0,1%. O bilionário feito ficou em 0,74%, e 26,0% de quem abre empresa quebra (eram 25,2%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,6% na 20ª, com 905 histórias por 1.000 vidas. Os toques ficaram em 477,8 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas, e nenhuma estratégia domina. O bilionário feito ficou em 0,69% (era 0,74%), e 26,6% de quem abre empresa quebra (eram 26,0%). A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 87,4% na 20ª, com 906 histórias por 1.000 vidas. Os toques ficaram em 477,2 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

@@ -1892,3 +1892,15 @@ O dono pediu a empresa ainda melhor, "como um pós-doc faria" (I-135). A saída 
 - **O emprego sente o setor** (1,3 vez a demissão por 10% de sobra), para quem joga e para a família: o mercado chega à vida de quem nunca abriu empresa.
 - **Os mercados abrem no nascimento com um sorteio próprio** (da semente da vida, sem gastar o sorteio dela), passam para quem herda e abrem no primeiro ano de um save antigo.
 
+## O bloco H4: comprar no tempo certo (02/11)
+
+O dono pediu mais melhorias para a empresa (I-136). Com o ciclo de cada setor no lugar (H3), o que faltava era quem joga poder ler o ciclo e agir no tempo certo.
+
+**Medidas** (10.000 vidas; antes = o bloco H3): bilionário feito de 0,74% para 0,69%; quebram de 26,0% para 26,6% de quem abre empresa; saturação V5/V20 de 52,3%/87,6% para 52,6%/87,4%; assinaturas de 905 para 906 por 1.000 vidas; toques de 477,8 para 477,2; as contas fecham nas 4,09 milhões de entradas.
+
+**Decisões tomadas sozinho:**
+- **A previsão sai do estado que já existe:** a obra em andamento no setor fica pronta no ano que vem, e é ela que diz o preço de lá. Nenhum número novo, só o indicador antecedente à vista.
+- **O preço do dia da concorrente** é o preço do setor vezes a força dela (de 80% a 120% do justo pela força): a compra na baixa rende mais negócio por real, e a na alta, menos.
+- **A arriscada só compra pelo justo ou abaixo:** os robôs passam a esperar a hora.
+- **A cópia das entidades da herança passa pelo JSON:** o gravador das etapas dos testes observa as entidades, e o `structuredClone` não as copiava; o defeito só aparecia com empresa na herança.
+
