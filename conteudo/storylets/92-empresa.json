@@ -265,7 +265,7 @@
   {
     "id": "concorrente_gigante",
     "idade": [20, 78],
-    "condicoes": { "empresa.valor": { "min": 50000, "max": 100000000 } },
+    "condicoes": { "empresa.valor": { "min": 50000, "max": 100000000 }, "empresa.concorrente": { "min": 50 } },
     "peso": 3,
     "texto": "Uma rede gigante abriu [do outro lado da rua|um aplicativo que faz o mesmo que {empresa:o|a} {empresa}|uma filial na sua cidade] cobrando preço de custo. Os clientes começaram a perguntar se você \"cobre a oferta\".",
     "resumo": "viu um concorrente gigante chegar",
