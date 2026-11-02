@@ -237,7 +237,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
   - das propostas, as seguidas ficam entre 30% e 70%, e seguir a diretora não domina: na mesma estratégia, o patrimônio mediano de quem mais segue não passa de 1,5 vez o de quem menos segue;
   - sem regressão: quebra entre 15% e 55% de quem abre (hoje 24,7%), bilionário feito entre 0,02% e 1% (hoje 0,51%), toques ≤ 480 (hoje 479,2: as propostas e as iniciativas disputam o lugar do evento do ano, não somam), save ≤ 700 KB e a CPU por vida no máximo 10% acima em A/B na mesma máquina.
 - **Depende de:** I-134 (a concorrência), I-136 (a compra pelo preço do dia), I-123 (a pessoa decide), I-125 (os segredos) e a identidade das pessoas (Ω1). Todas feitas.
-- **Estado:** proposta: a próxima atualização (H6), com o plano no roteiro.
+- **Estado:** feita (bloco H6, 02/11). O cartel ficou uma marca da empresa, e não um segredo (os segredos são de pessoa para pessoa); o rival que você conhece vem de um ex ou de um amigo da vida adulta (o irmão ficou de fora: o papel dele carrega a herança e a família).
 
 ## Índice
 
@@ -334,7 +334,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
-| I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e a diretora que propõe | H6 | Alta | proposta (a próxima atualização, 02/11) |
+| I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e o gestor que propõe | H6 | Alta | feita (bloco H6, 02/11) |
 | I-138 | A influência que se sente: três esferas e as conquistas | ★ | Alta | feita (bloco ★, 02/11) |
 | I-137 | O capitalismo integrado: fornecedor, trabalhador e governo na conta da empresa | H | Alta | feita (bloco H5, 02/11) |
 | I-136 | Comprar no tempo certo e ler o ciclo antes dele chegar | H | Alta | feita (bloco H4, 02/11) |

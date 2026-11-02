@@ -314,6 +314,21 @@ Cada real tem de onde vir e para onde ir. As **contas do país** são entidades 
 - **A política da moeda** é a nona de quem governa (`mundo.json › politicas`, `pais.pol_moeda`): o bloco liberal contém, o Regime imprime, os outros ficam no regular.
 - **A folha País** mostra o dinheiro circulando e se ele sobra ou falta, o que o Banco Central emitiu ou enxugou no ano e o que a inflação levou.
 
+## A rival e o gestor (`diretoria.ts`, `familia.ts › genteDaEmpresa`; bloco H6)
+
+A empresa que quem joga cuida de perto (`empresa`) traz duas pessoas, no molde do colega e do chefe, mas sem o ano da família (não adoecem nem contam anos sem contato; saem pela idade):
+
+- **A rival** (o papel `rival`): o dono da concorrente, com o nome dela (`rival.negocio`, de `empresa.ts › nomeDaEmpresa`) e o setor. Chega com a empresa (a entrada `regra:rival_chegou`) e sai quando ela acaba ou muda de setor, quando chega concorrente nova (que traz outro dono) e dois anos depois da quebra (`rival.quebrou`, o tempo de ele pedir emprego).
+  - **O jeito do dono** (`negocio.ts › garraDaRival`): a briga do traço dividida pela média (1,1) multiplica a corrida atrás de quem atrai mais e a chance de guerra de preços; com a mágoa de 30 ou mais, metade a mais. A guerra de preços que começa deixa 10 de mágoa no dono.
+  - **O rival que você conhece:** na concorrente nova, com 60% de chance, um ex ou um amigo da vida adulta (mágoa de 15 ou mais, ou vínculo abaixo de 45) é o dono (`regra:rival_conhecido`). `pessoas.ts › levarParaAEmpresa` tira a pessoa do papel antigo e a põe no novo com o mesmo número (a memória e a opinião saem do livro), levando o traço, o vínculo, a mágoa e a confiança.
+  - **Comprar a concorrente é pedir ao dono** (`empresa.ts › adquirir`): ele decide (`decidir`, o pedido `aceitar`, com o ajuste da força dela: a fraca vende mais fácil); o não vai para o livro com o porquê, e a tentativa do ano acabou. Vendida, ele vira o gestor se a cadeira está vaga e tem menos de 67 anos; senão, sai.
+  - **O cartel** (`empresa.cartel`, da história da trégua): enquanto dura, não há guerra de preços nem corrida atrás de quem atrai mais; acaba quando o dono sai.
+- **O gestor** (o papel `gestor`): chega com a empresa de R$ 10 milhões (ou é o dono que vendeu, ou o que quebrou e foi contratado). O traço dá o jeito: arrojado (ambicioso, gastador, brigão, piadista) ou cauteloso.
+  - **A proposta do ano:** `jogadasDoNegocio` é a heurística dos robôs do túnel, saída de `robos.ts`; a primeira jogada que a folha aceitaria (com o sorteio próprio do ano, que não gasta o da vida) vira `gestor.proposta`, em palavras e com o número que a justifica (`textoDaProposta`).
+  - **A escolha** (o storylet `a_proposta_do_gestor`, tensão 2, intervalo 3): o efeito `proposta: true` refaz a conta e, se a jogada é a mesma do cartão, aplica-a pela folha no lançamento da escolha; `false` recusa. A escolha fica no livro (`escolha.indice`: 0 segue, 1 recusa).
+  - **A conferência no ano seguinte:** recusada e o ano no vermelho, o gestor tinha razão (`regra:gestor_avisou`, com a recusa de causa; −12 de confiança, +6 de mágoa); recusada e o ano no azul, +3; seguida e o ano no azul, +4. Com a confiança abaixo de 35 ou a mágoa de 60, ele vai para a concorrência (`regra:gestor_saiu`, +8 na força dela).
+  - **Os robôs** com gestor deixam a empresa de perto com ele; quem recusa faz do próprio jeito no mesmo ano.
+
 ## A influência (`influencia.ts`; bloco ★)
 
 A influência total (`eu.influencia`, poder.ts) continua; por cima dela, três esferas tiradas do estado na hora, sem número novo (`influencia.ts › esferas`, de 0 a 100; a política lê o poder do cargo em `mundo.json › cargos`):

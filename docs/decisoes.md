@@ -1934,3 +1934,21 @@ O dono pediu o sistema de influência no centro, com as esferas pessoal, políti
 - **A folha Carreira** mostra a influência e a fama numa linha e as três esferas na seguinte, de borda a borda, e só diz "quase lá" quando falta 5 ou menos: a régua da tela pede a folha em até duas telas na letra 1,15, e a primeira versão media 3,4.
 - **O teste do tamanho do save subiu de 600 para 700 KB:** a vida longa com empresa, setores e contas do país passou de 619 KB. O teto do teste é uma guarda contra o crescimento sem controle, não o limite do navegador (uns 5 MB).
 - **Duas histórias não apareceram no túnel de 10.000 vidas da primeira versão:** a fofoca da dívida escondida subiu para 3 (o máximo do esquema) e o convite para ministro passou a pedir influência 50 (era 60).
+
+## O bloco H6: o capitalismo com rosto (02/11)
+
+O dono pediu para continuar o foco no capitalismo, cada atualização melhor que a anterior, barata e completa (I-139). A concorrência era um número sem dono, e ninguém na empresa propunha nada (I-12).
+
+**Medidas** (10.000 vidas; antes = os blocos H5 e ★): bilionário feito de 0,51% para 0,40%; quebram de 24,7% para 25,6% de quem abre empresa; saturação V5/V20 de 52,6%/86,9% para 52,3%/87,2%; assinaturas de 904 para 901 por 1.000 vidas; toques de 479,2 para 476,9 (os robôs com gestor deixam a empresa com ele); CPU de 150,7 para 149,4 ms por vida; as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina. Os portões do H6: a rival pelo nome em 100% de quem abre empresa; o rival que já era da vida em 2,59%; o gestor em 19,2%; 51,1% das 1.982 propostas seguidas; seguir não domina (R$ 41 milhões contra R$ 42 milhões de patrimônio mediano, 189 e 191 vidas). As histórias: a proposta em 8,4% das vidas, o gerente roubado em 5,9%, a festa em 1,6%, a trégua em 1,5%, o dono quebrado em 0,4%, o cartel que vaza em 0,3%, a oferta pela empresa em 0,2% e o processo da marca em 0,1%. O gestor teve razão 17 vezes (o aviso), e nenhum foi para a concorrência no túnel (os robôs recusam ao acaso, e o ano no vermelho depois da recusa é raro); um teste prova a saída.
+
+**Decisões tomadas sozinho:**
+- **O papel se chama `gestor`, não `diretor`:** "diretor" já é o diretor narrativo do motor (a causa `diretor` das entradas). No texto, é "o diretor" ou "a diretora".
+- **Quem vem com a empresa não tem o ano da família:** a rival e o gestor agem (as iniciativas) e saem pela idade, mas não adoecem nem contam anos sem contato. Só o traço, o vínculo, a mágoa e a confiança contam; com o ano da família, uma dúzia de campos seria escrita sem que nada os lesse.
+- **O rival que você conhece vem de um ex ou de um amigo da vida adulta**, nunca de um irmão (o papel dele carrega a herança e a família). A chance é de 60% quando chega concorrente nova e há quem tenha motivo; a pessoa sai do papel antigo e entra no novo com o mesmo número (`levarParaAEmpresa`). O plano previa 3% das vidas com empresa; com a concorrente nova rara, o túnel mede 2,59%, e o portão é de 1%.
+- **O cartel é uma marca da empresa, não um segredo:** os segredos são de pessoa para pessoa, e o Cade não é uma pessoa. Enquanto dura, não há guerra de preços nem corrida atrás de quem atrai mais; acaba quando o dono sai.
+- **A trégua vem da concorrente forte (força de 55 ou mais), não só da guerra de preços:** só com a guerra, rara, o cartel não apareceu em 2.000 vidas.
+- **A proposta passa na frente do ritmo do ano (tensão 2), a cada três anos no máximo:** no ritmo, ela virava cartão em 2 de 842 anos com gestor (perdia o sorteio para o resto do ano); com o intervalo, os toques ficaram abaixo de 480.
+- **Os robôs com gestor deixam a empresa com ele, e quem recusa faz do próprio jeito no mesmo ano:** com a recusa parada, seguir dava 1,55 vez o patrimônio mediano (a comparação era com ficar parado); com o próprio jeito, o portão compara o jeito do gestor com o de quem joga.
+- **A conferência lê a escolha no livro** (`escolha.indice`), e não uma qualidade nova: a primeira escolha da proposta segue, a segunda recusa.
+- **Comprar a concorrente tem uma tentativa por ano** (era uma compra por ano), e o ajuste do pedido é a força dela: a fraca vende mais fácil (+1), a forte, menos (−1).
+

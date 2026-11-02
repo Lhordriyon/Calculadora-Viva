@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%E2%98%85%20a%20influ%C3%AAncia%20%2B%20H5%20o%20capitalismo-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-904-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H6%3A%20o%20capitalismo%20com%20rosto-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-901-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,29 +15,30 @@
 
 ---
 
-## 🆕 Novidades: ★ A influência que importa + H5 O capitalismo integrado (02/11/2026)
+## 🆕 Novidades: H6 · O capitalismo com rosto (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a influência virou o centro da vida, e a empresa passou a viver no meio da economia.
-> - **Três esferas de influência**, tiradas do que você fez: a **pessoal** (as pessoas que gostam muito de você e a fama), a **política** (o poder do cargo, a popularidade, o lobby, a mídia própria e a família) e a **de negócios** (o tamanho do grupo, o truste e as empresas). A folha Carreira mostra as três.
-> - **Cada esfera muda uma coisa de verdade:** quem conhece gente entra mais fácil na vaga; a política pesa na eleição e faz o lobby andar; a de negócios faz o banco emprestar mais e baixa o preço da concorrente.
-> - **Nove conquistas**, três por esfera: de "Gente querida no bairro" a "Um nome que abre portas", de "Uma voz que se escuta" a "O poder por trás do trono", de "Respeito no mercado" a "Uma potência da economia". Elas entram em dourado na linha do tempo, no epitáfio e no cartão da vida, e abrem histórias (o bairro pede a sua opinião, os partidos batem na porta, os conselhos te chamam). A primeira de cada esfera vem em uma vida a cada três ou quatro; a última é lenda.
-> - **O capitalismo integrado (H5):** cada setor compra insumo de outro, e o preço do fornecedor entra no seu custo; com uma empresa no setor fornecedor, você compra a preço de custo. A folha de pagamento sobe quando falta gente, o imposto da empresa segue a política de impostos de quem governa, e o lobby (2% do valor) pode baixar os impostos do país, com o risco do escândalo.
+> **O que mudou:** a concorrência e a empresa ganharam gente.
+> - **A concorrente tem nome e dono.** Quem abre empresa conhece a rival: a Andrade & Filhos, da Carla, do outro lado da rua. O jeito do dono muda a briga: o brigão entra mais na guerra de preços, e a guerra deixa mágoa nele.
+> - **O rival pode ser alguém que você conhece.** Quando chega concorrente nova, um ex ou um amigo magoado pode ser o dono, a mesma pessoa, que lembra do que você fez.
+> - **Comprar a concorrente é pedir ao dono.** Ele decide pelo que lembra de você e pela força da empresa dele, e o não vem com o porquê ("não quis vender, porque…"). A folha diz como ele está ("deve dizer sim", "difícil"). Quem vende pode ficar para tocar o negócio com você.
+> - **O que a rival faz:** propõe uma trégua de preços (o cartel, que o Cade pode descobrir), oferece comprar a sua empresa no ano ruim, leva o seu melhor gerente, processa pela marca, aparece quebrado pedindo emprego, divide a mesa na festa.
+> - **O gestor que propõe.** Com a empresa de R$ 10 milhões, chega um diretor (ou uma diretora) com o jeito do traço, cauteloso ou arrojado, que traz a jogada do ano com o número que a justifica ("ampliar a estrutura em 25%, porque os pedidos já passam 30% do que ela entrega"). Seguir faz a jogada; recusar é ir do seu jeito. No ano seguinte, os números dizem quem tinha razão, e quem ignora demais perde o diretor para a concorrência.
 
 > [!TIP]
 > **Para testar:**
-> - Abra a folha Carreira e veja as três esferas; o "quase lá" aparece quando uma conquista está a 5 pontos.
-> - Siga um caminho e espere a conquista em dourado: cuide da família e da fama, ou se eleja (vereador é o começo; a voz que se escuta vem do prefeito para cima), ou faça a empresa crescer.
-> - Com uma empresa, veja "Custos de fora" na folha Dinheiro; abra outra no setor fornecedor e veja o custo cair; faça lobby quando o governo não for o seu.
+> - Abra uma empresa e veja, na folha Dinheiro, a concorrência com nome e dono; na Família, ela aparece no fim da lista.
+> - Tente comprar a concorrente depois de uma guerra de preços: o dono lembra.
+> - Faça a empresa passar de R$ 10 milhões e espere a primeira proposta; recuse uma e veja se o ano seguinte dá razão ao diretor.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🌐 Três esferas de influência com efeito de verdade | 🧭 A influência como verbo (pedir um favor ao prefeito, emplacar um aliado) |
-| 🏅 Nove conquistas em escada, em dourado, no epitáfio e no cartão | 🏆 O placar das conquistas entre vidas |
-| 🔗 A cadeia de fornecimento e a integração vertical | 🏬 Várias concorrentes com nome e marca próprios |
-| 💼 A folha que sente o desemprego, o imposto pela política e o lobby | 🏭 Fábricas e lojas como lugares |
+| 🧑‍💼 A concorrente com nome e dono, que tem jeito e memória | 📈 A bolsa de verdade: ações da rival e a oferta hostil |
+| 🤝 Comprar a concorrente pedindo ao dono, com o porquê do não | 🏬 Várias rivais por setor |
+| 🗂️ O diretor que propõe com os números, e o ano seguinte que confere | 🏭 Fábricas e lojas como lugares |
+| 🎭 Oito histórias: trégua e cartel, oferta, gerente roubado, processo, dono quebrado, festa | 🧭 Dar ordens ao diretor (carta branca por área) |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. O bilionário feito ficou em 0,51% (era 0,69%), e 24,7% de quem abre empresa quebra (eram 26,6%). A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 86,9% na 20ª, com 904 histórias por 1.000 vidas. Os toques ficaram em 479,2 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. Todo mundo que abre empresa conhece a rival pelo nome, e em 2,6% das vidas com empresa o dono é alguém que já era da vida. O gestor chega em 19% das vidas com empresa; das 1.982 propostas, 51% foram seguidas, sem que seguir dominasse (R$ 41 milhões de patrimônio mediano para quem mais seguiu, R$ 42 milhões para quem mais recusou). O bilionário feito ficou em 0,40% (era 0,51%), e 25,6% de quem abre empresa quebra (eram 24,7%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,2% na 20ª, com 901 histórias por 1.000 vidas. Os toques caíram para 476,9 por vida (eram 479,2). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

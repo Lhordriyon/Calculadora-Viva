@@ -86,26 +86,26 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 
 **O bloco H6, o capitalismo com rosto (o próximo; o pedido do dono, 02/11).** O dono pediu para preparar a próxima atualização: mais capitalismo. A concorrência é um número sem dono e ninguém na empresa propõe nada (I-139, com as candidatas nos 12 critérios). A ordem de execução:
 
-- [ ] H6a: a rival tem nome e dono.
+- [x] H6a: a rival tem nome e dono.
   - **O papel `rival`** (`familia.ts`), no molde do colega e do chefe: chega com a concorrente nova (ou no primeiro ano de quem já tem empresa, o save antigo) e sai quando ela quebra, é comprada ou quem joga troca de empresa. O nome da concorrente fica em `empresa.rival`, tirado de `mundo.json` e do setor.
   - **O traço do dono na reação** (`negocio.ts › concorrenciaDoAno`): na chance de guerra, na corrida atrás de quem atrai mais e na volta para a média.
   - **O rival que você conhece:** na concorrente nova, o colega antigo magoado, um ex, o irmão ou o amigo brigado pode virar o dono, pela troca de papel de `pessoas.ts` e com a entrada do motivo de causa.
   - **Comprar a concorrente é pedir ao dono** (`empresa.ts › adquirir`, com o pedido `aceitar` de `decisao.ts`): a mágoa da guerra de preços pesa, e a folha diz como ele está.
   - **No resto do motor:** o manifesto, `herdeiro.ts` (o rival passa com a empresa) e os testes de cada ligação.
-- [ ] H6b: o que a rival faz. Seis iniciativas do dono (`conteudo/storylets/` novo), com `teste decide` quando a resposta é dele:
+- [x] H6b: o que a rival faz. Seis iniciativas do dono (`conteudo/storylets/` novo), com `teste decide` quando a resposta é dele:
   - a trégua de preços (o tema `cartel` em `mundo.json › segredos`, e o Cade se vazar);
   - a oferta pela sua empresa;
   - o funcionário roubado;
   - o processo da marca;
   - o dono quebrado que pede emprego;
   - o encontro na festa.
-- [ ] H6c: a diretora que propõe (I-12).
+- [x] H6c: o gestor que propõe (I-12; o papel se chama `gestor`, porque "diretor" já é o diretor narrativo do motor).
   - **O papel `diretor`:** chega com a empresa acima de R$ 10 milhões ou com a rival comprada (o dono fica). O jeito dela, cautelosa ou arrojada, vem do traço.
   - **A proposta do ano:** a heurística do robô no jeito dela (`robos.ts`), num storylet com o texto montado do estado; as escolhas são seguir, recusar ou fazer do seu jeito.
   - **O efeito `operacao`** (`esquema.ts`, `efeitos.ts`): executa a operação da folha, com o motivo de recusa dela.
   - **A conferência no ano seguinte:** os números deram razão a ela? A resposta vai para a confiança e a lembrança, e quem ignora sempre perde a diretora para a rival.
-- [ ] H6d: a interface. Na folha Dinheiro, o nome da rival, o dono e como ele está para vender; na Família, o rival e a diretora no grupo do trabalho; na linha do tempo, a chegada e a saída do rival. A régua (`npm run telas`, 52 critérios) passa.
-- [ ] H6e: os robôs (seguem a diretora pelo jeito da estratégia), o túnel com os portões da I-139, a documentação, o `verificar` e a publicação.
+- [x] H6d: a interface. Na folha Dinheiro, o nome da rival, o dono e como ele está para vender; na Família, o rival e a diretora no grupo do trabalho; na linha do tempo, a chegada e a saída do rival. A régua (`npm run telas`, 52 critérios) passa.
+- [x] H6e: os robôs (seguem a diretora pelo jeito da estratégia), o túnel com os portões da I-139, a documentação, o `verificar` e a publicação.
 
 Riscos já vistos:
 - **Os toques estão em 479,2, com teto de 480:** as propostas e as iniciativas disputam o lugar do evento do ano; não podem somar um evento.

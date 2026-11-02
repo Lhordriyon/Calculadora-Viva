@@ -4,6 +4,20 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🧑‍💼 H6 · O capitalismo com rosto · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): continuar o foco no capitalismo, cada atualização melhor que a anterior.
+
+- 🧑‍💼 **A rival tem nome e dono** (o papel `rival`): o traço dele dá a garra na briga (`negocio.ts › garraDaRival`), a guerra de preços o magoa, e ele sai quando a empresa acaba, muda de setor, chega concorrente nova ou dois anos depois da quebra.
+- 💔 **O rival que você conhece:** na concorrente nova, um ex ou um amigo magoado pode ser o dono, a mesma pessoa (`pessoas.ts › levarParaAEmpresa`).
+- 🤝 **Comprar a concorrente é pedir ao dono** (o pedido `aceitar`, com o porquê); quem vende pode virar o gestor.
+- 🗂️ **O gestor que propõe** (o papel `gestor`, `diretoria.ts`): chega com a empresa de R$ 10 milhões e propõe a jogada do ano pelo jeito do traço (a heurística dos robôs), com o número que a justifica; o ano seguinte confere, e sem confiança ele vai para a concorrência.
+- 🎭 **Oito histórias** (a proposta, a trégua e o cartel que vaza, a oferta pela empresa, o gerente roubado, o processo da marca, o dono quebrado, a festa) e a folha Dinheiro com a rival, o diretor e como o dono está para vender.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,10 milhões de entradas; a rival pelo nome em 100% de quem abre empresa, e o rival que já era da vida em 2,6%; o gestor em 19,2%, com 51% das 1.982 propostas seguidas e sem dominar (R$ 41 milhões contra R$ 42 milhões); bilionário feito 0,40%; quebram 25,6% de quem abre empresa; saturação V5 52,3% e V20 87,2%; 901 histórias por 1.000 vidas; toques 476,9.
+
+---
+
 ## 🌐 ★ · A influência que importa · 02/11/2026
 
 > [!NOTE]
