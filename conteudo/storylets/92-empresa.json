@@ -201,11 +201,11 @@
   {
     "id": "acionistas_furiosos",
     "idade": [25, 90],
-    "condicoes": { "marcas": ["empresa.na_bolsa"], "pais.ret_acoes": { "max": -10 } },
+    "condicoes": { "marcas": ["empresa.na_bolsa"], "pais.ret_acoes": { "max": -5 } },
     "tensao": 2,
     "repetivel": true,
     "intervalo": 8,
-    "texto": "A bolsa despencou, e as ações d{empresa:o|a} {empresa} caíram [trinta|quarenta|cinquenta] por cento em um mês. No fórum de investidores, seu nome virou xingamento; na assembleia, pauta.",
+    "texto": "A bolsa virou, e as ações d{empresa:o|a} {empresa} caíram [vinte|trinta|quarenta] por cento em um mês. No fórum de investidores, seu nome virou xingamento; na assembleia, pauta.",
     "resumo": "viu as ações da própria empresa despencarem",
     "escolhas": [
       {
