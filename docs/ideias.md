@@ -176,6 +176,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** o empréstimo cria dinheiro no banco e as contas fecham (teste); a concorrente reage e o lucro alto a atrai (teste); a guerra corta a receita (teste); no túnel, as quatro histórias acontecem e nenhuma estratégia domina.
 - **Estado:** feita (bloco H2, 02/11).
 
+### I-135 · Os mercados de cada setor (a teia de aranha da oferta e do preço)
+- **Problema:** o preço era o mesmo para todo mundo, e o ciclo vinha só do país. Nenhum setor vivia o boom de quem constrói demais.
+- **Efeitos causais:** um número por setor (a oferta relativa) faz o preço; a onda de obras responde ao preço com inércia (ciclos de uns oito anos); o preço entra na receita da empresa; a sobra tira a concorrente fraca e aperta o emprego de quem trabalha no setor (quem joga e a família); a falta chama concorrente nova; o conteúdo lê a sobra do setor da empresa e do emprego.
+- **Aceitação:** o setor oscila (teste), a sobra derruba a receita e aperta o emprego (teste), e no túnel as histórias do setor acontecem sem estratégia dominante.
+- **Estado:** feita (bloco H3, 02/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -271,6 +277,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-135 | Os mercados de cada setor: o ciclo de oferta e preço | H | Alta | feita (bloco H3, 02/11) |
 | I-134 | A concorrência que reage e o banco da empresa | H | Alta | feita (bloco H2, 02/11) |
 | I-133 | O dinheiro existe: contas com saldo, partidas dobradas, crédito, emissão e imposto inflacionário | $ | Alta | feita (bloco $, 02/11) |
 | I-132 | O negócio de verdade: caixa, produto, mercado e o mundo que reage | H | Alta | feita (bloco H, 01/11): o caixa, a demanda, a capacidade, o preço, a qualidade, a marca, as verbas, o salário, os dividendos, a exportação, a falência por causa, os empregos, o imposto, a mídia e o aluguel; o crédito da empresa e o lobby, não |

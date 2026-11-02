@@ -79,6 +79,7 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 **O bloco H2, a concorrência e o banco da empresa (02/11).** O dono pediu a empresa "10× melhor" (I-134).
 
 - [x] A concorrente que reage (corre atrás, guerra de preços, nova pelo lucro, quebra), o crédito do banco com o juro da Selic, quatro histórias, a folha, os robôs e os testes
+- [x] H3 (02/11): os mercados de cada setor, com o ciclo de oferta e preço (a teia de aranha com inércia), o preço na receita, a sobra na concorrência e no emprego de quem trabalha nele, três histórias e a folha País com os setores (I-135)
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
