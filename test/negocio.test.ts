@@ -297,11 +297,11 @@ describe('o negócio de verdade (bloco H)', () => {
     expect(e.entidades['eu']!.q['lobista']).toBeTruthy();
     e.entidades['eu']!.n['influencia'] = 100;
     e.rng = criarRng(7);
-    for (let i = 0; i < 3 && e.entidades['pais']!.n['pol_impostos'] === 2; i++) lobbyDoAno(e);
+    for (let i = 0; i < 3 && e.entidades['pais']!.n['pol_impostos'] === 2; i++) lobbyDoAno(e, c);
     expect(e.entidades['pais']!.n['pol_impostos']).toBe(1);
     const noticia = e.historico.find((x) => x.ref === 'pais:lobby')!;
     expect(noticia.causas).toEqual([h.id]);
-    lobbyDoAno(e);
+    lobbyDoAno(e, c);
     expect(e.entidades['pais']!.n['pol_impostos']).toBe(1);
   });
 });

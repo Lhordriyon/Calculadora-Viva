@@ -32,7 +32,7 @@ describe('a influência (bloco ★)', () => {
     const e = adulto();
     lacos(e, 3);
     e.entidades['eu']!.n['fama'] = 50;
-    expect(influenciaPessoal(e)).toBeCloseTo(38, 5);
+    expect(influenciaPessoal(e)).toBeCloseTo(53, 5);
     // A carreira mais difícil de entrar (as outras batem no teto de 95%).
     const def = [...c.mundo.carreiras].sort((a, b) => a.chance - b.chance)[0]!;
     const com = chanceDeEntrar(e, def);
@@ -53,9 +53,9 @@ describe('a influência (bloco ★)', () => {
   it('cada degrau vira conquista uma vez só, com a entrada na linha do tempo e a qualidade que o epitáfio lê', () => {
     const e = adulto(53);
     lacos(e, 3);
-    e.entidades['eu']!.n['fama'] = 100;
-    conquistasDoAno(e);
-    conquistasDoAno(e);
+    e.entidades['eu']!.n['fama'] = 60;
+    conquistasDoAno(e, c);
+    conquistasDoAno(e, c);
     expect(e.historico.filter((h) => h.ref === 'conquista:conquista_querida')).toHaveLength(1);
     expect(e.entidades['eu']!.q['conquista_querida']).toBeTruthy();
     expect(e.entidades['eu']!.q['conquista_referencia']).toBeUndefined();

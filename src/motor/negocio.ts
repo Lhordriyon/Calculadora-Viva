@@ -732,12 +732,12 @@ export function textoDosCustos(e: EstadoVida, c: Conteudo, emp: Entidade): strin
  * O lobby trabalha: por até três anos depois de contratado (ou da regra sob medida do conteúdo), um governo que não é o
  * de quem joga pode baixar a política de impostos, uma vez, numa notícia que aponta o lobby de causa.
  */
-export function lobbyDoAno(e: EstadoVida): void {
+export function lobbyDoAno(e: EstadoVida, c: Conteudo): void {
   const q = e.entidades['eu']?.q['lobista'];
   if (!q || e.ano - q.ano > 3 || governoAtual(e) === 'voce' || nivelDe(e, 'impostos') === 0) return;
   for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano >= q.ano; i--) if (e.historico[i]!.ref === 'pais:lobby') return;
   // A influência política faz o lobby andar.
-  const chance = Math.min(0.5, CADEIA.chanceDoLobby + influenciaPolitica(e) / 200);
+  const chance = Math.min(0.5, CADEIA.chanceDoLobby + influenciaPolitica(e, c) / 200);
   if (aleatorio(e.rng) >= chance) return;
   const causa = entradaQueMudou(e, 'eu.lobista');
   const entrada = novaEntrada(e, {

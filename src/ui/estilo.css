@@ -1796,6 +1796,15 @@ button {
   font-weight: 700;
 }
 
+/* As três esferas da influência numa linha que vai de uma borda à outra: a folha não cresce (bloco ★). */
+.empresa-cartao.poder dd.esferas {
+  grid-column: 1 / -1;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.88em;
+  color: var(--texto-suave);
+}
+
 .bem-meu {
   padding: 10px 12px;
   border-radius: 15px;

@@ -516,7 +516,7 @@ function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
   if (cargos.length === 0) return [];
   const minimo = estrategia === 'cautelosa' ? 0.6 : estrategia === 'arriscada' ? 0.3 : 0;
   if (estrategia === 'aleatoria' && aleatorio(rng) >= 0.12) return [];
-  const bons = cargos.filter((k) => chanceDeEleicao(e, k) >= minimo).sort((a, b) => b.poder - a.poder);
+  const bons = cargos.filter((k) => chanceDeEleicao(e, c, k) >= minimo).sort((a, b) => b.poder - a.poder);
   const alvo = estrategia === 'aleatoria' ? (bons.length ? sortear(rng, bons) : undefined) : bons[0];
   return alvo ? [{ tipo: 'candidatarCargo', cargo: alvo.id }] : [];
 }

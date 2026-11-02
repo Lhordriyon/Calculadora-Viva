@@ -4,7 +4,6 @@
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
 import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
-import { influenciaNegocios, influenciaPessoal, influenciaPolitica } from './influencia.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
@@ -62,9 +61,6 @@ const PESSOA: Record<string, DefCampo> = {
   /** O que a pessoa deve a quem joga, e o que quem joga deve a ela (as promissórias, promissorias.ts), e os anos de atraso entre vocês. */
   te_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
   /** As três esferas da influência (influencia.ts): a pessoal, a política e a de negócios, de 0 a 100. */
-  influencia_pessoal: { tipo: 'num', sistema: 'poder', derivado: true },
-  influencia_politica: { tipo: 'num', sistema: 'poder', derivado: true },
-  influencia_negocios: { tipo: 'num', sistema: 'poder', derivado: true },
   /** A sobra (positiva) ou a falta de oferta no setor do trabalho, em % (negocio.ts › anoDosSetores). */
   sobra_no_setor: { tipo: 'num', sistema: 'carreira', derivado: true },
   voce_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
@@ -695,12 +691,6 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return deQuando(e, ent, en, 'ruim');
       case 'visao':
         return visaoDe(e, ent, en);
-      case 'influencia_pessoal':
-        return influenciaPessoal(e);
-      case 'influencia_politica':
-        return influenciaPolitica(e);
-      case 'influencia_negocios':
-        return influenciaNegocios(e);
       case 'sobra_no_setor':
         return (e.entidades[`setor_${en.t['setor'] ?? ''}`]?.n['oferta'] ?? 100) - 100;
       case 'te_deve':

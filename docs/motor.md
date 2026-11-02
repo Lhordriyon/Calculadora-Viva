@@ -316,12 +316,12 @@ Cada real tem de onde vir e para onde ir. As **contas do país** são entidades 
 
 ## A influência (`influencia.ts`; bloco ★)
 
-A influência total (`eu.influencia`, poder.ts) continua; por cima dela, três esferas tiradas do estado, sem número novo (campos calculados `eu.influencia_pessoal`, `_politica` e `_negocios`, de 0 a 100):
+A influência total (`eu.influencia`, poder.ts) continua; por cima dela, três esferas tiradas do estado na hora, sem número novo (`influencia.ts › esferas`, de 0 a 100; a política lê o poder do cargo em `mundo.json › cargos`):
 
-- **Pessoal:** 6 por pessoa viva e por perto com vínculo de 70 ou mais, mais 0,4 da fama. Multiplica a chance de entrar numa vaga por 1 + pessoal ÷ 200 (quem conhece gente entra mais fácil).
-- **Política:** o cargo (35), 0,35 da popularidade, o lobby (10), 8 por veículo de mídia própria e a linhagem (20 para a coroa e o Regime, 8 para quem é filho de político). Soma pessoal ÷ 14 ao logit da eleição (metade do peso da influência inteira) e faz o lobby andar (a chance soma política ÷ 200).
+- **Pessoal:** 6 por pessoa viva e por perto com vínculo de 70 ou mais, mais 0,7 da fama. Multiplica a chance de entrar numa vaga por 1 + pessoal ÷ 200 (quem conhece gente entra mais fácil).
+- **Política:** o poder do cargo (8 de quem é vereador, 18 de quem é prefeito, 50 de quem preside o país), 0,3 da popularidade, o lobby (10), 8 por veículo de mídia própria e a linhagem (20 para a coroa e o Regime, 8 para quem é filho de político). Soma política ÷ 14 ao logit da eleição (metade do peso da influência inteira) e faz o lobby andar (a chance soma política ÷ 200).
 - **Negócios:** 12 por zero do valor da maior empresa acima de R$ 100 mil, o truste (10) e 5 por empresa a mais. Multiplica o limite do banco por 1 + negócios ÷ 100 e tira até 20% do preço da compra da concorrente.
-- **As conquistas** (`influencia.ts › CONQUISTAS`): três degraus por esfera (40, 70 e 90). No ano do poder, a esfera que passou de um degrau pela primeira vez vira uma entrada (`conquista:<id>`, em dourado na linha do tempo) e a qualidade de quem joga, que o epitáfio (`marcas.json`), o conteúdo e o cartão da vida leem. A folha Carreira mostra as três esferas e o que falta para a próxima conquista de cada uma.
+- **As conquistas** (`influencia.ts › CONQUISTAS`): três degraus por esfera (40, 70 e 90), calibrados como escada: nas vidas dos robôs, o degrau 40 vem em cerca de 30% (6% na de negócios), o 70 em 1% a 3% e o 90 em menos de 0,5%. No ano do poder, a esfera que passou de um degrau pela primeira vez vira uma entrada (`conquista:<id>`, em dourado na linha do tempo) e a qualidade de quem joga, que o epitáfio (`marcas.json`), o conteúdo e o cartão da vida leem. A folha Carreira mostra as três esferas e o que falta para a próxima conquista de cada uma.
 
 ## Dinastia (`herdeiro.ts`)
 

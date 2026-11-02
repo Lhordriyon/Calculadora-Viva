@@ -92,7 +92,7 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "pais.moeda": { "min": 6 }, "pais.pol_moeda": { "min": 2 },     // o dinheiro (moeda.ts): o excesso que circula, em % (negativo é crédito curto), e a política da moeda (0 contida, 1 regular, 2 impressora)
   "empresa.concorrente": { "min": 50 }, "empresa.divida": { "min": 1 }, "marcas": ["empresa.guerra"], // a concorrência e o banco: a força da concorrente (50 é a média), o que a empresa deve; as marcas guerra, concorrente_novo e concorrente_quebrou
   "empresa.sobra_no_setor": { "min": 12 }, "eu.sobra_no_setor": { "max": -8 }, // os mercados: a sobra (positiva) ou a falta de oferta no setor da empresa ou do emprego, em %
-  "eu.influencia_politica": { "min": 40 }, "marcas": ["conquista_voz"], // a influência: as três esferas (pessoal, politica, negocios, de 0 a 100) e as nove conquistas (influencia.ts › CONQUISTAS)
+  "marcas": ["conquista_voz"],                                         // a influência: as nove conquistas das três esferas (influencia.ts › CONQUISTAS); as esferas se calculam na hora e não são campos
   "empresa.setor": "tecnologia", "marcas": ["empresa.na_bolsa"], "empresa.valor": false, // sem empresa
   "empresas": { "min": 2 }, "empresa.subsidiarias": { "min": 10 },     // o grupo: quantas empresas quem joga tem e as subsidiárias da que ele cuida
   "marcaHa": [{ "marca": "empresa.fundiu", "min": 1, "max": 3 }],       // de 1 a 3 anos depois de uma fusão

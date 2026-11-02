@@ -114,11 +114,11 @@ describe('imagem pública', () => {
     const eu = e.entidades['eu']!;
     eu.n['influencia'] = 30;
     eu.n['popularidade'] = 50;
-    const neutra = chanceDeEleicao(e, prefeito);
+    const neutra = chanceDeEleicao(e, c, prefeito);
     eu.n['popularidade'] = 80;
-    expect(chanceDeEleicao(e, prefeito)).toBeGreaterThan(neutra);
+    expect(chanceDeEleicao(e, c, prefeito)).toBeGreaterThan(neutra);
     eu.n['popularidade'] = 20;
-    expect(chanceDeEleicao(e, prefeito)).toBeLessThan(neutra);
+    expect(chanceDeEleicao(e, c, prefeito)).toBeLessThan(neutra);
   });
 });
 

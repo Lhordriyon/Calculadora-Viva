@@ -91,7 +91,7 @@ function Trabalho({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
             Pedir demissão
           </button>
         ))}
-      {vagas.some((v) => v.motivo === null) && <p class="nota">Uma tentativa por ano. Profissões de palco pagam pouco no começo e uma fortuna no topo.</p>}
+      {vagas.some((v) => v.motivo === null) && <p class="nota">Uma tentativa por ano; quem conhece gente entra mais fácil.</p>}
       {sel && (
         <div class="confirmar">
           <p>
@@ -180,23 +180,14 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
     <fieldset class="grupo">
       <legend>Poder</legend>
       <dl class="empresa-cartao poder">
-        <dt>Influência</dt>
-        <dd>{Math.round(eu.n['influencia'] ?? 0)}</dd>
-        <dt>As três esferas</dt>
+        <dt>Influência · fama</dt>
         <dd>
-          pessoal {Math.round(esferas(vida).pessoal)} · política {Math.round(esferas(vida).politica)} · negócios {Math.round(esferas(vida).negocios)}
-          <small>a pessoal abre vagas; a política ganha eleições e faz o lobby andar; a de negócios dá crédito e desconto na compra</small>
+          {Math.round(eu.n['influencia'] ?? 0)} · {Math.round(eu.n['fama'] ?? 0)}
         </dd>
-        <dt>Próximas conquistas</dt>
-        <dd>
-          {(['pessoal', 'politica', 'negocios'] as Esfera[])
-            .map((x) => proximaConquista(vida, x))
-            .filter((x): x is { nome: string; falta: number } => x !== null)
-            .map((x) => `${x.nome} (faltam ${x.falta})`)
-            .join(' · ') || 'todas conquistadas'}
+        <dd class="esferas">
+          pessoal {Math.round(esferas(vida, conteudo).pessoal)} · política {Math.round(esferas(vida, conteudo).politica)} · negócios {Math.round(esferas(vida, conteudo).negocios)}
+          {proximaDeTodas(vida, conteudo) && ` · quase lá: ${proximaDeTodas(vida, conteudo)}`}
         </dd>
-        <dt>Fama</dt>
-        <dd>{Math.round(eu.n['fama'] ?? 0)}</dd>
         {fila && (
           <>
             <dt>Sucessão</dt>
@@ -221,7 +212,7 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         )}
       </dl>
       <p class="nota">
-        A influência vem do patrimônio, dos bens, da fama, da empresa e do cargo, e decide eleições. Municipais nos anos múltiplos de 4; gerais, dois anos depois.
+        Eleições municipais nos anos múltiplos de 4; gerais, dois anos depois.
       </p>
       {sel && (
         <div class="confirmar">
@@ -230,7 +221,7 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
               {noGenero(sel.nome, g)} {ondeDoCargo(vida, sel)}
             </b>
             : campanha de {formatarDinheiro(sel.campanha)}, salário de {porMes(sel.salario)}, mandato de {sel.mandato} anos.
-            {motivoSel ? ` Agora não: ${motivoSel}.` : ` Chance de ganhar: ${pct(chanceDeEleicao(vida, sel))}.`}
+            {motivoSel ? ` Agora não: ${motivoSel}.` : ` Chance de ganhar: ${pct(chanceDeEleicao(vida, conteudo, sel))}.`}
           </p>
           <div class="escolhas-origem">
             <button type="button" class="botao" disabled={motivoSel !== null} onClick={() => opSel && aoOperar(opSel)}>
@@ -246,11 +237,11 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
         {cargos
           .filter((c) => c.motivo === null)
           .map((c) => (
-            <Cargo key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />
+            <Cargo conteudo={conteudo} key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />
           ))}
         {[...fechados].map(([motivo, grupo]) =>
           verTodos || grupo.length < 3 ? (
-            grupo.map((c) => <Cargo key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />)
+            grupo.map((c) => <Cargo conteudo={conteudo} key={c.k.id} {...c} vida={vida} escolhido={escolhido === c.k.id} aoEscolher={setEscolhido} />)
           ) : (
             <li key={motivo}>
               <button type="button" class="vaga fechada" onClick={() => setVerTodos(true)}>
@@ -277,7 +268,7 @@ function TomarOPoder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   return (
     <fieldset class="grupo">
       <legend>Tomar o poder</legend>
-      <p class="nota">O que não passa pela urna. Não gasta a ficha do ano, e o mundo vai reagir: lá fora, quem não gosta de golpe se afasta.</p>
+      <p class="nota">O que não passa pela urna: não gasta a ficha do ano, e o mundo reage.</p>
       <ListaDeJogadas lista={lista} aoOperar={aoOperar} rotulo="Jogadas do poder" />
     </fieldset>
   );
@@ -361,7 +352,7 @@ function Coroa({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
 }
 
 /** Um cargo eletivo da lista: a eleição, a influência e a campanha, e a chance (ou o motivo de não poder agora). */
-function Cargo({ k, motivo, vida, escolhido, aoEscolher }: { k: DefCargo; motivo: string | null; vida: EstadoVida; escolhido: boolean; aoEscolher: (id: string) => void }) {
+function Cargo({ k, motivo, vida, conteudo, escolhido, aoEscolher }: { k: DefCargo; motivo: string | null; vida: EstadoVida; conteudo: Conteudo; escolhido: boolean; aoEscolher: (id: string) => void }) {
   return (
     <li>
       <button type="button" class={`vaga${motivo ? ' fechada' : ''}`} aria-pressed={escolhido} onClick={() => aoEscolher(k.id)}>
@@ -370,7 +361,7 @@ function Cargo({ k, motivo, vida, escolhido, aoEscolher }: { k: DefCargo; motivo
         </b>
         <small>
           eleição em {proximaEleicao(vida.ano, k)} · influência {k.influencia}+ · campanha {formatarDinheiro(k.campanha)}
-          {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEleicao(vida, k))}`}
+          {motivo ? ` · ${motivo}` : ` · ${pct(chanceDeEleicao(vida, conteudo, k))}`}
         </small>
       </button>
     </li>
@@ -406,3 +397,12 @@ export function Carreira({ vida, conteudo, aoOperar, aoFechar }: Props) {
     </Folha>
   );
 }
+
+/** A conquista mais perto de vir, das três esferas (a que falta menos), se estiver perto. */
+function proximaDeTodas(vida: EstadoVida, conteudo: Conteudo): string {
+  const proximas = (['pessoal', 'politica', 'negocios'] as Esfera[]).map((x) => proximaConquista(vida, conteudo, x)).filter((x): x is { nome: string; falta: number } => x !== null);
+  const q = proximas.sort((a, b) => a.falta - b.falta)[0];
+  // Só a que está perto (até 5 pontos): a folha não cresce à toa.
+  return q && q.falta <= 5 ? `${q.nome} (faltam ${q.falta})` : '';
+}
+

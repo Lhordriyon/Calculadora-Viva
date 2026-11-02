@@ -5,25 +5,30 @@
  * compra da concorrente) e tem três conquistas, que entram na linha do tempo em dourado e no cartão da vida
  * (poder.ts › conquistasDoAno).
  */
+import type { Conteudo } from './conteudo.ts';
 import type { EstadoVida } from './tipos.ts';
 
 const MIDIA = new Set(['radio', 'jornal', 'emissora']);
 
-/** A pessoal: 6 por pessoa com vínculo de 70 ou mais (viva e por perto) e 0,4 da fama. */
+/** A pessoal: 6 por pessoa com vínculo de 70 ou mais (viva e por perto) e 0,7 da fama. */
 export function influenciaPessoal(e: EstadoVida): number {
   let fortes = 0;
   for (const x of Object.values(e.entidades)) if (x.tipo === 'pessoa' && x.id !== 'eu' && x.vivo !== false && !x.q['ausente'] && (x.n['vinculo'] ?? 0) >= 70) fortes++;
-  return Math.min(100, 6 * fortes + 0.4 * (e.entidades['eu']?.n['fama'] ?? 0));
+  return Math.min(100, 6 * fortes + 0.7 * (e.entidades['eu']?.n['fama'] ?? 0));
 }
 
-/** A política: o cargo (35), 0,35 da popularidade, o lobby (10), 8 por veículo de mídia própria e a linhagem. */
-export function influenciaPolitica(e: EstadoVida): number {
+/**
+ * A política: o poder do cargo (mundo.json › cargos: 8 de quem é vereador, 50 de quem preside o país), 0,3 da
+ * popularidade, o lobby (10), 8 por veículo de mídia própria e a linhagem.
+ */
+export function influenciaPolitica(e: EstadoVida, c: Conteudo): number {
   const eu = e.entidades['eu'];
   if (!eu) return 0;
   let midias = 0;
   for (const x of Object.values(e.entidades)) if (x.tipo === 'bem' && MIDIA.has(x.t['item'] ?? '')) midias++;
   const linhagem = eu.q['principe'] || eu.q['herdeiro_regime'] ? 20 : eu.q['filho_de_politico'] ? 8 : 0;
-  return Math.min(100, (eu.t['cargo'] ? 35 : 0) + 0.35 * (eu.n['popularidade'] ?? 0) + (eu.q['lobista'] ? 10 : 0) + 8 * midias + linhagem);
+  const cargo = eu.t['cargo'] ? (c.mundo.cargos.find((k) => k.id === eu.t['cargo'])?.poder ?? 0) : 0;
+  return Math.min(100, cargo + 0.3 * (eu.n['popularidade'] ?? 0) + (eu.q['lobista'] ? 10 : 0) + 8 * midias + linhagem);
 }
 
 /** A de negócios: 12 por zero do valor da maior empresa acima de R$ 100 mil, o truste (10) e 5 por empresa a mais. */
@@ -43,8 +48,8 @@ export function influenciaNegocios(e: EstadoVida): number {
 
 export type Esfera = 'pessoal' | 'politica' | 'negocios';
 
-export function esferas(e: EstadoVida): Record<Esfera, number> {
-  return { pessoal: influenciaPessoal(e), politica: influenciaPolitica(e), negocios: influenciaNegocios(e) };
+export function esferas(e: EstadoVida, c: Conteudo): Record<Esfera, number> {
+  return { pessoal: influenciaPessoal(e), politica: influenciaPolitica(e, c), negocios: influenciaNegocios(e) };
 }
 
 /** As conquistas: três degraus por esfera (40, 70 e 90). O id é a qualidade de quem joga; o epitáfio está em marcas.json. */
@@ -61,9 +66,9 @@ export const CONQUISTAS = [
 ] as const satisfies readonly { id: string; esfera: Esfera; nivel: number; nome: string; frase: string }[];
 
 /** A próxima conquista de uma esfera: o nome e quanto falta (a folha Carreira). */
-export function proximaConquista(e: EstadoVida, esfera: Esfera): { nome: string; falta: number } | null {
+export function proximaConquista(e: EstadoVida, c: Conteudo, esfera: Esfera): { nome: string; falta: number } | null {
   const eu = e.entidades['eu'];
-  const valor = esferas(e)[esfera];
+  const valor = esferas(e, c)[esfera];
   const q = CONQUISTAS.find((x) => x.esfera === esfera && !eu?.q[x.id]);
   return q ? { nome: q.nome, falta: Math.max(0, Math.ceil(q.nivel - valor)) } : null;
 }

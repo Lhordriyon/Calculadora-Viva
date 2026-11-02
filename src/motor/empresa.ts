@@ -493,7 +493,7 @@ export function alvoDaTracao(e: EstadoVida, c: Conteudo, emp: Entidade, carga = 
 export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[], mercado?: Partial<Record<Ativo, number>>): void {
   reorganizarGrupo(e, reg);
   // O lobby contratado (ou a regra sob medida) pode baixar os impostos do país (negocio.ts).
-  lobbyDoAno(e);
+  lobbyDoAno(e, c);
   const empresas = empresasDe(e);
   if (empresas.length === 0) return;
   const carga = cargaDaMesa(e);
