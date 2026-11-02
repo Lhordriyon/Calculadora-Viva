@@ -182,6 +182,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** o setor oscila (teste), a sobra derruba a receita e aperta o emprego (teste), e no túnel as histórias do setor acontecem sem estratégia dominante.
 - **Estado:** feita (bloco H3, 02/11).
 
+### I-136 · Comprar no tempo certo e ler o ciclo antes dele chegar
+- **Problema:** a concorrente custava sempre 30% do valor, na alta ou na baixa, e quem joga não tinha como ver o ciclo do setor chegando.
+- **Efeitos causais:** o preço do dia da concorrente (o preço do setor e a força dela), o negócio que entra pelo preço justo, a concorrente que perde força com a compra; a fatia do mercado e a previsão do preço do setor pela obra em andamento, na folha.
+- **Aceitação:** a concorrente sai barata na baixa e quando está fraca, e a compra dá o negócio inteiro e fecha o mercado (teste).
+- **Estado:** feita (bloco H4, 02/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -277,6 +283,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-136 | Comprar no tempo certo e ler o ciclo antes dele chegar | H | Alta | feita (bloco H4, 02/11) |
 | I-135 | Os mercados de cada setor: o ciclo de oferta e preço | H | Alta | feita (bloco H3, 02/11) |
 | I-134 | A concorrência que reage e o banco da empresa | H | Alta | feita (bloco H2, 02/11) |
 | I-133 | O dinheiro existe: contas com saldo, partidas dobradas, crédito, emissão e imposto inflacionário | $ | Alta | feita (bloco $, 02/11) |
