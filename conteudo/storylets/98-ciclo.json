@@ -1,0 +1,83 @@
+[
+  {
+    "id": "setor_aquecido",
+    "idade": [18, 95],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "empresa.valor": true, "empresa.sobra_no_setor": { "max": -8 } },
+    "texto": "Falta mercadoria no setor {empresa:do|da} {empresa}: o preço subiu, os pedidos atrasam, e todo mundo do ramo está abrindo filial. Um veterano do setor avisa, entre um café e outro: daqui a dois anos, sobra.",
+    "resumo": "viveu a alta do setor da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Ampliar agora, enquanto o preço está bom",
+        "resumo": "ampliou a empresa na alta do setor",
+        "resultado": { "texto": "Você mandou começar a obra na segunda-feira. O concorrente do lado também; o do outro lado, também.", "efeitos": { "negocio": { "expandir": 0.25 }, "empresa.tracao": 2, "felicidade": -1 } }
+      },
+      {
+        "texto": "Subir o preço e guardar o lucro",
+        "resumo": "subiu o preço e guardou o lucro da alta do setor",
+        "resultado": { "texto": "Preço novo, vitrine igual. O caixa engordou, e você não assinou contrato de obra nenhum.", "efeitos": { "negocio": { "preco": "premium" }, "empresa.tracao": -1, "felicidade": 1 } }
+      },
+      {
+        "texto": "Não seguir a manada",
+        "resumo": "não seguiu a manada na alta do setor",
+        "resultado": { "texto": "Você deixou a festa para os outros e foi estudar os ciclos do setor. O veterano do café aprovou.", "efeitos": { "felicidade": 1, "inteligencia": 1, "empresa.tracao": -2 } }
+      }
+    ]
+  },
+  {
+    "id": "setor_afundou",
+    "idade": [18, 95],
+    "peso": 4,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": { "empresa.valor": true, "empresa.sobra_no_setor": { "min": 12 } },
+    "texto": "O setor {empresa:do|da} {empresa} construiu demais: tem galpão vazio em toda esquina, o preço despencou, e quem se endividou na alta está vendendo máquina pela metade do preço.",
+    "resumo": "viveu a sobra de oferta no setor da própria empresa",
+    "escolhas": [
+      {
+        "texto": "Comprar estrutura barata de quem está quebrando",
+        "resumo": "comprou estrutura barata na baixa do setor",
+        "resultado": { "texto": "Você arrematou máquinas com nota fiscal de cinco anos atrás. Quando o setor voltar, você estará pronto; se voltar.", "efeitos": { "negocio": { "expandir": 0.25 }, "empresa.tracao": 2, "felicidade": -1 } }
+      },
+      {
+        "texto": "Cortar antes que piore",
+        "resumo": "cortou a estrutura na baixa do setor",
+        "resultado": { "texto": "Você fechou uma unidade e renegociou o aluguel de outra. Menor, mais leve, com menos sono perdido.", "efeitos": { "negocio": { "cortar": 0.2 }, "empresa.tracao": -1, "felicidade": 1 } }
+      },
+      {
+        "texto": "Aguentar a seca",
+        "resumo": "aguentou a seca do setor sem mexer em nada",
+        "resultado": { "texto": "Você não cortou, não comprou e não dormiu. A seca passa; a pergunta é quem estará de pé.", "efeitos": { "empresa.tracao": 1, "felicidade": -1, "dinheiro": 1000 } }
+      }
+    ]
+  },
+  {
+    "id": "ramo_em_crise",
+    "idade": [20, 64],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "eu.sobra_no_setor": { "min": 12 }, "renda": { "min": 1 }, "semMarcas": ["empreendedor", "socio", "herdeiro_negocio", "servidor", "aposentado"] },
+    "texto": "O seu ramo construiu demais e agora demite: na firma, a palavra \"reestruturação\" aparece em toda reunião, e o café ficou mais fraco.",
+    "resumo": "viu o próprio ramo entrar em crise de sobra",
+    "escolhas": [
+      {
+        "texto": "Fazer um curso e mudar de área",
+        "resumo": "fez um curso para mudar de área na crise do ramo",
+        "resultado": { "texto": "Noite de aula depois do expediente. Cansa, mas a porta de saída já tem o seu nome.", "efeitos": { "felicidade": 1, "inteligencia": 1, "dinheiro": -3000 } }
+      },
+      {
+        "texto": "Virar indispensável",
+        "resumo": "fez hora extra para não entrar na lista da crise do ramo",
+        "resultado": { "texto": "Você chegou antes de todo mundo e saiu depois do chefe. A hora extra pagou; o fim de semana, não.", "efeitos": { "felicidade": -2, "dinheiro": 2000 } }
+      },
+      {
+        "texto": "Esperar a onda passar",
+        "resumo": "esperou a crise do ramo passar",
+        "resultado": { "texto": "Você manteve a cabeça baixa e o currículo atualizado. Ondas passam; às vezes levam gente junto.", "efeitos": { "felicidade": -1 } }
+      }
+    ]
+  }
+]
