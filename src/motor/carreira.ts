@@ -7,6 +7,7 @@
  * Mudar de emprego por um storylet (a demissão, o bico) tira a carreira.
  */
 import { entradaQueDefiniu } from './campos.ts';
+import { influenciaPessoal } from './influencia.ts';
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { momentoDoPais } from './pais.ts';
@@ -67,7 +68,8 @@ export function profissaoComCargo(nome: string, cargo: string): string {
 export function chanceDeEntrar(e: EstadoVida, def: DefCarreira): number {
   const talento = e.entidades['eu']!.n[def.talento] ?? 50;
   const fase = momentoDoPais(e);
-  return Math.min(0.95, Math.max(0.02, (def.chance * (1 + (talento - 55) / 60) * verbaDe(e, def.verba)) / Math.sqrt(fase.desemprego)));
+  // Quem conhece gente entra mais fácil: a influência pessoal (os laços fortes e a fama) abre a porta.
+  return Math.min(0.95, Math.max(0.02, ((def.chance * (1 + (talento - 55) / 60) * verbaDe(e, def.verba)) / Math.sqrt(fase.desemprego)) * (1 + influenciaPessoal(e) / 200)));
 }
 
 /** Já tentou uma vaga neste ano (as tentativas ficam no livro). */

@@ -33,6 +33,7 @@
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
 import { exteriorNaEmpresa } from './diplomacia.ts';
+import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
 import { empresasDe, entidadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import type { Ativo } from './constantes.ts';
@@ -657,7 +658,8 @@ export function custoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
 export function precoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
   const emp = empresaDe(e, id);
   if (!emp) return 1;
-  return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (0.6 + (0.8 * (emp.n['concorrente'] ?? 50)) / 100);
+  // Quem tem nome no mercado negocia melhor (até 20% a menos).
+  return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (0.6 + (0.8 * (emp.n['concorrente'] ?? 50)) / 100) * (1 - influenciaNegocios(e) / 500);
 }
 
 /** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */

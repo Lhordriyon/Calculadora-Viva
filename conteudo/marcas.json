@@ -179,5 +179,14 @@
   "prematuro": { "epitafio": "Chegou antes da hora e passou a vida sem pressa." },
   "asma": { "epitafio": "Respirou fundo a vida inteira, com bombinha no bolso." },
   "musica_cedo": { "epitafio": "Aprendeu as cantigas da avó antes de aprender a falar." },
-  "veterano": { "epitafio": "Voltou da guerra e nunca contou tudo." }
+  "veterano": { "epitafio": "Voltou da guerra e nunca contou tudo." },
+  "conquista_querida": { "epitafio": "Era querida no bairro: o velório encheu a rua." },
+  "conquista_referencia": { "epitafio": "A cidade inteira pedia a sua opinião, e quase sempre seguia." },
+  "conquista_portas": { "epitafio": "Bastava dizer o nome para a porta abrir." },
+  "conquista_voz": { "epitafio": "Quando falava, a câmara anotava." },
+  "conquista_reis": { "epitafio": "Fez mais eleitos do que muito partido." },
+  "conquista_trono": { "epitafio": "Governos passaram; o telefone continuou tocando." },
+  "conquista_mercado": { "epitafio": "Tinha crédito no banco e palavra no mercado." },
+  "conquista_magnata": { "epitafio": "O setor esperava o seu movimento para fazer o dele." },
+  "conquista_potencia": { "epitafio": "Quando a empresa espirrava, o PIB pegava gripe." }
 }

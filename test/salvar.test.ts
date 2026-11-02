@@ -35,7 +35,9 @@ describe('save', () => {
 
   it('cabe com folga no localStorage', () => {
     const vida = viverAteOFim(nascer(c, { semente: 9, ano: 2026 }), c, 9, 'cautelosa');
-    expect(escreverSave({ ...saveVazio(), vida }).length).toBeLessThan(600_000);
+    // Os mercados de cada setor (H3) anotam a oferta e a obra de 11 setores por ano no livro: uns 80 KB numa vida longa.
+    // O localStorage aguenta uns 5 MB; 700 KB ainda é folga.
+    expect(escreverSave({ ...saveVazio(), vida }).length).toBeLessThan(700_000);
   });
 
   it('descarta save corrompido sem quebrar', () => {

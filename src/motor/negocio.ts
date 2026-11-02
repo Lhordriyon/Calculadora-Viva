@@ -21,6 +21,7 @@
  * para quem joga (a parte dele) e para os outros sócios.
  */
 import { PARCEIROS, type Parceiro } from './constantes.ts';
+import { influenciaNegocios, influenciaPolitica } from './influencia.ts';
 import { CADEIA, DESEMPREGO_NATURAL } from './regras.ts';
 import { governoAtual, nivelDe } from './pais.ts';
 import { criarRng, misturar } from './rng.ts';
@@ -370,7 +371,7 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
     case 'cortar':
       return (n['capacidade'] ?? 0) <= 0 ? 'não há o que cortar' : null;
     case 'emprestimo': {
-      const limite = limiteDeCredito(c, emp);
+      const limite = limiteDeCredito(c, emp, e);
       if (!(op.valor > 0)) return 'diga quanto';
       return op.valor > limite + 1 ? (limite < 1 ? 'o banco não empresta mais para ela' : `o banco empresta até ${Math.round(limite).toLocaleString('pt-BR')} reais`) : null;
     }
@@ -555,9 +556,11 @@ export function jurosDaEmpresa(e: EstadoVida): number {
 }
 
 /** Até quanto o banco empresta: duas vezes o lucro do ano mais 30% da estrutura, menos o que ela já deve. */
-export function limiteDeCredito(c: Conteudo, emp: Entidade): number {
+export function limiteDeCredito(c: Conteudo, emp: Entidade, e?: EstadoVida): number {
   const estrutura = (emp.n['capacidade'] ?? 0) * economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro;
-  return Math.max(0, CREDITO_DA_EMPRESA.vezesOLucro * Math.max(0, emp.n['lucro'] ?? 0) + CREDITO_DA_EMPRESA.daEstrutura * estrutura - (emp.n['divida'] ?? 0));
+  // A influência de negócios (o tamanho do grupo, o truste) faz o banco emprestar mais.
+  const nome = e ? 1 + influenciaNegocios(e) / 100 : 1;
+  return Math.max(0, nome * (CREDITO_DA_EMPRESA.vezesOLucro * Math.max(0, emp.n['lucro'] ?? 0) + CREDITO_DA_EMPRESA.daEstrutura * estrutura) - (emp.n['divida'] ?? 0));
 }
 
 /** A disputa em palavras (a folha Dinheiro). */
@@ -733,7 +736,8 @@ export function lobbyDoAno(e: EstadoVida): void {
   const q = e.entidades['eu']?.q['lobista'];
   if (!q || e.ano - q.ano > 3 || governoAtual(e) === 'voce' || nivelDe(e, 'impostos') === 0) return;
   for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano >= q.ano; i--) if (e.historico[i]!.ref === 'pais:lobby') return;
-  const chance = Math.min(0.5, CADEIA.chanceDoLobby + (e.entidades['eu']!.n['influencia'] ?? 0) / 200);
+  // A influência política faz o lobby andar.
+  const chance = Math.min(0.5, CADEIA.chanceDoLobby + influenciaPolitica(e) / 200);
   if (aleatorio(e.rng) >= chance) return;
   const causa = entradaQueMudou(e, 'eu.lobista');
   const entrada = novaEntrada(e, {

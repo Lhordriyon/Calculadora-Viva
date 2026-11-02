@@ -107,11 +107,11 @@ function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida;
       </div>
       <p class="nota">A obra sai do caixa e fica pronta no ano que vem. Cortar vende a estrutura pela metade do que custou.</p>
       <p class="nota">
-        <b>Banco.</b> {(n['divida'] ?? 0) >= 1 ? `Deve ${formatarDinheiro(n['divida'] ?? 0)}: paga o juro e 10% da dívida por ano, do caixa.` : `Empresta até ${formatarDinheiro(limiteDoBanco(conteudo, emp))}, a ${(jurosDaEmpresa(vida) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação.`}
+        <b>Banco.</b> {(n['divida'] ?? 0) >= 1 ? `Deve ${formatarDinheiro(n['divida'] ?? 0)}: paga o juro e 10% da dívida por ano, do caixa.` : `Empresta até ${formatarDinheiro(limiteDoBanco(conteudo, emp, vida))}, a ${(jurosDaEmpresa(vida) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação.`}
       </p>
       <div class="escolhas-origem" role="group" aria-label="Banco">
-        <button type="button" class="chip-origem" disabled={limiteDoBanco(conteudo, emp) < 1000 || pode({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp)), empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp)), empresa: id })}>
-          Pegar {formatarDinheiro(limiteDoBanco(conteudo, emp))}
+        <button type="button" class="chip-origem" disabled={limiteDoBanco(conteudo, emp, vida) < 1000 || pode({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp, vida)), empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp, vida)), empresa: id })}>
+          Pegar {formatarDinheiro(limiteDoBanco(conteudo, emp, vida))}
         </button>
         <button type="button" class="chip-origem" disabled={pode({ tipo: 'pagar', empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'pagar', empresa: id })}>
           Pagar a dívida

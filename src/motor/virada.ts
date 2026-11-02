@@ -8,6 +8,7 @@
  * emprego, a avó que morreu).
  */
 import { type Capitulo, capitulosDe, capitulosDoCartao } from './capitulos.ts';
+import { conquistasDaVida } from './influencia.ts';
 import { defCampo, patrimonioTotal } from './campos.ts';
 import { herdeiroPossivel, type Parentesco } from './herdeiro.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -290,6 +291,8 @@ export function pontosDeVirada(e: EstadoVida, c?: Conteudo, limite = 3): PontoDe
 }
 
 export interface ResumoVida {
+  /** As conquistas da influência desta vida, pelo nome (influencia.ts). */
+  conquistas: string[];
   nome: string;
   nomeCompleto: string;
   genero: Genero;
@@ -360,6 +363,7 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     origem: descreverOrigem(classe?.nome, familia?.nome),
     pontos,
     epitafio: renderizar(modelo, ctx),
+    conquistas: conquistasDaVida(e),
     geracao: e.dinastia?.geracao ?? 1,
     antepassados: e.dinastia?.antepassados ?? [],
     herdeiro: (() => {

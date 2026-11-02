@@ -821,8 +821,8 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     return [];
   }
   if (estrategia !== 'arriscada') return [];
-  // Compra a concorrente quando ela sai pelo preço justo ou abaixo (a baixa do setor, a rival fraca).
-  if (pode(e, c, { tipo: 'adquirir' }) && custoDaAquisicao(e) <= liquido * 0.5 && precoDaAquisicao(e) <= 1) return [{ tipo: 'adquirir' }];
+  // Compra a concorrente quando ela sai perto do preço justo ou abaixo (a baixa do setor, a rival fraca).
+  if (pode(e, c, { tipo: 'adquirir' }) && custoDaAquisicao(e) <= liquido * 0.5 && precoDaAquisicao(e) <= 1.15) return [{ tipo: 'adquirir' }];
   if (momentoDoPais(e).id === 'expansao') {
     const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
     if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];

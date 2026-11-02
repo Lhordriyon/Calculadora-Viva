@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { esferas, proximaConquista, type Esfera } from '../motor/influencia.ts';
 import { Folha } from './Folha.tsx';
 import { carreiraDe, chanceDeEntrar, faixaDeIdade, nomeDoCargo, noGenero, salarioDoCargo } from '../motor/carreira.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
@@ -181,6 +182,19 @@ function Poder({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
       <dl class="empresa-cartao poder">
         <dt>Influência</dt>
         <dd>{Math.round(eu.n['influencia'] ?? 0)}</dd>
+        <dt>As três esferas</dt>
+        <dd>
+          pessoal {Math.round(esferas(vida).pessoal)} · política {Math.round(esferas(vida).politica)} · negócios {Math.round(esferas(vida).negocios)}
+          <small>a pessoal abre vagas; a política ganha eleições e faz o lobby andar; a de negócios dá crédito e desconto na compra</small>
+        </dd>
+        <dt>Próximas conquistas</dt>
+        <dd>
+          {(['pessoal', 'politica', 'negocios'] as Esfera[])
+            .map((x) => proximaConquista(vida, x))
+            .filter((x): x is { nome: string; falta: number } => x !== null)
+            .map((x) => `${x.nome} (faltam ${x.falta})`)
+            .join(' · ') || 'todas conquistadas'}
+        </dd>
         <dt>Fama</dt>
         <dd>{Math.round(eu.n['fama'] ?? 0)}</dd>
         {fila && (

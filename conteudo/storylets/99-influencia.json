@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pedem_sua_opiniao",
+    "idade": [25, 95],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": { "marcas": ["conquista_querida"] },
+    "texto": "No bairro, ninguém decide nada sem ouvir você: o padre quer saber da reforma da igreja, a vizinha do negócio do filho, e o vereador, discretamente, da próxima eleição.",
+    "resumo": "viu o bairro inteiro pedir a sua opinião",
+    "escolhas": [
+      { "texto": "Abrir a casa para quem pede", "resumo": "abriu a casa para quem pedia conselho", "resultado": { "texto": "Café passado, porta aberta e uma fila educada na calçada. O bairro saiu mais calmo; a sua tarde, nem tanto.", "efeitos": { "felicidade": 2, "eu.fama": 2, "dinheiro": -1000 } } },
+      { "texto": "Indicar quem você confia", "resumo": "indicou gente de confiança para quem pedia", "resultado": { "texto": "Você passou nomes e telefones. Quem foi bem indicado agradece; quem não foi, cobra.", "efeitos": { "eu.popularidade": 2, "felicidade": -1 } } },
+      { "texto": "Pedir para ninguém contar que veio de você", "resumo": "aconselhou sem querer aparecer", "resultado": { "texto": "Você ajudou de longe. O conselho circulou; o seu nome, menos.", "efeitos": { "felicidade": 1, "eu.fama": -1 } } }
+    ]
+  },
+  {
+    "id": "o_partido_bate_na_porta",
+    "idade": [25, 85],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "marcas": ["conquista_voz"] },
+    "texto": "Três partidos ligaram na mesma semana: todos querem o seu apoio na campanha, e um deles quer você na chapa.",
+    "resumo": "viu os partidos disputarem o seu apoio",
+    "escolhas": [
+      { "texto": "Entrar na chapa", "resumo": "entrou na chapa de um partido", "resultado": { "texto": "Foto oficial, santinho e um marqueteiro que fala em \"narrativa\". A política agora tem o seu rosto.", "efeitos": { "eu.popularidade": 3, "felicidade": -1 } } },
+      { "texto": "Apoiar quem oferecer mais", "resumo": "vendeu o apoio na campanha", "resultado": { "texto": "O apoio saiu caro e a nota saiu como \"consultoria\". O eleitor desconfiou; a conta, não.", "efeitos": { "dinheiro": 5000, "eu.popularidade": -2 } } },
+      { "texto": "Ficar acima da briga", "resumo": "ficou fora da briga dos partidos", "resultado": { "texto": "Você agradeceu a todos e não prometeu nada a ninguém. Dormiu bem; perdeu alguns convites.", "efeitos": { "felicidade": 2, "eu.popularidade": -1 } } }
+    ]
+  },
+  {
+    "id": "o_conselho_te_chama",
+    "idade": [25, 90],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": { "marcas": ["conquista_mercado"], "empresa.valor": true },
+    "texto": "Duas companhias querem você no conselho. O jeton paga bem, a agenda nem tanto, e o mercado lê cada cadeira sua como um sinal.",
+    "resumo": "foi chamado para conselhos de outras empresas",
+    "escolhas": [
+      { "texto": "Aceitar as duas cadeiras", "resumo": "aceitou duas cadeiras de conselho", "resultado": { "texto": "Duas reuniões por mês, duas pastas, dois cafés ruins. O jeton pagou; a sua empresa sentiu a falta.", "efeitos": { "dinheiro": 20000, "felicidade": -2, "empresa.tracao": -1 } } },
+      { "texto": "Aceitar uma e cobrar caro", "resumo": "aceitou uma cadeira de conselho e cobrou caro", "resultado": { "texto": "Uma cadeira, um jeton gordo e a fama de quem não se vende barato.", "efeitos": { "dinheiro": 10000, "felicidade": -1 } } },
+      { "texto": "Recusar e cuidar da sua", "resumo": "recusou os conselhos para cuidar da própria empresa", "resultado": { "texto": "Você agradeceu e voltou para a sua mesa. A sua empresa notou quem manda nela.", "efeitos": { "empresa.tracao": 2, "felicidade": 1 } } }
+    ]
+  }
+]

@@ -12,6 +12,10 @@ import { ATIVOS, CONTAS, PARCEIROS, POLITICAS, SETORES } from './constantes.ts';
 /** Os mercados de cada setor (negocio.ts › anoDosSetores): a oferta e a obra; e o nome, para quem percorre as entidades. */
 const MERCADOS = SETORES.flatMap((s) => [`setor_${s}.oferta`, `setor_${s}.obra`]);
 const NOMES_DOS_MERCADOS = SETORES.map((s) => `setor_${s}.nome`);
+/** As conquistas da influência (influencia.ts): qualidades de quem joga, uma por degrau de cada esfera. */
+const CONQUISTAS_DO_PODER = ['eu.conquista_querida', 'eu.conquista_referencia', 'eu.conquista_portas', 'eu.conquista_voz', 'eu.conquista_reis', 'eu.conquista_trono', 'eu.conquista_mercado', 'eu.conquista_magnata', 'eu.conquista_potencia'];
+/** O que as esferas da influência leem (influencia.ts). */
+const ESFERAS = ['pessoa.vinculo', 'pessoa.vivo', 'pessoa.ausente', 'eu.fama', 'eu.cargo', 'eu.popularidade', 'eu.lobista', 'eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico', 'bem.item', 'empresa.valor', 'empresa.vivo', 'empresa.truste'];
 
 export interface LeituraMotor {
   caminho: string;
@@ -37,6 +41,8 @@ const DO_TRABALHO = ['colega', 'chefe'] as const;
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // as conquistas da influência (influencia.ts)
+  ...CONQUISTAS_DO_PODER,
   // os mercados de cada setor (negocio.ts)
   ...MERCADOS,
   // a concorrência e o banco da empresa (negocio.ts)
@@ -297,6 +303,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(CONQUISTAS_DO_PODER, 'poder: cada conquista vem uma vez só', true),
   ...ler(MERCADOS, 'mercados: o preço do setor na empresa, a concorrente que sai na sobra e a demissão de quem trabalha nele', true),
   ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
   ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
@@ -529,7 +536,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    le: [...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
     escreve: ['pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
@@ -636,14 +643,14 @@ export const ETAPAS_DO_ANO = [
     nome: 'a carreira: promoção, fama e o fim da carreira',
     // No cargo, a carreira para; com a coroa ou o Regime, ela fica para trás (o cargo vitalício vira o trabalho).
     // O chefe que gosta de quem joga promove mais.
-    le: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
+    le: [...ESFERAS, 'eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
     escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor'],
   },
   {
     id: 'poder',
     nome: 'o poder: influência, popularidade, mandato e queda',
-    le: ['ano.fase', ...PATRIMONIO, 'empresa.subsidiarias', 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.fama', 'eu.renda', 'eu.ocupacao', 'eu.genero', 'eu.politico', 'eu.ex_politico', 'eu.filho_de_politico', 'eu.monarca', 'eu.principe', 'eu.ditador', 'eu.herdeiro_regime', 'eu.micronacao', 'ilha.coroa'],
-    escreve: ['eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.ex_politico', 'eu.ocupacao', 'eu.renda', 'agenda'],
+    le: [...ESFERAS, ...CONQUISTAS_DO_PODER, 'ano.fase', ...PATRIMONIO, 'empresa.subsidiarias', 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.fama', 'eu.renda', 'eu.ocupacao', 'eu.genero', 'eu.politico', 'eu.ex_politico', 'eu.filho_de_politico', 'eu.monarca', 'eu.principe', 'eu.ditador', 'eu.herdeiro_regime', 'eu.micronacao', 'ilha.coroa'],
+    escreve: [...CONQUISTAS_DO_PODER, 'eu.cargo', 'eu.mandato', 'eu.influencia', 'eu.popularidade', 'eu.ex_politico', 'eu.ocupacao', 'eu.renda', 'agenda'],
   },
   {
     id: 'coroa',

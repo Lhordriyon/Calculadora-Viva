@@ -10,6 +10,7 @@
  * agendado). Decretos são storylets que mexem no país (`pais.impulso`).
  */
 import { empresasDe, entradaQueDefiniu, patrimonioTotal } from './campos.ts';
+import { CONQUISTAS, esferas, influenciaPolitica } from './influencia.ts';
 import { statusDosBens } from './bens.ts';
 import { noGenero, largarEmprego, tentouEsteAno } from './carreira.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -53,7 +54,8 @@ export function proximaEleicao(ano: number, def: DefCargo): number {
 export function chanceDeEleicao(e: EstadoVida, def: DefCargo): number {
   const eu = e.entidades['eu']!;
   const imagem = ((eu.n['popularidade'] ?? 50) - 50) / 3;
-  const x = ((eu.n['influencia'] ?? 0) - def.dificuldade + imagem) / 7 + ((eu.n['aparencia'] ?? 50) - 50) / 50;
+  // A influência política (o cargo, a popularidade, a mídia, o lobby, a linhagem) pesa metade da influência inteira.
+  const x = ((eu.n['influencia'] ?? 0) - def.dificuldade + imagem) / 7 + influenciaPolitica(e) / 14 + ((eu.n['aparencia'] ?? 50) - 50) / 50;
   return Math.min(0.95, Math.max(0.03, 1 / (1 + Math.exp(-x))));
 }
 
@@ -179,6 +181,7 @@ const BONUS_DA_FASE: Record<string, number> = { normal: 0, expansao: 10, recessa
 export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
   if (e.idade < 14) return;
+  conquistasDoAno(e);
   const inf = eu.n['influencia'] ?? 0;
   const alvo = influenciaAlvo(e, c);
   if (Math.abs(alvo - inf) >= 0.3) somar(e, reg, 'eu', 'influencia', (alvo - inf) * RITMO_INFLUENCIA, 'poder');
@@ -214,3 +217,21 @@ export function regraDoPoder(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mud
   entrada.resumo = `deixou o cargo de ${nome}`;
   lancar(e, entrada, fim);
 }
+
+/**
+ * As conquistas do ano (influencia.ts): a esfera que passou de um degrau pela primeira vez vira uma entrada da linha do
+ * tempo (em dourado) e uma qualidade de quem joga, que o epitáfio e o conteúdo leem.
+ */
+export function conquistasDoAno(e: EstadoVida): void {
+  const eu = e.entidades['eu'];
+  if (!eu) return;
+  const valor = esferas(e);
+  for (const q of CONQUISTAS) {
+    if (eu.q[q.id] || valor[q.esfera] < q.nivel) continue;
+    const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: `conquista:${q.id}`, texto: `Conquista: ${q.nome}. ${q.frase}`, resumo: `conquistou "${q.nome}"` });
+    const reg: Mudanca[] = [];
+    ganhar(e, reg, 'eu', q.id, entrada.id);
+    lancar(e, entrada, reg);
+  }
+}
+
