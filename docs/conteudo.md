@@ -89,6 +89,7 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "padrao": "luxo", "perfil": ["arrojado", "moderado"],        // padrão de vida e perfil de investidor que o jogador escolheu
   "empresa.valor": true, "empresa.tracao": { "min": 12 },      // a empresa de quem joga (qualquer condição sobre ela, menos false, exige que ela exista)
   "empresa.ocupacao": { "min": 1.3 }, "empresa.lucro": { "max": -1 }, "empresa.salario": "piso", // o negócio (bloco H): caixa, receita, lucro, impostos, demanda, capacidade, obra, ocupacao (procura ÷ capacidade), qualidade, marca, marketing, pd, preco, salario, exporta
+  "pais.moeda": { "min": 6 }, "pais.pol_moeda": { "min": 2 },     // o dinheiro (moeda.ts): o excesso que circula, em % (negativo é crédito curto), e a política da moeda (0 contida, 1 regular, 2 impressora)
   "empresa.setor": "tecnologia", "marcas": ["empresa.na_bolsa"], "empresa.valor": false, // sem empresa
   "empresas": { "min": 2 }, "empresa.subsidiarias": { "min": 10 },     // o grupo: quantas empresas quem joga tem e as subsidiárias da que ele cuida
   "marcaHa": [{ "marca": "empresa.fundiu", "min": 1, "max": 3 }],       // de 1 a 3 anos depois de uma fusão

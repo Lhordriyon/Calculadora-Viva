@@ -164,6 +164,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** as contas da empresa fecham entrada por entrada (o caixa tem contraparte); teste de cada decisão com a consequência que ela causa; no túnel, a empresa tem lucro e prejuízo, expande, corta e quebra por causa, e nenhuma estratégia domina.
 - **Estado:** feita (bloco H, 01/11). Ficaram de fora o crédito da empresa no banco (a empresa ainda não deve), o lobby e o conselho que propõe (I-12).
 
+### I-133 · O dinheiro existe (o pedido do dono, 02/11)
+- **Problema:** "parece que o dinheiro do jogo é virtual: quero que cada real exista de fato, que cada uso o movimente na economia, quero emissão monetária de fato, dinheiro que tenha de onde vir e para onde ir". As contrapartes de fora da vida (o mercado, o banco, o tesouro) eram rótulos: pagavam e recebiam sem saldo, um poço sem fundo.
+- **Efeitos causais:** as contas do país com saldo e o lado de lá de cada real; a soma do mundo que dá zero; o crédito que cria dinheiro e o empréstimo que o destrói; a emissão e o enxugamento pela política da moeda; o imposto inflacionário; o dinheiro que sobra (ou falta) acende (ou apaga) a inflação e o crescimento; o gasto de quem joga move o que circula.
+- **Aceitação:** a soma do mundo é zero no fim de toda vida e em toda entrada (o túnel trava o contrário); a impressora ligada põe dinheiro novo na economia e acende a inflação (teste); o que quem joga paga ao mercado entra na conta do mercado (teste).
+- **Estado:** feita (bloco $, 02/11). Ficaram de fora o balanço de cada banco, o Tesouro com a dívida dentro do saldo e o câmbio pela conta de lá fora.
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -259,6 +265,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-133 | O dinheiro existe: contas com saldo, partidas dobradas, crédito, emissão e imposto inflacionário | $ | Alta | feita (bloco $, 02/11) |
 | I-132 | O negócio de verdade: caixa, produto, mercado e o mundo que reage | H | Alta | feita (bloco H, 01/11): o caixa, a demanda, a capacidade, o preço, a qualidade, a marca, as verbas, o salário, os dividendos, a exportação, a falência por causa, os empregos, o imposto, a mídia e o aluguel; o crédito da empresa e o lobby, não |
 
 (os blocos de cada ideia vêm na versão final)

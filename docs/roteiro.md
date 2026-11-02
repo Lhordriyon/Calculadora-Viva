@@ -69,6 +69,13 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 - [x] H3: 15 histórias do negócio, a folha Dinheiro com o negócio, os robôs que decidem nele, os testes e o túnel
 - [ ] Depois: o crédito da empresa no banco (a empresa que deve), o lobby, o conselho que propõe (I-12) e as fábricas e lojas como lugares (hoje são a capacidade)
 
+**O bloco $, o dinheiro existe (02/11).** O dono pediu que cada real exista, com emissão monetária de fato (I-133; as decisões e as medidas em `docs/decisoes.md › O bloco $`).
+
+- [x] As contas do país com saldo, o lado de lá de cada real e a soma do mundo que dá zero (conferida em cada entrada e no fim de cada vida)
+- [x] O crédito que cria dinheiro, a emissão e o enxugamento pela política da moeda, o imposto inflacionário, e o excesso de dinheiro na inflação e no crescimento
+- [x] A folha País com o dinheiro do país, três histórias do dinheiro, os testes e o túnel
+- [ ] Depois: o balanço de cada banco, a dívida pública dentro do saldo do Tesouro e o câmbio pela conta de lá fora
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
