@@ -13,7 +13,7 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 🖨️ **O dinheiro nasce e morre:** o crédito dos bancos cria dinheiro, e o empréstimo que volta o destrói; o Banco Central emite para o governo ou enxuga, pela nova política da moeda (contida, regular, impressora); a inflação come o dinheiro de todo mundo e vai para quem emitiu.
 - 🔥 **O dinheiro que sobra vira inflação** e aquece o crescimento do ano seguinte; o crédito desfaz metade do excesso por ano. No A/B: contida 3,5% de inflação, regular 4,9%, impressora 9,2%.
 - 📖 **Três histórias do dinheiro** e a folha País com o dinheiro circulando, a emissão do ano e o que a inflação levou.
-- 📊 **No túnel** (10.000 vidas): «N10K»
+- 📊 **No túnel** (10.000 vidas): o dinheiro fecha nas 4,09 milhões de entradas, e a soma do mundo dá zero no fim de toda vida; saturação V5 52,1% e V20 87,6%; 911 histórias por 1.000 vidas; toques 478,2; CPU 130 ms por vida (eram 124).
 
 ---
 

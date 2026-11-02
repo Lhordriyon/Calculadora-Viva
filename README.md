@@ -3,7 +3,7 @@
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
 ![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%24%3A%20o%20dinheiro%20existe-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-909-2EA043)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-911-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -39,7 +39,7 @@
 | 🔥 A inflação que vem do dinheiro que sobra, e o imposto inflacionário | |
 | 💳 O crédito que cria dinheiro e encurta com o juro alto | |
 
-Num A/B com a mesma semente (12 vidas, 30 anos em cada política), a moeda contida deu inflação de 3,5% e crescimento de 1,99%; a regular, 4,9% e 1,80%; e a impressora, 9,2% e 2,45%, com a dívida pública 0,66 ponto do PIB por ano mais baixa que na regular. «N10K» O bloco anterior, a empresa de verdade, está no [`CHANGELOG.md`](CHANGELOG.md).
+Num A/B com a mesma semente (12 vidas, 30 anos em cada política), a moeda contida deu inflação de 3,5% e crescimento de 1,99%; a regular, 4,9% e 1,80%; e a impressora, 9,2% e 2,45%, com a dívida pública 0,66 ponto do PIB por ano mais baixa que na regular. No túnel de vento (10.000 vidas), o dinheiro fechou em todas as 4,09 milhões de entradas, e a soma do mundo deu zero no fim de cada vida. A variedade ficou onde estava: saturação de 52,1% na 5ª vida e de 87,6% na 20ª, com 911 histórias por 1.000 vidas. Os toques ficaram em 478,2 por vida, e a CPU foi a 130 ms por vida (eram 124; a etapa do dinheiro custa 0,75 ms). O bloco anterior, a empresa de verdade, está no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

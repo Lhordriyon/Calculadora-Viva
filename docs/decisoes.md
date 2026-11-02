@@ -1825,7 +1825,15 @@ O dono pediu que cada real exista de fato, com emissão monetária, e que o dinh
 | regular | 4,9% | −0,4% | 1,80% | −0,09 ponto |
 | impressora | 9,2% | +7,8% | 2,45% | −0,75 ponto |
 
-**Medidas do túnel** (10.000 vidas; antes = o bloco H): «N10K»
+**Medidas do túnel** (10.000 vidas; antes = o bloco H): 
+
+| Medida | Antes (bloco H) | Depois |
+|---|---|---|
+| Entradas conferidas | 4,09 milhões, sem as contas do país | 4,09 milhões, com o lado de lá e a soma do mundo zero no fim de toda vida |
+| Saturação V5 / V20 | 52,5% / 87,7% | 52,1% / 87,6% |
+| Assinaturas por 1.000 vidas (destino) | 909 (569) | 911 (568) |
+| Toques por vida | 478,6 | 478,2 |
+| CPU por vida | 124,0 ms | 129,5 ms (a etapa do dinheiro, 0,75 ms; o resto é a variação da máquina entre rodadas) |
 
 **Decisões tomadas sozinho:**
 - **As contas do país são entidades** (um formato de estado), e o lado de lá de cada real é anotado no lançamento, numa mudança por conta, não em cada mudança: o livro cresce pouco e a etapa custa 0,75 ms por vida.
