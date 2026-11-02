@@ -13,6 +13,7 @@ import { defFase, defGoverno, ESTATISTICAS, faseDe, governoAtual, jogadorGoverna
 import { ACORDO, ATO, DEFESA, META_DE_INFLACAO, SANCAO } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import { dinheiroDoAno } from '../motor/moeda.ts';
+import { ofertaDe, precoDoSetor } from '../motor/negocio.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 
 interface Props {
@@ -169,6 +170,7 @@ function Numeros({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
     // Num save de antes do país ter tamanho, o PIB nasce no primeiro ano: até lá, a dívida e a pesquisa em reais não aparecem.
     ...(dividaEmReais(vida) !== undefined ? [{ nome: 'Dívida pública', valor: formatarDinheiro(dividaEmReais(vida)!), nota: quemEmpresta(vida) }] : []),
     ...(vida.entidades['mercado'] ? linhasDaMoeda(vida) : []),
+    ...linhaDosSetores(vida, conteudo),
     ...(n['pib'] !== undefined ? [{ nome: 'Pesquisa pública', valor: `${formatarDinheiro(gastoEmPesquisa(vida, conteudo).reais)} por ano`, nota: `${num(gastoEmPesquisa(vida, conteudo).pontos)}% do PIB, pagos pelo Tesouro; vira tecnologia em uma década` }] : []),
   ];
   return (
@@ -190,6 +192,19 @@ function Numeros({ vida, conteudo }: Pick<Props, 'vida' | 'conteudo'>) {
       ))}
     </dl>
   );
+}
+
+/** Os mercados (negocio.ts › anoDosSetores): o setor com o preço mais acima e o mais abaixo do normal. */
+function linhaDosSetores(vida: EstadoVida, conteudo: Props['conteudo']): { nome: string; valor: string; nota: string }[] {
+  const precos = conteudo.mundo.setores
+    .filter((s) => vida.entidades[`setor_${s.id}`])
+    .map((s) => ({ nome: s.nome, p: Math.round((precoDoSetor(ofertaDe(vida, s.id)) - 1) * 100) }))
+    .sort((a, b) => b.p - a.p);
+  if (precos.length === 0) return [];
+  const alta = precos[0]!;
+  const baixa = precos.at(-1)!;
+  const sinal = (p: number): string => `${p > 0 ? '+' : p < 0 ? '−' : ''}${Math.abs(p)}%`;
+  return [{ nome: 'Setores', valor: `${alta.nome} ${sinal(alta.p)} · ${baixa.nome} ${sinal(baixa.p)}`, nota: 'o preço de cada setor anda com a sobra e a falta de oferta: quem constrói na alta encontra a sobra' }];
 }
 
 /** O dinheiro do país (moeda.ts): o que circula contra o que a economia precisa, e o que o Banco Central fez no ano. */

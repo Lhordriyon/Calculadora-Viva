@@ -5,6 +5,7 @@
  * (mutam o objeto recebido; a interface clona antes).
  */
 import { regraDoPadrao, regraDoTrabalho } from './trabalho.ts';
+import { abrirSetores, anoDosSetores } from './negocio.ts';
 import { abrirContas, anoDaMoeda } from './moeda.ts';
 import { AMIGOS, ATRIBUTOS, FILHOS, type Ativo } from './constantes.ts';
 import { patrimonioTotal } from './campos.ts';
@@ -125,6 +126,8 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   });
   // As contas do país (moeda.ts): o dinheiro da família sai do que circula, e a soma de tudo dá zero.
   abrirContas(e);
+  // Os mercados de cada setor (negocio.ts): cada um começa perto do equilíbrio.
+  abrirSetores(e, c);
   return e;
 }
 
@@ -212,6 +215,8 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   },
   // O dinheiro do ano (moeda.ts): a inflação que vai para quem emitiu, o caixa do governo, o câmbio, o crédito e a emissão.
   moeda: (x) => anoDaMoeda(x.e, x.reg),
+  // Os mercados de cada setor (negocio.ts): a teia de aranha da oferta e do preço.
+  setores: (x) => anoDosSetores(x.e, x.c, x.reg),
   // A pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros (pesquisa.ts).
   pesquisa: (x) => regraDaPesquisa(x.e, x.c),
   mercado: (x) => {

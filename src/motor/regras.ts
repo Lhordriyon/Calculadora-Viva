@@ -339,6 +339,14 @@ export const SORTE_DO_NEGOCIO = 0.5;
  * concorrente quebra e a clientela dela vem junto (15% da demanda).
  */
 export const CONCORRENCIA = { reversao: 0.15, reacao: 4, desvio: 3, margemQueAtrai: 0.18, chanceDeEntrar: 0.25, chanceDeGuerra: 0.3, corteNaGuerra: 0.1, perdaNaGuerra: 8, anosDeGuerra: 3, quebra: 30, clientela: 0.15 } as const;
+/**
+ * Os mercados de cada setor (negocio.ts › anoDosSetores, bloco H3): o preço é a oferta relativa elevada a −1/1,5,
+ * entre 75% e 135% do normal; a obra do ano que vem é 80% da que estava em andamento mais 0,8 vez o lucro extra do
+ * preço de agora (a teia de aranha com inércia: ciclos de uns oito anos); a procura do setor anda com o ciclo do país
+ * e com uma sorte de 3,5% por ano. Cada 10% de
+ * sobra de oferta multiplica a demissão de quem trabalha no setor por 1,3 e tira 3 pontos por ano da concorrente.
+ */
+export const CICLO_DO_SETOR = { elasticidade: 1.5, piso: 0.75, teto: 1.35, resposta: 0.8, inercia: 0.8, choque: 0.035, naDemissao: 3, naConcorrente: 30 } as const;
 /** O crédito da empresa (negocio.ts): o juro real é a Selic menos a inflação mais o spread; a parcela, 10% da dívida por ano; o banco empresta até duas vezes o lucro mais 30% da estrutura. */
 export const CREDITO_DA_EMPRESA = { spread: 3, amortizacao: 0.1, vezesOLucro: 2, daEstrutura: 0.3 } as const;
 /** A mídia própria (bens.ts): a publicidade que ela vende por ano (fração do valor, num ano normal) e a influência que dá a quem é dono, por veículo. */

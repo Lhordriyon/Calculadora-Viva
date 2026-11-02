@@ -7,7 +7,11 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
-import { ATIVOS, CONTAS, PARCEIROS, POLITICAS } from './constantes.ts';
+import { ATIVOS, CONTAS, PARCEIROS, POLITICAS, SETORES } from './constantes.ts';
+
+/** Os mercados de cada setor (negocio.ts › anoDosSetores): a oferta e a obra; e o nome, para quem percorre as entidades. */
+const MERCADOS = SETORES.flatMap((s) => [`setor_${s}.oferta`, `setor_${s}.obra`]);
+const NOMES_DOS_MERCADOS = SETORES.map((s) => `setor_${s}.nome`);
 
 export interface LeituraMotor {
   caminho: string;
@@ -33,6 +37,8 @@ const DO_TRABALHO = ['colega', 'chefe'] as const;
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // os mercados de cada setor (negocio.ts)
+  ...MERCADOS,
   // a concorrência e o banco da empresa (negocio.ts)
   'empresa.divida',
   'empresa.concorrente',
@@ -291,6 +297,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(MERCADOS, 'mercados: o preço do setor na empresa, a concorrente que sai na sobra e a demissão de quem trabalha nele', true),
   ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
   ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
   ...ler(['mercado.dinheiro'], 'país: o dinheiro que circula contra o que a economia precisa (o excesso)', true),
@@ -495,6 +502,12 @@ export const ETAPAS_DO_ANO = [
     escreve: [...CONTAS_DO_PAIS, 'pais.moeda', 'pais.divida'],
   },
   {
+    id: 'setores',
+    nome: 'os mercados de cada setor: a obra que fica pronta, a procura do ano e o preço que decide a obra do ano que vem',
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.crescimento'],
+    escreve: [...MERCADOS],
+  },
+  {
     id: 'pesquisa',
     nome: 'a pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros',
     // O texto da notícia concorda com quem joga (eu.genero).
@@ -516,7 +529,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
     escreve: ['empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
@@ -564,7 +577,7 @@ export const ETAPAS_DO_ANO = [
     // A morte de quem reinava (o pai ou a mãe de quem é príncipe ou herdeiro do Regime) agenda a sucessão (sucessao.ts).
     // O colega e o chefe vêm com o trabalho de quem joga (a ocupação, a renda, o negócio, o cargo), e quem chega ganha um
     // nome que ninguém da vida tem.
-    le: [...LADO_DE_LA, 
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, ...LADO_DE_LA, 
       'ano.fase',
       'pessoa.*',
       ...BOLSO,
@@ -615,7 +628,7 @@ export const ETAPAS_DO_ANO = [
     nome: 'o trabalho de quem joga: salário e demissão',
     // Quem tem cargo (mandato, coroa, Regime) vive do cargo: nem o setor nem a demissão o alcançam.
     // O chefe magoado demite mais fácil.
-    le: ['ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...FASE],
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, 'ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...FASE],
     escreve: ['eu.renda', 'agenda'],
   },
   {
@@ -662,7 +675,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'regras',
     nome: 'fecha as regras do ano numa entrada invisível do livro',
-    le: [...LADO_DE_LA, 'eu.felicidade'],
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, ...LADO_DE_LA, 'eu.felicidade'],
     escreve: [...LADO_DE_LA, ],
   },
   {

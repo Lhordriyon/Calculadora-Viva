@@ -11,6 +11,7 @@
  * de déficit (storylet agendado cuja causa é a escolha que subiu o padrão).
  */
 import type { Conteudo } from './conteudo.ts';
+import { apertoDoSetor } from './negocio.ts';
 import { faseDe, type Momento } from './pais.ts';
 import { patrimonioDe } from './campos.ts';
 import { somar } from './livro.ts';
@@ -58,7 +59,8 @@ export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: 
   // O chefe magoado demite mais fácil; o que gosta de você segura o seu nome na lista.
   const chefe = e.entidades['chefe'];
   const doChefe = chefe && chefe.vivo !== false ? fatorDoChefe(chefe.n['vinculo'] ?? 50, chefe.n['magoa'] ?? 0).demissao : 1;
-  const chance = DEMISSAO_JOGADOR * lugar * (1 + (fase.desemprego - 1) * sente) * doChefe;
+  // O setor que construiu demais demite mais (negocio.ts › anoDosSetores).
+  const chance = DEMISSAO_JOGADOR * lugar * (1 + (fase.desemprego - 1) * sente) * doChefe * apertoDoSetor(e, eu.t['setor']);
   if (aleatorio(e.rng) < chance) agendarJa(e, c, 'demissao', causaDaFase(e));
 }
 

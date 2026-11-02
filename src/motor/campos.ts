@@ -60,6 +60,8 @@ const PESSOA: Record<string, DefCampo> = {
   visao: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   /** O que a pessoa deve a quem joga, e o que quem joga deve a ela (as promissórias, promissorias.ts), e os anos de atraso entre vocês. */
   te_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
+  /** A sobra (positiva) ou a falta de oferta no setor do trabalho, em % (negocio.ts › anoDosSetores). */
+  sobra_no_setor: { tipo: 'num', sistema: 'carreira', derivado: true },
   voce_deve: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
   atraso_da_divida: { tipo: 'num', sistema: 'relacoes', derivado: true },
   dinheiro: { tipo: 'num', sistema: 'dinheiro', reais: true },
@@ -296,6 +298,13 @@ const PROMISSORIA: Record<string, DefCampo> = {
   atraso: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
 };
 
+/** Os mercados de cada setor (negocio.ts › anoDosSetores): a oferta relativa e a obra que fica pronta no ano que vem, em % (100 é o equilíbrio). */
+const SETOR: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
+  oferta: { tipo: 'num', sistema: 'mundo' },
+  obra: { tipo: 'num', sistema: 'mundo' },
+};
+
 /** As contas do país (moeda.ts): as empresas e as famílias, os bancos, o governo, o Banco Central e lá fora. */
 const CONTA: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
@@ -304,6 +313,8 @@ const CONTA: Record<string, DefCampo> = {
 };
 
 const EMPRESA: Record<string, DefCampo> = {
+  /** A sobra (positiva) ou a falta de oferta no setor dela, em % (negocio.ts › anoDosSetores). */
+  sobra_no_setor: { tipo: 'num', sistema: 'carreira', derivado: true },
   /** O que a empresa deve aos bancos (negocio.ts): paga o juro e 10% por ano, do caixa. */
   divida: { tipo: 'num', sistema: 'dinheiro' },
   /** A força da concorrente principal (50 é a média do setor): disputa a clientela com a qualidade e a marca de quem joga. */
@@ -372,6 +383,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent.startsWith('tit')) return TITULO;
   if (ent.startsWith('prm')) return PROMISSORIA;
   if ((CONTAS as readonly string[]).includes(ent)) return CONTA;
+  if (ent.startsWith('setor_')) return SETOR;
   return PESSOA;
 }
 
@@ -678,6 +690,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return deQuando(e, ent, en, 'ruim');
       case 'visao':
         return visaoDe(e, ent, en);
+      case 'sobra_no_setor':
+        return (e.entidades[`setor_${en.t['setor'] ?? ''}`]?.n['oferta'] ?? 100) - 100;
       case 'te_deve':
         return entreVoceE(e, ent).teDeve;
       case 'voce_deve':

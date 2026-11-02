@@ -21,6 +21,9 @@
  * para quem joga (a parte dele) e para os outros sócios.
  */
 import { PARCEIROS, type Parceiro } from './constantes.ts';
+import { criarRng, misturar } from './rng.ts';
+import { CICLO_DO_SETOR } from './regras.ts';
+import { novaEntidade } from './pessoas.ts';
 import { aleatorio, normal } from './rng.ts';
 import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -229,7 +232,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // O dólar do ano: quem exporta recebe mais reais pelo que vende, quem importa paga mais caro pelo que compra.
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
   // Na guerra de preços, todo mundo cobra menos.
-  const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1);
+  const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor']));
   const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar);
   const fixo = capacidade * eco.fixo * SALARIOS[salario(emp)].fixo;
   const verbas = vendas * ((n['marketing'] ?? 0) + (n['pd'] ?? 0));
@@ -558,7 +561,9 @@ function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: 
   const id = emp.id;
   const forca = emp.n['concorrente'] ?? 50;
   const vantagem = atratividade(emp) - forca / 50;
-  let alvo = forca + (50 - forca) * CONCORRENCIA.reversao + (vantagem > 0.15 ? CONCORRENCIA.reacao : 0) + normal(e.rng, 0, CONCORRENCIA.desvio);
+  // Na sobra de oferta do setor, a concorrente fraca sai; na falta, chega concorrente nova mais fácil.
+  const sobra = ofertaDe(e, emp.t['setor']) / 100 - 1;
+  let alvo = forca + (50 - forca) * CONCORRENCIA.reversao + (vantagem > 0.15 ? CONCORRENCIA.reacao : 0) + normal(e.rng, 0, CONCORRENCIA.desvio) - CICLO_DO_SETOR.naConcorrente * Math.max(0, sobra);
   const recente = (q: string, anos: number): boolean => (emp.q[q]?.ano ?? -99) >= e.ano - anos;
   const guerra = emp.q['guerra'];
   if (guerra) {
@@ -569,7 +574,7 @@ function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: 
   } else if (preco(emp) === 'popular' && vantagem > 0 && aleatorio(e.rng) < CONCORRENCIA.chanceDeGuerra) {
     ganhar(e, reg, id, 'guerra', entradaQueMudou(e, `${id}.preco`));
   }
-  if (vendas > 0 && lucro / vendas > CONCORRENCIA.margemQueAtrai && !recente('concorrente_novo', 5) && aleatorio(e.rng) < CONCORRENCIA.chanceDeEntrar) {
+  if (vendas > 0 && lucro / vendas > CONCORRENCIA.margemQueAtrai && !recente('concorrente_novo', 5) && aleatorio(e.rng) < CONCORRENCIA.chanceDeEntrar * (1 + 3 * Math.max(0, -sobra))) {
     alvo = Math.max(alvo, 65);
     ganhar(e, reg, id, 'concorrente_novo', entradaQueMudou(e, `${id}.preco`));
   }
@@ -579,5 +584,63 @@ function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: 
     alvo = 45;
   }
   definirNumero(e, reg, id, 'concorrente', Math.round(Math.max(0, Math.min(100, alvo))), 'negocio');
+}
+
+// ---------------------------------------------------------------- os mercados de cada setor (bloco H3)
+
+/** O preço do setor: a oferta acima do que o país compra derruba, a que falta sobe (elasticidade de 1,5). */
+export function precoDoSetor(oferta: number): number {
+  return Math.max(CICLO_DO_SETOR.piso, Math.min(CICLO_DO_SETOR.teto, Math.pow(Math.max(0.3, oferta / 100), -1 / CICLO_DO_SETOR.elasticidade)));
+}
+
+/** A oferta relativa do setor, em % (100 é o equilíbrio; o setor estável, e o save de antes dos mercados, ficam em 100). */
+export function ofertaDe(e: EstadoVida, setor: string | undefined): number {
+  return e.entidades[`setor_${setor ?? ''}`]?.n['oferta'] ?? 100;
+}
+
+/** Quanto a sobra de oferta multiplica a chance de demissão de quem trabalha no setor. */
+export function apertoDoSetor(e: EstadoVida, setor: string | undefined): number {
+  return 1 + CICLO_DO_SETOR.naDemissao * Math.max(0, ofertaDe(e, setor) / 100 - 1);
+}
+
+/** O setor em palavras (as folhas Dinheiro e País). */
+export function textoDoSetor(e: EstadoVida, setor: string | undefined): string {
+  const p = Math.round((precoDoSetor(ofertaDe(e, setor)) - 1) * 100);
+  return p <= -4 ? `sobra oferta: o preço está ${-p}% abaixo do normal` : p >= 4 ? `falta oferta: o preço está ${p}% acima do normal` : 'oferta e procura em equilíbrio';
+}
+
+/** Os mercados abrem com o país: cada setor (menos o estável) começa perto do equilíbrio, sem gastar o sorteio da vida. */
+export function abrirSetores(e: EstadoVida, c: Conteudo, reg?: Mudanca[]): void {
+  const rng = criarRng(misturar(e.semente, 7331));
+  for (const s of c.mundo.setores) {
+    const id = `setor_${s.id}`;
+    if (s.estavel || e.entidades[id]) continue;
+    e.entidades[id] = novaEntidade({ id, tipo: 'setor', nome: s.nome });
+    const oferta = Math.round((100 + normal(rng, 0, 6)) * 100) / 100;
+    if (reg) somar(e, reg, id, 'oferta', oferta, 'nascimento');
+    else e.entidades[id]!.n['oferta'] = oferta;
+  }
+}
+
+/**
+ * O ano dos mercados (a teia de aranha): a obra decidida no ano passado fica pronta, a procura do setor anda com o
+ * ciclo do país (mais nos setores que sentem mais o ciclo) e com a sorte do setor, e quem investe decide a obra do ano
+ * que vem pelo preço de agora. Preço alto chama obra; a obra pronta faz sobrar; a sobra derruba o preço; o preço baixo
+ * fecha portas até faltar de novo. Ciclos de uns oito anos, que a sorte mantém vivos.
+ */
+export function anoDosSetores(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
+  abrirSetores(e, c, reg);
+  const g = (e.entidades['pais']?.n['crescimento'] ?? 2) / 100;
+  for (const s of c.mundo.setores) {
+    const en = e.entidades[`setor_${s.id}`];
+    if (!en) continue;
+    const x = (en.n['oferta'] ?? 100) / 100;
+    const procura = g * ((s.ciclo ?? 1) - 1) + normal(e.rng, 0, CICLO_DO_SETOR.choque);
+    const novo = Math.max(0.6, Math.min(1.6, (x * (1 + (en.n['obra'] ?? 0) / 100)) / (1 + procura)));
+    // A onda de obras tem inércia: 80% do que já estava em andamento continua, e o preço novo soma ou tira.
+    const obra = Math.max(-15, Math.min(15, CICLO_DO_SETOR.inercia * (en.n['obra'] ?? 0) + 100 * CICLO_DO_SETOR.resposta * (precoDoSetor(novo * 100) - 1)));
+    definirNumero(e, reg, en.id, 'oferta', Math.round(novo * 10000) / 100, 'setor');
+    definirNumero(e, reg, en.id, 'obra', Math.round(obra * 100) / 100, 'setor');
+  }
 }
 

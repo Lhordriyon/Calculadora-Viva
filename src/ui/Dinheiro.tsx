@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, textoDaConcorrencia } from '../motor/negocio.ts';
+import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, ofertaDe, precoDoSetor, textoDaConcorrencia, textoDoSetor } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
@@ -299,6 +299,8 @@ function CartaoDaEmpresa({
             <>
               <dt>Concorrência</dt>
               <dd class={forcaDaConcorrente(emp) > atratividade(emp) || emp.q['guerra'] ? 'ruim' : ''}>{textoDaConcorrencia(emp)}</dd>
+              <dt>O setor</dt>
+              <dd class={precoDoSetor(ofertaDe(vida, emp.t['setor'])) < 0.96 ? 'ruim' : ''}>{textoDoSetor(vida, emp.t['setor'])}</dd>
             </>
           )}
           {(n['divida'] ?? 0) >= 1 && (

@@ -468,7 +468,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     e.entidades[copia.id] = copia;
   });
   // O lugar, o país e o mundo lá fora continuam como estavam (a sanção em vigor, a relação, a crise de lá, o dólar).
-  for (const id of ['lugar', 'pais', ...PARCEIROS]) {
+  for (const id of ['lugar', 'pais', ...PARCEIROS, ...Object.keys(antiga.entidades).filter((k) => k.startsWith('setor_'))]) {
     const en = antiga.entidades[id];
     if (en) e.entidades[id] = recausar(structuredClone(en), abertura.id);
   }

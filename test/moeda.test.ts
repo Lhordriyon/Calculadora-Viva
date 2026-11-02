@@ -68,7 +68,9 @@ describe('o dinheiro existe (bloco $)', () => {
   });
 
   it('o que quem joga paga ao mercado entra na conta do mercado no mesmo lançamento', () => {
-    const e = viver(44, 'cautelosa', 30);
+    // A primeira vida (a partir da semente 44) que chega viva aos 30.
+    let e = viver(44, 'cautelosa', 30);
+    for (let semente = 45; !e.vivo; semente++) e = viver(semente, 'cautelosa', 30);
     while (e.pendente) escolher(e, c, Math.max(0, e.pendente.opcoes.findIndex((o) => o.disponivel)));
     e.entidades['eu']!.n['dinheiro'] = (e.entidades['eu']!.n['dinheiro'] ?? 0) + 200_000;
     const mercado = e.entidades['mercado']!.n['dinheiro']!;

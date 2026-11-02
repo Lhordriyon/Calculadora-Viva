@@ -4,7 +4,7 @@ import { operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
-import { decidirNoNegocio, economiaDo, valorNaEmpresa } from '../src/motor/negocio.ts';
+import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -210,6 +210,38 @@ describe('o negócio de verdade (bloco H)', () => {
       return empresaDe(e)!.n['receita']!;
     };
     expect(receita(true)).toBeLessThan(receita(false) * 0.95);
+  });
+
+  it('o setor vive ciclos: a obra da alta faz sobrar, e a sobra derruba o preço', () => {
+    const e = adulto(28);
+    e.rng = criarRng(9);
+    const ofertas: number[] = [];
+    for (let i = 0; i < 40; i++) {
+      anoDosSetores(e, c, []);
+      ofertas.push(e.entidades['setor_construcao']!.n['oferta']!);
+    }
+    let viradas = 0;
+    for (let i = 1; i < ofertas.length; i++) if ((ofertas[i]! - 100) * (ofertas[i - 1]! - 100) < 0) viradas++;
+    expect(viradas).toBeGreaterThanOrEqual(3);
+    expect(Math.max(...ofertas) - Math.min(...ofertas)).toBeGreaterThan(10);
+    expect(precoDoSetor(120)).toBeLessThan(0.9);
+    expect(precoDoSetor(85)).toBeGreaterThan(1.08);
+  });
+
+  it('a sobra de oferta no setor derruba a receita da empresa e aperta o emprego de quem trabalha nele', () => {
+    const base = adulto(29);
+    operar(base, c, { tipo: 'abrir', setor: 'comercio', valor: 500_000 });
+    const receita = (oferta: number): number => {
+      const e = structuredClone(base);
+      e.rng = criarRng(3);
+      e.entidades['setor_comercio']!.n['oferta'] = oferta;
+      ano(e);
+      return empresaDe(e)!.n['receita']!;
+    };
+    expect(receita(130)).toBeLessThan(receita(100) * 0.9);
+    const e = structuredClone(base);
+    e.entidades['setor_industria']!.n['oferta'] = 120;
+    expect(apertoDoSetor(e, 'industria')).toBeGreaterThan(1.5);
   });
 });
 

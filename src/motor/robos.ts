@@ -24,7 +24,7 @@ import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { abrirPorEfeito, empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
-import { custoDaObra, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, VERBAS } from './negocio.ts';
+import { custoDaObra, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ofertaDe, VERBAS } from './negocio.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
@@ -746,7 +746,8 @@ function gerirNegocio(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
       if (primeiroAno) {
         tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });
       }
-      if (ocupacao > 1.2) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
+      // A cautelosa não amplia com o setor sobrando oferta.
+      if (ocupacao > 1.2 && ofertaDe(e, emp.t['setor']) < 110) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
       else if (ocupacao < 0.55) tentar({ tipo: 'cortar', fracao: 0.2, empresa: id });
       if ((n['divida'] ?? 0) > 0) tentar({ tipo: 'pagar', empresa: id });
       // No prejuízo, paga o piso; com lucro e fila de pedidos, volta a pagar o de mercado.

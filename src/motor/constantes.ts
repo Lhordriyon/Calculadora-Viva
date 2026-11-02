@@ -81,6 +81,8 @@ export const CONTAS_DE_FORA = ['mercado', 'tesouro', 'banco', 'parentes'] as con
 export type ContaDeFora = (typeof CONTAS_DE_FORA)[number];
 /** As contas do país (moeda.ts): entidades com saldo, do lado de lá de todo dinheiro que vem de fora da vida. */
 export const CONTAS = ['mercado', 'banco', 'tesouro', 'bc', 'exterior'] as const;
+/** Os setores da economia (os de mundo.json › setores): cada um tem o seu mercado, com o ciclo de oferta e procura (negocio.ts). */
+export const SETORES = ['comercio', 'servicos', 'industria', 'construcao', 'agro', 'tecnologia', 'saude', 'educacao', 'publico', 'transporte', 'financas', 'cultura'] as const;
 export type Conta = (typeof CONTAS)[number];
 /** Contraparte de uma mudança de dinheiro: uma entidade da vida, uma conta de fora ou a reavaliação (preço que mudou). */
 export type Contraparte = ContaDeFora | 'reavaliacao' | (string & {});

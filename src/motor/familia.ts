@@ -7,6 +7,7 @@
  * situação, saliência).
  */
 import { idadeDe } from './campos.ts';
+import { apertoDoSetor } from './negocio.ts';
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { AMIGOS, EXES, FILHOS, IRMAOS, ehAmigo, ehEx, ehFilho, ehIrmao, papelBase, type Visao } from './constantes.ts';
@@ -388,7 +389,7 @@ export function regrasDosPersonagens(
       } else if (!en.q['ausente'] && !en.q['dono_do_negocio'] && !setor?.estavel && idade >= 18) {
         // Desemprego do lugar (relativo a 8%) vezes o momento do país, conforme o setor sente o ciclo.
         const desemprego = ((lugar?.n['desemprego'] ?? 0.08) / 0.08) * (1 + (fase.desemprego - 1) * (setor?.ciclo ?? 1));
-        if (!en.q['desempregado'] && aleatorio(e.rng) < DEMISSAO_BASE * desemprego * (traco?.emprego ?? 1)) {
+        if (!en.q['desempregado'] && aleatorio(e.rng) < DEMISSAO_BASE * desemprego * (traco?.emprego ?? 1) * apertoDoSetor(e, en.t['setor'])) {
           // Numa recessão ou crise, a fase do país entra como causa da demissão (ela aumentou a chance).
           const pelaFase = fase.desemprego > 1 && (setor?.ciclo ?? 1) > 0 ? causaDaFase(e) : null;
           acontecer(
