@@ -5,7 +5,7 @@
  * métrica de quanto da vida o jogador causou.
  */
 import { defCampo } from './campos.ts';
-import { ATIVOS, CONTAS } from './constantes.ts';
+import { ATIVOS, CONTAS, PARCEIROS } from './constantes.ts';
 import type { Entrada, EstadoVida, Mudanca, TipoEntidade } from './tipos.ts';
 
 function limitar(v: number, limites: readonly [number, number] | undefined): number {
@@ -140,9 +140,18 @@ export function fecharMudancas(reg: Mudanca[]): Mudanca[] {
 const DO_PATRIMONIO = new Set<string>(['dinheiro', ...ATIVOS]);
 const E_CONTA = new Set<string>(CONTAS);
 
-/** O tipo de uma entidade pelo id, mesmo que ela já tenha saído da vida (a empresa vendida, a conta do país). */
+const SEM_DINHEIRO = /^(bem|ctr|tit|prm)|^(lugar|pais|ilha|ator)$/;
+
+/**
+ * O tipo de uma entidade pelo id, mesmo que ela já tenha saído da vida (a empresa vendida, o colega do emprego que
+ * acabou), como campos.ts › camposDe: o que não é empresa, conta, bem, contrato, título, promissória ou lugar é gente.
+ */
 export function tipoDe(e: EstadoVida, ent: string): TipoEntidade | undefined {
-  return e.entidades[ent]?.tipo ?? (ent.startsWith('empresa') ? 'empresa' : E_CONTA.has(ent) ? 'conta' : undefined);
+  const x = e.entidades[ent];
+  if (x) return x.tipo;
+  if (ent.startsWith('empresa')) return 'empresa';
+  if (E_CONTA.has(ent)) return 'conta';
+  return SEM_DINHEIRO.test(ent) || (PARCEIROS as readonly string[]).includes(ent) ? undefined : 'pessoa';
 }
 
 /**
