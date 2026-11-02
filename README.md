@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H2%3A%20concorr%C3%AAncia%20e%20banco-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-908-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H3%3A%20os%20mercados%20de%20cada%20setor-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-905-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,27 +15,29 @@
 
 ---
 
-## 🆕 Novidades: H2 · A concorrência e o banco da empresa (02/11/2026)
+## 🆕 Novidades: H3 · Os mercados de cada setor (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a empresa ganhou adversária e banco.
-> - **A concorrente reage.** Toda empresa disputa a clientela com uma concorrente que tem força própria. Se você atrai muito mais, ela corre atrás; se você cobra o popular e toma clientela, ela pode começar uma guerra de preços (todo mundo cobra 10% menos por até três anos, e quem atrai menos perde a briga). O lucro alto atrai concorrente nova, e a que perde a briga quebra e deixa a clientela para você. Cada notícia aponta a decisão de preço que a provocou.
-> - **O banco da empresa.** Na folha Dinheiro, a empresa pega crédito até duas vezes o lucro mais 30% da estrutura. O dinheiro é novo (o banco o cria ao emprestar, como no bloco $). Ela paga o juro real (a Selic menos a inflação, mais 3) antes do imposto e 10% da dívida por ano, e a dívida sai do valor. Com o juro baixo, cresce mais rápido; com o juro alto, a parcela aperta e a quebra chega antes.
-> - **Quatro histórias:** a guerra de preços, a concorrente nova, a concorrente que quebrou e a parcela do banco com o juro alto. A rede gigante só abre do outro lado da rua quando a concorrente é forte.
+> **O que mudou:** cada setor da economia virou um mercado com ciclo próprio.
+> - **A teia de aranha.** Quando o preço de um setor está bom, todo mundo constrói. A estrutura nova fica pronta, sobra oferta e o preço cai; com o preço baixo, as portas fecham até faltar de novo. São ciclos de uns oito anos, um para cada setor, que a sorte mantém vivos.
+> - **A sua empresa sente o setor.** O preço do setor entra na receita: o lucro e o valor sobem na alta e descem na sobra. A obra também custa o preço do setor, e na baixa a estrutura sai barata. Comprar na baixa e não construir no pico vira estratégia que se descobre.
+> - **A concorrência e o emprego também.** Na sobra, a concorrente fraca sai do mercado; na falta, chega concorrente nova. Quem trabalha num setor que construiu demais (você e a sua família) é mais demitido.
+> - **Três histórias:** o setor aquecido, o setor que afundou e o ramo do seu emprego em crise. A folha Dinheiro diz como está o setor da sua empresa, e a folha País mostra o setor mais acima e o mais abaixo do preço normal.
 
 > [!TIP]
 > **Para testar:**
-> - Abra uma empresa, ponha o preço no popular e veja, na folha, "Concorrência": a guerra de preços pode começar no ano seguinte.
-> - Com fila de pedidos e pouco caixa, toque em "Pegar" no Banco e amplie; depois acompanhe a dívida e a parcela quando a Selic subir.
-> - Ponha o preço no premium com a qualidade alta e veja a concorrente correr atrás.
+> - Olhe "Setores" na folha País e abra uma empresa no setor em baixa: a estrutura sai barata e o ciclo vira a seu favor.
+> - Com a empresa aberta, acompanhe "O setor" na folha Dinheiro. Quando falta oferta, a tentação é ampliar; quem amplia no pico encontra a sobra dois anos depois.
+> - Trabalhando num setor em sobra, espere a história do ramo em crise e escolha.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🥊 A concorrente que reage, a guerra de preços, a nova e a que quebra | 🏬 Várias concorrentes com nome e marca próprios |
-| 🏦 O crédito do banco, com o juro da Selic, a parcela e a dívida no valor | 🤝 O lobby e o conselho que propõe com base nos números |
-| 📖 Quatro histórias do mercado | 🏭 Fábricas e lojas como lugares |
+| 🌀 O ciclo de oferta e preço de cada setor, com a obra que demora a ficar pronta | 🏬 Várias concorrentes com nome e marca próprios |
+| 💵 O preço do setor na receita e no custo da obra | 🤝 O lobby e o conselho que propõe com base nos números |
+| 🥊 A sobra que tira a concorrente fraca; a falta que chama a nova | 🏭 Fábricas e lojas como lugares |
+| 👷 O emprego da família que sente o setor | |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas. Nenhuma estratégia domina, o bilionário feito ficou em 0,79% e 25,2% de quem abre empresa quebra (eram 23,2%). A variedade ficou onde estava: saturação de 52,4% na 5ª vida e de 87,6% na 20ª, com 908 histórias por 1.000 vidas. Os toques ficaram em 477,2 por vida. Os blocos anteriores (o dinheiro existe e a empresa de verdade) estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas e nenhuma estratégia domina. As histórias novas aparecem bem: o setor aquecido em 2,7% das vidas, o ramo em crise em 2,1% e o setor que afundou em 0,9%; a concorrente que quebra passou a aparecer em 0,1%. O bilionário feito ficou em 0,74%, e 26,0% de quem abre empresa quebra (eram 25,2%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,6% na 20ª, com 905 histórias por 1.000 vidas. Os toques ficaram em 477,8 por vida. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

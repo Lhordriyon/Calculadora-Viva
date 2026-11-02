@@ -4,6 +4,19 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌀 H3 · Os mercados de cada setor · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): a simulação da empresa ainda melhor, "como um pós-doc faria".
+
+- 🌀 **A teia de aranha** (`negocio.ts › anoDosSetores`): cada setor é uma entidade com a oferta relativa e a obra em andamento; o preço sai da oferta (elasticidade 1,5), e a onda de obras responde ao preço com inércia, com ciclos de uns oito anos.
+- 💵 **O preço do setor** entra na receita de toda empresa dele e no custo da obra (comprar na baixa).
+- 🥊 **A sobra tira a concorrente fraca e aperta o emprego** de quem trabalha no setor (quem joga e a família); a falta chama concorrente nova.
+- 📖 **Três histórias** (o setor aquecido, o que afundou, o ramo em crise), e as folhas Dinheiro e País com o setor.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,09 milhões de entradas; bilionário feito 0,74%; quebram 26,0% de quem abre empresa; saturação V5 52,3% e V20 87,6%; 905 histórias por 1.000 vidas; toques 477,8.
+
+---
+
 ## 🥊 H2 · A concorrência e o banco da empresa · 02/11/2026
 
 > [!NOTE]

@@ -1869,3 +1869,26 @@ O dono pediu a empresa "10× melhor" (I-134). As duas peças que mais mudam o jo
 - **Os acionistas furiosos chegam com a bolsa em queda de 5%:** com o lucro contábil, a empresa listada quase nunca fecha o ano no prejuízo.
 - **Ficaram de fora:** várias concorrentes com nome, o lobby, o conselho que propõe e as fábricas e lojas como lugares.
 
+## O bloco H3: os mercados de cada setor (02/11)
+
+O dono pediu a empresa ainda melhor, "como um pós-doc faria" (I-135). A saída foi deixar o mercado andar sozinho, sem regra a mais: um número por setor (a oferta relativa) faz o preço, e o preço decide a obra de quem investe. É a teia de aranha dos livros de economia, com inércia.
+
+**Medidas** (10.000 vidas; antes = o bloco H2):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Quebram, de quem abre empresa | 25,2% | 26,0% |
+| Bilionário feito | 0,79% | 0,74% |
+| Vidas com a concorrente que quebra | abaixo de 0,1% | 0,1% |
+| Vidas com o setor aquecido / afundado / o ramo em crise | — | 2,7% / 0,9% / 2,1% |
+| Saturação V5 / V20 | 52,4% / 87,6% | 52,3% / 87,6% |
+| Assinaturas por 1.000 vidas (destino) | 908 (568) | 905 (566) |
+| Toques por vida | 477,2 | 477,8 |
+
+**Decisões tomadas sozinho:**
+- **Um número por setor, numa entidade própria** (`setor_<id>`), como as contas do país: o conteúdo lê a sobra pelo campo derivado da empresa e do emprego, e o validador não pede leitor de conteúdo para cada um dos 11 setores.
+- **A obra com inércia:** na primeira versão, a obra decidida pelo preço ficava pronta no ano seguinte e só fazia o setor convergir (2 viradas em 40 anos). Com 80% da onda de obras continuando de um ano para o outro, o setor oscila em ciclos amortecidos de uns oito anos, que a sorte (3,5% por ano) mantém vivos.
+- **A obra custa o preço do setor:** comprar na baixa vira estratégia, e a cautelosa não amplia com o setor sobrando.
+- **O emprego sente o setor** (1,3 vez a demissão por 10% de sobra), para quem joga e para a família: o mercado chega à vida de quem nunca abriu empresa.
+- **Os mercados abrem no nascimento com um sorteio próprio** (da semente da vida, sem gastar o sorteio dela), passam para quem herda e abrem no primeiro ano de um save antigo.
+
