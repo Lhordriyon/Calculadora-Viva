@@ -170,6 +170,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** a soma do mundo é zero no fim de toda vida e em toda entrada (o túnel trava o contrário); a impressora ligada põe dinheiro novo na economia e acende a inflação (teste); o que quem joga paga ao mercado entra na conta do mercado (teste).
 - **Estado:** feita (bloco $, 02/11). Ficaram de fora o balanço de cada banco, o Tesouro com a dívida dentro do saldo e o câmbio pela conta de lá fora.
 
+### I-134 · A concorrência e o banco da empresa (o pedido do dono, 02/11)
+- **Problema:** "vamos melhorar a simulação da empresa, 10× melhor": a empresa disputava a clientela com uma média fixa (ninguém reagia) e só crescia com o próprio caixa.
+- **Efeitos causais:** a concorrente que reage (corre atrás, guerra de preços, chega nova pelo lucro, quebra e entrega a clientela) e o crédito do banco (dinheiro novo, juro real que segue a Selic, parcela, dívida no valor).
+- **Aceitação:** o empréstimo cria dinheiro no banco e as contas fecham (teste); a concorrente reage e o lucro alto a atrai (teste); a guerra corta a receita (teste); no túnel, as quatro histórias acontecem e nenhuma estratégia domina.
+- **Estado:** feita (bloco H2, 02/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -265,6 +271,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-134 | A concorrência que reage e o banco da empresa | H | Alta | feita (bloco H2, 02/11) |
 | I-133 | O dinheiro existe: contas com saldo, partidas dobradas, crédito, emissão e imposto inflacionário | $ | Alta | feita (bloco $, 02/11) |
 | I-132 | O negócio de verdade: caixa, produto, mercado e o mundo que reage | H | Alta | feita (bloco H, 01/11): o caixa, a demanda, a capacidade, o preço, a qualidade, a marca, as verbas, o salário, os dividendos, a exportação, a falência por causa, os empregos, o imposto, a mídia e o aluguel; o crédito da empresa e o lobby, não |
 

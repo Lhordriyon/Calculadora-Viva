@@ -76,6 +76,10 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 - [x] A folha País com o dinheiro do país, três histórias do dinheiro, os testes e o túnel
 - [ ] Depois: o balanço de cada banco, a dívida pública dentro do saldo do Tesouro e o câmbio pela conta de lá fora
 
+**O bloco H2, a concorrência e o banco da empresa (02/11).** O dono pediu a empresa "10× melhor" (I-134).
+
+- [x] A concorrente que reage (corre atrás, guerra de preços, nova pelo lucro, quebra), o crédito do banco com o juro da Selic, quatro histórias, a folha, os robôs e os testes
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
