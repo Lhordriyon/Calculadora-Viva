@@ -163,4 +163,53 @@ describe('o negócio de verdade (bloco H)', () => {
     lancar(e, entrada, reg);
     expect(conferirContas(e, entrada)).toEqual([]);
   });
+
+  it('o empréstimo da empresa sai do banco (dinheiro novo), o juro e a parcela voltam para ele, e as contas fecham', () => {
+    const e = adulto(25, 2_000_000);
+    operar(e, c, { tipo: 'abrir', setor: 'industria', valor: 1_000_000 });
+    const emp = empresaDe(e)!;
+    emp.n['lucro'] = 200_000;
+    const banco = e.entidades['banco']!.n['dinheiro']!;
+    const caixa = emp.n['caixa']!;
+    const h = operar(e, c, { tipo: 'emprestimo', valor: 300_000 });
+    expect(conferirContas(e, e.historico.find((x) => x.id === h.id)!)).toEqual([]);
+    expect(emp.n['caixa']).toBeCloseTo(caixa + 300_000);
+    expect(emp.n['divida']).toBeCloseTo(300_000);
+    expect(e.entidades['banco']!.n['dinheiro']!).toBeCloseTo(banco - 300_000);
+    expect(ano(e)).toEqual([]);
+    expect(e.historico.at(-1)!.mudancas?.some((m) => m.c === 'empresa.caixa' && m.r === 'juros' && m.p === 'banco')).toBe(true);
+    expect(emp.n['divida']!).toBeLessThan(300_000);
+  });
+
+  it('a concorrente reage: corre atrás de quem atrai muito mais, e o lucro alto atrai concorrente nova', () => {
+    const e = adulto(26, 2_000_000);
+    operar(e, c, { tipo: 'abrir', setor: 'tecnologia', valor: 1_000_000 });
+    const emp = empresaDe(e)!;
+    Object.assign(emp.n, { qualidade: 95, marca: 95, concorrente: 50, demanda: emp.n['capacidade']! });
+    emp.t['preco'] = 'premium';
+    e.rng = criarRng(5);
+    let maior = 0;
+    let nova = false;
+    for (let i = 0; i < 12; i++) {
+      ano(e);
+      maior = Math.max(maior, emp.n['concorrente']!);
+      nova ||= Boolean(emp.q['concorrente_novo']);
+    }
+    expect(maior).toBeGreaterThan(55);
+    expect(nova).toBe(true);
+  });
+
+  it('a guerra de preços corta a receita de quem está nela', () => {
+    const base = adulto(27);
+    operar(base, c, { tipo: 'abrir', setor: 'comercio', valor: 500_000 });
+    const receita = (guerra: boolean): number => {
+      const e = structuredClone(base);
+      e.rng = criarRng(3);
+      if (guerra) empresaDe(e)!.q['guerra'] = { v: 1, ano: e.ano, idade: e.idade, causa: null };
+      ano(e);
+      return empresaDe(e)!.n['receita']!;
+    };
+    expect(receita(true)).toBeLessThan(receita(false) * 0.95);
+  });
 });
+

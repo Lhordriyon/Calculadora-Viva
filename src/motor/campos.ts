@@ -304,6 +304,10 @@ const CONTA: Record<string, DefCampo> = {
 };
 
 const EMPRESA: Record<string, DefCampo> = {
+  /** O que a empresa deve aos bancos (negocio.ts): paga o juro e 10% por ano, do caixa. */
+  divida: { tipo: 'num', sistema: 'dinheiro' },
+  /** A força da concorrente principal (50 é a média do setor): disputa a clientela com a qualidade e a marca de quem joga. */
+  concorrente: { tipo: 'num', sistema: 'carreira', limites: [0, 100] },
   nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
   /** Anos desde a fundação. */
   idade: { tipo: 'num', sistema: 'carreira', derivado: true },

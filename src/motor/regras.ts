@@ -331,6 +331,16 @@ export const PEA_DA_CIDADE = 300_000;
 export const DOLAR_NO_CAIXA = 0.5;
 /** O ano de cada negócio: a sorte na demanda, como fração da volatilidade de antes (o valor agora segue os fundamentos). */
 export const SORTE_DO_NEGOCIO = 0.5;
+/**
+ * A concorrência (negocio.ts): a força da concorrente principal volta 15% por ano para a média do setor (50), sobe 4
+ * quando quem joga atrai bem mais que ela e balança com a sorte; o lucro acima de 18% das vendas atrai concorrente nova
+ * (25% ao ano, uma a cada cinco anos); quem cobra o preço popular e atrai mais provoca a guerra de preços (30% ao ano),
+ * que corta 10% do preço de todo mundo por até três anos e tira 8 pontos por ano de quem perde a briga; abaixo de 30, a
+ * concorrente quebra e a clientela dela vem junto (15% da demanda).
+ */
+export const CONCORRENCIA = { reversao: 0.15, reacao: 4, desvio: 3, margemQueAtrai: 0.18, chanceDeEntrar: 0.25, chanceDeGuerra: 0.3, corteNaGuerra: 0.1, perdaNaGuerra: 8, anosDeGuerra: 3, quebra: 30, clientela: 0.15 } as const;
+/** O crédito da empresa (negocio.ts): o juro real é a Selic menos a inflação mais o spread; a parcela, 10% da dívida por ano; o banco empresta até duas vezes o lucro mais 30% da estrutura. */
+export const CREDITO_DA_EMPRESA = { spread: 3, amortizacao: 0.1, vezesOLucro: 2, daEstrutura: 0.3 } as const;
 /** A mídia própria (bens.ts): a publicidade que ela vende por ano (fração do valor, num ano normal) e a influência que dá a quem é dono, por veículo. */
 export const PUBLICIDADE_DA_MIDIA = 0.11;
 export const INFLUENCIA_DA_MIDIA = 1.5;

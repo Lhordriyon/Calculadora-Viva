@@ -33,6 +33,12 @@ const DO_TRABALHO = ['colega', 'chefe'] as const;
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // a concorrência e o banco da empresa (negocio.ts)
+  'empresa.divida',
+  'empresa.concorrente',
+  'empresa.guerra',
+  'empresa.concorrente_novo',
+  'empresa.concorrente_quebrou',
   // o dinheiro (moeda.ts, bloco $)
   ...CONTAS.map((x) => `${x}.dinheiro`),
   'pais.moeda',
@@ -285,6 +291,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
   ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
   ...ler(['mercado.dinheiro'], 'país: o dinheiro que circula contra o que a economia precisa (o excesso)', true),
   ...ler(['pais.moeda'], 'país: o dinheiro que sobra acende a inflação e aquece o crescimento', true),
@@ -509,7 +516,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    le: ['pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
     escreve: ['empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {

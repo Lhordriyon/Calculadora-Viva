@@ -24,7 +24,7 @@ import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { abrirPorEfeito, empresaDe, liquidoDe, setoresDeEmpresa } from './empresa.ts';
-import { NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, VERBAS } from './negocio.ts';
+import { custoDaObra, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, VERBAS } from './negocio.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
@@ -748,12 +748,14 @@ function gerirNegocio(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
       }
       if (ocupacao > 1.2) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
       else if (ocupacao < 0.55) tentar({ tipo: 'cortar', fracao: 0.2, empresa: id });
+      if ((n['divida'] ?? 0) > 0) tentar({ tipo: 'pagar', empresa: id });
       // No prejuízo, paga o piso; com lucro e fila de pedidos, volta a pagar o de mercado.
       if ((n['lucro'] ?? 0) < 0 && emp.t['salario'] !== 'piso') tentar({ tipo: 'salario', nivel: 'piso', empresa: id });
       else if ((n['lucro'] ?? 0) > 0 && ocupacao > 1 && emp.t['salario'] === 'piso') tentar({ tipo: 'salario', nivel: 'mercado', empresa: id });
     } else if (estrategia === 'arriscada') {
       if (primeiroAno) tentar({ tipo: 'verbas', marketing: 0.08, pd: 0.08, empresa: id });
-      if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id })) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
+      // Sem caixa para a obra, pega no banco (e amplia na revisão seguinte).
+      if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5)), empresa: id });
       if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
       // Com caixa sobrando (mais de 30% do valor), passa a tirar dividendos.
       if ((n['caixa'] ?? 0) > 0.3 * (n['valor'] ?? 0) && (n['retirada'] ?? 0) < 0.3) tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });

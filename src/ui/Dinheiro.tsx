@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
+import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, textoDaConcorrencia } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
@@ -105,6 +106,17 @@ function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida;
         </button>
       </div>
       <p class="nota">A obra sai do caixa e fica pronta no ano que vem. Cortar vende a estrutura pela metade do que custou.</p>
+      <p class="nota">
+        <b>Banco.</b> {(n['divida'] ?? 0) >= 1 ? `Deve ${formatarDinheiro(n['divida'] ?? 0)}: paga o juro e 10% da dívida por ano, do caixa.` : `Empresta até ${formatarDinheiro(limiteDoBanco(conteudo, emp))}, a ${(jurosDaEmpresa(vida) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação.`}
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="Banco">
+        <button type="button" class="chip-origem" disabled={limiteDoBanco(conteudo, emp) < 1000 || pode({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp)), empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'emprestimo', valor: Math.floor(limiteDoBanco(conteudo, emp)), empresa: id })}>
+          Pegar {formatarDinheiro(limiteDoBanco(conteudo, emp))}
+        </button>
+        <button type="button" class="chip-origem" disabled={pode({ tipo: 'pagar', empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'pagar', empresa: id })}>
+          Pagar a dívida
+        </button>
+      </div>
       <p class="nota">
         <b>Lá fora.</b> {exporta ? `Vende para ${vida.entidades[exporta]?.nome ?? exporta}: a relação, o crescimento de lá e o acordo puxam a demanda; uma sanção fecha a porta.` : `Abrir um mercado custa ${formatarDinheiro(custoDeExportar(conteudo, emp))} e pede uma relação morna com o país.`}
       </p>
@@ -283,6 +295,20 @@ function CartaoDaEmpresa({
           <dd>
             qualidade {Math.round(n['qualidade'] ?? 50)} · marca {Math.round(n['marca'] ?? 50)}
           </dd>
+          {n['capacidade'] !== undefined && (
+            <>
+              <dt>Concorrência</dt>
+              <dd class={forcaDaConcorrente(emp) > atratividade(emp) || emp.q['guerra'] ? 'ruim' : ''}>{textoDaConcorrencia(emp)}</dd>
+            </>
+          )}
+          {(n['divida'] ?? 0) >= 1 && (
+            <>
+              <dt>Dívida no banco</dt>
+              <dd>
+                {formatarDinheiro(n['divida'] ?? 0)} · juros de {(jurosDaEmpresa(vida) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação
+              </dd>
+            </>
+          )}
           <dt>Ritmo</dt>
           <dd class={(n['tracao'] ?? 0) < 0 ? 'ruim' : ''}>{porcento(n['tracao'] ?? 0)} ao ano</dd>
           <dt>Depende de você</dt>

@@ -21,10 +21,12 @@
  * para quem joga (a parte dele) e para os outros sócios.
  */
 import { PARCEIROS, type Parceiro } from './constantes.ts';
+import { aleatorio, normal } from './rng.ts';
+import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
-import { definirNumero, definirTexto, somar } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
 import type { Momento } from './pais.ts';
 import {
   ATRATIVIDADE_NO_CRESCIMENTO,
@@ -215,7 +217,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // mercado tem tamanho (perto do teto, o ganho some; a perda vale inteira).
   const demanda = n['demanda'] ?? 0;
   const teto = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
-  const bruto = (n['tracao'] ?? 0) / 100 + fase.empresa * (setor?.ciclo ?? 1) + fora + sorte + (atratividade(emp) - 1) * ATRATIVIDADE_NO_CRESCIMENTO;
+  const bruto = (n['tracao'] ?? 0) / 100 + fase.empresa * (setor?.ciclo ?? 1) + fora + sorte + (atratividade(emp) - forcaDaConcorrente(emp)) * ATRATIVIDADE_NO_CRESCIMENTO;
   const cresce = bruto > 0 ? bruto * Math.max(0, 1 - demanda / teto) : Math.max(-0.6, bruto);
   somar(e, reg, id, 'demanda', demanda * cresce, 'negocio');
 
@@ -226,13 +228,16 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const fracaoFora = procura(e, emp) > 0 ? exportacaoDe(e, emp) / procura(e, emp) : 0;
   // O dólar do ano: quem exporta recebe mais reais pelo que vende, quem importa paga mais caro pelo que compra.
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
-  const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar);
+  // Na guerra de preços, todo mundo cobra menos.
+  const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1);
   const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar);
   const fixo = capacidade * eco.fixo * SALARIOS[salario(emp)].fixo;
   const verbas = vendas * ((n['marketing'] ?? 0) + (n['pd'] ?? 0));
   const ebit = vendas - variavel - fixo - verbas;
-  const imposto = Math.max(0, ebit) * IMPOSTO_DA_EMPRESA;
-  const lucro = ebit - imposto;
+  // O juro do banco sai antes do imposto (o lucro é depois dele).
+  const juros = (n['divida'] ?? 0) * jurosDaEmpresa(e);
+  const imposto = Math.max(0, ebit - juros) * IMPOSTO_DA_EMPRESA;
+  const lucro = ebit - juros - imposto;
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
   const exportou = vendas * fracaoFora;
@@ -240,6 +245,13 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   if (exportou > 0) somar(e, reg, id, 'caixa', exportou, 'exportacao', emp.t['exporta']!);
   if (variavel + fixo + verbas > 0) somar(e, reg, id, 'caixa', -(variavel + fixo + verbas), 'custos', 'mercado');
   if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', 'tesouro');
+  // O banco recebe o juro e a parcela (o dinheiro que volta para ele deixa de existir).
+  if (juros >= 1) somar(e, reg, id, 'caixa', -juros, 'juros', 'banco');
+  const parcela = (n['divida'] ?? 0) * CREDITO_DA_EMPRESA.amortizacao;
+  if (parcela >= 1) {
+    somar(e, reg, id, 'caixa', -parcela, 'amortizacao', 'banco');
+    somar(e, reg, id, 'divida', -parcela, 'amortizacao');
+  }
 
   // Os dividendos saem do lucro, na proporção que os donos decidiram, e do que há no caixa.
   const parte = n['participacao'] ?? 1;
@@ -275,11 +287,12 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // O valor vai para os fundamentos: o caixa e a obra, mais o maior entre os ativos a preço de venda e o lucro vezes o múltiplo.
   const ativos = (n['capacidade'] ?? 0) * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS;
   const multiplo = eco.multiplo * (emp.q['na_bolsa'] ? 1 + PREMIO_DA_BOLSA : 1);
-  const alvo = Math.max(0, n['caixa'] ?? 0) + (n['obra'] ?? 0) * eco.giro + Math.max(ativos, multiplo * Math.max(0, lucro));
+  const alvo = Math.max(0, Math.max(0, n['caixa'] ?? 0) + (n['obra'] ?? 0) * eco.giro + Math.max(ativos, multiplo * Math.max(0, lucro)) - (n['divida'] ?? 0));
   somar(e, reg, id, 'valor', (alvo - (n['valor'] ?? 0)) * 0.5, 'empresa');
   definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
   definirNumero(e, reg, id, 'receita', vendas, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
+  concorrenciaDoAno(e, reg, emp, lucro, vendas);
   return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosDe(c, emp) };
 }
 
@@ -310,9 +323,11 @@ export type OperacaoNegocio =
   | { tipo: 'cortar'; empresa?: string; fracao: number }
   | { tipo: 'verbas'; empresa?: string; marketing: number; pd: number }
   | { tipo: 'salario'; empresa?: string; nivel: Salario }
-  | { tipo: 'exportar'; empresa?: string; para: Parceiro | '' };
+  | { tipo: 'exportar'; empresa?: string; para: Parceiro | '' }
+  | { tipo: 'emprestimo'; empresa?: string; valor: number }
+  | { tipo: 'pagar'; empresa?: string };
 
-const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar']);
+const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar', 'emprestimo', 'pagar']);
 export function ehOperacaoDeNegocio(op: { tipo: string }): op is OperacaoNegocio {
   return TIPOS.has(op.tipo);
 }
@@ -344,6 +359,14 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
       return custoDaObra(c, emp, op.fracao) > (n['caixa'] ?? 0) ? `a obra custa ${Math.round(custoDaObra(c, emp, op.fracao)).toLocaleString('pt-BR')} reais e o caixa não tem` : null;
     case 'cortar':
       return (n['capacidade'] ?? 0) <= 0 ? 'não há o que cortar' : null;
+    case 'emprestimo': {
+      const limite = limiteDeCredito(c, emp);
+      if (!(op.valor > 0)) return 'diga quanto';
+      return op.valor > limite + 1 ? (limite < 1 ? 'o banco não empresta mais para ela' : `o banco empresta até ${Math.round(limite).toLocaleString('pt-BR')} reais`) : null;
+    }
+    case 'pagar':
+      if ((n['divida'] ?? 0) < 1) return 'ela não deve nada';
+      return (n['caixa'] ?? 0) < 1 ? 'o caixa não tem para pagar' : null;
     case 'exportar': {
       if (op.para === '') return emp.t['exporta'] ? null : 'ela não exporta';
       if (!(PARCEIROS as readonly string[]).includes(op.para)) return 'esse país não existe';
@@ -390,6 +413,19 @@ export function operarNegocio(e: EstadoVida, c: Conteudo, op: OperacaoNegocio, r
       somar(e, reg, id, 'capacidade', -corte, 'corte');
       somar(e, reg, id, 'caixa', corte * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS, 'venda_de_ativos', 'mercado');
       return { texto: `${nomeDaEmpresa} fechou ${Math.round(op.fracao * 100)}% da estrutura e vendeu o que dava. A demissão saiu na sexta.`, resumo: `cortou ${Math.round(op.fracao * 100)}% de ${nomeDaEmpresa}` };
+    }
+    case 'emprestimo':
+      somar(e, reg, id, 'caixa', op.valor, 'credito', 'banco');
+      somar(e, reg, id, 'divida', op.valor, 'credito');
+      return {
+        texto: `${nomeDaEmpresa} pegou ${Math.round(op.valor).toLocaleString('pt-BR')} reais no banco, a ${(jurosDaEmpresa(e) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação. O dinheiro não existia: o banco o criou ao emprestar.`,
+        resumo: `pegou um empréstimo para ${nomeDaEmpresa}`,
+      };
+    case 'pagar': {
+      const v = Math.min(emp.n['caixa'] ?? 0, emp.n['divida'] ?? 0);
+      somar(e, reg, id, 'caixa', -v, 'amortizacao', 'banco');
+      somar(e, reg, id, 'divida', -v, 'amortizacao');
+      return { texto: `${nomeDaEmpresa} pagou ${Math.round(v).toLocaleString('pt-BR')} reais da dívida com o banco.`, resumo: `pagou a dívida de ${nomeDaEmpresa}` };
     }
     case 'exportar': {
       if (op.para === '') {
@@ -480,3 +516,68 @@ export function valorNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: s
   }
   somar(e, reg, id, 'valor', Math.max(-valor, delta), 'empresa');
 }
+
+// ---------------------------------------------------------------- a concorrência e o banco
+
+/** A força da concorrente principal, na régua da atratividade (1 é a média do setor). */
+export function forcaDaConcorrente(emp: Entidade): number {
+  return (emp.n['concorrente'] ?? 50) / 50;
+}
+
+/** O juro real que a empresa paga ao banco: a Selic menos a inflação, mais o spread. */
+export function jurosDaEmpresa(e: EstadoVida): number {
+  const n = e.entidades['pais']?.n ?? {};
+  return Math.max(0.01, ((n['juros'] ?? 9.2) - (n['inflacao'] ?? 4.5) + CREDITO_DA_EMPRESA.spread) / 100);
+}
+
+/** Até quanto o banco empresta: duas vezes o lucro do ano mais 30% da estrutura, menos o que ela já deve. */
+export function limiteDeCredito(c: Conteudo, emp: Entidade): number {
+  const estrutura = (emp.n['capacidade'] ?? 0) * economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro;
+  return Math.max(0, CREDITO_DA_EMPRESA.vezesOLucro * Math.max(0, emp.n['lucro'] ?? 0) + CREDITO_DA_EMPRESA.daEstrutura * estrutura - (emp.n['divida'] ?? 0));
+}
+
+/** A disputa em palavras (a folha Dinheiro). */
+export function textoDaConcorrencia(emp: Entidade): string {
+  const v = atratividade(emp) - forcaDaConcorrente(emp);
+  const base = v > 0.25 ? 'você atrai mais que a concorrente' : v < -0.25 ? 'a concorrente atrai mais que você' : 'parelha com a concorrente';
+  return emp.q['guerra'] ? `${base} · guerra de preços` : base;
+}
+
+/** A entrada que mudou o campo por último (a decisão de causa), nos últimos lançamentos do livro. */
+function entradaQueMudou(e: EstadoVida, campo: string): number | null {
+  for (let i = e.historico.length - 1, k = 0; i >= 0 && k < 400; i--, k++) if (e.historico[i]!.mudancas?.some((m) => m.c === campo)) return e.historico[i]!.id;
+  return null;
+}
+
+/**
+ * A concorrente reage: volta para a média do setor, corre atrás de quem atrai bem mais que ela, entra na guerra de
+ * preços contra quem cobra o popular e toma clientela, chega nova quando o lucro é alto, e quebra quando perde a briga
+ * (a clientela dela vem junto). Cada notícia aponta a decisão de preço que a provocou.
+ */
+function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number): void {
+  const id = emp.id;
+  const forca = emp.n['concorrente'] ?? 50;
+  const vantagem = atratividade(emp) - forca / 50;
+  let alvo = forca + (50 - forca) * CONCORRENCIA.reversao + (vantagem > 0.15 ? CONCORRENCIA.reacao : 0) + normal(e.rng, 0, CONCORRENCIA.desvio);
+  const recente = (q: string, anos: number): boolean => (emp.q[q]?.ano ?? -99) >= e.ano - anos;
+  const guerra = emp.q['guerra'];
+  if (guerra) {
+    // Quem atrai mais ganha a briga; quem atrai menos perde clientela.
+    if (vantagem > 0) alvo -= CONCORRENCIA.perdaNaGuerra;
+    else somar(e, reg, id, 'demanda', -(emp.n['demanda'] ?? 0) * 0.05, 'negocio');
+    if (preco(emp) !== 'popular' || e.ano - guerra.ano >= CONCORRENCIA.anosDeGuerra) perder(e, reg, id, 'guerra');
+  } else if (preco(emp) === 'popular' && vantagem > 0 && aleatorio(e.rng) < CONCORRENCIA.chanceDeGuerra) {
+    ganhar(e, reg, id, 'guerra', entradaQueMudou(e, `${id}.preco`));
+  }
+  if (vendas > 0 && lucro / vendas > CONCORRENCIA.margemQueAtrai && !recente('concorrente_novo', 5) && aleatorio(e.rng) < CONCORRENCIA.chanceDeEntrar) {
+    alvo = Math.max(alvo, 65);
+    ganhar(e, reg, id, 'concorrente_novo', entradaQueMudou(e, `${id}.preco`));
+  }
+  if (alvo < CONCORRENCIA.quebra && !recente('concorrente_quebrou', 3)) {
+    somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * CONCORRENCIA.clientela, 'negocio');
+    ganhar(e, reg, id, 'concorrente_quebrou', guerra?.causa ?? null);
+    alvo = 45;
+  }
+  definirNumero(e, reg, id, 'concorrente', Math.round(Math.max(0, Math.min(100, alvo))), 'negocio');
+}
+
