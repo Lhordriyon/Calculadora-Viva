@@ -188,6 +188,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** a concorrente sai barata na baixa e quando está fraca, e a compra dá o negócio inteiro e fecha o mercado (teste).
 - **Estado:** feita (bloco H4, 02/11).
 
+### I-137 · O capitalismo integrado: o fornecedor, o trabalhador e o governo na conta da empresa
+- **Problema:** a empresa vivia numa ilha: o custo não dependia de outro setor, o salário não dependia do mercado de trabalho, o imposto não dependia de quem governa, e o lobby da história não mudava nada.
+- **Efeitos causais:** a cadeia de fornecimento (o preço do setor fornecedor no custo; a integração vertical); a folha pelo desemprego; o imposto pela política; o lobby que baixa os impostos do país, com causa e com escândalo de risco.
+- **Aceitação:** testes de cada ligação (a cadeia e a integração, a folha e o imposto, o lobby com as contas e a causa), e o túnel sem estratégia dominante.
+- **Estado:** feita (bloco H5, 02/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -283,6 +289,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-137 | O capitalismo integrado: fornecedor, trabalhador e governo na conta da empresa | H | Alta | feita (bloco H5, 02/11) |
 | I-136 | Comprar no tempo certo e ler o ciclo antes dele chegar | H | Alta | feita (bloco H4, 02/11) |
 | I-135 | Os mercados de cada setor: o ciclo de oferta e preço | H | Alta | feita (bloco H3, 02/11) |
 | I-134 | A concorrência que reage e o banco da empresa | H | Alta | feita (bloco H2, 02/11) |
