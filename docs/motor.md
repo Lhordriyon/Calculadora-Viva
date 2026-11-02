@@ -314,6 +314,15 @@ Cada real tem de onde vir e para onde ir. As **contas do país** são entidades 
 - **A política da moeda** é a nona de quem governa (`mundo.json › politicas`, `pais.pol_moeda`): o bloco liberal contém, o Regime imprime, os outros ficam no regular.
 - **A folha País** mostra o dinheiro circulando e se ele sobra ou falta, o que o Banco Central emitiu ou enxugou no ano e o que a inflação levou.
 
+## A influência (`influencia.ts`; bloco ★)
+
+A influência total (`eu.influencia`, poder.ts) continua; por cima dela, três esferas tiradas do estado, sem número novo (campos calculados `eu.influencia_pessoal`, `_politica` e `_negocios`, de 0 a 100):
+
+- **Pessoal:** 6 por pessoa viva e por perto com vínculo de 70 ou mais, mais 0,4 da fama. Multiplica a chance de entrar numa vaga por 1 + pessoal ÷ 200 (quem conhece gente entra mais fácil).
+- **Política:** o cargo (35), 0,35 da popularidade, o lobby (10), 8 por veículo de mídia própria e a linhagem (20 para a coroa e o Regime, 8 para quem é filho de político). Soma pessoal ÷ 14 ao logit da eleição (metade do peso da influência inteira) e faz o lobby andar (a chance soma política ÷ 200).
+- **Negócios:** 12 por zero do valor da maior empresa acima de R$ 100 mil, o truste (10) e 5 por empresa a mais. Multiplica o limite do banco por 1 + negócios ÷ 100 e tira até 20% do preço da compra da concorrente.
+- **As conquistas** (`influencia.ts › CONQUISTAS`): três degraus por esfera (40, 70 e 90). No ano do poder, a esfera que passou de um degrau pela primeira vez vira uma entrada (`conquista:<id>`, em dourado na linha do tempo) e a qualidade de quem joga, que o epitáfio (`marcas.json`), o conteúdo e o cartão da vida leem. A folha Carreira mostra as três esferas e o que falta para a próxima conquista de cada uma.
+
 ## Dinastia (`herdeiro.ts`)
 
 Quando a vida acaba, a história continua com quem herda: pelo testamento, o par (que herda tudo, sem metade separada, e começa viúvo, com o filho do casal) ou o melhor amigo (com o próprio sobrenome e a própria família); pela lei, o filho mais velho vivo (com os irmãos levando a parte deles, como a metade do cônjuge sai, e entrando na vida nova como os irmãos de quem herda) ou, pelo testamento, o filho escolhido, sem dividir; sem filho, um sobrinho (gerado de uma semente da própria vida, sem gastar o sorteio), filho de um irmão de verdade de quem morreu (o que teve filhos e está vivo, senão o vivo), que vira o pai ou a mãe na vida nova. Testamento para uma causa ou para o bicho encerra a história. A partilha paga as dívidas com o espólio, separa a metade de quem era casado (quando o par não é o herdeiro), 4% de imposto e o quarto do testamento solidário; as empresas e os bens passam ao herdeiro (a primeira empresa é a que ele cuida de perto), e só o que a conta não cobre sai da parte em cada empresa, na mesma proporção, e, depois, dos bens mais baratos. A coroa, o Regime e a ilha passam a quem herda, seja quem for (`sucessao.ts`): a resposta é o primeiro capítulo, ou vem aos 18. A primeira entrada conta a herança e é a causa do estado inicial.

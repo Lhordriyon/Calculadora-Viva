@@ -194,6 +194,12 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** testes de cada ligação (a cadeia e a integração, a folha e o imposto, o lobby com as contas e a causa), e o túnel sem estratégia dominante.
 - **Estado:** feita (bloco H5, 02/11).
 
+### I-138 · A influência que se sente: três esferas e as conquistas
+- **Problema:** a influência era um número que pesava na eleição e no voto; quem joga não sentia que ela importava, nem tinha o que conquistar com ela.
+- **Efeitos causais:** três esferas tiradas do estado (a pessoal, a política e a de negócios), cada uma com um uso (a vaga; a eleição e o lobby; o crédito e a compra), e três conquistas por esfera, na linha do tempo, no epitáfio e no cartão; três histórias que só a conquista abre.
+- **Aceitação:** testes das esferas, dos usos e da conquista que vem uma vez só; no túnel, as histórias abertas pelas conquistas acontecem.
+- **Estado:** feita (bloco ★, 02/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -289,6 +295,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-138 | A influência que se sente: três esferas e as conquistas | ★ | Alta | feita (bloco ★, 02/11) |
 | I-137 | O capitalismo integrado: fornecedor, trabalhador e governo na conta da empresa | H | Alta | feita (bloco H5, 02/11) |
 | I-136 | Comprar no tempo certo e ler o ciclo antes dele chegar | H | Alta | feita (bloco H4, 02/11) |
 | I-135 | Os mercados de cada setor: o ciclo de oferta e preço | H | Alta | feita (bloco H3, 02/11) |

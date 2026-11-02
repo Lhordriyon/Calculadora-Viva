@@ -82,6 +82,7 @@ Os cinco blocos da ordem do dono estão feitos. Seguem pendentes o Bloco B2 e a 
 - [x] H3 (02/11): os mercados de cada setor, com o ciclo de oferta e preço (a teia de aranha com inércia), o preço na receita, a sobra na concorrência e no emprego de quem trabalha nele, três histórias e a folha País com os setores (I-135)
 - [x] H4 (02/11): comprar a concorrente pelo preço do dia (barata na baixa e quando está fraca), a fatia do mercado e a previsão do preço do setor pela obra em andamento (I-136)
 - [x] H5 (02/11): o capitalismo integrado: a cadeia de fornecimento e a integração vertical, a folha pelo desemprego, o imposto pela política e o lobby que baixa os impostos (I-137)
+- [x] ★ (02/11): a influência em três esferas (pessoal, política, negócios), cada uma com um uso, e as nove conquistas na linha do tempo, no epitáfio e no cartão (I-138)
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
