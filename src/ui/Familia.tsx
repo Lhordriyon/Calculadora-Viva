@@ -63,7 +63,7 @@ function Testamento({ vida, conteudo, aoOperar }: { vida: EstadoVida; conteudo: 
 }
 
 /** Ordem do painel: quem veio antes, quem chegou depois, e por último quem passou (os ex) e quem é do trabalho. */
-const ORDEM = ['mae', 'pai', 'avo', ...IRMAOS, ...AMIGOS, 'amor', ...FILHOS, 'pet', ...EXES, 'colega', 'chefe'] as const;
+const ORDEM = ['mae', 'pai', 'avo', ...IRMAOS, ...AMIGOS, 'amor', ...FILHOS, 'pet', ...EXES, 'colega', 'chefe', 'gestor', 'rival'] as const;
 
 function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
   const f = en.genero === 'f';
@@ -76,6 +76,10 @@ function papelDe(id: string, en: Entidade, vida: EstadoVida): string {
       return 'Colega';
     case 'chefe':
       return 'Chefe';
+    case 'gestor':
+      return f ? 'Diretora' : 'Diretor';
+    case 'rival':
+      return 'Rival';
     case 'mae':
     case 'pai':
       // Numa dinastia, a família de quem herda pode ter duas mães ou dois pais.

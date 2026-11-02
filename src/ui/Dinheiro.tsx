@@ -9,7 +9,9 @@ import { comPreposicao, extrato } from '../motor/contas.ts';
 import { contratosDe, emAtraso, limiteDeCredito, modalidadeDe, origemDe } from '../motor/contratos.ts';
 import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
-import { aEmpresa, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
+import { dicaDaChance } from '../motor/acoes.ts';
+import { decidir } from '../motor/decisao.ts';
+import { aEmpresa, ajusteDaVenda, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { custoDaObra, custoDeExportar, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ocupacaoDe, procura, VERBAS, type Preco, type Salario } from '../motor/negocio.ts';
 import { PARCEIROS } from '../motor/constantes.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
@@ -244,6 +246,9 @@ function CartaoDaEmpresa({
   const naEmpresa = principal ? jogadasDe(vida, conteudo).filter((j) => ehDaEmpresa(j.s)) : [];
   const pessoas = Math.max(1, Math.round(n['funcionarios'] ?? 1));
   const motivoCompra = motivoParaNaoOperar(vida, conteudo, { tipo: 'adquirir', empresa: id });
+  // A concorrente tem dono, e quem dirige a empresa com você propõe (bloco H6): só na empresa que você cuida de perto.
+  const dono = id === PRINCIPAL && vida.entidades['rival']?.vivo !== false ? vida.entidades['rival'] : undefined;
+  const gestor = id === PRINCIPAL ? vida.entidades['gestor'] : undefined;
   const subsidiarias = vendaDeSubsidiarias(vida, id);
   const motivoBolsa = naBolsa ? null : motivoParaNaoOperar(vida, conteudo, { tipo: 'abrirCapital', empresa: id });
   const outras = grupo.filter((x) => x.id !== id);
@@ -306,7 +311,24 @@ function CartaoDaEmpresa({
           {n['capacidade'] !== undefined && (
             <>
               <dt>Concorrência</dt>
-              <dd class={forcaDaConcorrente(emp) > atratividade(emp) || emp.q['guerra'] ? 'ruim' : ''}>{textoDaConcorrencia(emp)}</dd>
+              <dd class={forcaDaConcorrente(emp) > atratividade(emp) || emp.q['guerra'] ? 'ruim' : ''}>
+                {textoDaConcorrencia(emp)}
+                {dono && (
+                  <small>
+                    {dono.t['negocio']}, de {dono.nome}
+                    {dono.q['quebrou'] ? ', que quebrou' : ''}
+                  </small>
+                )}
+              </dd>
+              {gestor && (
+                <>
+                  <dt>{gestor.genero === 'f' ? 'A diretora' : 'O diretor'}</dt>
+                  <dd>
+                    {gestor.nome}
+                    {gestor.t['proposta'] ? <small>propõe {gestor.t['proposta']}</small> : null}
+                  </dd>
+                </>
+              )}
               <dt>O setor</dt>
               <dd class={precoDoSetor(ofertaDe(vida, emp.t['setor'])) < 0.96 ? 'ruim' : ''}>
                 {textoDoSetor(vida, emp.t['setor'])}
@@ -388,6 +410,11 @@ function CartaoDaEmpresa({
       {motivoAporte && <p class="nota">Agora não: {motivoAporte}.</p>}
       <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir', empresa: id })}>
         Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida, id))}, {Math.round(precoDaAquisicao(vida, id) * 100)}% do preço justo)
+        {dono && (
+          <small>
+            {dono.nome}: {dicaDaChance(decidir(vida, conteudo, 'rival', 'aceitar', undefined, ajusteDaVenda(emp)).chance)}
+          </small>
+        )}
       </button>
       <p class="nota">
         {motivoCompra
