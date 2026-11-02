@@ -1036,6 +1036,28 @@ const elosPorVida = media(vidas.map((v) => v.elos.length));
 const anosPesados = vidas.reduce((a, v) => a + v.anosPesados, 0);
 const pesadosSeguidos = vidas.reduce((a, v) => a + v.pesadosSeguidos, 0);
 const parteSeguida = pesadosSeguidos / Math.max(1, anosPesados);
+/** Bloco H6 (pedido do dono em 02/11): o capitalismo com rosto, a rival com dono e o gestor que propõe. */
+const fundadoresH6 = vidas.filter((v) => v.fundou);
+const comRosto = (f: (x: (typeof vidas)[number]['comRosto']) => boolean): number => fundadoresH6.filter((v) => f(v.comRosto)).length / Math.max(1, fundadoresH6.length);
+const seguidasH6 = vidas.reduce((s, v) => s + v.comRosto.seguidas, 0);
+const recusadasH6 = vidas.reduce((s, v) => s + v.comRosto.recusadas, 0);
+const fracaoSeguida = seguidasH6 / Math.max(1, seguidasH6 + recusadasH6);
+// Seguir não domina: entre quem respondeu a duas propostas ou mais, o patrimônio de quem mais seguiu contra o de quem mais recusou.
+const responderam = vidas.filter((v) => v.comRosto.seguidas + v.comRosto.recusadas >= 2);
+const seguiuMais = responderam.filter((v) => v.comRosto.seguidas > v.comRosto.recusadas).map((v) => v.patrimonio);
+const recusouMais = responderam.filter((v) => v.comRosto.seguidas < v.comRosto.recusadas).map((v) => v.patrimonio);
+const razaoSeguir = mediana(seguiuMais) / Math.max(1, mediana(recusouMais));
+const portoesH6 = [
+  ['A concorrência tem rosto: ≥ 60% de quem abre empresa conhece a rival pelo nome', comRosto((x) => x.rival) >= 0.6, pct(comRosto((x) => x.rival))],
+  ['O rival que já era da vida (um ex, um amigo) existe: ≥ 1% de quem abre empresa', comRosto((x) => x.conhecido) >= 0.01, pct(comRosto((x) => x.conhecido), 2)],
+  ['O gestor chega em 15% a 40% das vidas com empresa', comRosto((x) => x.gestor) >= 0.15 && comRosto((x) => x.gestor) <= 0.4, pct(comRosto((x) => x.gestor))],
+  ['Das propostas do gestor, as seguidas ficam entre 30% e 70%', fracaoSeguida >= 0.3 && fracaoSeguida <= 0.7, `${pct(fracaoSeguida)} de ${seguidasH6 + recusadasH6}`],
+  [
+    'Seguir o gestor não domina: o patrimônio mediano de quem mais seguiu fica abaixo de 1,5 vez o de quem mais recusou',
+    razaoSeguir <= 1.5,
+    `${formatarDinheiro(mediana(seguiuMais))} contra ${formatarDinheiro(mediana(recusouMais))} (${seguiuMais.length} e ${recusouMais.length} vidas)`,
+  ],
+] as const;
 const portoesOmega6 = [
   [
     'O caminho varia mais que o destino: as assinaturas do caminho (as causas dos pontos de virada e os capítulos) passam as do destino',
@@ -1370,6 +1392,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesOmega6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O capitalismo com rosto (bloco H6)');
+l();
+l(`A concorrente da empresa que quem joga cuida de perto tem nome e dono, e o gestor que chega com a empresa grande propõe a jogada do ano pelo jeito dele (diretoria.ts). Avisos do gestor que tinha razão: ${vidas.reduce((s, v) => s + v.comRosto.avisos, 0)}; gestores que foram para a concorrência: ${vidas.reduce((s, v) => s + v.comRosto.saidas, 0)}.`);
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesH6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1772,6 +1802,7 @@ for (const [nome, ok, detalhe] of portoesOmega3) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesOmega4) console.log(`${ok ? '✓' : '·'} portão Ω4: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega5) console.log(`${ok ? '✓' : '·'} portão Ω5: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega6) console.log(`${ok ? '✓' : '·'} portão Ω6: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesH6) console.log(`${ok ? '✓' : '·'} portão H6: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

@@ -3,6 +3,7 @@
  * seguidas, a vida de origem escolhida e a dinastia. Cada tarefa depende só da semente: o resultado é o mesmo rodando
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
+import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA } from '../src/motor/diretoria.ts';
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
@@ -367,6 +368,8 @@ export interface Vida {
   segredos: HistoriaDosSegredos;
   /** Os capítulos da vida (missão Ω5, capitulos.ts): quantos de cada tipo. */
   capitulos: Partial<Record<TipoDeCapitulo, number>>;
+  /** A rival e o gestor (bloco H6): a concorrência com nome, o rival que já era da vida, o gestor, as propostas seguidas e recusadas, os avisos e as saídas. */
+  comRosto: { rival: boolean; conhecido: boolean; gestor: boolean; seguidas: number; recusadas: number; avisos: number; saidas: number };
   /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
   caminho: string;
   /** Os elos causais distintos da vida ("storylet que causou>storylet que aconteceu"). */
@@ -1144,6 +1147,15 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     projetos: projetosDaVida(e),
     segredos: segredosDaVida(e, c),
     capitulos: capitulosDe(e, c).reduce<Partial<Record<TipoDeCapitulo, number>>>((m, k) => ({ ...m, [k.tipo]: (m[k.tipo] ?? 0) + 1 }), {}),
+    comRosto: {
+      rival: e.historico.some((h) => h.ref === 'regra:rival_chegou' || h.ref === 'regra:rival_conhecido'),
+      conhecido: e.historico.some((h) => h.ref === 'regra:rival_conhecido'),
+      gestor: e.historico.some((h) => h.mudancas?.some((m) => m.c.startsWith('gestor.'))),
+      seguidas: e.historico.filter((h) => h.ref === PROPOSTA && h.escolha?.indice === ESCOLHA_SEGUIR).length,
+      recusadas: e.historico.filter((h) => h.ref === PROPOSTA && h.escolha?.indice === ESCOLHA_RECUSAR).length,
+      avisos: e.historico.filter((h) => h.ref === 'regra:gestor_avisou').length,
+      saidas: e.historico.filter((h) => h.ref === 'regra:gestor_saiu').length,
+    },
     ...caminhoDaVida(e, c, pontos),
     ...contasDaVida(e),
   };
