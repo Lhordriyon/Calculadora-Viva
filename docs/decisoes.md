@@ -1846,3 +1846,26 @@ O dono pediu que cada real exista de fato, com emissão monetária, e que o dinh
 - **Quem já saiu da vida continua sendo gente na conferência:** o tipo vem do id, como em `campos.ts`.
 - **Ficaram de fora:** o balanço de cada banco, a dívida pública dentro do saldo do governo e o câmbio movido pela conta de lá fora.
 
+## O bloco H2: a concorrência e o banco da empresa (02/11)
+
+O dono pediu a empresa "10× melhor" (I-134). As duas peças que mais mudam o jogo de negócios: alguém do outro lado que reage, e o crédito que faz crescer (e quebrar) mais rápido.
+
+**Medidas** (10.000 vidas; antes = o bloco $):
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Quebram, de quem abre empresa | 23,2% | 25,2% |
+| Bilionário feito, de quem nasce sem fortuna | 0,78% | 0,79% |
+| Saturação V5 / V20 | 52,1% / 87,6% | 52,4% / 87,6% |
+| Assinaturas por 1.000 vidas (destino) | 911 (568) | 908 (568) |
+| Toques por vida | 478,2 | 477,2 |
+| Vidas com guerra de preços / concorrente nova / parcela do banco | — | 0,8% / 0,5% / 0,3% |
+
+**Decisões tomadas sozinho:**
+- **Uma concorrente por empresa, como um número** (a força, de 0 a 100), não várias empresas rivais como entidades: a disputa cabe na folha e no livro, e a demanda passa a crescer pela diferença entre as duas.
+- **A guerra de preços nasce da decisão de quem joga** (o preço popular atraindo mais), e a notícia aponta essa decisão; ela acaba com o preço de volta ou em três anos.
+- **O crédito usa o dinheiro do bloco $:** o empréstimo sai do banco como dinheiro novo, e o juro e a parcela voltam para ele. O juro é o real (Selic − inflação + 3), porque o jogo conta em reais de hoje.
+- **A arriscada pega crédito para crescer quando falta caixa para a obra; a cautelosa paga o que deve.**
+- **Os acionistas furiosos chegam com a bolsa em queda de 5%:** com o lucro contábil, a empresa listada quase nunca fecha o ano no prejuízo.
+- **Ficaram de fora:** várias concorrentes com nome, o lobby, o conselho que propõe e as fábricas e lojas como lugares.
+

@@ -4,6 +4,18 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🥊 H2 · A concorrência e o banco da empresa · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): a simulação da empresa "10× melhor".
+
+- 🥊 **A concorrente que reage** (`negocio.ts`): a demanda cresce pela atratividade de quem joga menos a força da concorrente; ela corre atrás de quem atrai muito mais, entra na guerra de preços contra quem cobra o popular, chega nova quando o lucro passa de 18% das vendas e quebra quando perde a briga (a clientela vem junto), com a decisão de preço de causa.
+- 🏦 **O banco da empresa:** crédito até duas vezes o lucro mais 30% da estrutura, com dinheiro novo; o juro real da Selic sai antes do imposto, e 10% da dívida sai por ano; a dívida sai do valor.
+- 📖 **Quatro histórias do mercado** e a folha Dinheiro com a disputa, a dívida e o limite do banco.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,09 milhões de entradas; bilionário feito 0,79%; quebram 25,2% de quem abre empresa; saturação V5 52,4% e V20 87,6%; 908 histórias por 1.000 vidas; toques 477,2.
+
+---
+
 ## 💵 $ · O dinheiro existe · 02/11/2026
 
 > [!NOTE]

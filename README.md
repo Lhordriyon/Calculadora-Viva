@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%24%3A%20o%20dinheiro%20existe-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-911-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H2%3A%20concorr%C3%AAncia%20e%20banco-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-908-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,31 +15,27 @@
 
 ---
 
-## 🆕 Novidades: $ · O dinheiro existe (02/11/2026)
+## 🆕 Novidades: H2 · A concorrência e o banco da empresa (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** cada real tem de onde vir e para onde ir, como você pediu.
-> - **O dinheiro do país tem dono.** As empresas e as famílias, os bancos, o governo, o Banco Central e lá fora agora são contas com saldo. O salário sai do caixa do mercado, o imposto entra no do governo, o juro vai para os bancos, e o que você compra entra na conta de quem vende. A soma de todo o dinheiro do mundo é zero: o que as pessoas, as empresas e o governo têm é o que os bancos e o Banco Central criaram.
-> - **O dinheiro nasce e morre.** Os bancos criam dinheiro quando emprestam e o destroem quando o empréstimo volta. O Banco Central emite para o governo gastar, ou enxuga o que sobra. A inflação come o dinheiro parado de todo mundo e vai para quem emitiu (o imposto inflacionário).
-> - **A impressora tem preço.** Quem governa decide a moeda na folha País: contida, regular ou impressora. Com a impressora ligada, a economia aquece e a dívida cresce menos, mas a inflação quase dobra no ano seguinte e fica lá enquanto ela estiver ligada.
-> - **O seu dinheiro movimenta a economia.** O que você gasta entra no dinheiro que circula; uma fortuna gasta de uma vez vira inflação para o país inteiro.
-> - **Três histórias do dinheiro:** os preços remarcados quando sobra dinheiro, a impressora ligada e o crédito que some quando falta.
+> **O que mudou:** a empresa ganhou adversária e banco.
+> - **A concorrente reage.** Toda empresa disputa a clientela com uma concorrente que tem força própria. Se você atrai muito mais, ela corre atrás; se você cobra o popular e toma clientela, ela pode começar uma guerra de preços (todo mundo cobra 10% menos por até três anos, e quem atrai menos perde a briga). O lucro alto atrai concorrente nova, e a que perde a briga quebra e deixa a clientela para você. Cada notícia aponta a decisão de preço que a provocou.
+> - **O banco da empresa.** Na folha Dinheiro, a empresa pega crédito até duas vezes o lucro mais 30% da estrutura. O dinheiro é novo (o banco o cria ao emprestar, como no bloco $). Ela paga o juro real (a Selic menos a inflação, mais 3) antes do imposto e 10% da dívida por ano, e a dívida sai do valor. Com o juro baixo, cresce mais rápido; com o juro alto, a parcela aperta e a quebra chega antes.
+> - **Quatro histórias:** a guerra de preços, a concorrente nova, a concorrente que quebrou e a parcela do banco com o juro alto. A rede gigante só abre do outro lado da rua quando a concorrente é forte.
 
 > [!TIP]
 > **Para testar:**
-> - Abra a folha País e veja o dinheiro circulando, se ele sobra ou falta, e o que o Banco Central fez no ano.
-> - Se chegar a governar, ligue a impressora e acompanhe a inflação nos anos seguintes; depois desligue e veja o crédito encurtar.
-> - Com uma fortuna, gaste muito de uma vez (uma jogada de Brincar de deus) e veja o dinheiro sobrando no país e a inflação do ano seguinte.
+> - Abra uma empresa, ponha o preço no popular e veja, na folha, "Concorrência": a guerra de preços pode começar no ano seguinte.
+> - Com fila de pedidos e pouco caixa, toque em "Pegar" no Banco e amplie; depois acompanhe a dívida e a parcela quando a Selic subir.
+> - Ponha o preço no premium com a qualidade alta e veja a concorrente correr atrás.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🏦 As contas do país com saldo, e o lado de lá de cada real | 🏛️ O balanço de cada banco (hoje os bancos são uma conta só) |
-| ⚖️ A soma do mundo que dá zero, conferida em cada lançamento | 📜 A dívida pública dentro do saldo do governo (ela continua em % do PIB) |
-| 🖨️ A emissão e o enxugamento pela política da moeda | 💱 O dólar movido pelo dinheiro que entra e sai do país |
-| 🔥 A inflação que vem do dinheiro que sobra, e o imposto inflacionário | |
-| 💳 O crédito que cria dinheiro e encurta com o juro alto | |
+| 🥊 A concorrente que reage, a guerra de preços, a nova e a que quebra | 🏬 Várias concorrentes com nome e marca próprios |
+| 🏦 O crédito do banco, com o juro da Selic, a parcela e a dívida no valor | 🤝 O lobby e o conselho que propõe com base nos números |
+| 📖 Quatro histórias do mercado | 🏭 Fábricas e lojas como lugares |
 
-Num A/B com a mesma semente (12 vidas, 30 anos em cada política), a moeda contida deu inflação de 3,5% e crescimento de 1,99%; a regular, 4,9% e 1,80%; e a impressora, 9,2% e 2,45%, com a dívida pública 0,66 ponto do PIB por ano mais baixa que na regular. No túnel de vento (10.000 vidas), o dinheiro fechou em todas as 4,09 milhões de entradas, e a soma do mundo deu zero no fim de cada vida. A variedade ficou onde estava: saturação de 52,1% na 5ª vida e de 87,6% na 20ª, com 911 histórias por 1.000 vidas. Os toques ficaram em 478,2 por vida, e a CPU foi a 130 ms por vida (eram 124; a etapa do dinheiro custa 0,75 ms). O bloco anterior, a empresa de verdade, está no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,09 milhões de entradas. Nenhuma estratégia domina, o bilionário feito ficou em 0,79% e 25,2% de quem abre empresa quebra (eram 23,2%). A variedade ficou onde estava: saturação de 52,4% na 5ª vida e de 87,6% na 20ª, com 908 histórias por 1.000 vidas. Os toques ficaram em 477,2 por vida. Os blocos anteriores (o dinheiro existe e a empresa de verdade) estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
