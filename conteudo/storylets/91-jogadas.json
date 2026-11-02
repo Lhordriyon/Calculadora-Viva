@@ -3095,7 +3095,7 @@
     ],
     "condicoes": {
       "eu.influencia": {
-        "min": 60
+        "min": 50
       },
       "semMarcas": [
         "politico",

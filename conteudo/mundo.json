@@ -3455,7 +3455,7 @@
       "alvos": ["amor"],
       "gravidade": 6,
       "revelacao": "contaram_da_divida",
-      "fofoca": 4,
+      "fofoca": 3,
       "acaba": { "divida": { "max": 0 } },
       "sabem": { "ator.voce_deve": { "min": 1 } },
       "soube": {
