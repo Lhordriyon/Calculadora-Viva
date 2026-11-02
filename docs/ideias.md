@@ -200,6 +200,45 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:** testes das esferas, dos usos e da conquista que vem uma vez só; no túnel, as histórias abertas pelas conquistas acontecem.
 - **Estado:** feita (bloco ★, 02/11).
 
+### I-139 · O capitalismo com rosto: a rival com dono, o que ela faz e a diretora que propõe (o pedido do dono, 02/11)
+- **Pedido:** "preparar a execução da próxima atualização, que será melhorar mais o sistema de capitalismo".
+- **Problema:**
+  - a concorrência é um número (`empresa.concorrente`, de 0 a 100): a guerra de preços, a concorrente que chega e a que quebra não têm nome nem dono, e o conteúdo dela fala de ninguém (no túnel de 02/11: `concorrente_gigante` em 8,9% das vidas, `guerra_de_precos` 0,9%, `concorrente_nova` 0,9%, `concorrente_quebrou` 0,1%);
+  - ninguém na empresa propõe nada (I-12): a folha Dinheiro mostra o setor, a previsão, a fatia, os custos de fora e o banco, e cabe a quem joga juntar tudo sozinho;
+  - quem joga não tem contra quem jogar: o capitalismo sem rival é uma planilha.
+- **As candidatas, nos 12 critérios:**
+  - **a rival com dono** (uma pessoa com identidade, no molde do colega e do chefe): alta em história emergente, consequência, rejogabilidade e interação (as pessoas, a decisão, os segredos, a influência, o Cade, os setores); custo médio; reuso alto. **Entra.**
+  - **a diretora que propõe com os números** (I-12): alta em compreensão e em decisão (a gestão vira uma escolha de um toque, com o porquê), reuso alto (a proposta é a heurística dos robôs no jeito dela). **Entra.**
+  - **a bolsa de verdade** (as ações da rival, a oferta hostil): alta em fantasia, mas custo alto e cara de tela de gestão. **Depois** (H7).
+  - **fábricas e lojas como lugares:** média; mais gestão que história. **Depois.**
+- **Efeitos causais:**
+  - **a rival tem nome e dono:** a concorrente da empresa que quem joga cuida de perto ganha nome (`empresa.rival`, tirado de `mundo.json` e do setor) e dono, a pessoa no papel `rival`, que chega com a concorrente nova e sai quando ela quebra, é comprada ou quem joga troca de empresa. O traço do dono muda a reação da concorrente: o agressivo entra mais na guerra de preços, o caprichoso corre atrás da qualidade, o acomodado volta para a média;
+  - **o rival que você conhece:** quando chega concorrente nova, quem já tem motivo pode ser o dono, com a entrada do motivo de causa: o colega de um emprego antigo, um ex, o irmão, o amigo brigado. A troca de papel (`pessoas.ts`) leva a memória junto: ele lembra do que você fez;
+  - **comprar a rival é pedir a ela:** a compra da concorrente (H4) passa pela decisão do dono (o pedido `aceitar`, em `decisao.ts`), pela mágoa da guerra de preços e pelo preço do dia em % do justo; a folha diz como ele está ("deve dizer sim", "difícil", "não vende para você");
+  - **o que a rival faz:** iniciativas do dono, com `teste decide` quando a resposta é dele:
+    - a trégua de preços (o cartel entra nos segredos, com o tema `cartel` em `mundo.json`, e chama o Cade se vazar);
+    - a oferta pela sua empresa;
+    - o funcionário roubado (cobrir o salário ou perder qualidade);
+    - o processo da marca;
+    - o dono quebrado que pede emprego;
+    - o encontro na festa;
+  - **a diretora que propõe:** quando a empresa passa de R$ 10 milhões, ou quando quem joga compra a rival e o dono fica, chega uma pessoa no papel `diretor`, com o jeito dela (cautelosa ou arrojada, pelo traço). No máximo uma vez por ano, ela traz uma proposta com os números do dia:
+    - segurar a obra, porque o setor está construindo;
+    - pedir crédito, porque o juro real está baixo e a demanda passa da capacidade;
+    - comprar a concorrente barata;
+    - pagar dividendos do caixa que sobra;
+    - subir o piso, porque falta gente.
+
+    A proposta é a heurística do robô do jeito dela (`robos.ts`), num storylet só, com o texto montado do estado. As escolhas são seguir, recusar ou fazer do seu jeito, e um efeito novo, `operacao`, executa a operação da folha pelo storylet, com o motivo de recusa da folha. No ano seguinte, uma regra confere se os números deram razão a ela e anota a confiança dela em você e a lembrança ("lembra quando você não quis segurar a obra"). Quem ignora sempre perde a diretora para a rival.
+- **Aceitação (portões do túnel de 10.000 vidas):**
+  - zero histórias mortas e nenhuma estratégia dominante;
+  - das vidas com empresa, ≥ 60% conhecem a rival pelo nome, e ≥ 3% têm um rival que já era alguém da vida;
+  - a diretora chega em 15% a 40% das vidas com empresa;
+  - das propostas, as seguidas ficam entre 30% e 70%, e seguir a diretora não domina: na mesma estratégia, o patrimônio mediano de quem mais segue não passa de 1,5 vez o de quem menos segue;
+  - sem regressão: quebra entre 15% e 55% de quem abre (hoje 24,7%), bilionário feito entre 0,02% e 1% (hoje 0,51%), toques ≤ 480 (hoje 479,2: as propostas e as iniciativas disputam o lugar do evento do ano, não somam), save ≤ 700 KB e a CPU por vida no máximo 10% acima em A/B na mesma máquina.
+- **Depende de:** I-134 (a concorrência), I-136 (a compra pelo preço do dia), I-123 (a pessoa decide), I-125 (os segredos) e a identidade das pessoas (Ω1). Todas feitas.
+- **Estado:** proposta: a próxima atualização (H6), com o plano no roteiro.
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -295,6 +334,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e a diretora que propõe | H6 | Alta | proposta (a próxima atualização, 02/11) |
 | I-138 | A influência que se sente: três esferas e as conquistas | ★ | Alta | feita (bloco ★, 02/11) |
 | I-137 | O capitalismo integrado: fornecedor, trabalhador e governo na conta da empresa | H | Alta | feita (bloco H5, 02/11) |
 | I-136 | Comprar no tempo certo e ler o ciclo antes dele chegar | H | Alta | feita (bloco H4, 02/11) |
