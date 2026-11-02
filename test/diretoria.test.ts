@@ -118,4 +118,27 @@ describe('o capitalismo com rosto (bloco H6)', () => {
     expect(recusou.historico.at(-1)!.mudancas!.some((m) => m.c.startsWith('empresa.'))).toBe(false);
     e = seguiu;
   });
+  it('recusada a proposta e o ano no vermelho, o gestor avisa (com a recusa de causa); sem confiança, vai para a concorrência', () => {
+    const e = comEmpresa(66, 40e6);
+    for (let i = 0; i < 4 && !e.entidades['gestor']; i++) passarAno(e);
+    expect(e.entidades['gestor']).toBeDefined();
+    // A recusa deste ano, no livro, como a escolha do cartão deixa.
+    const recusa = novaEntrada(e, { tipo: 'evento', causa: 'escolha', ref: 'a_proposta_do_gestor', texto: 'recusou' });
+    recusa.escolha = { indice: 1, texto: 'Recusar', resumo: 'recusou a proposta' };
+    lancar(e, recusa, []);
+    // O ano que vem no vermelho: quase ninguém compra.
+    empresaDe(e)!.n['demanda'] = 1;
+    passarAno(e);
+    expect(empresaDe(e)!.n['lucro']!).toBeLessThan(0);
+    const aviso = e.historico.find((h) => h.ref === 'regra:gestor_avisou');
+    expect(aviso?.causas).toEqual([recusa.id]);
+    // Sem confiança em quem joga, ele vai embora, e a concorrência fica mais forte.
+    const quem = e.entidades['gestor']!.pessoa;
+    e.entidades['gestor']!.n['confianca'] = -40;
+    passarAno(e);
+    const saiu = e.historico.find((h) => h.ref === 'regra:gestor_saiu');
+    expect(saiu?.mudancas?.some((m) => m.c === 'empresa.concorrente' && m.d === 8)).toBe(true);
+    // A empresa continua grande: chega outro gestor, outra pessoa.
+    expect(e.entidades['gestor']?.pessoa).not.toBe(quem);
+  });
 });
