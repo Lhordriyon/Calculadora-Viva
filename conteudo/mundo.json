@@ -1616,6 +1616,15 @@
         "texto": "A verba dos quartéis encolheu: menos treino, menos fronteira vigiada e os tanques do desfile empurrados. Sobra dinheiro, e falta dissuasão.",
         "resumo": "cortou a verba da defesa"
       }
+    },
+    {
+      "id": "moeda",
+      "nome": "A moeda",
+      "niveis": ["contida", "regular", "impressora"],
+      "descricao": "Se o Banco Central imprime dinheiro para o governo gastar. Contida, ele enxuga um pouco do que circula: a inflação cede, o crédito encurta e ninguém agradece. Regular, o governo se financia com títulos. Impressora, ele emite 3% do PIB por ano: a dívida cresce menos, a festa começa e a inflação chega no ano seguinte, para todo mundo que tem dinheiro parado.",
+      "efeitos": {},
+      "subir": { "texto": "O Banco Central ligou a impressora para o governo pagar as contas. Hoje sobra dinheiro; o preço do pão fica sabendo amanhã.", "resumo": "mandou o Banco Central imprimir mais dinheiro" },
+      "baixar": { "texto": "O Banco Central desligou a impressora e passou a enxugar o que sobra. A inflação vai ceder, devagar, e o crédito some antes dela.", "resumo": "segurou a emissão de dinheiro" }
     }
   ],
   "governos": [
@@ -1623,7 +1632,7 @@
       "id": "frente_popular",
       "nome": "a frente popular",
       "promessa": "comida no prato, posto de saúde e escola boa, pagos por quem pode mais",
-      "politicas": { "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1, "pesquisa": 2, "defesa": 0 },
+      "politicas": { "moeda": 1, "impostos": 2, "social": 2, "saude": 2, "educacao": 2, "seguranca": 1, "comercio": 1, "pesquisa": 2, "defesa": 0 },
       "eleito": true,
       "aproxima": ["pacto", "celeste"]
     },
@@ -1631,7 +1640,7 @@
       "id": "bloco_liberal",
       "nome": "o bloco liberal",
       "promessa": "menos imposto, menos Estado e a economia andando com as próprias pernas",
-      "politicas": { "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0, "pesquisa": 0, "defesa": 1 },
+      "politicas": { "moeda": 0, "impostos": 0, "social": 0, "saude": 0, "educacao": 1, "seguranca": 1, "comercio": 0, "pesquisa": 0, "defesa": 1 },
       "eleito": true,
       "aproxima": ["federacao", "liga"]
     },
@@ -1639,7 +1648,7 @@
       "id": "alianca_da_ordem",
       "nome": "a aliança da ordem",
       "promessa": "polícia na rua, contas em dia e o resto depois",
-      "politicas": { "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 1, "defesa": 2 },
+      "politicas": { "moeda": 1, "impostos": 1, "social": 0, "saude": 1, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 1, "defesa": 2 },
       "eleito": true,
       "aproxima": ["federacao"]
     },
@@ -1647,7 +1656,7 @@
       "id": "centrao",
       "nome": "o centrão",
       "promessa": "um pouco de tudo para todo mundo, desde que sobrem cargos",
-      "politicas": { "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1, "pesquisa": 1, "defesa": 1 },
+      "politicas": { "moeda": 1, "impostos": 1, "social": 1, "saude": 1, "educacao": 1, "seguranca": 1, "comercio": 1, "pesquisa": 1, "defesa": 1 },
       "gasto": 1,
       "aprovacao": 4,
       "eleito": true
@@ -1656,7 +1665,7 @@
       "id": "regime",
       "nome": "o regime",
       "promessa": "ordem, progresso e nenhuma pergunta",
-      "politicas": { "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 2, "defesa": 2 },
+      "politicas": { "moeda": 2, "impostos": 1, "social": 0, "saude": 0, "educacao": 0, "seguranca": 2, "comercio": 2, "pesquisa": 2, "defesa": 2 },
       "eleito": false,
       "aproxima": ["celeste"]
     }

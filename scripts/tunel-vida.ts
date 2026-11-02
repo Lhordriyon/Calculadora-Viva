@@ -4,6 +4,7 @@
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
+import { dinheiroDoMundo } from '../src/motor/moeda.ts';
 import type { Conteudo } from '../src/motor/conteudo.ts';
 import { REF_SOUBE } from '../src/motor/segredos.ts';
 import { capitulosDe, type TipoDeCapitulo } from '../src/motor/capitulos.ts';
@@ -1170,6 +1171,12 @@ export function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entra
   const noFim = conferirDividas(e);
   if (noFim.length > 0 && !exemploDeDivida) exemploDeDivida = `semente ${e.semente}, no fim: ${noFim[0]}`;
   dividasErradas += noFim.length;
+  // O dinheiro do mundo soma zero no fim da vida (moeda.ts): nada saiu do nada, nada sumiu.
+  const resto = e.entidades['mercado'] ? dinheiroDoMundo(e) : 0;
+  if (Math.abs(resto) > Math.max(1e4, (e.entidades['pais']?.n['pib'] ?? 1e13) * 1e-7)) {
+    contasErradas++;
+    if (!exemploDeConta) exemploDeConta = `semente ${e.semente}, no fim: o dinheiro do mundo soma ${resto.toFixed(0)}, não zero`;
+  }
   return { contasErradas, entradasConferidas: e.historico.length, exemploDeConta, extrato: extrato(e).linhas, dividasErradas, exemploDeDivida, dividas: dividasDaVida(e) };
 }
 

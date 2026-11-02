@@ -358,7 +358,15 @@ export function venderParte(e: EstadoVida, reg: Mudanca[], fracao: number, premi
 export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number, id = PRINCIPAL): number {
   if (!empresaDe(e, id)) return 0;
   const volta = parteNaEmpresa(e, id) * sobra;
-  if (volta > 0) movimentar(e, reg, { dinheiro: volta, contraparte: id });
+  if (volta > 0) {
+    // A sobra sai do caixa da empresa e, no que faltar, de quem compra o que ela tinha (o mercado).
+    const doCaixa = Math.min(volta, Math.max(0, empresaDe(e, id)!.n['caixa'] ?? 0));
+    if (doCaixa > 0) {
+      movimentar(e, reg, { dinheiro: doCaixa, contraparte: id });
+      somar(e, reg, id, 'caixa', -doCaixa, 'encerramento', 'eu');
+    }
+    if (volta - doCaixa > 0) movimentar(e, reg, { dinheiro: volta - doCaixa, contraparte: 'mercado' });
+  }
   encerrar(e, reg, id);
   return volta;
 }

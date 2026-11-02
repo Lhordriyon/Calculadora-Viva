@@ -5,7 +5,8 @@
  * métrica de quanto da vida o jogador causou.
  */
 import { defCampo } from './campos.ts';
-import type { Entrada, EstadoVida, Mudanca } from './tipos.ts';
+import { ATIVOS, CONTAS } from './constantes.ts';
+import type { Entrada, EstadoVida, Mudanca, TipoEntidade } from './tipos.ts';
 
 function limitar(v: number, limites: readonly [number, number] | undefined): number {
   if (!limites) return v;
@@ -136,8 +137,70 @@ export function fecharMudancas(reg: Mudanca[]): Mudanca[] {
   return out;
 }
 
+const DO_PATRIMONIO = new Set<string>(['dinheiro', ...ATIVOS]);
+const E_CONTA = new Set<string>(CONTAS);
+
+/** O tipo de uma entidade pelo id, mesmo que ela já tenha saído da vida (a empresa vendida, a conta do país). */
+export function tipoDe(e: EstadoVida, ent: string): TipoEntidade | undefined {
+  return e.entidades[ent]?.tipo ?? (ent.startsWith('empresa') ? 'empresa' : E_CONTA.has(ent) ? 'conta' : undefined);
+}
+
+/**
+ * Quanto uma mudança mexe no dinheiro do mundo (moeda.ts): a conta, o que se aplicou e, com o sinal trocado, a dívida
+ * das pessoas; o caixa das empresas; o saldo das contas do país. Null quando o campo não é dinheiro (o valor de um bem,
+ * de uma empresa ou de um título é patrimônio, não dinheiro).
+ */
+export function emDinheiro(tipo: TipoEntidade | undefined, campo: string, d: number): number | null {
+  if (tipo === 'pessoa') return DO_PATRIMONIO.has(campo) ? d : campo === 'divida' ? -d : null;
+  if (tipo === 'empresa') return campo === 'caixa' ? d : null;
+  if (tipo === 'conta') return campo === 'dinheiro' ? d : null;
+  return null;
+}
+
+/** A conta do país do lado de lá de uma mudança de dinheiro, quando a contraparte é de fora da vida. */
+function contaDoOutroLado(e: EstadoVida, m: Mudanca, tipo: TipoEntidade): string | undefined {
+  const p = m.p;
+  // Quem chega à vida traz o dinheiro de fora dela (as famílias do país); quem sai leva de volta.
+  if (!p) return tipo === 'pessoa' && (m.r === 'nascimento' || m.r === 'saida') ? 'mercado' : undefined;
+  if (E_CONTA.has(p)) return p;
+  // A inflação vai para quem emitiu; a cotação que mudou é o mercado que pagou (ou cobrou) por ela.
+  if (p === 'reavaliacao') return m.r === 'inflacao' ? 'bc' : 'mercado';
+  if (p === 'parentes') return 'mercado';
+  if (e.entidades[p]?.tipo === 'jurisdicao') return p === 'pais' ? 'tesouro' : 'exterior';
+  return undefined;
+}
+
+/**
+ * O lado de lá (moeda.ts): o dinheiro que veio de uma conta do país (o salário, do mercado; o imposto, para o governo; o
+ * juro, para os bancos) sai dela no mesmo lançamento, numa mudança por conta. Entre duas entidades da vida, quem mexe
+ * anota os dois lados (contas.ts confere).
+ */
+function espelhar(e: EstadoVida, reg: Mudanca[]): void {
+  if (!e.entidades['mercado']) return;
+  let lado: Map<string, number> | undefined;
+  for (const m of reg) {
+    if (m.d === undefined || m.q !== undefined || m.r === 'espelho') continue;
+    const ponto = m.c.indexOf('.');
+    const ent = m.c.slice(0, ponto);
+    const tipo = tipoDe(e, ent);
+    if (!tipo || (tipo === 'conta' && m.r === 'nascimento')) continue;
+    const v = emDinheiro(tipo, m.c.slice(ponto + 1), m.d);
+    if (v === null) continue;
+    const conta = contaDoOutroLado(e, m, tipo);
+    if (!conta || conta === ent) continue;
+    (lado ??= new Map()).set(conta, (lado.get(conta) ?? 0) - v);
+  }
+  if (!lado) return;
+  for (const [conta, d] of lado) {
+    const x = e.entidades[conta]!;
+    x.n['dinheiro'] = (x.n['dinheiro'] ?? 0) + d;
+    reg.push({ c: `${conta}.dinheiro`, d, r: 'espelho' });
+  }
+}
+
 /** Registra uma entrada no histórico, já com as mudanças fechadas. */
 export function lancar(e: EstadoVida, entrada: Entrada, reg: Mudanca[]): Entrada {
+  espelhar(e, reg);
   const mudancas = fecharMudancas(reg);
   if (mudancas.length > 0) entrada.mudancas = mudancas;
   e.historico.push(entrada);

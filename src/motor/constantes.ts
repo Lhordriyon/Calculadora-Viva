@@ -79,6 +79,9 @@ export type Parceiro = (typeof PARCEIROS)[number];
  */
 export const CONTAS_DE_FORA = ['mercado', 'tesouro', 'banco', 'parentes'] as const;
 export type ContaDeFora = (typeof CONTAS_DE_FORA)[number];
+/** As contas do país (moeda.ts): entidades com saldo, do lado de lá de todo dinheiro que vem de fora da vida. */
+export const CONTAS = ['mercado', 'banco', 'tesouro', 'bc', 'exterior'] as const;
+export type Conta = (typeof CONTAS)[number];
 /** Contraparte de uma mudança de dinheiro: uma entidade da vida, uma conta de fora ou a reavaliação (preço que mudou). */
 export type Contraparte = ContaDeFora | 'reavaliacao' | (string & {});
 
@@ -142,7 +145,7 @@ export const FASES = ['normal', 'expansao', 'recessao', 'crise'] as const;
 export type Fase = (typeof FASES)[number];
 
 /** As políticas do governo (pais.pol_impostos…), cada uma em três níveis: 0 baixo, 1 médio, 2 alto. */
-export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca', 'comercio', 'pesquisa', 'defesa'] as const;
+export const POLITICAS = ['impostos', 'social', 'saude', 'educacao', 'seguranca', 'comercio', 'pesquisa', 'defesa', 'moeda'] as const;
 export type Politica = (typeof POLITICAS)[number];
 export type CategoriaMorte = (typeof CATEGORIAS_MORTE)[number];
 

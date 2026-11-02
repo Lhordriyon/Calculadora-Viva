@@ -441,8 +441,8 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
  * de vez em quando.
  */
 const GOVERNO_DOS_ROBOS: Record<'cautelosa' | 'arriscada', Record<Politica, number>> = {
-  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1, pesquisa: 2, defesa: 1 },
-  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2, pesquisa: 0, defesa: 2 },
+  cautelosa: { impostos: 1, social: 1, saude: 2, educacao: 2, seguranca: 1, comercio: 1, pesquisa: 2, defesa: 1, moeda: 1 },
+  arriscada: { impostos: 0, social: 2, saude: 1, educacao: 1, seguranca: 2, comercio: 2, pesquisa: 0, defesa: 2, moeda: 2 },
 };
 
 function decidirGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {

@@ -829,6 +829,7 @@ export const DefGoverno = z.strictObject({
   promessa: z.string(),
   /** Os níveis das políticas (0 a 2) que o bloco adota ao assumir. */
   politicas: z.strictObject({
+    moeda: z.number().int().min(0).max(2),
     impostos: z.number().int().min(0).max(2),
     social: z.number().int().min(0).max(2),
     saude: z.number().int().min(0).max(2),

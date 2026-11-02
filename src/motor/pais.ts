@@ -15,6 +15,7 @@
  * com a causa: o voto, a eleição, a reforma, o decreto, o choque de fora.
  */
 import { POLITICAS, type Fase, type Politica } from './constantes.ts';
+import { MOEDA } from './regras.ts';
 import { classeDoPatrimonio, indicadoresDoPais, inimigoDe, patrimonioTotal } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
@@ -725,7 +726,8 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   }
 
   // Crescimento: volta para o potencial, com a sorte, o empurrão e o freio do juro real alto.
-  const g = limitar(pot + PERSISTENCIA_DO_CRESCIMENTO * (g0 - pot) + choque + 0.6 * impulso - 0.12 * (i0 - pi0 - JURO_REAL_NEUTRO - 0.5), -9, 12);
+  // O dinheiro que sobra na economia (moeda.ts) aquece o ano; o que falta esfria.
+  const g = limitar(pot + PERSISTENCIA_DO_CRESCIMENTO * (g0 - pot) + choque + 0.6 * impulso - 0.12 * (i0 - pi0 - JURO_REAL_NEUTRO - 0.5) + MOEDA.noCrescimento * (n['moeda'] ?? 0), -9, 12);
   const hiato = g - pot;
   // Desemprego: volta para o natural (menor com escola boa) e cai quando a economia cresce acima do potencial.
   const natural = DESEMPREGO_NATURAL - 0.03 * (edu0 - 50);
@@ -741,7 +743,9 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
       normal(r, 0, 1.3) +
       choqueNaInflacao +
       REPASSE_DO_CAMBIO * 100 * fora.cambio +
-      0.5 * efeito('inflacao'),
+      0.5 * efeito('inflacao') +
+      // Dinheiro demais atrás de coisa de menos (moeda.ts): a emissão e o crédito fácil viram preço.
+      MOEDA.naInflacao * (n['moeda'] ?? 0),
     0.5,
     30,
   );

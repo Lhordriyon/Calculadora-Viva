@@ -7,7 +7,7 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
-import { ATIVOS, PARCEIROS, POLITICAS } from './constantes.ts';
+import { ATIVOS, CONTAS, PARCEIROS, POLITICAS } from './constantes.ts';
 
 export interface LeituraMotor {
   caminho: string;
@@ -33,6 +33,9 @@ const DO_TRABALHO = ['colega', 'chefe'] as const;
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // o dinheiro (moeda.ts, bloco $)
+  ...CONTAS.map((x) => `${x}.dinheiro`),
+  'pais.moeda',
   // economia e idade de quem joga
   'eu.saude',
   'eu.felicidade',
@@ -282,6 +285,9 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
+  ...ler(['mercado.dinheiro'], 'país: o dinheiro que circula contra o que a economia precisa (o excesso)', true),
+  ...ler(['pais.moeda'], 'país: o dinheiro que sobra acende a inflação e aquece o crescimento', true),
   ...ler(['eu.saude'], 'mortalidade', true),
   ...ler(['eu.felicidade'], 'retorno da felicidade', false),
   ...ler(['eu.dinheiro', 'eu.divida', 'eu.renda', 'eu.custo'], 'economia (sobra, crédito, juros)', true),
@@ -439,6 +445,10 @@ const BOLSO = ['eu.dinheiro', 'eu.divida', ...ATIVOS.map((a) => `eu.${a}`)];
 /** O patrimônio (campos.ts › patrimonioTotal): o bolso, os títulos do Tesouro, a parte nas empresas, os bens e o que corre entre pessoas. */
 const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item', 'prm.saldo', 'prm.credor', 'prm.devedor'];
 const POLITICAS_DO_PAIS = POLITICAS.map((p) => `pais.pol_${p}`);
+/** O saldo das contas do país (moeda.ts). */
+const CONTAS_DO_PAIS = CONTAS.map((x) => `${x}.dinheiro`);
+/** O lado de lá (livro.ts › lancar): a etapa que lança dinheiro com uma conta do país mexe no saldo dela (e quem percorre as entidades lê o nome). */
+const LADO_DE_LA = [...CONTAS_DO_PAIS, ...CONTAS.map((x) => `${x}.nome`)];
 const RETORNOS = ATIVOS.map((a) => `pais.ret_${a}`);
 /** A fase do ciclo, que as regras do ano leem pelo nome. */
 const FASE = ['pais.expansao', 'pais.recessao', 'pais.crise'];
@@ -468,8 +478,14 @@ export const ETAPAS_DO_ANO = [
     id: 'pais',
     nome: 'o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote',
     // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe. A guerra (fora.guerra) custa no ano.
-    le: ['ano.exterior', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'fora.guerra', 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
-    escreve: ['ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
+    le: [...LADO_DE_LA, 'ano.exterior', 'pais.moeda', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'fora.guerra', 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
+    escreve: [...LADO_DE_LA, 'ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
+  },
+  {
+    id: 'moeda',
+    nome: 'o dinheiro: a inflação que vai para quem emitiu, o caixa do governo, o câmbio, o crédito dos bancos e a emissão do Banco Central',
+    le: [...CONTAS_DO_PAIS, 'pais.moeda', 'pais.pib', 'pais.inflacao', 'pais.juros', 'pais.crescimento', 'pais.pol_moeda', 'pais.divida'],
+    escreve: [...CONTAS_DO_PAIS, 'pais.moeda', 'pais.divida'],
   },
   {
     id: 'pesquisa',
@@ -499,20 +515,20 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'bens',
     nome: 'os bens: valor, manutenção, aluguel e o financiamento',
-    le: ['bem.*', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.nome_sujo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', 'eu.influencia', 'pais.desemprego', 'pais.crescimento', ...RETORNOS],
-    escreve: ['bem.*', ...BOLSO, 'ctr.*', 'eu.custo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', 'eu.influencia'],
+    le: [...LADO_DE_LA, 'bem.*', ...BOLSO, 'ctr.*', 'eu.renda', 'eu.custo', 'eu.nome_sujo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', 'eu.influencia', 'pais.desemprego', 'pais.crescimento', ...RETORNOS],
+    escreve: [...LADO_DE_LA, 'bem.*', ...BOLSO, 'ctr.*', 'eu.custo', 'eu.casa_propria', 'eu.imovel', 'eu.senhorio', 'eu.cobertura', 'eu.mansao', 'eu.influencia'],
   },
   {
     id: 'tesouro',
     nome: 'os títulos do Tesouro: o cupom do ano e o que venceu',
-    le: ['tit.*', ...BOLSO, 'ctr.*'],
-    escreve: ['tit.*', ...BOLSO, 'ctr.*'],
+    le: [...LADO_DE_LA, 'tit.*', ...BOLSO, 'ctr.*'],
+    escreve: [...LADO_DE_LA, 'tit.*', ...BOLSO, 'ctr.*'],
   },
   {
     id: 'dividas',
     nome: 'as dívidas: a parcela do acordo, o limite, o que caduca e o nome',
-    le: ['ctr.*', ...BOLSO, 'bem.item', 'eu.renda', 'eu.nome_sujo'],
-    escreve: ['ctr.*', ...BOLSO, 'eu.nome_sujo', 'agenda'],
+    le: [...LADO_DE_LA, 'ctr.*', ...BOLSO, 'bem.item', 'eu.renda', 'eu.nome_sujo'],
+    escreve: [...LADO_DE_LA, 'ctr.*', ...BOLSO, 'eu.nome_sujo', 'agenda'],
   },
   {
     id: 'promissorias',
@@ -541,7 +557,7 @@ export const ETAPAS_DO_ANO = [
     // A morte de quem reinava (o pai ou a mãe de quem é príncipe ou herdeiro do Regime) agenda a sucessão (sucessao.ts).
     // O colega e o chefe vêm com o trabalho de quem joga (a ocupação, a renda, o negócio, o cargo), e quem chega ganha um
     // nome que ninguém da vida tem.
-    le: [
+    le: [...LADO_DE_LA, 
       'ano.fase',
       'pessoa.*',
       ...BOLSO,
@@ -585,7 +601,7 @@ export const ETAPAS_DO_ANO = [
       'lugar.desemprego',
       ...FASE,
     ],
-    escreve: ['pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
+    escreve: [...LADO_DE_LA, 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
   },
   {
     id: 'trabalho',
@@ -639,8 +655,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'regras',
     nome: 'fecha as regras do ano numa entrada invisível do livro',
-    le: ['eu.felicidade'],
-    escreve: [],
+    le: [...LADO_DE_LA, 'eu.felicidade'],
+    escreve: [...LADO_DE_LA, ],
   },
   {
     id: 'morte',

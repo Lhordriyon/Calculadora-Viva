@@ -3,7 +3,7 @@
  * "lugar.desemprego", "fumante"). Sem ponto, o caminho é de quem joga (`eu`).
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
-import { ATIVOS, CLASSES, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
+import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
 import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
@@ -136,6 +136,8 @@ const PAIS: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
   /** Inflação do último ano, em %. */
   inflacao: { tipo: 'num', sistema: 'mundo' },
+  /** O dinheiro que circula acima (ou abaixo) do que a economia precisa, em % (moeda.ts): acende a inflação e aquece o crescimento do ano seguinte. */
+  moeda: { tipo: 'num', sistema: 'mundo' },
   /** Quanto cada classe de investimento rendeu no último ano, em % acima da inflação ("pais.ret_acoes": { "max": -20 } é a bolsa despencando). */
   ret_renda_fixa: { tipo: 'num', sistema: 'mundo' },
   ret_acoes: { tipo: 'num', sistema: 'mundo' },
@@ -294,6 +296,13 @@ const PROMISSORIA: Record<string, DefCampo> = {
   atraso: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
 };
 
+/** As contas do país (moeda.ts): as empresas e as famílias, os bancos, o governo, o Banco Central e lá fora. */
+const CONTA: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  /** O saldo em reais de hoje: positivo é dinheiro que ela tem; negativo, o que ela criou (os bancos, o Banco Central). */
+  dinheiro: { tipo: 'num', sistema: 'dinheiro' },
+};
+
 const EMPRESA: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'carreira', derivado: true },
   /** Anos desde a fundação. */
@@ -358,6 +367,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent.startsWith('ctr')) return CONTRATO;
   if (ent.startsWith('tit')) return TITULO;
   if (ent.startsWith('prm')) return PROMISSORIA;
+  if ((CONTAS as readonly string[]).includes(ent)) return CONTA;
   return PESSOA;
 }
 

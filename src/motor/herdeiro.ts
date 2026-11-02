@@ -10,6 +10,7 @@
  * fortuna da família de geração em geração.
  */
 import { ATIVOS, FILHOS, IRMAOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
+import { abrirContas } from './moeda.ts';
 import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
@@ -633,5 +634,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   lancar(e, abertura, daAbertura);
   // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.
   eu.n['influencia'] = Math.round(influenciaAlvo(e, c));
+  // As contas do país abrem com a vida nova (moeda.ts): o dinheiro de quem herdou sai do que circula, e a soma dá zero.
+  abrirContas(e);
   return e;
 }

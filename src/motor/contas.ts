@@ -11,6 +11,7 @@
  */
 import { quemE } from './campos.ts';
 import { ATIVOS, CONTAS_DE_FORA } from './constantes.ts';
+import { emDinheiro, tipoDe } from './livro.ts';
 import type { Entrada, EstadoVida } from './tipos.ts';
 
 /** Contraparte que o código esqueceu de dizer (economia.ts › SEM_CONTRAPARTE): a conferência acusa. */
@@ -78,6 +79,25 @@ export function conferirContas(e: EstadoVida, h: Entrada): string[] {
     const [a, b] = k.split('>') as [string, string];
     const volta = pares.get(`${b}>${a}`) ?? 0;
     if (Math.abs(v + volta) > tolerancia) problemas.push(`${a} → ${b} não fecha: ${v.toFixed(2)} contra ${volta.toFixed(2)}`);
+  }
+  // O dinheiro se conserva (moeda.ts): o que sai de um lugar entra em outro, salvo a abertura das contas do país.
+  // A abertura da vida de quem herda vem antes das contas (herdeiro.ts as abre depois dela).
+  if (e.entidades['mercado'] && h.ref !== 'herdeiro') {
+    let soma = 0;
+    let quantas = 0;
+    let maior = 0;
+    for (const m of h.mudancas ?? []) {
+      if (m.d === undefined) continue;
+      const ent = separar(m.c)[0];
+      const tipo = tipoDe(e, ent);
+      if (tipo === 'conta' && m.r === 'nascimento') continue;
+      const v = emDinheiro(tipo, separar(m.c)[1], m.d);
+      if (v === null) continue;
+      soma += v;
+      quantas++;
+      maior = Math.max(maior, Math.abs(v));
+    }
+    if (Math.abs(soma) > 0.01 * quantas + maior * 1e-9 + 0.01) problemas.push(`o dinheiro não fecha: ${soma.toFixed(2)} saíram do nada ou sumiram`);
   }
   return problemas;
 }

@@ -502,6 +502,14 @@ export const META_DE_INFLACAO = 4.5;
 export const JURO_REAL_NEUTRO = 4;
 /** A Selic média (%) do modelo: com ela, a dívida de quem joga paga JUROS_DIVIDA. */
 export const JUROS_MEDIOS = 9.2;
+/**
+ * O dinheiro (moeda.ts, bloco $): o que circula (as empresas e as famílias), o caixa do governo e a base do Banco
+ * Central, em fração do PIB, na abertura das contas; quanto o excesso de dinheiro (em %) acende a inflação e aquece o
+ * crescimento do ano seguinte; quanto da distância até o que a economia precisa o crédito dos bancos fecha por ano, e
+ * quanto ele anda por ponto de juro real abaixo do neutro; e o que o
+ * Banco Central emite por ano, em fração do PIB, em cada nível da política da moeda (contida, regular, impressora).
+ */
+export const MOEDA = { circulante: 0.45, governo: 0.1, base: 0.06, naInflacao: 0.25, noCrescimento: 0.04, fechamento: 0.5, credito: 0.5, emissao: [-0.01, 0, 0.03] } as const;
 /** A dívida pública (% do PIB) para onde as contas puxam: acima dela, o mercado cobra e quem governa corta. */
 export const DIVIDA_DE_EQUILIBRIO = 75;
 export const REACAO_FISCAL = 0.05;
