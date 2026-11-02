@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H%3A%20a%20empresa%20de%20verdade-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-%24%3A%20o%20dinheiro%20existe-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-909-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,34 +15,31 @@
 
 ---
 
-## 🆕 Novidades: H · A empresa de verdade (01/11/2026)
+## 🆕 Novidades: $ · O dinheiro existe (02/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a empresa deixou de ser um número que sobe e virou um negócio, como você pediu.
-> - **Caixa de verdade.** Cada real diz de onde veio e para onde foi: as vendas, os custos, o imposto (25% do lucro, para o governo), os dividendos, a obra. Faltou caixa, a empresa vende estrutura pela metade do que custou; dois anos seguidos no prejuízo sem caixa, e ela quebra (a folha avisa no primeiro).
-> - **Produto e mercado.** A empresa tem clientela (o que o mercado quer comprar dela), estrutura (o que ela entrega), qualidade e marca. Você decide o preço, o salário, quanto vai para marketing e P&D, ampliar (a obra fica pronta no ano seguinte), cortar e demitir, exportar e quanto do lucro sai de dividendo.
-> - **O mundo reage.** Os empregos que ela abre baixam o desemprego da sua cidade, e a sua família sente; o imposto baixa a dívida do país; o dólar alto enche o caixa de quem exporta e encarece o de quem importa; a sanção de um país fecha a sua exportação, com a notícia e a causa; a sua fama puxa a marca.
-> - **O que você tem rende.** Rádio, jornal e emissora vendem publicidade e dão influência; o aluguel sente o desemprego.
-> - **15 histórias do negócio** que leem o estado real (a fila de pedidos, a estrutura parada, a greve do piso, o recall, o primeiro container, a licitação de quem tem cargo…). As antigas da empresa agora mexem no caixa e na estrutura, e não num número que voltava sozinho.
+> **O que mudou:** cada real tem de onde vir e para onde ir, como você pediu.
+> - **O dinheiro do país tem dono.** As empresas e as famílias, os bancos, o governo, o Banco Central e lá fora agora são contas com saldo. O salário sai do caixa do mercado, o imposto entra no do governo, o juro vai para os bancos, e o que você compra entra na conta de quem vende. A soma de todo o dinheiro do mundo é zero: o que as pessoas, as empresas e o governo têm é o que os bancos e o Banco Central criaram.
+> - **O dinheiro nasce e morre.** Os bancos criam dinheiro quando emprestam e o destroem quando o empréstimo volta. O Banco Central emite para o governo gastar, ou enxuga o que sobra. A inflação come o dinheiro parado de todo mundo e vai para quem emitiu (o imposto inflacionário).
+> - **A impressora tem preço.** Quem governa decide a moeda na folha País: contida, regular ou impressora. Com a impressora ligada, a economia aquece e a dívida cresce menos, mas a inflação quase dobra no ano seguinte e fica lá enquanto ela estiver ligada.
+> - **O seu dinheiro movimenta a economia.** O que você gasta entra no dinheiro que circula; uma fortuna gasta de uma vez vira inflação para o país inteiro.
+> - **Três histórias do dinheiro:** os preços remarcados quando sobra dinheiro, a impressora ligada e o crédito que some quando falta.
 
 > [!TIP]
 > **Para testar:**
-> - Abra uma empresa na folha Dinheiro, passe um ano e leia o resultado: vendas, lucro, imposto e caixa.
-> - Ponha o preço no premium com a qualidade baixa e veja a clientela fugir; invista em P&D e tente de novo.
-> - Quando o mercado pedir mais do que a estrutura entrega, amplie: a obra sai do caixa e fica pronta no ano seguinte.
-> - Abra exportação para um país; se vier uma sanção, a notícia aponta a causa.
-> - Compre uma rádio e veja a publicidade cair na conta e a influência subir.
+> - Abra a folha País e veja o dinheiro circulando, se ele sobra ou falta, e o que o Banco Central fez no ano.
+> - Se chegar a governar, ligue a impressora e acompanhe a inflação nos anos seguintes; depois desligue e veja o crédito encurtar.
+> - Com uma fortuna, gaste muito de uma vez (uma jogada de Brincar de deus) e veja o dinheiro sobrando no país e a inflação do ano seguinte.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 💰 Caixa, resultado do ano e dividendos tirados do lucro | 🏦 A empresa pegar empréstimo no banco (hoje, quem deve é você) |
-| 🏭 Clientela, estrutura com obra, preço, salário, qualidade, marca, marketing e P&D | 🤝 O lobby e o conselho que propõe com base nos números |
-| 📉 A quebra por causa: 22,8% de quem abre empresa (era 29% por sorteio) | 🏬 Fábricas e lojas como lugares (hoje são a estrutura) |
-| 🌍 O dólar, a exportação e a sanção no caixa | |
-| 👷 Os empregos no desemprego da cidade; o imposto na dívida do país | |
-| 📻 A mídia que vende publicidade e dá influência; o aluguel com vacância | |
+| 🏦 As contas do país com saldo, e o lado de lá de cada real | 🏛️ O balanço de cada banco (hoje os bancos são uma conta só) |
+| ⚖️ A soma do mundo que dá zero, conferida em cada lançamento | 📜 A dívida pública dentro do saldo do governo (ela continua em % do PIB) |
+| 🖨️ A emissão e o enxugamento pela política da moeda | 💱 O dólar movido pelo dinheiro que entra e sai do país |
+| 🔥 A inflação que vem do dinheiro que sobra, e o imposto inflacionário | |
+| 💳 O crédito que cria dinheiro e encurta com o juro alto | |
 
-No túnel de vento (10.000 vidas), as contas fecharam em todas as 4,09 milhões de entradas, agora com o caixa das empresas dentro. A bolsa voltou a mexer no valor de quem está nela (correlação 0,44, contra 0,00 das fechadas), e o dólar divide os setores (+0,34 no agro, −0,39 no comércio). O bilionário feito ficou mais raro (0,59%, eram 0,81%). A variedade ficou onde estava: saturação de 52,5% na 5ª vida e de 87,7% na 20ª, com 909 histórias por 1.000 vidas (eram 913). Os toques foram a 478,6 por vida (eram 464). A CPU ficou em 124 ms por vida (eram 125). A atualização anterior, o salto Ω, está no [`CHANGELOG.md`](CHANGELOG.md).
+Num A/B com a mesma semente (12 vidas, 30 anos em cada política), a moeda contida deu inflação de 3,5% e crescimento de 1,99%; a regular, 4,9% e 1,80%; e a impressora, 9,2% e 2,45%, com a dívida pública 0,66 ponto do PIB por ano mais baixa que na regular. «N10K» O bloco anterior, a empresa de verdade, está no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
@@ -119,6 +116,7 @@ flowchart LR
 - Toda dívida é um contrato com o banco: cheque especial, empréstimo, financiamento com garantia e acordo. Atrasar suja o nome, e o imóvel financiado vai a leilão
 - Emprestar ao governo: o título do Tesouro paga cupom todo ano, vence ou é vendido pelo preço do dia, e o calote leva parte dele
 - 30 bens: morar, alugar, financiar, imóveis de renda, carros, iate, jatinho, emissora de TV
+- O dinheiro que existe: as contas do país com saldo, o crédito que cria dinheiro, a emissão do Banco Central e a inflação que vem do dinheiro que sobra
 - Até cinco empresas que são negócios: caixa, clientela, estrutura com obra, preço, salário, qualidade, marca, marketing, P&D, exportação e quebra por causa; com subsidiárias, fusões, bolsa e a mesa de quem manda
 - Brincar de deus: 14 jogadas bilionárias, de uma estátua a uma colônia em Marte, e a ilha que vira país, com população, PIB e coroa
 - Todo real tem contraparte: o extrato do ano e o da vida fecham entrada por entrada

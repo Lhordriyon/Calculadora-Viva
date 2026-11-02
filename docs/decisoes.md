@@ -1813,3 +1813,28 @@ O dono pediu um simulador de negócios de verdade ("as empresas não têm caixa,
 - **O número e o nome:** a ideia é a I-132 (a I-130 já era do namoro), e o bloco é o H da lista do dono, não o N (as formas de governo).
 - **Ficaram de fora:** o crédito da empresa no banco, o lobby, o conselho que propõe (I-12) e as fábricas e lojas como lugares.
 
+## O bloco $: o dinheiro existe (02/11)
+
+O dono pediu que cada real exista de fato, com emissão monetária, e que o dinheiro tenha de onde vir e para onde ir (I-133). Antes, o mercado, o banco e o tesouro eram rótulos de contraparte: pagavam e recebiam sem saldo.
+
+**A política da moeda** (A/B com a mesma semente: 12 vidas, 30 anos em cada nível, medidos do 11º ano em diante):
+
+| Nível | Inflação | Dinheiro sobrando | Crescimento | Dívida por ano |
+|---|---|---|---|---|
+| contida | 3,5% | −3,2% | 1,99% | +0,06 ponto |
+| regular | 4,9% | −0,4% | 1,80% | −0,09 ponto |
+| impressora | 9,2% | +7,8% | 2,45% | −0,75 ponto |
+
+**Medidas do túnel** (10.000 vidas; antes = o bloco H): «N10K»
+
+**Decisões tomadas sozinho:**
+- **As contas do país são entidades** (um formato de estado), e o lado de lá de cada real é anotado no lançamento, numa mudança por conta, não em cada mudança: o livro cresce pouco e a etapa custa 0,75 ms por vida.
+- **O que é dinheiro:** o das pessoas (a conta, o que aplicou e, com o sinal trocado, a dívida), o caixa das empresas e o saldo das contas. O bem, a empresa e o título são patrimônio, não dinheiro: a cotação que muda não cria real nenhum.
+- **A soma do mundo é zero desde o começo:** as contas abrem com o que circula (45% do PIB, perto do M2 do Brasil), o caixa do governo (10%) e a base do Banco Central (6%), e o dinheiro da família sai do que circula.
+- **O crédito acompanha o que a economia pede** e desfaz metade do excesso por ano. Na primeira versão, ele fechava só metade da distância até o que a economia precisa, e o país vivia 6% abaixo, com a inflação de base caindo. Agora a regular fica em −0,4%.
+- **A inflação come o dinheiro das contas e vai para o Banco Central,** que o emitiu; o da gente já encolhia (a conta parada), e agora tem para onde ir.
+- **A política da moeda não mexe direto na aprovação:** a impressora cobra pela inflação, que já pesa no voto. Com o efeito direto, as eleições mudavam, e a defesa de um teste saía do lugar.
+- **A sobra da empresa que fecha sai do caixa dela,** e o que faltar vem de quem compra o que ela tinha.
+- **Quem já saiu da vida continua sendo gente na conferência:** o tipo vem do id, como em `campos.ts`.
+- **Ficaram de fora:** o balanço de cada banco, a dívida pública dentro do saldo do governo e o câmbio movido pela conta de lá fora.
+

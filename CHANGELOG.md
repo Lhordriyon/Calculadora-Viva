@@ -4,6 +4,19 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 💵 $ · O dinheiro existe · 02/11/2026
+
+> [!NOTE]
+> O pedido do dono (02/11): que cada real exista de fato, com emissão monetária de fato, e que o dinheiro tenha de onde vir e para onde ir.
+
+- 🏦 **As contas do país** (`moeda.ts`): as empresas e as famílias, os bancos, o governo, o Banco Central e lá fora são entidades com saldo. Todo dinheiro que vem de fora da vida sai de uma delas, no mesmo lançamento, e a soma de todo o dinheiro do mundo é zero (o túnel trava o contrário, entrada por entrada e no fim de cada vida).
+- 🖨️ **O dinheiro nasce e morre:** o crédito dos bancos cria dinheiro, e o empréstimo que volta o destrói; o Banco Central emite para o governo ou enxuga, pela nova política da moeda (contida, regular, impressora); a inflação come o dinheiro de todo mundo e vai para quem emitiu.
+- 🔥 **O dinheiro que sobra vira inflação** e aquece o crescimento do ano seguinte; o crédito desfaz metade do excesso por ano. No A/B: contida 3,5% de inflação, regular 4,9%, impressora 9,2%.
+- 📖 **Três histórias do dinheiro** e a folha País com o dinheiro circulando, a emissão do ano e o que a inflação levou.
+- 📊 **No túnel** (10.000 vidas): «N10K»
+
+---
+
 ## 🏭 H · A empresa de verdade · 01/11/2026
 
 > [!NOTE]
