@@ -1,0 +1,543 @@
+[
+  {
+    "id": "a_proposta_do_gestor",
+    "tipo": "npc",
+    "ator": [
+      "gestor"
+    ],
+    "afinidade": "ajuda",
+    "peso": 4,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 3,
+    "condicoes": {
+      "ator.proposta": true,
+      "ator.confianca": {
+        "min": 35
+      },
+      "ator.magoa": {
+        "max": 90
+      }
+    },
+    "texto": "{ator}, {ator:o diretor|a diretora} que toca a empresa com você, fecha a porta da sala e abre a planilha: \"Minha proposta é {ator.proposta}.\" [O café esfria entre os dois|O ar-condicionado faz o único barulho da sala|Lá fora, alguém ri alto demais para uma terça-feira].",
+    "resumo": "ouviu a proposta de {ator.quem} para a empresa",
+    "escolhas": [
+      {
+        "texto": "Seguir a proposta",
+        "resumo": "seguiu a proposta de {ator.quem} para a empresa",
+        "resultado": {
+          "texto": "{ator} sai da sala já ligando para alguém. Na empresa, as coisas começam a andar do jeito {ator:dele|dela}.",
+          "efeitos": {
+            "proposta": true
+          }
+        }
+      },
+      {
+        "texto": "Recusar: vai do seu jeito",
+        "resumo": "recusou a proposta de {ator.quem} e fez do seu jeito",
+        "resultado": {
+          "texto": "{ator} fecha a planilha sem discutir. Anota alguma coisa no caderno, e você finge que não viu.",
+          "efeitos": {
+            "proposta": false
+          }
+        }
+      },
+      {
+        "texto": "Pedir os números de novo, com calma",
+        "resumo": "pediu a {ator.quem} os números de novo antes de decidir",
+        "resultado": {
+          "texto": "Vocês passam a tarde na planilha. Você entende mais do próprio negócio; {ator} entende que vai ter de explicar tudo de novo no ano que vem.",
+          "efeitos": {
+            "inteligencia": 1,
+            "felicidade": -1
+          }
+        }
+      }
+    ],
+    "tensao": 2
+  },
+  {
+    "id": "a_tregua_do_rival",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "afinidade": "ajuda",
+    "peso": 4,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": {
+      "empresa.concorrente": {
+        "min": 55
+      },
+      "ator.negocio": true,
+      "ator.magoa": {
+        "max": 60
+      }
+    },
+    "texto": "{ator}, {ator:o dono|a dona} de {ator.negocio}, liga tarde da noite, com voz de quem não dorme há uma semana: \"Essa briga de preço vai quebrar nós dois. E se a gente combinasse um preço? Ninguém precisa saber.\"",
+    "resumo": "ouviu {ator.quem} propor um acordo de preços",
+    "escolhas": [
+      {
+        "texto": "Combinar o preço",
+        "resumo": "combinou o preço com {ator.quem}, a concorrência",
+        "resultado": {
+          "texto": "Vocês combinaram o preço numa mesa de bar, sem guardanapo assinado. A margem voltou; a consciência, nem tanto.",
+          "efeitos": {
+            "removerMarcas": [
+              "empresa.guerra"
+            ],
+            "marcas": [
+              "empresa.cartel"
+            ],
+            "negocio": {
+              "preco": "medio"
+            },
+            "ator.vinculo": 10,
+            "ator.magoa": -10,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Recusar e seguir brigando",
+        "resumo": "recusou o acordo de {ator.quem} e seguiu na guerra de preços",
+        "resultado": {
+          "texto": "\"Então vai até o fim\", disse {ator}, e desligou. A guerra continua, agora com nome e sobrenome.",
+          "efeitos": {
+            "ator.magoa": 8,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Gravar a ligação e denunciar ao Cade",
+        "resumo": "denunciou ao Cade o acordo que {ator.quem} propôs",
+        "resultado": {
+          "texto": "O Cade abriu processo contra {ator.negocio}. Você saiu no jornal como empresário exemplar; {ator} saiu como o vilão, e não esqueceu.",
+          "efeitos": {
+            "ator.magoa": 25,
+            "empresa.concorrente": -10,
+            "eu.popularidade": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_cartel_vazou",
+    "peso": 4,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 10,
+    "condicoes": {
+      "marcas": [
+        "empresa.cartel"
+      ]
+    },
+    "texto": "Um e-mail antigo vazou, e o Cade bateu à porta com o acordo de preços que você fez com a concorrência. O advogado chegou antes do café e pediu para ninguém dizer nada a ninguém.",
+    "resumo": "viu o Cade descobrir o acordo de preços",
+    "escolhas": [
+      {
+        "texto": "Colaborar e entregar a outra parte",
+        "resumo": "fez acordo de leniência e entregou {rival.quem} ao Cade",
+        "condicoes": {
+          "rival.vivo": true
+        },
+        "bloqueio": "a outra parte já saiu do mercado",
+        "resultado": {
+          "texto": "Você contou tudo, com data e mesa de bar. A multa veio menor; o telefone de {rival} nunca mais tocou para você.",
+          "efeitos": {
+            "empresaFator": 0.97,
+            "removerMarcas": [
+              "empresa.cartel"
+            ],
+            "rival.magoa": 40,
+            "eu.popularidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Pagar a multa e prometer nunca mais",
+        "resumo": "pagou a multa do cartel e prometeu nunca mais",
+        "resultado": {
+          "texto": "A multa doeu no balanço, e a promessa saiu num comunicado com três parágrafos de \"compromisso com a livre concorrência\".",
+          "efeitos": {
+            "empresaFator": 0.9,
+            "removerMarcas": [
+              "empresa.cartel"
+            ],
+            "eu.popularidade": -3
+          }
+        }
+      },
+      {
+        "texto": "Negar tudo",
+        "resumo": "negou o acordo de preços diante do Cade",
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "O e-mail não provava nada, e o processo morreu numa gaveta de Brasília. Você dormiu mal por um ano inteiro.",
+          "efeitos": {
+            "removerMarcas": [
+              "empresa.cartel"
+            ],
+            "felicidade": -2
+          }
+        },
+        "fracasso": {
+          "texto": "Tinha mais e-mail. A multa veio cheia, com a manchete de brinde.",
+          "efeitos": {
+            "empresaFator": 0.82,
+            "removerMarcas": [
+              "empresa.cartel"
+            ],
+            "eu.popularidade": -6
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_rival_quer_comprar",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "afinidade": "ajuda",
+    "peso": 3,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 8,
+    "condicoes": {
+      "empresa.lucro": {
+        "max": 0
+      },
+      "ator.negocio": true,
+      "ator.confianca": {
+        "min": 20
+      }
+    },
+    "texto": "{ator}, de {ator.negocio}, marca um almoço e vai direto ao ponto, antes da entrada: \"Sei que o ano foi duro. Eu compro a sua empresa, à vista, e você sai com a cabeça erguida.\"",
+    "resumo": "recebeu de {ator.quem} uma oferta pela empresa",
+    "escolhas": [
+      {
+        "texto": "Vender tudo para {ator}",
+        "resumo": "vendeu a empresa para {ator.quem}, a concorrência",
+        "resultado": {
+          "texto": "Você assinou na sobremesa: {venda} na conta. {ator} pagou a conta do almoço também, que é o tipo de coisa que quem ganha faz.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.05
+            },
+            "ator.vinculo": 6,
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Vender metade e virar sócio",
+        "resumo": "vendeu metade da empresa para {ator.quem}",
+        "resultado": {
+          "texto": "Metade é de {ator} agora, por {venda}. A reunião de sócios virou a reunião de rivais, só que com o mesmo café.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 0.5
+            },
+            "ator.vinculo": 4
+          }
+        }
+      },
+      {
+        "texto": "Recusar com um sorriso",
+        "resumo": "recusou a oferta de {ator.quem} pela empresa",
+        "resultado": {
+          "texto": "\"Não está à venda.\" {ator} sorriu também, do jeito que se sorri para quem vai quebrar.",
+          "efeitos": {
+            "ator.magoa": 5,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_rival_levou_seu_gerente",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "afinidade": "briga",
+    "peso": 3,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": {
+      "empresa.qualidade": {
+        "min": 45
+      },
+      "ator.negocio": true,
+      "ator.vinculo": {
+        "max": 60
+      }
+    },
+    "texto": "O seu melhor gerente pediu as contas numa segunda-feira. Na terça, a foto nova no perfil profissional tinha o logo de {ator.negocio}, e um comentário de {ator}: \"Bem-vindo ao time!\"",
+    "resumo": "viu {ator.quem} levar o seu melhor gerente",
+    "escolhas": [
+      {
+        "texto": "Cobrir a proposta e segurar o resto do time",
+        "resumo": "cobriu a proposta da concorrência e passou a pagar acima do mercado",
+        "resultado": {
+          "texto": "O gerente foi, mas o resto do time ficou, com o salário novo e a sensação de valer alguma coisa.",
+          "efeitos": {
+            "negocio": {
+              "salario": "acima"
+            },
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Deixar ir",
+        "resumo": "deixou o gerente ir para a concorrência",
+        "resultado": {
+          "texto": "Você desejou boa sorte por mensagem. Na semana seguinte, dois clientes perguntaram por ele.",
+          "efeitos": {
+            "empresa.qualidade": -5
+          }
+        }
+      },
+      {
+        "texto": "Ligar para {ator} e tirar satisfação",
+        "resumo": "ligou para {ator.quem} para tirar satisfação pelo gerente",
+        "resultado": {
+          "texto": "\"Mercado livre, querido\", disse {ator}, e você ouviu a risada antes de a ligação cair. Desabafar fez bem; ao gerente, não fez diferença.",
+          "efeitos": {
+            "empresa.qualidade": -5,
+            "ator.magoa": 6,
+            "felicidade": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_processo_da_marca",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "afinidade": "briga",
+    "peso": 2,
+    "idade": [
+      18,
+      95
+    ],
+    "condicoes": {
+      "empresa.marca": {
+        "min": 40
+      },
+      "ator.negocio": true,
+      "ator.magoa": {
+        "min": 10
+      },
+      "ator.setor": [
+        "comercio",
+        "servicos",
+        "industria",
+        "tecnologia",
+        "cultura"
+      ]
+    },
+    "texto": "Chegou uma notificação: {ator.negocio} diz que a sua marca copia a dela, \"induzindo o consumidor ao erro\". Você compara as duas logos lado a lado e, honestamente, já não sabe.",
+    "resumo": "foi processado por {ator.quem} por causa da marca",
+    "escolhas": [
+      {
+        "texto": "Brigar na Justiça",
+        "resumo": "brigou na Justiça com {ator.quem} pela marca",
+        "teste": {
+          "chance": 0.55
+        },
+        "sucesso": {
+          "texto": "O juiz achou as logos \"apenas da mesma cor\". Você ganhou, pagou o advogado e ainda saiu no jornal do setor.",
+          "efeitos": {
+            "dinheiro": -20000,
+            "empresa.marca": 3,
+            "ator.magoa": 8
+          }
+        },
+        "fracasso": {
+          "texto": "Perdeu. Trocar a fachada, as sacolas e o site custou mais que o advogado, que também custou.",
+          "efeitos": {
+            "dinheiro": -45000,
+            "empresa.marca": -6,
+            "ator.magoa": 5
+          }
+        }
+      },
+      {
+        "texto": "Fazer um acordo",
+        "resumo": "fez um acordo com {ator.quem} sobre a marca",
+        "resultado": {
+          "texto": "Um ajuste na cor, um cheque e um aperto de mão frio no cartório. A briga acabou; a antipatia, não.",
+          "efeitos": {
+            "dinheiro": -15000,
+            "empresa.marca": -2,
+            "ator.magoa": -5
+          }
+        }
+      },
+      {
+        "texto": "Trocar o nome e a embalagem de uma vez",
+        "resumo": "trocou a marca para encerrar a briga com {ator.quem}",
+        "resultado": {
+          "texto": "Logo nova, cor nova, cliente confuso. {ator} mandou um \"ficou bonito\" que você não soube como ler.",
+          "efeitos": {
+            "empresa.marca": -10,
+            "ator.vinculo": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_dono_quebrado_pede_emprego",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "afinidade": "ajuda",
+    "peso": 5,
+    "tensao": 2,
+    "idade": [
+      18,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": {
+      "marcas": [
+        "ator.quebrou"
+      ],
+      "ator.negocio": true
+    },
+    "texto": "{ator} aparece na sua empresa sem gravata. {ator.negocio} quebrou, e {ator:ele|ela} pergunta, olhando para a mesa, se tem alguma vaga. \"Conheço esse mercado como ninguém. Você sabe disso melhor que todo mundo.\"",
+    "resumo": "recebeu {ator.quem}, que quebrou, pedindo emprego",
+    "escolhas": [
+      {
+        "texto": "Contratar {ator} para tocar a empresa com você",
+        "resumo": "contratou {ator.quem}, o ex-rival, para dirigir a empresa",
+        "condicoes": {
+          "gestor.vivo": false
+        },
+        "bloqueio": "você já tem quem toque a empresa",
+        "resultado": {
+          "texto": "{ator} começou na segunda-feira, com o crachá de diretor{ator:|a} e o olhar de quem jurou nunca mais perder. Agora joga do seu lado.",
+          "efeitos": {
+            "promover": {
+              "de": "ator",
+              "para": "gestor"
+            },
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Ajudar com um dinheiro para recomeçar",
+        "resumo": "ajudou {ator.quem}, que quebrou, a recomeçar",
+        "resultado": {
+          "texto": "Você fez um Pix sem perguntar para quê. {ator} agradeceu de um jeito que nunca agradeceu a ninguém.",
+          "efeitos": {
+            "dinheiro": -10000,
+            "ator.vinculo": 15,
+            "ator.magoa": -15
+          }
+        }
+      },
+      {
+        "texto": "Desejar boa sorte",
+        "resumo": "desejou boa sorte a {ator.quem}, que quebrou",
+        "resultado": {
+          "texto": "\"Boa sorte\", você disse, e era verdade. {ator} saiu sem olhar para trás, que é o que resta de orgulho.",
+          "efeitos": {
+            "ator.magoa": 5,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_rival_na_festa",
+    "tipo": "npc",
+    "ator": [
+      "rival"
+    ],
+    "peso": 2,
+    "idade": [
+      22,
+      95
+    ],
+    "repetivel": true,
+    "intervalo": 8,
+    "texto": "No casamento de um cliente, a cerimonialista pôs você na mesma mesa de {ator}, {ator:o dono|a dona} de {ator.negocio}. O garçom serve os dois ao mesmo tempo, sem saber de nada.",
+    "resumo": "dividiu a mesa da festa com {ator.quem}, a concorrência",
+    "escolhas": [
+      {
+        "texto": "Puxar conversa",
+        "resumo": "puxou conversa com {ator.quem} na festa",
+        "resultado": {
+          "texto": "Vocês falaram do fornecedor que atrasa os dois, do imposto que come os dois e do noivo, que ninguém conhecia. Rival também cansa.",
+          "efeitos": {
+            "ator.vinculo": 8,
+            "ator.magoa": -5,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Provocar com o último balanço",
+        "resumo": "provocou {ator.quem} com o último balanço na festa",
+        "resultado": {
+          "texto": "Você comentou, de passagem, o crescimento do trimestre. {ator} brindou com um sorriso de vidro.",
+          "efeitos": {
+            "ator.magoa": 8,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Trocar de mesa",
+        "resumo": "trocou de mesa para não sentar com {ator.quem}",
+        "resultado": {
+          "texto": "Você achou uma cadeira ao lado da tia do noivo, que contou a vida inteira. Pelo menos não falou de preço.",
+          "efeitos": {
+            "felicidade": -1,
+            "inteligencia": 1
+          }
+        }
+      }
+    ],
+    "condicoes": {
+      "ator.negocio": true
+    }
+  }
+]

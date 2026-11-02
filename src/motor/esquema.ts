@@ -171,7 +171,10 @@ const EFEITOS_FIXOS = {
   personagens: z.array(z.enum(PAPEIS_QUE_CHEGAM)).optional(),
   /** Copia um personagem para outro papel (ex.: o primeiro amor vira o amor atual). */
   /** Copia a pessoa de um papel para outro (a paixão vira o amor); `de: "ator"` é o ator do storylet (o ex que volta). */
-  promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: PapelNovo }).optional(),
+  /** O dono da concorrente vira o gestor da empresa de quem joga (`rival` → `gestor`, bloco H6), a mesma pessoa. */
+  promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: z.union([PapelNovo, z.literal('gestor')]) }).optional(),
+  /** A proposta do gestor (diretoria.ts): true segue a jogada que ele propôs, pela folha; false recusa. */
+  proposta: z.boolean().optional(),
   agendar: z.array(Agendamento).optional(),
   /** Dinheiro de uma pessoa para outra: valor fixo ou fração do dinheiro de quem dá, com teto. */
   transferir: z
@@ -548,6 +551,11 @@ export const GATILHOS = [
   'devedor_atrasou',
   'divida_foi_junto',
   'morreu_devendo',
+  // a rival e o gestor que vêm com a empresa (bloco H6)
+  'rival_chegou',
+  'rival_conhecido',
+  'gestor_avisou',
+  'gestor_saiu',
 ] as const;
 export type Gatilho = (typeof GATILHOS)[number];
 

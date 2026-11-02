@@ -46,6 +46,10 @@ const PESSOA: Record<string, DefCampo> = {
   magoa: { tipo: 'num', sistema: 'relacoes', limites: [0, 100] },
   /** A confiança em quem joga (0 a 100; começa em 60): promessa cumprida e ajuda sobem, mentira e sumiço na hora difícil derrubam. */
   confianca: { tipo: 'num', sistema: 'relacoes', limites: [0, 100], base: 60 },
+  /** O negócio que a pessoa toca: a concorrente, para quem é dono dela (o papel `rival`, bloco H6). */
+  negocio: { tipo: 'texto', sistema: 'carreira' },
+  /** A jogada que o gestor propõe agora, em palavras (diretoria.ts): '' sem proposta. */
+  proposta: { tipo: 'texto', sistema: 'dinheiro' },
   /** Anos sem contato com quem joga: zera quando vocês se falam (qualquer storylet com a pessoa), conta longe de casa. */
   sem_contato: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
   /** O que a pessoa ama (GOSTOS), tirado do nome e do nascimento: o presente certo, o programa junto. */

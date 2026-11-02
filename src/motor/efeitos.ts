@@ -2,6 +2,7 @@
  * Aplica os efeitos de um storylet. Toda mudança vai para o registro da
  * entrada que a causou (o livro-razão); `ator` resolve os caminhos "ator.x".
  */
+import { seguirProposta } from './diretoria.ts';
 import { ATIVOS, ATRIBUTOS, type PapelNovo } from './constantes.ts';
 import { pesosDoPerfil, realocar } from './carteira.ts';
 import { comprarPorEfeito, venderParteDosTitulos } from './tesouro.ts';
@@ -206,6 +207,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     const id = criarPersonagem(e, c, papel as PapelNovo, reg);
     if (id) (ctx.criados ??= {})[papel] = id;
   }
+  if (ef.proposta !== undefined) seguirProposta(e, c, reg, ef.proposta, origem);
   if (ef.promover) {
     const de = ef.promover.de === 'ator' ? (ator ?? 'ator') : ef.promover.de;
     const quem = e.entidades[de];

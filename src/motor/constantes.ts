@@ -9,9 +9,10 @@ export const PAPEIS_NOVOS = ['amor', 'filho', 'paixao', 'pet'] as const;
 /**
  * A rede (a missão Ω): pessoas que o motor põe e tira da vida, não um efeito do conteúdo. Os irmãos nascem com a
  * família (os mais novos, depois), o ex é o amor que foi embora e continua existindo, o colega e o chefe vêm com o
- * trabalho. O conteúdo que fala de um deles pede `"<papel>.vivo"` na condição: sem a pessoa, a condição não vale.
+ * trabalho; o dono da concorrente (`rival`) e o gestor que dirige a empresa com quem joga (`gestor`) vêm com a empresa
+ * (bloco H6). O conteúdo que fala de um deles pede `"<papel>.vivo"` na condição: sem a pessoa, a condição não vale.
  */
-export const PAPEIS_DA_REDE = ['irmao', 'ex', 'colega', 'chefe'] as const;
+export const PAPEIS_DA_REDE = ['irmao', 'ex', 'colega', 'chefe', 'rival', 'gestor'] as const;
 export const PAPEIS = [...PAPEIS_FIXOS, ...PAPEIS_NOVOS, ...PAPEIS_DA_REDE] as const;
 export type Papel = (typeof PAPEIS)[number];
 export type PapelNovo = (typeof PAPEIS_NOVOS)[number];

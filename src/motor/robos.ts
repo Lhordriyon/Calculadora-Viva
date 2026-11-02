@@ -14,7 +14,6 @@ import { acoesDoVerbo, jaAgiu } from './acoes.ts';
 import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
 import { motivoParaNaoOperar, perfilDe, type Operacao } from './carteira.ts';
-import { PARCEIROS } from './constantes.ts';
 import { chanceDeEleicao } from './poder.ts';
 import { governoAtual, momentoDoPais, nivelDe } from './pais.ts';
 import { bensDe, devedorDe, empresasDe, entidadeDe, entreVoceE, investidoDe, parteNaEmpresa, patrimonioDe, promissoriasDe, separar, titulosDe } from './campos.ts';
@@ -24,10 +23,10 @@ import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
 import { abrirPorEfeito, custoDaAquisicao, empresaDe, liquidoDe, precoDaAquisicao, setoresDeEmpresa } from './empresa.ts';
-import { custoDaObra, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ofertaDe, VERBAS } from './negocio.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
 import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
+import { ESCOLHA_RECUSAR, jogadasDoNegocio, PROPOSTA } from './diretoria.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
 import { chanceDeSucesso, custoDaEscolha, elegivel, instanciaDe, opcoesDe } from './storylets.ts';
 import { etapasDe, projetosAtivos, projetosPossiveis } from './projetos.ts';
@@ -727,54 +726,28 @@ function decidirQuemManda(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rn
  * a arriscada cresce na frente da fila, investe 8%, cobra premium quando a qualidade deixa e abre mercado lá fora; a
  * aleatória mexe de vez em quando.
  */
+/** Quem joga recusou neste ano a proposta do gestor (a escolha está no livro)? */
+function recusouOGestor(e: EstadoVida): boolean {
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano === e.ano; i--) {
+    const h = e.historico[i]!;
+    if (h.ref === PROPOSTA && h.escolha?.indice === ESCOLHA_RECUSAR) return true;
+  }
+  return false;
+}
+
 function gerirNegocio(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   const ops: Operacao[] = [];
   for (const emp of empresasDe(e)) {
-    const n = emp.n;
-    if (n['capacidade'] === undefined) continue;
-    const id = emp.id;
-    const ocupacao = n['ocupacao'] ?? 1;
+    if (emp.n['capacidade'] === undefined) continue;
+    // Quem tem gestor deixa a empresa de perto com ele: as jogadas chegam como proposta (bloco H6). Quem recusou a do ano
+    // faz do seu jeito, no mesmo ano: o túnel compara o jeito do gestor com o de quem joga, e não com ficar parado.
+    const doGestor = emp.id === 'empresa' && e.entidades['gestor'] !== undefined;
+    const doSeuJeito = doGestor && recusouOGestor(e);
+    if (doGestor && !doSeuJeito) continue;
     const primeiroAno = e.ano - (emp.nascimento ?? e.ano) <= 1;
     // Quem joga com método revê o negócio de dois em dois anos (no começo, todo ano).
-    if (estrategia !== 'aleatoria' && !primeiroAno && e.idade % 2 !== 0) continue;
-    const tentar = (op: Operacao): boolean => {
-      if (!pode(e, c, op)) return false;
-      ops.push(op);
-      return true;
-    };
-    if (estrategia === 'cautelosa') {
-      if (primeiroAno) {
-        tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });
-      }
-      // A cautelosa não amplia com o setor sobrando oferta.
-      if (ocupacao > 1.2 && ofertaDe(e, emp.t['setor']) < 110) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
-      else if (ocupacao < 0.55) tentar({ tipo: 'cortar', fracao: 0.2, empresa: id });
-      if ((n['divida'] ?? 0) > 0) tentar({ tipo: 'pagar', empresa: id });
-      // No prejuízo, paga o piso; com lucro e fila de pedidos, volta a pagar o de mercado.
-      if ((n['lucro'] ?? 0) < 0 && emp.t['salario'] !== 'piso') tentar({ tipo: 'salario', nivel: 'piso', empresa: id });
-      else if ((n['lucro'] ?? 0) > 0 && ocupacao > 1 && emp.t['salario'] === 'piso') tentar({ tipo: 'salario', nivel: 'mercado', empresa: id });
-    } else if (estrategia === 'arriscada') {
-      if (primeiroAno) tentar({ tipo: 'verbas', marketing: 0.08, pd: 0.08, empresa: id });
-      // Sem caixa para a obra, pega no banco (e amplia na revisão seguinte).
-      if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
-      if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
-      // Com a empresa grande e os impostos altos, a arriscada contrata lobby (uma vez a cada tanto).
-      if (!e.entidades['eu']?.q['lobista'] && (n['valor'] ?? 0) >= 50e6 && nivelDe(e, 'impostos') >= 1 && aleatorio(rng) < 0.2) tentar({ tipo: 'lobby', empresa: id });
-      // Com caixa sobrando (mais de 30% do valor), passa a tirar dividendos.
-      if ((n['caixa'] ?? 0) > 0.3 * (n['valor'] ?? 0) && (n['retirada'] ?? 0) < 0.3) tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });
-      if (!emp.t['exporta'] && (n['receita'] ?? 0) > 0) {
-        const melhor = [...PARCEIROS].sort((a, b) => (e.entidades[b]?.n['relacao'] ?? 0) - (e.entidades[a]?.n['relacao'] ?? 0))[0];
-        if (melhor) tentar({ tipo: 'exportar', para: melhor, empresa: id });
-      }
-    } else if (estrategia === 'aleatoria' && aleatorio(rng) < 0.1) {
-      const sorte = aleatorio(rng);
-      if (sorte < 0.35 && ocupacao > 1) tentar({ tipo: 'expandir', fracao: sortear(rng, [0.25, 0.5]), empresa: id });
-      else if (sorte < 0.5) tentar({ tipo: 'preco', nivel: sortear(rng, NIVEIS_DE_PRECO), empresa: id });
-      else if (sorte < 0.65) tentar({ tipo: 'verbas', marketing: sortear(rng, VERBAS), pd: sortear(rng, VERBAS), empresa: id });
-      else if (sorte < 0.75) tentar({ tipo: 'salario', nivel: sortear(rng, NIVEIS_DE_SALARIO), empresa: id });
-      else if (sorte < 0.85 && ocupacao < 0.7) tentar({ tipo: 'cortar', fracao: 0.25, empresa: id });
-      else if (sorte < 0.9) tentar({ tipo: 'exportar', para: sortear(rng, [...PARCEIROS]), empresa: id });
-    }
+    if (estrategia !== 'aleatoria' && !primeiroAno && !doSeuJeito && e.idade % 2 !== 0) continue;
+    ops.push(...jogadasDoNegocio(estrategia, e, c, emp, rng, (op) => pode(e, c, op)));
   }
   return ops;
 }

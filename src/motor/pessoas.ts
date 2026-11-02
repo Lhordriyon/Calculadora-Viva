@@ -121,6 +121,31 @@ function virarDaFamilia(e: EstadoVida, de: string, para: string, reg: Mudanca[])
   moverPessoa(e, de, para, reg);
 }
 
+/**
+ * Alguém da vida passa a ser da empresa (bloco H6: o ex que abre a concorrente, o dono da concorrente que vira o gestor):
+ * a mesma pessoa (o número, e com ele a memória e a opinião, que saem do livro), com o que a relação guardou (o traço, a
+ * mágoa, a confiança e, na concorrência, o vínculo). O resto do papel antigo (a saúde, os anos sem contato) fica para
+ * trás: quem é da empresa não tem o ano da família.
+ */
+export function levarParaAEmpresa(e: EstadoVida, de: string, para: 'rival' | 'gestor', reg: Mudanca[]): void {
+  const antes = e.entidades[de];
+  if (!antes || de === para || e.entidades[para]) return;
+  const pessoa = garantirPessoa(e, de, antes);
+  const novo = novaEntidade({
+    id: para,
+    tipo: 'pessoa',
+    nome: antes.nome,
+    vivo: true,
+    ...(antes.genero ? { genero: antes.genero } : {}),
+    ...(antes.nascimento !== undefined ? { nascimento: antes.nascimento } : {}),
+  });
+  novo.pessoa = pessoa;
+  if (antes.t['traco']) novo.t['traco'] = antes.t['traco'];
+  for (const k of para === 'gestor' ? ['magoa', 'confianca'] : ['vinculo', 'magoa', 'confianca']) if (antes.n[k] !== undefined) novo.n[k] = antes.n[k]!;
+  partir(e, de, reg);
+  chegar(e, para, novo, reg);
+}
+
 /** Alguém chega à vida num papel (o colega e o chefe do emprego novo), com número e ocupação, e tudo no livro. */
 export function chegar(e: EstadoVida, papel: string, en: Entidade, reg: Mudanca[]): void {
   ocuparPapel(e, papel, en, reg);
@@ -259,6 +284,11 @@ export function promover(e: EstadoVida, c: Conteudo, de: string, para: string, r
   // O colega (ou o chefe) que vira o amor ou o melhor amigo é a mesma pessoa, com a memória dela.
   if ((de === 'colega' || de === 'chefe') && (para === 'amor' || ehAmigo(para))) {
     virarDaFamilia(e, de, para, reg);
+    return;
+  }
+  // O dono da concorrente que quem joga contratou ou comprou vira o gestor: a mesma pessoa, com a memória dela.
+  if (de === 'rival' && para === 'gestor') {
+    levarParaAEmpresa(e, de, para, reg);
     return;
   }
   const novo = structuredClone({ ...origem, id: para });

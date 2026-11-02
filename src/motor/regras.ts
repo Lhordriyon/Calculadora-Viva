@@ -354,6 +354,18 @@ export const CICLO_DO_SETOR = { elasticidade: 1.5, piso: 0.75, teto: 1.35, respo
  * custa 2% do valor da empresa (no mínimo R$ 1 milhão) e, por até três anos, tem 15% ao ano (mais a influência de quem
  * joga ÷ 200, até 50%) de baixar a política de impostos de um governo que não é o de quem joga.
  */
+/**
+ * A rival (bloco H6): a chance de o dono da concorrente nova ser alguém da vida e quem pode ser (a mágoa ou o vínculo
+ * baixo), a briga média dos traços, a mágoa que torna a briga pessoal, a mágoa que a guerra de preços deixa e a idade
+ * em que o dono passa o negócio adiante.
+ */
+export const RIVAL = { conhecido: 0.6, magoa: 15, vinculo: 45, garraMedia: 1.1, pessoal: 30, magoaDaGuerra: 10, idadeDeSair: 75 } as const;
+/**
+ * O gestor (bloco H6): o valor da empresa que o traz, os traços do jeito arrojado, o que a confiança dele em quem joga
+ * anda (o aviso que deu razão a ele, o acerto de quem recusou, a proposta seguida que deu lucro), a mágoa do aviso, a
+ * confiança abaixo da qual ele sai (ou a mágoa a partir da qual sai) e a força que leva para a concorrente.
+ */
+export const GESTOR = { valor: 10_000_000, arrojados: ['ambicioso', 'gastador', 'brigao', 'piadista'], avisou: 12, acertou: 3, seguiu: 4, magoa: 6, saida: 35, magoaQueLeva: 60, leva: 8 } as const;
 export const CADEIA = { descontoDoProprio: 0.05, salarioPorPonto: 0.03, impostoPorNivel: [0.8, 1, 1.25], lobby: 0.02, lobbyMinimo: 1_000_000, chanceDoLobby: 0.15 } as const;
 /** O crédito da empresa (negocio.ts): o juro real é a Selic menos a inflação mais o spread; a parcela, 10% da dívida por ano; o banco empresta até duas vezes o lucro mais 30% da estrutura. */
 export const CREDITO_DA_EMPRESA = { spread: 3, amortizacao: 0.1, vezesOLucro: 2, daEstrutura: 0.3 } as const;

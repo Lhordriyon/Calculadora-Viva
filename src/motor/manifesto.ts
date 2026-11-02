@@ -35,12 +35,19 @@ const TODOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'pet', ...DA_REDE]
 const PROXIMOS = ['mae', 'pai', 'avo', 'amigo', 'amor', 'filho', 'irmao'] as const;
 /** Quem trabalha e pode perder o emprego: os pais e os irmãos adultos. */
 const TRABALHAM = ['mae', 'pai', 'irmao'] as const;
-/** Quem vem com o trabalho de quem joga: o colega e o chefe (a relação, a saúde e a morte; nada de casa, dinheiro ou visita). */
+/**
+ * Quem vem com o trabalho de quem joga: o colega e o chefe, e, com a empresa, o dono da concorrente e o gestor (bloco H6)
+ * (a relação, a saúde e a morte; nada de casa, dinheiro ou visita).
+ */
 const DO_TRABALHO = ['colega', 'chefe'] as const;
+/** O que o motor escreve na rival e no gestor (bloco H6): o negócio e o setor do dono, a quebra, e a proposta do gestor com a resposta. */
+const RIVAL_E_GESTOR = ['rival.negocio', 'rival.setor', 'rival.quebrou', 'rival.magoa', 'rival.vinculo', 'rival.confianca', 'gestor.proposta', 'gestor.confianca', 'gestor.magoa'];
 /** O bicho não tem vínculo: a alegria dele já está na qualidade de ter um. */
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // a rival e o gestor que vêm com a empresa (familia.ts › genteDaEmpresa, diretoria.ts)
+  ...RIVAL_E_GESTOR,
   // as conquistas da influência (influencia.ts)
   ...CONQUISTAS_DO_PODER,
   // os mercados de cada setor (negocio.ts)
@@ -429,6 +436,12 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['amigo.de_infancia'], 'o amigo de infância fica mais perto do que o da vida adulta', true),
   ...ler(['chefe.vinculo', 'chefe.magoa'], 'o chefe pesa na promoção e na demissão de quem joga', true),
   ...ler(['colega.vinculo'], 'o colega muito próximo vira o melhor amigo quando o emprego acaba', true),
+  ...ler(['empresa.cartel'], 'o acordo de preços: sem guerra de preços nem corrida atrás de quem atrai mais enquanto ele dura', true),
+  ...ler(['rival.quebrou', 'rival.setor'], 'o dono da concorrente sai dois anos depois da quebra, ou quando a empresa muda de setor', true),
+  ...ler(['gestor.proposta'], 'a proposta do gestor: o que a escolha faz', true),
+  ...ler(['gestor.confianca', 'gestor.magoa', 'gestor.traco'], 'o gestor sai sem confiança em quem joga ou magoado demais, e propõe pelo jeito do traço', true),
+  ...ler(['rival.traco', 'rival.magoa', 'rival.vinculo', 'rival.confianca'], 'o dono da concorrente: a garra na briga e a decisão de vender', true),
+  ...ler(['rival.negocio'], 'o nome da concorrente na compra', false),
   ...ler(de(DO_TRABALHO, 'traco'), 'iniciativas e vínculo de quem é do trabalho', true),
   ...ler(de(DO_TRABALHO, 'saude'), 'mortalidade de quem é do trabalho', true),
   ...ler(de(DO_TRABALHO, 'doente'), 'saúde de quem é do trabalho', true),
@@ -536,8 +549,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: [...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
-    escreve: ['pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    le: ['pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    escreve: ['pessoa.magoa', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',
@@ -587,6 +600,8 @@ export const ETAPAS_DO_ANO = [
     le: [...MERCADOS, ...NOMES_DOS_MERCADOS, ...LADO_DE_LA, 
       'ano.fase',
       'pessoa.*',
+      // a rival e o gestor vêm com a empresa, e o gestor propõe pelas contas dela e pela folha (bloco H6)
+      'empresa.*', 'fora.*', 'bem.item', 'ctr.*', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', 'pais.juros', 'pais.inflacao', 'pais.divida', 'pais.pib', 'lugar.desemprego', ...POLITICAS_DO_PAIS,
       ...BOLSO,
       'ctr.*',
       'eu.felicidade',
@@ -628,7 +643,7 @@ export const ETAPAS_DO_ANO = [
       'lugar.desemprego',
       ...FASE,
     ],
-    escreve: [...LADO_DE_LA, 'pessoa.*', ...BOLSO, 'ctr.*', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
+    escreve: [...LADO_DE_LA, 'pessoa.*', ...BOLSO, 'ctr.*', 'empresa.concorrente', 'empresa.cartel', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
   },
   {
     id: 'trabalho',

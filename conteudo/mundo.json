@@ -842,6 +842,30 @@
       ],
       "resumo": "{ator} virou {ator:seu melhor amigo|sua melhor amiga}"
     },
+    "rival_chegou": {
+      "textos": [
+        "A concorrência agora tem nome: {ator.negocio}, de {ator}, vende o mesmo que você [do outro lado da rua|a duas quadras dali|no mesmo shopping]. [O primeiro bom-dia foi seco|{ator} passou na porta para conferir o movimento|No mesmo dia, o preço de lá baixou um pouquinho]."
+      ],
+      "resumo": "conheceu a concorrência: {ator}, de {ator.negocio}"
+    },
+    "rival_conhecido": {
+      "textos": [
+        "{ator} abriu uma concorrente bem na sua frente: {ator.negocio}. [Ninguém no setor acredita em coincidência|Na inauguração, chegaram flores sem cartão na sua porta|O primeiro anúncio saiu no outdoor em frente à sua janela]."
+      ],
+      "resumo": "viu {ator} abrir a concorrente"
+    },
+    "gestor_avisou": {
+      "textos": [
+        "O balanço fechou no vermelho, e {ator} nem precisou falar nada: deixou na sua mesa a proposta que você recusou, com a data circulada [de caneta vermelha|duas vezes|e um café frio do lado]."
+      ],
+      "resumo": "viu {ator} ter razão sobre a proposta recusada"
+    },
+    "gestor_saiu": {
+      "textos": [
+        "{ator} pediu as contas. [Na semana seguinte, o crachá novo era da concorrência|Saiu sem bater a porta e foi direto para a concorrência|A carta de despedida tinha duas linhas, e o endereço novo era o da concorrência]."
+      ],
+      "resumo": "perdeu {ator:o diretor|a diretora} para a concorrência"
+    },
     "divida_quitada": {
       "textos": [
         "Você pagou a última parcela do que devia a {ator.quem}. [{ator:Ele|Ela} não disse nada, só mandou um joinha, o que vindo {ator:dele|dela} é festa.|{ator:Ele|Ela} disse que nunca duvidou. Duvidou duas vezes, mas disse.|No almoço de domingo, {ator:ele|ela} contou para a mesa inteira que você pagou tudo.]"

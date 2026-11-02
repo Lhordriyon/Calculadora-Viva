@@ -35,13 +35,14 @@
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
-import { empresasDe, entidadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { empresasDe, entidadeDe, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { decidir, porqueDaResposta } from './decisao.ts';
 import type { Ativo } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { AberturaEmpresa, DefSetor } from './esquema.ts';
 import { anotarCaixa, caixaDe, movimentar, resgatarDe } from './economia.ts';
 import { anotar, definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar, somarQualidade } from './livro.ts';
-import { novaEntidade } from './pessoas.ts';
+import { levarParaAEmpresa, novaEntidade, partir } from './pessoas.ts';
 import {
   AQUISICOES_TRUSTE,
   CAPITAL_MINIMO_EMPRESA,
@@ -73,7 +74,7 @@ import {
   subsidiariasPorVenda,
   volatilidadeDaEmpresa,
 } from './regras.ts';
-import { normal, sortear } from './rng.ts';
+import { aleatorio, normal, sortear } from './rng.ts';
 import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
@@ -122,7 +123,7 @@ export function lugarLivre(e: EstadoVida): string | null {
 }
 
 /** "Silva Tech", "Mercadinho da Ana": um nome do setor com o sobrenome da família. */
-function nomeDaEmpresa(e: EstadoVida, setor: DefSetor | undefined, sobrenome?: string): string {
+export function nomeDaEmpresa(e: EstadoVida, setor: DefSetor | undefined, sobrenome?: string): string {
   const eu = e.entidades['eu']!;
   const ultimo = sobrenome ?? e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
   const modelo = sortear(e.rng, setor?.empresas ?? ['{sobrenome} & Cia.', 'Grupo {sobrenome}']);
@@ -618,7 +619,7 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
   if (op.tipo === 'adquirir') {
     if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
     if (custoDaAquisicao(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaAquisicao(e, id))}`;
-    if (fezNoAno(e, 'empresa:adquirir')) return 'uma compra por ano';
+    if (fezNoAno(e, 'empresa:adquirir')) return 'uma tentativa por ano';
   }
   if (op.tipo === 'venderSubsidiaria' && (emp.n['subsidiarias'] ?? 0) < 1) return 'ela não tem subsidiárias';
   if (op.tipo === 'fundir') {
@@ -682,7 +683,13 @@ const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sex
 const subsidiariasTexto = (n: number): string => (n === 1 ? 'uma subsidiária' : `${n.toLocaleString('pt-BR')} subsidiárias`);
 
 /** Faz a operação (já conferida) e devolve o texto e o resumo da entrada. */
-export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, reg: Mudanca[], origem: number): { texto: string; resumo: string } {
+/** O tamanho do pedido de compra para o dono (o `ajuste` da decisão): a concorrente fraca vende mais fácil, a forte, menos. */
+export function ajusteDaVenda(emp: Entidade): number {
+  const forca = emp.n['concorrente'] ?? 50;
+  return forca < 40 ? 1 : forca > 65 ? -1 : 0;
+}
+
+export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, reg: Mudanca[], origem: number): { texto: string; resumo: string; causas?: number[] } {
   if (op.tipo === 'abrir') {
     const lugar = lugarLivre(e)!;
     const valor = tirarDeQuemJoga(e, reg, op.valor, lugar);
@@ -701,6 +708,20 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     return { texto: `Pôs ${formatarDinheiro(valor)} ${aEmpresa(emp, 'na')}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
   }
   if (op.tipo === 'adquirir') {
+    // Quem vende é o dono (bloco H6): ele decide pelo que lembra de quem joga (a guerra de preços magoa) e pela força da
+    // concorrente (a fraca vende mais fácil). O não fica no livro, com o porquê, e a tentativa do ano acabou.
+    const dono = id === PRINCIPAL && e.entidades['rival']?.vivo !== false ? e.entidades['rival'] : undefined;
+    if (dono) {
+      const d = decidir(e, c, 'rival', 'aceitar', undefined, ajusteDaVenda(emp));
+      if (aleatorio(e.rng) >= d.chance) {
+        const pq = porqueDaResposta(e, c, 'rival', 'aceitar', d, false);
+        return {
+          texto: `${dono.nome} não quis vender a ${dono.t['negocio'] ?? 'concorrente'}, ${pq.texto}.`,
+          resumo: `ouviu um não de ${dono.nome} pela concorrente`,
+          ...(pq.entrada !== undefined ? { causas: [pq.entrada] } : {}),
+        };
+      }
+    }
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
     // O negócio que entra vale o preço justo; o que se paga é o do dia (barato na baixa, caro na alta).
     const justo = (emp.n['valor'] ?? 0) * CUSTO_AQUISICAO;
@@ -713,14 +734,22 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     // Ela vira subsidiária, com as subsidiárias que já tinha.
     const delas = subsidiariasDoRival(custo);
     somar(e, reg, id, 'subsidiarias', 1 + delas);
-    const rival = nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes));
+    const rival = dono?.t['negocio'] ?? nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes));
+    // O dono fica para tocar o negócio (o gestor), se a cadeira está vaga e ele está em idade de trabalhar; senão, sai de cena.
+    let fica = '';
+    if (dono) {
+      if (!e.entidades['gestor'] && idadeDe(e, dono) < 67) {
+        levarParaAEmpresa(e, 'rival', 'gestor', reg);
+        fica = ` ${dono.nome} ficou para tocar o negócio com você.`;
+      } else partir(e, 'rival', reg);
+    }
     somarQualidade(e, reg, id, 'aquisicoes', 1, origem);
     const truste = (emp.q['aquisicoes']?.v ?? 0) >= AQUISICOES_TRUSTE && ganhar(e, reg, id, 'truste', origem);
     if (truste) somar(e, reg, id, 'tracao', 5);
     const junto = delas > 0 ? `, com ${delas === 1 ? 'a subsidiária' : `as ${delas.toLocaleString('pt-BR')} subsidiárias`} dela` : '';
     const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
     return {
-      texto: `${aEmpresa(emp, 'A')} comprou a concorrente ${rival}${junto}, por ${formatarDinheiro(custo)}.${fim}`,
+      texto: `${aEmpresa(emp, 'A')} comprou a concorrente ${rival}${junto}, por ${formatarDinheiro(custo)}.${fica}${fim}`,
       resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : `comprou a concorrente ${rival}`,
     };
   }

@@ -22,7 +22,7 @@
  */
 import { PARCEIROS, type Parceiro } from './constantes.ts';
 import { influenciaNegocios, influenciaPolitica } from './influencia.ts';
-import { CADEIA, DESEMPREGO_NATURAL } from './regras.ts';
+import { RIVAL, CADEIA, DESEMPREGO_NATURAL } from './regras.ts';
 import { governoAtual, nivelDe } from './pais.ts';
 import { criarRng, misturar } from './rng.ts';
 import { CICLO_DO_SETOR } from './regras.ts';
@@ -300,7 +300,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
   definirNumero(e, reg, id, 'receita', vendas, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
-  concorrenciaDoAno(e, reg, emp, lucro, vendas);
+  concorrenciaDoAno(e, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
   return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosDe(c, emp) };
 }
 
@@ -395,7 +395,7 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
   }
 }
 
-const NOME_DO_PRECO: Record<Preco, string> = { popular: 'o preço popular', medio: 'o preço de mercado', premium: 'o preço premium' };
+export const NOME_DO_PRECO: Record<Preco, string> = { popular: 'o preço popular', medio: 'o preço de mercado', premium: 'o preço premium' };
 const NOME_DO_SALARIO: Record<Salario, string> = { piso: 'o piso da categoria', mercado: 'o salário de mercado', acima: 'acima do mercado' };
 
 /** A decisão vira estado (com a entrada de causa) e a frase da linha do tempo. */
@@ -581,13 +581,24 @@ function entradaQueMudou(e: EstadoVida, campo: string): number | null {
  * preços contra quem cobra o popular e toma clientela, chega nova quando o lucro é alto, e quebra quando perde a briga
  * (a clientela dela vem junto). Cada notícia aponta a decisão de preço que a provocou.
  */
-function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number): void {
+/**
+ * O jeito do dono da concorrente (bloco H6): a briga do traço dele (1 é a média dos traços), e metade a mais quando é
+ * pessoal (a mágoa de 30 ou mais com quem joga). Só a empresa que quem joga cuida de perto tem a concorrente com dono.
+ */
+export function garraDaRival(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const r = emp.id === 'empresa' ? e.entidades['rival'] : undefined;
+  if (!r || r.vivo === false) return 1;
+  const briga = c.mundo.tracos.find((t) => t.id === r.t['traco'])?.briga ?? RIVAL.garraMedia;
+  return (briga / RIVAL.garraMedia) * ((r.n['magoa'] ?? 0) >= RIVAL.pessoal ? 1.5 : 1);
+}
+
+function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number, garra = 1): void {
   const id = emp.id;
   const forca = emp.n['concorrente'] ?? 50;
   const vantagem = atratividade(emp) - forca / 50;
   // Na sobra de oferta do setor, a concorrente fraca sai; na falta, chega concorrente nova mais fácil.
   const sobra = ofertaDe(e, emp.t['setor']) / 100 - 1;
-  let alvo = forca + (50 - forca) * CONCORRENCIA.reversao + (vantagem > 0.15 ? CONCORRENCIA.reacao : 0) + normal(e.rng, 0, CONCORRENCIA.desvio) - CICLO_DO_SETOR.naConcorrente * Math.max(0, sobra);
+  let alvo = forca + (50 - forca) * CONCORRENCIA.reversao + (vantagem > 0.15 && !emp.q['cartel'] ? CONCORRENCIA.reacao * garra : 0) + normal(e.rng, 0, CONCORRENCIA.desvio) - CICLO_DO_SETOR.naConcorrente * Math.max(0, sobra);
   const recente = (q: string, anos: number): boolean => (emp.q[q]?.ano ?? -99) >= e.ano - anos;
   const guerra = emp.q['guerra'];
   if (guerra) {
@@ -595,8 +606,10 @@ function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: 
     if (vantagem > 0) alvo -= CONCORRENCIA.perdaNaGuerra;
     else somar(e, reg, id, 'demanda', -(emp.n['demanda'] ?? 0) * 0.05, 'negocio');
     if (preco(emp) !== 'popular' || e.ano - guerra.ano >= CONCORRENCIA.anosDeGuerra) perder(e, reg, id, 'guerra');
-  } else if (preco(emp) === 'popular' && vantagem > 0 && aleatorio(e.rng) < CONCORRENCIA.chanceDeGuerra) {
+  } else if (!emp.q['cartel'] && preco(emp) === 'popular' && vantagem > 0 && aleatorio(e.rng) < CONCORRENCIA.chanceDeGuerra * garra) {
     ganhar(e, reg, id, 'guerra', entradaQueMudou(e, `${id}.preco`));
+    // A guerra de preços magoa o dono da concorrente: ele lembra disso na hora de vender (empresa.ts › adquirir).
+    if (id === 'empresa' && e.entidades['rival']) somar(e, reg, 'rival', 'magoa', RIVAL.magoaDaGuerra, 'negocio');
   }
   if (vendas > 0 && lucro / vendas > CONCORRENCIA.margemQueAtrai && !recente('concorrente_novo', 5) && aleatorio(e.rng) < CONCORRENCIA.chanceDeEntrar * (1 + 3 * Math.max(0, -sobra))) {
     alvo = Math.max(alvo, 65);

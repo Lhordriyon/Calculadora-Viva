@@ -6,7 +6,10 @@
  * iniciativa: um storylet de personagem, escolhido pela regra dele (traço,
  * situação, saliência).
  */
-import { idadeDe } from './campos.ts';
+import { idadeDe, ler } from './campos.ts';
+import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA, propostaDoGestor, textoDaProposta } from './diretoria.ts';
+import { empresaDe, nomeDaEmpresa } from './empresa.ts';
+import { GESTOR, RIVAL } from './regras.ts';
 import { apertoDoSetor } from './negocio.ts';
 import { atende, causasDe } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -16,7 +19,7 @@ import { saliencia, type Candidato } from './diretor.ts';
 import type { Gatilho, Mundo } from './esquema.ts';
 import type { Momento } from './pais.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { arquivarEx, chegar, morrerPersonagem, nomeLivre, novaEntidade, partir, promover } from './pessoas.ts';
+import { arquivarEx, chegar, levarParaAEmpresa, morrerPersonagem, nomeLivre, novaEntidade, partir, promover } from './pessoas.ts';
 import {
   ATIVIDADE_PERSONAGEM,
   CHANCE_FALENCIA,
@@ -68,6 +71,8 @@ import type { Entidade, Entrada, EstadoVida, Genero, MemoriaJogador, Mudanca, Qu
  * que esfria).
  */
 export const PAPEIS_COM_REGRAS = ['avo', 'mae', 'pai', ...IRMAOS, 'amor', ...FILHOS, ...AMIGOS, 'pet', ...EXES, 'colega', 'chefe'] as const;
+/** Quem toma iniciativa: quem tem regras do ano e quem vem com a empresa (a rival e o gestor agem, mas não têm o ano da família). */
+const PAPEIS_QUE_AGEM = [...PAPEIS_COM_REGRAS, 'rival', 'gestor'] as const;
 
 /** Os papéis que vêm com o trabalho de quem joga. */
 const DO_TRABALHO: ReadonlySet<string> = new Set(['colega', 'chefe']);
@@ -286,6 +291,7 @@ export function regrasDosPersonagens(
   const amor = e.entidades['amor'];
   if (amor && amor.vivo !== false && (eu.q['namoro']?.v ?? 0) <= 0 && (eu.q['casado']?.v ?? 0) <= 0) arquivarEx(e, regAno);
   genteDoTrabalho(e, c, regAno);
+  genteDaEmpresa(e, c, regAno);
   for (const papel of PAPEIS_COM_REGRAS) {
     const en = e.entidades[papel];
     if (!en || en.vivo === false) continue;
@@ -487,6 +493,129 @@ function genteDoTrabalho(e: EstadoVida, c: Conteudo, regAno: Mudanca[]): void {
   }
 }
 
+/**
+ * A rival e o gestor vêm com a empresa que quem joga cuida de perto (bloco H6, I-139). O dono da concorrente chega com
+ * ela (a concorrente nova traz outro dono, às vezes alguém que quem joga já conhece) e sai quando a empresa acaba, muda
+ * de setor ou a concorrente quebra (fica o ano da quebra: é quando ele pede emprego). O gestor chega com a empresa de
+ * R$ 10 milhões, propõe a jogada do ano pelo jeito dele (diretoria.ts) e confere no ano seguinte o que os números
+ * disseram; sem confiança em quem joga, vai para a concorrente.
+ */
+function genteDaEmpresa(e: EstadoVida, c: Conteudo, regAno: Mudanca[]): void {
+  const principal = empresaDe(e);
+  const emp = principal && principal.n['capacidade'] !== undefined ? principal : undefined;
+  rivalNoAno(e, c, emp, regAno);
+  gestorNoAno(e, c, emp, regAno);
+}
+
+function rivalNoAno(e: EstadoVida, c: Conteudo, emp: Entidade | undefined, regAno: Mudanca[]): void {
+  const setor = emp?.t['setor'] ?? '';
+  const nova = emp?.q['concorrente_novo']?.ano === e.ano;
+  const antes = e.entidades['rival'];
+  const quebrou = antes?.q['quebrou'];
+  if (antes && (!emp || antes.vivo === false || antes.t['setor'] !== setor || (quebrou && e.ano - quebrou.ano >= 2) || nova || idadeDe(e, antes) >= RIVAL.idadeDeSair)) {
+    partir(e, 'rival', regAno);
+    // O acordo de preços era com quem saiu: acaba com ele.
+    if (emp?.q['cartel']) perder(e, regAno, emp.id, 'cartel', 'negocio');
+  }
+  if (!emp) return;
+  const rival = e.entidades['rival'];
+  if (rival) {
+    const quebra = emp.q['concorrente_quebrou'];
+    if (quebra?.ano === e.ano && !rival.q['quebrou']) ganhar(e, regAno, 'rival', 'quebrou', quebra.causa ?? null, 'negocio');
+    return;
+  }
+  const negocio = nomeDaEmpresa(e, c.setores.get(setor), sortear(e.rng, c.mundo.sobrenomes));
+  // Na concorrente nova, quem tem motivo pode ser o dono: a memória vai junto com a pessoa.
+  const conhecido = nova ? conhecidoQueConcorre(e) : undefined;
+  if (conhecido && aleatorio(e.rng) < RIVAL.conhecido) {
+    acontecer(e, c, 'rival', 'rival_conhecido', (reg) => {
+      levarParaAEmpresa(e, conhecido, 'rival', reg);
+      definirTexto(e, reg, 'rival', 'negocio', negocio);
+      definirTexto(e, reg, 'rival', 'setor', setor);
+    });
+    return;
+  }
+  const en = pessoaDoTrabalho(e, c, 'rival', negocio);
+  // Quem vem com a empresa não tem o ano da família (a saúde que anda): só o traço, o vínculo e o negócio.
+  delete en.n['saude'];
+  en.t['negocio'] = negocio;
+  en.t['setor'] = setor;
+  acontecer(e, c, 'rival', 'rival_chegou', (reg) => chegar(e, 'rival', en, reg));
+}
+
+/** Quem da vida pode abrir a concorrente: um ex ou um amigo da vida adulta, em idade de empreender, magoado ou distante. */
+function conhecidoQueConcorre(e: EstadoVida): string | undefined {
+  return [...EXES, ...AMIGOS.slice(1)].find((id) => {
+    const en = e.entidades[id];
+    if (!en || en.vivo === false || en.q['ausente']) return false;
+    const idade = idadeDe(e, en);
+    return idade >= 22 && idade < IDADE_DE_SAIR_DO_TRABALHO && ((en.n['magoa'] ?? 0) >= RIVAL.magoa || (en.n['vinculo'] ?? 50) < RIVAL.vinculo);
+  });
+}
+
+function gestorNoAno(e: EstadoVida, c: Conteudo, emp: Entidade | undefined, regAno: Mudanca[]): void {
+  const antes = e.entidades['gestor'];
+  if (antes && (!emp || antes.vivo === false || idadeDe(e, antes) >= IDADE_DE_SAIR_DO_TRABALHO)) partir(e, 'gestor', regAno);
+  else if (antes && emp) conferirGestor(e, c, emp, regAno);
+  if (!emp) return;
+  if (!e.entidades['gestor'] && (emp.n['valor'] ?? 0) >= GESTOR.valor) {
+    const en = pessoaDoTrabalho(e, c, 'gestor', emp.nome ?? '');
+    // Do gestor, o que conta é o traço (o jeito de propor) e a confiança em quem joga.
+    delete en.n['saude'];
+    delete en.n['vinculo'];
+    chegar(e, 'gestor', en, regAno);
+  }
+  const gestor = e.entidades['gestor'];
+  if (!gestor) return;
+  const op = propostaDoGestor(e, c);
+  const texto = op ? textoDaProposta(e, op) : '';
+  if ((gestor.t['proposta'] ?? '') !== texto) definirTexto(e, regAno, 'gestor', 'proposta', texto, 'negocio');
+}
+
+/**
+ * O ano seguinte confere a proposta: recusada e o ano no vermelho, o gestor tinha razão (vira notícia, com a recusa de
+ * causa, e a confiança dele em quem joga cai); recusada e o ano no azul, quem joga tinha razão; seguida e o ano no azul,
+ * a confiança sobe. Com a confiança abaixo de 35, ou magoado demais, o gestor vai embora, para a concorrente (que ganha força).
+ */
+function conferirGestor(e: EstadoVida, c: Conteudo, emp: Entidade, regAno: Mudanca[]): void {
+  const lucro = emp.n['lucro'] ?? 0;
+  const resposta = respostaAoGestor(e);
+  const recusada = resposta?.escolha?.indice === ESCOLHA_RECUSAR ? resposta : undefined;
+  const seguida = resposta?.escolha?.indice === ESCOLHA_SEGUIR ? resposta : undefined;
+  if (recusada) {
+    if (lucro < 0)
+      acontecer(
+        e,
+        c,
+        'gestor',
+        'gestor_avisou',
+        (reg) => {
+          somar(e, reg, 'gestor', 'confianca', -GESTOR.avisou);
+          somar(e, reg, 'gestor', 'magoa', GESTOR.magoa);
+        },
+        {},
+        [recusada.id],
+      );
+    else somar(e, regAno, 'gestor', 'confianca', GESTOR.acertou, 'relacoes');
+  } else if (seguida && lucro > 0) somar(e, regAno, 'gestor', 'confianca', GESTOR.seguiu, 'relacoes');
+  if (Number(ler(e, 'gestor', 'confianca') ?? 60) < GESTOR.saida || Number(ler(e, 'gestor', 'magoa') ?? 0) >= GESTOR.magoaQueLeva) {
+    acontecer(e, c, 'gestor', 'gestor_saiu', (reg) => {
+      if (emp.n['concorrente'] !== undefined) somar(e, reg, emp.id, 'concorrente', GESTOR.leva, 'negocio');
+    });
+    partir(e, 'gestor', regAno);
+  }
+}
+
+/** A resposta à proposta do gestor no ano passado (a entrada da escolha no livro), se houve. */
+function respostaAoGestor(e: EstadoVida): Entrada | undefined {
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.ano < e.ano - 1) return undefined;
+    if (h.ano === e.ano - 1 && h.ref === PROPOSTA && h.escolha) return h;
+  }
+  return undefined;
+}
+
 /** O lugar de amigo para quem chega na vida adulta: um vago, ou o de quem morreu há dois anos ou mais. */
 function lugarDeAmigo(e: EstadoVida): string | undefined {
   return (
@@ -499,7 +628,7 @@ function lugarDeAmigo(e: EstadoVida): string | undefined {
 }
 
 /** Uma pessoa do trabalho novo: o colega da idade de quem joga, o chefe mais velho; o traço é sorteado. */
-function pessoaDoTrabalho(e: EstadoVida, c: Conteudo, papel: string, trabalho: string): Entidade {
+export function pessoaDoTrabalho(e: EstadoVida, c: Conteudo, papel: string, trabalho: string): Entidade {
   const genero: Genero = aleatorio(e.rng) < 0.5 ? 'f' : 'm';
   const idade = papel === 'chefe' ? Math.max(25, Math.min(70, e.idade + inteiro(e.rng, 4, 22))) : Math.max(18, e.idade + inteiro(e.rng, -6, 8));
   const en = novaEntidade({ id: papel, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento: e.ano - idade, vivo: true });
@@ -605,7 +734,7 @@ function namoroEsfria(e: EstadoVida, c: Conteudo, namoro: Qualidade): void {
  */
 export function personagensAgem(e: EstadoVida, c: Conteudo, memoria: MemoriaJogador | undefined): Candidato[] {
   const comEscolha: Candidato[] = [];
-  for (const papel of PAPEIS_COM_REGRAS) {
+  for (const papel of PAPEIS_QUE_AGEM) {
     const lista = c.npcPorPapel.get(papelBase(papel));
     const en = e.entidades[papel];
     if (!lista || !en || !e.vivo) continue;
