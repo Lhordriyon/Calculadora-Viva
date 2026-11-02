@@ -486,6 +486,9 @@ const Profissao = z.strictObject({ m: z.string(), f: z.string(), setor: SetorDaO
 
 /** Setor da economia: quanto sente o ciclo e quanto os salários crescem por ano (real). */
 export const DefSetor = z.strictObject({
+  /** O setor que fornece o insumo (cadeia de fornecimento, negocio.ts) e a parte do custo variável que é insumo. */
+  insumo: z.string().optional(),
+  parteDoInsumo: z.number().min(0).max(0.8).optional(),
   id,
   nome: z.string(),
   /** 0 = não sente o ciclo; 1 = sente como a média; 2 = sente o dobro. */

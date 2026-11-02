@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor } from '../motor/negocio.ts';
+import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, custoDoLobby, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor, textoDosCustos } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
@@ -115,6 +115,14 @@ function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida;
         </button>
         <button type="button" class="chip-origem" disabled={pode({ tipo: 'pagar', empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'pagar', empresa: id })}>
           Pagar a dívida
+        </button>
+      </div>
+      <p class="nota">
+        <b>Lobby.</b> Consultores em Brasília podem fazer o governo baixar os impostos nos próximos três anos. Se der certo, a notícia sai; se vazar, o escândalo também.
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="Lobby">
+        <button type="button" class="chip-origem" disabled={pode({ tipo: 'lobby', empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'lobby', empresa: id })}>
+          Contratar lobby · {formatarDinheiro(custoDoLobby(emp))}
         </button>
       </div>
       <p class="nota">
@@ -306,6 +314,8 @@ function CartaoDaEmpresa({
               </dd>
               <dt>Fatia do mercado</dt>
               <dd>{(fatiaDoMercado(vida, conteudo, emp) * 100).toFixed(fatiaDoMercado(vida, conteudo, emp) < 0.001 ? 3 : 1).replace('.', ',')}% do que o país compra do setor</dd>
+              <dt>Custos de fora</dt>
+              <dd>{textoDosCustos(vida, conteudo, emp)}</dd>
             </>
           )}
           {(n['divida'] ?? 0) >= 1 && (

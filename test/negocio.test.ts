@@ -4,7 +4,7 @@ import { operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { custoDaAquisicao, empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
-import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, ofertaDe, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
+import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, fatorDaMaoDeObra, fatorDoInsumo, impostoDaEmpresa, lobbyDoAno, ofertaDe, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -261,6 +261,48 @@ describe('o negócio de verdade (bloco H)', () => {
     // O negócio que entra é o do preço justo (28,5% a mais de estrutura), pago pelo preço do dia.
     expect(emp.n['capacidade']! / capacidade - 1).toBeCloseTo(0.285, 2);
     expect(emp.n['concorrente']).toBe(10);
+  });
+
+  it('a cadeia: a alta do fornecedor encarece o insumo, e quem tem empresa no setor fornecedor compra a preço de custo', () => {
+    const e = adulto(31, 5_000_000);
+    operar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 1_000_000 });
+    const emp = empresaDe(e)!;
+    e.entidades['setor_industria']!.n['oferta'] = 80;
+    expect(fatorDoInsumo(e, c, emp)).toBeGreaterThan(1.05);
+    operar(e, c, { tipo: 'abrir', setor: 'industria', valor: 1_000_000 });
+    expect(fatorDoInsumo(e, c, emp)).toBeCloseTo(1 - 0.6 * 0.05, 5);
+  });
+
+  it('o mercado de trabalho e a política mexem no custo: desemprego baixo encarece a folha, e o imposto segue quem governa', () => {
+    const e = adulto(32);
+    const pais = e.entidades['pais']!;
+    pais.n['desemprego'] = 5;
+    expect(fatorDaMaoDeObra(e)).toBeGreaterThan(1.08);
+    pais.n['desemprego'] = 13;
+    expect(fatorDaMaoDeObra(e)).toBeLessThan(0.9);
+    pais.n['pol_impostos'] = 0;
+    expect(impostoDaEmpresa(e)).toBeCloseTo(0.2, 5);
+    pais.n['pol_impostos'] = 2;
+    expect(impostoDaEmpresa(e)).toBeCloseTo(0.3125, 5);
+  });
+
+  it('o lobby sai do caixa (as contas fecham) e baixa os impostos do país uma vez, com o lobby de causa', () => {
+    const e = adulto(33, 300_000_000);
+    operar(e, c, { tipo: 'abrir', setor: 'financas', valor: 200_000_000 });
+    e.entidades['pais']!.n['pol_impostos'] = 2;
+    const caixa = empresaDe(e)!.n['caixa']!;
+    const h = operar(e, c, { tipo: 'lobby' });
+    expect(conferirContas(e, e.historico.find((x) => x.id === h.id)!)).toEqual([]);
+    expect(empresaDe(e)!.n['caixa']).toBeLessThan(caixa);
+    expect(e.entidades['eu']!.q['lobista']).toBeTruthy();
+    e.entidades['eu']!.n['influencia'] = 100;
+    e.rng = criarRng(7);
+    for (let i = 0; i < 3 && e.entidades['pais']!.n['pol_impostos'] === 2; i++) lobbyDoAno(e);
+    expect(e.entidades['pais']!.n['pol_impostos']).toBe(1);
+    const noticia = e.historico.find((x) => x.ref === 'pais:lobby')!;
+    expect(noticia.causas).toEqual([h.id]);
+    lobbyDoAno(e);
+    expect(e.entidades['pais']!.n['pol_impostos']).toBe(1);
   });
 });
 

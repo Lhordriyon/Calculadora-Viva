@@ -347,6 +347,14 @@ export const CONCORRENCIA = { reversao: 0.15, reacao: 4, desvio: 3, margemQueAtr
  * sobra de oferta multiplica a demissão de quem trabalha no setor por 1,3 e tira 3 pontos por ano da concorrente.
  */
 export const CICLO_DO_SETOR = { elasticidade: 1.5, piso: 0.75, teto: 1.35, resposta: 0.8, inercia: 0.8, choque: 0.035, naDemissao: 3, naConcorrente: 30 } as const;
+/**
+ * O capitalismo integrado (negocio.ts, bloco H5): quem tem empresa no setor fornecedor compra a preço de custo (5% a
+ * menos na parte do insumo, sem o ciclo do fornecedor); a folha de salários anda 3% por ponto de desemprego abaixo do
+ * natural (de 80% a 125%); o imposto da empresa é 80%, 100% ou 125% do de sempre pela política de impostos; o lobby
+ * custa 2% do valor da empresa (no mínimo R$ 1 milhão) e, por até três anos, tem 15% ao ano (mais a influência de quem
+ * joga ÷ 200, até 50%) de baixar a política de impostos de um governo que não é o de quem joga.
+ */
+export const CADEIA = { descontoDoProprio: 0.05, salarioPorPonto: 0.03, impostoPorNivel: [0.8, 1, 1.25], lobby: 0.02, lobbyMinimo: 1_000_000, chanceDoLobby: 0.15 } as const;
 /** O crédito da empresa (negocio.ts): o juro real é a Selic menos a inflação mais o spread; a parcela, 10% da dívida por ano; o banco empresta até duas vezes o lucro mais 30% da estrutura. */
 export const CREDITO_DA_EMPRESA = { spread: 3, amortizacao: 0.1, vezesOLucro: 2, daEstrutura: 0.3 } as const;
 /** A mídia própria (bens.ts): a publicidade que ela vende por ano (fração do valor, num ano normal) e a influência que dá a quem é dono, por veículo. */

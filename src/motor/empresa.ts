@@ -73,7 +73,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { normal, sortear } from './rng.ts';
-import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
+import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -491,6 +491,8 @@ export function alvoDaTracao(e: EstadoVida, c: Conteudo, emp: Entidade, carga = 
  */
 export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[], mercado?: Partial<Record<Ativo, number>>): void {
   reorganizarGrupo(e, reg);
+  // O lobby contratado (ou a regra sob medida) pode baixar os impostos do país (negocio.ts).
+  lobbyDoAno(e);
   const empresas = empresasDe(e);
   if (empresas.length === 0) return;
   const carga = cargaDaMesa(e);

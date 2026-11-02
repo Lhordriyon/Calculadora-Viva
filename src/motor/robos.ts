@@ -758,6 +758,8 @@ function gerirNegocio(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
       // Sem caixa para a obra, pega no banco (e amplia na revisão seguinte).
       if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
       if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
+      // Com a empresa grande e os impostos altos, a arriscada contrata lobby (uma vez a cada tanto).
+      if (!e.entidades['eu']?.q['lobista'] && (n['valor'] ?? 0) >= 50e6 && nivelDe(e, 'impostos') >= 1 && aleatorio(rng) < 0.2) tentar({ tipo: 'lobby', empresa: id });
       // Com caixa sobrando (mais de 30% do valor), passa a tirar dividendos.
       if ((n['caixa'] ?? 0) > 0.3 * (n['valor'] ?? 0) && (n['retirada'] ?? 0) < 0.3) tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });
       if (!emp.t['exporta'] && (n['receita'] ?? 0) > 0) {

@@ -21,6 +21,8 @@
  * para quem joga (a parte dele) e para os outros sócios.
  */
 import { PARCEIROS, type Parceiro } from './constantes.ts';
+import { CADEIA, DESEMPREGO_NATURAL } from './regras.ts';
+import { governoAtual, nivelDe } from './pais.ts';
 import { criarRng, misturar } from './rng.ts';
 import { CICLO_DO_SETOR } from './regras.ts';
 import { novaEntidade } from './pessoas.ts';
@@ -29,7 +31,7 @@ import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
-import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
+import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import type { Momento } from './pais.ts';
 import {
   ATRATIVIDADE_NO_CRESCIMENTO,
@@ -233,13 +235,15 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
   // Na guerra de preços, todo mundo cobra menos.
   const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor']));
-  const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar);
-  const fixo = capacidade * eco.fixo * SALARIOS[salario(emp)].fixo;
+  // O insumo vem do setor fornecedor (a alta dele encarece; o fornecedor próprio vende a preço de custo).
+  const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp);
+  // A folha anda com o mercado de trabalho: desemprego baixo, gente cara.
+  const fixo = capacidade * eco.fixo * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e);
   const verbas = vendas * ((n['marketing'] ?? 0) + (n['pd'] ?? 0));
   const ebit = vendas - variavel - fixo - verbas;
   // O juro do banco sai antes do imposto (o lucro é depois dele).
   const juros = (n['divida'] ?? 0) * jurosDaEmpresa(e);
-  const imposto = Math.max(0, ebit - juros) * IMPOSTO_DA_EMPRESA;
+  const imposto = Math.max(0, ebit - juros) * impostoDaEmpresa(e);
   const lucro = ebit - juros - imposto;
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
@@ -328,9 +332,10 @@ export type OperacaoNegocio =
   | { tipo: 'salario'; empresa?: string; nivel: Salario }
   | { tipo: 'exportar'; empresa?: string; para: Parceiro | '' }
   | { tipo: 'emprestimo'; empresa?: string; valor: number }
-  | { tipo: 'pagar'; empresa?: string };
+  | { tipo: 'pagar'; empresa?: string }
+  | { tipo: 'lobby'; empresa?: string };
 
-const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar', 'emprestimo', 'pagar']);
+const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar', 'emprestimo', 'pagar', 'lobby']);
 export function ehOperacaoDeNegocio(op: { tipo: string }): op is OperacaoNegocio {
   return TIPOS.has(op.tipo);
 }
@@ -369,6 +374,11 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
       if (!(op.valor > 0)) return 'diga quanto';
       return op.valor > limite + 1 ? (limite < 1 ? 'o banco não empresta mais para ela' : `o banco empresta até ${Math.round(limite).toLocaleString('pt-BR')} reais`) : null;
     }
+    case 'lobby':
+      if (e.entidades['eu']?.q['lobista']) return 'o lobby já está trabalhando';
+      if (governoAtual(e) === 'voce') return 'quem governa é você';
+      if (nivelDe(e, 'impostos') === 0) return 'os impostos já estão baixos';
+      return custoDoLobby(emp) > (n['caixa'] ?? 0) ? 'o caixa não paga o lobby' : null;
     case 'pagar':
       if ((n['divida'] ?? 0) < 1) return 'ela não deve nada';
       return (n['caixa'] ?? 0) < 1 ? 'o caixa não tem para pagar' : null;
@@ -426,6 +436,15 @@ export function operarNegocio(e: EstadoVida, c: Conteudo, op: OperacaoNegocio, r
         texto: `${nomeDaEmpresa} pegou ${Math.round(op.valor).toLocaleString('pt-BR')} reais no banco, a ${(jurosDaEmpresa(e) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação. O dinheiro não existia: o banco o criou ao emprestar.`,
         resumo: `pegou um empréstimo para ${nomeDaEmpresa}`,
       };
+    case 'lobby': {
+      const custo = custoDoLobby(emp);
+      somar(e, reg, id, 'caixa', -custo, 'lobby', 'mercado');
+      ganhar(e, reg, 'eu', 'lobista', null);
+      return {
+        texto: `${nomeDaEmpresa} contratou consultores em Brasília para explicar aos parlamentares, com paciência e almoço, o peso dos impostos: ${Math.round(custo).toLocaleString('pt-BR')} reais.`,
+        resumo: `contratou lobby para ${nomeDaEmpresa}`,
+      };
+    }
     case 'pagar': {
       const v = Math.min(emp.n['caixa'] ?? 0, emp.n['divida'] ?? 0);
       somar(e, reg, id, 'caixa', -v, 'amortizacao', 'banco');
@@ -659,5 +678,74 @@ export function previsaoDoSetor(e: EstadoVida, setor: string | undefined): strin
   const depois = precoDoSetor((en.n['oferta'] ?? 100) * (1 + (en.n['obra'] ?? 0) / 100));
   const d = Math.round((depois - agora) * 100);
   return d <= -2 ? `o setor está construindo: o preço deve cair uns ${-d}% no ano que vem` : d >= 2 ? `o setor está fechando portas: o preço deve subir uns ${d}% no ano que vem` : 'sem obra grande no setor: o preço deve ficar onde está';
+}
+
+// ---------------------------------------------------------------- o capitalismo integrado (bloco H5)
+
+/** A empresa da vida no setor fornecedor (a integração vertical), se houver. */
+export function fornecedorProprio(e: EstadoVida, emp: Entidade, insumo: string): Entidade | undefined {
+  return Object.values(e.entidades).find((x) => x.tipo === 'empresa' && x.vivo !== false && x.id !== emp.id && x.t['setor'] === insumo && x.n['capacidade'] !== undefined);
+}
+
+/**
+ * O custo do insumo: a parte do custo variável que vem do setor fornecedor anda com o preço dele (a alta do fornecedor
+ * aperta a margem); quem tem empresa no setor fornecedor compra a preço de custo, sem o ciclo dele.
+ */
+export function fatorDoInsumo(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const s = c.setores.get(emp.t['setor'] ?? '');
+  const insumo = s?.insumo;
+  const parte = s?.parteDoInsumo ?? 0;
+  if (!insumo || parte <= 0) return 1;
+  if (fornecedorProprio(e, emp, insumo)) return 1 - parte * CADEIA.descontoDoProprio;
+  return 1 - parte + parte * precoDoSetor(ofertaDe(e, insumo));
+}
+
+/** A mão de obra: com o desemprego abaixo do natural, a folha encarece (3% por ponto); acima, barateia. */
+export function fatorDaMaoDeObra(e: EstadoVida): number {
+  const d = e.entidades['pais']?.n['desemprego'] ?? DESEMPREGO_NATURAL;
+  return Math.max(0.8, Math.min(1.25, 1 + CADEIA.salarioPorPonto * (DESEMPREGO_NATURAL - d)));
+}
+
+/** O imposto da empresa, pela política de impostos de quem governa. */
+export function impostoDaEmpresa(e: EstadoVida): number {
+  return IMPOSTO_DA_EMPRESA * CADEIA.impostoPorNivel[nivelDe(e, 'impostos')]!;
+}
+
+/** O lobby custa 2% do valor da empresa, no mínimo R$ 1 milhão. */
+export function custoDoLobby(emp: Entidade): number {
+  return Math.max(CADEIA.lobbyMinimo, CADEIA.lobby * (emp.n['valor'] ?? 0));
+}
+
+/** Os custos de fora em uma linha (a folha Dinheiro): o insumo, a mão de obra e o imposto. */
+export function textoDosCustos(e: EstadoVida, c: Conteudo, emp: Entidade): string {
+  const s = c.setores.get(emp.t['setor'] ?? '');
+  const ins = s?.insumo ? c.setores.get(s.insumo) : undefined;
+  const pct = (x: number): string => `${x > 0 ? '+' : x < 0 ? '−' : ''}${Math.abs(Math.round(x * 100))}%`;
+  const insumo = !ins ? 'sem insumo de fora' : fornecedorProprio(e, emp, ins.id) ? `insumo de ${ins.nome} da sua própria empresa` : `insumo de ${ins.nome} a ${pct(precoDoSetor(ofertaDe(e, ins.id)) - 1)}`;
+  return `${insumo} · mão de obra ${pct(fatorDaMaoDeObra(e) - 1)} · imposto de ${Math.round(impostoDaEmpresa(e) * 100)}% do lucro`;
+}
+
+/**
+ * O lobby trabalha: por até três anos depois de contratado (ou da regra sob medida do conteúdo), um governo que não é o
+ * de quem joga pode baixar a política de impostos, uma vez, numa notícia que aponta o lobby de causa.
+ */
+export function lobbyDoAno(e: EstadoVida): void {
+  const q = e.entidades['eu']?.q['lobista'];
+  if (!q || e.ano - q.ano > 3 || governoAtual(e) === 'voce' || nivelDe(e, 'impostos') === 0) return;
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano >= q.ano; i--) if (e.historico[i]!.ref === 'pais:lobby') return;
+  const chance = Math.min(0.5, CADEIA.chanceDoLobby + (e.entidades['eu']!.n['influencia'] ?? 0) / 200);
+  if (aleatorio(e.rng) >= chance) return;
+  const causa = entradaQueMudou(e, 'eu.lobista');
+  const entrada = novaEntrada(e, {
+    tipo: 'mundo',
+    causa: 'regra',
+    ref: 'pais:lobby',
+    texto: 'O Congresso aprovou, sem alarde, um corte de impostos que parecia escrito sob medida. Os consultores mandaram flores.',
+    resumo: 'viu o lobby baixar os impostos do país',
+    causas: causa !== null ? [causa] : [],
+  });
+  const reg: Mudanca[] = [];
+  somar(e, reg, 'pais', 'pol_impostos', -1, 'lobby');
+  lancar(e, entrada, reg);
 }
 

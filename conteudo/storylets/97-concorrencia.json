@@ -1,111 +1,314 @@
 [
   {
     "id": "guerra_de_precos",
-    "idade": [18, 95],
+    "idade": [
+      18,
+      95
+    ],
     "peso": 4,
     "repetivel": true,
     "intervalo": 3,
-    "condicoes": { "empresa.valor": true, "marcas": ["empresa.guerra"] },
+    "condicoes": {
+      "empresa.valor": true,
+      "marcas": [
+        "empresa.guerra"
+      ]
+    },
     "texto": "A concorrente baixou o preço de novo, e você baixou atrás. Os clientes adoram; o caixa {empresa:do|da} {empresa}, nem tanto. Alguém vai piscar primeiro.",
     "resumo": "entrou numa guerra de preços com a concorrente",
     "escolhas": [
       {
         "texto": "Ir até o fim",
         "resumo": "foi até o fim na guerra de preços",
-        "resultado": { "texto": "Você cortou até o cafezinho da reunião. Quem quebrar primeiro perde a briga, e você pretende não ser o primeiro.", "efeitos": { "empresa.tracao": 3, "felicidade": -2 } }
+        "resultado": {
+          "texto": "Você cortou até o cafezinho da reunião. Quem quebrar primeiro perde a briga, e você pretende não ser o primeiro.",
+          "efeitos": {
+            "empresa.tracao": 3,
+            "felicidade": -2
+          }
+        }
       },
       {
         "texto": "Sair da briga e voltar ao preço de mercado",
         "resumo": "saiu da guerra de preços",
-        "resultado": { "texto": "Você voltou ao preço de antes. Uns clientes foram embora com a promoção; a margem voltou para casa.", "efeitos": { "negocio": { "preco": "medio" }, "empresa.tracao": -2, "felicidade": 1 } }
+        "resultado": {
+          "texto": "Você voltou ao preço de antes. Uns clientes foram embora com a promoção; a margem voltou para casa.",
+          "efeitos": {
+            "negocio": {
+              "preco": "medio"
+            },
+            "empresa.tracao": -2,
+            "felicidade": 1
+          }
+        }
       },
       {
         "texto": "Brigar pela qualidade, não pelo preço",
         "resumo": "trocou a guerra de preços pela briga da qualidade",
-        "resultado": { "texto": "Preço de mercado e o dinheiro da promoção no laboratório. Quem compra pelo preço vai embora; quem fica, fica.", "efeitos": { "negocio": { "preco": "medio", "pd": 0.08 }, "empresa.tracao": 1, "felicidade": -1 } }
+        "resultado": {
+          "texto": "Preço de mercado e o dinheiro da promoção no laboratório. Quem compra pelo preço vai embora; quem fica, fica.",
+          "efeitos": {
+            "negocio": {
+              "preco": "medio",
+              "pd": 0.08
+            },
+            "empresa.tracao": 1,
+            "felicidade": -1
+          }
+        }
       }
     ]
   },
   {
     "id": "concorrente_nova",
-    "idade": [18, 95],
+    "idade": [
+      18,
+      95
+    ],
     "peso": 4,
     "repetivel": true,
     "intervalo": 5,
-    "condicoes": { "empresa.valor": true, "marcaHa": [{ "marca": "empresa.concorrente_novo", "min": 0, "max": 1 }] },
+    "condicoes": {
+      "empresa.valor": true,
+      "marcaHa": [
+        {
+          "marca": "empresa.concorrente_novo",
+          "min": 0,
+          "max": 1
+        }
+      ]
+    },
     "texto": "O lucro {empresa:do|da} {empresa} chamou atenção: uma concorrente nova abriu com dinheiro de fundo, vitrine bonita e o seu antigo gerente de vendas.",
     "resumo": "viu uma concorrente nova chegar atrás do seu lucro",
     "escolhas": [
       {
         "texto": "Responder com marketing",
         "resumo": "respondeu à concorrente nova com marketing",
-        "resultado": { "texto": "Outdoor na avenida, patrocínio no time do bairro e um jingle que gruda. A concorrente sentiu.", "efeitos": { "negocio": { "marketing": 0.08 }, "empresa.tracao": 2, "felicidade": -1 } }
+        "resultado": {
+          "texto": "Outdoor na avenida, patrocínio no time do bairro e um jingle que gruda. A concorrente sentiu.",
+          "efeitos": {
+            "negocio": {
+              "marketing": 0.08
+            },
+            "empresa.tracao": 2,
+            "felicidade": -1
+          }
+        }
       },
       {
         "texto": "Baixar o preço antes dela",
         "resumo": "baixou o preço para segurar a concorrente nova",
-        "resultado": { "texto": "Você cortou o preço na segunda-feira. Na terça, ela cortou também. A briga começou.", "efeitos": { "negocio": { "preco": "popular" }, "empresa.tracao": 3, "felicidade": -2 } }
+        "resultado": {
+          "texto": "Você cortou o preço na segunda-feira. Na terça, ela cortou também. A briga começou.",
+          "efeitos": {
+            "negocio": {
+              "preco": "popular"
+            },
+            "empresa.tracao": 3,
+            "felicidade": -2
+          }
+        }
       },
       {
         "texto": "Deixar o mercado decidir",
         "resumo": "deixou a concorrente nova disputar sozinha",
-        "resultado": { "texto": "Você não mudou nada. Uns clientes foram experimentar a novidade; você foi experimentar o fim de semana.", "efeitos": { "empresa.tracao": -2, "felicidade": 1 } }
+        "resultado": {
+          "texto": "Você não mudou nada. Uns clientes foram experimentar a novidade; você foi experimentar o fim de semana.",
+          "efeitos": {
+            "empresa.tracao": -2,
+            "felicidade": 1
+          }
+        }
       }
     ]
   },
   {
     "id": "concorrente_quebrou",
-    "idade": [18, 95],
+    "idade": [
+      18,
+      95
+    ],
     "peso": 5,
     "repetivel": true,
     "intervalo": 4,
-    "condicoes": { "empresa.valor": true, "marcaHa": [{ "marca": "empresa.concorrente_quebrou", "min": 0, "max": 1 }] },
+    "condicoes": {
+      "empresa.valor": true,
+      "marcaHa": [
+        {
+          "marca": "empresa.concorrente_quebrou",
+          "min": 0,
+          "max": 1
+        }
+      ]
+    },
     "texto": "A concorrente fechou as portas. A clientela dela bateu na porta {empresa:do|da} {empresa} na mesma semana, e metade da equipe dela mandou currículo.",
     "resumo": "viu a concorrente quebrar",
     "escolhas": [
       {
         "texto": "Contratar a equipe dela",
         "resumo": "contratou a equipe da concorrente que quebrou",
-        "resultado": { "texto": "Gente que conhece o ramo e chega sabendo onde fica o café. A estrutura cresceu com quem já sabia o caminho.", "efeitos": { "negocio": { "expandir": 0.25 }, "empresa.tracao": 2, "felicidade": 1 } }
+        "resultado": {
+          "texto": "Gente que conhece o ramo e chega sabendo onde fica o café. A estrutura cresceu com quem já sabia o caminho.",
+          "efeitos": {
+            "negocio": {
+              "expandir": 0.25
+            },
+            "empresa.tracao": 2,
+            "felicidade": 1
+          }
+        }
       },
       {
         "texto": "Comprar a carteira de clientes",
         "resumo": "comprou a carteira de clientes da concorrente que quebrou",
-        "resultado": { "texto": "O administrador da massa falida vendeu a lista de clientes por um preço que dava dó. Dó dele.", "efeitos": { "negocio": { "demanda": 0.1 }, "dinheiro": -5000, "empresa.tracao": 3 } }
+        "resultado": {
+          "texto": "O administrador da massa falida vendeu a lista de clientes por um preço que dava dó. Dó dele.",
+          "efeitos": {
+            "negocio": {
+              "demanda": 0.1
+            },
+            "dinheiro": -5000,
+            "empresa.tracao": 3
+          }
+        }
       },
       {
         "texto": "Só comemorar",
         "resumo": "comemorou a quebra da concorrente",
-        "resultado": { "texto": "Você abriu um espumante no escritório. Um funcionário lembrou que a próxima pode ser vocês; você fechou o espumante.", "efeitos": { "felicidade": 3 } }
+        "resultado": {
+          "texto": "Você abriu um espumante no escritório. Um funcionário lembrou que a próxima pode ser vocês; você fechou o espumante.",
+          "efeitos": {
+            "felicidade": 3
+          }
+        }
       }
     ]
   },
   {
     "id": "a_parcela_do_banco",
-    "idade": [18, 95],
+    "idade": [
+      18,
+      95
+    ],
     "peso": 4,
     "repetivel": true,
     "intervalo": 4,
-    "condicoes": { "empresa.divida": { "min": 1 }, "pais.juros": { "min": 10.5 } },
+    "condicoes": {
+      "empresa.divida": {
+        "min": 1
+      },
+      "pais.juros": {
+        "min": 10.5
+      }
+    },
     "texto": "O juro subiu, e a parcela do empréstimo {empresa:do|da} {empresa} subiu junto. O gerente do banco, que antes mandava cesta de Natal, agora manda e-mail com o assunto em maiúsculas.",
     "resumo": "viu a dívida da empresa ficar cara com o juro alto",
     "escolhas": [
       {
         "texto": "Pôr dinheiro do bolso no caixa",
         "resumo": "pôs dinheiro do bolso no caixa para aguentar a parcela",
-        "condicoes": { "dinheiro": { "min": 20000 } },
+        "condicoes": {
+          "dinheiro": {
+            "min": 20000
+          }
+        },
         "bloqueio": "não tem R$ 20 mil na conta",
-        "resultado": { "texto": "Você tirou da conta e pôs na empresa. A parcela sai do caixa este ano, e você dorme um pouco melhor.", "efeitos": { "negocio": { "aporte": 20000 }, "felicidade": -1 } }
+        "resultado": {
+          "texto": "Você tirou da conta e pôs na empresa. A parcela sai do caixa este ano, e você dorme um pouco melhor.",
+          "efeitos": {
+            "negocio": {
+              "aporte": 20000
+            },
+            "felicidade": -1
+          }
+        }
       },
       {
         "texto": "Cortar estrutura para pagar",
         "resumo": "cortou estrutura para pagar o banco",
-        "resultado": { "texto": "Você fechou um galpão e vendeu as máquinas. A dívida encolheu; a empresa também.", "efeitos": { "negocio": { "cortar": 0.2 }, "empresa.tracao": -2, "felicidade": 1 } }
+        "resultado": {
+          "texto": "Você fechou um galpão e vendeu as máquinas. A dívida encolheu; a empresa também.",
+          "efeitos": {
+            "negocio": {
+              "cortar": 0.2
+            },
+            "empresa.tracao": -2,
+            "felicidade": 1
+          }
+        }
       },
       {
         "texto": "Segurar e torcer pelo juro cair",
         "resumo": "segurou a dívida esperando o juro cair",
-        "resultado": { "texto": "Você leu a ata do Banco Central como quem lê horóscopo. O juro fica onde quiser.", "efeitos": { "empresa.tracao": 1, "felicidade": -2 } }
+        "resultado": {
+          "texto": "Você leu a ata do Banco Central como quem lê horóscopo. O juro fica onde quiser.",
+          "efeitos": {
+            "empresa.tracao": 1,
+            "felicidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "faltou_gente",
+    "idade": [
+      18,
+      95
+    ],
+    "peso": 3,
+    "repetivel": true,
+    "intervalo": 5,
+    "condicoes": {
+      "empresa.valor": true,
+      "empresa.funcionarios": {
+        "min": 15
+      },
+      "pais.desemprego": {
+        "max": 6.5
+      }
+    },
+    "texto": "Não se acha gente para contratar: o desemprego está no chão, e {empresa:o|a} {empresa} disputa cada currículo com a concorrência. No RH, falam em \"mercado aquecido\" com olheiras.",
+    "resumo": "viu faltar gente para contratar com o desemprego baixo",
+    "escolhas": [
+      {
+        "texto": "Pagar acima do mercado",
+        "resumo": "pagou acima do mercado para não faltar gente",
+        "resultado": {
+          "texto": "Salário novo, fila de currículo de volta. A folha engordou, e a obra andou.",
+          "efeitos": {
+            "negocio": {
+              "salario": "acima"
+            },
+            "empresa.tracao": 2,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Treinar quem chega",
+        "resumo": "treinou gente sem experiência quando faltou mão de obra",
+        "resultado": {
+          "texto": "Você contratou quem nunca tinha feito aquilo e ensinou. Demora, mas fica.",
+          "efeitos": {
+            "negocio": {
+              "pd": 0.03
+            },
+            "dinheiro": -2000,
+            "empresa.tracao": 1
+          }
+        }
+      },
+      {
+        "texto": "Segurar a folha e crescer menos",
+        "resumo": "segurou a folha e cresceu menos quando faltou gente",
+        "resultado": {
+          "texto": "Você aceitou crescer devagar. A planilha ficou bonita; o pátio, vazio.",
+          "efeitos": {
+            "empresa.tracao": -2,
+            "felicidade": 1
+          }
+        }
       }
     ]
   }
