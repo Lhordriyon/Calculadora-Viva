@@ -98,7 +98,7 @@ function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida;
       <div class="escolhas-origem" role="group" aria-label="Obra">
         {[0.25, 0.5, 1].map((f) => (
           <button type="button" class="chip-origem" key={f} disabled={pode({ tipo: 'expandir', fracao: f, empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'expandir', fracao: f, empresa: id })}>
-            Ampliar {pct(f)} · {formatarDinheiro(custoDaObra(conteudo, emp, f))}
+            Ampliar {pct(f)} · {formatarDinheiro(custoDaObra(conteudo, emp, f, vida))}
           </button>
         ))}
         <button type="button" class="chip-origem" disabled={pode({ tipo: 'cortar', fracao: 0.25, empresa: id }) !== null} onClick={() => aoOperar({ tipo: 'cortar', fracao: 0.25, empresa: id })}>

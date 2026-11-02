@@ -756,7 +756,7 @@ function gerirNegocio(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
     } else if (estrategia === 'arriscada') {
       if (primeiroAno) tentar({ tipo: 'verbas', marketing: 0.08, pd: 0.08, empresa: id });
       // Sem caixa para a obra, pega no banco (e amplia na revisão seguinte).
-      if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5)), empresa: id });
+      if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
       if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
       // Com caixa sobrando (mais de 30% do valor), passa a tirar dividendos.
       if ((n['caixa'] ?? 0) > 0.3 * (n['valor'] ?? 0) && (n['retirada'] ?? 0) < 0.3) tentar({ tipo: 'retirada', fracao: 0.3, empresa: id });

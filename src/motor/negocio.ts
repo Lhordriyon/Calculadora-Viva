@@ -336,8 +336,10 @@ export function ehOperacaoDeNegocio(op: { tipo: string }): op is OperacaoNegocio
 }
 
 /** Quanto custa crescer `fracao` da capacidade (a obra paga do caixa). */
-export function custoDaObra(c: Conteudo, emp: Entidade, fracao: number): number {
-  return (emp.n['capacidade'] ?? 0) * fracao * economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro;
+export function custoDaObra(c: Conteudo, emp: Entidade, fracao: number, e?: EstadoVida): number {
+  // A obra custa o preço do setor: na sobra, máquina e estrutura saem baratas (comprar na baixa); na alta, caras.
+  const preco = e ? precoDoSetor(ofertaDe(e, emp.t['setor'])) : 1;
+  return (emp.n['capacidade'] ?? 0) * fracao * economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro * preco;
 }
 
 /** Abrir um mercado lá fora custa a estrutura de exportar (o despachante, a feira, a certificação). */
@@ -359,7 +361,7 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
       return Math.abs((n['marketing'] ?? 0) - op.marketing) < 1e-9 && Math.abs((n['pd'] ?? 0) - op.pd) < 1e-9 ? 'as verbas já são essas' : null;
     case 'expandir':
       if ((n['obra'] ?? 0) > 0) return 'já tem uma obra em andamento';
-      return custoDaObra(c, emp, op.fracao) > (n['caixa'] ?? 0) ? `a obra custa ${Math.round(custoDaObra(c, emp, op.fracao)).toLocaleString('pt-BR')} reais e o caixa não tem` : null;
+      return custoDaObra(c, emp, op.fracao, e) > (n['caixa'] ?? 0) ? `a obra custa ${Math.round(custoDaObra(c, emp, op.fracao, e)).toLocaleString('pt-BR')} reais e o caixa não tem` : null;
     case 'cortar':
       return (n['capacidade'] ?? 0) <= 0 ? 'não há o que cortar' : null;
     case 'emprestimo': {
@@ -404,7 +406,7 @@ export function operarNegocio(e: EstadoVida, c: Conteudo, op: OperacaoNegocio, r
         resumo: `mudou as verbas de marketing e de pesquisa de ${nomeDaEmpresa}`,
       };
     case 'expandir': {
-      const custo = custoDaObra(c, emp, op.fracao);
+      const custo = custoDaObra(c, emp, op.fracao, e);
       const nova = (emp.n['capacidade'] ?? 0) * op.fracao;
       somar(e, reg, id, 'caixa', -custo, 'obra', 'mercado');
       somar(e, reg, id, 'obra', nova, 'negocio');
@@ -470,10 +472,10 @@ export function decidirNoNegocio(
   if (d.demanda !== undefined) somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * d.demanda, 'negocio');
   if (d.expandir !== undefined) {
     // O caixa paga o que der da obra.
-    const porReal = economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro;
+    const porReal = economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro * precoDoSetor(ofertaDe(e, emp.t['setor']));
     const fracao = Math.min(d.expandir, Math.max(0, emp.n['caixa'] ?? 0) / Math.max(1, (emp.n['capacidade'] ?? 0) * porReal));
     if (fracao > 0.01) {
-      somar(e, reg, id, 'caixa', -custoDaObra(c, emp, fracao), 'obra', 'mercado');
+      somar(e, reg, id, 'caixa', -custoDaObra(c, emp, fracao, e), 'obra', 'mercado');
       somar(e, reg, id, 'obra', (emp.n['capacidade'] ?? 0) * fracao, 'negocio');
     }
   }

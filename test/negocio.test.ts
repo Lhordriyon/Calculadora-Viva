@@ -4,7 +4,7 @@ import { operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { empresaDe, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
-import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
+import { anoDosSetores, apertoDoSetor, decidirNoNegocio, economiaDo, ofertaDe, precoDoSetor, valorNaEmpresa } from '../src/motor/negocio.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -58,7 +58,7 @@ describe('o negócio de verdade (bloco H)', () => {
     const capacidade = emp.n['capacidade']!;
     const caixa = emp.n['caixa']!;
     operar(e, c, { tipo: 'expandir', fracao: 0.25 });
-    expect(emp.n['caixa']).toBeCloseTo(caixa - capacidade * 0.25 * economiaDo(c.setores.get('comercio')).giro);
+    expect(emp.n['caixa']).toBeCloseTo(caixa - capacidade * 0.25 * economiaDo(c.setores.get('comercio')).giro * precoDoSetor(ofertaDe(e, 'comercio')));
     expect(emp.n['capacidade']).toBeCloseTo(capacidade);
     expect(emp.n['obra']).toBeCloseTo(capacidade * 0.25);
     ano(e);
