@@ -11,7 +11,7 @@ import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { dicaDaChance } from '../motor/acoes.ts';
 import { decidir } from '../motor/decisao.ts';
-import { aEmpresa, ajusteDaVenda, cargaDaMesa, custoDaAquisicao, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
+import { aEmpresa, ajusteDaVenda, cargaDaMesa, chanceDaOpa, custoDaAquisicao, custoDaOpa, custoDaRecompra, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { custoDaObra, custoDeExportar, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ocupacaoDe, procura, VERBAS, type Preco, type Salario } from '../motor/negocio.ts';
 import { PARCEIROS } from '../motor/constantes.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
@@ -28,7 +28,7 @@ import {
   PRAZO_ACORDO,
   PRAZOS_DO_TITULO,
 } from '../motor/regras.ts';
-import { ANOS_ATE_O_CALOTE } from '../motor/regras.ts';
+import { ANOS_ATE_O_CALOTE, BOLSA } from '../motor/regras.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { anos } from './formato.ts';
@@ -251,6 +251,11 @@ function CartaoDaEmpresa({
   const gestor = id === PRINCIPAL ? vida.entidades['gestor'] : undefined;
   const subsidiarias = vendaDeSubsidiarias(vida, id);
   const motivoBolsa = naBolsa ? null : motivoParaNaoOperar(vida, conteudo, { tipo: 'abrirCapital', empresa: id });
+  // A bolsa de verdade (bloco H7): emitir, recomprar a maioria e a oferta hostil pela concorrente.
+  const minhaParte = n['participacao'] ?? 1;
+  const motivoEmitir = naBolsa ? motivoParaNaoOperar(vida, conteudo, { tipo: 'emitir', empresa: id }) : null;
+  const motivoRecompra = naBolsa && minhaParte < BOLSA.controle ? motivoParaNaoOperar(vida, conteudo, { tipo: 'recomprar', empresa: id }) : null;
+  const motivoOpa = naBolsa && dono ? motivoParaNaoOperar(vida, conteudo, { tipo: 'opa', empresa: id }) : null;
   const outras = grupo.filter((x) => x.id !== id);
   const sobrenome = vida.sobrenome.split(' ').at(-1) ?? vida.sobrenome;
   const operar = (op: Operacao) => {
@@ -282,7 +287,7 @@ function CartaoDaEmpresa({
           <dd>{formatarDinheiro(n['valor'] ?? 0)}</dd>
           <dt>Sua parte</dt>
           <dd>
-            {Math.round(parte * 100)}% · {formatarDinheiro(parteNaEmpresa(vida, id))}
+            {Math.round(minhaParte * 100)}% · {formatarDinheiro(parteNaEmpresa(vida, id))}
           </dd>
           {idade > 0 && (
             <>
@@ -442,6 +447,29 @@ function CartaoDaEmpresa({
             {motivoBolsa && <p class="nota">Bolsa: {motivoBolsa}.</p>}
           </>
         ))}
+      {naBolsa && (
+        <>
+          <p class="nota">
+            Na bolsa, a sua parte é {Math.round(minhaParte * 100)}%: {minhaParte >= 0.5 ? 'a maioria é sua.' : 'sem a maioria, alguém pode comprar o controle.'}
+          </p>
+          <button class="botao secundario" type="button" disabled={motivoEmitir !== null || vida.pendente !== null} onClick={() => aoOperar({ tipo: 'emitir', empresa: id })}>
+            Emitir ações (+{formatarDinheiro(((n['valor'] ?? 0) * BOLSA.emissao) / (1 - BOLSA.emissao))} no caixa)
+            <small>a sua parte vai a {Math.round(minhaParte * (1 - BOLSA.emissao) * 100)}%</small>
+          </button>
+          {minhaParte < BOLSA.controle && (
+            <button class="botao secundario" type="button" disabled={motivoRecompra !== null || vida.pendente !== null} onClick={() => aoOperar({ tipo: 'recomprar', empresa: id })}>
+              Recomprar a maioria ({formatarDinheiro(custoDaRecompra(vida, id))})
+            </button>
+          )}
+          {dono && (
+            <button class="botao secundario" type="button" disabled={motivoOpa !== null || vida.pendente !== null} onClick={() => aoOperar({ tipo: 'opa', empresa: id })}>
+              Oferta hostil pela concorrente ({formatarDinheiro(custoDaOpa(vida, id))})
+              <small>os acionistas: {dicaDaChance(chanceDaOpa(vida, conteudo, id))}</small>
+            </button>
+          )}
+          {(motivoEmitir ?? motivoRecompra ?? motivoOpa) && <p class="nota">Agora não: {motivoOpa ?? motivoRecompra ?? motivoEmitir}.</p>}
+        </>
+      )}
       {outras.length > 0 && (
         <>
           <p class="nota">
