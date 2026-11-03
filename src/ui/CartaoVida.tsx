@@ -140,6 +140,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
           </ol>
         )}
         <p class="epitafio">“{resumo.epitafio}”</p>
+        {(resumo.sonhos?.length ?? 0) > 0 && <p class="nota">{resumo.sonhos!.length > 1 ? 'Os sonhos' : 'O sonho'}: {resumo.sonhos!.join(' · ')}</p>}
         {resumo.conquistas.length > 0 && <p class="nota">Conquistas: {resumo.conquistas.join(' · ')}</p>}
         {resumo.antepassados.length > 0 && (
           <ol class="dinastia" aria-label="A família, de geração em geração">

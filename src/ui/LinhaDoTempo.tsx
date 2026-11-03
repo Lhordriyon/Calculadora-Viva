@@ -41,7 +41,7 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque, capitulo }: P
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
   // E as conquistas da influência (poder.ts › conquistasDoAno).
-  const marco = ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false);
+  const marco = ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || h.ref === 'regra:projeto_conquista';
   return (
     <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`} data-id={h.id}>
       <span class="idade" aria-label={`${h.idade} anos`}>

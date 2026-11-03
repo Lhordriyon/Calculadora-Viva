@@ -60,8 +60,9 @@ export function Projetos({ vida, conteudo, aoOperar, aoFechar }: Props) {
             return (
               <div class="projeto" key={p.def.id}>
                 <p>
-                  <b>{nome}</b> · {etapas.filter((x) => x.feita).length} de {etapas.length} etapas · {falta > 1 ? `faltam ${anos(falta)}` : 'último ano'}
+                  <b>{p.def.sonho ? '✦ ' : ''}{nome}</b> · {etapas.filter((x) => x.feita).length} de {etapas.length} etapas · {falta > 1 ? `faltam ${anos(falta)}` : 'último ano'}
                 </p>
+                {p.def.sonho && <p class="meta">O sonho da sua vida. {renderizar(p.def.descricao, ctx)}</p>}
                 <ul class="etapas">
                   {etapas.map((x, i) => (
                     <li key={i} class={x.feita ? 'feita' : ''}>
@@ -100,7 +101,7 @@ export function Projetos({ vida, conteudo, aoOperar, aoFechar }: Props) {
             const op: Operacao = { tipo: 'comecar_projeto', id: p.def.id, ...(p.com ? { com: p.com } : {}) };
             return (
               <button class="opcao" type="button" key={`${p.def.id}#${p.com ?? ''}`} onClick={() => aoOperar(op)}>
-                {nome}
+                {p.def.sonho ? '✦ ' : ''}{nome}
                 <small>
                   {renderizar(p.def.descricao, ctx)} {anos(p.def.prazo)} para chegar lá.
                 </small>
