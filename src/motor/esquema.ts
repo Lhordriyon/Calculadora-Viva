@@ -173,6 +173,8 @@ const EFEITOS_FIXOS = {
   /** Copia a pessoa de um papel para outro (a paixão vira o amor); `de: "ator"` é o ator do storylet (o ex que volta). */
   /** O dono da concorrente vira o gestor da empresa de quem joga (`rival` → `gestor`, bloco H6), a mesma pessoa. */
   promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: z.union([PapelNovo, z.literal('gestor')]) }).optional(),
+  /** Começa o sonho da vida (um projeto com `sonho`, projetos.ts › sonhar, bloco S1), com a escolha de causa. */
+  sonhar: z.string().regex(/^[a-z_]+$/).optional(),
   /** Recompra a maioria da empresa de perto na bolsa (empresa.ts › recomprar, bloco H7): {custo} é o que custou. */
   recomprar: z.literal(true).optional(),
   /** A proposta do gestor (diretoria.ts): true segue a jogada que ele propôs, pela folha; false recusa. */
@@ -975,6 +977,8 @@ export const Mundo = z.strictObject({
       idade: FaixaIdade,
       /** Com quem: os papéis possíveis (a condição `quando` vale para a pessoa, de ator). */
       com: z.array(z.enum(PAPEIS)).min(1).optional(),
+      /** O sonho da vida (bloco S1): o grande projeto que a pergunta dos 15 anos oferece e o cartão da vida conta. */
+      sonho: z.boolean().optional(),
       /** Quando dá para começar. */
       quando: Condicoes,
       etapas: z.array(z.strictObject({ texto: z.string(), feita: Condicoes, ajuda: z.array(z.string()).optional() })).min(1),

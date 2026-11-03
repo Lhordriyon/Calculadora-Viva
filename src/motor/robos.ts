@@ -407,6 +407,9 @@ function emprestarAoGoverno(estrategia: Estrategia, e: EstadoVida, c: Conteudo, 
  */
 const pode = (e: EstadoVida, c: Conteudo, op: Operacao): boolean => motivoParaNaoOperar(e, c, op) === null;
 
+/** A fama do sonho de virar estrela (`mundo.json › projetos › estrela`): a carreira que chega lá é a que o robô sonhador tenta. */
+const FAMA_DO_SONHO = 60;
+
 /** Vagas: a cautelosa busca estabilidade e salário, a arriscada o topo mais alto (palco, mercado), a aleatória sorteia. */
 function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   if (e.idade < 17 || e.idade > 58) return [];
@@ -415,6 +418,12 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
   const renda = eu.n['renda'] ?? 0;
   const vagas = c.mundo.carreiras.filter((k) => pode(e, c, { tipo: 'candidatar', carreira: k.id }));
   if (vagas.length === 0) return [];
+  // Quem sonha persegue o sonho (bloco S1): com o sonho de virar estrela, tenta o palco que leva à fama do sonho, mesmo
+  // ganhando menos (a porta que a vida abriu: o bar, a câmera, a várzea, o teatro).
+  if (eu.q['projeto_estrela'] && (atual?.fama ?? 0) < FAMA_DO_SONHO && e.idade <= 40) {
+    const palco = vagas.filter((k) => (k.fama ?? 0) >= FAMA_DO_SONHO).sort((a, b) => chanceDeEntrar(e, b) - chanceDeEntrar(e, a))[0];
+    if (palco) return [{ tipo: 'candidatar', carreira: palco.id }];
+  }
   let alvo: (typeof vagas)[number] | undefined;
   if (estrategia === 'aleatoria') {
     if (aleatorio(rng) < (atual ? 0.06 : 0.25)) alvo = sortear(rng, vagas);
@@ -515,8 +524,10 @@ function decidirPoder(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: R
   const liquido = liquidoDe(e);
   const cargos = c.mundo.cargos.filter((k) => k.esfera !== 'vitalicio' && pode(e, c, { tipo: 'candidatarCargo', cargo: k.id }) && k.campanha <= liquido * 0.35);
   if (cargos.length === 0) return [];
-  const minimo = estrategia === 'cautelosa' ? 0.6 : estrategia === 'arriscada' ? 0.3 : 0;
-  if (estrategia === 'aleatoria' && aleatorio(rng) >= 0.12) return [];
+  // Quem sonha governar o país (bloco S1) disputa mais vezes e aceita uma chance menor.
+  const sonha = Boolean(e.entidades['eu']!.q['projeto_presidencia']);
+  const minimo = estrategia === 'cautelosa' ? (sonha ? 0.35 : 0.6) : estrategia === 'arriscada' ? (sonha ? 0.15 : 0.3) : 0;
+  if (estrategia === 'aleatoria' && aleatorio(rng) >= (sonha ? 0.4 : 0.12)) return [];
   const bons = cargos.filter((k) => chanceDeEleicao(e, c, k) >= minimo).sort((a, b) => b.poder - a.poder);
   const alvo = estrategia === 'aleatoria' ? (bons.length ? sortear(rng, bons) : undefined) : bons[0];
   return alvo ? [{ tipo: 'candidatarCargo', cargo: alvo.id }] : [];
@@ -775,6 +786,11 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     }
     if (estrategia === 'aleatoria' && idade >= 20 && idade <= 55 && liquido >= 25000 && aleatorio(rng) < 0.04) {
       return [{ tipo: 'abrir', setor: sortear(rng, setores), valor: Math.floor(liquido * (0.2 + 0.4 * aleatorio(rng))) }];
+    }
+    // Quem sonha com o império (bloco S1) abre a empresa, qualquer que seja o jeito.
+    if (e.entidades['eu']!.q['projeto_imperio'] && idade >= 20 && idade <= 50 && liquido >= 15000) {
+      const setor = e.entidades['eu']!.t['setor'] ?? '';
+      return [{ tipo: 'abrir', setor: setores.includes(setor) ? setor : sortear(rng, setores), valor: Math.floor(liquido * 0.4) }];
     }
     return [];
   }

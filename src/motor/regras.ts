@@ -83,6 +83,8 @@ export const PESO_CONFORTO_BENS = 0.6;
 /** Carreira: a chance de subir de cargo cai a cada degrau (multiplica por isto a cada nível); no palco, cai mais. */
 export const PIRAMIDE = 0.8;
 export const PIRAMIDE_DA_FAMA = 0.45;
+/** Quem sonha em virar estrela (bloco S1) sobe com esta vez a chance numa carreira de holofote: a garra do sonho. */
+export const GARRA_DO_SONHO = 2;
 /** Truste: quanto custa comprar uma concorrente (fração do valor da empresa) e quantas compras fazem um truste. */
 export const CUSTO_AQUISICAO = 0.3;
 export const AQUISICOES_TRUSTE = 3;

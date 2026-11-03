@@ -293,6 +293,8 @@ export function pontosDeVirada(e: EstadoVida, c?: Conteudo, limite = 3): PontoDe
 export interface ResumoVida {
   /** As conquistas da influência desta vida, pelo nome (influencia.ts). */
   conquistas: string[];
+  /** O sonho da vida (bloco S1): o nome e como acabou (realizado, pelo caminho, deixado para trás, de pé). */
+  sonhos?: string[];
   nome: string;
   nomeCompleto: string;
   genero: Genero;
@@ -326,6 +328,28 @@ export function descreverOrigem(classe: string | undefined, familia: string | un
   if (!classe || !familia) return classe ?? familia ?? '';
   const tipo = familia.replace(/^família /, '');
   return classe.startsWith('família ') ? `${classe} e ${tipo}` : `${classe}, família ${tipo}`;
+}
+
+/** Os sonhos da vida (bloco S1), lidos do livro: quando começaram e como acabaram. */
+export function sonhosDaVida(e: EstadoVida, c: Conteudo): string[] {
+  const saida: string[] = [];
+  for (const def of c.mundo.projetos) {
+    if (!def.sonho) continue;
+    const q = `eu.projeto_${def.id}`;
+    let comecou = false;
+    let fim: { tipo: string; idade: number } | undefined;
+    for (const h of e.historico) {
+      if (!comecou && h.mudancas?.some((m) => m.c === q && (m.q ?? 0) > 0)) comecou = true;
+      const m = /^projeto:([a-z_]+)#(conquista|vencido|semTempo)$/.exec(h.instancia ?? '');
+      if (m && m[1] === def.id) fim = { tipo: m[2]!, idade: h.idade };
+    }
+    if (!comecou) continue;
+    if (fim?.tipo === 'conquista') saida.push(`${def.nome}, realizado aos ${fim.idade}`);
+    else if (fim) saida.push(`${def.nome}, que ficou pelo caminho aos ${fim.idade}`);
+    else if (e.entidades['eu']?.q[`projeto_${def.id}`]) saida.push(e.vivo ? `${def.nome}, de pé` : `${def.nome}, sonhado até o fim`);
+    else saida.push(`${def.nome}, deixado para trás`);
+  }
+  return saida;
 }
 
 export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
@@ -364,6 +388,7 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     pontos,
     epitafio: renderizar(modelo, ctx),
     conquistas: conquistasDaVida(e),
+    sonhos: sonhosDaVida(e, c),
     geracao: e.dinastia?.geracao ?? 1,
     antepassados: e.dinastia?.antepassados ?? [],
     herdeiro: (() => {

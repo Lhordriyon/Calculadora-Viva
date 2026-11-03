@@ -167,6 +167,17 @@ function terminar(e: EstadoVida, p: ProjetoAtivo, fim: Fim): void {
  * passado é fracasso, e a pessoa que morreu antes leva o projeto junto. Quem saiu da vida (sem ninguém com a
  * qualidade) também encerra, calado.
  */
+/**
+ * O sonho começa por uma escolha (o efeito `sonhar`, bloco S1): o projeto com `sonho` vira de quem joga, com a escolha
+ * de causa, se não estiver de pé e couber entre os projetos da vida.
+ */
+export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, origem: number): void {
+  const def = c.mundo.projetos.find((p) => p.id === id);
+  const q = qualidadeDoProjeto(id);
+  if (!def?.sonho || e.entidades['eu']?.q[q] || projetosAtivos(e, c).length >= MAX_PROJETOS) return;
+  ganhar(e, reg, 'eu', q, origem);
+}
+
 export function anoDosProjetos(e: EstadoVida, c: Conteudo): void {
   if (!e.vivo) return;
   for (const p of projetosAtivos(e, c)) {

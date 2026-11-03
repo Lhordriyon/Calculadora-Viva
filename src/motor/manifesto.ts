@@ -316,6 +316,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
   ...ler(['mercado.dinheiro'], 'país: o dinheiro que circula contra o que a economia precisa (o excesso)', true),
   ...ler(['pais.moeda'], 'país: o dinheiro que sobra acende a inflação e aquece o crescimento', true),
+  ...ler(['eu.projeto_estrela'], 'carreira: quem sonha em virar estrela sobe com o dobro da chance numa carreira de holofote', true),
   ...ler(['eu.saude'], 'mortalidade', true),
   ...ler(['eu.felicidade'], 'retorno da felicidade', false),
   ...ler(['eu.dinheiro', 'eu.divida', 'eu.renda', 'eu.custo'], 'economia (sobra, crédito, juros)', true),
@@ -657,8 +658,8 @@ export const ETAPAS_DO_ANO = [
     id: 'carreira',
     nome: 'a carreira: promoção, fama e o fim da carreira',
     // No cargo, a carreira para; com a coroa ou o Regime, ela fica para trás (o cargo vitalício vira o trabalho).
-    // O chefe que gosta de quem joga promove mais.
-    le: [...ESFERAS, 'eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
+    // O chefe que gosta de quem joga promove mais; o sonho de virar estrela dá a garra no palco (bloco S1).
+    le: [...ESFERAS, 'eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor', 'eu.aposentado', 'eu.genero', 'eu.saude', 'eu.inteligencia', 'eu.aparencia', 'eu.cargo', 'eu.projeto_estrela', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...POLITICAS_DO_PAIS],
     escreve: ['eu.carreira', 'eu.nivel', 'eu.ocupacao', 'eu.fama', 'eu.renda', 'eu.salario_em_dolar', 'eu.servidor'],
   },
   {
