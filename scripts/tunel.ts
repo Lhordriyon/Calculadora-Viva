@@ -1058,6 +1058,22 @@ const portoesH6 = [
     `${formatarDinheiro(mediana(seguiuMais))} contra ${formatarDinheiro(mediana(recusouMais))} (${seguiuMais.length} e ${recusouMais.length} vidas)`,
   ],
 ] as const;
+/** Bloco H7 (pedido do dono em 03/11): a bolsa de verdade. */
+const somaBolsa = (f: (b: (typeof vidas)[number]['bolsa']) => number): number => vidas.reduce((s, v) => s + f(v.bolsa), 0);
+const ofertasH7 = somaBolsa((b) => b.ofertas);
+const passaramH7 = somaBolsa((b) => b.passaram) / Math.max(1, ofertasH7);
+const fracaoDeVidas = (f: (b: (typeof vidas)[number]['bolsa']) => boolean): number => vidas.filter((v) => f(v.bolsa)).length / vidas.length;
+const respostasContra = [0, 1, 2].map((i) => somaBolsa((b) => b.respostas[i] ?? 0));
+const portoesH7 = [
+  ['A oferta hostil acontece: ≥ 0,1% das vidas tentam tomar a concorrente na bolsa', fracaoDeVidas((b) => b.ofertas > 0) >= 0.001, pct(fracaoDeVidas((b) => b.ofertas > 0), 2)],
+  ['A oferta hostil nem sempre passa: das ofertas, as que passam ficam entre 30% e 85%', passaramH7 >= 0.3 && passaramH7 <= 0.85, `${pct(passaramH7)} de ${ofertasH7}`],
+  [
+    'Quem perde a maioria na bolsa pode perder a empresa: a oferta contra quem joga acontece (≥ 0,05% das vidas)',
+    fracaoDeVidas((b) => b.contra > 0) >= 0.0005,
+    `${pct(fracaoDeVidas((b) => b.contra > 0), 2)} das vidas · recomprou ${respostasContra[0]}, vendeu ${respostasContra[1]}, brigou ${respostasContra[2]}`,
+  ],
+  ['Emitir ações acontece: ≥ 0,2% das vidas', fracaoDeVidas((b) => b.emissoes > 0) >= 0.002, `${pct(fracaoDeVidas((b) => b.emissoes > 0), 2)} (recompras: ${somaBolsa((b) => b.recompras)})`],
+] as const;
 const portoesOmega6 = [
   [
     'O caminho varia mais que o destino: as assinaturas do caminho (as causas dos pontos de virada e os capítulos) passam as do destino',
@@ -1400,6 +1416,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesH6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## A bolsa de verdade (bloco H7)');
+l();
+l('A empresa na bolsa emite ações (o dinheiro vai para o caixa e a parte de quem joga encolhe), recompra a maioria e toma a concorrente numa oferta hostil, sem pedir ao dono; sem a maioria, alguém pode comprar o controle dela.');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesH7) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## O ano em etapas (fatia 1.3)');
 l();
@@ -1803,6 +1827,7 @@ for (const [nome, ok, detalhe] of portoesOmega4) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesOmega5) console.log(`${ok ? '✓' : '·'} portão Ω5: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesOmega6) console.log(`${ok ? '✓' : '·'} portão Ω6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesH6) console.log(`${ok ? '✓' : '·'} portão H6: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesH7) console.log(`${ok ? '✓' : '·'} portão H7: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

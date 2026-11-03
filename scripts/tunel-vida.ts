@@ -3,6 +3,8 @@
  * seguidas, a vida de origem escolhida e a dinastia. Cada tarefa depende só da semente: o resultado é o mesmo rodando
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
+import { OFERTAS_CONTRA } from '../src/motor/empresa.ts';
+const CONTRA: ReadonlySet<string> = new Set(OFERTAS_CONTRA);
 import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA } from '../src/motor/diretoria.ts';
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
@@ -370,6 +372,8 @@ export interface Vida {
   capitulos: Partial<Record<TipoDeCapitulo, number>>;
   /** A rival e o gestor (bloco H6): a concorrência com nome, o rival que já era da vida, o gestor, as propostas seguidas e recusadas, os avisos e as saídas. */
   comRosto: { rival: boolean; conhecido: boolean; gestor: boolean; seguidas: number; recusadas: number; avisos: number; saidas: number };
+  /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
+  bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
   caminho: string;
   /** Os elos causais distintos da vida ("storylet que causou>storylet que aconteceu"). */
@@ -1155,6 +1159,14 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       recusadas: e.historico.filter((h) => h.ref === PROPOSTA && h.escolha?.indice === ESCOLHA_RECUSAR).length,
       avisos: e.historico.filter((h) => h.ref === 'regra:gestor_avisou').length,
       saidas: e.historico.filter((h) => h.ref === 'regra:gestor_saiu').length,
+    },
+    bolsa: {
+      emissoes: e.historico.filter((h) => h.ref === 'empresa:emitir').length,
+      recompras: e.historico.filter((h) => h.ref === 'empresa:recomprar').length,
+      ofertas: e.historico.filter((h) => h.ref === 'empresa:opa').length,
+      passaram: e.historico.filter((h) => h.ref === 'empresa:opa' && h.texto.startsWith('A oferta hostil deu certo')).length,
+      contra: e.historico.filter((h) => CONTRA.has(h.ref ?? '')).length,
+      respostas: [0, 1, 2].map((i) => e.historico.filter((h) => CONTRA.has(h.ref ?? '') && h.escolha?.indice === i).length),
     },
     ...caminhoDaVida(e, c, pontos),
     ...contasDaVida(e),
