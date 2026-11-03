@@ -22,9 +22,9 @@ import { FORMAS_DA_COROA, PADROES, PERFIS, POLITICAS, RETIRADAS, VERBOS, type Fo
 import { propostaDeAcordo } from './dividas.ts';
 import { padraoDe } from './economia.ts';
 import { ACOES_DIPLOMATICAS, parceirosDe, type AcaoDiplomatica } from './diplomacia.ts';
-import { abrirPorEfeito, custoDaAquisicao, empresaDe, liquidoDe, precoDaAquisicao, setoresDeEmpresa } from './empresa.ts';
+import { abrirPorEfeito, chanceDaOpa, custoDaAquisicao, custoDaOpa, custoDaRecompra, empresaDe, liquidoDe, precoDaAquisicao, setoresDeEmpresa } from './empresa.ts';
 import { ehDaEmpresa, ehDoPoder, jogadasDe } from './fortuna.ts';
-import { fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
+import { BOLSA, fracaoDeUmaSubsidiaria, PREMIO_DA_BOLSA, REVERSAO_TRACAO, subsidiariasPorVenda } from './regras.ts';
 import type { Efeitos, Escolha, Storylet } from './esquema.ts';
 import { ESCOLHA_RECUSAR, jogadasDoNegocio, PROPOSTA } from './diretoria.ts';
 import { aleatorio, sortear, type Rng } from './rng.ts';
@@ -129,6 +129,8 @@ export function valorEfeitos(ef: Efeitos | undefined, e: EstadoVida, c: Conteudo
   }
   // A estreia na bolsa reavalia a parte de quem joga.
   if (ef.abrirCapital && emp && !emp.q['na_bolsa']) v += (PREMIO_DA_BOLSA * parte) / REAIS_POR_PONTO;
+  // A recompra da maioria paga o prêmio de quem vende (bloco H7): o resto do que sai da conta volta como parte da empresa.
+  if (ef.recomprar && emp) v -= (custoDaRecompra(e) * BOLSA.premioRecompra) / (1 + BOLSA.premioRecompra) / REAIS_POR_PONTO;
   for (const [chave, valor] of Object.entries(ef)) {
     if (!chave.includes('.') || typeof valor !== 'number') continue;
     const { ent, campo } = separar(chave);
@@ -726,6 +728,15 @@ function decidirQuemManda(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rn
  * a arriscada cresce na frente da fila, investe 8%, cobra premium quando a qualidade deixa e abre mercado lá fora; a
  * aleatória mexe de vez em quando.
  */
+/** O dono da concorrente disse não à compra nos últimos três anos (o livro guarda a recusa)? */
+function donoRecusou(e: EstadoVida): boolean {
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano > e.ano - 3; i--) {
+    const h = e.historico[i]!;
+    if (h.ref === 'empresa:adquirir' && h.texto.includes('não quis vender')) return true;
+  }
+  return false;
+}
+
 /** Quem joga recusou neste ano a proposta do gestor (a escolha está no livro)? */
 function recusouOGestor(e: EstadoVida): boolean {
   for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano === e.ano; i--) {
@@ -770,6 +781,9 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   const grupo = empresasDe(e);
   const outras = grupo.filter((x) => x.id !== emp.id);
   if (estrategia === 'cautelosa') {
+    // Sem a maioria na bolsa, recompra o controle quando cabe no bolso (bloco H7).
+    const semMaioria = idade < 65 ? grupo.find((x) => pode(e, c, { tipo: 'recomprar', empresa: x.id })) : undefined;
+    if (semMaioria) return [{ tipo: 'recomprar', empresa: semMaioria.id }];
     // As outras primeiro: vender a que toca põe outra no lugar dela.
     return idade >= 65 ? [...grupo].reverse().map((x) => ({ tipo: 'vender', empresa: x.id }) as Operacao) : [];
   }
@@ -794,8 +808,12 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     return [];
   }
   if (estrategia !== 'arriscada') return [];
+  // Na bolsa (bloco H7), a arriscada não pede: vai pela oferta hostil quando os acionistas tendem a vender (e com menos ainda, se o dono já disse não).
+  if (pode(e, c, { tipo: 'opa' }) && custoDaOpa(e) <= liquido * 0.5 && chanceDaOpa(e, c) >= (donoRecusou(e) ? 0.4 : 0.55)) return [{ tipo: 'opa' }];
   // Compra a concorrente quando ela sai perto do preço justo ou abaixo (a baixa do setor, a rival fraca).
   if (pode(e, c, { tipo: 'adquirir' }) && custoDaAquisicao(e) <= liquido * 0.5 && precoDaAquisicao(e) <= 1.15) return [{ tipo: 'adquirir' }];
+  // Na bolsa, com mais pedido que estrutura, emite ações em vez de esperar o caixa (bloco H7).
+  if ((emp.n['ocupacao'] ?? 1) > 1.1 && pode(e, c, { tipo: 'emitir', empresa: emp.id })) return [{ tipo: 'emitir', empresa: emp.id }];
   if (momentoDoPais(e).id === 'expansao') {
     const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
     if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];

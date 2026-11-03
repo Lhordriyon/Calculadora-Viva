@@ -11,7 +11,7 @@ import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campo
 import type { Conteudo } from './conteudo.ts';
 import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
 import { movimentar } from './economia.ts';
-import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
+import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, recomprar, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
 import { decidirNoNegocio, valorNaEmpresa } from './negocio.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
@@ -208,6 +208,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     if (id) (ctx.criados ??= {})[papel] = id;
   }
   if (ef.proposta !== undefined) seguirProposta(e, c, reg, ef.proposta, origem);
+  if (ef.recomprar) ctx.valores['custo'] = recomprar(e, reg);
   if (ef.promover) {
     const de = ef.promover.de === 'ator' ? (ator ?? 'ator') : ef.promover.de;
     const quem = e.entidades[de];

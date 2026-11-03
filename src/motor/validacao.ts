@@ -780,6 +780,7 @@ function verificarTextos(
   if (blocos.some((b) => b.efeitos.rodada)) extras.add('rodada');
   if (blocos.some((b) => b.efeitos.venderEmpresa || b.efeitos.venderSubsidiarias || b.efeitos.abrirCapital)) extras.add('venda');
   if (blocos.some((b) => b.efeitos.fecharEmpresa)) extras.add('sobra');
+  if (blocos.some((b) => b.efeitos.recomprar)) extras.add('custo');
   const exigidasStorylet = new Set(qualidadesGarantidas(s.condicoes));
   const usados = new Set<string>();
   const atores = s.ator;

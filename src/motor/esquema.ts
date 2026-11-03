@@ -173,6 +173,8 @@ const EFEITOS_FIXOS = {
   /** Copia a pessoa de um papel para outro (a paixão vira o amor); `de: "ator"` é o ator do storylet (o ex que volta). */
   /** O dono da concorrente vira o gestor da empresa de quem joga (`rival` → `gestor`, bloco H6), a mesma pessoa. */
   promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: z.union([PapelNovo, z.literal('gestor')]) }).optional(),
+  /** Recompra a maioria da empresa de perto na bolsa (empresa.ts › recomprar, bloco H7): {custo} é o que custou. */
+  recomprar: z.literal(true).optional(),
   /** A proposta do gestor (diretoria.ts): true segue a jogada que ele propôs, pela folha; false recusa. */
   proposta: z.boolean().optional(),
   agendar: z.array(Agendamento).optional(),

@@ -4,7 +4,7 @@
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
 import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
-import { MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
+import { BOLSA, MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
@@ -318,6 +318,8 @@ const CONTA: Record<string, DefCampo> = {
 };
 
 const EMPRESA: Record<string, DefCampo> = {
+  /** Recomprar a maioria cabe no bolso de quem joga? (1 ou 0; a história da oferta contra quem joga, bloco H7). */
+  recompra_cabe: { tipo: 'num', sistema: 'dinheiro', derivado: true },
   /** A sobra (positiva) ou a falta de oferta no setor dela, em % (negocio.ts › anoDosSetores). */
   sobra_no_setor: { tipo: 'num', sistema: 'carreira', derivado: true },
   /** O que a empresa deve aos bancos (negocio.ts): paga o juro e 10% por ano, do caixa. */
@@ -695,6 +697,12 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return deQuando(e, ent, en, 'ruim');
       case 'visao':
         return visaoDe(e, ent, en);
+      case 'recompra_cabe': {
+        const falta = Math.max(0, BOLSA.controle - (en.n['participacao'] ?? 1));
+        const custo = Math.max(0, en.n['valor'] ?? 0) * falta * (1 + BOLSA.premioRecompra);
+        const eu = e.entidades['eu'];
+        return falta > 0 && eu !== undefined && custo <= Math.max(0, eu.n['dinheiro'] ?? 0) + investidoDe(eu) ? 1 : 0;
+      }
       case 'sobra_no_setor':
         return (e.entidades[`setor_${en.t['setor'] ?? ''}`]?.n['oferta'] ?? 100) - 100;
       case 'te_deve':

@@ -571,7 +571,7 @@ export function textoDaConcorrencia(emp: Entidade): string {
 }
 
 /** A entrada que mudou o campo por último (a decisão de causa), nos últimos lançamentos do livro. */
-function entradaQueMudou(e: EstadoVida, campo: string): number | null {
+export function entradaQueMudou(e: EstadoVida, campo: string): number | null {
   for (let i = e.historico.length - 1, k = 0; i >= 0 && k < 400; i--, k++) if (e.historico[i]!.mudancas?.some((m) => m.c === campo)) return e.historico[i]!.id;
   return null;
 }

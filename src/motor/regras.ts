@@ -496,6 +496,14 @@ export const SINERGIA_DA_FUSAO = { mesmoRamo: 0.08, outroRamo: -0.02, desvio: 0.
 export const TRACAO_DA_FUSAO = 2;
 /** Abrir o capital: o menor valor, quanto a empresa passa a valer a mais por ter preço todo dia, quanto da parte de quem joga ele vende na estreia e quanto a dependência cai (conselho, auditoria, balanço público). */
 export const MINIMO_BOLSA = 1e8;
+/**
+ * A bolsa de verdade (bloco H7): a emissão de ações (a fração da empresa vendida em ações novas: o dinheiro vai para o
+ * caixa e a parte de quem joga encolhe), a recompra do controle (a fração que garante a maioria e o prêmio de quem
+ * vende), a oferta hostil pela concorrente (o prêmio sobre o preço do dia, o que se perde quando falha, a força e a
+ * mágoa que ficam, os anos entre ofertas) e a oferta contra quem perdeu a maioria (a chance no ano, e mais com a
+ * concorrente forte), e a chance de quem compra ser a dona da concorrente, e não um fundo.
+ */
+export const BOLSA = { emissao: 0.15, controle: 0.51, premioRecompra: 0.1, premioHostil: 0.35, custoDaOferta: 0.05, forcaQueFica: 10, magoaDaOferta: 30, anosEntreOfertas: 3, chanceContraVoce: 0.12, rivalForte: 0.1, daRival: 0.6 } as const;
 export const PREMIO_DA_BOLSA = 0.2;
 export const FRACAO_NA_ESTREIA = 0.2;
 export const GOVERNANCA_DA_BOLSA = 15;

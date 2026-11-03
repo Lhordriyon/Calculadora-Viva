@@ -54,6 +54,7 @@ import {
   GARGALO_DO_DONO,
   GOVERNANCA_DA_BOLSA,
   MAX_EMPRESAS,
+  BOLSA,
   MINIMO_BOLSA,
   PERDA_SEM_DONO,
   PENALIDADE_PORTE,
@@ -75,7 +76,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { aleatorio, normal, sortear } from './rng.ts';
-import { anoDoNegocio, empregosDe, empregosNaCidade, garantirFundamentos, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
+import { anoDoNegocio, empregosDe, empregosNaCidade, entradaQueMudou, garantirFundamentos, garraDaRival, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -495,6 +496,7 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   reorganizarGrupo(e, reg);
   // O lobby contratado (ou a regra sob medida) pode baixar os impostos do país (negocio.ts).
   lobbyDoAno(e, c);
+  ofertaContraVoce(e, c);
   const empresas = empresasDe(e);
   if (empresas.length === 0) return;
   const carga = cargaDaMesa(e);
@@ -563,10 +565,13 @@ export type OperacaoEmpresa =
   | { tipo: 'fundir'; empresa?: string; com: string }
   /** Leva a empresa para a bolsa. */
   | { tipo: 'abrirCapital'; empresa?: string }
+  | { tipo: 'emitir'; empresa?: string }
+  | { tipo: 'recomprar'; empresa?: string }
+  | { tipo: 'opa'; empresa?: string }
   /** Passa a tocar esta de perto (a que tocava fica com a diretoria). */
   | { tipo: 'cuidar'; empresa: string };
 
-const TIPOS_DE_EMPRESA = new Set(['abrir', 'aportar', 'retirada', 'vender', 'adquirir', 'venderSubsidiaria', 'fundir', 'abrirCapital', 'cuidar']);
+const TIPOS_DE_EMPRESA = new Set(['abrir', 'aportar', 'retirada', 'vender', 'adquirir', 'venderSubsidiaria', 'fundir', 'abrirCapital', 'cuidar', 'emitir', 'recomprar', 'opa']);
 
 export function ehOperacaoDeEmpresa(op: { tipo: string }): op is OperacaoEmpresa {
   return TIPOS_DE_EMPRESA.has(op.tipo);
@@ -620,6 +625,20 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
     if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
     if (custoDaAquisicao(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaAquisicao(e, id))}`;
     if (fezNoAno(e, 'empresa:adquirir')) return 'uma tentativa por ano';
+  }
+  // A bolsa de verdade (bloco H7): emitir, recomprar e a oferta hostil são jogadas de quem está na bolsa.
+  if ((op.tipo === 'emitir' || op.tipo === 'recomprar' || op.tipo === 'opa') && !emp.q['na_bolsa']) return 'só com a empresa na bolsa';
+  if (op.tipo === 'emitir' && fezNoAno(e, 'empresa:emitir')) return 'uma emissão por ano';
+  if (op.tipo === 'recomprar') {
+    if ((emp.n['participacao'] ?? 1) >= BOLSA.controle) return 'a maioria já é sua';
+    if (custoDaRecompra(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaRecompra(e, id))}`;
+  }
+  if (op.tipo === 'opa') {
+    const dono = e.entidades['rival'];
+    if (id !== PRINCIPAL || !dono || dono.vivo === false) return 'a concorrência não tem dono à vista';
+    if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
+    if (custoDaOpa(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaOpa(e, id))}`;
+    if (ofertaRecente(e)) return `uma oferta a cada ${BOLSA.anosEntreOfertas} anos`;
   }
   if (op.tipo === 'venderSubsidiaria' && (emp.n['subsidiarias'] ?? 0) < 1) return 'ela não tem subsidiárias';
   if (op.tipo === 'fundir') {
@@ -683,6 +702,67 @@ const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sex
 const subsidiariasTexto = (n: number): string => (n === 1 ? 'uma subsidiária' : `${n.toLocaleString('pt-BR')} subsidiárias`);
 
 /** Faz a operação (já conferida) e devolve o texto e o resumo da entrada. */
+/** Recomprar a maioria (bloco H7): o que falta para 51% da empresa, pelo valor de agora com o prêmio de quem vende. */
+export function custoDaRecompra(e: EstadoVida, id = PRINCIPAL): number {
+  const emp = empresaDe(e, id);
+  if (!emp) return 0;
+  return Math.max(0, emp.n['valor'] ?? 0) * Math.max(0, BOLSA.controle - (emp.n['participacao'] ?? 1)) * (1 + BOLSA.premioRecompra);
+}
+
+/** Quem joga compra de volta, de quem tem as ações, o que falta para a maioria; o valor da empresa não muda, só o dono. Devolve o que pagou. */
+export function recomprar(e: EstadoVida, reg: Mudanca[], id = PRINCIPAL): number {
+  const emp = empresaDe(e, id);
+  const falta = Math.max(0, BOLSA.controle - (emp?.n['participacao'] ?? 1));
+  if (!emp || falta <= 0) return 0;
+  const pago = tirarDeQuemJoga(e, reg, custoDaRecompra(e, id), 'mercado');
+  somar(e, reg, id, 'participacao', falta);
+  return pago;
+}
+
+/** A oferta hostil pela concorrente (bloco H7): o preço do dia dela, com o prêmio que convence os acionistas a vender. */
+export function custoDaOpa(e: EstadoVida, id = PRINCIPAL): number {
+  return custoDaAquisicao(e, id) * (1 + BOLSA.premioHostil);
+}
+
+/**
+ * A chance da oferta hostil: os acionistas vendem pelo prêmio, a influência de negócios de quem joga ajuda, e o dono
+ * briga pelo traço e pela mágoa (a garra dele); a concorrente cara (o setor em alta, ela forte) segura melhor.
+ */
+export function chanceDaOpa(e: EstadoVida, c: Conteudo, id = PRINCIPAL): number {
+  const emp = empresaDe(e, id);
+  if (!emp || !e.entidades['rival']) return 0;
+  const chance = 0.45 + influenciaNegocios(e) / 300 - (garraDaRival(e, c, emp) - 1) * 0.25 - (precoDaAquisicao(e, id) > 1 ? 0.1 : 0);
+  return Math.min(0.9, Math.max(0.1, chance));
+}
+
+/** Houve oferta hostil nos últimos anos? (uma a cada três) */
+function ofertaRecente(e: EstadoVida): boolean {
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano > e.ano - BOLSA.anosEntreOfertas; i--) if (e.historico[i]!.ref === 'empresa:opa') return true;
+  return false;
+}
+
+/** As histórias da oferta contra quem joga (só pela agenda): a da dona da concorrente e a de um fundo de fora. */
+export const OFERTAS_CONTRA = ['a_opa_da_rival', 'a_opa_do_fundo'] as const;
+
+/**
+ * A oferta contra quem joga (bloco H7): com a empresa de perto na bolsa e menos da metade das ações nas mãos de quem
+ * joga, alguém pode comprar o controle: a dona da concorrente (seis vezes em dez, quando há uma) ou um fundo de fora. A oferta vem no ano, pela
+ * agenda (a história com as três respostas), e aponta a entrada que levou a parte de quem joga abaixo da metade.
+ */
+export function ofertaContraVoce(e: EstadoVida, c: Conteudo): void {
+  const emp = empresaDe(e);
+  if (!emp?.q['na_bolsa'] || (emp.n['participacao'] ?? 1) >= 0.5) return;
+  if (e.agenda.some((a) => (OFERTAS_CONTRA as readonly string[]).includes(a.evento))) return;
+  for (let i = e.historico.length - 1; i >= 0 && e.historico[i]!.ano > e.ano - BOLSA.anosEntreOfertas; i--) if ((OFERTAS_CONTRA as readonly string[]).includes(e.historico[i]!.ref ?? '')) return;
+  const chance = BOLSA.chanceContraVoce + ((emp.n['concorrente'] ?? 50) >= 60 ? BOLSA.rivalForte : 0);
+  if (aleatorio(e.rng) >= chance) return;
+  const rival = e.entidades['rival'];
+  const origem = entradaQueMudou(e, 'empresa.participacao');
+  // Quem compra: a dona da concorrente, quando há uma (seis em dez), ou um fundo de fora.
+  const daRival = rival !== undefined && rival.vivo !== false && c.porId.has('a_opa_da_rival') && aleatorio(e.rng) < BOLSA.daRival;
+  e.agenda.push(daRival ? { evento: 'a_opa_da_rival', ano: e.ano, origem, ator: 'rival' } : { evento: 'a_opa_do_fundo', ano: e.ano, origem });
+}
+
 /** O tamanho do pedido de compra para o dono (o `ajuste` da decisão): a concorrente fraca vende mais fácil, a forte, menos. */
 export function ajusteDaVenda(emp: Entidade): number {
   const forca = emp.n['concorrente'] ?? 50;
@@ -707,11 +787,23 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     porNaEmpresa(e, reg, id, valor, valor, true);
     return { texto: `Pôs ${formatarDinheiro(valor)} ${aEmpresa(emp, 'na')}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
   }
-  if (op.tipo === 'adquirir') {
+  if (op.tipo === 'adquirir' || op.tipo === 'opa') {
+    // A oferta hostil (bloco H7) compra pela bolsa, sem pedir ao dono, com o prêmio aos acionistas.
+    const hostil = op.tipo === 'opa';
     // Quem vende é o dono (bloco H6): ele decide pelo que lembra de quem joga (a guerra de preços magoa) e pela força da
     // concorrente (a fraca vende mais fácil). O não fica no livro, com o porquê, e a tentativa do ano acabou.
     const dono = id === PRINCIPAL && e.entidades['rival']?.vivo !== false ? e.entidades['rival'] : undefined;
-    if (dono) {
+    if (dono && hostil && aleatorio(e.rng) >= chanceDaOpa(e, c, id)) {
+      // A oferta que falha custa os bancos e os advogados, e os acionistas ficam com o dono: a concorrência sai mais unida.
+      const perdido = tirarDeQuemJoga(e, reg, custoDaOpa(e, id) * BOLSA.custoDaOferta, 'mercado');
+      if (emp.n['concorrente'] !== undefined) definirNumero(e, reg, id, 'concorrente', Math.min(100, (emp.n['concorrente'] ?? 50) + BOLSA.forcaQueFica), 'negocio');
+      somar(e, reg, 'rival', 'magoa', BOLSA.magoaDaOferta);
+      return {
+        texto: `A oferta hostil por ${dono.t['negocio'] ?? 'a concorrente'} não passou: os acionistas ficaram com ${dono.nome}. Os bancos e os advogados custaram ${formatarDinheiro(perdido)}, e a concorrência saiu mais unida.`,
+        resumo: `perdeu a oferta hostil pela concorrente de ${dono.nome}`,
+      };
+    }
+    if (dono && !hostil) {
       const d = decidir(e, c, 'rival', 'aceitar', undefined, ajusteDaVenda(emp));
       if (aleatorio(e.rng) >= d.chance) {
         const pq = porqueDaResposta(e, c, 'rival', 'aceitar', d, false);
@@ -725,7 +817,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
     // O negócio que entra vale o preço justo; o que se paga é o do dia (barato na baixa, caro na alta).
     const justo = (emp.n['valor'] ?? 0) * CUSTO_AQUISICAO;
-    const custo = tirarDeQuemJoga(e, reg, custoDaAquisicao(e, id), 'mercado');
+    const custo = tirarDeQuemJoga(e, reg, hostil ? custoDaOpa(e, id) : custoDaAquisicao(e, id), 'mercado');
     // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
     porNaEmpresa(e, reg, id, custo, justo * 0.95, false);
     somar(e, reg, id, 'tracao', 2);
@@ -738,10 +830,13 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     // O dono fica para tocar o negócio (o gestor), se a cadeira está vaga e ele está em idade de trabalhar; senão, sai de cena.
     let fica = '';
     if (dono) {
-      if (!e.entidades['gestor'] && idadeDe(e, dono) < 67) {
+      if (!hostil && !e.entidades['gestor'] && idadeDe(e, dono) < 67) {
         levarParaAEmpresa(e, 'rival', 'gestor', reg);
         fica = ` ${dono.nome} ficou para tocar o negócio com você.`;
-      } else partir(e, 'rival', reg);
+      } else {
+        partir(e, 'rival', reg);
+        if (hostil) fica = ` ${dono.nome} saiu do conselho sem apertar a sua mão.`;
+      }
     }
     somarQualidade(e, reg, id, 'aquisicoes', 1, origem);
     const truste = (emp.q['aquisicoes']?.v ?? 0) >= AQUISICOES_TRUSTE && ganhar(e, reg, id, 'truste', origem);
@@ -749,8 +844,24 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     const junto = delas > 0 ? `, com ${delas === 1 ? 'a subsidiária' : `as ${delas.toLocaleString('pt-BR')} subsidiárias`} dela` : '';
     const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
     return {
-      texto: `${aEmpresa(emp, 'A')} comprou a concorrente ${rival}${junto}, por ${formatarDinheiro(custo)}.${fica}${fim}`,
-      resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : `comprou a concorrente ${rival}`,
+      texto: hostil
+        ? `A oferta hostil deu certo: ${aEmpresa(emp)} comprou ${rival} na bolsa${junto}, por ${formatarDinheiro(custo)}, com o prêmio aos acionistas.${fica}${fim}`
+        : `${aEmpresa(emp, 'A')} comprou a concorrente ${rival}${junto}, por ${formatarDinheiro(custo)}.${fica}${fim}`,
+      resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : hostil ? `tomou a concorrente ${rival} numa oferta hostil` : `comprou a concorrente ${rival}`,
+    };
+  }
+  if (op.tipo === 'emitir') {
+    const entrou = rodadaDeInvestimento(e, reg, BOLSA.emissao, id);
+    return {
+      texto: `${aEmpresa(emp, 'A')} emitiu ações novas e levantou ${formatarDinheiro(entrou)} na bolsa, direto para o caixa. A sua parte caiu para ${Math.round((emp.n['participacao'] ?? 1) * 100)}%.`,
+      resumo: `emitiu ações ${aEmpresa(emp, 'da')} na bolsa`,
+    };
+  }
+  if (op.tipo === 'recomprar') {
+    const pago = recomprar(e, reg, id);
+    return {
+      texto: `Você recomprou ações ${aEmpresa(emp, 'da')} na bolsa, por ${formatarDinheiro(pago)}, e voltou a ter mais da metade: o controle é seu.`,
+      resumo: `recomprou o controle ${aEmpresa(emp, 'da')}`,
     };
   }
   if (op.tipo === 'venderSubsidiaria') {

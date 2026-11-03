@@ -1,0 +1,138 @@
+[
+  {
+    "id": "a_opa_da_rival",
+    "ator": [
+      "rival"
+    ],
+    "apenasAgendado": true,
+    "condicoes": {
+      "ator.negocio": true,
+      "marcas": [
+        "empresa.na_bolsa"
+      ]
+    },
+    "texto": "{ator}, de {ator.negocio}, lançou uma oferta pelas ações da sua empresa: paga 30% acima da cotação a quem vender. Com menos da metade das ações nas suas mãos, quem escolhe o dono agora é o mercado.",
+    "resumo": "viu {ator.quem} lançar uma oferta pelo controle da sua empresa",
+    "escolhas": [
+      {
+        "texto": "Recomprar ações e segurar a maioria",
+        "resumo": "recomprou ações e segurou o controle contra {ator.quem}",
+        "condicoes": {
+          "empresa.recompra_cabe": true
+        },
+        "bloqueio": "não há dinheiro para recomprar a maioria",
+        "resultado": {
+          "texto": "Você foi às compras na bolsa e voltou a ter mais da metade, por {custo}. A oferta de {ator} morreu sem acionista para vender.",
+          "efeitos": {
+            "recomprar": true,
+            "ator.magoa": 10,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Vender a sua parte pela oferta",
+        "resumo": "vendeu a empresa para {ator.quem} na oferta pelo controle",
+        "resultado": {
+          "texto": "Você vendeu com 30% de prêmio: {venda} na conta. A empresa agora é de {ator}, e o seu nome sai da fachada na semana que vem.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.3
+            },
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Brigar no conselho, voto a voto",
+        "resumo": "brigou no conselho contra a oferta de {ator.quem}",
+        "teste": {
+          "chance": 0.4
+        },
+        "sucesso": {
+          "texto": "Você ligou para cada conselheiro e cada fundo, um por um. A oferta não passou, e {ator} saiu da assembleia sem olhar para trás.",
+          "efeitos": {
+            "felicidade": -1,
+            "ator.magoa": 15
+          }
+        },
+        "fracasso": {
+          "texto": "Perdeu no voto. A oferta passou, e a sua parte foi vendida com um prêmio menor: {venda}.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.1
+            },
+            "felicidade": -4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_opa_do_fundo",
+    "apenasAgendado": true,
+    "texto": "Um fundo de fora, com nome de três letras e escritório em lugar nenhum, lançou uma oferta pelas ações da sua empresa: 30% acima da cotação. Com menos da metade das ações nas suas mãos, o controle está à venda, queira você ou não.",
+    "resumo": "viu um fundo de fora lançar uma oferta pelo controle da sua empresa",
+    "escolhas": [
+      {
+        "texto": "Recomprar ações e segurar a maioria",
+        "resumo": "recomprou ações e segurou o controle contra o fundo",
+        "condicoes": {
+          "empresa.recompra_cabe": true
+        },
+        "bloqueio": "não há dinheiro para recomprar a maioria",
+        "resultado": {
+          "texto": "Você recomprou o que faltava para a maioria, por {custo}. O fundo mandou um e-mail educado e foi atrás de outra empresa.",
+          "efeitos": {
+            "recomprar": true,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Vender a sua parte pela oferta",
+        "resumo": "vendeu a empresa para um fundo de fora",
+        "resultado": {
+          "texto": "O fundo pagou com 30% de prêmio: {venda} na conta. Na primeira reunião, os donos novos trocaram o café da copa por um cardápio de metas.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.3
+            },
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Brigar no conselho, voto a voto",
+        "resumo": "brigou no conselho contra a oferta do fundo",
+        "teste": {
+          "chance": 0.45
+        },
+        "sucesso": {
+          "texto": "Os conselheiros ficaram com você, e o fundo desistiu com uma nota curta à imprensa.",
+          "efeitos": {
+            "felicidade": -1
+          }
+        },
+        "fracasso": {
+          "texto": "Perdeu no voto, e a sua parte foi vendida com um prêmio menor: {venda}.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.1
+            },
+            "felicidade": -4
+          }
+        }
+      }
+    ],
+    "condicoes": {
+      "marcas": [
+        "empresa.na_bolsa"
+      ]
+    }
+  }
+]

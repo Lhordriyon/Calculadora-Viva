@@ -13,7 +13,7 @@ import { aEmpresa, ehOperacaoDeEmpresa, empresaDe, operarEmpresa } from './empre
 import { definirTexto } from './livro.ts';
 import { custoDaObra, ehOperacaoDeNegocio, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, NOME_DO_PRECO, ofertaDe, operarNegocio, VERBAS } from './negocio.ts';
 import { nivelDe } from './pais.ts';
-import { GESTOR } from './regras.ts';
+import { BOLSA, GESTOR } from './regras.ts';
 import { aleatorio, criarRng, misturar, sortear, type Rng } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
@@ -60,7 +60,9 @@ export function jogadasDoNegocio(estrategia: string, e: EstadoVida, c: Conteudo,
   } else if (estrategia === 'arriscada') {
     if (primeiroAno) tentar({ tipo: 'verbas', marketing: 0.08, pd: 0.08, empresa: id });
     // Sem caixa para a obra, pega no banco (e amplia na revisão seguinte).
-    if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id })) tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
+    // Na bolsa, emite ações antes de pegar crédito (bloco H7): a obra sai sem dívida, e a parte de quem joga encolhe.
+    if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id }) && !tentar({ tipo: 'emitir', empresa: id }))
+      tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
     if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
     // Com a empresa grande e os impostos altos, a arriscada contrata lobby (uma vez a cada tanto).
     if (!e.entidades['eu']?.q['lobista'] && (n['valor'] ?? 0) >= 50e6 && nivelDe(e, 'impostos') >= 1 && aleatorio(rng) < 0.2) tentar({ tipo: 'lobby', empresa: id });
@@ -119,6 +121,8 @@ export function textoDaProposta(e: EstadoVida, op: Operacao): string {
       return `pegar ${formatarDinheiro(op.valor)} no banco para a obra, porque os pedidos passam do que a estrutura entrega`;
     case 'preco':
       return `cobrar ${NOME_DO_PRECO[op.nivel]}, porque a qualidade já aguenta`;
+    case 'emitir':
+      return `emitir ações novas para a obra, porque os pedidos passam do que a estrutura entrega e ações não cobram juro (a sua parte cai para ${pct((empresaDe(e)?.n['participacao'] ?? 1) * (1 - BOLSA.emissao))})`;
     case 'lobby':
       return 'contratar lobby contra os impostos do país, porque o imposto come a margem';
     case 'exportar':
