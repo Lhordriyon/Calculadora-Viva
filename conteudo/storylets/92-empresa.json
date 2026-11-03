@@ -200,6 +200,7 @@
   },
   {
     "id": "acionistas_furiosos",
+    "peso": 10,
     "idade": [25, 90],
     "condicoes": { "marcas": ["empresa.na_bolsa"], "pais.ret_acoes": { "max": -5 } },
     "tensao": 2,
