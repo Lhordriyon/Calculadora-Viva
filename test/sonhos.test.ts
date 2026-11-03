@@ -1,0 +1,103 @@
+import { describe, expect, it } from 'vitest';
+import { conteudo } from '../src/conteudo.ts';
+import { regraDaCarreira } from '../src/motor/carreira.ts';
+import { ganhar } from '../src/motor/livro.ts';
+import { anoDosProjetos, projetosAtivos, qualidadeDoProjeto } from '../src/motor/projetos.ts';
+import { criarRng } from '../src/motor/rng.ts';
+import { apresentarStorylet, elegivel } from '../src/motor/storylets.ts';
+import type { EstadoVida } from '../src/motor/tipos.ts';
+import { sonhosDaVida } from '../src/motor/virada.ts';
+import { escolher, nascer } from '../src/motor/vida.ts';
+
+const c = conteudo;
+
+/** Um adolescente de 15 anos, sem nenhum projeto de pé. */
+function adolescente(semente = 81): EstadoVida {
+  const e = nascer(c, { semente, ano: 2026 });
+  e.agenda = [];
+  e.idade = 15;
+  e.ano = e.anoNascimento + 15;
+  const eu = e.entidades['eu']!;
+  for (const q of Object.keys(eu.q)) if (q.startsWith('projeto_')) delete eu.q[q];
+  return e;
+}
+
+function responderMarco(e: EstadoVida, indice: number): void {
+  apresentarStorylet(e, c.porId.get('o_que_voce_quer_da_vida')!, undefined, 'diretor', []);
+  escolher(e, c, indice);
+}
+
+describe('o sonho da vida (bloco S1)', () => {
+  it('o marco dos 15 começa o sonho, com a escolha de causa; "ainda não sei" não começa nada', () => {
+    const e = adolescente();
+    responderMarco(e, 0);
+    const escolha = e.historico.at(-1)!;
+    expect(escolha.causa).toBe('escolha');
+    expect(e.entidades['eu']!.q[qualidadeDoProjeto('estrela')]?.causa).toBe(escolha.id);
+    expect(projetosAtivos(e, c).map((p) => p.def.id)).toEqual(['estrela']);
+    expect(sonhosDaVida(e, c)).toEqual(['Virar estrela, de pé']);
+
+    const indeciso = adolescente();
+    responderMarco(indeciso, 3);
+    expect(projetosAtivos(indeciso, c)).toEqual([]);
+    expect(sonhosDaVida(indeciso, c)).toEqual([]);
+  });
+
+  it('sonhar não repete o sonho de pé', () => {
+    const e = adolescente(82);
+    responderMarco(e, 1);
+    const antes = e.entidades['eu']!.q[qualidadeDoProjeto('imperio')]!.causa;
+    apresentarStorylet(e, c.porId.get('o_que_voce_quer_da_vida')!, undefined, 'diretor', []);
+    escolher(e, c, 1);
+    expect(e.entidades['eu']!.q[qualidadeDoProjeto('imperio')]!.causa).toBe(antes);
+  });
+
+  it('a meta alcançada vira conquista no livro, e o cartão conta "realizado aos N"', () => {
+    const e = adolescente(83);
+    responderMarco(e, 0);
+    e.idade = 34;
+    e.ano = e.anoNascimento + 34;
+    e.entidades['eu']!.n['fama'] = 85;
+    anoDosProjetos(e, c);
+    const fim = e.historico.at(-1)!;
+    expect(fim.instancia).toBe('projeto:estrela#conquista');
+    expect(fim.ref).toBe('regra:projeto_conquista');
+    expect(projetosAtivos(e, c)).toEqual([]);
+    expect(sonhosDaVida(e, c)).toEqual(['Virar estrela, realizado aos 34']);
+  });
+
+  it('as cenas do sonho só aparecem para quem sonha', () => {
+    const e = adolescente(84);
+    e.idade = 18;
+    e.entidades['eu']!.n['fama'] = 0;
+    const palco = c.porId.get('o_primeiro_palco')!;
+    expect(elegivel(palco, e, undefined)).toBe(false);
+    responderMarco(e, 0);
+    expect(elegivel(palco, e, undefined)).toBe(true);
+  });
+
+  it('a garra do sonho: quem sonha em virar estrela sobe no palco com o dobro da chance', () => {
+    const promovidos = (sonha: boolean): number => {
+      let n = 0;
+      for (let i = 0; i < 400; i++) {
+        const e = adolescente(90);
+        e.idade = 22;
+        e.rng = criarRng(1000 + i);
+        delete e.entidades['chefe'];
+        const eu = e.entidades['eu']!;
+        Object.assign(eu.n, { renda: 2000, nivel: 0, aparencia: 60 });
+        eu.t['carreira'] = 'cantor';
+        delete eu.t['cargo'];
+        if (sonha) ganhar(e, [], 'eu', qualidadeDoProjeto('estrela'), null);
+        regraDaCarreira(e, c, []);
+        if (eu.n['nivel'] === 1) n++;
+      }
+      return n;
+    };
+    const sem = promovidos(false);
+    const com = promovidos(true);
+    expect(sem).toBeGreaterThan(20);
+    expect(com / sem).toBeGreaterThan(1.6);
+    expect(com / sem).toBeLessThan(2.4);
+  });
+});

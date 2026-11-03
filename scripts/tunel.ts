@@ -1058,6 +1058,19 @@ const portoesH6 = [
     `${formatarDinheiro(mediana(seguiuMais))} contra ${formatarDinheiro(mediana(recusouMais))} (${seguiuMais.length} e ${recusouMais.length} vidas)`,
   ],
 ] as const;
+/** Bloco S1 (pedido do dono em 03/11): o sonho da vida. */
+const adultasS1 = vidas.filter((v) => v.idade >= 20);
+const comSonho = adultasS1.filter((v) => v.sonhos.teve.length > 0).length / Math.max(1, adultasS1.length);
+const acabaramS1 = vidas.reduce((s, v) => s + v.sonhos.acabaram, 0);
+const realizadosS1 = vidas.flatMap((v) => v.sonhos.realizados);
+const fracaoRealizada = realizadosS1.length / Math.max(1, acabaramS1);
+const idsDosSonhos = [...new Set(vidas.flatMap((v) => v.sonhos.teve))].sort();
+const semRealizar = idsDosSonhos.filter((id) => !realizadosS1.includes(id));
+const portoesS1 = [
+  ['Quase toda vida sonha: ≥ 60% das vidas que chegam aos 20 têm um sonho', comSonho >= 0.6, pct(comSonho)],
+  ['O sonho não é garantido: dos sonhos que acabaram, os realizados ficam entre 10% e 70%', fracaoRealizada >= 0.1 && fracaoRealizada <= 0.7, `${pct(fracaoRealizada)} de ${acabaramS1}`],
+  ['Todo sonho se realiza em alguma vida', idsDosSonhos.length > 0 && semRealizar.length === 0, semRealizar.length ? `não se realizou: ${semRealizar.join(', ')}` : `${idsDosSonhos.length} de ${idsDosSonhos.length} (${idsDosSonhos.map((id) => `${id} ${realizadosS1.filter((x) => x === id).length}`).join(', ')})`],
+] as const;
 /** Bloco H7 (pedido do dono em 03/11): a bolsa de verdade. */
 const somaBolsa = (f: (b: (typeof vidas)[number]['bolsa']) => number): number => vidas.reduce((s, v) => s + f(v.bolsa), 0);
 const ofertasH7 = somaBolsa((b) => b.ofertas);
@@ -1416,6 +1429,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesH6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O sonho da vida (bloco S1)');
+l();
+l('Aos 15, a pergunta do que quer da vida (a estrela, o império, o topo do país); no primeiro namoro sério, a do amor (a casa cheia, o amor para a vida toda). Cada sonho é um projeto com cenas próprias e um fim que o cartão conta.');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesS1) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## A bolsa de verdade (bloco H7)');
 l();
@@ -1828,6 +1849,7 @@ for (const [nome, ok, detalhe] of portoesOmega5) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesOmega6) console.log(`${ok ? '✓' : '·'} portão Ω6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesH6) console.log(`${ok ? '✓' : '·'} portão H6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesH7) console.log(`${ok ? '✓' : '·'} portão H7: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesS1) console.log(`${ok ? '✓' : '·'} portão S1: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

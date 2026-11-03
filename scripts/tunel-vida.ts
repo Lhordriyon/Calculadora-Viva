@@ -32,6 +32,14 @@ import { conferirContas, conferirContratos, conferirDividas, conferirPromissoria
 
 export const ANO = 2026;
 
+/** Os sonhos de uma vida, lidos do livro (bloco S1). */
+function sonhosDoLivro(e: EstadoVida, c: Conteudo): { teve: string[]; realizados: string[]; acabaram: number } {
+  const ids = c.mundo.projetos.filter((p) => p.sonho).map((p) => p.id);
+  const teve = ids.filter((id) => e.historico.some((h) => h.mudancas?.some((m) => m.c === `eu.projeto_${id}` && (m.q ?? 0) > 0)));
+  const fins = e.historico.map((h) => /^projeto:([a-z_]+)#(conquista|vencido|semTempo)$/.exec(h.instancia ?? '')).filter((m): m is RegExpExecArray => m !== null && ids.includes(m[1]!));
+  return { teve, realizados: fins.filter((m) => m[2] === 'conquista').map((m) => m[1]!), acabaram: fins.length };
+}
+
 // ---------------------------------------------------------------- uma vida
 
 export interface Jogada {
@@ -374,6 +382,8 @@ export interface Vida {
   comRosto: { rival: boolean; conhecido: boolean; gestor: boolean; seguidas: number; recusadas: number; avisos: number; saidas: number };
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
+  /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
+  sonhos: { teve: string[]; realizados: string[]; acabaram: number };
   /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
   caminho: string;
   /** Os elos causais distintos da vida ("storylet que causou>storylet que aconteceu"). */
@@ -1160,6 +1170,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       avisos: e.historico.filter((h) => h.ref === 'regra:gestor_avisou').length,
       saidas: e.historico.filter((h) => h.ref === 'regra:gestor_saiu').length,
     },
+    sonhos: sonhosDoLivro(e, c),
     bolsa: {
       emissoes: e.historico.filter((h) => h.ref === 'empresa:emitir').length,
       recompras: e.historico.filter((h) => h.ref === 'empresa:recomprar').length,
