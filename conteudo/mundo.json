@@ -1073,6 +1073,101 @@
       "conquista": { "texto": "Você subiu no palco da formatura de beca, e a família gritou o seu nome como em final de campeonato. O diploma foi para a parede, torto, e ficou torto.", "resumo": "tirou o diploma" },
       "vencido": { "texto": "Oito anos depois de decidir, o diploma continua só uma ideia. A mochila ficou no armário, pronta.", "resumo": "não tirou o diploma no prazo que se deu" },
       "desistencia": { "texto": "Você trancou o sonho do diploma, como quem tranca a matrícula. Talvez um dia.", "resumo": "desistiu do diploma" }
+    },
+    {
+      "id": "estrela",
+      "sonho": true,
+      "nome": "Virar estrela",
+      "objetivo": "virar estrela",
+      "descricao": "Palco, campo ou tela: o país inteiro sabendo o seu nome, e gente pedindo foto na fila da padaria. Quem sonha sobe com o dobro da chance numa carreira de holofote.",
+      "idade": [14, 45],
+      "quando": {},
+      "etapas": [
+        {"texto": "Uma carreira de holofote (música, palco, tela, campo, livro ou cozinha)", "feita": {"eu.carreira": ["cantor", "ator", "influenciador", "modelo", "escritor", "chef", "jogador_futebol", "atleta", "jornalista"]}, "ajuda": ["trabalhar", "folha:carreira"]},
+        {"texto": "Gente que sabe quem você é (fama 20)", "feita": {"eu.fama": {"min": 20}}, "ajuda": ["trabalhar", "sair"]},
+        {"texto": "Gente parando você na rua para uma foto (fama 40)", "feita": {"eu.fama": {"min": 40}}, "ajuda": ["trabalhar", "sair"]}
+      ],
+      "meta": {"eu.fama": {"min": 60}},
+      "prazo": 35,
+      "conquista": {"texto": "Numa fila de aeroporto, uma criança apontou para você e disse o seu nome inteiro, sem errar uma letra. Você virou estrela, e a primeira ligação foi para quem duvidou.", "resumo": "realizou o sonho de virar estrela"},
+      "vencido": {"texto": "Trinta e cinco anos atrás dos holofotes, e eles nunca vieram do jeito sonhado. O violão, a câmera e a camisa continuam no armário, prontos para um dia que ainda pode chegar.", "resumo": "viu o sonho de virar estrela ficar para trás"},
+      "desistencia": {"texto": "Você guardou o sonho de ser estrela numa caixa no fundo do armário. De vez em quando, ela faz barulho.", "resumo": "desistiu do sonho de virar estrela"}
+    },
+    {
+      "id": "imperio",
+      "sonho": true,
+      "nome": "Construir um império",
+      "objetivo": "construir um império com o seu sobrenome",
+      "descricao": "Começar com quase nada e chegar a uma empresa de cem milhões de reais, com o seu sobrenome na fachada.",
+      "idade": [16, 55],
+      "quando": {},
+      "etapas": [
+        {"texto": "Uma empresa sua", "feita": {"empresa.valor": true}, "ajuda": ["folha:dinheiro", "tocar_empresa"]},
+        {"texto": "R$ 1 milhão de valor", "feita": {"empresa.valor": {"min": 1000000}}, "ajuda": ["tocar_empresa", "tocar_o_negocio", "folha:dinheiro"]},
+        {"texto": "R$ 10 milhões de valor", "feita": {"empresa.valor": {"min": 10000000}}, "ajuda": ["tocar_empresa", "folha:dinheiro"]}
+      ],
+      "meta": {"empresa.valor": {"min": 100000000}},
+      "prazo": 40,
+      "conquista": {"texto": "O contador ligou às sete da manhã, rindo de nervoso: a empresa passou de cem milhões. Você desligou, olhou a fachada com o seu sobrenome e, por um minuto, não teve reunião nenhuma.", "resumo": "realizou o sonho de construir um império"},
+      "vencido": {"texto": "Quarenta anos construindo, e o império não chegou aos cem milhões. Mas ali em cima da porta continua o seu sobrenome, e tem muita gente que paga o aluguel com o salário que você criou.", "resumo": "viu o sonho do império ficar no meio do caminho"},
+      "desistencia": {"texto": "Você desistiu do império. Dormiu oito horas pela primeira vez em anos, e não soube se aquilo era derrota ou sabedoria.", "resumo": "desistiu do sonho de construir um império"}
+    },
+    {
+      "id": "presidencia",
+      "sonho": true,
+      "nome": "Governar o país",
+      "objetivo": "chegar ao topo do país",
+      "descricao": "A faixa no peito, a caneta na mão e o país inteiro esperando a sua decisão. Pela urna, pela coroa ou pelo que vier.",
+      "idade": [16, 70],
+      "quando": {},
+      "etapas": [
+        {"texto": "Um primeiro mandato", "feita": {"eu.cargo": true}, "ajuda": ["folha:carreira", "sair"]},
+        {"texto": "Um cargo grande: prefeitura, Assembleia ou Congresso", "feita": {"eu.cargo": ["prefeito", "deputado_estadual", "deputado_federal", "governador", "senador", "presidente", "rei", "ditador"]}, "ajuda": ["folha:carreira"]},
+        {"texto": "O governo de um estado ou o Senado", "feita": {"eu.cargo": ["governador", "senador", "presidente", "rei", "ditador"]}, "ajuda": ["folha:carreira"]}
+      ],
+      "meta": {"eu.cargo": ["presidente", "rei", "ditador"]},
+      "prazo": 40,
+      "conquista": {"texto": "No primeiro dia no palácio, você sentou na cadeira, olhou a mesa enorme e pensou na escola pública, no caixote de feira, no microfone que chiava. O país agora é responsabilidade sua.", "resumo": "realizou o sonho de chegar ao topo do país"},
+      "vencido": {"texto": "Quarenta anos de política, e o palácio ficou para outro. Você ainda acha que governaria melhor, e talvez tenha razão.", "resumo": "viu o sonho do palácio ficar para outro"},
+      "desistencia": {"texto": "Você largou a política. Os amigos da época ainda ligam em ano de eleição, e você deixa tocar.", "resumo": "desistiu do sonho de governar o país"}
+    },
+    {
+      "id": "familia_grande",
+      "sonho": true,
+      "nome": "A casa cheia",
+      "objetivo": "encher a casa de família",
+      "descricao": "Três filhos, ou mais, e uma mesa de domingo em que ninguém consegue terminar uma frase.",
+      "idade": [16, 45],
+      "quando": {"filhos": {"max": 2}},
+      "etapas": [
+        {"texto": "Alguém para dividir a vida", "feita": {"algumaMarca": ["namoro", "casado"]}, "ajuda": ["sair", "pedido_de_casamento"]},
+        {"texto": "O primeiro filho", "feita": {"filhos": {"min": 1}}, "ajuda": ["tentar_um_filho", "familia"]},
+        {"texto": "Dois filhos", "feita": {"filhos": {"min": 2}}, "ajuda": ["tentar_um_filho", "familia"]}
+      ],
+      "meta": {"filhos": {"min": 3}, "algumaMarca": ["namoro", "casado"]},
+      "prazo": 30,
+      "conquista": {"texto": "No almoço de domingo faltou cadeira, faltou prato e sobrou barulho. Você olhou a mesa cheia, os três falando ao mesmo tempo, e entendeu que era isso.", "resumo": "realizou o sonho da casa cheia"},
+      "vencido": {"texto": "A casa não encheu como você sonhou. Mas quem está nela sabe o caminho da cozinha de olhos fechados, e isso também é família.", "resumo": "viu a casa ficar menor do que sonhou"},
+      "desistencia": {"texto": "Você desistiu da casa cheia. A casa ficou silenciosa, e você ainda não sabe se gosta.", "resumo": "desistiu do sonho da casa cheia"}
+    },
+    {
+      "id": "amor_da_vida",
+      "sonho": true,
+      "nome": "Um amor para a vida toda",
+      "objetivo": "viver um amor para a vida toda",
+      "descricao": "Encontrar a pessoa e ficar: vinte e cinco anos de casamento, e ainda rir das mesmas piadas.",
+      "idade": [14, 45],
+      "quando": {},
+      "etapas": [
+        {"texto": "Alguém que acelera o coração", "feita": {"algumaMarca": ["namoro", "casado"]}, "ajuda": ["sair"]},
+        {"texto": "O casamento", "feita": {"marcas": ["casado"]}, "ajuda": ["pedido_de_casamento"]},
+        {"texto": "Dez anos juntos", "feita": {"marcaHa": [{"marca": "casado", "min": 10}]}, "ajuda": ["familia", "presente_certo"]}
+      ],
+      "meta": {"marcaHa": [{"marca": "casado", "min": 25}]},
+      "prazo": 40,
+      "conquista": {"texto": "Bodas de prata. Na festa, alguém pediu o segredo, e vocês dois responderam ao mesmo tempo coisas diferentes, e riram da mesma coisa.", "resumo": "realizou o sonho de um amor para a vida toda"},
+      "vencido": {"texto": "O amor de cinema não ficou para a vida inteira. Ficaram as fotos, as músicas e a certeza de que você amou de verdade.", "resumo": "viu o amor para a vida toda ficar no meio do filme"},
+      "desistencia": {"texto": "Você desistiu de esperar o amor de cinema. Passou a gostar mais dos filmes do que dos roteiros da vida.", "resumo": "desistiu do sonho de um amor para a vida toda"}
     }
   ],
   "setores": [

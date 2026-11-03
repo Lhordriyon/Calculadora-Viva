@@ -1,0 +1,1110 @@
+[
+  {
+    "id": "o_que_voce_quer_da_vida",
+    "marco": true,
+    "idade": [
+      15,
+      16
+    ],
+    "condicoes": {
+      "semMarcas": [
+        "projeto_estrela",
+        "projeto_imperio",
+        "projeto_presidencia"
+      ]
+    },
+    "texto": "Deitad{o|a} no chão do quarto, olhando o teto, você pensa no que quer da vida. Não no que a família espera, nem no que o boletim diz: no que você quer de verdade, daquele jeito que dá frio na barriga.",
+    "resumo": "decidiu o que queria da vida",
+    "escolhas": [
+      {
+        "texto": "Virar estrela: palco, campo ou tela",
+        "resumo": "sonhou em virar estrela",
+        "resultado": {
+          "texto": "Você ensaiou o autógrafo na última página do caderno. Ficou bom.",
+          "efeitos": {
+            "sonhar": "estrela"
+          }
+        }
+      },
+      {
+        "texto": "Construir um império com o meu sobrenome",
+        "resumo": "sonhou em construir um império",
+        "resultado": {
+          "texto": "Você desenhou o logotipo da sua empresa no canto da prova de matemática. Ainda não sabe o que ela vai vender.",
+          "efeitos": {
+            "sonhar": "imperio"
+          }
+        }
+      },
+      {
+        "texto": "Chegar ao topo e governar o país",
+        "resumo": "sonhou em governar o país",
+        "resultado": {
+          "texto": "Você começou a prestar atenção no jornal das oito e a discordar dele em voz alta.",
+          "efeitos": {
+            "sonhar": "presidencia"
+          }
+        }
+      },
+      {
+        "texto": "Ainda não sei, e tudo bem",
+        "resumo": "deixou o sonho para depois",
+        "resultado": {
+          "texto": "Você virou de lado e dormiu ali mesmo, no chão. O sonho pode esperar; a vida ainda nem começou."
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_que_voce_quer_do_amor",
+    "marco": true,
+    "idade": [
+      20,
+      35
+    ],
+    "condicoes": {
+      "marcas": [
+        "namoro"
+      ],
+      "semMarcas": [
+        "projeto_familia_grande",
+        "projeto_amor_da_vida"
+      ]
+    },
+    "texto": "Numa noite qualquer, deitad{o|a} ao lado de quem você ama, você se pega pensando no que quer dessa parte da vida. Não no que a novela mostra: no que você quer de verdade.",
+    "resumo": "decidiu o que queria do amor",
+    "escolhas": [
+      {
+        "texto": "Uma casa cheia: filhos, cachorro e Natal barulhento",
+        "resumo": "sonhou com uma casa cheia de família",
+        "resultado": {
+          "texto": "Você contou de cabeça quantas cadeiras cabem numa mesa de domingo. Vai precisar de uma mesa maior.",
+          "efeitos": {
+            "sonhar": "familia_grande"
+          }
+        }
+      },
+      {
+        "texto": "Um amor de cinema, para a vida toda",
+        "resumo": "sonhou com um amor para a vida toda",
+        "resultado": {
+          "texto": "Você guardou na memória a música que vai tocar nas bodas de prata. Faltam só uns vinte e poucos anos.",
+          "efeitos": {
+            "sonhar": "amor_da_vida"
+          }
+        }
+      },
+      {
+        "texto": "Do jeito que vier, vem bem",
+        "resumo": "deixou o amor ir do jeito que viesse",
+        "resultado": {
+          "texto": "Você fechou os olhos e deixou o futuro fazer o trabalho dele. Às vezes, ele faz bem."
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_primeiro_palco",
+    "peso": 4,
+    "idade": [
+      15,
+      45
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_estrela"
+      ],
+      "eu.fama": {
+        "max": 19
+      }
+    },
+    "texto": "Chegou a primeira chance de verdade, e ela tem quatro portas: o microfone aberto do bar da esquina, a câmera emprestada de um amigo, o campo de várzea com um olheiro na arquibancada e o teste do grupo de teatro. Dá para entrar em uma só.",
+    "resumo": "escolheu por onde começar a virar estrela",
+    "escolhas": [
+      {
+        "texto": "O microfone do bar da esquina",
+        "resumo": "subiu no microfone do bar e não desceu mais",
+        "resultado": {
+          "texto": "Você cantou três músicas, depois mais cinco, e o dono do bar pediu que você voltasse na sexta. Voltou em todas.",
+          "efeitos": {
+            "marcas": [
+              "musico"
+            ],
+            "eu.fama": 5,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "A câmera emprestada do amigo",
+        "resumo": "ligou a câmera e postou o primeiro vídeo à meia-noite",
+        "resultado": {
+          "texto": "Você gravou na laje, editou no celular e postou à meia-noite. Às três da manhã, já tinha gente pedindo a parte dois.",
+          "efeitos": {
+            "marcas": [
+              "criador_conteudo"
+            ],
+            "eu.fama": 6,
+            "felicidade": 2,
+            "saude": -1
+          }
+        }
+      },
+      {
+        "texto": "A várzea, com o olheiro olhando",
+        "resumo": "jogou a várzea na frente de um olheiro",
+        "teste": {
+          "atributo": "saude",
+          "dificuldade": 65
+        },
+        "sucesso": {
+          "texto": "Você fez o gol do jogo de bicicleta, meio sem querer, e o olheiro anotou o seu nome num guardanapo. Na segunda, o telefone tocou.",
+          "efeitos": {
+            "marcas": [
+              "boleiro"
+            ],
+            "eu.fama": 6,
+            "felicidade": 4
+          }
+        },
+        "fracasso": {
+          "texto": "O olheiro foi embora no intervalo, antes do seu melhor lance. A várzea continua lá todo domingo, e você também.",
+          "efeitos": {
+            "eu.fama": 1,
+            "felicidade": -2,
+            "saude": 1
+          }
+        }
+      },
+      {
+        "texto": "O teste do grupo de teatro",
+        "resumo": "passou no teste do grupo de teatro",
+        "resultado": {
+          "texto": "Você decorou o texto inteiro em dois dias e ganhou um papel com fala. A plateia era de parentes do elenco, e aplaudiu de pé assim mesmo.",
+          "efeitos": {
+            "aparencia": 3,
+            "eu.fama": 4,
+            "felicidade": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_video_que_viralizou",
+    "peso": 4,
+    "idade": [
+      15,
+      70
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_estrela"
+      ],
+      "eu.fama": {
+        "min": 8,
+        "max": 44
+      }
+    },
+    "texto": "Você acordou com o celular quente: um vídeo seu passou de um milhão de visualizações durante a noite. Os comentários vão de \"gênio\" a \"quem é esse\", e um empresário já mandou mensagem.",
+    "resumo": "viu um vídeo seu viralizar",
+    "escolhas": [
+      {
+        "texto": "Assinar com o empresário",
+        "resumo": "assinou com um empresário depois do vídeo que viralizou",
+        "resultado": {
+          "texto": "O contrato tinha doze páginas e uma vírgula estranha. Mas a agenda encheu, e o primeiro cachê pagou o aluguel de três meses.",
+          "efeitos": {
+            "eu.fama": 8,
+            "dinheiro": 30000,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Surfar a onda sozinh{o|a}",
+        "resumo": "surfou sozinh{o|a} a onda do vídeo que viralizou",
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "Você postou todo dia por um mês, e o país inteiro passou a cantar o refrão. Sem empresário, sem vírgula estranha.",
+          "efeitos": {
+            "eu.fama": 14,
+            "felicidade": 3
+          }
+        },
+        "fracasso": {
+          "texto": "A onda passou mais rápido do que você nadou. Uma semana depois, o assunto era um gato tocando piano.",
+          "efeitos": {
+            "eu.fama": 3,
+            "felicidade": -2,
+            "saude": -2
+          }
+        }
+      },
+      {
+        "texto": "Sumir uns dias e respirar",
+        "resumo": "sumiu uns dias depois do vídeo que viralizou",
+        "resultado": {
+          "texto": "Você desligou o celular e foi ver o mar. Quando voltou, metade do mundo tinha esquecido, e a outra metade sentia a sua falta.",
+          "efeitos": {
+            "felicidade": 4,
+            "eu.fama": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_turne_ou_a_casa",
+    "peso": 4,
+    "idade": [
+      16,
+      75
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_estrela"
+      ],
+      "eu.fama": {
+        "min": 25
+      }
+    },
+    "texto": "O convite chegou: um ano inteiro de estrada, cidade por cidade, o maior palco da sua vida. Em casa, alguém pergunta baixinho quantos aniversários você vai perder.",
+    "resumo": "recebeu o convite para a maior turnê da vida",
+    "escolhas": [
+      {
+        "texto": "Cair na estrada",
+        "resumo": "caiu na estrada na maior turnê da vida",
+        "resultado": {
+          "texto": "Duzentos shows, quarenta cidades, um hotel igual ao outro. Na última noite, o estádio cantou a sua música sem você precisar cantar.",
+          "efeitos": {
+            "eu.fama": 14,
+            "dinheiro": 150000,
+            "felicidade": 2,
+            "saude": -4
+          }
+        }
+      },
+      {
+        "texto": "Fazer metade da turnê e voltar no meio",
+        "resumo": "fez metade da turnê e voltou para casa no meio",
+        "resultado": {
+          "texto": "Você fez os melhores seis meses da sua vida e voltou a tempo do aniversário que importava. O empresário reclamou; você não.",
+          "efeitos": {
+            "eu.fama": 7,
+            "dinheiro": 60000,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Recusar: a estrada espera, a casa não",
+        "resumo": "recusou a turnê para ficar em casa",
+        "resultado": {
+          "texto": "Você recusou o maior palco da sua vida para jantar em casa numa terça-feira. Ninguém aplaudiu, e foi bom mesmo assim.",
+          "efeitos": {
+            "felicidade": 5,
+            "eu.fama": -3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_contrato_que_pode_tudo",
+    "peso": 4,
+    "idade": [
+      18,
+      80
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_imperio"
+      ],
+      "empresa.valor": {
+        "min": 1,
+        "max": 4999999
+      }
+    },
+    "texto": "Um cliente grande quer fechar com a sua empresa: o contrato dobra o tamanho dela, ou a quebra se der errado. O advogado diz \"é uma aposta\"; o seu estômago diz o mesmo, mais alto.",
+    "resumo": "recebeu o contrato que podia fazer ou quebrar a empresa",
+    "escolhas": [
+      {
+        "texto": "Assinar e apostar tudo",
+        "resumo": "apostou a empresa no contrato grande",
+        "teste": {
+          "chance": 0.55
+        },
+        "sucesso": {
+          "texto": "Entregaram tudo no prazo, com a equipe virando noites. A empresa dobrou, e o cliente grande pediu mais.",
+          "efeitos": {
+            "empresaFator": 1.6,
+            "felicidade": 4
+          }
+        },
+        "fracasso": {
+          "texto": "O cliente atrasou, a equipe cansou e a multa veio. A empresa encolheu, e você aprendeu o que é fluxo de caixa do jeito caro.",
+          "efeitos": {
+            "empresaFator": 0.7,
+            "felicidade": -4
+          }
+        }
+      },
+      {
+        "texto": "Negociar um contrato menor",
+        "resumo": "negociou um contrato menor com o cliente grande",
+        "resultado": {
+          "texto": "Metade do contrato, metade do risco, o dobro do sono. A empresa cresceu sem perder o fôlego.",
+          "efeitos": {
+            "empresaFator": 1.15,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Recusar e crescer no seu ritmo",
+        "resumo": "recusou o contrato grande e cresceu no seu ritmo",
+        "resultado": {
+          "texto": "Você recusou, e o cliente foi para a concorrência. Seis meses depois, ela estava atrasando salário; a sua, não.",
+          "efeitos": {
+            "empresaFator": 1.05,
+            "felicidade": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_capa_da_revista",
+    "peso": 4,
+    "idade": [
+      18,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_imperio"
+      ],
+      "empresa.valor": {
+        "min": 5000000,
+        "max": 99999999
+      }
+    },
+    "texto": "Uma revista de negócios quer você na capa, de braços cruzados e sorriso de quem não dorme. A manchete já está pronta: \"O próximo império do Brasil?\"",
+    "resumo": "foi chamad{o|a} para a capa de uma revista de negócios",
+    "escolhas": [
+      {
+        "texto": "Topar e prometer o mundo",
+        "resumo": "saiu na capa prometendo o mundo",
+        "resultado": {
+          "texto": "A capa vendeu bem, e o seu telefone tocou mais. Metade era investidor; a outra metade, gente pedindo emprego para o sobrinho.",
+          "efeitos": {
+            "eu.fama": 8,
+            "empresaFator": 1.08,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Usar a capa para levantar dinheiro",
+        "resumo": "usou a capa da revista para levantar dinheiro com investidores",
+        "resultado": {
+          "texto": "Com a revista debaixo do braço, você levantou {rodada} numa semana. Os investidores querem relatório toda sexta.",
+          "efeitos": {
+            "rodada": {
+              "parte": 0.15
+            },
+            "eu.fama": 4
+          }
+        }
+      },
+      {
+        "texto": "Recusar e trabalhar calad{o|a}",
+        "resumo": "recusou a capa e trabalhou calad{o|a}",
+        "resultado": {
+          "texto": "Você recusou, e a capa foi para um concorrente que nunca mais entregou nada. A sua empresa cresceu sem foto.",
+          "efeitos": {
+            "empresaFator": 1.12,
+            "felicidade": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_preco_do_imperio",
+    "peso": 4,
+    "idade": [
+      20,
+      90
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_imperio"
+      ],
+      "empresa.valor": {
+        "min": 20000000
+      }
+    },
+    "texto": "A empresa vale mais do que você consegue explicar para a sua avó. O preço também: reunião às seis da manhã, jantar frio às onze, e um médico pedindo para você desacelerar.",
+    "resumo": "sentiu o preço do império na própria saúde",
+    "escolhas": [
+      {
+        "texto": "Acelerar: o topo está logo ali",
+        "resumo": "acelerou o império, apesar do médico",
+        "resultado": {
+          "texto": "Você trocou o almoço por uma reunião e o fim de semana por outra. A empresa cresceu; o seu sono, não.",
+          "efeitos": {
+            "empresaFator": 1.2,
+            "saude": -6,
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Contratar quem cuide do dia a dia",
+        "resumo": "contratou quem cuidasse do dia a dia do império",
+        "resultado": {
+          "texto": "A primeira semana sem você no comando foi um susto. A segunda, um alívio. A empresa aprendeu a andar sem segurar a sua mão.",
+          "efeitos": {
+            "empresa.dependencia": -20,
+            "empresaFator": 1.05,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Tirar as primeiras férias em dez anos",
+        "resumo": "tirou as primeiras férias em dez anos",
+        "resultado": {
+          "texto": "Quinze dias numa praia sem sinal. Voltou com a pele queimada e três ideias melhores que as do último ano inteiro.",
+          "efeitos": {
+            "felicidade": 6,
+            "saude": 3,
+            "empresaFator": 0.97
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_primeiro_comicio",
+    "peso": 4,
+    "idade": [
+      18,
+      75
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_presidencia"
+      ],
+      "eu.cargo": false
+    },
+    "texto": "Você subiu num caixote de feira, com um microfone que chiava, para falar com trinta pessoas e dois cachorros. Era o primeiro comício da sua vida.",
+    "resumo": "fez o primeiro comício da vida",
+    "escolhas": [
+      {
+        "texto": "Falar com o coração",
+        "resumo": "falou com o coração no primeiro comício",
+        "resultado": {
+          "texto": "Você esqueceu o discurso no segundo parágrafo e falou da sua mãe. Uma senhora chorou, um cachorro latiu, e o vídeo correu o bairro.",
+          "efeitos": {
+            "eu.popularidade": 6,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Prometer o que todo mundo quer ouvir",
+        "resumo": "prometeu o que todo mundo queria ouvir no primeiro comício",
+        "resultado": {
+          "texto": "Asfalto, emprego, praça e cerveja mais barata. O aplauso veio fácil; a conta, você descobre depois.",
+          "efeitos": {
+            "eu.popularidade": 10,
+            "felicidade": 1,
+            "inteligencia": -1
+          }
+        }
+      },
+      {
+        "texto": "Ouvir mais do que falar",
+        "resumo": "ouviu mais do que falou no primeiro comício",
+        "resultado": {
+          "texto": "Você desceu do caixote e passou a tarde ouvindo. Saiu com um caderno cheio e a certeza de que o bairro sabe o que precisa.",
+          "efeitos": {
+            "eu.popularidade": 4,
+            "inteligencia": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_padrinho_politico",
+    "peso": 4,
+    "idade": [
+      20,
+      80
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_presidencia"
+      ],
+      "eu.cargo": true
+    },
+    "texto": "Um político velho de guerra marcou um café: ele abre as portas do partido, da TV e da campanha. Em troca, \"só uns favores, lá na frente\".",
+    "resumo": "recebeu a proposta de um padrinho político",
+    "escolhas": [
+      {
+        "texto": "Aceitar o padrinho",
+        "resumo": "aceitou um padrinho político",
+        "resultado": {
+          "texto": "As portas abriram, a TV ligou e o partido sorriu. Os favores, por enquanto, ficaram num caderninho que não é seu.",
+          "efeitos": {
+            "eu.popularidade": 8,
+            "dinheiro": 50000,
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Seguir sem padrinho",
+        "resumo": "recusou o padrinho político e seguiu sozinh{o|a}",
+        "resultado": {
+          "texto": "Você agradeceu o café e pagou a sua parte. A estrada ficou mais longa, mas é só sua.",
+          "efeitos": {
+            "eu.popularidade": 3,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Gravar a conversa e guardar",
+        "resumo": "gravou a conversa com o padrinho político e guardou",
+        "resultado": {
+          "texto": "Você saiu sem compromisso e com um arquivo de áudio que talvez valha mais que o apoio.",
+          "efeitos": {
+            "eu.popularidade": 2,
+            "inteligencia": 2,
+            "felicidade": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_debate_na_tv",
+    "peso": 4,
+    "idade": [
+      21,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_presidencia"
+      ],
+      "eu.cargo": [
+        "vereador",
+        "prefeito",
+        "deputado_estadual",
+        "deputado_federal",
+        "governador",
+        "senador"
+      ]
+    },
+    "texto": "O debate da TV, ao vivo, cronômetro na tela. O adversário acabou de mentir sobre você com um sorriso no rosto, e você tem um minuto para responder.",
+    "resumo": "enfrentou o adversário num debate ao vivo",
+    "escolhas": [
+      {
+        "texto": "Desmontar a mentira com números",
+        "resumo": "desmontou a mentira do adversário com números",
+        "teste": {
+          "chance": 0.55
+        },
+        "sucesso": {
+          "texto": "Você citou a página, o ano e a assinatura. O adversário gaguejou, e o corte rodou o país inteiro.",
+          "efeitos": {
+            "eu.popularidade": 10,
+            "felicidade": 3
+          }
+        },
+        "fracasso": {
+          "texto": "Os números estavam certos, mas o minuto acabou no meio da conta. Na internet, ganhou quem sorriu.",
+          "efeitos": {
+            "eu.popularidade": -4,
+            "felicidade": -2
+          }
+        }
+      },
+      {
+        "texto": "Contar a sua história, sem atacar ninguém",
+        "resumo": "contou a própria história no debate, sem atacar",
+        "resultado": {
+          "texto": "Você falou do bairro, do ônibus lotado e da escola pública. Não ganhou o debate, mas ganhou a cozinha de muita gente.",
+          "efeitos": {
+            "eu.popularidade": 6,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Partir para o ataque",
+        "resumo": "partiu para o ataque no debate",
+        "teste": {
+          "chance": 0.4
+        },
+        "sucesso": {
+          "texto": "Você devolveu a mentira com juros, e o estúdio inteiro prendeu o riso. Virou meme, e meme vira voto.",
+          "efeitos": {
+            "eu.popularidade": 14
+          }
+        },
+        "fracasso": {
+          "texto": "O ataque saiu torto, e o adversário fez cara de vítima. A manchete do dia seguinte foi dele.",
+          "efeitos": {
+            "eu.popularidade": -8,
+            "felicidade": -3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_quarto_vazio",
+    "peso": 4,
+    "idade": [
+      21,
+      44
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_familia_grande",
+        "namoro"
+      ],
+      "semMarcas": [
+        "pai_mae",
+        "sem_filhos"
+      ]
+    },
+    "texto": "Tem um quarto vazio na sua casa e uma conversa que vocês adiam desde o Natal. Hoje, no café da manhã, alguém finalmente perguntou: \"e se a gente enchesse esse quarto?\"",
+    "resumo": "conversou sobre encher o quarto vazio de casa",
+    "escolhas": [
+      {
+        "texto": "Encher o quarto: vamos ter um filho",
+        "resumo": "decidiu ter o primeiro filho",
+        "resultado": {
+          "texto": "Nove meses depois, o quarto vazio ganhou um berço, um móbile torto e um choro às três da manhã. Ninguém dormiu, e ninguém se arrependeu.",
+          "efeitos": {
+            "felicidade": 6,
+            "saude": -2,
+            "custo": 12000,
+            "personagens": [
+              "filho"
+            ],
+            "marcas": [
+              "pai_mae"
+            ],
+            "agendar": [
+              {
+                "evento": "filho_adolescente",
+                "em": 14
+              },
+              {
+                "evento": "filho_formatura",
+                "em": [
+                  21,
+                  24
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Adotar uma criança que precisa de casa",
+        "resumo": "adotou uma criança para encher o quarto vazio",
+        "resultado": {
+          "texto": "Foram meses de papelada e uma tarde de abraço. O quarto encheu de uma vez: de brinquedo, de pergunta e de história.",
+          "efeitos": {
+            "felicidade": 7,
+            "dinheiro": -8000,
+            "custo": 12000,
+            "personagens": [
+              "filho"
+            ],
+            "marcas": [
+              "pai_mae"
+            ],
+            "agendar": [
+              {
+                "evento": "filho_adolescente",
+                "em": 14
+              },
+              {
+                "evento": "filho_formatura",
+                "em": [
+                  21,
+                  24
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Ainda não: primeiro a casa, depois o berço",
+        "resumo": "adiou o primeiro filho para arrumar a casa",
+        "resultado": {
+          "texto": "Vocês pintaram o quarto de amarelo, para servir para qualquer um. Ele espera.",
+          "efeitos": {
+            "felicidade": 1,
+            "dinheiro": 2000
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_natal_barulhento",
+    "peso": 4,
+    "idade": [
+      24,
+      90
+    ],
+    "repetivel": true,
+    "intervalo": 6,
+    "condicoes": {
+      "marcas": [
+        "projeto_familia_grande"
+      ],
+      "filhos": {
+        "min": 1
+      }
+    },
+    "texto": "Natal na sua casa: criança correndo, panela no fogo, tio contando a mesma piada do ano passado e o cachorro roubando o pernil. Você está no meio de tudo, com o avental torto.",
+    "resumo": "fez o Natal barulhento da família em casa",
+    "escolhas": [
+      {
+        "texto": "Cozinhar para todo mundo",
+        "resumo": "cozinhou o Natal inteiro para a família",
+        "resultado": {
+          "texto": "Você passou o dia na cozinha e comeu em pé. Valeu cada prato que voltou vazio.",
+          "efeitos": {
+            "felicidade": 5,
+            "dinheiro": -2000,
+            "saude": -1
+          }
+        }
+      },
+      {
+        "texto": "Pedir que cada um traga um prato",
+        "resumo": "fez o Natal em que cada um trouxe um prato",
+        "resultado": {
+          "texto": "Vieram três maioneses e nenhuma sobremesa. Foi o melhor Natal em anos.",
+          "efeitos": {
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Fugir para a varanda por um minuto",
+        "resumo": "fugiu para a varanda no meio do Natal",
+        "resultado": {
+          "texto": "Lá fora, sozinh{o|a} com o barulho de dentro, você entendeu que era exatamente o que queria da vida.",
+          "efeitos": {
+            "felicidade": 3,
+            "saude": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mais_um_para_a_mesa",
+    "peso": 4,
+    "idade": [
+      24,
+      46
+    ],
+    "repetivel": true,
+    "intervalo": 2,
+    "condicoes": {
+      "marcas": [
+        "projeto_familia_grande",
+        "namoro",
+        "pai_mae"
+      ],
+      "semMarcas": [
+        "sem_filhos",
+        "familia_completa"
+      ],
+      "filhos": {
+        "min": 1,
+        "max": 2
+      }
+    },
+    "texto": "A mesa de domingo ainda tem lugar sobrando, e você sabe disso. Alguém, entre uma garfada e outra, solta: \"e se viesse mais um?\"",
+    "resumo": "pensou em mais um filho para a mesa",
+    "escolhas": [
+      {
+        "texto": "Mais um, sim",
+        "resumo": "teve mais um filho para encher a mesa",
+        "resultado": {
+          "texto": "Mais um berço, mais um apelido, mais uma cadeira na mesa. A casa ficou menor e a vida, maior.",
+          "efeitos": {
+            "felicidade": 5,
+            "saude": -2,
+            "custo": 12000,
+            "personagens": [
+              "filho"
+            ],
+            "agendar": [
+              {
+                "evento": "ciumes_do_irmao",
+                "em": 2
+              },
+              {
+                "evento": "filho_adolescente",
+                "em": 14
+              },
+              {
+                "evento": "filho_formatura",
+                "em": [
+                  21,
+                  24
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Adotar mais um",
+        "resumo": "adotou mais um filho",
+        "resultado": {
+          "texto": "Chegou com uma mochila e um olhar desconfiado. Duas semanas depois, já brigava pelo controle da TV como se tivesse nascido ali.",
+          "efeitos": {
+            "felicidade": 6,
+            "dinheiro": -8000,
+            "custo": 12000,
+            "personagens": [
+              "filho"
+            ],
+            "agendar": [
+              {
+                "evento": "ciumes_do_irmao",
+                "em": 2
+              },
+              {
+                "evento": "filho_adolescente",
+                "em": 14
+              },
+              {
+                "evento": "filho_formatura",
+                "em": [
+                  21,
+                  24
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "texto": "Está bom assim",
+        "resumo": "decidiu que a família estava do tamanho certo",
+        "resultado": {
+          "texto": "Você olhou a mesa e achou que estava do tamanho certo. O lugar sobrando virou o lugar do cachorro.",
+          "efeitos": {
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_restaurante_do_primeiro_encontro",
+    "peso": 4,
+    "idade": [
+      20,
+      95
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_amor_da_vida",
+        "casado"
+      ],
+      "marcaHa": [
+        {
+          "marca": "casado",
+          "min": 2
+        }
+      ],
+      "amor.vivo": true
+    },
+    "texto": "Você reservou uma mesa no restaurante do primeiro encontro com {amor}. O garçom é outro, o cardápio mudou, e vocês dois pediram exatamente a mesma coisa daquela noite.",
+    "resumo": "voltou com {amor} ao restaurante do primeiro encontro",
+    "escolhas": [
+      {
+        "texto": "Contar o que sentiu naquela noite",
+        "resumo": "contou a {amor} o que sentiu no primeiro encontro",
+        "resultado": {
+          "texto": "Você contou do nervoso, da camisa errada e da vontade de ficar. {amor} riu e disse que lembrava de tudo diferente, e melhor.",
+          "efeitos": {
+            "amor.vinculo": 8,
+            "felicidade": 4,
+            "dinheiro": -500
+          }
+        }
+      },
+      {
+        "texto": "Planejar os próximos dez anos no guardanapo",
+        "resumo": "planejou com {amor} os próximos dez anos num guardanapo",
+        "resultado": {
+          "texto": "Uma viagem, uma reforma e um cachorro. O guardanapo foi para a carteira de {amor} e nunca mais saiu de lá.",
+          "efeitos": {
+            "amor.vinculo": 6,
+            "felicidade": 3,
+            "inteligencia": 1,
+            "dinheiro": -500
+          }
+        }
+      },
+      {
+        "texto": "Comer em silêncio, de mão dada",
+        "resumo": "jantou em silêncio, de mão dada com {amor}",
+        "resultado": {
+          "texto": "Vocês quase não falaram. Não precisava.",
+          "efeitos": {
+            "amor.vinculo": 5,
+            "felicidade": 3,
+            "dinheiro": -500
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_crise_do_setimo_ano",
+    "peso": 4,
+    "idade": [
+      24,
+      95
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_amor_da_vida",
+        "casado"
+      ],
+      "marcaHa": [
+        {
+          "marca": "casado",
+          "min": 6
+        }
+      ],
+      "amor.vivo": true
+    },
+    "texto": "Você e {amor} passaram a conversar mais com o celular do que um com o outro. Ninguém fez nada de errado, e esse é justamente o problema.",
+    "resumo": "viu o casamento com {amor} entrar na rotina",
+    "escolhas": [
+      {
+        "texto": "Terapia de casal, toda quinta",
+        "resumo": "levou o casamento com {amor} para a terapia",
+        "resultado": {
+          "texto": "Na terceira sessão, vocês brigaram. Na quarta, riram da briga. Na décima, voltaram a se olhar no jantar.",
+          "efeitos": {
+            "amor.vinculo": 10,
+            "felicidade": -1,
+            "dinheiro": -4000
+          }
+        }
+      },
+      {
+        "texto": "Uma viagem só dos dois",
+        "resumo": "fez uma viagem só com {amor} para salvar a rotina",
+        "resultado": {
+          "texto": "Uma pousada sem televisão e uma estrada de terra. Na volta, vocês tinham assunto para o resto do ano.",
+          "efeitos": {
+            "amor.vinculo": 8,
+            "felicidade": 4,
+            "dinheiro": -9000
+          }
+        }
+      },
+      {
+        "texto": "Deixar a rotina como está",
+        "resumo": "deixou o casamento com {amor} na rotina",
+        "resultado": {
+          "texto": "A rotina é confortável, como um sofá velho. O problema dos sofás velhos é que ninguém se senta neles de propósito.",
+          "efeitos": {
+            "amor.vinculo": -6,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "as_bodas",
+    "peso": 4,
+    "idade": [
+      35,
+      99
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_amor_da_vida",
+        "casado"
+      ],
+      "marcaHa": [
+        {
+          "marca": "casado",
+          "min": 15
+        }
+      ],
+      "amor.vivo": true
+    },
+    "texto": "Quinze anos ou mais de casamento com {amor}. Os amigos querem festa, os filhos dos amigos querem salgadinho, e você quer saber o que {amor} quer.",
+    "resumo": "comemorou as bodas com {amor}",
+    "escolhas": [
+      {
+        "texto": "Renovar os votos, com festa e tudo",
+        "resumo": "renovou os votos com {amor}",
+        "resultado": {
+          "texto": "Você chorou no segundo parágrafo dos votos, como da primeira vez. {amor} fingiu que não, e também chorou.",
+          "efeitos": {
+            "amor.vinculo": 10,
+            "felicidade": 5,
+            "dinheiro": -20000
+          }
+        }
+      },
+      {
+        "texto": "Um jantar a dois, sem plateia",
+        "resumo": "comemorou as bodas num jantar a dois com {amor}",
+        "resultado": {
+          "texto": "Uma mesa no canto, uma garrafa boa e as mesmas piadas de sempre, que continuam funcionando.",
+          "efeitos": {
+            "amor.vinculo": 6,
+            "felicidade": 3,
+            "dinheiro": -1500
+          }
+        }
+      },
+      {
+        "texto": "Escrever uma carta e esconder no casaco",
+        "resumo": "escreveu uma carta de bodas para {amor}",
+        "resultado": {
+          "texto": "{amor} achou a carta uma semana depois, no bolso do casaco, e leu três vezes no ponto de ônibus.",
+          "efeitos": {
+            "amor.vinculo": 7,
+            "felicidade": 3,
+            "inteligencia": 1
+          }
+        }
+      }
+    ]
+  }
+]
