@@ -258,6 +258,7 @@ Os projetos ficam em `mundo.json › projetos` e são escritos como o resto do c
 - Com alguém: `"com": ["mae", "pai", "irmao", …]`, e `quando`, as etapas e a meta leem a pessoa como `ator` (`"ator.magoa": { "max": 10 }`); `nome`, `objetivo` e os textos aceitam `{ator}` e `{ator.quem}`; `semTempo` é o fim de quando a pessoa morre antes.
 - `ajuda` lista o que leva à etapa: um verbo (`poupar`), o id de uma ação (`faculdade_a_noite`) ou uma folha (`folha:dinheiro`, `folha:familia`, `folha:carreira`, `folha:pais`). A folha Planos mostra; os robôs dão preferência.
 - **Storylets do projeto:** a condição `"marcas": ["projeto_casa_propria"]` (ou `"ator.projeto_reparar_relacao"` na pessoa) faz o storylet existir só com o projeto de pé, com peso dobrado. Todo projeto precisa de pelo menos um (o validador avisa).
+- **O sonho** (bloco S1): o projeto com `"sonho": true` é um sonho de vida (estrela, império, governar o país, a casa cheia, um amor para a vida toda). Ele começa pela escolha com o efeito `"sonhar": "<id>"` (o marco dos 15 anos e o do amor, em `58-sonhos.json`), além da folha Planos, e a qualidade é a do projeto (`projeto_<id>`). As cenas do sonho são storylets comuns com `"marcas": ["projeto_<id>"]` e uma condição do ponto do caminho (`"eu.fama": { "max": 29 }`, `"empresa.valor": { "min": 10000000 }`, `"eu.cargo": true`); escreva-as para momentos diferentes, para o sonho não repetir a mesma cena.
 
 ## Os segredos (missão Ω4)
 
@@ -325,6 +326,7 @@ O tema do segredo fica em `mundo.json › segredos`; quem sabe e de quem é esco
 | `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
 | `venderSubsidiarias` | `{ "quantas": 1, "premio": 1.5 }` ou `{ "fracao": 0.3 }` | a empresa vende subsidiárias pelo que valem × prêmio (cada uma vale valor ÷ (subsidiárias + 2)); a parte de quem joga vira dinheiro; `{venda}` no texto |
 | `abrirCapital` | `true` | a empresa vai para a bolsa, como na folha: vale 20% mais, quem joga vende 20% da parte na estreia (`{venda}`), a dependência cai 15 e ela ganha `empresa.na_bolsa` |
+| `sonhar` | `"estrela"` | começa o sonho (o projeto com `"sonho": true`) com a escolha de causa; não faz nada se ele já está de pé ou se já há três projetos |
 | caminhos de poder | `"eu.influencia": 5`, `"eu.popularidade": -8`, `"eu.fama": 10`, `"eu.cargo": { "definir": "rei" }` | a coroa e o Regime entram assim; eleição é pela folha Carreira |
 | caminhos de carreira | `"eu.carreira": { "definir": "ator" }`, `"eu.nivel": 1` | dá uma profissão (com `renda` e `eu.setor`); trocar `eu.setor` ou zerar a renda sem `eu.carreira` encerra a carreira |
 | `pais.impulso` | `1.5` | decreto que aquece a economia (mais crescimento, inflação e dívida); some pela metade a cada ano |

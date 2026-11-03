@@ -252,6 +252,25 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
   - no túnel: a oferta hostil em ≥ 0,1% das vidas, passando entre 30% e 85%; a oferta contra quem joga em ≥ 0,05%; a emissão em ≥ 0,2%; zero histórias mortas.
 - **Estado:** feita (bloco H7, 03/11).
 
+### I-141 · O sonho: o que você quer da vida, com cenas e um fim (o pedido do dono, 03/11)
+- **Pedido:** "o mundo real é chato demais; o player busca o Trajetória para viver nele o que de fato quer viver e no mundo real não tem o poder para isso. O que podemos entregar que resolva o problema existencial dele?", com um loop de atualizações focadas na qualidade de jogo.
+- **Problema:** a vida respondia ao mundo, mas não perguntava o que quem joga queria dela. Os planos (Ω3) são práticos (a casa, o diploma, sair das dívidas) e ficam numa folha que muita gente não abre. Ninguém sonhava em virar estrela, construir um império, governar o país, encher a casa de filhos ou viver um amor para a vida toda, e o cartão final não dizia se o sonho tinha se realizado.
+- **Candidatas (nos 12 critérios):**
+  - o sonho como plano de vida: pontua alto em fantasia, decisão, consequência, história emergente e reuso, porque reaproveita o motor dos planos inteiro (etapas que são o estado, prazo, o fim no livro com a causa);
+  - pular até a próxima decisão que importa: alto em diversão e ritmo, médio em liberdade; fica para depois, porque mexe no tempo da vida e pede medir o tédio antes;
+  - mais origens fantásticas: alto em fantasia, baixo em consequência; a fantasia sem o caminho até ela é só um começo diferente.
+- **Efeitos causais:**
+  - o marco dos 15 anos ("o que você quer da vida": estrela, império, governar o país, ou ainda não sei) e o do amor (com o namoro, a casa cheia ou um amor para a vida toda) começam o sonho com a escolha de causa (o efeito `sonhar`);
+  - o sonho é um plano com `sonho: true` (`mundo.json › projetos`): as etapas são a fama (até 60), o valor da empresa (até R$ 100 milhões), o cargo (até o Planalto), os filhos (três) e os anos de casado (25), e o prazo é longo (de 30 a 40 anos);
+  - a primeira cena da estrela é a porta (o microfone do bar, a câmera, a várzea com o olheiro, o teatro), e cada porta abre uma carreira de holofote diferente; quem sonha em virar estrela sobe com o dobro da chance no palco (a garra do sonho, `regras.ts › GARRA_DO_SONHO`), porque a pirâmide da fama, sem ela, leva mais de 50 anos para o segundo degrau;
+  - cada sonho tem três cenas que só aparecem para quem sonha, em momentos diferentes do caminho (o primeiro palco, o vídeo que viralizou, a turnê ou a casa; o contrato que pode tudo, a capa da revista, o preço do império; o primeiro comício, o padrinho, o debate; o quarto vazio, o Natal barulhento, mais um na mesa; o restaurante do primeiro encontro, a crise do sétimo ano, as bodas), e as cenas pesam o dobro pelo plano de pé;
+  - o sonho realizado entra na linha do tempo em dourado, e o cartão da vida diz como cada sonho terminou ("realizado aos 34", "que ficou pelo caminho aos 52", "sonhado até o fim").
+- **Aceitação:**
+  - testes: o marco começa o sonho com a escolha de causa; "ainda não sei" não começa nada; a meta vira conquista com o começo de causa e o cartão conta a idade; as cenas só aparecem para quem sonha;
+  - no túnel: ≥ 60% das vidas que chegam aos 20 têm um sonho; entre 10% e 70% dos sonhos que acabaram se realizam (nem impossível, nem garantido); todo sonho se realiza em alguma vida; zero histórias mortas; os toques ficam no teto;
+  - os robôs que sonham vão atrás do sonho (a vaga de holofote, a eleição com chance menor, a empresa aberta), como quem joga faria; sem isso, a medida dizia quanto a vida realiza o sonho de quem não faz nada por ele.
+- **Estado:** feita (bloco S1, 03/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -347,6 +366,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-141 | O sonho: o que você quer da vida, com cenas e um fim | S1 | Alta | feita (bloco S1, 03/11) |
 | I-140 | A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo | H7 | Alta | feita (bloco H7, 03/11) |
 | I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e o gestor que propõe | H6 | Alta | feita (bloco H6, 02/11) |
 | I-138 | A influência que se sente: três esferas e as conquistas | ★ | Alta | feita (bloco ★, 02/11) |

@@ -120,6 +120,12 @@ Riscos já vistos:
 
 Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fundo ativista (a cadeira no conselho e o dividendo extra).
 
+**O loop da qualidade de jogo (03/11).** O dono pediu um loop de atualizações cada vez melhores, com foco total na experiência de quem joga: "o mundo real é chato demais; o player busca o Trajetória para viver nele o que de fato quer viver". Cada volta escolhe, pelos 12 critérios, o que mais muda a vida de quem joga, entrega inteira e recomeça (I-141 em diante).
+
+- [x] S1 (03/11): o sonho. Aos 15, a vida pergunta o que você quer dela (virar estrela, construir um império, governar o país, ou ainda não sei) e, com o namoro, o que você quer do amor (a casa cheia ou um amor para a vida toda). O sonho é um plano com as etapas do estado e prazo longo; cada um tem três cenas em pontos diferentes do caminho; a conquista é um marco dourado, e o cartão da vida diz como cada sonho terminou (I-141)
+- [ ] S2, a próxima volta: o ano que vale a pena. Pular os anos sem decisão até o próximo momento que importa (o ano em que algo acontece com você), com a linha do tempo contando o que passou; mede-se pelos toques por vida e pelos anos vazios seguidos
+- [ ] Depois, na fila: mais sonhos (o mundo inteiro, a obra-prima, a cura), e a rival que volta na vida seguinte
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
