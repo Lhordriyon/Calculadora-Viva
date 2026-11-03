@@ -17,6 +17,10 @@ function verboDe(h: Entrada, c: Conteudo): string | undefined {
 }
 
 /** Operações da folha (e regras que contam algo) pelo grupo do ref: "empresa:abrir" → Empresa. */
+/** Os sonhos de vida (bloco S1): a conquista de um sonho é marco dourado; a de um plano comum, não. */
+const SONHOS: ReadonlySet<string> = new Set(conteudo.mundo.projetos.filter((p) => p.sonho).map((p) => p.id));
+const sonhoRealizado = (h: Entrada): boolean => h.ref === 'regra:projeto_conquista' && SONHOS.has(/^projeto:([a-z_]+)#/.exec(h.instancia ?? '')?.[1] ?? '');
+
 const GRUPOS: Record<string, string> = { empresa: 'Empresa', bens: 'Compra', carreira: 'Carreira', poder: 'Política', carteira: 'Dinheiro', testamento: 'Testamento', jogada: 'Fortuna' };
 function etiquetaDoGrupo(ref: string | undefined): string | undefined {
   const grupo = ref?.split(':')[0] ?? '';
@@ -40,8 +44,8 @@ function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque, capitulo }: P
   const chips = chipsDe(h, nomeDe, inflacao);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
-  // E as conquistas da influência (poder.ts › conquistasDoAno).
-  const marco = ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || h.ref === 'regra:projeto_conquista';
+  // E as conquistas da influência (poder.ts › conquistasDoAno) e o sonho realizado.
+  const marco = ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || sonhoRealizado(h);
   return (
     <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`} data-id={h.id}>
       <span class="idade" aria-label={`${h.idade} anos`}>
