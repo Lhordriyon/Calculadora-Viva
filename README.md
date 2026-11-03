@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H6%3A%20o%20capitalismo%20com%20rosto-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H7%3A%20a%20bolsa%20de%20verdade-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-901-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,30 +15,29 @@
 
 ---
 
-## 🆕 Novidades: H6 · O capitalismo com rosto (02/11/2026)
+## 🆕 Novidades: H7 · A bolsa de verdade (03/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a concorrência e a empresa ganharam gente.
-> - **A concorrente tem nome e dono.** Quem abre empresa conhece a rival: a Andrade & Filhos, da Carla, do outro lado da rua. O jeito do dono muda a briga: o brigão entra mais na guerra de preços, e a guerra deixa mágoa nele.
-> - **O rival pode ser alguém que você conhece.** Quando chega concorrente nova, um ex ou um amigo magoado pode ser o dono, a mesma pessoa, que lembra do que você fez.
-> - **Comprar a concorrente é pedir ao dono.** Ele decide pelo que lembra de você e pela força da empresa dele, e o não vem com o porquê ("não quis vender, porque…"). A folha diz como ele está ("deve dizer sim", "difícil"). Quem vende pode ficar para tocar o negócio com você.
-> - **O que a rival faz:** propõe uma trégua de preços (o cartel, que o Cade pode descobrir), oferece comprar a sua empresa no ano ruim, leva o seu melhor gerente, processa pela marca, aparece quebrado pedindo emprego, divide a mesa na festa.
-> - **O gestor que propõe.** Com a empresa de R$ 10 milhões, chega um diretor (ou uma diretora) com o jeito do traço, cauteloso ou arrojado, que traz a jogada do ano com o número que a justifica ("ampliar a estrutura em 25%, porque os pedidos já passam 30% do que ela entrega"). Seguir faz a jogada; recusar é ir do seu jeito. No ano seguinte, os números dizem quem tinha razão, e quem ignora demais perde o diretor para a concorrência.
+> **O que mudou:** abrir o capital deixou de ser uma decisão só. Na bolsa, o dinheiro sem dívida custa controle, e comprar sem pedir custa prêmio e risco.
+> - **Emitir ações.** A empresa na bolsa vende ações novas: o dinheiro entra no caixa, sem juro nenhum, e a sua parte encolhe.
+> - **A oferta hostil.** Na bolsa, você pode tomar a concorrente sem pedir ao dono: paga 35% acima do preço do dia, e os acionistas decidem. A influência de negócios ajuda, e o dono brigão segura melhor. A oferta que falha custa os bancos e os advogados e deixa a rival mais forte e magoada.
+> - **O controle em jogo.** Com menos da metade das ações, a dona da concorrente ou um fundo de fora pode comprar a sua empresa. Você recompra a maioria (se couber no bolso), vende com 30% de prêmio ou briga no conselho, voto a voto. E o porquê aponta a emissão ou a venda que tirou a sua maioria.
+> - **Recomprar a maioria** pela folha, antes que alguém tente.
 
 > [!TIP]
 > **Para testar:**
-> - Abra uma empresa e veja, na folha Dinheiro, a concorrência com nome e dono; na Família, ela aparece no fim da lista.
-> - Tente comprar a concorrente depois de uma guerra de preços: o dono lembra.
-> - Faça a empresa passar de R$ 10 milhões e espere a primeira proposta; recuse uma e veja se o ano seguinte dá razão ao diretor.
+> - Faça a empresa passar de R$ 100 milhões, abra o capital e veja, na folha Dinheiro, a sua parte e os botões novos.
+> - Emita ações algumas vezes, até a sua parte cair abaixo da metade, e espere a oferta pelo controle.
+> - Tente comprar a concorrente pedindo ao dono; se ele disser não, vá pela oferta hostil.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🧑‍💼 A concorrente com nome e dono, que tem jeito e memória | 📈 A bolsa de verdade: ações da rival e a oferta hostil |
-| 🤝 Comprar a concorrente pedindo ao dono, com o porquê do não | 🏬 Várias rivais por setor |
-| 🗂️ O diretor que propõe com os números, e o ano seguinte que confere | 🏭 Fábricas e lojas como lugares |
-| 🎭 Oito histórias: trégua e cartel, oferta, gerente roubado, processo, dono quebrado, festa | 🧭 Dar ordens ao diretor (carta branca por área) |
+| 📈 Emitir ações: caixa sem dívida, parte que encolhe | 🗣️ O fundo ativista (a cadeira no conselho e o dividendo extra) |
+| 🦈 A oferta hostil pela concorrente, sem pedir ao dono | 🏬 Várias rivais por setor |
+| 🛡️ O controle em jogo: a oferta contra você, com três respostas | 🏭 Fábricas e lojas como lugares |
+| 🔁 Recomprar a maioria | 📉 A cotação de cada dia (hoje, o valor anda com o humor do ano) |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. Todo mundo que abre empresa conhece a rival pelo nome, e em 2,6% das vidas com empresa o dono é alguém que já era da vida. O gestor chega em 19% das vidas com empresa; das 1.982 propostas, 51% foram seguidas, sem que seguir dominasse (R$ 41 milhões de patrimônio mediano para quem mais seguiu, R$ 42 milhões para quem mais recusou). O bilionário feito ficou em 0,40% (era 0,51%), e 25,6% de quem abre empresa quebra (eram 24,7%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,2% na 20ª, com 901 histórias por 1.000 vidas. Os toques caíram para 476,9 por vida (eram 479,2). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. A oferta hostil foi tentada em 0,11% das vidas e passou em 61% das 23 ofertas; a oferta contra quem perdeu a maioria chegou em 0,23% das vidas; a emissão de ações, em 0,43%. Nos robôs, quem perde a maioria briga no conselho (a arriscada escolhe sempre o risco), e nenhum recomprou: a recompra está provada nos testes. O bilionário feito ficou em 0,38% (era 0,40%), e 25,7% de quem abre empresa quebra (eram 25,6%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,2% na 20ª, com 901 histórias por 1.000 vidas. Os toques ficaram em 477,1 por vida (eram 476,9). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 

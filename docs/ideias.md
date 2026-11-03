@@ -239,6 +239,19 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Depende de:** I-134 (a concorrência), I-136 (a compra pelo preço do dia), I-123 (a pessoa decide), I-125 (os segredos) e a identidade das pessoas (Ω1). Todas feitas.
 - **Estado:** feita (bloco H6, 02/11). O cartel ficou uma marca da empresa, e não um segredo (os segredos são de pessoa para pessoa); o rival que você conhece vem de um ex ou de um amigo da vida adulta (o irmão ficou de fora: o papel dele carrega a herança e a família).
 
+### I-140 · A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo (o pedido do dono, 03/11)
+- **Pedido:** "próxima atualização de capitalismo", o passo combinado no fim do H6.
+- **Problema:** abrir o capital acontecia uma vez só: o valor subia, um pedaço era vendido, e a bolsa não pedia mais nenhuma decisão. Não havia como financiar sem dívida, nem risco de perder o controle, nem como comprar a concorrente sem pedir ao dono.
+- **Efeitos causais:**
+  - emitir ações: caixa sem dívida, e a parte de quem joga encolhe;
+  - recomprar a maioria;
+  - a oferta hostil: o prêmio, a chance pelos acionistas, pela influência e pela garra do dono; a que falha custa e fortalece a rival;
+  - sem a maioria, a oferta contra quem joga, da dona da concorrente ou de um fundo, com a causa na diluição.
+- **Aceitação:**
+  - testes de cada ligação: as contas fecham na emissão e na recompra; a oferta hostil dos dois lados; a oferta contra quem joga, com a causa;
+  - no túnel: a oferta hostil em ≥ 0,1% das vidas, passando entre 30% e 85%; a oferta contra quem joga em ≥ 0,05%; a emissão em ≥ 0,2%; zero histórias mortas.
+- **Estado:** feita (bloco H7, 03/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -334,6 +347,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-140 | A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo | H7 | Alta | feita (bloco H7, 03/11) |
 | I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e o gestor que propõe | H6 | Alta | feita (bloco H6, 02/11) |
 | I-138 | A influência que se sente: três esferas e as conquistas | ★ | Alta | feita (bloco ★, 02/11) |
 | I-137 | O capitalismo integrado: fornecedor, trabalhador e governo na conta da empresa | H | Alta | feita (bloco H5, 02/11) |

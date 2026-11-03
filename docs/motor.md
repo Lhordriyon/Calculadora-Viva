@@ -329,6 +329,20 @@ A empresa que quem joga cuida de perto (`empresa`) traz duas pessoas, no molde d
   - **A conferência no ano seguinte:** recusada e o ano no vermelho, o gestor tinha razão (`regra:gestor_avisou`, com a recusa de causa; −12 de confiança, +6 de mágoa); recusada e o ano no azul, +3; seguida e o ano no azul, +4. Com a confiança abaixo de 35 ou a mágoa de 60, ele vai para a concorrência (`regra:gestor_saiu`, +8 na força dela).
   - **Os robôs** com gestor deixam a empresa de perto com ele; quem recusa faz do próprio jeito no mesmo ano.
 
+## A bolsa de verdade (`empresa.ts`; bloco H7)
+
+Com a empresa na bolsa (`empresa.na_bolsa`), três operações da folha e uma ameaça:
+
+- **Emitir ações** (`emitir`, uma por ano): é a rodada de investimento com 15% (`rodadaDeInvestimento`). O dinheiro novo (17,6% do valor) sai do mercado para o caixa, e `empresa.participacao` encolhe 15%. A arriscada (e o gestor arrojado) emite antes de pegar crédito quando os pedidos passam da estrutura.
+- **Recomprar a maioria** (`recomprar`, só abaixo de 51%): quem joga paga ao mercado o que falta para 51% pelo valor de agora, com 10% de prêmio (`custoDaRecompra`). O valor da empresa não muda, só o dono. O efeito `recomprar` do conteúdo faz o mesmo (`{custo}` diz quanto custou), e `empresa.recompra_cabe` diz se cabe no bolso.
+- **A oferta hostil** (`opa`, uma a cada três anos, só na empresa de perto e com dono à vista): compra a concorrente pela bolsa, sem pedir ao dono, pelo preço do dia com 35% de prêmio (`custoDaOpa`).
+  - **A chance** (`chanceDaOpa`, de 10% a 90%): 45%, mais a influência de negócios ÷ 300, menos (a garra do dono − 1) × 0,25, e menos 10% se ela está cara.
+  - **Deu certo:** é a compra da concorrente (H4), e o dono sai do conselho (não vira gestor).
+  - **Falhou:** 5% da oferta vai em bancos e advogados, a concorrente ganha 10 de força e o dono, 30 de mágoa.
+- **A oferta contra quem joga** (`ofertaContraVoce`, na etapa da empresa): com a empresa de perto na bolsa e menos da metade das ações, 12% de chance por ano (22% com a concorrente de força 60 ou mais), uma a cada três anos.
+  - **Quem compra:** a dona da concorrente (60%, `a_opa_da_rival`) ou um fundo de fora (`a_opa_do_fundo`), pela agenda, com a entrada que mudou `empresa.participacao` de causa.
+  - **As respostas:** recomprar a maioria (se cabe), vender com 30% de prêmio, ou brigar no conselho (40% contra a rival, 45% contra o fundo; perder vende com 10%).
+
 ## A influência (`influencia.ts`; bloco ★)
 
 A influência total (`eu.influencia`, poder.ts) continua; por cima dela, três esferas tiradas do estado na hora, sem número novo (`influencia.ts › esferas`, de 0 a 100; a política lê o poder do cargo em `mundo.json › cargos`):

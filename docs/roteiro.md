@@ -114,7 +114,11 @@ Riscos já vistos:
 - **O rival conhecido muda de papel:** a memória vai com ele, mas o conteúdo do papel antigo para de alcançá-lo.
 - **Seguir a diretora não pode ser a resposta certa:** o jeito dela erra no ciclo errado (a cautelosa perde a alta, a arrojada pega a sobra).
 
-Depois do H6 (H7): a bolsa de verdade (as ações da rival e a oferta hostil), várias rivais por setor, e fábricas e lojas como lugares.
+**O bloco H7, a bolsa de verdade (03/11).** O dono pediu a próxima atualização de capitalismo (I-140; as decisões e as medidas em `docs/decisoes.md › O bloco H7`).
+
+- [x] H7: emitir ações, recomprar a maioria, a oferta hostil pela concorrente e a oferta contra quem perdeu a maioria (a dona da concorrente ou um fundo de fora), com a folha Dinheiro, os robôs, os testes e os portões do túnel
+
+Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fundo ativista (a cadeira no conselho e o dividendo extra).
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 

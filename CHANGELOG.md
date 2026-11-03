@@ -4,6 +4,20 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📈 H7 · A bolsa de verdade · 03/11/2026
+
+> [!NOTE]
+> O pedido do dono (03/11): a próxima atualização de capitalismo (o passo combinado no fim do H6).
+
+- 📈 **Emitir ações** (`emitir`): a rodada de 15% na bolsa; o dinheiro vai para o caixa, e a parte de quem joga encolhe.
+- 🔁 **Recomprar a maioria** (`recomprar`): o que falta para 51%, com 10% de prêmio a quem vende.
+- 🦈 **A oferta hostil** (`opa`): a concorrente pela bolsa, sem pedir ao dono, com 35% de prêmio; a chance pelos acionistas, pela influência de negócios e pela garra do dono; a que falha custa 5% e fortalece a rival.
+- 🛡️ **A oferta contra quem joga:** sem a maioria, a dona da concorrente ou um fundo de fora pode comprar o controle (pela agenda, com a diluição de causa); recomprar, vender com prêmio ou brigar no conselho.
+- 🤖 **Os robôs:** a arriscada emite antes de pegar crédito e vai pela oferta hostil; a cautelosa recompra a maioria.
+- 📊 **No túnel** (10.000 vidas): as contas fecham em 4,10 milhões de entradas; a oferta hostil em 0,11% das vidas, passando em 61% das 23; a oferta contra quem perdeu a maioria em 0,23% (os robôs brigam no conselho); a emissão em 0,43%; bilionário feito 0,38%; quebram 25,7% de quem abre empresa; saturação V5 52,3% e V20 87,2%; 901 histórias por 1.000 vidas; toques 477,1.
+
+---
+
 ## 🧑‍💼 H6 · O capitalismo com rosto · 02/11/2026
 
 > [!NOTE]

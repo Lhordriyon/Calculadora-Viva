@@ -1952,3 +1952,19 @@ O dono pediu para continuar o foco no capitalismo, cada atualização melhor que
 - **A conferência lê a escolha no livro** (`escolha.indice`), e não uma qualidade nova: a primeira escolha da proposta segue, a segunda recusa.
 - **Comprar a concorrente tem uma tentativa por ano** (era uma compra por ano), e o ajuste do pedido é a força dela: a fraca vende mais fácil (+1), a forte, menos (−1).
 
+## O bloco H7: a bolsa de verdade (03/11)
+
+O dono pediu a próxima atualização de capitalismo (I-140), o passo combinado no fim do H6. Abrir o capital acontecia uma vez só, e a bolsa não pedia mais nenhuma decisão.
+
+**Medidas** (10.000 vidas; antes = o bloco H6): bilionário feito de 0,40% para 0,38%; quebram de 25,6% para 25,7% de quem abre empresa; saturação V5/V20 em 52,3%/87,2%, como antes; assinaturas em 901 por 1.000 vidas, como antes; toques de 476,9 para 477,1; CPU de 149,4 para 141,0 ms por vida (a CPU absoluta varia de máquina para máquina); as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina. Os portões do H7: a oferta hostil em 0,11% das vidas, passando em 60,9% das 23; a oferta contra quem perdeu a maioria em 0,23% das vidas (29 vezes, e os robôs brigaram no conselho em todas); a emissão em 0,43%. Nenhum robô recomprou a maioria (a cautelosa quase nunca chega à bolsa, e a arriscada não recompra): a recompra está provada nos testes. O H6 continua de pé: 51,6% das 1.939 propostas seguidas, sem dominar (R$ 43 milhões contra R$ 41 milhões).
+
+**Decisões tomadas sozinho:**
+- **A bolsa reaproveita o que existe:** a emissão é a rodada de investimento (15%), e a oferta hostil é a compra da concorrente com prêmio e sem pedir ao dono.
+- **Recomprar só abaixo da maioria (51%), com 10% de prêmio:** o valor da empresa não muda, só quem tem as ações; acima da maioria, não há o que defender.
+- **A oferta hostil:** 35% de prêmio; a chance é 45%, mais a influência de negócios ÷ 300, menos a garra do dono. Com a base de 60% e a influência ÷ 250, ela passava em todas as ofertas dos robôs (a influência de quem chega à bolsa bate no teto); com os números de agora, passa em cerca de dois terços.
+- **A oferta contra quem joga só sem a maioria (abaixo de 50%):** com mais da metade, ninguém toma o controle. Quem compra é sorteado (60% a dona da concorrente, 40% um fundo de fora): com a rival sempre, a história do fundo não acontecia, porque quem está na bolsa sempre tem rival.
+- **Os robôs exercitam a bolsa:** a arriscada emite antes do crédito e faz a oferta hostil quando os acionistas tendem a vender (55%, ou 40% se o dono já recusou); a cautelosa recompra a maioria. Sem isso, a bolsa não acontecia no túnel: quem chega lá tem gestor, e a empresa fica com ele.
+- **O portão das respostas mede só que a oferta aconteça:** a arriscada sempre briga no conselho (é a opção de mais risco), e quem perde a maioria é quase sempre a arriscada; as respostas ficam como informação.
+- **Os acionistas furiosos ganharam peso 10 (era 1):** com a empresa na bolsa e a bolsa em queda, a história ficava elegível e perdia o sorteio do ano (em 500 vidas, 9 anos elegíveis e nenhuma vez no cartão); com o H7 vendendo empresas na defesa do controle, ela sumiu do túnel de 10.000 vidas.
+- **As histórias da oferta pedem a empresa na bolsa** (a marca), para o analisador de dilemas medi-las com a empresa típica. **A recompra custa 1 de felicidade, além do prêmio:** sem custo, ela era a opção melhor em tudo no bolso pobre.
+
