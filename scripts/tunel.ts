@@ -1030,6 +1030,7 @@ const portoesOmega5 = [
 ] as const;
 // ---- o caminho (missão Ω6): a variedade das vidas pela estrutura causal, e o ritmo dos anos pesados
 const caminhos = assinaturasPorBloco(vidas.map((v) => v.caminho));
+const caminhosSemSonho = assinaturasPorBloco(vidas.map((v) => v.caminhoSemSonho));
 const todosOsElos = new Set<string>();
 for (const v of vidas) for (const x of v.elos) todosOsElos.add(x);
 const elosPorVida = media(vidas.map((v) => v.elos.length));
@@ -1089,9 +1090,9 @@ const portoesH7 = [
 ] as const;
 const portoesOmega6 = [
   [
-    'O caminho varia mais que o destino: as assinaturas do caminho (as causas dos pontos de virada e os capítulos) passam as do destino',
+    'O caminho varia mais que o destino: as assinaturas do caminho (as causas dos pontos de virada, com a escolha, os capítulos e o arco do sonho) passam as do destino',
     caminhos > destinos,
-    `caminho ${num(caminhos, 0)} · destino ${num(destinos, 0)} por 1.000 vidas · ${num(elosPorVida, 1)} elos causais por vida, ${num(todosOsElos.size, 0)} distintos no túnel`,
+    `caminho ${num(caminhos, 0)} (sem o arco do sonho, ${num(caminhosSemSonho, 0)}) · destino ${num(destinos, 0)} por 1.000 vidas · ${num(elosPorVida, 1)} elos causais por vida, ${num(todosOsElos.size, 0)} distintos no túnel`,
   ],
   ['A vida respira: depois de um ano pesado, o seguinte também é pesado em ≤ 10% das vezes', parteSeguida <= 0.1, `${pct(parteSeguida)} de ${num(anosPesados, 0)} anos pesados`],
 ] as const;

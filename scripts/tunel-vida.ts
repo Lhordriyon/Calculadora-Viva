@@ -386,6 +386,8 @@ export interface Vida {
   sonhos: { teve: string[]; realizados: string[]; acabaram: number };
   /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
   caminho: string;
+  /** O caminho sem o arco do sonho (bloco S1): a régua de antes do sonho, para comparar com as versões sem ele. */
+  caminhoSemSonho: string;
   /** Os elos causais distintos da vida ("storylet que causou>storylet que aconteceu"). */
   elos: string[];
   /** O ritmo: os anos pesados (o que aconteceu tirou 8 de felicidade ou mais) e quantos deles vieram logo depois de outro. */
@@ -516,7 +518,7 @@ export interface HistoriaDosSegredos {
 }
 
 /** O caminho da vida (missão Ω6): a assinatura causal, os elos distintos e o ritmo dos anos pesados. */
-function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[]): { caminho: string; elos: string[]; anosPesados: number; pesadosSeguidos: number } {
+function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[]): { caminho: string; caminhoSemSonho: string; elos: string[]; anosPesados: number; pesadosSeguidos: number } {
   const porId = new Map(e.historico.map((h) => [h.id, h]));
   const refDe = (h: Entrada | undefined): string => (h?.ref ?? h?.tipo ?? '?').replace(/#.*$/, '');
   // A causa de um ponto de virada que foi escolha é a escolha (bloco S1): quem sonhou com a estrela e quem sonhou com o
@@ -544,7 +546,8 @@ function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[
   // ponto de virada (virada.ts › comecouUmSonho).
   const sonhos = sonhosDoLivro(e, c);
   const arco = sonhos.teve.map((id) => `${id}:${sonhos.realizados.includes(id) ? 'veio' : 'nao'}`).sort();
-  return { caminho: `${viradas.join(',')}|${tipos.join(',')}|${arco.join(',')}`, elos: [...elos], anosPesados, pesadosSeguidos };
+  const base = `${viradas.join(',')}|${tipos.join(',')}`;
+  return { caminho: `${base}|${arco.join(',')}`, caminhoSemSonho: base, elos: [...elos], anosPesados, pesadosSeguidos };
 }
 
 function segredosDaVida(e: EstadoVida, c: Conteudo): HistoriaDosSegredos {
