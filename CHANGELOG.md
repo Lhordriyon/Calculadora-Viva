@@ -17,6 +17,7 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 🤖 **Os robôs que sonham vão atrás do sonho:** a vaga de holofote, a eleição com chance menor, a empresa aberta.
 - 🪪 **Os sonhos têm vaga própria** (dois de pé, à parte dos três planos), e o marco do sonho não toma a vaga de um ponto de virada: o cartão já conta o sonho na linha própria.
 - 📏 **A régua do caminho** conta a escolha de cada ponto de virada e o arco do sonho, e mostra o caminho sem o arco, comparável com as versões de antes.
+- 🏠 **A casa dos pais cabe na tela** com a letra 1,5: o texto, uma opção e os motivos dos bloqueios ficaram mais curtos (a régua da tela achou a última opção fora da tela aos 42 anos de uma das vidas de teste), e a régua passa a mostrar o começo do texto do evento quando esse critério falha. Os 52 critérios passam.
 - 📊 **No túnel** (10.000 vidas): 91,0% das vidas que chegam aos 20 sonham; dos 10.850 sonhos que acabaram, 11,3% se realizaram (a casa cheia 534, o amor para a vida toda 323, a estrela 302, o império 41, o país 31); as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina; saturação V5 52,6% e V20 87,0%; 903 histórias por 1.000 vidas; toques 479,2; caminho 792 por 1.000 vidas (572 sem o arco do sonho, contra 650 do H7 na mesma régua) e destino 569; a oferta hostil caiu para 0,09% das vidas, abaixo do portão de 0,1%.
 
 ---
