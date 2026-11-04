@@ -4,6 +4,21 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌅 S2 · O segundo ato · 04/11/2026
+
+> [!NOTE]
+> O dono leu o projeto e mandou seguir (04/11): a segunda volta do loop da qualidade de jogo.
+
+- 🌅 **O dia do sonho** (`o_dia_do_sonho_<id>`, pela agenda, com a conquista de causa): o estádio cheio, os cem milhões, a posse, a foto da família inteira e as bodas de prata, cada um com três jeitos de viver o topo; a promessa grande demais da posse é cobrada no ano seguinte.
+- ❓ **O "e agora?" e "o sonho que ficou"** (`projetos.ts › terminar`): um ano depois do fim de qualquer sonho, a vida pergunta o que vem depois; as perguntas são repetíveis e oferecem os sonhos da segunda metade, cada um bloqueado com o motivo quando não faz sentido.
+- 🌍 **Quatro sonhos da segunda metade** (`mundo.json › projetos`): a fortuna (R$ 50 milhões), o lugar no mundo (o sítio, a casa de praia ou a fazenda), a volta ao mundo e ver os netos crescerem, com nove cenas.
+- 🎂 **A pergunta dos 50** (`a_crise_dos_cinquenta`): para quem chega lá sem sonho de pé.
+- 🃏 **O cartão conta os dois atos**, com a escolha do dia do sonho na linha do sonho realizado.
+- 🤖 **Os robôs:** quem sonha com o lugar no mundo compra o maior que cabe no bolso; quem sonha com o palco tenta a vaga a cada dois anos. Começar um sonho conta como consequência própria na régua dos dilemas.
+- 📊 **No túnel** (10.000 vidas): os anos dos 50 em diante com um sonho de pé foram de 30% para 51,9%; o dia do sonho chegou em 98,4% dos sonhos realizados; 87,6% dos sonhos que acabaram chegaram à pergunta do que vem depois; os realizados foram de 11,3% para 19,5% dos que acabaram; as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina; nenhuma história morta; saturação V5 53,1% e V20 87,2%; 903 histórias por 1.000 vidas; toques 478,9; a oferta hostil caiu para 0,07% das vidas, abaixo do portão de 0,1%.
+
+---
+
 ## ✦ S1 · O sonho · 03/11/2026
 
 > [!NOTE]

@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S1%3A%20o%20sonho-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S2%3A%20o%20segundo%20ato-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-903-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,30 +15,30 @@
 
 ---
 
-## 🆕 Novidades: S1 · O sonho (03/11/2026)
+## 🆕 Novidades: S2 · O segundo ato (04/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a vida pergunta o que você quer dela, e o mundo abre caminho para quem vai atrás.
-> - **O sonho dos 15 anos.** No chão do quarto, olhando o teto, você decide: virar estrela, construir um império, governar o país, ou ainda não sei. No primeiro namoro sério, vem a pergunta do amor: a casa cheia de filhos ou um amor para a vida toda.
-> - **O caminho até lá.** Cada sonho tem três cenas só dele, em momentos diferentes da vida. A estrela começa por uma porta (o microfone do bar, a câmera emprestada, a várzea com um olheiro, o teatro), e cada porta abre uma carreira de holofote. Depois vêm o vídeo que viralizou e a turnê que pede para você perder os aniversários de casa. O império tem o contrato que pode tudo, a capa da revista e o preço do império; a política, o primeiro comício, o padrinho e o debate na TV; a casa cheia, o quarto vazio, o Natal barulhento e mais um na mesa; o amor, o restaurante do primeiro encontro, a crise do sétimo ano e as bodas.
-> - **A garra do sonho.** Quem sonha em virar estrela sobe com o dobro da chance numa carreira de holofote.
-> - **O fim que se conta.** O sonho realizado brilha em dourado na linha do tempo, e o cartão da vida diz como cada sonho terminou: realizado aos 34, que ficou pelo caminho aos 52, sonhado até o fim.
+> **O que mudou:** o sonho não acaba numa linha. Ele tem o dia em que chega, e a vida continua depois dele.
+> - **O dia do sonho.** Quando o sonho se realiza, o mesmo ano traz a cena do topo, com três jeitos de viver o momento. No estádio cheio: a primeira música que você aprendeu, a turnê pelo mundo ou quem duvidou chamado ao palco. Nos cem milhões: o bônus para todo mundo, a festa para a cidade ou segunda-feira às oito. Na posse: o discurso da escola pública, a promessa grande demais (que alguém cobra no ano seguinte) ou a família no parlatório. E a foto da família inteira, e as bodas de prata.
+> - **E agora?** Um ano depois do sonho realizado, a vida pergunta o que vem depois. Se o sonho não veio, ela lembra do que ficou e pergunta o que fazer com o espaço.
+> - **Sonhos da segunda metade.** A fortuna (R$ 50 milhões), o lugar no mundo (o sítio, a casa de praia ou a fazenda), a volta ao mundo e ver os netos crescerem, cada um com cenas próprias. E quem chega aos 50 sem sonho de pé ouve a pergunta: o que você quer da segunda metade?
+> - **O cartão conta os dois atos**, e o dia do sonho entra na linha do sonho realizado.
 
 > [!TIP]
 > **Para testar:**
-> - Chegue aos 15 e escolha um sonho; na folha Planos, ele aparece com ✦, as etapas e o prazo.
-> - Escolha virar estrela, entre por uma das portas e procure a vaga de holofote na folha Carreira.
-> - No primeiro namoro sério, escolha a casa cheia e veja o que a vida faz com isso.
-> - No fim, leia no cartão como o sonho terminou.
+> - Realize um sonho (a casa cheia e o amor para a vida toda são os mais alcançáveis) e veja o dia do sonho no mesmo ano.
+> - Um ano depois, responda o "e agora?" e acompanhe o sonho novo na folha Planos.
+> - Chegue aos 50 sem sonho de pé e responda a pergunta da segunda metade.
+> - No fim, leia os dois atos no cartão.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| ✦ Cinco sonhos de vida, escolhidos aos 15 e no amor | 🌅 O dia do sonho: a cena do sonho realizado, com escolha |
-| 🎬 Quinze cenas, três por sonho, em pontos diferentes do caminho | ❓ O "e agora?" depois do sonho, realizado ou não |
-| 💪 A garra do sonho na carreira de holofote | 🌍 Sonhos da segunda metade da vida (a fortuna, o lugar no mundo, a volta ao mundo) |
-| 🏆 O sonho realizado em dourado e no cartão da vida | 🔁 O sonho que não se realizou passando para quem herda |
+| 🌅 O dia do sonho, com escolha, para os cinco sonhos | 🔁 O sonho que não veio passando para quem herda |
+| ❓ O "e agora?" e "o sonho que ficou" | 🎲 A sorte grande: uma chance extraordinária por vida |
+| 🌍 Quatro sonhos da segunda metade, com cenas | 🕯️ A despedida em várias cenas |
+| 🎂 A pergunta dos 50 para quem chega lá sem sonho | 🧑‍🏫 Ensinar o caminho a alguém |
 
-No túnel de vento (10.000 vidas), 91,0% das vidas que chegam aos 20 têm um sonho, e dos 10.850 sonhos que acabaram, 11,3% se realizaram: a casa cheia em 534 vidas, um amor para a vida toda em 323, virar estrela em 302, o império em 41 e governar o país em 31 (os dois mais difíceis, de propósito). O dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 87,0% na 20ª, com 903 histórias por 1.000 vidas. Os toques foram a 479,2 por vida (eram 477,1; teto 480). Duas coisas pioraram e ficam à vista: sem contar o arco do sonho, os caminhos das vidas variam 11% menos que no H7 (quem sonha converge nas mesmas jogadas: a eleição, a empresa aberta), e a oferta hostil na bolsa caiu de 0,11% para 0,09% das vidas, porque a robô arriscada agora também persegue a estrela e o poder. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), os anos dos 50 em diante com um sonho de pé foram de 30% para 51,9%. O dia do sonho chegou em 98,4% dos sonhos realizados, e 87,6% dos sonhos que acabaram chegaram à pergunta do que vem depois. Os sonhos da segunda metade são mais alcançáveis que os da juventude: o lugar no mundo se realizou em 912 vidas, a volta ao mundo em 445, os netos em 149 e a fortuna em 110; no total, 19,5% dos sonhos que acabaram se realizaram (eram 11,3%). O dinheiro fechou nas 4,10 milhões de entradas, nenhuma estratégia domina e nenhuma história ficou de fora. A variedade ficou praticamente onde estava (saturação de 53,1% na 5ª vida e de 87,2% na 20ª, eram 52,6% e 87,0%, porque as duas perguntas aparecem em quase toda vida), com 903 histórias por 1.000 vidas. Os toques ficaram em 478,9 por vida (eram 479,2). A oferta hostil na bolsa continua abaixo do portão: 0,07% das vidas (era 0,09%). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
@@ -104,7 +104,7 @@ flowchart LR
 - Gente com identidade: os irmãos, o ex que pode voltar, o colega e o chefe que vêm com o emprego, os amigos de infância e os da vida adulta; cada pessoa lembra do que você fez e tem opinião sobre você
 - A pessoa decide: quem responde a um pedido pesa o que viveu com você e diz por quê; o empréstimo entre pessoas é contrato, com parcela, atraso e calote
 - Os planos: a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, com etapas que são a vida de verdade
-- Os sonhos: aos 15, virar estrela, construir um império ou governar o país; no amor, a casa cheia ou um amor para a vida toda; cada um com cenas próprias e um fim que o cartão conta
+- Os sonhos: aos 15, virar estrela, construir um império ou governar o país; no amor, a casa cheia ou um amor para a vida toda; na segunda metade, a fortuna, o lugar no mundo, a volta ao mundo e os netos; cada um com cenas próprias, o dia em que chega e o "e agora?" depois
 - Os segredos: o caso, a dívida escondida, a festa que era estudo, o esquema no trabalho; a fofoca que corre, a chantagem e a revelação
 - Fichas de ação por ano: estudar, trabalhar, cuidar da saúde, ver a família, sair, poupar
 </details>
