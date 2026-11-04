@@ -33,10 +33,10 @@
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| ✦ Cinco sonhos de vida, escolhidos aos 15 e no amor | ⏩ Pular os anos sem decisão até o próximo momento que importa |
-| 🎬 Quinze cenas, três por sonho, em pontos diferentes do caminho | 🌍 Mais sonhos (o mundo inteiro, a obra-prima, a cura) |
-| 💪 A garra do sonho na carreira de holofote | 🔁 O sonho que não se realizou passando para quem herda |
-| 🏆 O sonho realizado em dourado e no cartão da vida | 🎭 O "e agora?" depois do sonho realizado |
+| ✦ Cinco sonhos de vida, escolhidos aos 15 e no amor | 🌅 O dia do sonho: a cena do sonho realizado, com escolha |
+| 🎬 Quinze cenas, três por sonho, em pontos diferentes do caminho | ❓ O "e agora?" depois do sonho, realizado ou não |
+| 💪 A garra do sonho na carreira de holofote | 🌍 Sonhos da segunda metade da vida (a fortuna, o lugar no mundo, a volta ao mundo) |
+| 🏆 O sonho realizado em dourado e no cartão da vida | 🔁 O sonho que não se realizou passando para quem herda |
 
 No túnel de vento (10.000 vidas), 91,0% das vidas que chegam aos 20 têm um sonho, e dos 10.850 sonhos que acabaram, 11,3% se realizaram: a casa cheia em 534 vidas, um amor para a vida toda em 323, virar estrela em 302, o império em 41 e governar o país em 31 (os dois mais difíceis, de propósito). O dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 87,0% na 20ª, com 903 histórias por 1.000 vidas. Os toques foram a 479,2 por vida (eram 477,1; teto 480). Duas coisas pioraram e ficam à vista: sem contar o arco do sonho, os caminhos das vidas variam 11% menos que no H7 (quem sonha converge nas mesmas jogadas: a eleição, a empresa aberta), e a oferta hostil na bolsa caiu de 0,11% para 0,09% das vidas, porque a robô arriscada agora também persegue a estrela e o poder. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
