@@ -1072,6 +1072,16 @@ const portoesS1 = [
   ['O sonho não é garantido: dos sonhos que acabaram, os realizados ficam entre 10% e 70%', fracaoRealizada >= 0.1 && fracaoRealizada <= 0.7, `${pct(fracaoRealizada)} de ${acabaramS1}`],
   ['Todo sonho se realiza em alguma vida', idsDosSonhos.length > 0 && semRealizar.length === 0, semRealizar.length ? `não se realizou: ${semRealizar.join(', ')}` : `${idsDosSonhos.length} de ${idsDosSonhos.length} (${idsDosSonhos.map((id) => `${id} ${realizadosS1.filter((x) => x === id).length}`).join(', ')})`],
 ] as const;
+/** Bloco S2 (pedido do dono em 04/11): o segundo ato do sonho. */
+const somaSonhos = (f: (s: (typeof vidas)[number]['sonhos']) => number): number => vidas.reduce((t, v) => t + f(v.sonhos), 0);
+const diasS2 = somaSonhos((s) => s.dias) / Math.max(1, somaSonhos((s) => s.diasPossiveis));
+const depoisS2 = somaSonhos((s) => s.depois) / Math.max(1, acabaramS1);
+const anos50S2 = somaSonhos((s) => s.anos50Sonho) / Math.max(1, somaSonhos((s) => s.anos50));
+const portoesS2 = [
+  ['O dia do sonho chega: ≥ 95% dos sonhos realizados (os que têm a cena) vivem o dia do sonho', diasS2 >= 0.95, `${pct(diasS2)} de ${somaSonhos((s) => s.diasPossiveis)}`],
+  ['Depois do sonho, a pergunta: ≥ 50% dos sonhos que acabaram chegam ao "e agora?" ou ao "sonho que ficou"', depoisS2 >= 0.5, `${pct(depoisS2)} de ${acabaramS1}`],
+  ['A segunda metade tem direção: ≥ 50% dos anos dos 50 em diante com um sonho de pé (eram 30%)', anos50S2 >= 0.5, pct(anos50S2)],
+] as const;
 /** Bloco H7 (pedido do dono em 03/11): a bolsa de verdade. */
 const somaBolsa = (f: (b: (typeof vidas)[number]['bolsa']) => number): number => vidas.reduce((s, v) => s + f(v.bolsa), 0);
 const ofertasH7 = somaBolsa((b) => b.ofertas);
@@ -1438,6 +1448,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesS1) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O segundo ato (bloco S2)');
+l();
+l('O sonho realizado traz o dia do sonho (a cena do topo); o fim de qualquer sonho traz, no ano seguinte, a pergunta do que vem depois; e a segunda metade da vida tem sonhos próprios (a fortuna, o lugar no mundo, a volta ao mundo, os netos).');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesS2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## A bolsa de verdade (bloco H7)');
 l();
@@ -1851,6 +1869,7 @@ for (const [nome, ok, detalhe] of portoesOmega6) console.log(`${ok ? '✓' : '·
 for (const [nome, ok, detalhe] of portoesH6) console.log(`${ok ? '✓' : '·'} portão H6: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesH7) console.log(`${ok ? '✓' : '·'} portão H7: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesS1) console.log(`${ok ? '✓' : '·'} portão S1: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesS2) console.log(`${ok ? '✓' : '·'} portão S2: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(

@@ -4,6 +4,7 @@
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
 import { OFERTAS_CONTRA } from '../src/motor/empresa.ts';
+import { diaDoSonho, E_AGORA, SONHO_QUE_FICOU } from '../src/motor/projetos.ts';
 const CONTRA: ReadonlySet<string> = new Set(OFERTAS_CONTRA);
 import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA } from '../src/motor/diretoria.ts';
 import { classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, indicadoresDoPais, nomeDaClasse, patrimonioTotal } from '../src/motor/campos.ts';
@@ -32,12 +33,43 @@ import { conferirContas, conferirContratos, conferirDividas, conferirPromissoria
 
 export const ANO = 2026;
 
-/** Os sonhos de uma vida, lidos do livro (bloco S1). */
-function sonhosDoLivro(e: EstadoVida, c: Conteudo): { teve: string[]; realizados: string[]; acabaram: number } {
+/** Os sonhos de uma vida, lidos do livro (bloco S1), e o segundo ato (bloco S2): o dia do sonho, o que vem depois e os anos dos 50 em diante. */
+function sonhosDoLivro(e: EstadoVida, c: Conteudo): { teve: string[]; realizados: string[]; acabaram: number; dias: number; diasPossiveis: number; depois: number; anos50: number; anos50Sonho: number } {
   const ids = c.mundo.projetos.filter((p) => p.sonho).map((p) => p.id);
   const teve = ids.filter((id) => e.historico.some((h) => h.mudancas?.some((m) => m.c === `eu.projeto_${id}` && (m.q ?? 0) > 0)));
   const fins = e.historico.map((h) => /^projeto:([a-z_]+)#(conquista|vencido|semTempo)$/.exec(h.instancia ?? '')).filter((m): m is RegExpExecArray => m !== null && ids.includes(m[1]!));
-  return { teve, realizados: fins.filter((m) => m[2] === 'conquista').map((m) => m[1]!), acabaram: fins.length };
+  const realizados = fins.filter((m) => m[2] === 'conquista').map((m) => m[1]!);
+  // Os anos de cada sonho de pé, do começo ao fim (ou à morte), pela qualidade no livro.
+  const abertos = new Map<string, number>();
+  const pe: [number, number][] = [];
+  for (const h of e.historico) {
+    for (const m of h.mudancas ?? []) {
+      const r = /^eu\.projeto_([a-z_]+)$/.exec(m.c);
+      if (!r || !ids.includes(r[1]!) || m.q === undefined) continue;
+      if (m.q > 0) abertos.set(r[1]!, h.idade);
+      else if (abertos.has(r[1]!)) {
+        pe.push([abertos.get(r[1]!)!, h.idade]);
+        abertos.delete(r[1]!);
+      }
+    }
+  }
+  for (const de of abertos.values()) pe.push([de, e.idade + 1]);
+  let anos50 = 0;
+  let anos50Sonho = 0;
+  for (let idade = 50; idade <= e.idade; idade++) {
+    anos50++;
+    if (pe.some(([de, ate]) => de <= idade && idade < ate)) anos50Sonho++;
+  }
+  return {
+    teve,
+    realizados,
+    acabaram: fins.length,
+    dias: e.historico.filter((h) => h.ref?.startsWith('o_dia_do_sonho_') && h.escolha).length,
+    diasPossiveis: realizados.filter((id) => c.porId.has(diaDoSonho(id))).length,
+    depois: e.historico.filter((h) => (h.ref === E_AGORA || h.ref === SONHO_QUE_FICOU) && h.escolha).length,
+    anos50,
+    anos50Sonho,
+  };
 }
 
 // ---------------------------------------------------------------- uma vida
@@ -383,7 +415,7 @@ export interface Vida {
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
-  sonhos: { teve: string[]; realizados: string[]; acabaram: number };
+  sonhos: ReturnType<typeof sonhosDoLivro>;
   /** O caminho (missão Ω6): as causas dos pontos de virada e os tipos de capítulo, como assinatura. */
   caminho: string;
   /** O caminho sem o arco do sonho (bloco S1): a régua de antes do sonho, para comparar com as versões sem ele. */

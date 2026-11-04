@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { conteudo } from '../src/conteudo.ts';
 import { regraDaCarreira } from '../src/motor/carreira.ts';
 import { ganhar } from '../src/motor/livro.ts';
-import { anoDosProjetos, projetosAtivos, qualidadeDoProjeto } from '../src/motor/projetos.ts';
+import { anoDosProjetos, diaDoSonho, E_AGORA, projetosAtivos, qualidadeDoProjeto, SONHO_QUE_FICOU } from '../src/motor/projetos.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { apresentarStorylet, elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
@@ -99,5 +99,57 @@ describe('o sonho da vida (bloco S1)', () => {
     expect(sem).toBeGreaterThan(20);
     expect(com / sem).toBeGreaterThan(1.6);
     expect(com / sem).toBeLessThan(2.4);
+  });
+});
+
+describe('o segundo ato (bloco S2)', () => {
+  /** Quem sonhou com a estrela aos 15 e chega à fama do sonho aos 34. */
+  function estrelaRealizada(semente = 91): EstadoVida {
+    const e = adolescente(semente);
+    responderMarco(e, 0);
+    e.idade = 34;
+    e.ano = e.anoNascimento + 34;
+    e.entidades['eu']!.n['fama'] = 85;
+    anoDosProjetos(e, c);
+    return e;
+  }
+
+  it('o sonho realizado agenda o dia do sonho no mesmo ano e o "e agora?" no seguinte, com a conquista de causa', () => {
+    const e = estrelaRealizada();
+    const fim = e.historico.at(-1)!;
+    expect(fim.instancia).toBe('projeto:estrela#conquista');
+    expect(e.agenda).toContainEqual({ evento: diaDoSonho('estrela'), ano: e.ano, origem: fim.id });
+    expect(e.agenda).toContainEqual({ evento: E_AGORA, ano: e.ano + 1, origem: fim.id });
+  });
+
+  it('o sonho que não veio agenda "o sonho que ficou" no ano seguinte', () => {
+    const e = adolescente(92);
+    responderMarco(e, 0);
+    const def = c.mundo.projetos.find((p) => p.id === 'estrela')!;
+    e.ano += def.prazo;
+    e.idade += def.prazo;
+    anoDosProjetos(e, c);
+    const fim = e.historico.at(-1)!;
+    expect(fim.instancia).toBe('projeto:estrela#vencido');
+    expect(e.agenda).toContainEqual({ evento: SONHO_QUE_FICOU, ano: e.ano + 1, origem: fim.id });
+    expect(e.agenda.some((a) => a.evento === diaDoSonho('estrela'))).toBe(false);
+  });
+
+  it('o "e agora?" começa outro sonho com a escolha de causa; sem filhos, os netos ficam bloqueados', () => {
+    const e = estrelaRealizada(93);
+    for (const f of Object.keys(e.entidades)) if (f.startsWith('filho')) delete e.entidades[f];
+    delete e.entidades['eu']!.q['pai_mae'];
+    apresentarStorylet(e, c.porId.get(E_AGORA)!, undefined, 'diretor', []);
+    expect(e.pendente!.opcoes[2]!.disponivel).toBe(false);
+    escolher(e, c, 1);
+    const escolha = e.historico.at(-1)!;
+    expect(e.entidades['eu']!.q[qualidadeDoProjeto('lugar_no_mundo')]?.causa).toBe(escolha.id);
+  });
+
+  it('o cartão conta como foi o dia do sonho', () => {
+    const e = estrelaRealizada(94);
+    apresentarStorylet(e, c.porId.get(diaDoSonho('estrela'))!, undefined, 'diretor', []);
+    escolher(e, c, 2);
+    expect(sonhosDaVida(e, c)).toEqual(['Virar estrela, realizado aos 34: no dia, chamou ao palco quem tinha duvidado do sonho']);
   });
 });
