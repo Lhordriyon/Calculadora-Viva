@@ -15,7 +15,7 @@ import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefProjeto } from './esquema.ts';
 import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
-import { FELICIDADE_DA_CONQUISTA, FELICIDADE_DA_DESISTENCIA, FELICIDADE_DO_PRAZO_VENCIDO, MAX_PROJETOS } from './regras.ts';
+import { FELICIDADE_DA_CONQUISTA, FELICIDADE_DA_DESISTENCIA, FELICIDADE_DO_PRAZO_VENCIDO, MAX_PROJETOS, MAX_SONHOS } from './regras.ts';
 import { temRelacao } from './relacoes.ts';
 import { capitalizar, renderizar } from './texto.ts';
 import type { EstadoVida, Mudanca } from './tipos.ts';
@@ -74,12 +74,23 @@ export interface ProjetoPossivel {
   com?: string;
 }
 
-/** Os projetos que dá para começar agora: a idade, a condição, a meta ainda por fazer, e no máximo MAX_PROJETOS vivos. */
+/**
+ * Há vaga para mais um projeto deste tipo? Os planos práticos são no máximo MAX_PROJETOS de pé; os sonhos (bloco S1),
+ * no máximo MAX_SONHOS, à parte: sonhar não tira a vaga da casa própria.
+ */
+export function temVaga(e: EstadoVida, c: Conteudo, def: Pick<DefProjeto, 'sonho'>): boolean {
+  const ativos = projetosAtivos(e, c);
+  return def.sonho ? ativos.filter((p) => p.def.sonho).length < MAX_SONHOS : ativos.filter((p) => !p.def.sonho).length < MAX_PROJETOS;
+}
+
+/** Os projetos que dá para começar agora: a idade, a condição, a meta ainda por fazer, e a vaga (planos e sonhos à parte). */
 export function projetosPossiveis(e: EstadoVida, c: Conteudo): ProjetoPossivel[] {
-  if (!e.vivo || projetosAtivos(e, c).length >= MAX_PROJETOS) return [];
+  if (!e.vivo) return [];
   const eu = e.entidades['eu']!;
   const saida: ProjetoPossivel[] = [];
+  const vaga = { plano: temVaga(e, c, {}), sonho: temVaga(e, c, { sonho: true }) };
   for (const def of c.mundo.projetos) {
+    if (!(def.sonho ? vaga.sonho : vaga.plano)) continue;
     if ((eu.q[qualidadeDoProjeto(def.id)]?.v ?? 0) > 0) continue;
     if (e.idade < def.idade[0] || e.idade > def.idade[1]) continue;
     if (!def.com) {
@@ -109,7 +120,7 @@ export function motivoParaNaoOperarProjeto(e: EstadoVida, c: Conteudo, op: Opera
   const ativo = projetosAtivos(e, c).find((p) => p.def.id === op.id);
   if (op.tipo === 'desistir_projeto') return ativo ? null : 'esse projeto não está de pé';
   if (ativo) return 'esse projeto já está de pé';
-  if (projetosAtivos(e, c).length >= MAX_PROJETOS) return `no máximo ${MAX_PROJETOS} projetos ao mesmo tempo`;
+  if (!temVaga(e, c, def)) return def.sonho ? `no máximo ${MAX_SONHOS} sonhos ao mesmo tempo` : `no máximo ${MAX_PROJETOS} planos ao mesmo tempo`;
   const possivel = projetosPossiveis(e, c).some((p) => p.def.id === op.id && p.com === op.com);
   return possivel ? null : def.com && !op.com ? 'escolha com quem' : 'esse projeto não faz sentido agora';
 }
@@ -169,12 +180,12 @@ function terminar(e: EstadoVida, p: ProjetoAtivo, fim: Fim): void {
  */
 /**
  * O sonho começa por uma escolha (o efeito `sonhar`, bloco S1): o projeto com `sonho` vira de quem joga, com a escolha
- * de causa, se não estiver de pé e couber entre os projetos da vida.
+ * de causa, se não estiver de pé e houver vaga entre os sonhos (MAX_SONHOS).
  */
 export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, origem: number): void {
   const def = c.mundo.projetos.find((p) => p.id === id);
   const q = qualidadeDoProjeto(id);
-  if (!def?.sonho || e.entidades['eu']?.q[q] || projetosAtivos(e, c).length >= MAX_PROJETOS) return;
+  if (!def?.sonho || e.entidades['eu']?.q[q] || !temVaga(e, c, def)) return;
   ganhar(e, reg, 'eu', q, origem);
 }
 

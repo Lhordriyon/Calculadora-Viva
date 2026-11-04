@@ -289,6 +289,8 @@ export const CONFIANCA_DA_QUITACAO = 8;
 export const VINCULO_DA_QUITACAO = 3;
 /** Os projetos (projetos.ts): quantos ao mesmo tempo, e o que o fim faz com o humor de quem joga. */
 export const MAX_PROJETOS = 3;
+/** Os sonhos de pé ao mesmo tempo (bloco S1: a ambição e o amor); eles não tiram a vaga dos planos práticos. */
+export const MAX_SONHOS = 2;
 export const FELICIDADE_DA_CONQUISTA = 6;
 export const FELICIDADE_DO_PRAZO_VENCIDO = -4;
 export const FELICIDADE_DA_DESISTENCIA = -1;

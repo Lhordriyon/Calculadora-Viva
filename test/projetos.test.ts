@@ -78,14 +78,20 @@ describe('os projetos (Ω3)', () => {
     expect(projetosAtivos(e, c)).toHaveLength(0);
   });
 
-  it('no máximo três de pé, e só os que fazem sentido (a idade, a condição, a meta ainda por fazer)', () => {
+  it('no máximo três planos de pé, e só os que fazem sentido; os sonhos têm a vaga deles (bloco S1)', () => {
     const e = adulto();
     expect(projetosPossiveis(e, c).some((p) => p.def.id === 'sair_das_dividas')).toBe(false);
     e.entidades['eu']!.n['divida'] = 5_000;
     expect(projetosPossiveis(e, c).some((p) => p.def.id === 'sair_das_dividas')).toBe(true);
     for (const id of ['casa_propria', 'primeiro_milhao', 'diploma']) operar(e, c, { tipo: 'comecar_projeto', id });
+    // Com três planos, só sobram os sonhos: sonhar não disputa a vaga da casa própria.
+    const sobram = projetosPossiveis(e, c);
+    expect(sobram.length).toBeGreaterThan(0);
+    expect(sobram.every((p) => p.def.sonho)).toBe(true);
+    expect(motivoParaNaoOperar(e, c, { tipo: 'comecar_projeto', id: 'casar' })).toBe('no máximo 3 planos ao mesmo tempo');
+    for (const id of ['estrela', 'imperio']) operar(e, c, { tipo: 'comecar_projeto', id });
     expect(projetosPossiveis(e, c)).toEqual([]);
-    expect(motivoParaNaoOperar(e, c, { tipo: 'comecar_projeto', id: 'casar' })).toBe('no máximo 3 projetos ao mesmo tempo');
+    expect(motivoParaNaoOperar(e, c, { tipo: 'comecar_projeto', id: 'presidencia' })).toBe('no máximo 2 sonhos ao mesmo tempo');
   });
 
   it('reparar uma relação é com alguém: a pessoa leva a marca, a meta lê ela, e a morte dela leva o projeto', () => {

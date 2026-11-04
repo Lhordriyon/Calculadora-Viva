@@ -6,7 +6,7 @@ import { VERBOS, type Verbo } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { contexto } from '../motor/contexto.ts';
 import { etapasDe, nomeDoProjeto, projetosAtivos, projetosPossiveis } from '../motor/projetos.ts';
-import { MAX_PROJETOS } from '../motor/regras.ts';
+import { MAX_PROJETOS, MAX_SONHOS } from '../motor/regras.ts';
 import { renderizar } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
 import { criarRng } from '../motor/rng.ts';
@@ -48,7 +48,7 @@ export function Projetos({ vida, conteudo, aoOperar, aoFechar }: Props) {
   return (
     <Folha id="titulo-projetos" titulo="Planos" classe="projetos" aoFechar={aoFechar}>
       <p class="meta">
-        O que você quer da vida, até {MAX_PROJETOS} planos ao mesmo tempo. Começar não gasta as escolhas do ano; o caminho até lá, sim.
+        O que você quer da vida, até {MAX_PROJETOS} planos e {MAX_SONHOS} sonhos (✦) ao mesmo tempo. Começar não gasta as escolhas do ano; o caminho até lá, sim.
       </p>
       {ativos.length > 0 && (
         <fieldset class="grupo">

@@ -563,7 +563,8 @@ function plausivel(e: EstadoVida, id: string): boolean {
 function decidirProjetos(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   const ativos = projetosAtivos(e, c);
   if (estrategia === 'aleatoria' && ativos.length > 0 && aleatorio(rng) < 0.05) return [{ tipo: 'desistir_projeto', id: sortear(rng, ativos).def.id }];
-  if (ativos.length >= 2 || aleatorio(rng) >= 0.2) return [];
+  // Os sonhos (bloco S1) não contam: quem sonha também põe na cabeça a casa própria e o diploma.
+  if (ativos.filter((p) => !p.def.sonho).length >= 2 || aleatorio(rng) >= 0.2) return [];
   const jaTeve = new Set(e.historico.filter((h) => h.ref === 'projeto:comecar_projeto').flatMap((h) => (h.mudancas ?? []).filter((m) => m.c.startsWith('eu.projeto_')).map((m) => m.c.slice('eu.projeto_'.length))));
   const possiveis = projetosPossiveis(e, c).filter((p) => !jaTeve.has(p.def.id) && plausivel(e, p.def.id));
   if (possiveis.length === 0) return [];
