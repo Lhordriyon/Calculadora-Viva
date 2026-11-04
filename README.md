@@ -2,8 +2,8 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-H7%3A%20a%20bolsa%20de%20verdade-D9A321)
-![Histórias](https://img.shields.io/badge/hist%C3%B3rias-901-2EA043)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S1%3A%20o%20sonho-D9A321)
+![Histórias](https://img.shields.io/badge/hist%C3%B3rias-903-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
 
@@ -15,29 +15,30 @@
 
 ---
 
-## 🆕 Novidades: H7 · A bolsa de verdade (03/11/2026)
+## 🆕 Novidades: S1 · O sonho (03/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** abrir o capital deixou de ser uma decisão só. Na bolsa, o dinheiro sem dívida custa controle, e comprar sem pedir custa prêmio e risco.
-> - **Emitir ações.** A empresa na bolsa vende ações novas: o dinheiro entra no caixa, sem juro nenhum, e a sua parte encolhe.
-> - **A oferta hostil.** Na bolsa, você pode tomar a concorrente sem pedir ao dono: paga 35% acima do preço do dia, e os acionistas decidem. A influência de negócios ajuda, e o dono brigão segura melhor. A oferta que falha custa os bancos e os advogados e deixa a rival mais forte e magoada.
-> - **O controle em jogo.** Com menos da metade das ações, a dona da concorrente ou um fundo de fora pode comprar a sua empresa. Você recompra a maioria (se couber no bolso), vende com 30% de prêmio ou briga no conselho, voto a voto. E o porquê aponta a emissão ou a venda que tirou a sua maioria.
-> - **Recomprar a maioria** pela folha, antes que alguém tente.
+> **O que mudou:** a vida pergunta o que você quer dela, e o mundo abre caminho para quem vai atrás.
+> - **O sonho dos 15 anos.** No chão do quarto, olhando o teto, você decide: virar estrela, construir um império, governar o país, ou ainda não sei. No primeiro namoro sério, vem a pergunta do amor: a casa cheia de filhos ou um amor para a vida toda.
+> - **O caminho até lá.** Cada sonho tem três cenas só dele, em momentos diferentes da vida. A estrela começa por uma porta (o microfone do bar, a câmera emprestada, a várzea com um olheiro, o teatro), e cada porta abre uma carreira de holofote. Depois vêm o vídeo que viralizou e a turnê que pede para você perder os aniversários de casa. O império tem o contrato que pode tudo, a capa da revista e o preço do império; a política, o primeiro comício, o padrinho e o debate na TV; a casa cheia, o quarto vazio, o Natal barulhento e mais um na mesa; o amor, o restaurante do primeiro encontro, a crise do sétimo ano e as bodas.
+> - **A garra do sonho.** Quem sonha em virar estrela sobe com o dobro da chance numa carreira de holofote.
+> - **O fim que se conta.** O sonho realizado brilha em dourado na linha do tempo, e o cartão da vida diz como cada sonho terminou: realizado aos 34, que ficou pelo caminho aos 52, sonhado até o fim.
 
 > [!TIP]
 > **Para testar:**
-> - Faça a empresa passar de R$ 100 milhões, abra o capital e veja, na folha Dinheiro, a sua parte e os botões novos.
-> - Emita ações algumas vezes, até a sua parte cair abaixo da metade, e espere a oferta pelo controle.
-> - Tente comprar a concorrente pedindo ao dono; se ele disser não, vá pela oferta hostil.
+> - Chegue aos 15 e escolha um sonho; na folha Planos, ele aparece com ✦, as etapas e o prazo.
+> - Escolha virar estrela, entre por uma das portas e procure a vaga de holofote na folha Carreira.
+> - No primeiro namoro sério, escolha a casa cheia e veja o que a vida faz com isso.
+> - No fim, leia no cartão como o sonho terminou.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 📈 Emitir ações: caixa sem dívida, parte que encolhe | 🗣️ O fundo ativista (a cadeira no conselho e o dividendo extra) |
-| 🦈 A oferta hostil pela concorrente, sem pedir ao dono | 🏬 Várias rivais por setor |
-| 🛡️ O controle em jogo: a oferta contra você, com três respostas | 🏭 Fábricas e lojas como lugares |
-| 🔁 Recomprar a maioria | 📉 A cotação de cada dia (hoje, o valor anda com o humor do ano) |
+| ✦ Cinco sonhos de vida, escolhidos aos 15 e no amor | ⏩ Pular os anos sem decisão até o próximo momento que importa |
+| 🎬 Quinze cenas, três por sonho, em pontos diferentes do caminho | 🌍 Mais sonhos (o mundo inteiro, a obra-prima, a cura) |
+| 💪 A garra do sonho na carreira de holofote | 🔁 O sonho que não se realizou passando para quem herda |
+| 🏆 O sonho realizado em dourado e no cartão da vida | 🎭 O "e agora?" depois do sonho realizado |
 
-No túnel de vento (10.000 vidas), o dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. A oferta hostil foi tentada em 0,11% das vidas e passou em 61% das 23 ofertas; a oferta contra quem perdeu a maioria chegou em 0,23% das vidas; a emissão de ações, em 0,43%. Nos robôs, quem perde a maioria briga no conselho (a arriscada escolhe sempre o risco), e nenhum recomprou: a recompra está provada nos testes. O bilionário feito ficou em 0,38% (era 0,40%), e 25,7% de quem abre empresa quebra (eram 25,6%). A variedade ficou onde estava: saturação de 52,3% na 5ª vida e de 87,2% na 20ª, com 901 histórias por 1.000 vidas. Os toques ficaram em 477,1 por vida (eram 476,9). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), 91,0% das vidas que chegam aos 20 têm um sonho, e dos 10.850 sonhos que acabaram, 11,3% se realizaram: a casa cheia em 534 vidas, um amor para a vida toda em 323, virar estrela em 302, o império em 41 e governar o país em 31 (os dois mais difíceis, de propósito). O dinheiro fechou nas 4,10 milhões de entradas, e nenhuma estratégia domina. A variedade ficou onde estava: saturação de 52,6% na 5ª vida e de 87,0% na 20ª, com 903 histórias por 1.000 vidas. Os toques foram a 479,2 por vida (eram 477,1; teto 480). Duas coisas pioraram e ficam à vista: sem contar o arco do sonho, os caminhos das vidas variam 11% menos que no H7 (quem sonha converge nas mesmas jogadas: a eleição, a empresa aberta), e a oferta hostil na bolsa caiu de 0,11% para 0,09% das vidas, porque a robô arriscada agora também persegue a estrela e o poder. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
@@ -103,6 +104,7 @@ flowchart LR
 - Gente com identidade: os irmãos, o ex que pode voltar, o colega e o chefe que vêm com o emprego, os amigos de infância e os da vida adulta; cada pessoa lembra do que você fez e tem opinião sobre você
 - A pessoa decide: quem responde a um pedido pesa o que viveu com você e diz por quê; o empréstimo entre pessoas é contrato, com parcela, atraso e calote
 - Os planos: a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, com etapas que são a vida de verdade
+- Os sonhos: aos 15, virar estrela, construir um império ou governar o país; no amor, a casa cheia ou um amor para a vida toda; cada um com cenas próprias e um fim que o cartão conta
 - Os segredos: o caso, a dívida escondida, a festa que era estudo, o esquema no trabalho; a fofoca que corre, a chantagem e a revelação
 - Fichas de ação por ano: estudar, trabalhar, cuidar da saúde, ver a família, sair, poupar
 </details>

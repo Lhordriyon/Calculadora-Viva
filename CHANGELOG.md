@@ -4,6 +4,23 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## ✦ S1 · O sonho · 03/11/2026
+
+> [!NOTE]
+> O pedido do dono (03/11): um loop de atualizações com foco total na qualidade de jogo, porque "o player busca o Trajetória para viver nele o que de fato quer viver".
+
+- ✦ **O sonho dos 15 anos** (o marco `o_que_voce_quer_da_vida`): virar estrela, construir um império, governar o país, ou ainda não sei. Com o namoro, o do amor (`o_que_voce_quer_do_amor`): a casa cheia ou um amor para a vida toda.
+- 🗺️ **O sonho é um plano** (`mundo.json › projetos`, `"sonho": true`; o efeito `sonhar`): as etapas são o estado (a fama até 60, a empresa até R$ 100 milhões, o cargo até o Planalto, três filhos, 25 anos de casado), o prazo vai de 30 a 40 anos, e a folha Planos marca o sonho com ✦.
+- 🎬 **Quinze cenas** (`58-sonhos.json`), três por sonho, em pontos diferentes do caminho; a primeira da estrela é a porta (o microfone do bar, a câmera, a várzea com o olheiro, o teatro), e cada uma abre uma carreira de holofote.
+- 💪 **A garra do sonho:** quem sonha em virar estrela sobe com o dobro da chance numa carreira de holofote (`regras.ts › GARRA_DO_SONHO`).
+- 🏆 **O fim que se conta:** o sonho realizado é um marco dourado na linha do tempo, e o cartão da vida diz como cada sonho terminou (`virada.ts › sonhosDaVida`).
+- 🤖 **Os robôs que sonham vão atrás do sonho:** a vaga de holofote, a eleição com chance menor, a empresa aberta.
+- 🪪 **Os sonhos têm vaga própria** (dois de pé, à parte dos três planos), e o marco do sonho não toma a vaga de um ponto de virada: o cartão já conta o sonho na linha própria.
+- 📏 **A régua do caminho** conta a escolha de cada ponto de virada e o arco do sonho, e mostra o caminho sem o arco, comparável com as versões de antes.
+- 📊 **No túnel** (10.000 vidas): 91,0% das vidas que chegam aos 20 sonham; dos 10.850 sonhos que acabaram, 11,3% se realizaram (a casa cheia 534, o amor para a vida toda 323, a estrela 302, o império 41, o país 31); as contas fecham nas 4,10 milhões de entradas, e nenhuma estratégia domina; saturação V5 52,6% e V20 87,0%; 903 histórias por 1.000 vidas; toques 479,2; caminho 792 por 1.000 vidas (572 sem o arco do sonho, contra 650 do H7 na mesma régua) e destino 569; a oferta hostil caiu para 0,09% das vidas, abaixo do portão de 0,1%.
+
+---
+
 ## 📈 H7 · A bolsa de verdade · 03/11/2026
 
 > [!NOTE]
