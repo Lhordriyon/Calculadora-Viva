@@ -23,6 +23,15 @@ import type { EstadoVida, Mudanca } from './tipos.ts';
 /** A qualidade do projeto, em quem joga e (com alguém) na pessoa. */
 export const qualidadeDoProjeto = (id: string): string => `projeto_${id}`;
 
+/**
+ * O segundo ato (bloco S2): o sonho realizado traz o dia do sonho no mesmo ano (a cena do topo, uma por sonho), e o
+ * fim de qualquer sonho traz, no ano seguinte, a pergunta do que vem depois: o "e agora?" depois do realizado, "o sonho
+ * que ficou" depois do que não veio. As três chegam pela agenda, com o fim de causa.
+ */
+export const diaDoSonho = (id: string): string => `o_dia_do_sonho_${id}`;
+export const E_AGORA = 'e_agora';
+export const SONHO_QUE_FICOU = 'o_sonho_que_ficou';
+
 export interface ProjetoAtivo {
   def: DefProjeto;
   /** O ano em que começou (o prazo conta daqui). */
@@ -151,7 +160,7 @@ export function operarProjeto(e: EstadoVida, c: Conteudo, op: OperacaoProjeto, r
 type Fim = 'conquista' | 'vencido' | 'semTempo';
 
 /** O fim do projeto vira acontecimento, com o começo de causa; a qualidade sai de quem joga e da pessoa. */
-function terminar(e: EstadoVida, p: ProjetoAtivo, fim: Fim): void {
+function terminar(e: EstadoVida, c: Conteudo, p: ProjetoAtivo, fim: Fim): void {
   const textos = fim === 'conquista' ? p.def.conquista : fim === 'semTempo' ? (p.def.semTempo ?? p.def.vencido) : p.def.vencido;
   const entrada = novaEntrada(e, {
     tipo: 'evento',
@@ -171,13 +180,11 @@ function terminar(e: EstadoVida, p: ProjetoAtivo, fim: Fim): void {
   if (p.com) perder(e, reg, p.com, q);
   somar(e, reg, 'eu', 'felicidade', fim === 'conquista' ? FELICIDADE_DA_CONQUISTA : FELICIDADE_DO_PRAZO_VENCIDO);
   lancar(e, entrada, reg);
+  if (!p.def.sonho) return;
+  if (fim === 'conquista' && c.porId.has(diaDoSonho(p.def.id))) e.agenda.push({ evento: diaDoSonho(p.def.id), ano: e.ano, origem: entrada.id });
+  e.agenda.push({ evento: fim === 'conquista' ? E_AGORA : SONHO_QUE_FICOU, ano: e.ano + 1, origem: entrada.id });
 }
 
-/**
- * O ano dos projetos (uma etapa do ano, depois da carreira e do poder): a meta alcançada é conquista, o prazo
- * passado é fracasso, e a pessoa que morreu antes leva o projeto junto. Quem saiu da vida (sem ninguém com a
- * qualidade) também encerra, calado.
- */
 /**
  * O sonho começa por uma escolha (o efeito `sonhar`, bloco S1): o projeto com `sonho` vira de quem joga, com a escolha
  * de causa, se não estiver de pé e houver vaga entre os sonhos (MAX_SONHOS).
@@ -189,6 +196,11 @@ export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, o
   ganhar(e, reg, 'eu', q, origem);
 }
 
+/**
+ * O ano dos projetos (uma etapa do ano, depois da carreira e do poder): a meta alcançada é conquista, o prazo
+ * passado é fracasso, e a pessoa que morreu antes leva o projeto junto. Quem saiu da vida (sem ninguém com a
+ * qualidade) também encerra, calado.
+ */
 export function anoDosProjetos(e: EstadoVida, c: Conteudo): void {
   if (!e.vivo) return;
   for (const p of projetosAtivos(e, c)) {
@@ -198,8 +210,8 @@ export function anoDosProjetos(e: EstadoVida, c: Conteudo): void {
       lancar(e, novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'regra:projeto_saiu', texto: '' }), reg);
       continue;
     }
-    if (p.com && e.entidades[p.com]!.vivo === false) terminar(e, p, 'semTempo');
-    else if (atende(p.def.meta, e, p.com)) terminar(e, p, 'conquista');
-    else if (e.ano - p.desde >= p.def.prazo) terminar(e, p, 'vencido');
+    if (p.com && e.entidades[p.com]!.vivo === false) terminar(e, c, p, 'semTempo');
+    else if (atende(p.def.meta, e, p.com)) terminar(e, c, p, 'conquista');
+    else if (e.ano - p.desde >= p.def.prazo) terminar(e, c, p, 'vencido');
   }
 }

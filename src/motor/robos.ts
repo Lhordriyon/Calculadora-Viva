@@ -422,7 +422,9 @@ function decidirCarreira(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng
   // ganhando menos (a porta que a vida abriu: o bar, a câmera, a várzea, o teatro).
   if (eu.q['projeto_estrela'] && (atual?.fama ?? 0) < FAMA_DO_SONHO && e.idade <= 40) {
     const palco = vagas.filter((k) => (k.fama ?? 0) >= FAMA_DO_SONHO).sort((a, b) => chanceDeEntrar(e, b) - chanceDeEntrar(e, a))[0];
-    if (palco) return [{ tipo: 'candidatar', carreira: palco.id }];
+    // O teste é a cada dois anos: no ano do meio, quem sonha ensaia e espera a próxima audição (bloco S2: cada
+    // tentativa custa toques, e o teto de 480 precisava de folga).
+    if (palco) return e.idade % 2 === 0 ? [{ tipo: 'candidatar', carreira: palco.id }] : [];
   }
   let alvo: (typeof vagas)[number] | undefined;
   if (estrategia === 'aleatoria') {
@@ -611,12 +613,21 @@ function casaFinanciavel(e: EstadoVida, c: Conteudo): string | undefined {
  * Bens: a cautelosa compra casa e carro quando sobra, sempre à vista; a arriscada financia a casa assim que a parcela
  * cabe e compra o mais caro que cabe num quinto do que tem; a aleatória, de vez em quando, à vista ou financiado.
  */
+/** O lugar no mundo (o sonho do bloco S2), do maior para o menor. */
+const LUGARES_NO_MUNDO = ['fazenda', 'casa_de_praia', 'sitio'] as const;
+
 function decidirBens(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng: Rng): Operacao[] {
   if (e.idade < 20 || estrategia === 'primeira') return [];
   const liquido = liquidoDe(e);
   const tem = new Set(bensDe(e).map((b) => defDoBem(c, b)?.marca));
   const compra = (item: string): Operacao[] => (pode(e, c, { tipo: 'comprar', item }) ? [{ tipo: 'comprar', item }] : []);
   const financia = (item: string): Operacao[] => [{ tipo: 'comprar', item, financiar: true }];
+  // Quem sonha com o lugar no mundo (bloco S2) compra o maior que cabe no bolso, com folga: a fazenda, a casa de praia
+  // ou o sítio.
+  if (e.entidades['eu']!.q['projeto_lugar_no_mundo']) {
+    const lugar = LUGARES_NO_MUNDO.map((id) => defBem(c, id)).find((b) => b && b.preco * 1.2 <= liquido && pode(e, c, { tipo: 'comprar', item: b.id }));
+    if (lugar) return [{ tipo: 'comprar', item: lugar.id }];
+  }
   if (estrategia === 'cautelosa') {
     if (!moradiaDe(e)) {
       const casa = c.mundo.bens.filter((b) => b.categoria === 'moradia' && b.preco * 1.3 <= liquido).sort((a, b) => b.preco - a.preco)[0];
@@ -880,6 +891,8 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       const outros = Object.keys(ef).filter((k) => k.includes('.')).map((k) => `${k}=${String(ef[k])}`);
       for (const m of [...(ef.marcas ?? []), ...(ef.removerMarcas ?? []).map((x) => `-${x}`), ...(ef.agendar ?? []).map((a) => `>${a.evento}`), ...outros]) marcas.add(m);
       if (ef.transferir) marcas.add(`$${ef.transferir.de}>${ef.transferir.para}`);
+      // Começar um sonho (bloco S1) é uma consequência própria, como ganhar uma qualidade: sonhos diferentes não se comparam.
+      if (ef.sonhar) marcas.add(`~${ef.sonhar}`);
     }
   }
   v.risco = avaliarEscolha(esc, e, c).risco;

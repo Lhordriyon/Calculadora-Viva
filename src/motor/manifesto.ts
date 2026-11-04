@@ -307,7 +307,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
   segredos.flatMap((s) => [...PAPEIS_DOS_SEGREDOS.map((p) => `${p}.sabe_${s.id}`), ...s.alvos.map((p) => `${p}.escondido_${s.id}`)]);
 
 /** Storylets que as regras do motor agendam (o amor que aparece, a demissão, o negócio e o padrão de vida no aperto). */
-export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro', 'a_opa_da_rival', 'a_opa_do_fundo'];
+export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro', 'a_opa_da_rival', 'a_opa_do_fundo', 'o_dia_do_sonho_estrela', 'o_dia_do_sonho_imperio', 'o_dia_do_sonho_presidencia', 'o_dia_do_sonho_familia_grande', 'o_dia_do_sonho_amor_da_vida', 'e_agora', 'o_sonho_que_ficou'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(CONQUISTAS_DO_PODER, 'poder: cada conquista vem uma vez só', true),
@@ -686,7 +686,8 @@ export const ETAPAS_DO_ANO = [
     nome: 'os projetos: a meta alcançada vira conquista, o prazo passado vira fracasso',
     // A meta e as etapas são condições do conteúdo (mundo.json › projetos), que podem ler qualquer coisa da vida.
     le: ['*'],
-    escreve: ['eu.projeto_*', 'pessoa.projeto_*', 'eu.felicidade'],
+    // O fim do sonho agenda o dia do sonho e o que vem depois (bloco S2).
+    escreve: ['eu.projeto_*', 'pessoa.projeto_*', 'eu.felicidade', 'agenda'],
   },
   {
     id: 'segredos',

@@ -8,6 +8,7 @@
  * emprego, a avó que morreu).
  */
 import { type Capitulo, capitulosDe, capitulosDoCartao } from './capitulos.ts';
+import { diaDoSonho } from './projetos.ts';
 import { conquistasDaVida } from './influencia.ts';
 import { defCampo, patrimonioTotal } from './campos.ts';
 import { herdeiroPossivel, type Parentesco } from './herdeiro.ts';
@@ -354,7 +355,9 @@ export function sonhosDaVida(e: EstadoVida, c: Conteudo): string[] {
       if (m && m[1] === def.id) fim = { tipo: m[2]!, idade: h.idade };
     }
     if (!comecou) continue;
-    if (fim?.tipo === 'conquista') saida.push(`${def.nome}, realizado aos ${fim.idade}`);
+    // O dia do sonho (bloco S2): a escolha de como viver o topo entra na linha do sonho realizado.
+    const dia = e.historico.find((h) => h.ref === diaDoSonho(def.id) && h.escolha)?.escolha?.resumo;
+    if (fim?.tipo === 'conquista') saida.push(`${def.nome}, realizado aos ${fim.idade}${dia ? `: no dia, ${dia}` : ''}`);
     else if (fim) saida.push(`${def.nome}, que ficou pelo caminho aos ${fim.idade}`);
     else if (e.entidades['eu']?.q[`projeto_${def.id}`]) saida.push(e.vivo ? `${def.nome}, de pé` : `${def.nome}, sonhado até o fim`);
     else saida.push(`${def.nome}, deixado para trás`);
