@@ -10,7 +10,10 @@
         "resumo": "abriu o show do estádio com a primeira música que aprendeu",
         "resultado": {
           "texto": "Você abriu com a música que tocava no rádio da cozinha quando era criança. Metade do estádio cantou junto; a outra metade chorou.",
-          "efeitos": { "felicidade": 9, "inteligencia": 1 }
+          "efeitos": {
+            "felicidade": 9,
+            "inteligencia": 1
+          }
         }
       },
       {
@@ -18,7 +21,12 @@
         "resumo": "anunciou a turnê pelo mundo no palco do estádio",
         "resultado": {
           "texto": "No fim do show, você anunciou dois anos de estrada em cinco continentes. O empresário comemorou; o seu joelho, nem tanto.",
-          "efeitos": { "eu.fama": 10, "dinheiro": 400000, "saude": -6, "felicidade": 3 }
+          "efeitos": {
+            "eu.fama": 10,
+            "dinheiro": 400000,
+            "saude": -6,
+            "felicidade": 3
+          }
         }
       },
       {
@@ -26,7 +34,10 @@
         "resumo": "chamou ao palco quem tinha duvidado do sonho",
         "resultado": {
           "texto": "Você chamou ao microfone o professor que dizia que palco não dava futuro. Ele subiu sem jeito, e vocês dois riram do mesmo jeito que choraram.",
-          "efeitos": { "felicidade": 6, "eu.popularidade": 6 }
+          "efeitos": {
+            "felicidade": 6,
+            "eu.popularidade": 6
+          }
         }
       }
     ]
@@ -34,7 +45,11 @@
   {
     "id": "o_dia_do_sonho_imperio",
     "apenasAgendado": true,
-    "condicoes": { "empresa.valor": { "min": 1 } },
+    "condicoes": {
+      "empresa.valor": {
+        "min": 1
+      }
+    },
     "texto": "A empresa passou de cem milhões, e a notícia chegou antes de você: no elevador, na portaria, no grupo da família. O seu sobrenome na fachada nunca pareceu tão grande.",
     "resumo": "viveu o dia em que a empresa passou de cem milhões",
     "escolhas": [
@@ -43,7 +58,11 @@
         "resumo": "pagou do próprio bolso um bônus para cada funcionário",
         "resultado": {
           "texto": "Cada funcionário recebeu um bônus e um bilhete escrito à mão. Na segunda, ninguém faltou, e a fila de currículos dobrou.",
-          "efeitos": { "dinheiro": -100000, "empresa.marca": 8, "felicidade": 5 }
+          "efeitos": {
+            "dinheiro": -100000,
+            "empresa.marca": 8,
+            "felicidade": 5
+          }
         }
       },
       {
@@ -51,7 +70,12 @@
         "resumo": "deu uma festa para a cidade inteira",
         "resultado": {
           "texto": "Você fechou a praça, contratou três bandas e mandou servir pastel até acabar a massa. A cidade fala disso até hoje.",
-          "efeitos": { "dinheiro": -150000, "eu.popularidade": 8, "eu.fama": 4, "felicidade": 6 }
+          "efeitos": {
+            "dinheiro": -150000,
+            "eu.popularidade": 8,
+            "eu.fama": 4,
+            "felicidade": 6
+          }
         }
       },
       {
@@ -59,7 +83,11 @@
         "resumo": "voltou ao trabalho às oito, como sempre",
         "resultado": {
           "texto": "Você chegou às oito e pediu o relatório do trimestre. Os cem milhões ficaram para comemorar depois, e depois nunca chega.",
-          "efeitos": { "empresaFator": 1.05, "saude": -2, "felicidade": -1 }
+          "efeitos": {
+            "empresaFator": 1.05,
+            "saude": -2,
+            "felicidade": -1
+          }
         }
       }
     ]
@@ -75,7 +103,10 @@
         "resumo": "fez o discurso da escola pública no primeiro dia no topo do país",
         "resultado": {
           "texto": "Você falou da escola pública, do caixote de feira e do microfone que chiava. O país inteiro se emocionou, até quem não queria você ali.",
-          "efeitos": { "eu.popularidade": 8, "felicidade": 6 }
+          "efeitos": {
+            "eu.popularidade": 8,
+            "felicidade": 6
+          }
         }
       },
       {
@@ -83,7 +114,19 @@
         "resumo": "prometeu acabar com a fila do SUS em um ano",
         "resultado": {
           "texto": "Você prometeu acabar com a fila do SUS em um ano. A praça veio abaixo; o ministro da Saúde engoliu em seco.",
-          "efeitos": { "eu.popularidade": 14, "felicidade": 4, "marcas": ["promessa_da_posse"] }
+          "efeitos": {
+            "eu.popularidade": 14,
+            "felicidade": 4,
+            "marcas": [
+              "promessa_da_posse"
+            ],
+            "agendar": [
+              {
+                "evento": "a_promessa_cobrada",
+                "em": 1
+              }
+            ]
+          }
         }
       },
       {
@@ -91,16 +134,22 @@
         "resumo": "chamou a família para o parlatório",
         "resultado": {
           "texto": "Você chamou a família para o parlatório e acenou de mãos dadas. A foto saiu em todos os jornais, e alguém da família guardou uma cópia de cada.",
-          "efeitos": { "felicidade": 9, "eu.popularidade": 3 }
+          "efeitos": {
+            "felicidade": 9,
+            "eu.popularidade": 3
+          }
         }
       }
     ]
   },
   {
     "id": "a_promessa_cobrada",
-    "idade": [25, 99],
-    "condicoes": { "marcas": ["promessa_da_posse"], "marcaHa": [{ "marca": "promessa_da_posse", "min": 1 }] },
-    "tensao": 2,
+    "apenasAgendado": true,
+    "condicoes": {
+      "marcas": [
+        "promessa_da_posse"
+      ]
+    },
     "texto": "A fila do SUS continua lá, e um repórter lembrou, ao vivo, da promessa da posse. A pergunta ficou no ar, e o microfone também.",
     "resumo": "foi cobrad{o|a} pela promessa da posse",
     "escolhas": [
@@ -109,17 +158,36 @@
         "resumo": "admitiu que tinha prometido demais na posse",
         "resultado": {
           "texto": "Você admitiu, ao vivo, que prometeu mais do que dava. O índice caiu, e você dormiu melhor do que esperava.",
-          "efeitos": { "eu.popularidade": -4, "felicidade": 2, "removerMarcas": ["promessa_da_posse"] }
+          "efeitos": {
+            "eu.popularidade": -4,
+            "felicidade": 2,
+            "removerMarcas": [
+              "promessa_da_posse"
+            ]
+          }
         }
       },
       {
         "texto": "Pôr o dinheiro do país na fila",
         "resumo": "pôs o dinheiro do país para cumprir a promessa da posse",
-        "condicoes": { "eu.cargo": ["presidente", "rei", "ditador"] },
+        "condicoes": {
+          "eu.cargo": [
+            "presidente",
+            "rei",
+            "ditador"
+          ]
+        },
         "bloqueio": "você não governa mais o país",
         "resultado": {
           "texto": "Você mandou abrir mutirões em todo o país, com dinheiro emprestado. A fila andou; a dívida também.",
-          "efeitos": { "eu.popularidade": 5, "pais.divida": 2, "pais.saude": 2, "removerMarcas": ["promessa_da_posse"] }
+          "efeitos": {
+            "eu.popularidade": 5,
+            "pais.divida": 2,
+            "pais.saude": 2,
+            "removerMarcas": [
+              "promessa_da_posse"
+            ]
+          }
         }
       },
       {
@@ -127,7 +195,13 @@
         "resumo": "culpou o Congresso pela promessa da posse",
         "resultado": {
           "texto": "Você culpou o Congresso, o Congresso culpou você, e a fila continuou exatamente onde estava.",
-          "efeitos": { "eu.popularidade": -2, "felicidade": -1, "removerMarcas": ["promessa_da_posse"] }
+          "efeitos": {
+            "eu.popularidade": -2,
+            "felicidade": -1,
+            "removerMarcas": [
+              "promessa_da_posse"
+            ]
+          }
         }
       }
     ]
@@ -143,7 +217,10 @@
         "resumo": "pendurou a foto da família inteira na parede da sala",
         "resultado": {
           "texto": "A foto ficou torta na parede, e ninguém deixa você endireitar. Quem chega em casa para na frente dela.",
-          "efeitos": { "felicidade": 6, "saude": 1 }
+          "efeitos": {
+            "felicidade": 6,
+            "saude": 1
+          }
         }
       },
       {
@@ -151,7 +228,10 @@
         "resumo": "deu uma cópia da foto da família para cada filho",
         "resultado": {
           "texto": "Você mandou revelar uma cópia para cada filho, com um bilhete atrás. O mais velho ligou à noite, sem saber direito o que dizer.",
-          "efeitos": { "felicidade": 4, "filho.vinculo": 8 }
+          "efeitos": {
+            "felicidade": 4,
+            "filho.vinculo": 8
+          }
         }
       },
       {
@@ -159,7 +239,10 @@
         "resumo": "levou a família inteira para a praia",
         "resultado": {
           "texto": "Três carros, um isopor e nenhum lugar para estacionar. Foi o fim de semana mais caro e mais barulhento da sua vida, e você repetiria.",
-          "efeitos": { "dinheiro": -15000, "felicidade": 9 }
+          "efeitos": {
+            "dinheiro": -15000,
+            "felicidade": 9
+          }
         }
       }
     ]
@@ -167,7 +250,12 @@
   {
     "id": "o_dia_do_sonho_amor_da_vida",
     "apenasAgendado": true,
-    "condicoes": { "marcas": ["casado"], "amor.vivo": true },
+    "condicoes": {
+      "marcas": [
+        "casado"
+      ],
+      "amor.vivo": true
+    },
     "texto": "Vinte e cinco anos de casados. Na festa das bodas de prata, {amor} levanta a taça e esquece o discurso no meio, e todo mundo ri, e ninguém se lembra de ter rido tão bem.",
     "resumo": "comemorou as bodas de prata com {amor}",
     "escolhas": [
@@ -176,7 +264,10 @@
         "resumo": "renovou os votos com {amor} na mesma igreja",
         "resultado": {
           "texto": "Vocês voltaram à mesma igreja, com os mesmos sapatos apertados de propósito. O padre era outro; o nervoso, o mesmo.",
-          "efeitos": { "amor.vinculo": 10, "felicidade": 6 }
+          "efeitos": {
+            "amor.vinculo": 10,
+            "felicidade": 6
+          }
         }
       },
       {
@@ -184,7 +275,14 @@
         "resumo": "fez com {amor} a lua de mel que nunca tinha feito",
         "resultado": {
           "texto": "Vinte e cinco anos depois, vocês embarcaram para a lua de mel que o dinheiro nunca deixou. Valeu cada parcela.",
-          "efeitos": { "dinheiro": -20000, "felicidade": 9, "amor.vinculo": 6, "marcas": ["viajou_longe"] }
+          "efeitos": {
+            "dinheiro": -20000,
+            "felicidade": 9,
+            "amor.vinculo": 6,
+            "marcas": [
+              "viajou_longe"
+            ]
+          }
         }
       },
       {
@@ -192,7 +290,10 @@
         "resumo": "dançou com {amor} a música do casamento",
         "resultado": {
           "texto": "O DJ tocou a música do casamento, e vocês dançaram como se ninguém estivesse olhando. Todo mundo estava, e todo mundo gostou.",
-          "efeitos": { "felicidade": 7, "amor.vinculo": 4 }
+          "efeitos": {
+            "felicidade": 7,
+            "amor.vinculo": 4
+          }
         }
       }
     ]
@@ -200,37 +301,57 @@
   {
     "id": "e_agora",
     "apenasAgendado": true,
-    "texto": "Faz um ano que o sonho chegou. De manhã, você acorda sem pressa pela primeira vez em muito tempo, olha o teto e se pergunta o que ninguém avisou que viria depois: e agora?",
+    "texto": "Faz um ano que o sonho chegou. [De manhã, você acorda sem pressa pela primeira vez em muito tempo|Numa terça-feira qualquer, você se pega olhando a janela sem pressa nenhuma|No meio de um almoço de domingo, a conversa para e você fica no silêncio], e vem a pergunta que ninguém avisou que viria depois: e agora?",
     "resumo": "se perguntou o que viria depois do sonho realizado",
     "escolhas": [
       {
         "texto": "Fazer fortuna de verdade",
         "resumo": "pôs na cabeça fazer fortuna depois do sonho realizado",
-        "condicoes": { "patrimonio": { "max": 49999999 } },
+        "condicoes": {
+          "patrimonio": {
+            "max": 49999999
+          }
+        },
         "bloqueio": "a fortuna você já tem",
         "resultado": {
           "texto": "Você abriu uma planilha nova e chamou a aba de \"fortuna\". Sonho realizado dá apetite.",
-          "efeitos": { "sonhar": "fortuna" }
+          "efeitos": {
+            "sonhar": "fortuna"
+          }
         }
       },
       {
         "texto": "Encontrar o seu lugar no mundo",
         "resumo": "pôs na cabeça encontrar o seu lugar no mundo",
-        "condicoes": { "semMarcas": ["sitio", "casa_de_praia", "fazenda"] },
+        "condicoes": {
+          "semMarcas": [
+            "sitio",
+            "casa_de_praia",
+            "fazenda"
+          ]
+        },
         "bloqueio": "o seu lugar você já tem",
         "resultado": {
           "texto": "Você começou a olhar anúncio de sítio no celular antes de dormir. A rede na varanda já tem lugar na sua cabeça.",
-          "efeitos": { "sonhar": "lugar_no_mundo" }
+          "efeitos": {
+            "sonhar": "lugar_no_mundo"
+          }
         }
       },
       {
         "texto": "Ver os netos crescerem",
         "resumo": "pôs na cabeça ver os netos crescerem",
-        "condicoes": { "filhos": { "min": 1 } },
+        "condicoes": {
+          "filhos": {
+            "min": 1
+          }
+        },
         "bloqueio": "sem filhos, não há netos",
         "resultado": {
           "texto": "Você comprou um jogo de pratos a mais, para quando a mesa encher de novo.",
-          "efeitos": { "sonhar": "os_netos" }
+          "efeitos": {
+            "sonhar": "os_netos"
+          }
         }
       },
       {
@@ -238,45 +359,70 @@
         "resumo": "resolveu aproveitar o que tinha construído",
         "resultado": {
           "texto": "Você decidiu que o próximo sonho pode esperar. Dormiu até tarde numa terça-feira e não pediu desculpa a ninguém.",
-          "efeitos": { "felicidade": 5, "saude": 2 }
+          "efeitos": {
+            "felicidade": 5,
+            "saude": 2
+          }
         }
       }
-    ]
+    ],
+    "repetivel": true,
+    "intervalo": 2
   },
   {
     "id": "o_sonho_que_ficou",
     "apenasAgendado": true,
-    "texto": "O sonho que você carregou por tanto tempo ainda aparece de vez em quando: numa música no rádio, numa vitrine, numa conversa. Ele não veio. A pergunta é o que fazer com o espaço que ficou.",
+    "texto": "O sonho que você carregou por tanto tempo ainda aparece de vez em quando: [numa música no rádio, numa vitrine, numa conversa|no álbum de fotos, na gaveta, no nome de uma rua|num cheiro, num programa de TV, na pergunta de um sobrinho]. Ele não veio. A pergunta é o que fazer com o espaço que ficou.",
     "resumo": "decidiu o que fazer com o sonho que não veio",
     "escolhas": [
       {
         "texto": "Dar a volta ao mundo",
         "resumo": "pôs na cabeça dar a volta ao mundo depois do sonho que não veio",
-        "condicoes": { "semMarcas": ["volta_ao_mundo"] },
+        "condicoes": {
+          "semMarcas": [
+            "volta_ao_mundo"
+          ]
+        },
         "bloqueio": "a volta ao mundo você já deu",
         "resultado": {
           "texto": "Você pendurou um mapa-múndi na parede e espetou o primeiro alfinete. O sonho mudou de tamanho, não de vontade.",
-          "efeitos": { "sonhar": "volta_ao_mundo" }
+          "efeitos": {
+            "sonhar": "volta_ao_mundo"
+          }
         }
       },
       {
         "texto": "Encontrar o seu lugar no mundo",
         "resumo": "pôs na cabeça encontrar o seu lugar no mundo depois do sonho que não veio",
-        "condicoes": { "semMarcas": ["sitio", "casa_de_praia", "fazenda"] },
+        "condicoes": {
+          "semMarcas": [
+            "sitio",
+            "casa_de_praia",
+            "fazenda"
+          ]
+        },
         "bloqueio": "o seu lugar você já tem",
         "resultado": {
           "texto": "Você trocou o sonho grande por um lugar: um sítio, uma praia, um pedaço de chão para chamar de seu.",
-          "efeitos": { "sonhar": "lugar_no_mundo" }
+          "efeitos": {
+            "sonhar": "lugar_no_mundo"
+          }
         }
       },
       {
         "texto": "Ver os netos crescerem",
         "resumo": "pôs na cabeça ver os netos crescerem depois do sonho que não veio",
-        "condicoes": { "filhos": { "min": 1 } },
+        "condicoes": {
+          "filhos": {
+            "min": 1
+          }
+        },
         "bloqueio": "sem filhos, não há netos",
         "resultado": {
           "texto": "Você decidiu que o próximo sonho vai ter cheiro de bolo e barulho de criança.",
-          "efeitos": { "sonhar": "os_netos" }
+          "efeitos": {
+            "sonhar": "os_netos"
+          }
         }
       },
       {
@@ -284,7 +430,96 @@
         "resumo": "fez as pazes com o sonho que não veio",
         "resultado": {
           "texto": "Você guardou o sonho numa caixa, com carinho, sem cadeado. De vez em quando, abre para olhar.",
-          "efeitos": { "felicidade": 5 }
+          "efeitos": {
+            "felicidade": 5
+          }
+        }
+      }
+    ],
+    "repetivel": true,
+    "intervalo": 2
+  },
+  {
+    "id": "a_crise_dos_cinquenta",
+    "marco": true,
+    "idade": [
+      50,
+      52
+    ],
+    "condicoes": {
+      "semMarcas": [
+        "projeto_estrela",
+        "projeto_imperio",
+        "projeto_presidencia",
+        "projeto_familia_grande",
+        "projeto_amor_da_vida",
+        "projeto_fortuna",
+        "projeto_lugar_no_mundo",
+        "projeto_volta_ao_mundo",
+        "projeto_os_netos"
+      ]
+    },
+    "texto": "Cinquenta anos. A festa foi boa, o bolo estava seco, e alguém fez a piada da metade do caminho. No banho, a piada voltou sem graça nenhuma: o que você quer da segunda metade?",
+    "resumo": "se perguntou, aos cinquenta, o que queria da segunda metade da vida",
+    "escolhas": [
+      {
+        "texto": "Fazer fortuna",
+        "resumo": "pôs na cabeça, aos cinquenta, fazer fortuna",
+        "condicoes": {
+          "patrimonio": {
+            "max": 49999999
+          }
+        },
+        "bloqueio": "a fortuna você já tem",
+        "resultado": {
+          "texto": "Você abriu uma planilha nova e chamou a aba de \"segunda metade\". Cinquenta é cedo para quem tem planilha.",
+          "efeitos": {
+            "sonhar": "fortuna"
+          }
+        }
+      },
+      {
+        "texto": "Encontrar o seu lugar no mundo",
+        "resumo": "pôs na cabeça, aos cinquenta, encontrar o seu lugar no mundo",
+        "condicoes": {
+          "semMarcas": [
+            "sitio",
+            "casa_de_praia",
+            "fazenda"
+          ]
+        },
+        "bloqueio": "o seu lugar você já tem",
+        "resultado": {
+          "texto": "Você começou a sonhar com uma varanda de frente para alguma coisa bonita: o mar, o mato, a serra, tanto faz.",
+          "efeitos": {
+            "sonhar": "lugar_no_mundo"
+          }
+        }
+      },
+      {
+        "texto": "Dar a volta ao mundo",
+        "resumo": "pôs na cabeça, aos cinquenta, dar a volta ao mundo",
+        "condicoes": {
+          "semMarcas": [
+            "volta_ao_mundo"
+          ]
+        },
+        "bloqueio": "a volta ao mundo você já deu",
+        "resultado": {
+          "texto": "Você comprou um mapa-múndi e um pacote de alfinetes. A parede da sala nunca mais foi a mesma.",
+          "efeitos": {
+            "sonhar": "volta_ao_mundo"
+          }
+        }
+      },
+      {
+        "texto": "Do jeito que vier, vem bem",
+        "resumo": "decidiu, aos cinquenta, deixar a segunda metade vir do jeito que viesse",
+        "resultado": {
+          "texto": "Você saiu do banho, comeu mais um pedaço do bolo seco e decidiu que a segunda metade pode se apresentar sozinha.",
+          "efeitos": {
+            "felicidade": 3
+          }
         }
       }
     ]
@@ -292,35 +527,62 @@
   {
     "id": "a_aposta_da_fortuna",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_fortuna"], "patrimonio": { "min": 1000000, "max": 19999999 } },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_fortuna"
+      ],
+      "patrimonio": {
+        "min": 1000000,
+        "max": 19999999
+      }
+    },
     "texto": "Um conhecido do clube oferece entrar num negócio que dobra o dinheiro em três anos, se der certo. Você conhece esse tipo de frase; o seu gerente também, e ficou quieto.",
     "resumo": "recebeu a proposta do negócio que dobra o dinheiro",
     "escolhas": [
       {
         "texto": "Entrar com tudo",
         "resumo": "entrou com tudo no negócio que dobrava o dinheiro",
-        "teste": { "chance": 0.45 },
+        "teste": {
+          "chance": 0.45
+        },
         "sucesso": {
           "texto": "Deu certo, e deu muito certo. O conhecido do clube virou amigo de infância, pelo jeito que você conta.",
-          "efeitos": { "patrimonioFator": 1.35, "felicidade": 6 }
+          "efeitos": {
+            "patrimonioFator": 1.35,
+            "felicidade": 6
+          }
         },
         "fracasso": {
           "texto": "O negócio sumiu junto com o conhecido do clube. O gerente não disse \"eu avisei\", mas pensou alto.",
-          "efeitos": { "patrimonioFator": 0.75, "felicidade": -6 }
+          "efeitos": {
+            "patrimonioFator": 0.75,
+            "felicidade": -6
+          }
         }
       },
       {
         "texto": "Entrar com um pouco, para ver",
         "resumo": "entrou com um pouco no negócio que dobrava o dinheiro",
-        "teste": { "chance": 0.45 },
+        "teste": {
+          "chance": 0.45
+        },
         "sucesso": {
           "texto": "Rendeu bem, e você ficou com a pulga atrás da orelha de não ter entrado com mais.",
-          "efeitos": { "patrimonioFator": 1.08, "felicidade": 2 }
+          "efeitos": {
+            "patrimonioFator": 1.08,
+            "felicidade": 2
+          }
         },
         "fracasso": {
           "texto": "Perdeu o que pôs, e ganhou uma história para contar no próximo jantar.",
-          "efeitos": { "patrimonioFator": 0.95, "felicidade": -2 }
+          "efeitos": {
+            "patrimonioFator": 0.95,
+            "felicidade": -2
+          }
         }
       },
       {
@@ -328,7 +590,9 @@
         "resumo": "recusou o negócio que dobrava o dinheiro",
         "resultado": {
           "texto": "Você agradeceu e voltou para a renda fixa. A fortuna vem devagar, mas vem com nota fiscal.",
-          "efeitos": { "felicidade": -1 }
+          "efeitos": {
+            "felicidade": -1
+          }
         }
       }
     ]
@@ -336,8 +600,18 @@
   {
     "id": "o_jantar_dos_ricos",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_fortuna"], "patrimonio": { "min": 5000000 } },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_fortuna"
+      ],
+      "patrimonio": {
+        "min": 5000000
+      }
+    },
     "texto": "Você foi convidad{o|a} para um jantar de gente muito rica. Ninguém fala de preço, e todo mundo fala de dinheiro. Na mesa, um lugar com o seu nome escrito à mão.",
     "resumo": "foi convidad{o|a} para o jantar dos ricos",
     "escolhas": [
@@ -346,7 +620,10 @@
         "resumo": "fez os contatos certos no jantar dos ricos",
         "resultado": {
           "texto": "Você saiu com seis cartões e um convite para um conselho. A comida, você nem lembra.",
-          "efeitos": { "eu.influencia": 5, "felicidade": -1 }
+          "efeitos": {
+            "eu.influencia": 5,
+            "felicidade": -1
+          }
         }
       },
       {
@@ -354,7 +631,9 @@
         "resumo": "passou o jantar dos ricos conversando com os garçons",
         "resultado": {
           "texto": "Você acabou na cozinha, rindo com os garçons e comendo a sobremesa direto da travessa. Foi o melhor jantar da sua vida.",
-          "efeitos": { "felicidade": 5 }
+          "efeitos": {
+            "felicidade": 5
+          }
         }
       },
       {
@@ -362,7 +641,10 @@
         "resumo": "foi embora do jantar dos ricos antes da sobremesa",
         "resultado": {
           "texto": "Você inventou uma dor de cabeça e foi para casa comer pão com manteiga. Rico também pode.",
-          "efeitos": { "felicidade": 2, "saude": 1 }
+          "efeitos": {
+            "felicidade": 2,
+            "saude": 1
+          }
         }
       }
     ]
@@ -370,8 +652,23 @@
   {
     "id": "o_lugar_que_voce_viu",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_lugar_no_mundo"], "semMarcas": ["sitio", "casa_de_praia", "fazenda"], "patrimonio": { "min": 100000 } },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_lugar_no_mundo"
+      ],
+      "semMarcas": [
+        "sitio",
+        "casa_de_praia",
+        "fazenda"
+      ],
+      "patrimonio": {
+        "min": 100000
+      }
+    },
     "texto": "Numa viagem de fim de semana, você viu o lugar: uma placa de vende-se meio torta, uma mangueira na frente e um pôr do sol que parecia combinado.",
     "resumo": "viu o lugar que queria para si",
     "escolhas": [
@@ -380,7 +677,10 @@
         "resumo": "apertou o cinto para juntar o dinheiro do lugar que viu",
         "resultado": {
           "texto": "Você cortou o streaming, a pizza de sexta e a academia que não usava. O lugar virou o papel de parede do celular.",
-          "efeitos": { "custoFator": 0.85, "felicidade": -1 }
+          "efeitos": {
+            "custoFator": 0.85,
+            "felicidade": -1
+          }
         }
       },
       {
@@ -388,7 +688,10 @@
         "resumo": "pediu o telefone do dono do lugar que viu",
         "resultado": {
           "texto": "O dono contou a história da casa por uma hora e meia, e você ouviu cada minuto. Ele disse que espera.",
-          "efeitos": { "felicidade": 3, "inteligencia": 1 }
+          "efeitos": {
+            "felicidade": 3,
+            "inteligencia": 1
+          }
         }
       },
       {
@@ -396,7 +699,9 @@
         "resumo": "tirou uma foto do lugar que viu e seguiu viagem",
         "resultado": {
           "texto": "Você tirou a foto e seguiu. Lugar bonito tem em todo canto; o difícil é o lugar que é seu.",
-          "efeitos": { "felicidade": 1 }
+          "efeitos": {
+            "felicidade": 1
+          }
         }
       }
     ]
@@ -404,8 +709,23 @@
   {
     "id": "a_rede_na_varanda_dos_outros",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_lugar_no_mundo"], "semMarcas": ["sitio", "casa_de_praia", "fazenda"], "patrimonio": { "max": 649999 } },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_lugar_no_mundo"
+      ],
+      "semMarcas": [
+        "sitio",
+        "casa_de_praia",
+        "fazenda"
+      ],
+      "patrimonio": {
+        "max": 649999
+      }
+    },
     "texto": "Um amigo comprou um sítio e chamou você para o fim de semana. Na rede da varanda dele, olhando o mato, você fez as contas do seu de cabeça, três vezes.",
     "resumo": "passou o fim de semana no sítio de um amigo",
     "escolhas": [
@@ -414,7 +734,10 @@
         "resumo": "pediu ao amigo o caminho das pedras para comprar um sítio",
         "resultado": {
           "texto": "Ele explicou o financiamento, o cartório e o vizinho que solta foguete. Você anotou tudo no guardanapo.",
-          "efeitos": { "inteligencia": 2, "felicidade": 1 }
+          "efeitos": {
+            "inteligencia": 2,
+            "felicidade": 1
+          }
         }
       },
       {
@@ -422,7 +745,10 @@
         "resumo": "sentiu um pouco de inveja do sítio do amigo",
         "resultado": {
           "texto": "Você sentiu inveja, só um pouco, e voltou para casa com mais vontade ainda. A inveja também serve de motor.",
-          "efeitos": { "felicidade": -2, "saude": 1 }
+          "efeitos": {
+            "felicidade": -2,
+            "saude": 1
+          }
         }
       },
       {
@@ -430,7 +756,9 @@
         "resumo": "aproveitou a rede do sítio do amigo",
         "resultado": {
           "texto": "Você dormiu na rede, acordou com um bem-te-vi e decidiu que o seu lugar pode esperar mais um pouco.",
-          "efeitos": { "felicidade": 4 }
+          "efeitos": {
+            "felicidade": 4
+          }
         }
       }
     ]
@@ -438,8 +766,18 @@
   {
     "id": "o_mapa_na_parede",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_volta_ao_mundo"], "semMarcas": ["viajou_longe"] },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_volta_ao_mundo"
+      ],
+      "semMarcas": [
+        "viajou_longe"
+      ]
+    },
     "texto": "Você pendurou um mapa-múndi na parede e começou a espetar alfinetes nos lugares que quer ver. Já tem mais alfinete do que parede.",
     "resumo": "pendurou o mapa da volta ao mundo na parede",
     "escolhas": [
@@ -448,7 +786,15 @@
         "resumo": "começou a juntar para a primeira viagem longe",
         "resultado": {
           "texto": "Você abriu uma caixinha no banco com o nome do primeiro alfinete. Dois anos.",
-          "efeitos": { "agendar": [{ "evento": "viagem_realizada", "em": 2 }], "felicidade": 1 }
+          "efeitos": {
+            "agendar": [
+              {
+                "evento": "viagem_realizada",
+                "em": 2
+              }
+            ],
+            "felicidade": 1
+          }
         }
       },
       {
@@ -456,7 +802,13 @@
         "resumo": "foi na primeira viagem longe parcelando no cartão",
         "resultado": {
           "texto": "Doze vezes sem juros, trinta dias de felicidade. O primeiro alfinete virou foto.",
-          "efeitos": { "dinheiro": -18000, "felicidade": 6, "marcas": ["viajou_longe"] }
+          "efeitos": {
+            "dinheiro": -18000,
+            "felicidade": 6,
+            "marcas": [
+              "viajou_longe"
+            ]
+          }
         }
       },
       {
@@ -464,7 +816,11 @@
         "resumo": "resolveu começar a volta ao mundo pelo Brasil",
         "resultado": {
           "texto": "Você foi conhecer o Pantanal no feriado e voltou dizendo que o mundo é grande, mas o Brasil é maior por dentro.",
-          "efeitos": { "dinheiro": -3000, "felicidade": 3, "saude": 1 }
+          "efeitos": {
+            "dinheiro": -3000,
+            "felicidade": 3,
+            "saude": 1
+          }
         }
       }
     ]
@@ -472,8 +828,22 @@
   {
     "id": "a_volta_ao_mundo",
     "peso": 4,
-    "idade": [30, 85],
-    "condicoes": { "marcas": ["projeto_volta_ao_mundo", "viajou_longe"], "semMarcas": ["volta_ao_mundo"], "patrimonio": { "min": 150000 } },
+    "idade": [
+      30,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_volta_ao_mundo",
+        "viajou_longe"
+      ],
+      "semMarcas": [
+        "volta_ao_mundo"
+      ],
+      "patrimonio": {
+        "min": 150000
+      }
+    },
     "texto": "As passagens estão no carrinho: doze países, um ano inteiro, um bilhete de ida e outro de volta, se você quiser voltar.",
     "resumo": "teve a volta ao mundo no carrinho de compras",
     "escolhas": [
@@ -482,7 +852,14 @@
         "resumo": "deu a volta ao mundo em um ano de estrada",
         "resultado": {
           "texto": "Você fechou a casa, deixou a planta com a vizinha e foi. Doze países, um ano, e nenhuma vontade de explicar para ninguém.",
-          "efeitos": { "dinheiro": -120000, "felicidade": 10, "inteligencia": 2, "marcas": ["volta_ao_mundo"] }
+          "efeitos": {
+            "dinheiro": -120000,
+            "felicidade": 10,
+            "inteligencia": 2,
+            "marcas": [
+              "volta_ao_mundo"
+            ]
+          }
         }
       },
       {
@@ -490,7 +867,10 @@
         "resumo": "resolveu dar a volta ao mundo aos poucos",
         "resultado": {
           "texto": "Você foi para um continente só, com a promessa de ir ao próximo no ano que vem. A volta ao mundo vai de prestação.",
-          "efeitos": { "dinheiro": -40000, "felicidade": 4 }
+          "efeitos": {
+            "dinheiro": -40000,
+            "felicidade": 4
+          }
         }
       },
       {
@@ -498,7 +878,9 @@
         "resumo": "adiou a volta ao mundo",
         "resultado": {
           "texto": "Você tirou as passagens do carrinho, devagar, uma por uma. O mapa continua na parede, esperando.",
-          "efeitos": { "felicidade": -2 }
+          "efeitos": {
+            "felicidade": -2
+          }
         }
       }
     ]
@@ -506,8 +888,25 @@
   {
     "id": "o_primeiro_neto",
     "peso": 4,
-    "idade": [40, 85],
-    "condicoes": { "marcas": ["projeto_os_netos"], "semMarcas": ["avo_coruja"], "marcaHa": [{ "marca": "pai_mae", "min": 20 }], "filho.vivo": true },
+    "idade": [
+      40,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_os_netos"
+      ],
+      "semMarcas": [
+        "avo_coruja"
+      ],
+      "marcaHa": [
+        {
+          "marca": "pai_mae",
+          "min": 20
+        }
+      ],
+      "filho.vivo": true
+    },
     "texto": "{filho} chegou para o almoço com um envelope e um sorriso que não cabia na cara. Dentro, a foto de um ultrassom. Você vai ser av{ô|ó}.",
     "resumo": "soube que ia ser av{ô|ó}",
     "escolhas": [
@@ -516,7 +915,14 @@
         "resumo": "virou av{ô|ó} babá",
         "resultado": {
           "texto": "Você reaprendeu a trocar fralda e jura que da primeira vez era mais fácil.",
-          "efeitos": { "felicidade": 8, "saude": -1, "marcas": ["avo_coruja"], "filho.vinculo": 6 }
+          "efeitos": {
+            "felicidade": 8,
+            "saude": -1,
+            "marcas": [
+              "avo_coruja"
+            ],
+            "filho.vinculo": 6
+          }
         }
       },
       {
@@ -524,7 +930,12 @@
         "resumo": "virou av{ô|ó} de fim de semana",
         "resultado": {
           "texto": "Sábado é dia de bolo, desenho animado e regra nenhuma.",
-          "efeitos": { "felicidade": 5, "marcas": ["avo_coruja"] }
+          "efeitos": {
+            "felicidade": 5,
+            "marcas": [
+              "avo_coruja"
+            ]
+          }
         }
       }
     ]
@@ -532,8 +943,21 @@
   {
     "id": "o_neto_no_fim_de_semana",
     "peso": 4,
-    "idade": [40, 95],
-    "condicoes": { "marcas": ["projeto_os_netos"], "marcaHa": [{ "marca": "avo_coruja", "min": 2 }] },
+    "idade": [
+      40,
+      95
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_os_netos"
+      ],
+      "marcaHa": [
+        {
+          "marca": "avo_coruja",
+          "min": 2
+        }
+      ]
+    },
     "texto": "O neto passou o fim de semana com você e quis aprender tudo ao mesmo tempo: o nome das árvores, o truque da moeda, o porquê de cada coisa.",
     "resumo": "passou o fim de semana com o neto",
     "escolhas": [
@@ -542,7 +966,10 @@
         "resumo": "ensinou ao neto o que sabia",
         "resultado": {
           "texto": "Você ensinou o nome das árvores e o truque da moeda. Na segunda, ele contou na escola que você é mágic{o|a}.",
-          "efeitos": { "felicidade": 5, "inteligencia": 1 }
+          "efeitos": {
+            "felicidade": 5,
+            "inteligencia": 1
+          }
         }
       },
       {
@@ -550,7 +977,11 @@
         "resumo": "deixou o neto ensinar o celular",
         "resultado": {
           "texto": "Ele te ensinou a mandar figurinha e a tirar foto sem o dedo na frente. Você mandou figurinha para todo mundo.",
-          "efeitos": { "felicidade": 4, "inteligencia": 2, "saude": -1 }
+          "efeitos": {
+            "felicidade": 4,
+            "inteligencia": 2,
+            "saude": -1
+          }
         }
       },
       {
@@ -558,7 +989,10 @@
         "resumo": "levou o neto ao parque até cansar",
         "resultado": {
           "texto": "Vocês correram no parque até ele cansar, o que levou umas quatro horas a mais do que você aguentava.",
-          "efeitos": { "felicidade": 3, "saude": 2 }
+          "efeitos": {
+            "felicidade": 3,
+            "saude": 2
+          }
         }
       }
     ]
@@ -566,8 +1000,21 @@
   {
     "id": "o_neto_pergunta_do_sonho",
     "peso": 4,
-    "idade": [40, 99],
-    "condicoes": { "marcas": ["projeto_os_netos"], "marcaHa": [{ "marca": "avo_coruja", "min": 5 }] },
+    "idade": [
+      40,
+      99
+    ],
+    "condicoes": {
+      "marcas": [
+        "projeto_os_netos"
+      ],
+      "marcaHa": [
+        {
+          "marca": "avo_coruja",
+          "min": 5
+        }
+      ]
+    },
     "texto": "No meio do lanche, o neto perguntou o que você queria ser quando era criança. A pergunta ficou no ar mais tempo do que ele esperava.",
     "resumo": "ouviu do neto a pergunta do sonho",
     "escolhas": [
@@ -576,7 +1023,9 @@
         "resumo": "contou ao neto o sonho dos quinze anos",
         "resultado": {
           "texto": "Você contou o sonho inteiro, com as partes boas e as que deram errado. Ele ouviu de boca aberta e pediu para você contar de novo amanhã.",
-          "efeitos": { "felicidade": 6 }
+          "efeitos": {
+            "felicidade": 6
+          }
         }
       },
       {
@@ -584,7 +1033,10 @@
         "resumo": "disse ao neto que queria ser exatamente av{ô|ó}",
         "resultado": {
           "texto": "Você disse que queria ser av{ô|ó}. Ele achou graça; você não estava brincando.",
-          "efeitos": { "felicidade": 4, "saude": 1 }
+          "efeitos": {
+            "felicidade": 4,
+            "saude": 1
+          }
         }
       },
       {
@@ -592,7 +1044,10 @@
         "resumo": "perguntou ao neto qual era o sonho dele",
         "resultado": {
           "texto": "Ele quer ser astronauta, dentista e dono de uma loja de sorvete, ao mesmo tempo. Você disse que dá.",
-          "efeitos": { "felicidade": 5, "inteligencia": 1 }
+          "efeitos": {
+            "felicidade": 5,
+            "inteligencia": 1
+          }
         }
       }
     ]
