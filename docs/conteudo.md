@@ -326,7 +326,7 @@ O tema do segredo fica em `mundo.json › segredos`; quem sabe e de quem é esco
 | `fecharEmpresa` | `{ "sobra": 0.1 }` | a empresa fecha e volta a fração `sobra` da parte; `{sobra}` no texto |
 | `venderSubsidiarias` | `{ "quantas": 1, "premio": 1.5 }` ou `{ "fracao": 0.3 }` | a empresa vende subsidiárias pelo que valem × prêmio (cada uma vale valor ÷ (subsidiárias + 2)); a parte de quem joga vira dinheiro; `{venda}` no texto |
 | `abrirCapital` | `true` | a empresa vai para a bolsa, como na folha: vale 20% mais, quem joga vende 20% da parte na estreia (`{venda}`), a dependência cai 15 e ela ganha `empresa.na_bolsa` |
-| `sonhar` | `"estrela"` | começa o sonho (o projeto com `"sonho": true`) com a escolha de causa; não faz nada se ele já está de pé ou se já há três projetos |
+| `sonhar` | `"estrela"` | começa o sonho (o projeto com `"sonho": true`) com a escolha de causa; não faz nada se ele já está de pé ou se já há dois sonhos de pé (os sonhos têm vaga própria, à parte dos três planos) |
 | caminhos de poder | `"eu.influencia": 5`, `"eu.popularidade": -8`, `"eu.fama": 10`, `"eu.cargo": { "definir": "rei" }` | a coroa e o Regime entram assim; eleição é pela folha Carreira |
 | caminhos de carreira | `"eu.carreira": { "definir": "ator" }`, `"eu.nivel": 1` | dá uma profissão (com `renda` e `eu.setor`); trocar `eu.setor` ou zerar a renda sem `eu.carreira` encerra a carreira |
 | `pais.impulso` | `1.5` | decreto que aquece a economia (mais crescimento, inflação e dívida); some pela metade a cada ano |

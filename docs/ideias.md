@@ -262,6 +262,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Efeitos causais:**
   - o marco dos 15 anos ("o que você quer da vida": estrela, império, governar o país, ou ainda não sei) e o do amor (com o namoro, a casa cheia ou um amor para a vida toda) começam o sonho com a escolha de causa (o efeito `sonhar`);
   - o sonho é um plano com `sonho: true` (`mundo.json › projetos`): as etapas são a fama (até 60), o valor da empresa (até R$ 100 milhões), o cargo (até o Planalto), os filhos (três) e os anos de casado (25), e o prazo é longo (de 30 a 40 anos);
+  - os sonhos têm vaga própria (dois de pé, a ambição e o amor), à parte dos três planos: com a vaga dividida, o plano prático sumia das vidas de quem sonhava;
   - a primeira cena da estrela é a porta (o microfone do bar, a câmera, a várzea com o olheiro, o teatro), e cada porta abre uma carreira de holofote diferente; quem sonha em virar estrela sobe com o dobro da chance no palco (a garra do sonho, `regras.ts › GARRA_DO_SONHO`), porque a pirâmide da fama, sem ela, leva mais de 50 anos para o segundo degrau;
   - cada sonho tem três cenas que só aparecem para quem sonha, em momentos diferentes do caminho (o primeiro palco, o vídeo que viralizou, a turnê ou a casa; o contrato que pode tudo, a capa da revista, o preço do império; o primeiro comício, o padrinho, o debate; o quarto vazio, o Natal barulhento, mais um na mesa; o restaurante do primeiro encontro, a crise do sétimo ano, as bodas), e as cenas pesam o dobro pelo plano de pé;
   - o sonho realizado entra na linha do tempo em dourado, e o cartão da vida diz como cada sonho terminou ("realizado aos 34", "que ficou pelo caminho aos 52", "sonhado até o fim").
@@ -270,6 +271,24 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
   - no túnel: ≥ 60% das vidas que chegam aos 20 têm um sonho; entre 10% e 70% dos sonhos que acabaram se realizam (nem impossível, nem garantido); todo sonho se realiza em alguma vida; zero histórias mortas; os toques ficam no teto;
   - os robôs que sonham vão atrás do sonho (a vaga de holofote, a eleição com chance menor, a empresa aberta), como quem joga faria; sem isso, a medida dizia quanto a vida realiza o sonho de quem não faz nada por ele.
 - **Estado:** feita (bloco S1, 03/11).
+
+### I-142 · O segundo ato: o dia do sonho, o "e agora?" e os sonhos da segunda metade da vida (o loop da qualidade de jogo, 03/11)
+- **Pedido:** a próxima volta do loop ("cubra o tédio do player pela vida"); o dono pediu o projeto antes da construção.
+- **O que a medida mostrou** (160 vidas dos robôs): pular os anos sem decisão quase não economizaria nada: 77% dos anos já têm uma decisão, e os trechos sem nenhuma têm mediana de 1 ano e chegam no máximo a 7. O tédio não está em ano vazio. Está no que o S1 deixou: o sonho acaba por volta dos 50 (realizado em 10% das vezes), e a segunda metade da vida fica sem direção; o sonho realizado é uma linha dourada, sem o momento; e ninguém sonha nada aos 50, 60 ou 70.
+- **Candidatas (nos 12 critérios):**
+  - **o segundo ato** (o dia do sonho, o "e agora?" e sonhos para depois dos 35): alto em fantasia, história emergente, decisão, consequência, variedade e reuso (o motor dos planos inteiro); custo do tamanho do S1;
+  - pular até o próximo momento: baixo pela medida;
+  - pesar mais a especificidade no diretor: baixo, porque ele já pesa a especificidade e a novidade entre vidas;
+  - a sorte grande (a chance extraordinária, uma por vida): alto em fantasia, médio em decisão; fica para depois;
+  - o sonho que passa para quem herda: alto em rejogabilidade, mas pede a dinastia; fica para o S3.
+- **Efeitos causais:**
+  - a conquista de um sonho agenda o dia do sonho no mesmo ano, com a conquista de causa; as três escolhas dizem como se vive o topo, e cada uma volta (a turnê cobra a saúde, a promessa da posse é cobrada, o bônus para todo mundo vira marca);
+  - o fim de qualquer sonho (realizado ou não) grava `sonho_acabou` com a entrada do fim de causa; nos três anos seguintes, a vida pergunta "e agora?" (depois do realizado) ou conta "o sonho que ficou" (depois do que não veio), e a resposta começa outro sonho (o efeito `sonhar`), ensina o caminho a alguém ou faz as pazes com o que foi;
+  - os sonhos da segunda metade são planos com `sonho: true`, idade de 35 a 75 e prazo de 15 a 25 anos: a fortuna (R$ 10 milhões), o lugar no mundo (o sítio, a casa de praia ou a fazenda), conhecer o mundo (a viagem longe e a volta ao mundo) e ver os netos crescerem (dez anos de avó ou avô), cada um com duas ou três cenas.
+- **Aceitação:**
+  - testes: a conquista agenda o dia do sonho com a conquista de causa; o fim grava `sonho_acabou` e o "e agora?" começa outro sonho com a escolha de causa; os sonhos novos aparecem no "e agora?" pela idade e pelo bolso;
+  - no túnel: ≥ 95% dos sonhos realizados têm o dia do sonho no mesmo ano; ≥ 50% dos fins de sonho de quem vive três anos depois chegam ao "e agora?"; os anos a partir dos 50 com um sonho de pé pelo menos dobram; todo sonho da segunda metade se realiza em alguma vida; zero histórias mortas; toques no teto (480); saturação V20 sem regressão.
+- **Estado:** proposta, com o projeto em `docs/roteiro.md › S2`, à espera do aval do dono.
 
 ## Índice
 
@@ -366,6 +385,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-142 | O segundo ato: o dia do sonho, o "e agora?" e os sonhos da segunda metade | S2 | Alta | proposta (projeto à espera do aval do dono) |
 | I-141 | O sonho: o que você quer da vida, com cenas e um fim | S1 | Alta | feita (bloco S1, 03/11) |
 | I-140 | A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo | H7 | Alta | feita (bloco H7, 03/11) |
 | I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e o gestor que propõe | H6 | Alta | feita (bloco H6, 02/11) |

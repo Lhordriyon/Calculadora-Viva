@@ -123,8 +123,38 @@ Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fund
 **O loop da qualidade de jogo (03/11).** O dono pediu um loop de atualizações cada vez melhores, com foco total na experiência de quem joga: "o mundo real é chato demais; o player busca o Trajetória para viver nele o que de fato quer viver". Cada volta escolhe, pelos 12 critérios, o que mais muda a vida de quem joga, entrega inteira e recomeça (I-141 em diante).
 
 - [x] S1 (03/11): o sonho. Aos 15, a vida pergunta o que você quer dela (virar estrela, construir um império, governar o país, ou ainda não sei) e, com o namoro, o que você quer do amor (a casa cheia ou um amor para a vida toda). O sonho é um plano com as etapas do estado e prazo longo; cada um tem três cenas em pontos diferentes do caminho; a conquista é um marco dourado, e o cartão da vida diz como cada sonho terminou (I-141)
-- [ ] S2, a próxima volta: o ano que vale a pena. Pular os anos sem decisão até o próximo momento que importa (o ano em que algo acontece com você), com a linha do tempo contando o que passou; mede-se pelos toques por vida e pelos anos vazios seguidos
-- [ ] Depois, na fila: mais sonhos (o mundo inteiro, a obra-prima, a cura), e a rival que volta na vida seguinte
+
+**O projeto do S2, o segundo ato (a próxima volta; à espera do aval do dono, I-142).** O sonho do S1 acaba por volta dos 50, e a segunda metade da vida fica sem direção; o sonho realizado é uma linha dourada, sem o momento. Pular os anos sem decisão foi medido e descartado: 77% dos anos já têm uma decisão, e os trechos sem nenhuma têm mediana de 1 ano. A ordem de execução:
+
+- [ ] S2a: o dia do sonho. A conquista agenda, no mesmo ano, a cena do sonho realizado, com a conquista de causa (`projetos.ts › terminar`; os cinco storylets em `AGENDADOS_PELO_MOTOR`). Três escolhas sobre como viver o topo, e cada uma volta depois:
+  - virar estrela, o estádio cheio: a primeira música que você aprendeu, a turnê pelo mundo (que cobra a saúde) ou quem duvidou de você chamado ao palco;
+  - o império, os cem milhões: o bônus para todo mundo (o caixa e a marca), a casa dos sonhos (um bem de verdade, pelo efeito novo `comprarBem`, a mesma compra da folha Dinheiro) ou segunda-feira às oito, como sempre;
+  - governar o país, a posse: o discurso da escola pública, a promessa grande demais (que alguém cobra no meio do mandato) ou a família no parlatório;
+  - a casa cheia, a foto da família inteira; um amor para a vida toda, as bodas de prata.
+- [ ] S2b: o "e agora?". O fim de qualquer sonho grava `sonho_acabou`, com a entrada do fim de causa. Nos três anos seguintes, a vida pergunta, disputando o lugar do evento do ano (sem toque a mais):
+  - depois do realizado ("e agora?"): sonhar de novo (dois sonhos da segunda metade, pela idade e pelo bolso), ensinar o caminho a alguém (o filho ou o amigo ganha a lembrança boa e o vínculo) ou aproveitar o que construiu;
+  - depois do que não veio ("o sonho que ficou"): tentar de outro jeito (um sonho da segunda metade), contar a história aos filhos ou fazer as pazes com o que foi.
+- [ ] S2c: os sonhos da segunda metade (`mundo.json › projetos`, `sonho: true`, idade de 35 a 75, prazo de 15 a 25 anos), cada um com duas ou três cenas:
+  - a fortuna: R$ 500 mil, R$ 2 milhões e R$ 5 milhões, até R$ 10 milhões;
+  - o lugar no mundo: a casa própria, o dinheiro da entrada, até o sítio, a casa de praia ou a fazenda (os bens que já existem);
+  - conhecer o mundo: o dinheiro guardado e a viagem longe (`viajou_longe`), até a volta ao mundo;
+  - ver os netos crescerem: o primeiro neto (`avo_coruja`), até dez anos de avó ou avô.
+- [ ] S2d: a folha Planos e o cartão contam os dois atos ("Virar estrela, realizado aos 41 · O lugar no mundo, realizado aos 58"), e a escolha do dia do sonho entra no cartão.
+- [ ] S2e: os robôs (quem sonha com o lugar no mundo compra o sítio quando cabe; quem sonha com a fortuna investe a sobra), os testes, os portões do túnel, a documentação, o `verificar`, a régua da tela e a publicação.
+
+Os portões do S2:
+- ≥ 95% dos sonhos realizados têm o dia do sonho no mesmo ano;
+- ≥ 50% dos fins de sonho de quem vive três anos depois chegam ao "e agora?" ou ao "sonho que ficou";
+- os anos a partir dos 50 com um sonho de pé pelo menos dobram;
+- todo sonho da segunda metade se realiza em alguma vida, e os realizados ficam entre 10% e 70% dos que acabaram;
+- zero histórias mortas, toques ≤ 480 e saturação V20 sem regressão.
+
+Riscos já vistos:
+- **Os toques estão em 476,5, com teto de 480:** o dia do sonho é agendado (um cartão a mais, só para quem realiza, uns 10% dos sonhos); o "e agora?" disputa o lugar do evento do ano, para não somar cartão.
+- **Toda qualidade nova precisa de dois leitores:** `sonho_acabou` é lida pelo motor (sai quando outro sonho começa) e pelas duas histórias; as marcas do dia do sonho, por histórias depois e pelos epitáfios.
+- **O sonho da segunda metade não pode ser fácil demais:** a viagem longe já acontece em muitas vidas; a meta é a volta ao mundo, não a primeira viagem.
+
+Fora do S2, na fila: o sonho que passa para quem herda (S3, com a dinastia), a sorte grande (uma chance extraordinária por vida, ligada ao sonho), a despedida em várias cenas, e a rival que volta na vida seguinte.
 
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
