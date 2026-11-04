@@ -550,11 +550,11 @@
     "idade": [18, 95],
     "condicoes": { "mae.vivo": false, "pai.vivo": false, "classe_origem": { "min": 2 } },
     "tensao": 2,
-    "texto": "{pai} e {mae} já se foram. Ficou a casa da família, com [uma casa cheia de potes de sorvete com feijão dentro|uma gaveta de documentos em ordem perfeita|um rádio que ninguém tem coragem de desligar] e uma decisão a tomar.",
+    "texto": "{pai} e {mae} já se foram. Ficou a casa da família, com [os potes de sorvete cheios de feijão|a gaveta de documentos em ordem|o rádio que ninguém desliga].",
     "resumo": "decidiu o destino da casa dos pais",
     "escolhas": [
       {
-        "texto": "Vender a casa e dividir com a família",
+        "texto": "Vender e dividir com a família",
         "resumo": "vendeu a casa dos pais e dividiu com a família",
         "condicoes": { "classe_origem": { "min": 2 } },
         "bloqueio": "a casa era alugada",
@@ -564,10 +564,10 @@
         }
       },
       {
-        "texto": "Ir morar na casa onde cresceu",
+        "texto": "Morar na casa onde cresceu",
         "resumo": "foi morar na casa onde cresceu",
         "condicoes": { "semMarcas": ["casa_propria"], "classe_origem": { "min": 2 } },
-        "bloqueio": "não dá para morar em duas casas",
+        "bloqueio": "você já tem casa",
         "resultado": {
           "texto": "Você se mudou para a casa da infância. Os potes de sorvete continuam no freezer, por respeito.",
           "efeitos": { "custo": -6000, "felicidade": -2, "marcas": ["casa_propria"] }
@@ -577,7 +577,7 @@
         "texto": "Lembrar que esteve perto",
         "resumo": "guardou a memória de ter cuidado dos pais",
         "condicoes": { "marcas": ["cuidou_dos_pais"] },
-        "bloqueio": "você estava longe quando aconteceu",
+        "bloqueio": "você estava longe",
         "resultado": {
           "texto": "Você segurou a mão deles no fim, cada um a seu tempo. Dói, mas não pesa.",
           "efeitos": { "felicidade": 2 }

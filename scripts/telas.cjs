@@ -764,6 +764,8 @@ async function jogarNaPagina({ semente, eventos: maxEventos, passos }) {
       foraDaTela: ops.filter((o) => !inteira(o)).length,
       rola: cartao.scrollHeight > cartao.clientHeight + 1,
       quando: t('.cartao-evento .quando', 80).trim(),
+      // O começo do texto do evento, para achar a história quando o critério falha.
+      inicio: t('.cartao-evento .texto', 60).trim(),
     };
   };
   const botaoDoAno = () => {
@@ -1410,7 +1412,7 @@ function avaliar(res) {
     criterio(3, 'cabeçalho nos eventos das vidas, 360×780 com 1,15', nos(em360(1.15)), (e) => e.cab, '≤', 110);
     criterio(3, 'cabeçalho nos eventos das vidas, 360×780 com 1,45', nos(em360(1.45)), (e) => e.cab, '≤', 125);
     criterio(3, 'opções fora da tela nos eventos das vidas (360×780 com 1,15, 1,45 e 1,5; 412×915 com 1,5)', nos(() => true), (e) => e.foraDaTela, '≤', 0, {
-      porque: (e) => `${e.foraDaTela} de ${e.opcoes} opções${e.rola ? ', o cartão rola' : ''}`,
+      porque: (e) => `${e.foraDaTela} de ${e.opcoes} opções${e.rola ? ', o cartão rola' : ''}${e.inicio ? ` ("${e.inicio}…")` : ''}`,
     });
   }
 
