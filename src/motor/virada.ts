@@ -231,6 +231,16 @@ function semARotina(lista: Entrada[], ler: (h: Entrada) => Leitura): Entrada[] {
 }
 
 /**
+ * A escolha que começou um sonho (o efeito `sonhar`, bloco S1): o cartão conta o sonho na linha própria, com o fim, e
+ * ele não toma também a vaga de um ponto de virada (a mesma frase, "aos 15, você sonhou com…", vida após vida). O
+ * ponto de virada do sonho é o que se fez por ele: a porta do bar, a empresa aberta, a primeira eleição.
+ */
+function comecouUmSonho(h: Entrada, c: Conteudo | undefined): boolean {
+  const esc = h.escolha && h.ref ? c?.porId.get(h.ref)?.escolhas?.[h.escolha.indice] : undefined;
+  return [esc?.resultado, esc?.sucesso, esc?.fracasso].some((r) => r?.efeitos?.sonhar !== undefined);
+}
+
+/**
  * Os pontos de virada da vida. Com o conteúdo, os marcos pesam como marcos (resumirVida e o túnel passam). A
  * consequência mostrada é a que conta a história, não a rotina: a pelada de toda semana só aparece se a causa não
  * deixou mais nada.
@@ -247,7 +257,7 @@ export function pontosDeVirada(e: EstadoVida, c?: Conteudo, limite = 3): PontoDe
   const candidatos: { origem: Entrada; frase: { texto: string; doJogador: boolean }; ultima: Entrada; total: number; peso: number; alcance: number }[] = [];
   for (const en of e.historico) {
     const f = frase(en);
-    if (!f) continue;
+    if (!f || comecouUmSonho(en, c)) continue;
     const ids = desc.get(en.id);
     if (!ids || ids.size === 0) continue;
     const lista = [...ids].map((id) => porId.get(id)).filter((d): d is Entrada => d !== undefined && d.tipo !== 'regra');

@@ -540,7 +540,11 @@ function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[
     anosPesados++;
     if ((perdaPorIdade.get(idade - 1) ?? 0) >= 8) pesadosSeguidos++;
   }
-  return { caminho: `${viradas.join(',')}|${tipos.join(',')}`, elos: [...elos], anosPesados, pesadosSeguidos };
+  // O arco do sonho (bloco S1), como o cartão conta: qual sonho e se veio. O marco que o começou não toma a vaga de um
+  // ponto de virada (virada.ts › comecouUmSonho).
+  const sonhos = sonhosDoLivro(e, c);
+  const arco = sonhos.teve.map((id) => `${id}:${sonhos.realizados.includes(id) ? 'veio' : 'nao'}`).sort();
+  return { caminho: `${viradas.join(',')}|${tipos.join(',')}|${arco.join(',')}`, elos: [...elos], anosPesados, pesadosSeguidos };
 }
 
 function segredosDaVida(e: EstadoVida, c: Conteudo): HistoriaDosSegredos {
