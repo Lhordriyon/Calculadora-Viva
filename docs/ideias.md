@@ -288,7 +288,8 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:**
   - testes: a conquista agenda o dia do sonho com a conquista de causa; o fim grava `sonho_acabou` e o "e agora?" começa outro sonho com a escolha de causa; os sonhos novos aparecem no "e agora?" pela idade e pelo bolso;
   - no túnel: ≥ 95% dos sonhos realizados têm o dia do sonho no mesmo ano; ≥ 50% dos fins de sonho de quem vive três anos depois chegam ao "e agora?"; os anos a partir dos 50 com um sonho de pé passam de 30% para ≥ 50%; todo sonho da segunda metade se realiza em alguma vida; zero histórias mortas; toques no teto (480, hoje em 479,2); saturação V20 sem regressão.
-- **Estado:** proposta, com o projeto em `docs/roteiro.md › S2`, à espera do aval do dono.
+- **O que mudou na construção:** a promessa da posse é cobrada pela agenda (a escolha agenda a cobrança para o ano seguinte), porque dependia de uma presidência rara mais uma escolha e morria no túnel; o "e agora?" e "o sonho que ficou" são repetíveis (quem perde dois sonhos ganha as duas perguntas) e variam o texto; e entrou o marco dos 50 ("o que você quer da segunda metade?") para quem chega lá sem sonho de pé, porque só o "e agora?" deixava a segunda metade em 49,8% dos anos com sonho. Ensinar o caminho a alguém ficou de fora: as quatro opções do cartão foram para sonhos.
+- **Estado:** feita (bloco S2, 04/11).
 
 ## Índice
 
@@ -385,7 +386,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
-| I-142 | O segundo ato: o dia do sonho, o "e agora?" e os sonhos da segunda metade | S2 | Alta | proposta (projeto à espera do aval do dono) |
+| I-142 | O segundo ato: o dia do sonho, o "e agora?" e os sonhos da segunda metade | S2 | Alta | feita (bloco S2, 04/11) |
 | I-141 | O sonho: o que você quer da vida, com cenas e um fim | S1 | Alta | feita (bloco S1, 03/11) |
 | I-140 | A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo | H7 | Alta | feita (bloco H7, 03/11) |
 | I-139 | O capitalismo com rosto: a rival com dono, o que ela faz e o gestor que propõe | H6 | Alta | feita (bloco H6, 02/11) |
