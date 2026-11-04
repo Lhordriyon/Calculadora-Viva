@@ -1168,6 +1168,82 @@
       "conquista": {"texto": "Bodas de prata. Na festa, alguém pediu o segredo, e vocês dois responderam ao mesmo tempo coisas diferentes, e riram da mesma coisa.", "resumo": "realizou o sonho de um amor para a vida toda"},
       "vencido": {"texto": "O amor de cinema não ficou para a vida inteira. Ficaram as fotos, as músicas e a certeza de que você amou de verdade.", "resumo": "viu o amor para a vida toda ficar no meio do filme"},
       "desistencia": {"texto": "Você desistiu de esperar o amor de cinema. Passou a gostar mais dos filmes do que dos roteiros da vida.", "resumo": "desistiu do sonho de um amor para a vida toda"}
+    },
+    {
+      "id": "fortuna",
+      "sonho": true,
+      "nome": "A fortuna",
+      "objetivo": "fazer fortuna",
+      "descricao": "Cinquenta milhões de reais: o ponto em que o dinheiro deixa de ser conta e vira escolha.",
+      "idade": [30, 70],
+      "quando": {"patrimonio": {"max": 49999999}},
+      "etapas": [
+        {"texto": "O primeiro milhão", "feita": {"patrimonio": {"min": 1000000}}, "ajuda": ["trabalhar", "poupar", "folha:dinheiro"]},
+        {"texto": "R$ 5 milhões", "feita": {"patrimonio": {"min": 5000000}}, "ajuda": ["folha:dinheiro", "tocar_empresa"]},
+        {"texto": "R$ 20 milhões", "feita": {"patrimonio": {"min": 20000000}}, "ajuda": ["folha:dinheiro", "tocar_empresa"]}
+      ],
+      "meta": {"patrimonio": {"min": 50000000}},
+      "prazo": 25,
+      "conquista": {"texto": "O gerente do banco ligou para marcar um café, e a voz dele era outra. Cinquenta milhões. Você olhou o extrato e pensou no que comprar, e a resposta que veio foi tempo.", "resumo": "realizou o sonho de fazer fortuna"},
+      "vencido": {"texto": "Vinte e cinco anos atrás da fortuna, e ela não veio do tamanho sonhado. Veio outra coisa: as contas pagas em dia e o sono tranquilo, que também custam caro.", "resumo": "viu o sonho da fortuna ficar pelo caminho"},
+      "desistencia": {"texto": "Você desistiu de correr atrás da fortuna e descobriu que dá para viver bem com menos planilha.", "resumo": "desistiu do sonho de fazer fortuna"}
+    },
+    {
+      "id": "lugar_no_mundo",
+      "sonho": true,
+      "nome": "O lugar no mundo",
+      "objetivo": "ter o seu lugar no mundo",
+      "descricao": "Um sítio com rede na varanda, uma casa de frente para o mar ou uma fazenda até onde a vista alcança: o lugar para onde a vida inteira levou.",
+      "idade": [30, 75],
+      "quando": {"semMarcas": ["sitio", "casa_de_praia", "fazenda"]},
+      "etapas": [
+        {"texto": "Um teto seu", "feita": {"marcas": ["casa_propria"]}, "ajuda": ["folha:dinheiro", "poupar"]},
+        {"texto": "R$ 300 mil de patrimônio", "feita": {"patrimonio": {"min": 300000}}, "ajuda": ["poupar", "trabalhar"]},
+        {"texto": "O dinheiro do sítio (R$ 650 mil)", "feita": {"patrimonio": {"min": 650000}}, "ajuda": ["poupar", "folha:dinheiro"]}
+      ],
+      "meta": {"algumaMarca": ["sitio", "casa_de_praia", "fazenda"]},
+      "prazo": 20,
+      "conquista": {"texto": "Na primeira noite no seu lugar, você deitou na rede sem relógio e ficou ouvindo o barulho que não tinha nome. O lugar no mundo existe, e tem o seu nome na escritura.", "resumo": "realizou o sonho do lugar no mundo"},
+      "vencido": {"texto": "Vinte anos sonhando com o lugar, e a escritura não veio. Ficaram as fotos dos lugares que você visitou, e cada uma tem um pedaço do que você queria.", "resumo": "viu o sonho do lugar no mundo ficar pelo caminho"},
+      "desistencia": {"texto": "Você desistiu do lugar no mundo. Talvez o lugar seja a casa onde você já está, e isso não é pouco.", "resumo": "desistiu do sonho do lugar no mundo"}
+    },
+    {
+      "id": "volta_ao_mundo",
+      "sonho": true,
+      "nome": "A volta ao mundo",
+      "objetivo": "dar a volta ao mundo",
+      "descricao": "Um ano inteiro de estrada, de um continente a outro, com a mochila nas costas e o passaporte cheio de carimbos.",
+      "idade": [30, 75],
+      "quando": {"semMarcas": ["volta_ao_mundo"]},
+      "etapas": [
+        {"texto": "R$ 50 mil guardados", "feita": {"patrimonio": {"min": 50000}}, "ajuda": ["poupar", "trabalhar"]},
+        {"texto": "A primeira viagem longe", "feita": {"marcas": ["viajou_longe"]}, "ajuda": ["sair", "poupar"]},
+        {"texto": "R$ 150 mil para a volta inteira", "feita": {"patrimonio": {"min": 150000}}, "ajuda": ["poupar", "trabalhar"]}
+      ],
+      "meta": {"marcas": ["volta_ao_mundo"]},
+      "prazo": 20,
+      "conquista": {"texto": "Você voltou com o passaporte sem página livre, três quilos a menos e uma mania nova de comer com as mãos. O mundo é maior do que o mapa da parede, e você viu.", "resumo": "realizou o sonho de dar a volta ao mundo"},
+      "vencido": {"texto": "Vinte anos de mapa na parede, e a volta inteira não aconteceu. Os alfinetes continuam lá, e alguns lugares você conheceu pelos olhos de quem foi.", "resumo": "viu o sonho da volta ao mundo ficar pelo caminho"},
+      "desistencia": {"texto": "Você tirou o mapa da parede. Ficou a marca do sol em volta dele, no formato do mundo.", "resumo": "desistiu do sonho de dar a volta ao mundo"}
+    },
+    {
+      "id": "os_netos",
+      "sonho": true,
+      "nome": "Ver os netos crescerem",
+      "objetivo": "ver os netos crescerem",
+      "descricao": "O almoço de domingo com a casa cheia de novo, agora com quem te chama de avó ou de avô.",
+      "idade": [40, 75],
+      "quando": {"filhos": {"min": 1}},
+      "etapas": [
+        {"texto": "Um filho adulto", "feita": {"marcaHa": [{"marca": "pai_mae", "min": 20}]}, "ajuda": ["familia"]},
+        {"texto": "O primeiro neto", "feita": {"marcas": ["avo_coruja"]}, "ajuda": ["familia"]},
+        {"texto": "Cinco anos de avó ou avô", "feita": {"marcaHa": [{"marca": "avo_coruja", "min": 5}]}, "ajuda": ["familia"]}
+      ],
+      "meta": {"marcaHa": [{"marca": "avo_coruja", "min": 10}]},
+      "prazo": 30,
+      "conquista": {"texto": "O neto mais velho fez dez anos e quis a festa na sua casa. Você olhou a bagunça na sala, o bolo torto e o barulho, e entendeu que era o melhor tipo de cansaço que existe.", "resumo": "realizou o sonho de ver os netos crescerem"},
+      "vencido": {"texto": "Os netos não vieram como você sonhou, ou vieram longe demais para crescer perto. Ficou o lugar à mesa, guardado, para quem chegar.", "resumo": "viu o sonho dos netos ficar pelo caminho"},
+      "desistencia": {"texto": "Você parou de cobrar os filhos pelos netos. O almoço de domingo ficou mais leve, e eles vieram mais.", "resumo": "desistiu do sonho de ver os netos crescerem"}
     }
   ],
   "setores": [
