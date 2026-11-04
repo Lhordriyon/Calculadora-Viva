@@ -519,7 +519,9 @@ export interface HistoriaDosSegredos {
 function caminhoDaVida(e: EstadoVida, c: Conteudo, pontos: { origemId: number }[]): { caminho: string; elos: string[]; anosPesados: number; pesadosSeguidos: number } {
   const porId = new Map(e.historico.map((h) => [h.id, h]));
   const refDe = (h: Entrada | undefined): string => (h?.ref ?? h?.tipo ?? '?').replace(/#.*$/, '');
-  const viradas = pontos.map((p) => refDe(porId.get(p.origemId))).sort();
+  // A causa de um ponto de virada que foi escolha é a escolha (bloco S1): quem sonhou com a estrela e quem sonhou com o
+  // império não fizeram o mesmo caminho, mesmo vindo do mesmo marco.
+  const viradas = pontos.map((p) => { const h = porId.get(p.origemId); return h?.escolha ? `${refDe(h)}#${h.escolha.indice}` : refDe(h); }).sort();
   const tipos = [...new Set(capitulosDe(e, c).map((k) => k.tipo))].sort();
   const elos = new Set<string>();
   const perdaPorIdade = new Map<number, number>();
