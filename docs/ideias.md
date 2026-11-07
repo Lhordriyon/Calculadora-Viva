@@ -304,6 +304,10 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **Aceitação:**
   - testes: contar o sonho entrega ao filho mais velho o sonho que não veio; quem herda começa com ele, a abertura conta, o cartão diz de quem era; sem filhos, a opção fica bloqueada com o motivo;
   - no túnel (as gerações das dinastias): alguma geração herdeira começa com o sonho de quem veio antes (≥ 2%), e o sonho herdado se realiza em alguma vida; zero histórias mortas; toques no teto.
+- **O que mudou na construção** (o dono, no meio da construção: "tem que ser divertida e legal e perceptível!"): o sonho que passa adiante só aparecia para quem contava o sonho e continuava como herdeiro. Entrou o que se vê em toda vida e em toda herança:
+  - cada etapa nova de qualquer sonho vira uma linha ✦ na linha do tempo ("2 de 3 etapas do sonho"; na última, "agora falta só ele"), com o começo do sonho de causa;
+  - quem herda acha a pasta do sonho no primeiro ano (a cena com as anotações nas margens: "não desistir", "ligar pro primo", "tentar de novo em março");
+  - a folha Planos diz "o sonho de Larissa, que agora é seu", e o fim do sonho herdado lembra de quem era ("Era o sonho de Larissa, e agora é história").
 - **Estado:** feita (bloco S3, 07/11).
 
 ## Índice
