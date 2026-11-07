@@ -100,7 +100,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   relacoes.ts          a relação com cada pessoa: o gosto, o humor, a convivência, as lembranças e o que a pessoa acha de você (do livro, somado pela pessoa que ocupava o papel)
   decisao.ts           a pessoa decide: o pedido (dinheiro, favor, perdão, outra chance, pagar, prazo, aceitar, ouvir) pelo estado e pela memória dela, e o porquê, que aponta a entrada que pesou
   promissorias.ts      o empréstimo entre pessoas: a promissória (quem emprestou e quem deve, pelo número da pessoa), a parcela, o atraso que magoa, a quitação, o calote e quitar pela folha
-  projetos.ts          os projetos (mundo.json › projetos): o que quem joga quer, com etapas que são condições do estado; começar e desistir, o sonho que começa por uma escolha (o efeito `sonhar`), e o fim (conquista, prazo vencido, sem tempo) com o começo de causa
+  projetos.ts          os projetos (mundo.json › projetos): o que quem joga quer, com etapas que são condições do estado; começar e desistir, o sonho que começa por uma escolha (o efeito `sonhar`) e o que passa adiante (`passarSonho`), e o fim (conquista, prazo vencido, sem tempo) com o começo de causa
   segredos.ts          os segredos (mundo.json › segredos): quem sabe e de quem é escondido, a notícia que corre pelos círculos, a revelação com quem contou ({fonte}) e o segredo que acaba calado
   capitulos.ts         os capítulos da vida: a peneira que reconhece no livro os arcos com começo e fim (o plano, o segredo que veio à tona, o amor que voltou, o calote, o favor devolvido, as pazes)
   caminho.ts           o caminho não tomado: a vida como comandos (a gravação), refeita igual; e a outra escolha num ponto de virada, com um robô do jeito de quem joga seguindo dali
@@ -122,7 +122,7 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   carreira.ts          profissões (mundo.json › carreiras): vaga, cargo, promoção em pirâmide, fama
   poder.ts             influência, eleições, mandato, popularidade, queda do cargo
   influencia.ts        as três esferas da influência (pessoal, política, negócios), tiradas do estado, e as nove conquistas
-  herdeiro.ts          dinastia e testamento: partilha, quem herda (filho, sobrinho, par, amigo) e a vida nova
+  herdeiro.ts          dinastia e testamento: partilha, quem herda (filho, sobrinho, par, amigo) e a vida nova (com o sonho que passou adiante)
   fortuna.ts           brincar de deus e quem manda na empresa: as jogadas (storylets "jogada") e a operação da folha
   diretoria.ts         o gestor e as jogadas do negócio: a heurística pelo jeito de quem decide (os robôs e o gestor), a proposta do ano em palavras e o efeito de seguir ou recusar
   morte.ts             morte de quem joga
@@ -335,3 +335,5 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Os sonhos da segunda metade (a fortuna em R$ 50 milhões, o lugar no mundo, a volta ao mundo, ver os netos crescerem) começam pelo "e agora?", pelo "sonho que ficou", pelo marco dos 50 (para quem chega lá sem sonho) ou pela folha Planos | agente (bloco S2) | as metas saíram da medida: com R$ 10 milhões, a fortuna seria fácil demais (25% de quem não nasceu rico chega lá) |
 | Começar um sonho conta como consequência própria na régua dos dilemas | agente (bloco S2) | sem isso, "aproveitar o que construiu" (felicidade +5) parecia melhor em tudo que começar um sonho novo |
 | O robô que sonha com o palco tenta a vaga a cada dois anos | agente (bloco S2) | cada tentativa custa três toques, e o teto de 480 precisava de folga para o segundo ato |
+| O sonho que não veio pode passar adiante: contado a quem vem depois, vai para o filho mais velho vivo (o campo `sonho`), e quem continua a história começa a vida com ele de pé, com a abertura de causa; o cartão diz de quem era | agente (bloco S3, I-143: o dono pediu a próxima volta do loop) | o sonho que não vinha morria com a vida, e a dinastia continuava sem nada do que quem morreu queria |
+| Passar o sonho conta como consequência própria na régua dos dilemas | agente (bloco S3) | sem isso, "fazer as pazes com o que foi" (felicidade +5) parecia melhor em tudo que passar o sonho adiante |

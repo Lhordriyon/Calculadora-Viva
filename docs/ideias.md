@@ -291,6 +291,21 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 - **O que mudou na construção:** a promessa da posse é cobrada pela agenda (a escolha agenda a cobrança para o ano seguinte), porque dependia de uma presidência rara mais uma escolha e morria no túnel; o "e agora?" e "o sonho que ficou" são repetíveis (quem perde dois sonhos ganha as duas perguntas) e variam o texto; e entrou o marco dos 50 ("o que você quer da segunda metade?") para quem chega lá sem sonho de pé, porque só o "e agora?" deixava a segunda metade em 49,8% dos anos com sonho. Ensinar o caminho a alguém ficou de fora: as quatro opções do cartão foram para sonhos.
 - **Estado:** feita (bloco S2, 04/11).
 
+### I-143 · O sonho que passa adiante (o loop da qualidade de jogo, 07/11)
+- **Pedido:** a terceira volta do loop ("Atualização", depois da proposta do S3 no relatório do S2).
+- **Problema:** o sonho que não vinha acabava com a vida (82% dos sonhos vencem o prazo). A dinastia continuava a história com o dinheiro e a família, mas sem nada do que quem morreu queria; o herdeiro começava a vida sem direção, igual a qualquer outra.
+- **Candidatas (nos 12 critérios):**
+  - o sonho que passa adiante: alto em história emergente, consequência, rejogabilidade (a dinastia ganha um fio), fantasia e reuso (o motor dos sonhos e o do herdeiro); custo baixo;
+  - a sorte grande (uma chance extraordinária por vida, ligada ao sonho): alto em fantasia e diversão, médio em consequência; fica para a próxima volta.
+- **Efeitos causais:**
+  - em "o sonho que ficou", contar o sonho a quem vem depois (o efeito `passarSonho`): o último sonho que ficou pelo caminho vai para o filho mais velho vivo, que o carrega (o campo `sonho` da pessoa);
+  - enquanto quem joga vive, o filho aparece com o sonho nas mãos (contar o que deu errado, dar o dinheiro do começo ou pedir que siga o próprio sonho, que o devolve);
+  - quem continua a história começa a vida com o sonho de pé, com a abertura de causa, e a abertura diz "e deixou um sonho para você terminar"; o cartão conta "Virar estrela (o sonho de Larissa)".
+- **Aceitação:**
+  - testes: contar o sonho entrega ao filho mais velho o sonho que não veio; quem herda começa com ele, a abertura conta, o cartão diz de quem era; sem filhos, a opção fica bloqueada com o motivo;
+  - no túnel (as gerações das dinastias): alguma geração herdeira começa com o sonho de quem veio antes (≥ 2%), e o sonho herdado se realiza em alguma vida; zero histórias mortas; toques no teto.
+- **Estado:** feita (bloco S3, 07/11).
+
 ## Índice
 
 | Id | Ideia | Fase | Prioridade | Estado |
@@ -386,6 +401,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
 | I-127 | O caminho não tomado | Ω | Alta | feita (Ω5, 01/11) |
 | I-128 | O ritmo e o apoio às histórias | Ω | Média | feita (Ω6, 01/11) |
 | I-129 | A diversidade pela estrutura causal | Ω | Média | feita (Ω6, 01/11) |
+| I-143 | O sonho que passa adiante | S3 | Alta | feita (bloco S3, 07/11) |
 | I-142 | O segundo ato: o dia do sonho, o "e agora?" e os sonhos da segunda metade | S2 | Alta | feita (bloco S2, 04/11) |
 | I-141 | O sonho: o que você quer da vida, com cenas e um fim | S1 | Alta | feita (bloco S1, 03/11) |
 | I-140 | A bolsa de verdade: emitir, recomprar, a oferta hostil e o controle em jogo | H7 | Alta | feita (bloco H7, 03/11) |

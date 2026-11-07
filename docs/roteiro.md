@@ -165,6 +165,9 @@ Na construção, o projeto mudou em três pontos: a promessa da posse é cobrada
 
 Fora do S2, na fila: o sonho que passa para quem herda (S3, com a dinastia), a sorte grande (uma chance extraordinária por vida, ligada ao sonho), a despedida em várias cenas, e a rival que volta na vida seguinte.
 
+- [x] S3 (07/11): o sonho que passa adiante. Em "o sonho que ficou", contar o sonho a quem vem depois entrega o sonho que não veio ao filho mais velho vivo; enquanto quem joga vive, o filho aparece com ele nas mãos; e quem continua a história começa a vida com o sonho de pé, a abertura conta e o cartão diz de quem era (I-143)
+- [ ] Na fila: a sorte grande (uma chance extraordinária por vida, ligada ao sonho), a despedida em várias cenas, ensinar o caminho a alguém, e a rival que volta na vida seguinte
+
 O incremento 11 ("morar lá fora") ficou como rascunho e não foi publicado. Ele tem motor, 27 storylets, 15 linhas e 5 epitáfios, mas a emigração dos robôs saiu alta demais. Ele volta como a fatia 3.2 (I-23), depois da decisão sobre países reais.
 
 ## Invariantes
