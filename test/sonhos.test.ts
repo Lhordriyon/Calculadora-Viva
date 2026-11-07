@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { conteudo } from '../src/conteudo.ts';
 import { regraDaCarreira } from '../src/motor/carreira.ts';
 import { ganhar } from '../src/motor/livro.ts';
-import { anoDosProjetos, diaDoSonho, E_AGORA, projetosAtivos, qualidadeDoProjeto, SONHO_QUE_FICOU } from '../src/motor/projetos.ts';
+import { anoDosProjetos, diaDoSonho, E_AGORA, PASTA_DO_SONHO, projetosAtivos, qualidadeDoProjeto, SONHO_QUE_FICOU } from '../src/motor/projetos.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import { apresentarStorylet, elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
@@ -197,5 +197,50 @@ describe('o sonho que passa adiante (bloco S3)', () => {
     responderMarco(e, 0);
     apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
     expect(e.pendente!.opcoes[2]!.disponivel).toBe(false);
+  });
+
+  it('a herança vira cena: no primeiro ano, quem herdou acha a pasta do sonho', () => {
+    const e = sonhoQueFicou(98);
+    apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
+    escolher(e, c, 2);
+    morrer(e, c);
+    const nova = continuarComoHerdeiro(e, c);
+    expect(nova.agenda).toContainEqual({ evento: PASTA_DO_SONHO, ano: nova.ano, origem: nova.historico[0]!.id });
+  });
+
+  it('o sonho herdado que se realiza lembra de quem era', () => {
+    const e = sonhoQueFicou(99);
+    apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
+    escolher(e, c, 2);
+    const pai = e.entidades['eu']!.nome;
+    morrer(e, c);
+    const nova = continuarComoHerdeiro(e, c);
+    nova.entidades['eu']!.n['fama'] = 85;
+    anoDosProjetos(nova, c);
+    const fim = nova.historico.at(-1)!;
+    expect(fim.instancia).toBe('projeto:estrela#conquista');
+    expect(fim.texto).toContain(`Era o sonho de ${pai}, e agora é história.`);
+  });
+});
+
+describe('o caminho do sonho à vista (bloco S3)', () => {
+  it('cada etapa nova vira uma linha ✦ na linha do tempo, uma vez só', () => {
+    const e = adolescente(100);
+    responderMarco(e, 0);
+    const eu = e.entidades['eu']!;
+    eu.t['carreira'] = 'cantor';
+    eu.n['fama'] = 25;
+    e.ano += 1;
+    e.idade += 1;
+    anoDosProjetos(e, c);
+    const linha = e.historico.at(-1)!;
+    expect(linha.instancia).toBe('projeto:estrela#etapas2');
+    expect(linha.texto).toBe('✦ Virar estrela: gente que sabe quem você é. 2 de 3 etapas do sonho.');
+    const antes = e.historico.length;
+    anoDosProjetos(e, c);
+    expect(e.historico.length).toBe(antes);
+    eu.n['fama'] = 45;
+    anoDosProjetos(e, c);
+    expect(e.historico.at(-1)!.texto).toBe('✦ Virar estrela: gente parando você na rua para uma foto. 3 de 3 etapas do sonho; agora falta só ele.');
   });
 });

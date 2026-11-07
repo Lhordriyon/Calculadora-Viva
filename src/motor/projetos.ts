@@ -32,6 +32,8 @@ export const qualidadeDoProjeto = (id: string): string => `projeto_${id}`;
 export const diaDoSonho = (id: string): string => `o_dia_do_sonho_${id}`;
 export const E_AGORA = 'e_agora';
 export const SONHO_QUE_FICOU = 'o_sonho_que_ficou';
+/** A pasta do sonho (bloco S3): a cena do primeiro ano de quem herdou um sonho. */
+export const PASTA_DO_SONHO = 'a_pasta_do_sonho';
 
 export interface ProjetoAtivo {
   def: DefProjeto;
@@ -175,6 +177,9 @@ function terminar(e: EstadoVida, c: Conteudo, p: ProjetoAtivo, fim: Fim): void {
   const ctx = contexto(e, { ator: p.com });
   entrada.texto = capitalizar(renderizar(textos.texto, ctx));
   entrada.resumo = renderizar(textos.resumo, ctx);
+  // O sonho que passou adiante lembra de quem era (bloco S3).
+  const deQuem = p.def.sonho ? deQuemEraOSonho(e, p.def.id) : undefined;
+  if (deQuem) entrada.texto += fim === 'conquista' ? ` Era o sonho de ${deQuem}, e agora é história.` : ` O sonho de ${deQuem} volta para a pasta, para quem vier depois.`;
   const reg: Mudanca[] = [];
   const q = qualidadeDoProjeto(p.def.id);
   perder(e, reg, 'eu', q);
@@ -217,6 +222,52 @@ export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, o
  * passado é fracasso, e a pessoa que morreu antes leva o projeto junto. Quem saiu da vida (sem ninguém com a
  * qualidade) também encerra, calado.
  */
+/**
+ * De quem era o sonho (bloco S3): o primeiro nome de quem veio antes, se o sonho de pé começou na abertura da vida de
+ * quem herdou (o sonho que passou adiante); senão, nada.
+ */
+export function deQuemEraOSonho(e: EstadoVida, id: string): string | undefined {
+  const q = `eu.${qualidadeDoProjeto(id)}`;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.mudancas?.some((m) => m.c === q && (m.q ?? 0) > 0)) return h.ref === 'herdeiro' ? e.dinastia?.antepassados.at(-1)?.nome.split(' ')[0] : undefined;
+  }
+  return undefined;
+}
+
+/**
+ * O caminho do sonho à vista (bloco S3, "tem de ser perceptível"): quando o número de etapas feitas passa do que já foi
+ * contado neste sonho, a linha do tempo ganha uma linha ✦ com a etapa e quantas faltam, com o começo do sonho de causa.
+ */
+/** "Gente que sabe…" vira "gente que sabe…"; "R$ 1 milhão" fica como está. */
+const minusculaInicial = (t: string): string => (/^[A-ZÀ-Ú][a-zà-ú]/.test(t) ? t[0]!.toLocaleLowerCase('pt-BR') + t.slice(1) : t);
+
+function anunciarEtapas(e: EstadoVida, p: ProjetoAtivo): void {
+  const etapas = etapasDe(e, p);
+  const feitas = etapas.filter((x) => x.feita).length;
+  const prefixo = `projeto:${p.def.id}#etapas`;
+  let contadas = 0;
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (p.causa !== null && h.id <= p.causa) break;
+    if (h.instancia?.startsWith(prefixo)) contadas = Math.max(contadas, Number(h.instancia.slice(prefixo.length)) || 0);
+  }
+  if (feitas <= contadas || feitas >= etapas.length + 1) return;
+  const ultima = [...etapas].reverse().find((x) => x.feita)!;
+  const { nome } = nomeDoProjeto(e, p.def, p.com);
+  const falta = etapas.length - feitas;
+  const entrada = novaEntrada(e, {
+    tipo: 'regra',
+    causa: 'regra',
+    ref: 'regra:projeto_etapa',
+    instancia: `${prefixo}${feitas}`,
+    texto: `✦ ${nome}: ${minusculaInicial(ultima.texto.replace(/ \([^)]*\)$/, ''))}. ${feitas} de ${etapas.length} etapas do sonho${falta === 0 ? '; agora falta só ele' : ''}.`,
+    ...(p.causa !== null ? { causas: [p.causa] } : {}),
+  });
+  entrada.resumo = `chegou a ${feitas} de ${etapas.length} etapas do sonho de ${p.def.objetivo}`;
+  lancar(e, entrada, []);
+}
+
 export function anoDosProjetos(e: EstadoVida, c: Conteudo): void {
   if (!e.vivo) return;
   for (const p of projetosAtivos(e, c)) {
@@ -226,6 +277,7 @@ export function anoDosProjetos(e: EstadoVida, c: Conteudo): void {
       lancar(e, novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'regra:projeto_saiu', texto: '' }), reg);
       continue;
     }
+    if (p.def.sonho && !atende(p.def.meta, e, p.com)) anunciarEtapas(e, p);
     if (p.com && e.entidades[p.com]!.vivo === false) terminar(e, c, p, 'semTempo');
     else if (atende(p.def.meta, e, p.com)) terminar(e, c, p, 'conquista');
     else if (e.ano - p.desde >= p.def.prazo) terminar(e, c, p, 'vencido');

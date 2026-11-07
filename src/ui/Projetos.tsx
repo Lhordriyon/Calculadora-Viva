@@ -5,7 +5,7 @@ import type { Operacao } from '../motor/carteira.ts';
 import { VERBOS, type Verbo } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { contexto } from '../motor/contexto.ts';
-import { etapasDe, nomeDoProjeto, projetosAtivos, projetosPossiveis } from '../motor/projetos.ts';
+import { deQuemEraOSonho, etapasDe, nomeDoProjeto, projetosAtivos, projetosPossiveis } from '../motor/projetos.ts';
 import { MAX_PROJETOS, MAX_SONHOS } from '../motor/regras.ts';
 import { renderizar } from '../motor/texto.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -62,7 +62,11 @@ export function Projetos({ vida, conteudo, aoOperar, aoFechar }: Props) {
                 <p>
                   <b>{p.def.sonho ? '✦ ' : ''}{nome}</b> · {etapas.filter((x) => x.feita).length} de {etapas.length} etapas · {falta > 1 ? `faltam ${anos(falta)}` : 'último ano'}
                 </p>
-                {p.def.sonho && <p class="meta">O sonho da sua vida. {renderizar(p.def.descricao, ctx)}</p>}
+                {p.def.sonho && (
+                  <p class="meta">
+                    {deQuemEraOSonho(vida, p.def.id) ? `O sonho de ${deQuemEraOSonho(vida, p.def.id)}, que agora é seu.` : 'O sonho da sua vida.'} {renderizar(p.def.descricao, ctx)}
+                  </p>
+                )}
                 <ul class="etapas">
                   {etapas.map((x, i) => (
                     <li key={i} class={x.feita ? 'feita' : ''}>

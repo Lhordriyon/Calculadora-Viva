@@ -506,6 +506,46 @@
     ]
   },
   {
+    "id": "a_pasta_do_sonho",
+    "apenasAgendado": true,
+    "texto": "Arrumando as coisas de quem se foi, você achou uma pasta escrita SONHO em letra de forma, com três clipes e uma mancha de café. Dentro, o sonho inteiro, com anotações nas margens: \"não desistir\", \"ligar pro primo\", \"tentar de novo em março\".",
+    "resumo": "achou a pasta do sonho de quem veio antes",
+    "escolhas": [
+      {
+        "texto": "Terminar o que foi começado",
+        "resumo": "prometeu terminar o sonho que achou na pasta",
+        "resultado": {
+          "texto": "Você colou a pasta na parede com fita crepe. Agora são dois teimosos atrás do mesmo sonho, e um deles torce de longe.",
+          "efeitos": {
+            "felicidade": 5
+          }
+        }
+      },
+      {
+        "texto": "Seguir as anotações das margens",
+        "resumo": "seguiu as anotações da pasta do sonho",
+        "resultado": {
+          "texto": "Você ligou para o primo. O primo não lembrava de nada, mas indicou outro primo, e o outro primo lembrava de tudo.",
+          "efeitos": {
+            "inteligencia": 2,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Rir das anotações e chorar no fim",
+        "resumo": "riu e chorou com a pasta do sonho",
+        "resultado": {
+          "texto": "Você riu da letra torta, do café derramado e do \"tentar de novo em março\". Na última página, parou de rir. Tudo bem.",
+          "efeitos": {
+            "felicidade": 3,
+            "saude": 1
+          }
+        }
+      }
+    ]
+  },
+  {
     "id": "a_crise_dos_cinquenta",
     "marco": true,
     "idade": [
