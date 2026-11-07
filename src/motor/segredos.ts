@@ -188,8 +188,9 @@ export function anoDosSegredos(e: EstadoVida, c: Conteudo): void {
       if (!fala(e, quem, en) || aleatorio(e.rng) >= chanceDeContar(c, en, def)) continue;
       const ouvintes = ouvintesDe(e, def, quem, alvo);
       if (ouvintes.length === 0) continue;
-      // A fofoca corre de lado antes de chegar a quem não devia saber: o alvo pesa metade de cada outra pessoa.
-      const pesos = ouvintes.map((x): number => (x === alvo ? 1 : PESO_DE_QUEM_NAO_E_O_ALVO));
+      // A fofoca corre de lado antes de chegar a quem não devia saber: o alvo pesa metade de cada outra pessoa (ou o
+      // peso do tema: a dívida de quem é casado vai direto ao par).
+      const pesos = ouvintes.map((x): number => (x === alvo ? (def.aoAlvo ?? 1) : PESO_DE_QUEM_NAO_E_O_ALVO));
       const ouvinte: string = ouvintes[sortearIndice(e.rng, pesos)]!;
       const origem = en.q[sabeDe(def.id)]?.causa;
       if (ouvinte === alvo) {

@@ -1015,6 +1015,8 @@ export const Mundo = z.strictObject({
       gravidade: z.number().min(0).max(40),
       /** Quanto o segredo corre (1 = normal): a dívida vira assunto no almoço de domingo; o esquema, o cúmplice guarda. */
       fofoca: z.number().min(0).max(3).optional(),
+      /** O peso do alvo entre quem ouve a fofoca (1 = metade de cada outra pessoa): a dívida de quem é casado vai direto ao par. */
+      aoAlvo: z.number().min(1).max(4).optional(),
       /** O storylet de quando a notícia chega ao alvo (só agendado; o ator é o alvo e {fonte} é quem contou). */
       revelacao: id,
       /** Quando vale, o segredo deixa de importar e acaba calado (a dívida paga antes de alguém descobrir). */
