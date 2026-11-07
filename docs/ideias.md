@@ -308,6 +308,7 @@ O dono pediu um salto, não mais um bloco: "o jogo está muito repetitivo, não 
   - cada etapa nova de qualquer sonho vira uma linha ✦ na linha do tempo ("2 de 3 etapas do sonho"; na última, "agora falta só ele"), com o começo do sonho de causa;
   - quem herda acha a pasta do sonho no primeiro ano (a cena com as anotações nas margens: "não desistir", "ligar pro primo", "tentar de novo em março");
   - a folha Planos diz "o sonho de Larissa, que agora é seu", e o fim do sonho herdado lembra de quem era ("Era o sonho de Larissa, e agora é história").
+  - quem morre com um sonho de pé também deixa esse sonho para quem herda (o começado por último): só o sonho contado em vida passava em 1 de 81 gerações herdeiras do túnel rápido, porque dependia de o sonho vencer, de haver filho e de uma das quatro opções do cartão; e a pasta ganhou a quarta opção, guardar numa gaveta, que larga o sonho herdado.
 - **Estado:** feita (bloco S3, 07/11).
 
 ## Índice
