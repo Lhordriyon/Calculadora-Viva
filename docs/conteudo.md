@@ -286,6 +286,7 @@ O tema do segredo fica em `mundo.json › segredos`; quem sabe e de quem é esco
 - **A chantagem recusada** agenda a revelação com quem chantageou de fonte: `"agendar": [{ "evento": "contaram_do_caso", "em": 1, "sobre": "amor", "fonte": "ator" }]`.
 - **A prova** (a conversa esquecida no computador, a auditoria, a foto marcada) é um storylet agendado na criação, como qualquer consequência.
 - `soube` é a notícia que chega a quem não é o alvo: `{ator}` ficou sabendo e `{fonte}` contou; o resumo começa com "você " (conta como coisa que você fez).
+- `aoAlvo` (1 a 4, opcional) é o peso do alvo entre quem ouve a fofoca; sem ele, o alvo pesa metade de cada outra pessoa do círculo. A dívida usa 4: quem fica sabendo da dívida de alguém casado avisa o par primeiro.
 
 ## Efeitos
 
