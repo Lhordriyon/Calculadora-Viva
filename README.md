@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S2%3A%20o%20segundo%20ato-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S3%3A%20o%20sonho%20que%20passa%20adiante-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-903-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,30 +15,29 @@
 
 ---
 
-## 🆕 Novidades: S2 · O segundo ato (04/11/2026)
+## 🆕 Novidades: S3 · O sonho que passa adiante (07/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o sonho não acaba numa linha. Ele tem o dia em que chega, e a vida continua depois dele.
-> - **O dia do sonho.** Quando o sonho se realiza, o mesmo ano traz a cena do topo, com três jeitos de viver o momento. No estádio cheio: a primeira música que você aprendeu, a turnê pelo mundo ou quem duvidou chamado ao palco. Nos cem milhões: o bônus para todo mundo, a festa para a cidade ou segunda-feira às oito. Na posse: o discurso da escola pública, a promessa grande demais (que alguém cobra no ano seguinte) ou a família no parlatório. E a foto da família inteira, e as bodas de prata.
-> - **E agora?** Um ano depois do sonho realizado, a vida pergunta o que vem depois. Se o sonho não veio, ela lembra do que ficou e pergunta o que fazer com o espaço.
-> - **Sonhos da segunda metade.** A fortuna (R$ 50 milhões), o lugar no mundo (o sítio, a casa de praia ou a fazenda), a volta ao mundo e ver os netos crescerem, cada um com cenas próprias. E quem chega aos 50 sem sonho de pé ouve a pergunta: o que você quer da segunda metade?
-> - **O cartão conta os dois atos**, e o dia do sonho entra na linha do sonho realizado.
+> **O que mudou:** o sonho não morre com quem sonhou, e você vê o caminho dele acontecendo.
+> - **O caminho à vista.** Cada etapa de um sonho vira uma linha ✦ na linha do tempo: "✦ Virar estrela: gente que sabe quem você é. 2 de 3 etapas do sonho." Na última, "agora falta só ele".
+> - **O sonho passa adiante.** Quem morre com um sonho de pé deixa esse sonho para quem continua a história. E o sonho que não veio pode ser contado a um filho em vida: ele aparece com o sonho nas mãos, e você decide se conta o que deu errado, se dá o dinheiro do começo ou se pede que ele siga o próprio sonho.
+> - **A pasta do sonho.** No primeiro ano, quem herda acha uma pasta escrita SONHO, com três clipes, uma mancha de café e anotações nas margens ("não desistir", "ligar pro primo", "tentar de novo em março"). Dá para terminar o que foi começado, seguir as anotações, rir e chorar, ou guardar a pasta numa gaveta e viver o seu.
+> - **De quem era.** A folha Planos diz "o sonho de Larissa, que agora é seu", e quando ele se realiza: "Era o sonho de Larissa, e agora é história." O cartão da vida também conta.
 
 > [!TIP]
 > **Para testar:**
-> - Realize um sonho (a casa cheia e o amor para a vida toda são os mais alcançáveis) e veja o dia do sonho no mesmo ano.
-> - Um ano depois, responda o "e agora?" e acompanhe o sonho novo na folha Planos.
-> - Chegue aos 50 sem sonho de pé e responda a pergunta da segunda metade.
-> - No fim, leia os dois atos no cartão.
+> - Escolha um sonho aos 15 e acompanhe as linhas ✦ na linha do tempo.
+> - Morra com um sonho de pé, toque em "Continuar como…" e abra a pasta do sonho no primeiro ano.
+> - Ou deixe um sonho vencer o prazo e, em "o sonho que ficou", conte-o a quem vem depois.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🌅 O dia do sonho, com escolha, para os cinco sonhos | 🔁 O sonho que não veio passando para quem herda |
-| ❓ O "e agora?" e "o sonho que ficou" | 🎲 A sorte grande: uma chance extraordinária por vida |
-| 🌍 Quatro sonhos da segunda metade, com cenas | 🕯️ A despedida em várias cenas |
-| 🎂 A pergunta dos 50 para quem chega lá sem sonho | 🧑‍🏫 Ensinar o caminho a alguém |
+| ✦ As etapas do sonho na linha do tempo | 🎲 A sorte grande: uma chance extraordinária por vida |
+| 🧬 O sonho de pé que passa a quem herda | 🕯️ A despedida em várias cenas |
+| 📁 A pasta do sonho, com quatro jeitos de recebê-lo | 🧑‍🏫 Ensinar o caminho a alguém |
+| 🧑‍🍼 O filho com o sonho nas mãos | 🔁 A rival que volta na vida seguinte |
 
-No túnel de vento (10.000 vidas), os anos dos 50 em diante com um sonho de pé foram de 30% para 51,9%. O dia do sonho chegou em 98,4% dos sonhos realizados, e 87,6% dos sonhos que acabaram chegaram à pergunta do que vem depois. Os sonhos da segunda metade são mais alcançáveis que os da juventude: o lugar no mundo se realizou em 912 vidas, a volta ao mundo em 445, os netos em 149 e a fortuna em 110; no total, 19,5% dos sonhos que acabaram se realizaram (eram 11,3%). O dinheiro fechou nas 4,10 milhões de entradas, nenhuma estratégia domina e nenhuma história ficou de fora. A variedade ficou praticamente onde estava (saturação de 53,1% na 5ª vida e de 87,2% na 20ª, eram 52,6% e 87,0%, porque as duas perguntas aparecem em quase toda vida), com 903 histórias por 1.000 vidas. Os toques ficaram em 478,9 por vida (eram 479,2). A oferta hostil na bolsa continua abaixo do portão: 0,07% das vidas (era 0,09%). Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), quase metade das gerações herdeiras das dinastias (48,4% de 368) começou a vida com o sonho de quem veio antes, e 44 delas o realizaram. As linhas ✦ das etapas levaram o porquê à vista de 38,6% para 41,8% dos acontecimentos. O dinheiro fechou nas 4,13 milhões de entradas, nenhuma estratégia domina e nenhuma história ficou de fora. A variedade ficou onde estava (saturação de 53,2% na 5ª vida e de 87,1% na 20ª), com 903 histórias por 1.000 vidas, e os toques ficaram em 478,6 por vida. Uma correção pelo caminho: a revelação da dívida escondida quase nunca chegava ao par e sumiu do túnel numa rodada; agora a dívida de quem é casado vai direto ao par. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🗺️ Os blocos do dono
 
@@ -104,7 +103,7 @@ flowchart LR
 - Gente com identidade: os irmãos, o ex que pode voltar, o colega e o chefe que vêm com o emprego, os amigos de infância e os da vida adulta; cada pessoa lembra do que você fez e tem opinião sobre você
 - A pessoa decide: quem responde a um pedido pesa o que viveu com você e diz por quê; o empréstimo entre pessoas é contrato, com parcela, atraso e calote
 - Os planos: a casa própria, sair das dívidas, um filho, o negócio, reparar uma relação, com etapas que são a vida de verdade
-- Os sonhos: aos 15, virar estrela, construir um império ou governar o país; no amor, a casa cheia ou um amor para a vida toda; na segunda metade, a fortuna, o lugar no mundo, a volta ao mundo e os netos; cada um com cenas próprias, o dia em que chega e o "e agora?" depois
+- Os sonhos: aos 15, virar estrela, construir um império ou governar o país; no amor, a casa cheia ou um amor para a vida toda; na segunda metade, a fortuna, o lugar no mundo, a volta ao mundo e os netos; cada um com cenas próprias, as etapas na linha do tempo, o dia em que chega, o "e agora?" depois e a pasta do sonho para quem herda
 - Os segredos: o caso, a dívida escondida, a festa que era estudo, o esquema no trabalho; a fofoca que corre, a chantagem e a revelação
 - Fichas de ação por ano: estudar, trabalhar, cuidar da saúde, ver a família, sair, poupar
 </details>

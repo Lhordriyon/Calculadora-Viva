@@ -4,6 +4,21 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🧬 S3 · O sonho que passa adiante · 07/11/2026
+
+> [!NOTE]
+> O dono pediu a próxima volta do loop (07/11) e, no meio da construção: "tem que ser divertida e legal e perceptível!".
+
+- ✦ **O caminho do sonho à vista** (`projetos.ts › anunciarEtapas`): cada etapa nova de qualquer sonho vira uma linha na linha do tempo, com o começo do sonho de causa ("2 de 3 etapas do sonho"; na última, "agora falta só ele").
+- 🧬 **O sonho passa adiante** (`herdeiro.ts`): quem morre com um sonho de pé deixa esse sonho para quem herda; o que não veio pode ser contado a um filho em vida (o efeito `passarSonho` e o campo `sonho` da pessoa), e o filho aparece com o sonho nas mãos.
+- 📁 **A pasta do sonho** (`a_pasta_do_sonho`): no primeiro ano, quem herda acha as anotações de quem veio antes; quatro jeitos de recebê-la, um deles a gaveta (o efeito `largarSonhoHerdado`).
+- 🪪 **De quem era:** a folha Planos, o fim do sonho e o cartão da vida dizem de quem era o sonho herdado.
+- 🤖 **A régua dos dilemas** conta passar e largar o sonho como consequências próprias.
+- 🗣️ **A dívida de quem é casado vai direto ao par** (o peso `aoAlvo` no tema do segredo): a revelação da dívida morria no túnel.
+- 📊 **No túnel** (10.000 vidas): 48,4% das gerações herdeiras começaram com o sonho de quem veio antes, e 44 o realizaram; o porquê à vista foi de 38,6% para 41,8% dos acontecimentos; as contas fecham nas 4,13 milhões de entradas, e nenhuma estratégia domina; nenhuma história morta; saturação V5 53,2% e V20 87,1%; 903 histórias por 1.000 vidas; toques 478,6.
+
+---
+
 ## 🌅 S2 · O segundo ato · 04/11/2026
 
 > [!NOTE]

@@ -2005,3 +2005,18 @@ O dono leu o projeto do S2, com a linha de base medida, e mandou seguir ("Próxi
 - **Começar um sonho conta como consequência própria na régua dos dilemas:** sem isso, "aproveitar o que construiu" (felicidade +5) parecia melhor em tudo que começar um sonho novo.
 - **A fortuna em R$ 50 milhões, não R$ 10 milhões:** 25% de quem não nasceu rico já termina a vida com R$ 10 milhões.
 - **O robô que sonha com o palco tenta a vaga a cada dois anos:** cada tentativa custa três toques, e o teto de 480 precisava de folga.
+
+## O bloco S3: o sonho que passa adiante (07/11)
+
+O dono pediu a próxima volta do loop ("Atualização", depois da proposta do S3 no relatório do S2; I-143) e, no meio da construção, cobrou: "tem que ser divertida e legal e perceptível!". O sonho que não vinha morria com a vida, e a dinastia continuava sem nada do que quem morreu queria.
+
+**Medidas** (10.000 vidas; antes = o bloco S2): 48,4% das 368 gerações herdeiras das dinastias começaram a vida com o sonho de quem veio antes (178), e 44 delas o realizaram; 7 gerações contaram o sonho a um filho em vida; o porquê à vista foi de 38,6% para 41,8% dos acontecimentos (as linhas ✦ das etapas); saturação V5/V20 de 53,1%/87,2% para 53,2%/87,1%; assinaturas em 903 por 1.000 vidas, como antes; toques de 478,9 para 478,6; bilionário feito de 0,45% para 0,42%; a revelação da dívida chegou ao par 1 vez em 10.000 vidas (2 no S2, nenhuma na primeira rodada do S3); as contas fecham nas 4,13 milhões de entradas, e nenhuma estratégia domina.
+
+**Decisões tomadas sozinho:**
+- **O sonho de pé passa sozinho a quem herda** (o começado por último), além do sonho contado a um filho em vida. Só o sonho contado em vida passava em 1 de 81 gerações herdeiras do túnel rápido: dependia de o sonho vencer o prazo, de haver filho e de uma das quatro opções do cartão. Com o sonho de pé, passou em 57,9% (44 de 76), e 8 se realizaram.
+- **A pasta do sonho dá a escolha que a herança automática tirou:** quatro jeitos de receber o sonho, e um deles é a gaveta, que o larga.
+- **O progresso de todo sonho virou linha na linha do tempo** (o pedido de "perceptível"): o andamento só aparecia na folha Planos, que muita gente não abre. A linha sai do livro (quantas etapas já foram contadas neste sonho), sem estado novo; não custa toque e só aparece quando a contagem sobe.
+- **O sonho herdado lembra de quem era** na folha Planos, no fim e no cartão, com o primeiro nome de quem veio antes.
+- **Passar e largar o sonho contam como consequências próprias na régua dos dilemas:** sem isso, "fazer as pazes com o que foi" (felicidade +5) parecia melhor em tudo que passar o sonho adiante.
+- **"Ver os netos crescerem" saiu do "sonho que ficou"** para dar lugar a contar o sonho; ele continua no "e agora?" e na folha Planos.
+- **A dívida de quem é casado vai direto ao par** (o peso `aoAlvo` 4 no tema do segredo): a revelação da dívida chegava ao par 2 vezes em 10.000 vidas no S2, e nenhuma na primeira rodada do S3, o que matava a história no túnel. O S3 não mexeu em segredos; o tema vivia no limite do ruído.
