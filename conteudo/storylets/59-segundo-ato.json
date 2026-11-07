@@ -410,18 +410,19 @@
         }
       },
       {
-        "texto": "Ver os netos crescerem",
-        "resumo": "pôs na cabeça ver os netos crescerem depois do sonho que não veio",
+        "texto": "Contar o sonho a quem vem depois",
+        "resumo": "contou o sonho que não veio a quem vem depois",
         "condicoes": {
           "filhos": {
             "min": 1
           }
         },
-        "bloqueio": "sem filhos, não há netos",
+        "bloqueio": "não há a quem contar",
         "resultado": {
-          "texto": "Você decidiu que o próximo sonho vai ter cheiro de bolo e barulho de criança.",
+          "texto": "Você contou o sonho inteiro a quem vem depois, com as partes boas e as que deram errado. Ninguém sabe o que vão fazer com ele, e é isso que dá esperança.",
           "efeitos": {
-            "sonhar": "os_netos"
+            "passarSonho": true,
+            "felicidade": 3
           }
         }
       },
@@ -438,6 +439,71 @@
     ],
     "repetivel": true,
     "intervalo": 2
+  },
+  {
+    "id": "o_seu_sonho_nas_maos",
+    "ator": [
+      "filho"
+    ],
+    "idade": [
+      40,
+      99
+    ],
+    "peso": 4,
+    "condicoes": {
+      "ator.sonho": true
+    },
+    "texto": "{ator} apareceu num domingo com uma pasta debaixo do braço: o seu velho sonho, agora com a letra {ator:dele|dela} nas margens. {ator:Ele|Ela} quer saber o que você faria diferente.",
+    "resumo": "viu o sonho que não veio nas mãos de {ator.quem}",
+    "escolhas": [
+      {
+        "texto": "Contar o que deu errado",
+        "resumo": "contou o que deu errado no sonho que passou adiante",
+        "resultado": {
+          "texto": "Você contou tudo: os atalhos que não eram atalhos, as portas em que não bateu. {ator} anotou cada palavra.",
+          "efeitos": {
+            "ator.vinculo": 8,
+            "felicidade": 4
+          }
+        }
+      },
+      {
+        "texto": "Dar o dinheiro do começo",
+        "resumo": "deu o dinheiro do começo para o sonho que passou adiante",
+        "condicoes": {
+          "dinheiro": {
+            "min": 20000
+          }
+        },
+        "bloqueio": "não há dinheiro para o começo",
+        "resultado": {
+          "texto": "Você fez o Pix com os olhos marejados. {ator} prometeu devolver com juros; você disse que os juros eram o sonho.",
+          "efeitos": {
+            "transferir": {
+              "de": "eu",
+              "para": "ator",
+              "valor": 20000
+            },
+            "ator.vinculo": 5,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Pedir que siga o próprio sonho",
+        "resumo": "pediu que seguisse o próprio sonho, e não o seu",
+        "resultado": {
+          "texto": "Você disse que o sonho era seu, e que {ator} merece um sonho próprio. {ator:Ele|Ela} guardou a pasta e sorriu de um jeito que você só entendeu dias depois.",
+          "efeitos": {
+            "ator.sonho": {
+              "definir": ""
+            },
+            "ator.vinculo": 3,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
   },
   {
     "id": "a_crise_dos_cinquenta",
