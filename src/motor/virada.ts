@@ -348,19 +348,26 @@ export function sonhosDaVida(e: EstadoVida, c: Conteudo): string[] {
     if (!def.sonho) continue;
     const q = `eu.projeto_${def.id}`;
     let comecou = false;
+    let herdado = false;
     let fim: { tipo: string; idade: number } | undefined;
     for (const h of e.historico) {
-      if (!comecou && h.mudancas?.some((m) => m.c === q && (m.q ?? 0) > 0)) comecou = true;
+      if (!comecou && h.mudancas?.some((m) => m.c === q && (m.q ?? 0) > 0)) {
+        comecou = true;
+        // O sonho que passou adiante (bloco S3) começa na abertura da vida de quem herdou.
+        herdado = h.ref === 'herdeiro';
+      }
       const m = /^projeto:([a-z_]+)#(conquista|vencido|semTempo)$/.exec(h.instancia ?? '');
       if (m && m[1] === def.id) fim = { tipo: m[2]!, idade: h.idade };
     }
     if (!comecou) continue;
+    const quem = herdado ? e.dinastia?.antepassados.at(-1)?.nome.split(' ')[0] : undefined;
+    const nome = quem ? `${def.nome} (o sonho de ${quem})` : def.nome;
     // O dia do sonho (bloco S2): a escolha de como viver o topo entra na linha do sonho realizado.
     const dia = e.historico.find((h) => h.ref === diaDoSonho(def.id) && h.escolha)?.escolha?.resumo;
-    if (fim?.tipo === 'conquista') saida.push(`${def.nome}, realizado aos ${fim.idade}${dia ? `: no dia, ${dia}` : ''}`);
-    else if (fim) saida.push(`${def.nome}, que ficou pelo caminho aos ${fim.idade}`);
-    else if (e.entidades['eu']?.q[`projeto_${def.id}`]) saida.push(e.vivo ? `${def.nome}, de pé` : `${def.nome}, sonhado até o fim`);
-    else saida.push(`${def.nome}, deixado para trás`);
+    if (fim?.tipo === 'conquista') saida.push(`${nome}, realizado aos ${fim.idade}${dia ? `: no dia, ${dia}` : ''}`);
+    else if (fim) saida.push(`${nome}, que ficou pelo caminho aos ${fim.idade}`);
+    else if (e.entidades['eu']?.q[`projeto_${def.id}`]) saida.push(e.vivo ? `${nome}, de pé` : `${nome}, sonhado até o fim`);
+    else saida.push(`${nome}, deixado para trás`);
   }
   return saida;
 }

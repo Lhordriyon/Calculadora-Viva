@@ -7,7 +7,7 @@
  * Caminhos usam papéis genéricos: "pessoa.x" vale para mãe, pai, avó, amigo,
  * amor, filho, paixão e bicho.
  */
-import { ATIVOS, CONTAS, PARCEIROS, POLITICAS, SETORES } from './constantes.ts';
+import { ATIVOS, CONTAS, FILHOS, PARCEIROS, POLITICAS, SETORES } from './constantes.ts';
 
 /** Os mercados de cada setor (negocio.ts › anoDosSetores): a oferta e a obra; e o nome, para quem percorre as entidades. */
 const MERCADOS = SETORES.flatMap((s) => [`setor_${s}.oferta`, `setor_${s}.obra`]);
@@ -46,6 +46,8 @@ const RIVAL_E_GESTOR = ['rival.negocio', 'rival.setor', 'rival.quebrou', 'rival.
 const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 
 export const ESCRITAS_DO_MOTOR: string[] = [
+  // o sonho que passa adiante (projetos.ts › passarSonho, bloco S3): o filho mais velho vivo o recebe
+  ...FILHOS.map((f) => `${f}.sonho`),
   // a rival e o gestor que vêm com a empresa (familia.ts › genteDaEmpresa, diretoria.ts)
   ...RIVAL_E_GESTOR,
   // as conquistas da influência (influencia.ts)
@@ -317,6 +319,7 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['mercado.dinheiro'], 'país: o dinheiro que circula contra o que a economia precisa (o excesso)', true),
   ...ler(['pais.moeda'], 'país: o dinheiro que sobra acende a inflação e aquece o crescimento', true),
   ...ler(['eu.projeto_estrela'], 'carreira: quem sonha em virar estrela sobe com o dobro da chance numa carreira de holofote', true),
+  ...ler(FILHOS.map((f) => `${f}.sonho`), 'herdeiro: quem herda começa a vida com o sonho que recebeu (bloco S3)', true),
   ...ler(['eu.saude'], 'mortalidade', true),
   ...ler(['eu.felicidade'], 'retorno da felicidade', false),
   ...ler(['eu.dinheiro', 'eu.divida', 'eu.renda', 'eu.custo'], 'economia (sobra, crédito, juros)', true),

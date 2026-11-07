@@ -175,6 +175,8 @@ const EFEITOS_FIXOS = {
   promover: z.strictObject({ de: z.enum(['ator', ...PAPEIS]), para: z.union([PapelNovo, z.literal('gestor')]) }).optional(),
   /** Começa o sonho da vida (um projeto com `sonho`, projetos.ts › sonhar, bloco S1), com a escolha de causa. */
   sonhar: z.string().regex(/^[a-z_]+$/).optional(),
+  /** Passa o último sonho que ficou pelo caminho ao filho mais velho vivo (bloco S3): quem herda começa a vida com ele. */
+  passarSonho: z.literal(true).optional(),
   /** Recompra a maioria da empresa de perto na bolsa (empresa.ts › recomprar, bloco H7): {custo} é o que custou. */
   recomprar: z.literal(true).optional(),
   /** A proposta do gestor (diretoria.ts): true segue a jogada que ele propôs, pela folha; false recusa. */

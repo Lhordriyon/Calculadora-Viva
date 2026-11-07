@@ -21,6 +21,7 @@ import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
 import { definirTexto, ganhar, lancar, novaEntrada } from './livro.ts';
+import { qualidadeDoProjeto } from './projetos.ts';
 import { criarPersonagem, nomeLivre, novaEntidade, registrarPessoas } from './pessoas.ts';
 import { ANOS_UNIAO, PERDA_SEM_DONO } from './regras.ts';
 import { aleatorio, criarRng, inteiro, misturar, normal, sortear, sortearIndice } from './rng.ts';
@@ -625,7 +626,11 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
       : filho.parentesco === 'amor'
         ? `A história da família ${ultimo} continua com você.`
         : `Geração ${geracao} da família ${ultimo}.`;
-  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}. ${fecho}${sucessao ? ` ${sucessao}` : ''}`;
+  // O sonho que passou adiante (bloco S3): quem recebeu o sonho de quem veio antes começa a vida com ele de pé.
+  const sonhoHerdado = c.mundo.projetos.find((p) => p.sonho && p.id === comoPersonagem?.t['sonho']);
+  if (sonhoHerdado) ganhar(e, daAbertura, 'eu', qualidadeDoProjeto(sonhoHerdado.id), abertura.id);
+  const herdouSonho = sonhoHerdado ? ` E deixou um sonho para você terminar: ${sonhoHerdado.objetivo}.` : '';
+  abertura.texto = `Você é ${eu.nome} ${e.sobrenome}, ${idade === 1 ? '1 ano' : `${idade} anos`}${vida}. ${quem}, ${velho.nome}, morreu ${causa}. ${capitalizar(heranca)}.${herdouSonho} ${fecho}${sucessao ? ` ${sucessao}` : ''}`;
   abertura.resumo = espolio.deixou >= 1 ? `herdou ${formatarDinheiro(espolio.deixou)} da família` : 'começou sem herança';
   // Quem está na vida nova ganha número e ocupação desde o começo dela (a identidade de pessoas).
   // Na vida nova, cada pessoa ganha número de novo (o livro antigo ficou para trás, e com ele quem ocupou cada papel).

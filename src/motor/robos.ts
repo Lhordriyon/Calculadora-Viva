@@ -893,6 +893,8 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       if (ef.transferir) marcas.add(`$${ef.transferir.de}>${ef.transferir.para}`);
       // Começar um sonho (bloco S1) é uma consequência própria, como ganhar uma qualidade: sonhos diferentes não se comparam.
       if (ef.sonhar) marcas.add(`~${ef.sonhar}`);
+      // Passar o sonho adiante (bloco S3) também: quem herda começa a vida com ele.
+      if (ef.passarSonho) marcas.add('~passar');
     }
   }
   v.risco = avaliarEscolha(esc, e, c).risco;

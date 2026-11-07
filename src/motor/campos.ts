@@ -106,6 +106,8 @@ const PESSOA: Record<string, DefCampo> = {
   /** Área da faculdade (saude, tecnologia, educacao, negocios, engenharia, artes). */
   curso: { tipo: 'texto', sistema: 'mente' },
   traco: { tipo: 'texto', sistema: 'carater' },
+  /** O sonho que a pessoa recebeu de quem joga (id de mundo.json › projetos com `sonho`, bloco S3): quem herda começa a vida com ele. */
+  sonho: { tipo: 'texto', sistema: 'historia' },
   /** Origem de quem joga: classe (0 a 7), riqueza da família ao nascer e tipo de família. */
   classe_origem: { tipo: 'num', sistema: 'origem', limites: [0, 7] },
   riqueza_origem: { tipo: 'num', sistema: 'origem', reais: true },

@@ -14,7 +14,8 @@ import { VARIOS } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { contexto } from './contexto.ts';
 import type { DefProjeto } from './esquema.ts';
-import { ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import { definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
+import { filhosVivos } from './campos.ts';
 import { FELICIDADE_DA_CONQUISTA, FELICIDADE_DA_DESISTENCIA, FELICIDADE_DO_PRAZO_VENCIDO, MAX_PROJETOS, MAX_SONHOS } from './regras.ts';
 import { temRelacao } from './relacoes.ts';
 import { capitalizar, renderizar } from './texto.ts';
@@ -189,6 +190,21 @@ function terminar(e: EstadoVida, c: Conteudo, p: ProjetoAtivo, fim: Fim): void {
  * O sonho começa por uma escolha (o efeito `sonhar`, bloco S1): o projeto com `sonho` vira de quem joga, com a escolha
  * de causa, se não estiver de pé e houver vaga entre os sonhos (MAX_SONHOS).
  */
+/**
+ * O sonho que passa adiante (bloco S3): o último sonho que ficou pelo caminho vai para o filho mais velho vivo, que o
+ * carrega (o campo `sonho`) e, se continuar a história, começa a vida com ele (herdeiro.ts).
+ */
+export function passarSonho(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
+  const sonhos = new Set(c.mundo.projetos.filter((p) => p.sonho).map((p) => p.id));
+  let id: string | undefined;
+  for (let i = e.historico.length - 1; i >= 0 && !id; i--) {
+    const m = /^projeto:([a-z_]+)#(vencido|semTempo)$/.exec(e.historico[i]!.instancia ?? '');
+    if (m && sonhos.has(m[1]!)) id = m[1]!;
+  }
+  const filho = filhosVivos(e)[0];
+  if (id && filho) definirTexto(e, reg, filho.id, 'sonho', id);
+}
+
 export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, origem: number): void {
   const def = c.mundo.projetos.find((p) => p.id === id);
   const q = qualidadeDoProjeto(id);

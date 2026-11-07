@@ -3,7 +3,7 @@
  * entrada que a causou (o livro-razão); `ator` resolve os caminhos "ator.x".
  */
 import { seguirProposta } from './diretoria.ts';
-import { sonhar } from './projetos.ts';
+import { passarSonho, sonhar } from './projetos.ts';
 import { ATIVOS, ATRIBUTOS, type PapelNovo } from './constantes.ts';
 import { pesosDoPerfil, realocar } from './carteira.ts';
 import { comprarPorEfeito, venderParteDosTitulos } from './tesouro.ts';
@@ -211,6 +211,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.proposta !== undefined) seguirProposta(e, c, reg, ef.proposta, origem);
   if (ef.recomprar) ctx.valores['custo'] = recomprar(e, reg);
   if (ef.sonhar) sonhar(e, c, reg, ef.sonhar, origem);
+  if (ef.passarSonho) passarSonho(e, c, reg);
   if (ef.promover) {
     const de = ef.promover.de === 'ator' ? (ator ?? 'ator') : ef.promover.de;
     const quem = e.entidades[de];
