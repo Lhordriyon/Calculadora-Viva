@@ -210,6 +210,11 @@ export function passarSonho(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   if (id && filho) definirTexto(e, reg, filho.id, 'sonho', id);
 }
 
+/** Larga o sonho que começou na abertura da vida de quem herdou (bloco S3): a pasta vai para a gaveta. */
+export function largarSonhoHerdado(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
+  for (const p of projetosAtivos(e, c)) if (p.def.sonho && deQuemEraOSonho(e, p.def.id) !== undefined) perder(e, reg, 'eu', qualidadeDoProjeto(p.def.id));
+}
+
 export function sonhar(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, origem: number): void {
   const def = c.mundo.projetos.find((p) => p.id === id);
   const q = qualidadeDoProjeto(id);

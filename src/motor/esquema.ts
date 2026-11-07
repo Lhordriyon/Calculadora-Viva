@@ -177,6 +177,8 @@ const EFEITOS_FIXOS = {
   sonhar: z.string().regex(/^[a-z_]+$/).optional(),
   /** Passa o último sonho que ficou pelo caminho ao filho mais velho vivo (bloco S3): quem herda começa a vida com ele. */
   passarSonho: z.literal(true).optional(),
+  /** Larga o sonho que veio na herança (bloco S3): a pasta vai para a gaveta, e a vida é de quem herdou. */
+  largarSonhoHerdado: z.literal(true).optional(),
   /** Recompra a maioria da empresa de perto na bolsa (empresa.ts › recomprar, bloco H7): {custo} é o que custou. */
   recomprar: z.literal(true).optional(),
   /** A proposta do gestor (diretoria.ts): true segue a jogada que ele propôs, pela folha; false recusa. */

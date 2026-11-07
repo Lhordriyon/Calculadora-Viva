@@ -259,6 +259,13 @@ function familiaDoHerdeiro(antiga: EstadoVida, vinculo: number): string {
  * (a semente sai da vida anterior). A primeira entrada do livro conta a
  * herança e é a causa do estado inicial, como o nascimento numa vida nova.
  */
+/** O sonho que quem morreu ainda tinha de pé (o começado por último), que passa a quem herda (bloco S3). */
+function sonhoDePe(antiga: EstadoVida, c: Conteudo): string {
+  const eu = antiga.entidades['eu']!;
+  const dePe = c.mundo.projetos.filter((p) => p.sonho && eu.q[qualidadeDoProjeto(p.id)]);
+  return dePe.sort((a, b) => (eu.q[qualidadeDoProjeto(b.id)]!.ano ?? 0) - (eu.q[qualidadeDoProjeto(a.id)]!.ano ?? 0))[0]?.id ?? '';
+}
+
 export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVida {
   const filho = herdeiroPossivel(antiga, c);
   if (!filho) throw new Error('Não há herdeiro para continuar a história.');
@@ -627,7 +634,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
         ? `A história da família ${ultimo} continua com você.`
         : `Geração ${geracao} da família ${ultimo}.`;
   // O sonho que passou adiante (bloco S3): quem recebeu o sonho de quem veio antes começa a vida com ele de pé.
-  const sonhoHerdado = c.mundo.projetos.find((p) => p.sonho && p.id === comoPersonagem?.t['sonho']);
+  // O que o filho recebeu em vida (contar o sonho a quem vem depois); senão, o sonho que quem morreu ainda tinha de pé.
+  const sonhoHerdado = c.mundo.projetos.find((p) => p.sonho && p.id === (comoPersonagem?.t['sonho'] || sonhoDePe(antiga, c)));
   if (sonhoHerdado) {
     ganhar(e, daAbertura, 'eu', qualidadeDoProjeto(sonhoHerdado.id), abertura.id);
     // A pasta do sonho: no primeiro ano, quem herdou acha as anotações de quem veio antes (uma cena, não uma linha).

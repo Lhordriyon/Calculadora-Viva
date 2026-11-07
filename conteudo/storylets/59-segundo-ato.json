@@ -542,6 +542,17 @@
             "saude": 1
           }
         }
+      },
+      {
+        "texto": "Guardar a pasta numa gaveta",
+        "resumo": "guardou a pasta do sonho numa gaveta para viver o seu",
+        "resultado": {
+          "texto": "Você guardou a pasta na gaveta de cima, com carinho e sem cadeado. O sonho era bonito; a vida, agora, é sua.",
+          "efeitos": {
+            "largarSonhoHerdado": true,
+            "felicidade": 2
+          }
+        }
       }
     ]
   },

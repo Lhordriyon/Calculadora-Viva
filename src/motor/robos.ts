@@ -895,6 +895,7 @@ function vetorDe(esc: Escolha, e: EstadoVida, c: Conteudo): Vetor {
       if (ef.sonhar) marcas.add(`~${ef.sonhar}`);
       // Passar o sonho adiante (bloco S3) também: quem herda começa a vida com ele.
       if (ef.passarSonho) marcas.add('~passar');
+      if (ef.largarSonhoHerdado) marcas.add('~largar');
     }
   }
   v.risco = avaliarEscolha(esc, e, c).risco;

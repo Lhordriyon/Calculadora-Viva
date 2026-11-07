@@ -244,3 +244,21 @@ describe('o caminho do sonho à vista (bloco S3)', () => {
     expect(e.historico.at(-1)!.texto).toBe('✦ Virar estrela: gente parando você na rua para uma foto. 3 de 3 etapas do sonho; agora falta só ele.');
   });
 });
+
+describe('o sonho de pé passa a quem herda (bloco S3)', () => {
+  it('quem morre com um sonho de pé deixa esse sonho; a gaveta da pasta o larga', () => {
+    const e = adolescente(101);
+    responderMarco(e, 0);
+    e.ano += 10;
+    e.idade += 10;
+    ganhar(e, [], 'eu', 'pai_mae', null);
+    const id = criarPersonagem(e, c, 'filho', [])!;
+    e.entidades[id]!.nascimento = e.ano - 5;
+    morrer(e, c);
+    const nova = continuarComoHerdeiro(e, c);
+    expect(nova.entidades['eu']!.q[qualidadeDoProjeto('estrela')]?.causa).toBe(nova.historico[0]!.id);
+    apresentarStorylet(nova, c.porId.get(PASTA_DO_SONHO)!, undefined, 'diretor', []);
+    escolher(nova, c, 3);
+    expect(nova.entidades['eu']!.q[qualidadeDoProjeto('estrela')]).toBeUndefined();
+  });
+});
