@@ -1272,6 +1272,8 @@ export interface Geracao {
   jogadas: string[];
   /** A sucessão e as jogadas do poder na geração (bloco F). */
   poder: HistoriaDoPoder;
+  /** O sonho que passa adiante (bloco S3): o que esta geração herdou (e se veio) e se ela passou um sonho adiante. */
+  sonho: { herdado: string; veio: boolean; passou: boolean };
 }
 
 export type Tarefa =
@@ -1385,6 +1387,16 @@ function rodarJogador(c: Conteudo, t: Extract<Tarefa, { tipo: 'jogador' }>): DoJ
   return r;
 }
 
+/** O sonho que a geração herdou na abertura (bloco S3), se ele veio, e se ela passou um sonho adiante. */
+function sonhoDaGeracao(e: EstadoVida, c: Conteudo): Geracao['sonho'] {
+  const ids = new Set(c.mundo.projetos.filter((p) => p.sonho).map((p) => p.id));
+  const abertura = e.historico[0];
+  const herdado = abertura?.ref === 'herdeiro' ? ([...ids].find((id) => abertura.mudancas?.some((m) => m.c === `eu.projeto_${id}` && (m.q ?? 0) > 0)) ?? '') : '';
+  const veio = herdado !== '' && e.historico.some((h) => h.instancia === `projeto:${herdado}#conquista`);
+  const passou = e.historico.some((h) => h.mudancas?.some((m) => /^filho\d?\.sonho$/.test(m.c) && (m.t ?? '') !== ''));
+  return { herdado, veio, passou };
+}
+
 function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): DaDinastia {
   const r: DaDinastia = { tipo: 'dinastia', geracoes: [], pares: [], tamanho: 0, dividasErradas: 0, entradasConferidas: 0, exemploDeDivida: '' };
   let e = nascer(c, { semente: t.semente, ano: ANO, ...(t.linhagem ? { origem: { linhagem: t.linhagem } } : {}) });
@@ -1415,6 +1427,7 @@ function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): D
       acoes: e.historico.filter((h) => h.tipo === 'acao').map((h) => h.ref!),
       jogadas: jogadasDaVida(e).jogadas,
       poder: poderDaVida(e),
+      sonho: sonhoDaGeracao(e, c),
     });
     if (!herdeiroPossivel(e, c) || g === t.geracoes) break;
     anterior = patrimonio;

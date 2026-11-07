@@ -7,7 +7,9 @@ import { criarRng } from '../src/motor/rng.ts';
 import { apresentarStorylet, elegivel } from '../src/motor/storylets.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
 import { sonhosDaVida } from '../src/motor/virada.ts';
-import { escolher, nascer } from '../src/motor/vida.ts';
+import { escolher, morrer, nascer } from '../src/motor/vida.ts';
+import { continuarComoHerdeiro } from '../src/motor/herdeiro.ts';
+import { criarPersonagem } from '../src/motor/pessoas.ts';
 
 const c = conteudo;
 
@@ -151,5 +153,49 @@ describe('o segundo ato (bloco S2)', () => {
     apresentarStorylet(e, c.porId.get(diaDoSonho('estrela'))!, undefined, 'diretor', []);
     escolher(e, c, 2);
     expect(sonhosDaVida(e, c)).toEqual(['Virar estrela, realizado aos 34: no dia, chamou ao palco quem tinha duvidado do sonho']);
+  });
+});
+
+describe('o sonho que passa adiante (bloco S3)', () => {
+  /** Quem sonhou com a estrela aos 15, não chegou lá e tem um filho de 20 anos. */
+  function sonhoQueFicou(semente = 95): EstadoVida {
+    const e = adolescente(semente);
+    responderMarco(e, 0);
+    const def = c.mundo.projetos.find((p) => p.id === 'estrela')!;
+    e.ano += def.prazo;
+    e.idade += def.prazo;
+    anoDosProjetos(e, c);
+    ganhar(e, [], 'eu', 'pai_mae', null);
+    const id = criarPersonagem(e, c, 'filho', [])!;
+    e.entidades[id]!.nascimento = e.ano - 20;
+    return e;
+  }
+
+  it('contar o sonho que ficou entrega ao filho mais velho o sonho que não veio', () => {
+    const e = sonhoQueFicou();
+    apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
+    expect(e.pendente!.opcoes[2]!.disponivel).toBe(true);
+    escolher(e, c, 2);
+    expect(e.entidades['filho']!.t['sonho']).toBe('estrela');
+  });
+
+  it('quem herda começa a vida com o sonho, a abertura conta, e o cartão diz de quem era', () => {
+    const e = sonhoQueFicou(96);
+    apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
+    escolher(e, c, 2);
+    const pai = e.entidades['eu']!.nome;
+    morrer(e, c);
+    const nova = continuarComoHerdeiro(e, c);
+    const abertura = nova.historico[0]!;
+    expect(nova.entidades['eu']!.q[qualidadeDoProjeto('estrela')]?.causa).toBe(abertura.id);
+    expect(abertura.texto).toContain('deixou um sonho para você terminar: virar estrela');
+    expect(sonhosDaVida(nova, c)).toEqual([`Virar estrela (o sonho de ${pai}), de pé`]);
+  });
+
+  it('sem filhos, não há a quem contar', () => {
+    const e = adolescente(97);
+    responderMarco(e, 0);
+    apresentarStorylet(e, c.porId.get(SONHO_QUE_FICOU)!, undefined, 'diretor', []);
+    expect(e.pendente!.opcoes[2]!.disponivel).toBe(false);
   });
 });

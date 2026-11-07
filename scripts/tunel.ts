@@ -1082,6 +1082,14 @@ const portoesS2 = [
   ['Depois do sonho, a pergunta: ≥ 50% dos sonhos que acabaram chegam ao "e agora?" ou ao "sonho que ficou"', depoisS2 >= 0.5, `${pct(depoisS2)} de ${acabaramS1}`],
   ['A segunda metade tem direção: ≥ 50% dos anos dos 50 em diante com um sonho de pé (eram 30%)', anos50S2 >= 0.5, pct(anos50S2)],
 ] as const;
+/** Bloco S3 (04/11): o sonho que passa adiante, nas gerações das dinastias. */
+const herdeirasS3 = geracoes.filter((g) => g.geracao > 1);
+const comSonhoHerdado = herdeirasS3.filter((g) => g.sonho.herdado !== '');
+const passaramS3 = geracoes.filter((g) => g.sonho.passou).length;
+const portoesS3 = [
+  ['O sonho passa adiante: alguma geração herdeira começa a vida com o sonho de quem veio antes (≥ 2% das herdeiras)', herdeirasS3.length > 0 && comSonhoHerdado.length / herdeirasS3.length >= 0.02, `${pct(comSonhoHerdado.length / Math.max(1, herdeirasS3.length))} de ${herdeirasS3.length} gerações herdeiras (${passaramS3} gerações passaram um sonho adiante)`],
+  ['O sonho herdado se realiza em alguma vida', comSonhoHerdado.some((g) => g.sonho.veio), `${comSonhoHerdado.filter((g) => g.sonho.veio).length} de ${comSonhoHerdado.length}`],
+] as const;
 /** Bloco H7 (pedido do dono em 03/11): a bolsa de verdade. */
 const somaBolsa = (f: (b: (typeof vidas)[number]['bolsa']) => number): number => vidas.reduce((s, v) => s + f(v.bolsa), 0);
 const ofertasH7 = somaBolsa((b) => b.ofertas);
@@ -1456,6 +1464,14 @@ l();
 l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesS2) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
+l();
+l('## O sonho que passa adiante (bloco S3)');
+l();
+l('O sonho que não veio pode ser contado a quem vem depois: o filho mais velho o carrega, e quem continua a história começa a vida com ele de pé. Medido nas gerações das dinastias.');
+l();
+l('| Portão | Situação | Valor |');
+l('|---|---|---|');
+for (const [nome, ok, detalhe] of portoesS3) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
 l('## A bolsa de verdade (bloco H7)');
 l();
@@ -1870,6 +1886,7 @@ for (const [nome, ok, detalhe] of portoesH6) console.log(`${ok ? '✓' : '·'} p
 for (const [nome, ok, detalhe] of portoesH7) console.log(`${ok ? '✓' : '·'} portão H7: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesS1) console.log(`${ok ? '✓' : '·'} portão S1: ${nome} (${detalhe})`);
 for (const [nome, ok, detalhe] of portoesS2) console.log(`${ok ? '✓' : '·'} portão S2: ${nome} (${detalhe})`);
+for (const [nome, ok, detalhe] of portoesS3) console.log(`${ok ? '✓' : '·'} portão S3: ${nome} (${detalhe})`);
 console.log(`Perfis (aleatória): ${porPerfil.map((p) => `${p.perfil} n=${p.n} p10 ${formatarDinheiro(p.p10)} p50 ${formatarDinheiro(p.p50)} p90 ${formatarDinheiro(p.p90)}`).join(' · ')}`);
 console.log(`Origens escolhidas: ${porOrigem.map((o) => `${o.nome} ${formatarDinheiro(o.patrimonio)}`).join(' · ')}`);
 console.log(
