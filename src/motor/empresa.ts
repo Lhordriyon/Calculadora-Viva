@@ -76,7 +76,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { aleatorio, normal, sortear } from './rng.ts';
-import { anoDoNegocio, empregosDe, empregosNaCidade, entradaQueMudou, garantirFundamentos, garraDaRival, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, type AnoDoNegocio } from './negocio.ts';
+import { anoDoNegocio, empregosDe, empregosNaCidade, entradaQueMudou, garantirFundamentos, garraDaRival, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, somarDemanda, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -234,18 +234,20 @@ export function abrirPorEfeito(e: EstadoVida, c: Conteudo, reg: Mudanca[], a: Ab
 }
 
 /** O contrato grande, o escândalo, a crise do setor: a demanda (os clientes) e o valor andam juntos. */
-export function multiplicarEmpresa(e: EstadoVida, reg: Mudanca[], fator: number, id = PRINCIPAL): void {
+export function multiplicarEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], fator: number, id = PRINCIPAL): void {
   const emp = empresaDe(e, id);
   if (!emp) return;
   somar(e, reg, id, 'valor', (emp.n['valor'] ?? 0) * (fator - 1));
-  if (emp.n['demanda'] !== undefined) somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * (fator - 1), 'negocio');
+  if (emp.n['demanda'] !== undefined) somarDemanda(e, c, reg, emp, (emp.n['demanda'] ?? 0) * (fator - 1));
 }
 
 /** O negócio cresce `fracao` de uma vez (a concorrente comprada traz a estrutura e os clientes dela). */
-function crescerNegocio(e: EstadoVida, reg: Mudanca[], id: string, fracao: number): void {
+function crescerNegocio(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, fracao: number): void {
   const emp = empresaDe(e, id);
   if (!emp || !(fracao > 0)) return;
-  for (const campo of ['capacidade', 'demanda']) if (emp.n[campo] !== undefined) somar(e, reg, id, campo, (emp.n[campo] ?? 0) * fracao, 'negocio');
+  if (emp.n['capacidade'] !== undefined) somar(e, reg, id, 'capacidade', (emp.n['capacidade'] ?? 0) * fracao, 'negocio');
+  // A estrutura dela vem inteira; os clientes, até onde o mercado comporta.
+  if (emp.n['demanda'] !== undefined) somarDemanda(e, c, reg, emp, (emp.n['demanda'] ?? 0) * fracao);
 }
 
 /** Investidores compram `parte` da empresa pelo valor de agora: o dinheiro deles entra nela, e a parte de quem joga encolhe. Devolve quanto entrou. */
@@ -432,7 +434,7 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const fora = exteriorNaEmpresa(e, c, emp.t['setor'] ?? '', fase.cambio ?? 0);
   const ano = anoDoNegocio(e, c, emp, fase, reg, fora, sorte);
   if (emp.q['na_bolsa'] && humor !== 0) somar(e, reg, id, 'valor', (n['valor'] ?? 0) * PESO_DA_BOLSA * humor, 'bolsa');
-  definirNumero(e, reg, id, 'ocupacao', Math.min(10, ocupacaoDe(e, emp)), 'negocio');
+  definirNumero(e, reg, id, 'ocupacao', Math.min(10, ocupacaoDe(e, c, emp)), 'negocio');
   definirNumero(e, reg, id, 'funcionarios', Math.min(3_000_000, empregosDe(c, emp)), 'negocio');
   const alvo = alvoDaTracao(e, c, emp, carga);
   somar(e, reg, id, 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
@@ -538,7 +540,9 @@ export function semQuemManda(e: EstadoVida, morte: number): void {
     const perda = PERDA_SEM_DONO * dependenciaDe(e, emp.id);
     if (perda < 0.005) continue;
     const reg: Mudanca[] = [];
-    multiplicarEmpresa(e, reg, 1 - perda, emp.id);
+    // A perda vale inteira (o teto do mercado só segura ganho): o valor e os clientes encolhem juntos.
+    somar(e, reg, emp.id, 'valor', -(emp.n['valor'] ?? 0) * perda);
+    if (emp.n['demanda'] !== undefined) somar(e, reg, emp.id, 'demanda', -(emp.n['demanda'] ?? 0) * perda, 'negocio');
     const pct = Math.round(perda * 100);
     const texto = `Sem você, ${aEmpresa(emp)} perdeu ${pct}% do valor: ${perda >= 0.2 ? 'tudo passava pela sua mesa' : 'quase tudo já andava sem você'}.`;
     lancar(e, novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'empresa:sem_dono', texto, resumo: `${aEmpresa(emp)} perdeu ${pct}% do valor sem você`, causas: [morte] }), reg);
@@ -684,13 +688,13 @@ export function precoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
 
 /** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */
 /** O dinheiro de quem joga entra na empresa (no caixa, ou na concorrente que ela comprou): o valor e a parte dele crescem. */
-function porNaEmpresa(e: EstadoVida, reg: Mudanca[], id: string, valor: number, ganho: number, noCaixa: boolean): void {
+function porNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, valor: number, ganho: number, noCaixa: boolean): void {
   const emp = empresaDe(e, id)!;
   const antes = emp.n['valor'] ?? 0;
   const parte = emp.n['participacao'] ?? 1;
   somar(e, reg, id, 'valor', ganho);
   if (noCaixa) somar(e, reg, id, 'caixa', valor, 'aporte', 'eu');
-  else crescerNegocio(e, reg, id, antes > 0 ? ganho / antes : 0);
+  else crescerNegocio(e, c, reg, id, antes > 0 ? ganho / antes : 0);
   if (parte < 1) somar(e, reg, id, 'participacao', (parte * antes + valor) / (antes + ganho) - parte);
 }
 
@@ -784,7 +788,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
   if (op.tipo === 'aportar') {
     // Dinheiro novo de quem joga aumenta a parte dele (os outros sócios não puseram nada).
     const valor = tirarDeQuemJoga(e, reg, op.valor, id);
-    porNaEmpresa(e, reg, id, valor, valor, true);
+    porNaEmpresa(e, c, reg, id, valor, valor, true);
     return { texto: `Pôs ${formatarDinheiro(valor)} ${aEmpresa(emp, 'na')}.`, resumo: `pôs ${formatarDinheiro(valor)} na própria empresa` };
   }
   if (op.tipo === 'adquirir' || op.tipo === 'opa') {
@@ -819,7 +823,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     const justo = (emp.n['valor'] ?? 0) * CUSTO_AQUISICAO;
     const custo = tirarDeQuemJoga(e, reg, hostil ? custoDaOpa(e, id) : custoDaAquisicao(e, id), 'mercado');
     // Pagar o preço justo não cria valor sozinho: o ganho vem do mercado mais fechado (tração), que o tempo desfaz.
-    porNaEmpresa(e, reg, id, custo, justo * 0.95, false);
+    porNaEmpresa(e, c, reg, id, custo, justo * 0.95, false);
     somar(e, reg, id, 'tracao', 2);
     // O mercado fica mais fechado: a concorrente principal perde força.
     if (emp.n['concorrente'] !== undefined) definirNumero(e, reg, id, 'concorrente', Math.max(0, (emp.n['concorrente'] ?? 50) - 15), 'negocio');
@@ -925,7 +929,12 @@ function fundir(e: EstadoVida, c: Conteudo, reg: Mudanca[], alvo: string, absorv
     somar(e, reg, alvo, 'caixa', caixaDela, 'fusao', absorvida);
   }
   for (const campo of ['capacidade', 'obra']) if ((b.n[campo] ?? 0) > 0) somar(e, reg, alvo, campo, b.n[campo]!, 'negocio');
-  if ((b.n['demanda'] ?? 0) > 0) somar(e, reg, alvo, 'demanda', b.n['demanda']! * (1 + sinergia), 'negocio');
+  // Os clientes da absorvida passam a ser da que fica (a dela zera antes, para o mercado contar uma vez só).
+  const clientesDela = b.n['demanda'] ?? 0;
+  if (clientesDela > 0) {
+    somar(e, reg, absorvida, 'demanda', -clientesDela, 'fusao');
+    somarDemanda(e, c, reg, a, clientesDela * (1 + sinergia));
+  }
   for (const campo of ['qualidade', 'marca']) if (a.n[campo] !== undefined || b.n[campo] !== undefined) definirNumero(e, reg, alvo, campo, media(campo, 50), 'negocio');
   somar(e, reg, alvo, 'subsidiarias', 1 + (b.n['subsidiarias'] ?? 0));
   // Uma bolsa basta: se a absorvida estava listada, a empresa que fica passa a estar.

@@ -448,8 +448,6 @@ export function precoDeVenda(faseEmpresa: number): number {
 
 // ---- o tamanho do mundo (auditoria de 11/10: sem isto, a empresa e a fortuna cresciam sem fim)
 
-/** O tamanho do mercado: nenhuma empresa passa disso (é o valor das maiores do mundo); perto do teto, crescer fica difícil. */
-export const TETO_EMPRESA = 2e13;
 /** Quanto o mercado comporta de dinheiro investido de uma só pessoa: o excedente fica parado (nem rende, nem perde). */
 export const CAPACIDADE_DO_MERCADO = 5e12;
 /** Gente que uma empresa consegue empregar no máximo (as maiores do mundo empregam uns 3 milhões). */

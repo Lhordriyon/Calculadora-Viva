@@ -109,24 +109,46 @@ export function mercadoDoSetor(e: EstadoVida, eco: Economia): number {
   return Math.max(1e9, e.entidades['pais']?.n['pib'] ?? 1e13) * eco.peso;
 }
 
+/**
+ * O que o país ainda compra do setor fora das outras empresas de quem joga: o teto da demanda desta (o mercado tem
+ * tamanho, e duas empresas do mesmo grupo no mesmo setor dividem o mesmo mercado).
+ */
+export function espacoNoMercado(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const setor = emp.t['setor'] ?? '';
+  let outras = 0;
+  for (const x of Object.values(e.entidades)) if (x.tipo === 'empresa' && x.vivo !== false && x.id !== emp.id && (x.t['setor'] ?? '') === setor) outras += x.n['demanda'] ?? 0;
+  return Math.max(0, mercadoDoSetor(e, economiaDo(c.setores.get(setor))) - outras);
+}
+
+/**
+ * A demanda que muda de uma vez (a concorrente comprada, a fusão, o contrato do conteúdo, a clientela de quem quebrou):
+ * o ganho só entra até onde o mercado comporta; a perda vale inteira. Devolve o que entrou. Sem isso, a compra somava
+ * clientes que o país não tinha: a folha chegava a mostrar 141% do que o país compra do setor.
+ */
+export function somarDemanda(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, delta: number): number {
+  const cabe = delta > 0 ? Math.min(delta, Math.max(0, espacoNoMercado(e, c, emp) - (emp.n['demanda'] ?? 0))) : delta;
+  return somar(e, reg, emp.id, 'demanda', cabe, 'negocio');
+}
+
 /** O quanto o produto atrai, perto de 1 na média do setor: a qualidade e a marca. */
 export function atratividade(emp: Entidade): number {
   return (0.55 * (emp.n['qualidade'] ?? 50) + 0.45 * (emp.n['marca'] ?? 50)) / 50;
 }
 
 /** O que o mercado quer comprar dela neste preço (em reais ao preço médio), aqui e lá fora. */
-export function procura(e: EstadoVida, emp: Entidade): number {
+export function procura(e: EstadoVida, c: Conteudo, emp: Entidade): number {
   const p = PRECOS[preco(emp)];
   // Premium sem qualidade espanta cliente.
   const semQualidade = preco(emp) === 'premium' && (emp.n['qualidade'] ?? 50) < 60 ? (emp.n['qualidade'] ?? 50) / 60 : 1;
-  const aqui = (emp.n['demanda'] ?? 0) * p.volume * (0.8 + 0.2 * atratividade(emp)) * semQualidade;
+  // O que o país compra dela não passa do que ele compra do setor (o preço popular e o produto que atrai vendem mais, até aí).
+  const aqui = Math.min((emp.n['demanda'] ?? 0) * p.volume * (0.8 + 0.2 * atratividade(emp)) * semQualidade, espacoNoMercado(e, c, emp));
   return aqui + exportacaoDe(e, emp);
 }
 
 /** Quanto do que ela consegue entregar o mercado quer (acima de 1, sobra pedido; abaixo, sobra estrutura). */
-export function ocupacaoDe(e: EstadoVida, emp: Entidade): number {
+export function ocupacaoDe(e: EstadoVida, c: Conteudo, emp: Entidade): number {
   const capacidade = emp.n['capacidade'] ?? 0;
-  return capacidade > 0 ? procura(e, emp) / capacidade : 0;
+  return capacidade > 0 ? procura(e, c, emp) / capacidade : 0;
 }
 
 /** A demanda de fora: a parte da demanda que o país escolhido compra, pela relação, pelo crescimento dele, pelo acordo; a sanção fecha a porta. */
@@ -171,7 +193,7 @@ export function garantirFundamentos(e: EstadoVida, c: Conteudo, reg: Mudanca[], 
     caixa = valor * 0.05;
   }
   somar(e, reg, id, 'capacidade', capacidade, 'negocio');
-  somar(e, reg, id, 'demanda', capacidade * (capital !== undefined ? DEMANDA_DA_FUNDACAO : 0.95), 'negocio');
+  somarDemanda(e, c, reg, emp, capacidade * (capital !== undefined ? DEMANDA_DA_FUNDACAO : 0.95));
   if (capital !== undefined) {
     // O capital entra no caixa (de quem pôs) e a estrutura sai dele (para quem vendeu a loja, a máquina).
     if (capital > 0) somar(e, reg, id, 'caixa', capital, 'capital', de);
@@ -221,6 +243,9 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
 
   // A demanda anda: o momento (a tração), o ciclo do setor, o mundo lá fora, a sorte e o quanto o produto atrai; o
   // mercado tem tamanho (perto do teto, o ganho some; a perda vale inteira).
+  // A demanda acima do mercado (um save de antes do teto para todo ganho) volta para dentro dele.
+  const acima = (n['demanda'] ?? 0) - espacoNoMercado(e, c, emp);
+  if (acima > 0) somar(e, reg, id, 'demanda', -acima, 'mercado');
   const demanda = n['demanda'] ?? 0;
   const teto = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
   const bruto = (n['tracao'] ?? 0) / 100 + fase.empresa * (setor?.ciclo ?? 1) + fora + sorte + (atratividade(emp) - forcaDaConcorrente(emp)) * ATRATIVIDADE_NO_CRESCIMENTO;
@@ -230,8 +255,9 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // Vende o que a capacidade dá conta, no preço escolhido; o resto da procura vira fila.
   const p = PRECOS[preco(emp)];
   const capacidade = n['capacidade'] ?? 0;
-  const entregue = Math.min(capacidade, procura(e, emp));
-  const fracaoFora = procura(e, emp) > 0 ? exportacaoDe(e, emp) / procura(e, emp) : 0;
+  const procurado = procura(e, c, emp);
+  const entregue = Math.min(capacidade, procurado);
+  const fracaoFora = procurado > 0 ? exportacaoDe(e, emp) / procurado : 0;
   // O dólar do ano: quem exporta recebe mais reais pelo que vende, quem importa paga mais caro pelo que compra.
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
   // Na guerra de preços, todo mundo cobra menos.
@@ -300,7 +326,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
   definirNumero(e, reg, id, 'receita', vendas, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
-  concorrenciaDoAno(e, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
+  concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
   return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosDe(c, emp) };
 }
 
@@ -529,7 +555,10 @@ export function valorNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: s
   const valor = n['valor'] ?? 0;
   if (delta > 0) {
     const f = valor > 0 ? delta / valor : 0;
-    for (const campo of ['capacidade', 'demanda']) if (f > 0) somar(e, reg, id, campo, (n[campo] ?? 0) * f, 'negocio');
+    if (f > 0) {
+      somar(e, reg, id, 'capacidade', (n['capacidade'] ?? 0) * f, 'negocio');
+      somarDemanda(e, c, reg, emp, (n['demanda'] ?? 0) * f);
+    }
   } else if (delta < 0) {
     const paga = Math.min(-delta, Math.max(0, n['caixa'] ?? 0));
     if (paga > 0) somar(e, reg, id, 'caixa', -paga, 'despesa', 'mercado');
@@ -592,7 +621,7 @@ export function garraDaRival(e: EstadoVida, c: Conteudo, emp: Entidade): number 
   return (briga / RIVAL.garraMedia) * ((r.n['magoa'] ?? 0) >= RIVAL.pessoal ? 1.5 : 1);
 }
 
-function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number, garra = 1): void {
+function concorrenciaDoAno(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number, garra = 1): void {
   const id = emp.id;
   const forca = emp.n['concorrente'] ?? 50;
   const vantagem = atratividade(emp) - forca / 50;
@@ -616,7 +645,7 @@ function concorrenciaDoAno(e: EstadoVida, reg: Mudanca[], emp: Entidade, lucro: 
     ganhar(e, reg, id, 'concorrente_novo', entradaQueMudou(e, `${id}.preco`));
   }
   if (alvo < CONCORRENCIA.quebra && !recente('concorrente_quebrou', 3)) {
-    somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * CONCORRENCIA.clientela, 'negocio');
+    somarDemanda(e, c, reg, emp, (emp.n['demanda'] ?? 0) * CONCORRENCIA.clientela);
     ganhar(e, reg, id, 'concorrente_quebrou', guerra?.causa ?? null);
     alvo = 45;
   }

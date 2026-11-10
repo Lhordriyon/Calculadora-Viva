@@ -303,7 +303,7 @@ function CartaoDaEmpresa({
           <dd>{formatarDinheiro(n['caixa'] ?? 0)}</dd>
           <dt>O mercado pede</dt>
           <dd>
-            {formatarDinheiro(procura(vida, emp))} por ano · {OCUPACAO(ocupacaoDe(vida, emp))}
+            {formatarDinheiro(procura(vida, conteudo, emp))} por ano · {OCUPACAO(ocupacaoDe(vida, conteudo, emp))}
           </dd>
           <dt>A estrutura entrega</dt>
           <dd>
