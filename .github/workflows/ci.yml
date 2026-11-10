@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   verificar:
-    name: Verificar (tipos, testes, conteúdo, túnel, build)
+    name: Verificar (tipos, testes, conteúdo, auditoria, túnel, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -27,6 +27,8 @@ jobs:
       - run: npm run checar
       - run: npm test
       - run: npm run validar
+      - name: Auditoria da simulação (os invariantes do estado ano a ano, em dinastias)
+        run: npm run auditoria
       - name: Túnel de vento (falha se uma meta quebrar)
         run: npm run tunel -- --sem-arquivo
       - run: npm run build

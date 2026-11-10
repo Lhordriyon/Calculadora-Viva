@@ -2,6 +2,10 @@ name: App Android
 
 # A cada atualização da main, gera o APK do jogo e troca o arquivo do link fixo:
 # https://github.com/<dono>/<repositório>/releases/download/android/Trajetoria.apk
+#
+# No disparo manual (em qualquer branch), o APK também é instalado num Android emulado: o jogo abre, começa uma vida,
+# o app é fechado à força e a vida continua lá (scripts/android-emulador.sh). Fora da main nada é publicado: serve para
+# conferir a build do Android antes de ela chegar a quem joga.
 
 on:
   push:
@@ -12,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: android
+  group: android-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -35,7 +39,33 @@ jobs:
       - name: Compilar o APK (assinado, versão = número da build)
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon -PversionCode=${{ github.run_number }} -PversionName=1.${{ github.run_number }}
+      - name: Conferir o APK (o pacote, a versão, as permissões e o jogo desta build dentro dele)
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          AAPT2="$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)"
+          "$AAPT2" dump badging "$APK" | grep -E "^package|^sdkVersion|^targetSdkVersion|^uses-permission|^launchable-activity|^application-label:"
+          ls -l "$APK"
+          for f in dist-android/index.html dist-android/assets/*; do
+            dentro="assets/public/${f#dist-android/}"
+            if [ "$(sha256sum < "$f")" = "$(unzip -p "$APK" "$dentro" | sha256sum)" ]; then
+              echo "✓ $dentro é o desta build"
+            else
+              echo "✗ $dentro não é o desta build"
+              exit 1
+            fi
+          done
+      - name: Ligar a aceleração do emulador (KVM)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Instalar e jogar num Android emulado (abre, começa uma vida, fecha à força e a vida continua)
+        if: github.event_name == 'workflow_dispatch'
+        timeout-minutes: 30
+        run: bash scripts/android-emulador.sh android/app/build/outputs/apk/release/app-release.apk
       - name: Publicar no link fixo
+        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
