@@ -227,6 +227,7 @@ describe('o que você deixou de fazer', () => {
     const reg: Mudanca[] = [];
     ganhar(e, reg, 'mae', 'doente', null);
     e.entidades['mae']!.q['doente']!.idade = e.idade - 1;
+    e.entidades['mae']!.q['doente']!.ano = e.ano - 1;
     e.entidades['mae']!.n['vinculo'] = 70;
     e.entidades['mae']!.n['sem_contato'] = 1;
     return e;
@@ -274,6 +275,7 @@ describe('o que cada pessoa quer', () => {
     ganhar(e, reg, 'eu', 'namoro', null);
     ganhar(e, reg, 'amor', 'quer_casar', null);
     e.entidades['amor']!.q['quer_casar']!.idade = e.idade - 5;
+    e.entidades['amor']!.q['quer_casar']!.ano = e.ano - 5;
     regrasDosPersonagens(e, c, []);
     expect(e.entidades['amor']!.n['magoa'] ?? 0).toBeGreaterThan(0);
   });

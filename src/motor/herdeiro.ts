@@ -393,7 +393,9 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
         continue;
       }
       const genero: Genero = slot === 'mae' ? 'f' : 'm';
-      const nascimento = velho.nascimento! + inteiro(e.rng, -8, 8);
+      // Do sobrinho, o outro pai é da geração de quem morreu (o tio); do par e do amigo, os pais são de uma geração
+      // antes de quem herda (com o ano de quem morreu, a "mãe" do herdeiro podia ser mais nova que ele).
+      const nascimento = sobrinho ? velho.nascimento! + inteiro(e.rng, -8, 8) : filho.nascimento - inteiro(e.rng, 20, 38);
       const vivo = e.ano - nascimento < 92 && aleatorio(e.rng) < Math.max(0.1, 1 - (e.ano - nascimento - 55) / 40);
       const pai = novaEntidade({ id: slot, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo });
       const traco = sortear(e.rng, c.mundo.tracos);
@@ -458,7 +460,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     e.entidades['avo'] = recausar(copia, abertura.id);
   }
   if (filho.parentesco !== 'amigo') {
-    const amigo = pessoaNova(e, c, 'amigo', filho.nascimento + inteiro(e.rng, -1, 1));
+    const amigo = pessoaNova(e, c, 'amigo', Math.min(e.ano, filho.nascimento + inteiro(e.rng, -1, 1)));
     amigo.q['de_infancia'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
     e.entidades['amigo'] = amigo;
   }

@@ -6,7 +6,7 @@
  * iniciativa: um storylet de personagem, escolhido pela regra dele (traço,
  * situação, saliência).
  */
-import { idadeDe, ler } from './campos.ts';
+import { anosDaMarca, idadeDe, ler } from './campos.ts';
 import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA, propostaDoGestor, textoDaProposta } from './diretoria.ts';
 import { empresaDe, nomeDaEmpresa } from './empresa.ts';
 import { GESTOR, RIVAL } from './regras.ts';
@@ -238,7 +238,7 @@ function vontadesNoAno(e: EstadoVida, c: Conteudo, papel: string, en: Entidade, 
     const desde = q.causa === null ? [] : [q.causa];
     if (v.feita && atende(v.feita, e, papel)) vontadeSai(e, papel, v, 'realizada', [...desde, ...causasDe(v.feita, e, papel)]);
     else if (v.ate !== undefined && v.perdida && idadeDe(e, en) > v.ate) vontadeSai(e, papel, v, 'perdida', desde);
-    else if (v.pressa && e.idade - q.idade >= v.pressa.anos) somar(e, regAno, papel, 'magoa', v.pressa.magoa, 'relacao');
+    else if (v.pressa && anosDaMarca(e, q) >= v.pressa.anos) somar(e, regAno, papel, 'magoa', v.pressa.magoa, 'relacao');
   }
 }
 

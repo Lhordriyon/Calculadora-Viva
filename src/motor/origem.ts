@@ -202,7 +202,8 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
 
   // ---- amigo de infância
   const generoAmigo: Genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
-  const amigo = pessoa('amigo', generoAmigo, e.ano + inteiro(rng, -1, 1), sortearTraco(rng, c, tipo), 50, 84);
+  // O amigo de infância nasce no ano de quem joga ou no anterior (nunca depois: aparecia com −1 ano no nascimento).
+  const amigo = pessoa('amigo', generoAmigo, e.ano + Math.min(0, inteiro(rng, -1, 1)), sortearTraco(rng, c, tipo), 50, 84);
   // O amigo de infância (os amigos da vida adulta chegam depois, em outro lugar: amigo2, amigo3).
   amigo.q['de_infancia'] = { v: 1, ano: e.ano, idade: 0, causa: null };
   e.entidades['amigo'] = amigo;

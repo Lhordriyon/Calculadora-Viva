@@ -3,7 +3,7 @@
  * "ator.vinculo", "lugar.desemprego". Qualidades são caminhos também
  * ("fumante", "mae.doente"). Compiladas uma vez por objeto.
  */
-import { defCampo, entidadeDe, entradaQueDecidiu, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
+import { anosDaMarca, defCampo, entidadeDe, entradaQueDecidiu, entradaQueDefiniu, ler, patrimonioTotal, separar } from './campos.ts';
 import type { Condicoes, ValorCondicao } from './esquema.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { EstadoVida, Qualidade } from './tipos.ts';
@@ -63,7 +63,7 @@ function compilar(cond: Condicoes): Teste {
   for (const req of cond.marcaHa ?? []) {
     testes.push((e, a) => {
       const q = qualidadeDe(e, req.marca, a);
-      return q !== undefined && q.v > 0 && dentro(e.idade - q.idade, req);
+      return q !== undefined && q.v > 0 && dentro(anosDaMarca(e, q), req);
     });
   }
   if (cond.genero) {
@@ -106,7 +106,7 @@ export function atendeDireto(cond: Condicoes | undefined, e: EstadoVida, ator?: 
   if (cond.algumaMarca && !cond.algumaMarca.some((m) => tem(e, m, ator))) return false;
   for (const req of cond.marcaHa ?? []) {
     const q = qualidadeDe(e, req.marca, ator);
-    if (!q || q.v <= 0 || !dentro(e.idade - q.idade, req)) return false;
+    if (!q || q.v <= 0 || !dentro(anosDaMarca(e, q), req)) return false;
   }
   if (cond.genero && e.entidades['eu']?.genero !== cond.genero) return false;
   for (const [chave, pedido] of Object.entries(cond)) {

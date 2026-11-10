@@ -6,7 +6,7 @@
 import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
 import { BOLSA, MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
-import type { Entidade, EstadoVida } from './tipos.ts';
+import type { Entidade, EstadoVida, Qualidade } from './tipos.ts';
 
 /** Sistemas do jogo: uma ação precisa mexer em pelo menos dois; um campo precisa ser lido por dois. */
 export type Sistema = 'corpo' | 'humor' | 'mente' | 'dinheiro' | 'relacoes' | 'carreira' | 'carater' | 'origem' | 'mundo' | 'poder' | 'historia';
@@ -125,6 +125,11 @@ const PESSOA: Record<string, DefCampo> = {
   genero: { tipo: 'texto', sistema: 'relacoes', derivado: true },
   /** "sua mãe", "seu pai", "sua amiga Ana": o personagem como sujeito de uma frase. */
   quem: { tipo: 'texto', sistema: 'relacoes', derivado: true },
+  /**
+   * O pai ou a mãe que ficou sem o outro (morto há dois anos ou mais, ausente desde sempre, ou separados) e a avó: quem
+   * pode namorar de novo e quem mora só. É da pessoa, não de quem joga (a marca `viuvo` é a viuvez de quem joga).
+   */
+  sozinho: { tipo: 'bool', sistema: 'relacoes', derivado: true },
   /** Quantas empresas quem joga tem (o grupo; 0 para os outros). */
   empresas: { tipo: 'num', sistema: 'dinheiro', derivado: true },
   /** Quanto quem joga emprestou ao governo em títulos do Tesouro (o valor que volta no vencimento; 0 para os outros). */
@@ -439,6 +444,15 @@ export function caculaDe(e: EstadoVida): string {
   return filhosVivos(e).at(-1)?.id ?? filhosDe(e).at(-1)?.id ?? 'filho';
 }
 
+/**
+ * Há quantos anos a qualidade existe, pelo calendário. Dentro de uma vida é o mesmo que a idade de agora menos a idade
+ * em que ela veio; na vida de quem herda, a marca herdada guarda a idade de quem morreu, e só o ano continua certo (o
+ * velório da avó chegava quando o neto fazia a idade que a mãe tinha na morte dela).
+ */
+export function anosDaMarca(e: EstadoVida, q: Qualidade): number {
+  return e.ano - q.ano;
+}
+
 export function idadeDe(e: EstadoVida, en: Entidade): number {
   if (en.nascimento === undefined) return 0;
   return (en.vivo === false && en.morte !== undefined ? en.morte : e.ano) - en.nascimento;
@@ -666,6 +680,15 @@ export function quemE(id: string, en: Entidade): string {
 }
 
 /** Valor de um caminho já resolvido. Qualidade inexistente vale 0; entidade inexistente, undefined. */
+/** O pai ou a mãe sem o outro (o outro morreu há dois anos ou mais, é ausente, ou os dois se separaram); a avó mora só. */
+function semOOutro(e: EstadoVida, ent: string): boolean {
+  if (ent === 'avo') return true;
+  if (ent !== 'mae' && ent !== 'pai') return false;
+  const outro = e.entidades[ent === 'mae' ? 'pai' : 'mae'];
+  if (!outro || outro.q['ausente'] || e.entidades['eu']?.q['pais_separados']) return true;
+  return outro.vivo === false && e.ano - (outro.morte ?? e.ano) >= 2;
+}
+
 export function ler(e: EstadoVida, ent: string, campo: string): number | string | boolean | undefined {
   const en = e.entidades[ent];
   if (!en) return undefined;
@@ -689,6 +712,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.genero ?? 'm';
       case 'quem':
         return quemE(ent, en);
+      case 'sozinho':
+        return semOOutro(e, ent);
       case 'gosto':
         return en.tipo === 'pessoa' && ent !== 'eu' ? gostoDe(en) : '';
       case 'humor':

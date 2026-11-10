@@ -5,7 +5,7 @@ import { fichasDoAno } from '../motor/regras.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import type { Destino } from '../motor/herdeiro.ts';
 import { AMIGOS, EXES, FILHOS, IRMAOS, VISOES_RUINS, ehAmigo, ehEx, ehFilho, ehIrmao, type Humor, type Verbo } from '../motor/constantes.ts';
-import { entreVoceE, idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
+import { anosDaMarca, entreVoceE, idadeDe, lerCaminho, patrimonioDe } from '../motor/campos.ts';
 import { convivem, gostoDe, humorDe, lembrancasDe, porqueDe, ROTULO_DA_VISAO, semONome, visoesDe } from '../motor/relacoes.ts';
 import { segredosDaPessoa } from '../motor/segredos.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
@@ -141,7 +141,7 @@ function Opiniao({ vida, id, en }: { vida: EstadoVida; id: string; en: Entidade 
 function Vontade({ vida, conteudo, en }: { vida: EstadoVida; conteudo: Conteudo; en: Entidade }) {
   const v = conteudo.mundo.vontades.find((x) => (en.q[x.id]?.v ?? 0) > 0);
   if (!v) return null;
-  const desde = vida.idade - en.q[v.id]!.idade;
+  const desde = anosDaMarca(vida, en.q[v.id]!);
   if (en.vivo === false) return <p class="vontade">Queria {v.quer}.</p>;
   return (
     <p class="vontade">

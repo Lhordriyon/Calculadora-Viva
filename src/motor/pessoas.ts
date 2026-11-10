@@ -4,7 +4,7 @@
  */
 import type { Conteudo } from './conteudo.ts';
 import { EXES, FILHOS, IRMAOS, ehAmigo, ehEx, ehFilho, ehIrmao, type PapelQueChega } from './constantes.ts';
-import { quemE } from './campos.ts';
+import { anosDaMarca, quemE } from './campos.ts';
 import { movimentar } from './economia.ts';
 import { ganhar, perder, somar, somarRepartido } from './livro.ts';
 import { quemEraQuemMudou } from './relacoes.ts';
@@ -257,7 +257,13 @@ export function criarPersonagem(e: EstadoVida, c: Conteudo, papel: PapelQueChega
     en.n['saude'] = 85;
   } else {
     const genero: Genero = aleatorio(e.rng) < 0.5 ? 'f' : 'm';
-    const nascimento = bebe ? e.ano : e.ano - Math.max(16, idadeEu + inteiro(e.rng, -4, 4));
+    // Gente da turma de quem joga: até quatro anos de diferença entre adultos (e adulto só com adulto); antes dos 18,
+    // um ano a menos ou dois a mais (o par de quem tinha 14 nascia com 16 a 18, e o de quem tinha 19 podia ter 17).
+    let nascimento = e.ano;
+    if (!bebe) {
+      const diferenca = inteiro(e.rng, -4, 4);
+      nascimento = e.ano - (idadeEu >= 18 ? Math.max(18, idadeEu + diferenca) : Math.max(10, idadeEu + Math.max(-1, Math.min(2, diferenca))));
+    }
     en = novaEntidade({ id, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo: true });
     en.n['saude'] = bebe ? 85 : 75;
     en.n['vinculo'] = papel === 'filho' ? 80 : papel === 'amor' ? 70 : papel === 'irmao' ? 60 : 55;
@@ -346,7 +352,7 @@ export function morrerPersonagem(e: EstadoVida, papel: string, reg: Mudanca[], c
   if (papel === 'amor') {
     // O namoro acaba com a morte; casamento ou união longa vira viuvez.
     const namoro = e.entidades['eu']!.q['namoro'];
-    const uniao = namoro !== undefined && e.idade - namoro.idade >= ANOS_UNIAO;
+    const uniao = namoro !== undefined && anosDaMarca(e, namoro) >= ANOS_UNIAO;
     perder(e, reg, 'eu', 'namoro');
     perder(e, reg, 'eu', 'voltou_com_o_ex');
     if (perder(e, reg, 'eu', 'casado') || uniao) ganhar(e, reg, 'eu', 'viuvo', causa);
