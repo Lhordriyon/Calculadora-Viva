@@ -1,3 +1,4 @@
+import { useRef } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
 import { defFase, faseDe } from '../motor/pais.ts';
 import { patrimonioTotal } from '../motor/campos.ts';
@@ -19,6 +20,24 @@ interface Props {
   aoAbrirMenu: () => void;
   /** Durante um evento: só o nome, os botões e o dinheiro, para o cartão do evento ter a tela. */
   compacto?: boolean;
+}
+
+/** A variação a partir da qual o número do cabeçalho dá o pulso (o vaivém de um ponto por ano não conta). */
+const PULSO_A_PARTIR_DE = 2;
+
+/**
+ * O número que mudou de verdade dá um pulso na cor (sobe em verde, desce em vermelho) e volta: a consequência do toque
+ * aparece onde o olho já está, sem nada mudar de lugar. A chave refaz a animação a cada mudança.
+ */
+function Numero({ valor }: { valor: number }) {
+  const mem = useRef({ valor, sentido: 0 });
+  if (mem.current.valor !== valor) mem.current = { valor, sentido: Math.abs(valor - mem.current.valor) >= PULSO_A_PARTIR_DE ? Math.sign(valor - mem.current.valor) : 0 };
+  const sentido = mem.current.sentido;
+  return (
+    <b key={valor} class={sentido > 0 ? 'subiu' : sentido < 0 ? 'desceu' : undefined}>
+      {valor}
+    </b>
+  );
 }
 
 export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinheiro, aoAbrirPais, aoAbrirMenu, compacto = false }: Props) {
@@ -92,7 +111,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
         </span>
       </button>
       {/* O estado é terciário: rótulo suave, número e uma barra fina na cor do atributo, sem caixa. */}
-      <div class="indicadores">
+      <div class="indicadores" key={vida.semente}>
         {ATRIBUTOS.map((a) => {
           const valor = Math.round(n[a] ?? 0);
           return (
@@ -101,7 +120,7 @@ export function Cabecalho({ vida, aoAbrirFamilia, aoAbrirCarreira, aoAbrirDinhei
                 <Icone nome={ICONE_DO_ATRIBUTO[a]} tamanho={16} classe="ico" />
                 <span class="rotulo">{NOMES[a]}</span>
               </span>
-              <b>{valor}</b>
+              <Numero valor={valor} />
               <div class="barra" role="meter" aria-label={NOMES[a]} aria-valuemin={0} aria-valuemax={100} aria-valuenow={valor} style={{ '--v': valor / 100 }}>
                 <span />
               </div>

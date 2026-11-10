@@ -212,6 +212,30 @@ button {
   flex-shrink: 0;
 }
 
+/* A tela de quando o jogo tropeça (Fronteira.tsx): o mesmo arranjo da abertura, e o erro em letra miúda que quebra. */
+.abertura.tropeco h1 {
+  margin: 0 0 8px;
+  color: var(--texto);
+  font-size: 26px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.abertura.tropeco p {
+  font-size: 16px;
+}
+
+.tropeco .acoes {
+  display: grid;
+  gap: 10px;
+}
+
+.tropeco-erro {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
 /* Encosta embaixo, no polegar, quando cabe; quando não cabe, rola a partir do topo. */
 .abertura > :first-child {
   margin-top: auto;
@@ -468,6 +492,39 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* O número que mudou dá um pulso (Cabecalho.tsx): só cor e escala, nada muda de lugar. */
+.indicador b.subiu {
+  animation: pulso-subiu 1.1s ease;
+}
+
+.indicador b.desceu {
+  animation: pulso-desceu 1.1s ease;
+}
+
+@keyframes pulso-subiu {
+  0% {
+    color: var(--saude);
+    transform: scale(1.22);
+  }
+
+  55% {
+    color: var(--saude);
+    transform: scale(1);
+  }
+}
+
+@keyframes pulso-desceu {
+  0% {
+    color: var(--ruim);
+    transform: scale(1.22);
+  }
+
+  55% {
+    color: var(--ruim);
+    transform: scale(1);
+  }
+}
+
 .indicador .barra {
   flex: 1 0 100%;
 }
@@ -555,6 +612,19 @@ button {
 
 .vida.com-evento {
   min-height: var(--min-vida, 3lh);
+}
+
+/* O evento precisou da tela toda (Palco.tsx): a fresta que sobraria da história não aparece. */
+.vida.sem-historia {
+  visibility: hidden;
+}
+
+/* As entradas antigas (LinhaDoTempo.tsx: tudo menos as últimas) só são desenhadas perto da tela, e o navegador guarda a
+   altura de cada uma depois de vê-la: abrir uma vida de 75 anos e tocar no ano ficam mais rápidos. As últimas ficam
+   sempre desenhadas, para a rolagem até o ano novo cair no lugar certo. */
+.linha-do-tempo > .ano.antiga {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 112px;
 }
 
 .linha-do-tempo {
@@ -1072,8 +1142,12 @@ button {
     linear-gradient(color-mix(in srgb, var(--texto) 22%, transparent), transparent) top / 100% 8px no-repeat scroll,
     linear-gradient(transparent, color-mix(in srgb, var(--texto) 22%, transparent)) bottom / 100% 8px no-repeat scroll;
   margin: 0 0 14px;
-  font-size: 19px;
-  line-height: 1.48;
+  /* O texto do evento é um pouco maior que o da história (19 contra 17) quando a tela comporta, e chega ao tamanho da
+     história conforme a letra do sistema cresce (o palco estreita, medido em em): sem degrau, e com a letra do dono o
+     texto cabe inteiro mais vezes, sem rolar por dentro (o primeiro valor é para o navegador sem unidades de contêiner). */
+  font-size: 1.1176em;
+  font-size: clamp(1em, 0.353em + 3.92cqi, 1.1176em);
+  line-height: 1.45;
 }
 
 .opcoes {
@@ -1215,6 +1289,23 @@ button {
 .cartao-vida .meta {
   margin: 0;
   color: var(--texto-suave);
+}
+
+/* A morte tem um tempo próprio (o cartão que abre sozinho quando a vida acaba): o nome, os anos e a frase da morte
+   chegam primeiro; o resto do cartão, um instante depois. Sem toque a mais; com o movimento reduzido, vem tudo junto. */
+.cartao-vida.despedida .causa {
+  animation: revelar 0.9s ease 0.3s both;
+}
+
+.cartao-vida.despedida .folha-corpo > :not(.meta):not(.causa) {
+  animation: revelar 0.7s ease 1.7s both;
+}
+
+@keyframes revelar {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 .cartao-vida .causa {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, escreverSave, gravarJa, importarSave, salvarDepois, lerComCopia, lerSave, saveVazio, VERSAO_SAVE } from '../src/jogo/salvar.ts';
+import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, confirmarAbertura, escreverSave, gravarJa, avisarSeNaoGravar, importarSave, largarAVida, salvar, salvarDepois, lerComCopia, lerSave, saveCru, saveVazio, temCopiaParaVoltar, voltarACopia, VERSAO_SAVE } from '../src/jogo/salvar.ts';
 import { lembrarVida } from '../src/motor/memoria.ts';
 import { novaGravacao } from '../src/motor/caminho.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -113,19 +113,23 @@ describe('a cópia do save e a exportação', () => {
     expect(importarSave('{"versao": "dois"}', c)).toBeNull();
   });
 
-  it('no aparelho: o save que abre bem vira a cópia; o estragado volta da cópia', () => {
+  it('no aparelho: o save que abre bem vira a cópia quando o jogo confirma que abriu; o estragado volta da cópia', () => {
     const guardado = new Map<string, string>();
     const antes = globalThis.localStorage;
     globalThis.localStorage = { getItem: (k: string) => guardado.get(k) ?? null, setItem: (k: string, v: string) => void guardado.set(k, v) } as Storage;
     try {
       guardado.set(CHAVE_SAVE, bom);
       expect(carregar(c).vida).toEqual(lerSave(bom, c).vida);
+      // Lido, mas a tela ainda não desenhou: a cópia espera (um save que derruba o desenho não pode apagar a cópia boa).
+      expect(guardado.get(CHAVE_COPIA)).toBeUndefined();
+      confirmarAbertura();
       expect(guardado.get(CHAVE_COPIA)).toBe(bom);
       guardado.set(CHAVE_SAVE, estragado);
       const volta = carregar(c);
       expect(volta.vida).toEqual(lerSave(bom, c).vida);
       expect(volta.aviso).toBe(AVISO_COPIA);
-      // A cópia não é trocada pelo estragado.
+      // A cópia não é trocada pelo estragado, nem depois de o jogo abrir com ela.
+      confirmarAbertura();
       expect(guardado.get(CHAVE_COPIA)).toBe(bom);
     } finally {
       globalThis.localStorage = antes;
@@ -157,5 +161,71 @@ describe('a gravação depois do toque', () => {
     } finally {
       globalThis.localStorage = antes;
     }
+  });
+});
+
+describe('o save que o aparelho recusa (missão Ascensão AAA, I-150)', () => {
+  /** Um armazenamento de mentira com um teto de caracteres, como o do navegador. */
+  function comArmazenamento<T>(teto: number, corpo: (guardado: Map<string, string>) => T): T {
+    const guardado = new Map<string, string>();
+    const antes = globalThis.localStorage;
+    globalThis.localStorage = {
+      getItem: (k: string) => guardado.get(k) ?? null,
+      removeItem: (k: string) => void guardado.delete(k),
+      setItem: (k: string, v: string) => {
+        const outros = [...guardado].filter(([x]) => x !== k).reduce((n, [, x]) => n + x.length, 0);
+        if (outros + v.length > teto) throw new Error('QuotaExceededError');
+        guardado.set(k, v);
+      },
+    } as Storage;
+    try {
+      return corpo(guardado);
+    } finally {
+      globalThis.localStorage = antes;
+      avisarSeNaoGravar(null);
+    }
+  }
+  const umSave = lerSave(JSON.stringify({ versao: VERSAO_SAVE, vida: null, memoria: { vidas: 2, recencia: {}, acoes: {} }, vidas: 2 }), c);
+
+  it('sem espaço, a cópia de segurança sai para a vida caber, e ninguém é avisado', () => {
+    const texto = escreverSave(umSave);
+    comArmazenamento(texto.length + 40, (guardado) => {
+      guardado.set(CHAVE_COPIA, 'x'.repeat(60));
+      let avisos = 0;
+      avisarSeNaoGravar(() => avisos++);
+      expect(salvar(umSave)).toBe(true);
+      expect(guardado.get(CHAVE_SAVE)).toBe(texto);
+      expect(guardado.has(CHAVE_COPIA)).toBe(false);
+      expect(avisos).toBe(0);
+    });
+  });
+
+  it('se nem assim couber, o jogo continua e avisa (antes falhava calado)', () => {
+    comArmazenamento(10, (guardado) => {
+      let avisos = 0;
+      avisarSeNaoGravar(() => avisos++);
+      expect(salvar(umSave)).toBe(false);
+      expect(guardado.has(CHAVE_SAVE)).toBe(false);
+      expect(avisos).toBe(1);
+    });
+  });
+
+  it('as saídas da tela de recuperação: o save cru, voltar à cópia e largar só a vida (a memória fica)', () => {
+    comArmazenamento(1e9, (guardado) => {
+      const comVida = JSON.stringify({ versao: VERSAO_SAVE, vida: { qualquer: 'coisa' }, memoria: { vidas: 5, recencia: { a: 1 }, acoes: {} }, vidas: 5 });
+      guardado.set(CHAVE_SAVE, comVida);
+      expect(saveCru()).toBe(comVida);
+      expect(temCopiaParaVoltar()).toBe(false);
+      guardado.set(CHAVE_COPIA, escreverSave(umSave));
+      expect(temCopiaParaVoltar()).toBe(true);
+      expect(largarAVida()).toBe(true);
+      const semVida = JSON.parse(guardado.get(CHAVE_SAVE)!);
+      expect(semVida.vida).toBeNull();
+      expect(semVida.vidas).toBe(5);
+      expect(semVida.memoria.recencia).toEqual({ a: 1 });
+      expect(voltarACopia()).toBe(true);
+      expect(guardado.get(CHAVE_SAVE)).toBe(escreverSave(umSave));
+      expect(temCopiaParaVoltar()).toBe(false);
+    });
   });
 });

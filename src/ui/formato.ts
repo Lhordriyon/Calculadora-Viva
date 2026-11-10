@@ -1,4 +1,5 @@
 import { ATIVOS, FILHOS } from '../motor/constantes.ts';
+import type { Conteudo } from '../motor/conteudo.ts';
 import type { Parentesco } from '../motor/herdeiro.ts';
 import type { Atributo } from '../motor/esquema.ts';
 import { formatarDinheiro } from '../motor/texto.ts';
@@ -96,6 +97,34 @@ export function variacoes(h: Entrada): Map<string, number> {
  */
 export function visivel(h: Entrada): boolean {
   return !(h.tipo === 'regra' && h.ref === 'ano');
+}
+
+/** A idade em que o noticiário do país entra na história de quem joga. */
+export const IDADE_DO_NOTICIARIO = 13;
+
+/**
+ * A entrada é desenhada na linha do tempo? As regras miúdas do ano não (`visivel`), e, na infância, o noticiário do
+ * país também não: até os 12, um quarto das entradas era eleição, ciclo e mundo lá fora, e com a letra grande uma
+ * notícia ocupa a faixa inteira da história. A notícia continua no livro (o porquê do que ela causar aponta para ela), o
+ * selo da economia e a folha País mostram o país em qualquer idade.
+ */
+export function naLinhaDoTempo(h: Entrada): boolean {
+  return visivel(h) && !(h.tipo === 'mundo' && h.idade < IDADE_DO_NOTICIARIO);
+}
+
+/** Os sonhos de vida (bloco S1): a conquista de um sonho é marco dourado; a de um plano comum, não. */
+function sonhoRealizado(h: Entrada, c: Conteudo): boolean {
+  if (h.ref !== 'regra:projeto_conquista') return false;
+  const id = /^projeto:([a-z_]+)#/.exec(h.instancia ?? '')?.[1] ?? '';
+  return c.mundo.projetos.some((p) => p.sonho && p.id === id);
+}
+
+/**
+ * A entrada é um marco da trajetória? Os marcos do conteúdo (o ENEM, o primeiro emprego, a aposentadoria…), as
+ * conquistas da influência e o sonho realizado: o destaque dourado da linha do tempo e a vibração do momento.
+ */
+export function ehMarco(h: Entrada, c: Conteudo): boolean {
+  return ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && c.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || sonhoRealizado(h, c);
 }
 
 /** Os efeitos visíveis de uma entrada, para os chips da linha do tempo. */

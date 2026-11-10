@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { conteudo } from '../conteudo.ts';
-import { carregar, gravarJa, salvarDepois, type Save } from '../jogo/salvar.ts';
+import { avisarSeNaoGravar, carregar, confirmarAbertura, escreverSave, gravarJa, salvarDepois, type Save } from '../jogo/salvar.ts';
 import { copiarVida } from '../motor/livro.ts';
 import type { Verbo } from '../motor/constantes.ts';
 import { operar, type Operacao } from '../motor/carteira.ts';
@@ -24,7 +24,9 @@ import { Projetos } from './Projetos.tsx';
 import { LinhaDoTempo } from './LinhaDoTempo.tsx';
 import { Menu } from './Menu.tsx';
 import { Palco } from './Palco.tsx';
-import { NO_APP, visivel } from './formato.ts';
+import { ehMarco, naLinhaDoTempo, NO_APP } from './formato.ts';
+import { exportarSave } from './exportar.ts';
+import { vibrar } from './vibrar.ts';
 import { useVoltar } from './voltar.ts';
 
 /** Rola a linha do tempo até a entrada `id` (o começo da história do ano), ou até o fim se ela couber. */
@@ -62,6 +64,10 @@ export function App() {
   const [folha, setFolha] = useState<Folha>(null);
   /** "Nova vida" (no menu, no palco, no cartão) abre a escolha da origem em vez de sortear. */
   const [escolhendoVida, setEscolhendoVida] = useState(false);
+  /** O que deu errado e quem joga precisa saber: o motor que tropeçou num toque, ou o save que o aparelho não gravou. */
+  const [tropeco, setTropeco] = useState<{ tipo: 'motor' | 'save'; erro?: string; mensagem?: string } | null>(null);
+  /** O cartão abriu sozinho porque a vida acabou agora (a despedida: a frase da morte chega antes do resto). */
+  const [despedida, setDespedida] = useState(false);
   const vistas = useRef(save.vida?.historico.length ?? 0);
   const novasDesde = vistas.current;
   const vida = save.vida;
@@ -81,7 +87,7 @@ export function App() {
     if (!linha || !vida) return;
     const desde = Math.min(contados.current, tamanho);
     contados.current = tamanho;
-    ancora.current = vida.historico.slice(desde).find(visivel)?.id ?? null;
+    ancora.current = vida.historico.slice(desde).find(naLinhaDoTempo)?.id ?? null;
     rolar(linha, ancora.current, !matchMedia('(prefers-reduced-motion: reduce)').matches);
   }, [linha, tamanho, vida?.pendente?.instancia]);
   useEffect(() => {
@@ -130,9 +136,36 @@ export function App() {
     };
   }, []);
 
+  // A tela desenhou com o save que foi lido: só agora ele vira a cópia de segurança (salvar.ts › confirmarAbertura).
+  useEffect(() => confirmarAbertura(), []);
+
+  // O save que não grava (armazenamento cheio ou bloqueado) avisa uma vez por sessão: o jogo continua, mas a vida pode
+  // se perder ao fechar, e exportar é a saída.
+  const avisouDoSave = useRef(false);
+  useEffect(() => {
+    avisarSeNaoGravar(() => {
+      if (avisouDoSave.current) return;
+      avisouDoSave.current = true;
+      setTropeco({ tipo: 'save' });
+    });
+    return () => avisarSeNaoGravar(null);
+  }, []);
+
   function guardar(novo: Save) {
     salvarDepois(novo);
     setSave(novo);
+  }
+
+  /**
+   * O motor mexe numa cópia da vida: se ele lançar um erro no meio, a vida da tela continua inteira. Antes, o toque
+   * não fazia nada e o erro se repetia calado a cada toque; agora quem joga fica sabendo e tem como sair.
+   */
+  function tentar(passo: () => void): void {
+    try {
+      passo();
+    } catch (erro) {
+      setTropeco({ tipo: 'motor', erro: erro instanceof Error ? erro.message : String(erro) });
+    }
   }
 
   function novaVida(origem?: EscolhaOrigem) {
@@ -163,15 +196,12 @@ export function App() {
   /** A história segue com quem herda, no mesmo mundo, com o que sobrou da herança. */
   function continuar() {
     if (!vida || vida.vivo) return;
-    let nova: EstadoVida;
-    try {
-      nova = continuarComoHerdeiro(vida, conteudo);
-    } catch {
-      return;
-    }
-    vistas.current = 0;
-    guardar({ ...save, vida: nova, gravacao: novaGravacao(nova, save.memoria) });
-    setFolha(null);
+    tentar(() => {
+      const nova = continuarComoHerdeiro(vida, conteudo);
+      vistas.current = 0;
+      guardar({ ...save, vida: nova, gravacao: novaGravacao(nova, save.memoria) });
+      setFolha(null);
+    });
   }
 
   /** Guarda a vida e o comando que a levou até ali (a gravação do caminho não tomado; caminho.ts). */
@@ -180,26 +210,36 @@ export function App() {
     const comGravacao = gravacao ? { gravacao } : {};
     if (!nova.vivo && save.vida?.vivo) {
       guardar({ ...save, vida: nova, memoria: lembrarVida(save.memoria, nova), vidas: save.vidas + 1, ...comGravacao });
+      setDespedida(true);
       setFolha('cartao');
+      vibrar('morte');
     } else {
       guardar({ ...save, vida: nova, ...comGravacao });
+      // O momento se sente: o marco e o sonho realizado que o toque trouxe; senão, o aceno curto de quem decidiu.
+      const novas = nova.historico.slice(save.vida?.historico.length ?? 0);
+      if (novas.some((h) => ehMarco(h, conteudo))) vibrar('marco');
+      else if (comando.t === 'escolher' || comando.t === 'agir') vibrar('decisao');
     }
   }
 
   function maisUmAno() {
     if (!vida?.vivo || vida.pendente) return;
-    const nova = copiarVida(vida);
-    avancarAno(nova, conteudo, save.memoria);
-    concluir(nova, { t: 'ano' });
+    tentar(() => {
+      const nova = copiarVida(vida);
+      avancarAno(nova, conteudo, save.memoria);
+      concluir(nova, { t: 'ano' });
+    });
   }
 
   /** Gasta uma ficha do ano na ação escolhida; quando as fichas acabam, o ano passa. */
   function agirNoAno(verbo: Verbo, escolha?: { id: string; ator?: string | undefined }) {
     if (!vida?.vivo || vida.pendente) return;
-    const nova = copiarVida(vida);
-    agir(nova, conteudo, verbo, escolha);
-    if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
-    concluir(nova, { t: 'agir', verbo, ...(escolha ? { escolha } : {}) });
+    tentar(() => {
+      const nova = copiarVida(vida);
+      agir(nova, conteudo, verbo, escolha);
+      if (nova.vivo && !nova.pendente && jaAgiu(nova)) avancarAno(nova, conteudo, save.memoria);
+      concluir(nova, { t: 'agir', verbo, ...(escolha ? { escolha } : {}) });
+    });
   }
 
   /** Mexer no dinheiro, comprar, tentar vaga e se candidatar não gastam a ficha do ano nem passam o tempo. */
@@ -218,11 +258,13 @@ export function App() {
 
   function responder(indice: number) {
     if (!vida?.pendente) return;
-    const nova = copiarVida(vida);
-    // A entrada que a escolha vai fazer: o ponto em que o caminho não tomado troca a opção.
-    const entrada = nova.proximoId;
-    escolher(nova, conteudo, indice);
-    concluir(nova, { t: 'escolher', i: indice, entrada });
+    tentar(() => {
+      const nova = copiarVida(vida);
+      // A entrada que a escolha vai fazer: o ponto em que o caminho não tomado troca a opção.
+      const entrada = nova.proximoId;
+      escolher(nova, conteudo, indice);
+      concluir(nova, { t: 'escolher', i: indice, entrada });
+    });
   }
 
   if (!vida || escolhendoVida) {
@@ -268,11 +310,15 @@ export function App() {
         <CartaoVida
           resumo={resumo}
           endereco={endereco}
-          aoFechar={() => setFolha(null)}
+          aoFechar={() => {
+            setFolha(null);
+            setDespedida(false);
+          }}
           aoNovaVida={pedirNovaVida}
           aoContinuar={continuar}
           gravadas={gravadas}
           aoImaginar={imaginar}
+          despedida={despedida}
         />
       )}
       {folha === 'familia' && (
@@ -292,7 +338,38 @@ export function App() {
       {folha === 'pais' && <Pais vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'planos' && <Projetos vida={vida} conteudo={conteudo} aoOperar={operarDinheiro} aoFechar={() => setFolha(null)} />}
       {folha === 'menu' && <Menu viva={vida.vivo} save={save} conteudo={conteudo} aoFechar={() => setFolha(null)} aoNovaVida={pedirNovaVida} aoImportar={importar} />}
-      {save.aviso && folha === null && (
+      {tropeco && (
+        <Folha id="titulo-tropeco" titulo={tropeco.tipo === 'motor' ? 'O jogo tropeçou' : 'O save não gravou'} aoFechar={() => setTropeco(null)}>
+          {tropeco.tipo === 'motor' ? (
+            <p class="meta">Algo deu errado ao viver este momento. A sua vida ficou como estava, nada se perdeu. Tente de novo; se o erro voltar, exporte o save (ele mostra o problema a quem cuida do jogo) e comece outra vida pelo menu.</p>
+          ) : (
+            <p class="meta">O aparelho não deixou guardar a vida (armazenamento cheio ou bloqueado). O jogo continua, mas o que você viver agora pode se perder ao fechar. Exporte o save para não depender do aparelho.</p>
+          )}
+          <div class="acoes">
+            <button class="botao" type="button" autoFocus onClick={() => setTropeco(null)}>
+              {tropeco.tipo === 'motor' ? 'Tentar de novo' : 'Continuar jogando'}
+            </button>
+            <button
+              class="botao secundario"
+              type="button"
+              onClick={() =>
+                void exportarSave(escreverSave(save)).then((frase) => {
+                  if (frase) setTropeco({ ...tropeco, mensagem: frase });
+                })
+              }
+            >
+              Exportar o save
+            </button>
+          </div>
+          {tropeco.mensagem && (
+            <p class="aviso" role="status">
+              {tropeco.mensagem}
+            </p>
+          )}
+          {tropeco.erro && <p class="meta tropeco-erro">O erro: {tropeco.erro}</p>}
+        </Folha>
+      )}
+      {save.aviso && folha === null && !tropeco && (
         <Folha id="titulo-aviso" titulo="Aviso" aoFechar={entendiAviso}>
           <p class="meta">{save.aviso}</p>
           <div class="acoes">

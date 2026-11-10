@@ -20,7 +20,7 @@
  *                    25, com um evento esperando a escolha; s75, um deputado federal de 75 anos; filhos, uma vida com
  *                    vários filhos; novos, o real com novidade nos verbos (o ponto de novidade).
  *   Opções:
- *     --so=grupos    só estes grupos (vírgulas): matriz, varredura, avanco, vidas, toques, folhas, cores, estatico
+ *     --so=grupos    só estes grupos (vírgulas): matriz, varredura, avanco, vidas, toques, folhas, falhas, cores, estatico
  *     --sem=grupos   todos menos estes (ex.: --sem=toques,vidas, os mais lentos, para iterar)
  *     --fonte=DIR    o repositório cujo src/ui/ os critérios de código leem (padrão: o deste arquivo)
  *     --paralelo=N   páginas abertas ao mesmo tempo (padrão: os núcleos da máquina, no mínimo 2). Com a máquina
@@ -72,7 +72,7 @@ const URL_BASE = String(posicionais[0] || opcao('url', 'http://localhost:4173/Ca
 const DIR_SAVES = path.resolve(String(posicionais[1] || opcao('saves', path.join(RAIZ, 'test', 'telas'))));
 const PARALELO = Math.max(1, Number(opcao('paralelo', Math.max(2, os.cpus().length))) || 2);
 const FONTE = path.resolve(String(opcao('fonte', RAIZ)));
-const GRUPOS = ['matriz', 'varredura', 'avanco', 'vidas', 'toques', 'folhas', 'cores', 'estatico'];
+const GRUPOS = ['matriz', 'varredura', 'avanco', 'vidas', 'toques', 'folhas', 'falhas', 'cores', 'estatico'];
 /** Os grupos que abrem o navegador (só "estatico" roda sem servidor e sem Playwright). */
 const NO_NAVEGADOR = GRUPOS.filter((g) => g !== 'estatico');
 const so = opcao('so', '');
@@ -763,6 +763,16 @@ async function jogarNaPagina({ semente, eventos: maxEventos, passos }) {
       opcoes: ops.length,
       foraDaTela: ops.filter((o) => !inteira(o)).length,
       rola: cartao.scrollHeight > cartao.clientHeight + 1,
+      // O texto do evento que rola por dentro (px escondidos) e a história que ainda aparece atrás (0 se ela saiu).
+      textoCortado: (() => {
+        const tx = q('.cartao-evento .texto');
+        return tx ? Math.max(0, tx.scrollHeight - tx.clientHeight) : 0;
+      })(),
+      historiaVisivel: vida && getComputedStyle(vida).visibility !== 'hidden' ? Math.round(vida.getBoundingClientRect().height) : 0,
+      linhaDoTexto: (() => {
+        const tx = q('.cartao-evento .texto');
+        return tx ? parseFloat(getComputedStyle(tx).lineHeight) || 0 : 0;
+      })(),
       quando: t('.cartao-evento .quando', 80).trim(),
       // O começo do texto do evento, para achar a história quando o critério falha.
       inicio: t('.cartao-evento .texto', 60).trim(),
@@ -1114,6 +1124,130 @@ async function tarefaFolhas(browser, c) {
   }
 }
 
+/**
+ * As falhas tratadas (missão Ascensão AAA, I-150): o save que o esquema aceita e o desenho não aguenta, o motor que
+ * lança um erro num toque e o armazenamento que recusa gravar. Em nenhuma o jogo fica mudo ou em branco.
+ */
+async function tarefaFalhas(browser) {
+  const passos = [];
+  const passo = (cenario, nome, ok) => passos.push({ cenario, nome, ok: !!ok });
+  const novo = async (texto, antesDeAbrir) => {
+    const ctx = await browser.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, colorScheme: 'dark', locale: 'pt-BR', serviceWorkers: 'block', reducedMotion: 'reduce' });
+    await ctx.addInitScript(() => {
+      const real = performance.now.bind(performance);
+      window.__telasAdiantado = 0;
+      performance.now = () => real() + window.__telasAdiantado;
+    });
+    await ctx.addInitScript((t) => {
+      try {
+        if (location.protocol.startsWith('http') && !sessionStorage.getItem('telas')) {
+          localStorage.setItem('trajetoria', t);
+          sessionStorage.setItem('telas', '1');
+        }
+      } catch {
+        // about:blank não tem armazenamento
+      }
+    }, texto);
+    if (antesDeAbrir) await ctx.addInitScript(antesDeAbrir);
+    const page = await ctx.newPage();
+    const erros = [];
+    page.on('pageerror', (e) => erros.push(e.message));
+    await page.goto(URL_BASE, { waitUntil: 'load' });
+    await page.waitForSelector('button', { timeout: 15000 });
+    await espera(300);
+    return { ctx, page, erros };
+  };
+  const adiantar = (page) => page.evaluate(() => (window.__telasAdiantado += 1000));
+  const texto = (page, sel) => page.textContent(sel, { timeout: 2000 }).catch(() => '');
+  const viverOuResponder = async (page) => {
+    await adiantar(page);
+    const opcao = await page.$('.cartao-evento .opcao:not([disabled])');
+    if (opcao) await opcao.click();
+    else await page.click('.botao.viver');
+    await espera(900);
+  };
+
+  // 1. O save que derruba o desenho: a tela de recuperação, com as saídas, e a saída por outra vida (com a memória).
+  {
+    const save = JSON.parse(lerSave('real').texto);
+    delete save.vida.entidades.eu;
+    const { ctx, page } = await novo(JSON.stringify(save));
+    try {
+      passo('desenho', 'a tela de recuperação aparece, não a tela em branco', /tropeçou/.test((await texto(page, 'h1')) || ''));
+      const botoes = await page.$$eval('button', (bs) => bs.map((b) => b.textContent.trim()));
+      passo('desenho', 'abrir de novo, exportar o save e começar outra vida estão na tela', ['Abrir de novo', 'Exportar o save', 'Começar outra vida'].every((b) => botoes.includes(b)));
+      await page.click('button:has-text("Começar outra vida")');
+      passo('desenho', 'largar a vida pede um segundo toque', await page.$('button:has-text("Confirmar: largar esta vida")'));
+      const vidasAntes = await page.evaluate(() => JSON.parse(localStorage.getItem('trajetoria')).vidas);
+      await page.click('button:has-text("Confirmar")');
+      await page.waitForSelector('button:has-text("Nascer")', { timeout: 10000 }).catch(() => null);
+      const depois = await page.evaluate(() => JSON.parse(localStorage.getItem('trajetoria')));
+      passo('desenho', 'depois de confirmar, o jogo abre para nascer e a conta de vidas fica', depois.vida === null && depois.vidas === vidasAntes && (await page.$('button:has-text("Nascer")')));
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // 2. O motor que lança um erro num toque: a folha avisa e mostra o erro, a vida fica como estava, e tentar de novo anda.
+  {
+    const { ctx, page, erros } = await novo(lerSave('marco').texto, () => {
+      const real = window.structuredClone.bind(window);
+      window.structuredClone = (x) => {
+        if (window.__quebrar) throw new Error('falha de teste no motor');
+        return real(x);
+      };
+    });
+    try {
+      const idadeAntes = await page.evaluate(() => JSON.parse(localStorage.getItem('trajetoria')).vida.idade);
+      await page.evaluate(() => (window.__quebrar = true));
+      await adiantar(page);
+      await page.click('.botao.viver');
+      await espera(300);
+      passo('motor', 'a folha "O jogo tropeçou" aparece', /tropeçou/.test((await texto(page, '#titulo-tropeco')) || ''));
+      passo('motor', 'a folha mostra o erro', ((await texto(page, '.tropeco-erro')) || '').includes('falha de teste no motor'));
+      passo('motor', 'nenhum erro fica solto na página', erros.length === 0);
+      await page.evaluate(() => (window.__quebrar = false));
+      await page.click('button:has-text("Tentar de novo")');
+      await espera(200);
+      await adiantar(page);
+      await page.click('.botao.viver');
+      await espera(900);
+      const idadeDepois = await page.evaluate(() => JSON.parse(localStorage.getItem('trajetoria')).vida.idade);
+      passo('motor', 'depois de tentar de novo, o ano passa', idadeDepois === idadeAntes + 1);
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // 3. O armazenamento que recusa gravar: a cópia sai para a vida caber; se nem assim, o aviso aparece uma vez.
+  {
+    const { ctx, page } = await novo(lerSave('marco').texto, () => {
+      const real = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (k, v) {
+        if (window.__cheio && k === 'trajetoria' && (window.__cheio === 'sempre' || localStorage.getItem('trajetoria:copia') !== null)) throw new DOMException('cheio', 'QuotaExceededError');
+        return real.call(this, k, v);
+      };
+    });
+    try {
+      const tinhaCopia = await page.evaluate(() => localStorage.getItem('trajetoria:copia') !== null);
+      await page.evaluate(() => (window.__cheio = 'com a cópia'));
+      await viverOuResponder(page);
+      const r = await page.evaluate(() => ({ copia: localStorage.getItem('trajetoria:copia') !== null, aviso: !!document.querySelector('#titulo-tropeco') }));
+      passo('save', 'sem espaço, a cópia de segurança sai, a vida grava e ninguém é incomodado', tinhaCopia && !r.copia && !r.aviso);
+      await page.evaluate(() => (window.__cheio = 'sempre'));
+      await viverOuResponder(page);
+      passo('save', 'se nem assim grava, a folha "O save não gravou" aparece', /save não gravou/.test((await texto(page, '#titulo-tropeco')) || ''));
+      await page.click('button:has-text("Continuar jogando")').catch(() => null);
+      await espera(200);
+      await viverOuResponder(page);
+      passo('save', 'o aviso aparece uma vez por sessão, não a cada toque', !(await page.$('#titulo-tropeco')));
+    } finally {
+      await ctx.close();
+    }
+  }
+  return { tipo: 'falhas', rotulo: 'falhas tratadas', erros: [], passos };
+}
+
 /** f20: o voltar do sistema com uma folha aberta fecha a folha ou sai do jogo? */
 async function tarefaVoltar(browser, c) {
   const { ctx, page, erros } = await abrir(browser, { ...c, antes: 'about:blank' });
@@ -1255,6 +1389,7 @@ function planejar() {
     for (const save of ['real', 's75']) for (const k of [1.15, 1.45]) tarefa(2, `folhas ${save} k${k}`, (b) => tarefaFolhas(b, { save, w: 360, h: 780, k, tema: 'dark' }));
     tarefa(1, 'voltar do sistema', (b) => tarefaVoltar(b, { save: 'real', w: 360, h: 780, k: 1, tema: 'dark' }));
   }
+  if (ativos.has('falhas')) tarefa(3, 'falhas tratadas', (b) => tarefaFalhas(b));
   for (const c of telas.values()) tarefa(1, rotulo(c), (b) => tarefaTela(b, c));
   return tarefas;
 }
@@ -1414,6 +1549,34 @@ function avaliar(res) {
     criterio(3, 'opções fora da tela nos eventos das vidas (360×780 com 1,15, 1,45 e 1,5; 412×915 com 1,5)', nos(() => true), (e) => e.foraDaTela, '≤', 0, {
       porque: (e) => `${e.foraDaTela} de ${e.opcoes} opções${e.rola ? ', o cartão rola' : ''}${e.inicio ? ` ("${e.inicio}…")` : ''}`,
     });
+    // Missão AAA (I-152): o evento é o que se lê agora. O texto dele só rola por dentro quando a história de trás já
+    // cedeu tudo; e o que sobra da história nunca é uma fresta (menos de uma linha e meia do texto do evento).
+    criterio(3, 'texto do evento cortado com a história ainda na tela (px de história), nos eventos das vidas', nos(() => true), (e) => (e.textoCortado > 1 ? e.historiaVisivel : 0), '≤', 0, {
+      porque: (e) => `${e.textoCortado} px do texto escondidos com ${e.historiaVisivel} px de história${e.inicio ? ` ("${e.inicio}…")` : ''}`,
+    });
+    criterio(3, 'fresta de história nos eventos das vidas (história visível com menos de uma linha e meia)', nos(() => true), (e) => (e.historiaVisivel > 0 && e.historiaVisivel < e.linhaDoTexto * 1.5 - 1 ? 1 : 0), '≤', 0, {
+      porque: (e) => `${e.historiaVisivel} px de história (a linha do texto tem ${Math.round(e.linhaDoTexto)} px)${e.inicio ? ` ("${e.inicio}…")` : ''}`,
+    });
+    {
+      const em145 = nos(em360(1.45));
+      const cortados = em145.filter((e) => e.textoCortado > 1).length;
+      const parte = em145.length ? cortados / em145.length : null;
+      out.push({ item: 3, nome: 'eventos com o texto rolando por dentro, 360×780 com 1,45 (era 56% antes da missão AAA)', valor: parte === null ? 'sem medida' : `${(parte * 100).toFixed(1)}%`, limite: '≤ 25%', ok: parte !== null && parte <= 0.25, onde: `${cortados} de ${em145.length} eventos` });
+    }
+  }
+
+  if (ativos.has('falhas')) {
+    // Item 10 (missão AAA): o jogo não fica mudo nem em branco quando algo quebra.
+    const passos = de('falhas').flatMap((m) => m.passos);
+    for (const [cenario, nome] of [
+      ['desenho', 'o save que derruba o desenho abre a tela de recuperação, com saída (passos que falharam)'],
+      ['motor', 'o erro do motor num toque avisa, guarda a vida e deixa tentar de novo (passos que falharam)'],
+      ['save', 'o armazenamento que recusa gravar libera a cópia e, se não bastar, avisa uma vez (passos que falharam)'],
+    ]) {
+      const dele = passos.filter((x) => x.cenario === cenario);
+      const ruins = dele.filter((x) => !x.ok);
+      out.push({ item: 10, nome, valor: dele.length ? ruins.length : 'sem medida', limite: '= 0', ok: dele.length > 0 && ruins.length === 0, onde: ruins.length ? ruins.map((x) => x.nome).join(' | ') : `${dele.length} passos` });
+    }
   }
 
   if (ativos.has('cores')) {

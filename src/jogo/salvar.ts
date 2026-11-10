@@ -274,11 +274,24 @@ export function carregar(conteudo: Conteudo): Save {
   try {
     const principal = globalThis.localStorage?.getItem(CHAVE_SAVE) ?? null;
     const { save, bom } = lerComCopia(principal, globalThis.localStorage?.getItem(CHAVE_COPIA) ?? null, conteudo);
-    if (bom && principal) guardarCopia(principal);
+    paraACopia = bom && principal ? principal : null;
     return save;
   } catch {
     return saveVazio();
   }
+}
+
+/** O save que foi lido bem e ainda não virou a cópia de segurança: vira quando o jogo confirma que abriu. */
+let paraACopia: string | null = null;
+
+/**
+ * O jogo abriu e desenhou a vida: o save que foi lido vira a cópia de segurança. Antes ele virava a cópia ao ser lido,
+ * e um save que o esquema aceita e a tela não aguenta apagava a última cópia boa na hora de derrubar o jogo.
+ */
+export function confirmarAbertura(): void {
+  if (paraACopia === null) return;
+  guardarCopia(paraACopia);
+  paraACopia = null;
 }
 
 function guardarCopia(texto: string): void {
@@ -316,10 +329,84 @@ export function gravarJa(): void {
   salvar(save);
 }
 
-export function salvar(save: Save): void {
+let aoNaoGravar: (() => void) | null = null;
+
+/** Quem quer saber quando o save não gravou (a interface avisa quem joga; null desliga). */
+export function avisarSeNaoGravar(fn: (() => void) | null): void {
+  aoNaoGravar = fn;
+}
+
+/**
+ * Grava o save do aparelho; devolve se gravou. Sem espaço, a vida em andamento vale mais que o resto: sai a cópia de
+ * segurança e tenta de novo; depois, sai a gravação do caminho não tomado. Se nem assim, o jogo continua e avisa (antes
+ * falhava calado, e a vida se perdia ao fechar o app sem ninguém saber).
+ */
+export function salvar(save: Save): boolean {
+  const ls = globalThis.localStorage;
+  const tentativas: (() => void)[] = [
+    () => ls.setItem(CHAVE_SAVE, escreverSave(save)),
+    () => {
+      ls.removeItem(CHAVE_COPIA);
+      ls.setItem(CHAVE_SAVE, escreverSave(save));
+    },
+    () => {
+      const { gravacao: _semOCaminho, ...semGravacao } = save;
+      ls.setItem(CHAVE_SAVE, escreverSave(semGravacao));
+    },
+  ];
+  if (ls) {
+    for (const tentar of tentativas) {
+      try {
+        tentar();
+        return true;
+      } catch {
+        // Sem espaço (ou armazenamento bloqueado): a próxima tentativa guarda menos.
+      }
+    }
+  }
+  aoNaoGravar?.();
+  return false;
+}
+
+/** O save do aparelho como está gravado (para exportar quando o jogo não consegue abrir a vida). */
+export function saveCru(): string | null {
   try {
-    globalThis.localStorage?.setItem(CHAVE_SAVE, escreverSave(save));
+    return globalThis.localStorage?.getItem(CHAVE_SAVE) ?? null;
   } catch {
-    // Sem armazenamento (ou cheio), o jogo continua; só não lembra depois.
+    return null;
+  }
+}
+
+/** Há uma cópia de segurança diferente do save principal para voltar a ela? */
+export function temCopiaParaVoltar(): boolean {
+  try {
+    const copia = globalThis.localStorage?.getItem(CHAVE_COPIA) ?? null;
+    return copia !== null && cascaDe(copia) !== null && copia !== globalThis.localStorage?.getItem(CHAVE_SAVE);
+  } catch {
+    return false;
+  }
+}
+
+/** O save principal volta a ser a cópia da última vez que o jogo abriu bem (o que veio depois dela se perde). */
+export function voltarACopia(): boolean {
+  try {
+    const copia = globalThis.localStorage?.getItem(CHAVE_COPIA) ?? null;
+    if (copia === null || cascaDe(copia) === null) return false;
+    globalThis.localStorage?.setItem(CHAVE_SAVE, copia);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** A vida em andamento sai do save; a memória entre vidas e a conta de vidas ficam (o texto de antes sai pelo exportar). */
+export function largarAVida(): boolean {
+  try {
+    const casca = cascaDe(globalThis.localStorage?.getItem(CHAVE_SAVE) ?? null);
+    const texto = JSON.stringify({ versao: casca?.versao ?? VERSAO_SAVE, vida: null, memoria: casca?.memoria ?? novaMemoria(), vidas: casca?.vidas ?? 0 });
+    globalThis.localStorage?.setItem(CHAVE_SAVE, texto);
+    return true;
+  } catch {
+    return false;
   }
 }

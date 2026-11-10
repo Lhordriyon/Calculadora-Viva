@@ -49,16 +49,22 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
   useEffect(() => setAberto(null), [momento]);
   // O voltar do celular fecha a lista do verbo.
   useVoltar(aberto !== null, () => setAberto(null));
-  // As opções do evento nunca saem da tela: primeiro a história cede até três linhas, depois o texto do evento
-  // rola (até duas); se ainda faltar, a história cede o resto (só neste evento).
+  // O evento é o que se lê agora: as opções nunca saem da tela, e o texto dele só rola por dentro quando a história
+  // de trás já cedeu tudo (só neste evento). Com a letra do dono (1,45), o texto ficava cortado em 56% dos eventos
+  // com a história ainda na tela. O que sobraria dela em menos de uma linha e meia é uma fresta: sai inteira.
   const cartao = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     const c = cartao.current;
     const linha = c?.closest('#app')?.querySelector<HTMLElement>('main.vida');
     if (!c || !linha) return;
+    const texto = c.querySelector<HTMLElement>('.texto');
     const ceder = () => {
-      const falta = c.scrollHeight - c.clientHeight;
-      if (falta > 1) linha.style.setProperty('--min-vida', `${Math.max(0, linha.clientHeight - falta)}px`);
+      const falta = c.scrollHeight - c.clientHeight + (texto ? texto.scrollHeight - texto.clientHeight : 0);
+      if (falta <= 1) return;
+      const sobra = Math.max(0, linha.clientHeight - falta);
+      const fresta = (texto ? parseFloat(getComputedStyle(texto).lineHeight) || 28 : 28) * 1.5;
+      linha.style.setProperty('--min-vida', `${sobra}px`);
+      linha.classList.toggle('sem-historia', sobra < fresta);
     };
     ceder();
     const olho = new ResizeObserver(ceder);
@@ -66,6 +72,7 @@ export function Palco({ vida, acoes, aoAvancar, aoAgir, aoEscolher, aoVerCartao,
     return () => {
       olho.disconnect();
       linha.style.removeProperty('--min-vida');
+      linha.classList.remove('sem-historia');
     };
   }, [chave]);
 

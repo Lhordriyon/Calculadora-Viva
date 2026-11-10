@@ -28,6 +28,8 @@ interface Props {
   /** As entradas das escolhas gravadas: só elas têm caminho não tomado. */
   gravadas?: ReadonlySet<number>;
   aoImaginar?: (entrada: number) => VidaNaoVivida | { erro: string };
+  /** O cartão abriu sozinho porque a vida acabou agora: o nome e a frase da morte chegam antes do resto. */
+  despedida?: boolean;
 }
 
 /** "Se aos 17 você tivesse escolhido…": a outra vida em duas frases, e o aviso de que é um experimento. */
@@ -49,7 +51,7 @@ function NaoVivida({ v, genero }: { v: VidaNaoVivida | { erro: string }; genero:
   );
 }
 
-export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar, gravadas, aoImaginar }: Props) {
+export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar, gravadas, aoImaginar, despedida = false }: Props) {
   const [naoVividas, setNaoVividas] = useState<Record<number, VidaNaoVivida | { erro: string }>>({});
   const [imagem, setImagem] = useState<{ blob: Blob; url: string } | null>(null);
   const [aviso, setAviso] = useState('');
@@ -80,7 +82,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
   }
 
   return (
-    <Folha id="titulo-cartao" titulo={resumo.nomeCompleto} classe="cartao-vida" aoFechar={aoFechar} tituloRef={titulo}>
+    <Folha id="titulo-cartao" titulo={resumo.nomeCompleto} classe={despedida ? 'cartao-vida despedida' : 'cartao-vida'} aoFechar={aoFechar} tituloRef={titulo}>
         <p class="meta">
           {resumo.anoNascimento}–{resumo.anoFinal} · {anos(resumo.idade)} · {resumo.cidade}, {resumo.uf}
         </p>

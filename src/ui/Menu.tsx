@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { Folha } from './Folha.tsx';
 import { escreverSave, importarSave, type Save } from '../jogo/salvar.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
-import { baixar } from './cartaoImagem.ts';
+import { exportarSave } from './exportar.ts';
 import { anos, LINK_APK, NO_APP } from './formato.ts';
+import { ligarVibracao, podeVibrar, vibracaoLigada, vibrar } from './vibrar.ts';
 
 interface Props {
   viva: boolean;
@@ -27,6 +28,7 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
   const [mensagem, setMensagem] = useState('');
   const [colando, setColando] = useState(false);
   const [trazido, setTrazido] = useState<Save | null>(null);
+  const [vibra, setVibra] = useState(vibracaoLigada);
   const arquivo = useRef<HTMLInputElement>(null);
   const colado = useRef<HTMLTextAreaElement>(null);
   const resposta = useRef<HTMLDivElement>(null);
@@ -37,32 +39,9 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
   }, [trazido, mensagem]);
 
 
-  /** O save sai como arquivo de texto: compartilhado (celular), copiado (no app) ou baixado. */
   async function exportar() {
-    const texto = escreverSave(save);
-    const nome = `trajetoria-save-${new Date().toISOString().slice(0, 10)}.txt`;
-    const volta = 'Para trazer de volta, use “Importar um save”.';
-    try {
-      const doc = new File([texto], nome, { type: 'text/plain' });
-      if (typeof navigator.share === 'function' && navigator.canShare?.({ files: [doc] })) {
-        await navigator.share({ files: [doc], title: 'Trajetória: save' });
-        setMensagem(`Save enviado. ${volta}`);
-        return;
-      }
-    } catch (e) {
-      if ((e as Error).name === 'AbortError') return;
-    }
-    if (NO_APP) {
-      try {
-        await navigator.clipboard.writeText(texto);
-        setMensagem(`Save copiado. Cole numa nota ou mande para você mesmo. ${volta}`);
-        return;
-      } catch {
-        // Sem área de transferência: baixa o arquivo.
-      }
-    }
-    baixar(new Blob([texto], { type: 'text/plain' }), nome);
-    setMensagem(`Save baixado (${nome}). ${volta}`);
+    const frase = await exportarSave(escreverSave(save));
+    if (frase) setMensagem(frase);
   }
 
   function ler(texto: string) {
@@ -90,6 +69,26 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
             </a>
           )}
         </div>
+        {podeVibrar() && (
+          <>
+            <h3 class="menu-save">O aparelho</h3>
+            <div class="acoes">
+              <button
+                class="botao secundario"
+                type="button"
+                role="switch"
+                aria-checked={vibra}
+                onClick={() => {
+                  ligarVibracao(!vibra);
+                  setVibra(!vibra);
+                  if (!vibra) vibrar('decisao');
+                }}
+              >
+                Vibração nas escolhas: {vibra ? 'ligada' : 'desligada'}
+              </button>
+            </div>
+          </>
+        )}
         <h3 class="menu-save">O save</h3>
         <p class="meta">Fica neste aparelho. Exporte para guardar uma cópia ou levar para outro aparelho.</p>
         <div class="acoes">

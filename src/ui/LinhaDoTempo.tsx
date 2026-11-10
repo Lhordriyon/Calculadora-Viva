@@ -6,7 +6,7 @@ import type { Entrada, EstadoVida } from '../motor/tipos.ts';
 import { capitulosDe, type Capitulo } from '../motor/capitulos.ts';
 import { porqueDe } from '../motor/virada.ts';
 import { conteudo } from '../conteudo.ts';
-import { avisosDeInflacao, chipDoBalanco, chipDosAlugueis, chipsDe, visivel, type Chip } from './formato.ts';
+import { avisosDeInflacao, chipDoBalanco, chipDosAlugueis, chipsDe, ehMarco, naLinhaDoTempo, visivel, type Chip } from './formato.ts';
 import { Icone } from './Icones.tsx';
 
 /** O verbo de uma ação ("Estudar"), para a etiqueta da entrada. */
@@ -17,10 +17,6 @@ function verboDe(h: Entrada, c: Conteudo): string | undefined {
 }
 
 /** Operações da folha (e regras que contam algo) pelo grupo do ref: "empresa:abrir" → Empresa. */
-/** Os sonhos de vida (bloco S1): a conquista de um sonho é marco dourado; a de um plano comum, não. */
-const SONHOS: ReadonlySet<string> = new Set(conteudo.mundo.projetos.filter((p) => p.sonho).map((p) => p.id));
-const sonhoRealizado = (h: Entrada): boolean => h.ref === 'regra:projeto_conquista' && SONHOS.has(/^projeto:([a-z_]+)#/.exec(h.instancia ?? '')?.[1] ?? '');
-
 const GRUPOS: Record<string, string> = { empresa: 'Empresa', bens: 'Compra', carreira: 'Carreira', poder: 'Política', carteira: 'Dinheiro', testamento: 'Testamento', jogada: 'Fortuna' };
 function etiquetaDoGrupo(ref: string | undefined): string | undefined {
   const grupo = ref?.split(':')[0] ?? '';
@@ -38,16 +34,18 @@ interface PropsItem {
   porque: { idade: number; texto: string } | null;
   /** O capítulo da vida que esta entrada fecha (capitulos.ts). */
   capitulo: Capitulo | undefined;
+  /** Longe do fim do livro: só é desenhada perto da tela (estilo.css › .ano.antiga). */
+  antiga: boolean;
 }
 
-function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque, capitulo }: PropsItem) {
+function ItemDoLivro({ h, nova, inflacao, nomeDe, balanco, porque, capitulo, antiga }: PropsItem) {
   const chips = chipsDe(h, nomeDe, inflacao);
   const verbo = h.tipo === 'mundo' ? 'Economia' : h.tipo === 'dinheiro' || h.tipo === 'regra' ? etiquetaDoGrupo(h.ref) : verboDe(h, conteudo);
   // Os marcos da vida (o ENEM, o primeiro emprego, a aposentadoria…) ganham o destaque dourado.
   // E as conquistas da influência (poder.ts › conquistasDoAno) e o sonho realizado.
-  const marco = ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && conteudo.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || sonhoRealizado(h);
+  const marco = ehMarco(h, conteudo);
   return (
-    <li class={`ano ${h.tipo}${marco ? ' marco' : ''}`} data-id={h.id}>
+    <li class={`ano ${h.tipo}${marco ? ' marco' : ''}${antiga ? ' antiga' : ''}`} data-id={h.id}>
       <span class="idade" aria-label={`${h.idade} anos`}>
         {h.idade}
       </span>
@@ -116,7 +114,8 @@ const Item = memo(
     mesmosChips(a.balanco, b.balanco) &&
     a.porque?.idade === b.porque?.idade &&
     a.porque?.texto === b.porque?.texto &&
-    a.capitulo?.fim === b.capitulo?.fim,
+    a.capitulo?.fim === b.capitulo?.fim &&
+    a.antiga === b.antiga,
 );
 
 /** O porquê de cada entrada, calculado uma vez: ele só olha as causas, que são entradas mais antigas. */
@@ -140,6 +139,9 @@ function balancoGuardado(regra: Entrada, partes: string, participacao: Record<st
   return chips;
 }
 
+/** As últimas entradas do livro, sempre desenhadas (uns dez anos de história: a rolagem até o ano novo mede alturas de verdade). */
+const RECENTES = 48;
+
 export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesde: number }) {
   const historico = vida.historico;
   const inflacao = useMemo(() => avisosDeInflacao(historico), [historico]);
@@ -159,7 +161,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
     let regra: Entrada | undefined;
     for (const h of historico) {
       if (!visivel(h)) regra = h;
-      else if (regra && h.idade === regra.idade) {
+      else if (regra && h.idade === regra.idade && naLinhaDoTempo(h)) {
         const chips = balancoGuardado(regra, partes, participacao);
         if (chips.length > 0) m.set(h.id, chips);
         regra = undefined;
@@ -170,7 +172,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
   return (
     <ol class="linha-do-tempo" aria-label="Linha do tempo da vida">
       {historico.map((h, i) =>
-        !visivel(h) ? null : (
+        !naLinhaDoTempo(h) ? null : (
           <Item
             h={h}
             nova={i >= novasDesde}
@@ -179,6 +181,7 @@ export function LinhaDoTempo({ vida, novasDesde }: { vida: EstadoVida; novasDesd
             balanco={balancos.get(h.id) ?? []}
             porque={porqueGuardado(h, porId)}
             capitulo={capitulos.get(h.id)}
+            antiga={i < historico.length - RECENTES}
             key={h.id}
           />
         ),
