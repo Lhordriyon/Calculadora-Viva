@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- O fundo do jogo no tema escuro (a noite). -->
+    <color name="fundo">#0B0F17</color>
+</resources>

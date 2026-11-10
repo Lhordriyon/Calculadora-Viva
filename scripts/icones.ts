@@ -1,6 +1,8 @@
 /**
- * npm run icones — desenha os ícones PNG do PWA a partir da mesma geometria do
- * símbolo SVG, sem dependências (rasterização com antisserrilhado por distância).
+ * npm run icones — desenha os ícones PNG do PWA e do app Android (o ícone do lançador em todas as densidades, o
+ * redondo e a frente do ícone adaptável) a partir da mesma geometria do símbolo SVG, sem dependências (rasterização
+ * com antisserrilhado por distância). O fundo do ícone adaptável e o da tela de abertura do Android são cores em
+ * android/app/src/main/res/values (noite e ouro, como o jogo).
  */
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -48,7 +50,7 @@ function coberturaFundo(x: number, y: number, raio: number, escala: number): num
   return Math.max(0, Math.min(1, 0.5 - d * escala));
 }
 
-function desenhar(tamanho: number, opcoes: { raio: number; zoom: number }): Buffer {
+function desenhar(tamanho: number, opcoes: { raio: number; zoom: number; semFundo?: boolean }): Buffer {
   const rgba = Buffer.alloc(tamanho * tamanho * 4);
   const escala = tamanho / 512;
   for (let py = 0; py < tamanho; py++) {
@@ -58,12 +60,18 @@ function desenhar(tamanho: number, opcoes: { raio: number; zoom: number }): Buff
       const y = (py + 0.5) / escala;
       const dx = 256 + (x - 256) / opcoes.zoom;
       const dy = 256 + (y - 256) / opcoes.zoom;
-      const fundo = coberturaFundo(x, y, opcoes.raio, escala);
+      // A frente do ícone adaptável é só o traço, sobre transparente (o fundo é uma cor, e o sistema recorta a forma).
+      const fundo = opcoes.semFundo ? 1 : coberturaFundo(x, y, opcoes.raio, escala);
       let d = Infinity;
       for (let i = 1; i < CAMINHO.length; i++) d = Math.min(d, distSegmento(dx, dy, CAMINHO[i - 1]!, CAMINHO[i]!) - 17);
       for (const [cx, cy, r] of CIRCULOS) d = Math.min(d, Math.hypot(dx - cx, dy - cy) - r);
       const traco = Math.max(0, Math.min(1, 0.5 - d * escala * opcoes.zoom)) * fundo;
       const o = (py * tamanho + px) * 4;
+      if (opcoes.semFundo) {
+        for (let c = 0; c < 3; c++) rgba[o + c] = TRACO[c]!;
+        rgba[o + 3] = Math.round(traco * 255);
+        continue;
+      }
       for (let c = 0; c < 3; c++) rgba[o + c] = Math.round(FUNDO[c]! * (1 - traco / Math.max(fundo, 1e-9)) + TRACO[c]! * (traco / Math.max(fundo, 1e-9)));
       rgba[o + 3] = Math.round(fundo * 255);
     }
@@ -118,4 +126,16 @@ const icones = [
 for (const i of icones) {
   writeFileSync(join(destino, i.nome), desenhar(i.tamanho, i));
   console.log(`✓ public/${i.nome}`);
+}
+
+// O app Android: o ícone do lançador (48 dp), o redondo e a frente do ícone adaptável (108 dp, com o símbolo dentro da
+// zona segura de 66 dp), em cada densidade.
+const DENSIDADES = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 } as const;
+const res = join(RAIZ, 'android', 'app', 'src', 'main', 'res');
+for (const [densidade, k] of Object.entries(DENSIDADES)) {
+  const pasta = join(res, `mipmap-${densidade}`);
+  writeFileSync(join(pasta, 'ic_launcher.png'), desenhar(48 * k, { raio: 112, zoom: 1 }));
+  writeFileSync(join(pasta, 'ic_launcher_round.png'), desenhar(48 * k, { raio: 256, zoom: 0.78 }));
+  writeFileSync(join(pasta, 'ic_launcher_foreground.png'), desenhar(108 * k, { raio: 0, zoom: 0.62, semFundo: true }));
+  console.log(`✓ android mipmap-${densidade}`);
 }

@@ -38,4 +38,6 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- A vibração curta nas escolhas e nos momentos da vida (navigator.vibrate na WebView só vibra com esta permissão; não pede nada a quem joga). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

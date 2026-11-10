@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- O fundo do jogo no tema claro (src/ui/estilo.css › o papel): a janela e a abertura abrem na cor dele. -->
+    <color name="fundo">#F6F2EA</color>
+</resources>

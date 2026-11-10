@@ -3,17 +3,24 @@ package io.github.lhordriyon.trajetoria;
 import android.os.Bundle;
 import android.webkit.WebView;
 import androidx.activity.OnBackPressedCallback;
+import androidx.core.content.ContextCompat;
 import com.getcapacitor.BridgeActivity;
 
 /**
  * O voltar do Android fecha a folha aberta: o jogo empilha uma entrada no histórico ao abrir uma folha
  * (src/ui/voltar.ts), e o voltar a desempilha. Sem folha aberta, o voltar faz o de sempre (sai do app).
+ *
+ * A página abre na cor do fundo do jogo (res/values/colors.xml, clara ou escura pelo tema do aparelho): sem isso, a
+ * WebView pintava branco no instante entre a tela de abertura e o primeiro desenho do jogo.
  */
 public class MainActivity extends BridgeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().setBackgroundColor(ContextCompat.getColor(this, R.color.fundo));
+        }
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
