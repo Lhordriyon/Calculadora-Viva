@@ -17,6 +17,7 @@ import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/mot
 import { ATIVOS, type Fase } from '../src/motor/constantes.ts';
 import { motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
+import { conferirEstado } from '../src/motor/invariantes.ts';
 import type { EscolhaOrigem } from '../src/motor/origem.ts';
 import { jaAgiu } from '../src/motor/acoes.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
@@ -89,6 +90,11 @@ export interface Jogada {
   grupo: GrupoDaVida;
   /** O mundo lá fora ano a ano (o que os portões do incremento 10 contam). */
   fora: ForaDaVida;
+  /** Os invariantes do estado (invariantes.ts), conferidos depois de cada ano: problemas (devem ser zero) e um exemplo. */
+  invariantes: number;
+  exemploDeInvariante: string;
+  /** O tempo gasto conferindo (fica fora da CPU da vida). */
+  msDaConferencia: number;
 }
 
 /** O mundo lá fora visto por uma vida. */
@@ -212,6 +218,17 @@ export function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: 
   const fora: ForaDaVida = { cambios: [], repasse: [], setores: [], porGoverno: {} };
   let cambioAntes = e.entidades['pais']?.n['cambio'] ?? 0;
   let parceirosAntes = fotoDosParceiros(e);
+  let invariantes = 0;
+  let exemploDeInvariante = '';
+  let msDaConferencia = 0;
+  /** O estado inteiro, depois de cada ano e no fim (o que as contas, entrada por entrada, não veem). */
+  const conferir = (): void => {
+    const t = performance.now();
+    const problemas = conferirEstado(e, c);
+    invariantes += problemas.length;
+    if (problemas.length > 0 && !exemploDeInvariante) exemploDeInvariante = `semente ${e.semente}, ${estrategia}, aos ${e.idade}: ${problemas[0]}`;
+    msDaConferencia += performance.now() - t;
+  };
   while (e.vivo) {
     if (e.pendente) {
       escolher(e, c, decidir(estrategia, e, c, robo));
@@ -240,9 +257,10 @@ export function viver(c: Conteudo, e: EstadoVida, estrategia: Estrategia, robo: 
       anotarFora(e, cambioAntes, antes, parceirosAntes, fora);
       cambioAntes = e.entidades['pais']?.n['cambio'] ?? cambioAntes;
       parceirosAntes = fotoDosParceiros(e);
+      conferir();
     }
   }
-  return { toques, anosPorFase, operacoes, pais, grupo, fora };
+  return { toques, anosPorFase, operacoes, pais, grupo, fora, invariantes, exemploDeInvariante, msDaConferencia };
 }
 
 export function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memoria: MemoriaJogador | undefined, origem?: EscolhaOrigem): Jogada {
@@ -250,7 +268,7 @@ export function jogar(c: Conteudo, estrategia: Estrategia, semente: number, memo
   const e = nascer(c, { semente, ano: ANO, ...(origem ? { origem } : {}) });
   const riquezaOrigem = (e.entidades['mae']?.n['dinheiro'] ?? 0) + (e.entidades['pai']?.n['dinheiro'] ?? 0);
   const r = viver(c, e, estrategia, criarRng(misturar(semente, 77)), memoria);
-  return { e, toques: r.toques + 1, ms: performance.now() - t0, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo, fora: r.fora };
+  return { e, toques: r.toques + 1, ms: performance.now() - t0 - r.msDaConferencia, riquezaOrigem, anosPorFase: r.anosPorFase, operacoes: r.operacoes, pais: r.pais, grupo: r.grupo, fora: r.fora, invariantes: r.invariantes, exemploDeInvariante: r.exemploDeInvariante, msDaConferencia: r.msDaConferencia };
 }
 
 // ---------------------------------------------------------------- medidas de uma vida
@@ -339,8 +357,10 @@ export interface Vida {
   carreiraSetor: string;
   perfil: string;
   operacoes: number;
-  /** Ao morrer, havia filho ou filha para continuar a história. */
+  /** Ao morrer, havia alguém para continuar a história (o filho, o sobrinho, o par ou o amigo do testamento). */
   herdeiro: boolean;
+  /** Quem continuaria a história: o parentesco de quem herda ('' sem ninguém). */
+  quemHerda: string;
   /** Anos adultos (18+) sem nenhum evento ou iniciativa de personagem: só a linha curta. */
   anosVazios: number;
   /** A empresa na vida: abriu alguma (por qualquer caminho), alguma quebrou, vendeu alguma. */
@@ -388,6 +408,9 @@ export interface Vida {
   contasErradas: number;
   entradasConferidas: number;
   exemploDeConta: string;
+  /** Os invariantes do estado, depois de cada ano da vida: problemas (devem ser zero) e um exemplo (missão AAA). */
+  invariantes: number;
+  exemploDeInvariante: string;
   extrato: { rotulo: string; contraparte: string; valor: number }[];
   /** A dívida como contrato (fatia 1.2): problemas da conferência (devem ser zero) e a história das dívidas da vida. */
   dividasErradas: number;
@@ -1121,6 +1144,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     perfil: perfilDe(e),
     operacoes: j.operacoes,
     herdeiro: herdeiroPossivel(e, c) !== null,
+    quemHerda: herdeiroPossivel(e, c)?.parentesco ?? '',
     anosVazios: (() => {
       const comEvento = new Set(visiveis.map((h) => h.idade));
       let vazios = 0;
@@ -1222,6 +1246,8 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
     },
     ...caminhoDaVida(e, c, pontos),
     ...contasDaVida(e),
+    invariantes: j.invariantes,
+    exemploDeInvariante: j.exemploDeInvariante,
   };
 }
 
@@ -1316,6 +1342,8 @@ export interface DaDinastia {
   dividasErradas: number;
   entradasConferidas: number;
   exemploDeDivida: string;
+  invariantes: number;
+  exemploDeInvariante: string;
 }
 export type Resultado = DoJogador | DaOrigem | DaDinastia;
 
@@ -1398,7 +1426,7 @@ function sonhoDaGeracao(e: EstadoVida, c: Conteudo): Geracao['sonho'] {
 }
 
 function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): DaDinastia {
-  const r: DaDinastia = { tipo: 'dinastia', geracoes: [], pares: [], tamanho: 0, dividasErradas: 0, entradasConferidas: 0, exemploDeDivida: '' };
+  const r: DaDinastia = { tipo: 'dinastia', geracoes: [], pares: [], tamanho: 0, dividasErradas: 0, entradasConferidas: 0, exemploDeDivida: '', invariantes: 0, exemploDeInvariante: '' };
   let e = nascer(c, { semente: t.semente, ano: ANO, ...(t.linhagem ? { origem: { linhagem: t.linhagem } } : {}) });
   const robo = criarRng(misturar(t.semente, 78));
   let anterior: number | null = null;
@@ -1406,7 +1434,9 @@ function rodarDinastia(c: Conteudo, t: Extract<Tarefa, { tipo: 'dinastia' }>): D
   for (; g <= t.geracoes; g++) {
     const inicioVida = e.idade;
     const herdou = g > 1 ? (e.dinastia?.antepassados.at(-1)?.deixou ?? 0) : 0;
-    viver(c, e, t.estrategia, robo, undefined);
+    const vivida = viver(c, e, t.estrategia, robo, undefined);
+    r.invariantes += vivida.invariantes;
+    if (!r.exemploDeInvariante) r.exemploDeInvariante = vivida.exemploDeInvariante && `geração ${g}, ${vivida.exemploDeInvariante}`;
     const conferida = contasDaVida(e);
     r.dividasErradas += conferida.dividasErradas;
     r.entradasConferidas += conferida.entradasConferidas;

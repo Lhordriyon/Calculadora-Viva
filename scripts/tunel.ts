@@ -189,6 +189,8 @@ const tamanhos: number[] = [];
 let dividasNasDinastias = 0;
 let entradasNasDinastias = 0;
 let exemploNasDinastias = '';
+let invariantesNasDinastias = 0;
+let exemploDeInvarianteNasDinastias = '';
 fila.forEach(({ t, como }, i) => {
   const r = resultados[i]!;
   if (r.tipo === 'jogador' && t.tipo === 'jogador') {
@@ -219,6 +221,8 @@ fila.forEach(({ t, como }, i) => {
     dividasNasDinastias += r.dividasErradas;
     entradasNasDinastias += r.entradasConferidas;
     if (!exemploNasDinastias) exemploNasDinastias = r.exemploDeDivida;
+    invariantesNasDinastias += r.invariantes;
+    if (!exemploDeInvarianteNasDinastias) exemploDeInvarianteNasDinastias = r.exemploDeInvariante;
   }
 });
 const segundos = (performance.now() - inicio) / 1000;
@@ -1162,8 +1166,17 @@ const contasErradas = vidas.reduce((s, v) => s + v.contasErradas, 0);
 const entradasConferidas = vidas.reduce((s, v) => s + v.entradasConferidas, 0);
 const dividasErradas = todasAsVidas.reduce((s, v) => s + v.dividasErradas, 0) + dividasNasDinastias;
 const entradasDasDividas = todasAsVidas.reduce((s, v) => s + v.entradasConferidas, 0) + entradasNasDinastias;
+const invariantesQuebrados = todasAsVidas.reduce((s, v) => s + v.invariantes, 0) + invariantesNasDinastias;
+const anosConferidos = todasAsVidas.reduce((s, v) => s + v.idade, 0);
 const metas = [
   ['Zero storylets mortos', mortos.length === 0, `${mortos.length} mortos`],
+  [
+    'O estado é íntegro depois de cada ano: números finitos e nos limites, o dinheiro do mundo somando zero, as dívidas nos contratos, o tempo e a família coerentes, a clientela dentro do mercado (missão AAA)',
+    invariantesQuebrados === 0,
+    invariantesQuebrados === 0
+      ? `0 problemas em ${num(anosConferidos, 0)} anos (as vidas sorteadas e as de origem escolhida), mais as gerações das dinastias`
+      : `${invariantesQuebrados} problemas; ex.: ${todasAsVidas.find((v) => v.exemploDeInvariante)?.exemploDeInvariante ?? exemploDeInvarianteNasDinastias}`,
+  ],
   [
     'Todo real tem contraparte: as contas fecham em toda entrada (fatia 1.1)',
     contasErradas === 0,
@@ -1651,7 +1664,8 @@ l();
 l('| Métrica | Valor |');
 l('|---|---|');
 l(`| Operações na carteira por vida (aplicar, resgatar, trocar o perfil) | ${num(operacoesPorVida, 1)} |`);
-l(`| Vidas que terminam com filho ou filha para continuar | ${pct(comHerdeiro)} |`);
+const quemContinua = (parentesco: string): string => pct(vidas.filter((v) => v.quemHerda === parentesco).length / vidas.length);
+l(`| Vidas que terminam com alguém para continuar a história | ${pct(comHerdeiro)} (filho ou filha ${quemContinua('filho')}, sobrinho ou sobrinha ${quemContinua('sobrinho')}, o par ${quemContinua('amor')}, o amigo ${quemContinua('amigo')}) |`);
 l(`| Dinastias: gerações em média / chegam à 3ª / chegam à 5ª | ${num(media(tamanhos), 1)} / ${pct(chegamTerceira)} / ${pct(tamanhos.filter((t) => t >= 5).length / Math.max(1, tamanhos.length))} |`);
 l(`| Idade de quem herda ao começar (mediana) / herança mediana | ${num(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.inicio)), 50), 0)} anos / ${formatarDinheiro(percentil(ordenar(geracoes.filter((g) => g.geracao > 1).map((g) => g.herdou)), 50))} |`);
 l(`| Mobilidade entre gerações (Spearman, patrimônio de quem morreu × do herdeiro) | ${num(entreGeracoes, 2)} |`);
