@@ -360,7 +360,7 @@
     "id": "sabado_com_os_sobrinhos",
     "ator": ["irmao"],
     "idade": [18, 75],
-    "condicoes": { "marcas": ["ator.pai_mae"], "semMarcas": ["ator.mora_longe", "ator.rompido"] },
+    "condicoes": { "ator.idade": { "max": 50 }, "marcas": ["ator.pai_mae"], "semMarcas": ["ator.mora_longe", "ator.rompido"] },
     "repetivel": true,
     "intervalo": 7,
     "texto": "{ator} precisa de alguém para ficar com as crianças no sábado, e você é a última esperança da lista, segundo {ator} mesm{ator:o|a}.",

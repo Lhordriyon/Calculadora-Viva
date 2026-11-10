@@ -740,7 +740,7 @@
     "tipo": "npc",
     "ator": ["amor"],
     "idade": [22, 90],
-    "condicoes": { "ator.visao": "cuida_dos_filhos", "marcas": ["namoro", "pai_mae"] },
+    "condicoes": { "ator.visao": "cuida_dos_filhos", "marcas": ["namoro", "pai_mae"], "filho.vivo": true, "filho.idade": { "max": 17 } },
     "repetivel": true,
     "intervalo": 6,
     "texto": "{ator} ficou um tempo olhando você com as crianças e disse, sem motivo nenhum, que escolheu bem.",
