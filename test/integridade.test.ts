@@ -12,7 +12,7 @@ import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.t
 import { ANOS_ENTRE_GERACOES, conferirEstado } from '../src/motor/invariantes.ts';
 import { ganhar } from '../src/motor/livro.ts';
 import { economiaDo, espacoNoMercado, garantirFundamentos, mercadoDoSetor, procura, somarDemanda } from '../src/motor/negocio.ts';
-import { criarPersonagem, novaEntidade } from '../src/motor/pessoas.ts';
+import { criarPersonagem, moverPessoa, novaEntidade } from '../src/motor/pessoas.ts';
 import { ESTRATEGIAS } from '../src/motor/robos.ts';
 import { criarRng } from '../src/motor/rng.ts';
 import type { Condicoes } from '../src/motor/esquema.ts';
@@ -127,6 +127,31 @@ describe('a família de quem herda é da geração certa', () => {
         expect(conferirEstado(h, c)).toEqual([]);
       }
     }
+  });
+
+  it('quem se separou do outro pai deixa o ex no lugar dele, e não um pai inventado morto antes do irmão mais novo', () => {
+    const e = aos(30, 777);
+    criarPersonagem(e, c, 'amor', []);
+    ganhar(e, [], 'eu', 'namoro', null);
+    const par = e.entidades['amor']!;
+    const nomeDoPar = par.nome;
+    criarPersonagem(e, c, 'filho', []);
+    e.idade += 10;
+    e.ano += 10;
+    criarPersonagem(e, c, 'filho', []);
+    // A separação: o par vira ex e continua vivo.
+    moverPessoa(e, 'amor', 'ex', []);
+    delete e.entidades['eu']!.q['namoro'];
+    e.idade += 25;
+    e.ano += 25;
+    Object.assign(e.entidades['eu']!.n, { dinheiro: 1000, divida: 0 });
+    morrer(e, c);
+    const h = continuarComoHerdeiro(e, c);
+    const slot = e.entidades['eu']!.genero === 'f' ? 'pai' : 'mae';
+    expect(h.entidades[slot]!.nome).toBe(nomeDoPar);
+    expect(h.entidades[slot]!.vivo).not.toBe(false);
+    expect(h.entidades['eu']!.q['pais_separados']).toBeDefined();
+    expect(conferirEstado(h, c)).toEqual([]);
   });
 
   it('o par de quem é adulto é adulto, o de quem é adolescente é da turma, e o amigo de infância não nasce depois de quem joga', () => {

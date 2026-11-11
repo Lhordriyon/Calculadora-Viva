@@ -11,7 +11,7 @@
  */
 import { ATIVOS, FILHOS, IRMAOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { abrirContas } from './moeda.ts';
-import { bensDe, classeDoPatrimonio, empresasDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
+import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
@@ -266,6 +266,24 @@ function sonhoDePe(antiga: EstadoVida, c: Conteudo): string {
   return dePe.sort((a, b) => (eu.q[qualidadeDoProjeto(b.id)]!.ano ?? 0) - (eu.q[qualidadeDoProjeto(a.id)]!.ano ?? 0))[0]?.id ?? '';
 }
 
+/**
+ * O outro pai ou mãe de quem herda: quem era o par de quem morreu quando quem herda chegou à vida (pela lista de quem
+ * ocupou cada papel), se essa pessoa ainda está na vida (o ex, viva ou não). Sem isso, quem se separou do outro pai
+ * deixava um pai ou mãe inventado, "morto há muito tempo", às vezes antes de o irmão mais novo nascer.
+ */
+function outroPaiDe(antiga: EstadoVida, filho: Entidade | undefined): Entidade | undefined {
+  const ocupacoes = antiga.ocupacoes;
+  if (!ocupacoes || filho?.pessoa === undefined) return undefined;
+  // A lista está na ordem em que as ocupações aconteceram: o par é o último a ocupar o papel antes de quem herda chegar
+  // (pela ordem, e não pelo número da entrada, que pode ser o mesmo da troca do par).
+  const chegou = ocupacoes.findIndex((o) => o.pessoa === filho.pessoa);
+  if (chegou < 0) return undefined;
+  let par = 0;
+  for (const o of ocupacoes.slice(0, chegou)) if (o.papel === 'amor') par = o.pessoa;
+  if (par <= 0) return undefined;
+  return Object.values(antiga.entidades).find((x) => x.tipo === 'pessoa' && x.pessoa === par && x.id !== 'eu');
+}
+
 export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVida {
   const filho = herdeiroPossivel(antiga, c);
   if (!filho) throw new Error('Não há herdeiro para continuar a história.');
@@ -377,6 +395,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
 
   // ---- a família que restou
   const amor = antiga.entidades['amor'];
+  const coPai = !novosPais && !amor ? outroPaiDe(antiga, comoPersonagem) : undefined;
   if (novosPais) {
     // Quem herda não é filho de quem morreu: os pais são outros (do sobrinho, o irmão de quem morreu é um deles; do
     // par e do amigo, a família deles).
@@ -441,11 +460,21 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     outro.n['vinculo'] = Math.round(limitar(vinculo + normal(e.rng, 0, 8), 5, 95));
     outro.n['dinheiro'] = Math.max(0, amor.n['dinheiro'] ?? 0) + espolio.doConjuge;
     e.entidades[outroSlot] = recausar(outro, abertura.id);
+  } else if (coPai) {
+    // Quem morreu se separou do outro pai ou mãe de quem herda: é essa pessoa (o ex), viva ou não, com a vida dela.
+    const outro = structuredClone(coPai);
+    outro.id = outroSlot;
+    outro.q = Object.fromEntries(Object.entries(coPai.q).filter(([k]) => k === 'faleceu' || k === 'doente' || k === 'aposentado' || k === 'desempregado'));
+    outro.n['vinculo'] = Math.round(limitar(55 + normal(e.rng, 0, 12), 5, 95));
+    for (const campo of ['magoa', 'confianca', 'sem_contato']) delete outro.n[campo];
+    e.entidades[outroSlot] = recausar(outro, abertura.id);
+    eu.q['pais_separados'] = { v: 1, ano: e.ano, idade, causa: abertura.id };
   } else {
-    // Sem ninguém ao lado, o outro pai ou mãe ficou para trás há muito tempo.
+    // Sem ninguém ao lado, o outro pai ou mãe ficou para trás há muito tempo: depois do último filho de quem morreu.
     const genero: Genero = outroSlot === 'mae' ? 'f' : 'm';
     const outro = novaEntidade({ id: outroSlot, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento: velho.nascimento! + inteiro(e.rng, -4, 4), vivo: false });
-    outro.morte = filho.nascimento + inteiro(e.rng, 0, Math.max(0, idade));
+    const ultimoFilho = Math.max(filho.nascimento, ...filhosDe(antiga).map((x) => x.nascimento ?? filho.nascimento));
+    outro.morte = Math.min(e.ano, ultimoFilho + inteiro(e.rng, 0, Math.max(0, e.ano - ultimoFilho)));
     outro.n = { vinculo: 20, saude: 0, dinheiro: 0 };
     outro.q = { faleceu: { v: 1, ano: outro.morte, idade: outro.morte - filho.nascimento, causa: abertura.id } };
     e.entidades[outroSlot] = outro;
