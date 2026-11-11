@@ -407,6 +407,8 @@ const EMPRESA: Record<string, DefCampo> = {
   subsidiarias: { tipo: 'num', sistema: 'poder', limites: [0, Infinity] },
   /** Quem controla: 'eu' (quem joga), '#<registro>' (outra empresa), 'p<número>' (uma pessoa) ou 'mercado' (o capital disperso). A parte dela é `participacao`. */
   dona: { tipo: 'texto', sistema: 'poder' },
+  /** O país de fora em que a filial vende (um dos quatro; vazio: o Brasil). */
+  pais: { tipo: 'texto', sistema: 'mundo' },
   /** A mídia do grupo em que a empresa põe a campanha (o id dela; vazio: o mercado). */
   anuncia: { tipo: 'texto', sistema: 'dinheiro' },
   /** Quem decide o dia a dia (governanca.ts): manual, consultiva, delegada ou autonoma; e o jeito que o conselho recebeu. */

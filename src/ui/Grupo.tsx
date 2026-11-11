@@ -17,6 +17,8 @@ import { AUTONOMIAS, autonomiaDe, jogadasDoConselho, MANDATOS, mandatoDe, NOME_D
 import { CAPITAL_MINIMO_HOLDING } from '../motor/grupo.ts';
 import { atratividade, audienciaDe, alcanceDaCampanha, custoDoLancamento, idadeDoProduto, midiasDoGrupo, SETOR_DA_MIDIA, velhiceDoProduto } from '../motor/negocio.ts';
 import { UNIDADES } from '../motor/regras.ts';
+import { defDoPais, fatiasDoGrupo, grupoNoMundo, maioresEmpresasDoPais, maisRicosDoPais, paisDaEmpresa } from '../motor/mundo-das-empresas.ts';
+import { PARCEIROS, type Parceiro } from '../motor/constantes.ts';
 import { capitalizar, formatarDinheiro } from '../motor/texto.ts';
 import type { Entidade, EstadoVida } from '../motor/tipos.ts';
 import { cidadeDaSede, contaDaUnidade, deApoioDe, ehDeApoio, formaQueProduz, nomeDaUnidade, porteDoApoioNovo, precoDaUnidade, unidadesDe } from '../motor/unidades.ts';
@@ -91,7 +93,7 @@ export function EstruturaDoGrupo({ vida, conteudo, aoOperar }: Base) {
               <li key={emp.id} style={{ paddingLeft: `${nivel * 1.2}em` }}>
                 <b>{emp.nome}</b>
                 <small>
-                  {emp.q['holding'] ? 'holding · ' : `${capitalizar(conteudo.setores.get(emp.t['setor'] ?? '')?.nome ?? '')} · `}
+                  {emp.q['holding'] ? 'holding · ' : `${capitalizar(conteudo.setores.get(emp.t['setor'] ?? '')?.nome ?? '')}${paisDaEmpresa(emp) ? ` ${defDoPais(conteudo, paisDaEmpresa(emp))?.genero === 'f' ? 'na' : 'no'} ${nomeDoPais(conteudo, paisDaEmpresa(emp)!)}` : ''} · `}
                   {donaEmPalavras(vida, emp)} · sua parte {pct(parteEfetiva(vida, emp), 0)}
                 </small>
               </li>
@@ -122,7 +124,9 @@ export function EstruturaDoGrupo({ vida, conteudo, aoOperar }: Base) {
               </dd>
             </dl>
           )}
+          <NoMundo vida={vida} conteudo={conteudo} />
           <EstruturaDecisoes vida={vida} conteudo={conteudo} aoOperar={aoOperar} temSubsidiaria={temSubsidiaria} />
+          <AbrirFilial vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         </>
       )}
     </div>
@@ -449,5 +453,129 @@ function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade })
         <p class="nota">{sugestao.length === 0 ? 'O conselho não sugere nada este ano.' : `O conselho sugere: ${sugestao.map((s) => (s.tipo === 'retirada' ? `distribuir ${Math.round(s.fracao * 100)}% do lucro` : s.tipo)).join(', ')}.`}</p>
       )}
     </>
+  );
+}
+
+// ---------------------------------------------------------------- o grupo no mundo (I-166 a I-169)
+
+const nomeDoPais = (c: Conteudo, p: Parceiro | 'brasil'): string => (p === 'brasil' ? 'Brasil' : (defDoPais(c, p)?.nome ?? p));
+const pctFino = (v: number): string => pct(v, v < 0.0001 ? 5 : v < 0.01 ? 3 : 1);
+
+/** O grupo no mundo: os funcionários por país, a fatia em cada setor (em cada país e no mundo) e o peso diante do planeta. */
+function NoMundo({ vida, conteudo }: { vida: EstadoVida; conteudo: Conteudo }) {
+  const g = grupoNoMundo(vida, conteudo);
+  const fatias = fatiasDoGrupo(vida, conteudo);
+  return (
+    <>
+      <p class="nota camadas">
+        <b>No mundo.</b> {g.funcionarios.toLocaleString('pt-BR')} {g.funcionarios === 1 ? 'pessoa trabalha' : 'pessoas trabalham'} no grupo
+        {g.funcionariosPorPais.length > 1 ? ` (${g.funcionariosPorPais.map((p) => `${p.funcionarios.toLocaleString('pt-BR')} ${p.pais === 'brasil' ? 'no Brasil' : `${defDoPais(conteudo, p.pais)?.genero === 'f' ? 'na' : 'no'} ${nomeDoPais(conteudo, p.pais)}`}`).join(', ')})` : ''}. A sua parte no grupo vale {pctFino(g.grupoNoBrasil)} do PIB do Brasil e {pctFino(g.grupoNoPlaneta)} do PIB do planeta; tudo o que você tem, {pctFino(g.patrimonioNoPlaneta)} do planeta.
+      </p>
+      <ul class="arvore" aria-label="A fatia do grupo em cada setor">
+        {fatias.map((f) => (
+          <li key={f.setor}>
+            <b>{capitalizar(f.nome)}</b>
+            <small>
+              {f.porPais.map((p) => `${nomeDoPais(conteudo, p.pais)} ${pctFino(p.parte)}`).join(' · ')} · no mundo {pctFino(f.mundo)}
+            </small>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+/** Abrir uma filial lá fora: o país e quem paga (a empresa do grupo com caixa), com o motivo à vista quando não dá. */
+function AbrirFilial({ vida, conteudo, aoOperar }: Base) {
+  const empresas = empresasDe(vida).filter((x) => !paisDaEmpresa(x));
+  const [pais, setPais] = useState<Parceiro>(PARCEIROS[0]);
+  const [quem, setQuem] = useState(empresas[0]?.id ?? '');
+  if (empresas.length === 0) return null;
+  const mae = vida.entidades[quem] ?? empresas[0]!;
+  const setor = mae.q['holding'] ? (setoresDeEmpresa(conteudo)[0]?.id ?? 'comercio') : (mae.t['setor'] ?? 'comercio');
+  const valor = Math.max(100_000, Math.round(((mae.n['caixa'] ?? 0) * 0.4) / 1000) * 1000);
+  const def = defDoPais(conteudo, pais);
+  return (
+    <>
+      <p class="nota camadas">
+        <b>Uma filial lá fora.</b> É uma empresa do grupo noutro país: vende no mercado de lá, paga o imposto de lá ({Math.round((def?.imposto ?? 0) * 100)}%), ganha com o dólar alto e sente a relação com o Brasil. {capitalizar(def?.descricao ?? '')}; a economia de lá é {def?.tamanho.toLocaleString('pt-BR')} vezes a do Brasil.
+      </p>
+      <div class="escolhas-origem" role="group" aria-label="O país da filial">
+        {PARCEIROS.map((p) => (
+          <button type="button" class="chip-origem" key={p} aria-pressed={pais === p} onClick={() => setPais(p)}>
+            {nomeDoPais(conteudo, p)}
+          </button>
+        ))}
+      </div>
+      {empresas.length > 1 && (
+        <label class="nota rotulo-campo">
+          Quem abre
+          <select class="campo" value={mae.id} onChange={(ev) => setQuem((ev.target as HTMLSelectElement).value)}>
+            {empresas.map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.nome}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <Acao vida={vida} conteudo={conteudo} aoOperar={aoOperar} op={{ tipo: 'fundarSubsidiaria', controladora: mae.id, setor, valor, pais }}>
+        Abrir a filial {defDoPais(conteudo, pais)?.genero === 'f' ? 'na' : 'no'} {nomeDoPais(conteudo, pais)} com {formatarDinheiro(valor)} do caixa {aEmpresa(mae, 'da')}
+      </Acao>
+    </>
+  );
+}
+
+/** Os 10 mais ricos do país e as 10 maiores empresas, com você e as suas no lugar em que estão. */
+export function OsMaisRicos({ vida, conteudo }: { vida: EstadoVida; conteudo: Conteudo }) {
+  const [aberta, setAberta] = useState(false);
+  const ricos = maisRicosDoPais(vida, conteudo);
+  const empresas = aberta ? maioresEmpresasDoPais(vida, conteudo) : [];
+  const resumo = ricos.posicao > 0 ? (ricos.posicao === 1 ? 'você é a fortuna número 1 do país' : `você está em ${ricos.posicao}º lugar no país`) : `a 10ª fortuna do país tem ${formatarDinheiro(ricos.lista[9]!.valor)}`;
+  return (
+    <div class="empresa-cartao">
+      <button type="button" class="vaga" aria-expanded={aberta} onClick={() => setAberta(!aberta)}>
+        <b>Os mais ricos e as maiores</b>
+        <small>{resumo}</small>
+      </button>
+      {aberta && (
+        <>
+          <p class="nota">
+            <b>As 10 maiores fortunas do país.</b> {ricos.posicao > 0 ? 'Você está entre elas.' : `Você tem ${formatarDinheiro(ricos.lista.at(-1)!.valor)}: ${pctFino(ricos.lista.at(-1)!.valor / ricos.lista[9]!.valor)} da décima.`}
+          </p>
+          <ol class="arvore" aria-label="As 10 maiores fortunas do país">
+            {ricos.lista.map((r, i) => (
+              <li key={`${r.nome}-${i}`}>
+                <b>
+                  {r.seu && ricos.posicao === 0 ? '— ' : `${i + 1}. `}
+                  {r.nome}
+                  {r.seu ? ' · você' : ''}
+                </b>
+                <small>
+                  {formatarDinheiro(r.valor)}
+                  {r.seu ? '' : ` · ${r.de}`}
+                </small>
+              </li>
+            ))}
+          </ol>
+          <p class="nota">
+            <b>As 10 maiores empresas do país.</b> {empresas.some((x) => x.seu) ? 'As suas estão marcadas.' : 'Nenhuma das suas entrou ainda.'}
+          </p>
+          <ol class="arvore" aria-label="As 10 maiores empresas do país">
+            {empresas.map((r, i) => (
+              <li key={`${r.nome}-${i}`}>
+                <b>
+                  {i + 1}. {r.nome}
+                  {r.seu ? ' · sua' : ''}
+                </b>
+                <small>
+                  {formatarDinheiro(r.valor)} · {r.de}
+                </small>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+    </div>
   );
 }

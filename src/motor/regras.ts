@@ -496,6 +496,8 @@ export const HOLDING = { estrutura: 150_000 } as const;
  * qualidade e 4 de marca na hora e só vale a partir do segundo ano da geração.
  */
 export const PRODUTO = { envelhece: 8, porAno: 1.5, maximo: 10, custo: 0.04, minimo: 20_000, qualidade: 6, marca: 4, intervalo: 2 } as const;
+/** O resto do mundo, fora do Brasil e dos quatro países de fora: quantas vezes o PIB do Brasil (o planeta dá umas 50). */
+export const RESTO_DO_MUNDO = 19;
 export const UNIDADES = {
   maximo: 8,
   pesoDaCidade: 0.4,

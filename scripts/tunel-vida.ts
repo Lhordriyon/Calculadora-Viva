@@ -440,7 +440,7 @@ export interface Vida {
    * quebraram, as compras que preservaram a comprada, as decisões do Cade, as unidades construídas, os anos de decisão de
    * conselho, os lançamentos de produto, a campanha paga à mídia do grupo e o maior peso do grupo no PIB (em %).
    */
-  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number };
+  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number };
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
@@ -1512,5 +1512,7 @@ function capitalismoVivo(e: EstadoVida): Vida['vivo'] {
     lancamentos: e.historico.reduce((s, h) => s + (h.mudancas?.filter((m) => m.r === 'lancamento' && m.c.endsWith('.caixa') && !m.c.startsWith('empresaR')).length ?? 0), 0),
     naMidia,
     pesoNoPib: pesoMax,
+    // As filiais lá fora (I-166): a empresa que ganhou um país.
+    filiais: e.historico.reduce((s, h) => s + (h.mudancas?.filter((m) => m.c.endsWith('.pais') && m.t !== undefined && m.t !== '').length ?? 0), 0),
   };
 }

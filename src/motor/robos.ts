@@ -11,6 +11,7 @@
  * perder felicidade com certeza é custo, não risco.
  */
 import { formaQueProduz } from './unidades.ts';
+import { PARCEIROS } from './constantes.ts';
 import { acoesDoVerbo, jaAgiu } from './acoes.ts';
 import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
@@ -855,6 +856,14 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   // com o mandato arrojado; com fila de pedidos e caixa, a de perto cresce numa unidade em outra cidade (a mais barata).
   const outra = grupo.find((x) => x.id !== emp.id && !x.q['holding'] && x.n['capacidade'] !== undefined && pode(e, c, { tipo: 'governanca', empresa: x.id, autonomia: 'delegada', mandato: 'arrojado' }));
   if (outra && (outra.t['autonomia'] ?? 'manual') === 'manual') return [{ tipo: 'governanca', empresa: outra.id, autonomia: 'delegada', mandato: 'arrojado' }];
+  // O grupo no mundo (I-166): com a empresa grande, uma filial no país de fora de melhor relação, uma vez.
+  if ((emp.n['valor'] ?? 0) >= 1e8 && !grupo.some((x) => x.t['pais']) && aleatorio(rng) < 0.15) {
+    const pais = [...PARCEIROS].filter((p) => !e.entidades[p]?.q['sancao']).sort((a, b) => (e.entidades[b]?.n['relacao'] ?? 0) - (e.entidades[a]?.n['relacao'] ?? 0))[0];
+    if (pais) {
+      const op: Operacao = { tipo: 'fundarSubsidiaria', controladora: emp.id, setor: emp.t['setor'] ?? 'comercio', valor: Math.max(1_000_000, Math.round((emp.n['caixa'] ?? 0) * 0.3)), pais };
+      if (pode(e, c, op)) return [op];
+    }
+  }
   if ((emp.n['ocupacao'] ?? 1) > 1.2 && (emp.n['valor'] ?? 0) >= 2e7 && aleatorio(rng) < 0.3) {
     const interior = c.mundo.cidades.find((x) => x.marcas.includes('interior') && x.nome !== e.entidades['lugar']?.nome)?.nome;
     const op: Operacao = { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade: interior ?? 'Campinas', fracao: 0.25 };

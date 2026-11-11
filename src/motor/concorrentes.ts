@@ -26,7 +26,7 @@ import type { Conteudo } from './conteudo.ts';
 import { jeitoDoGestor, jogadasDoNegocio } from './diretoria.ts';
 import { encerrarEmpresa, fundar } from './empresa.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
-import { anoDoNegocio, atratividade, economiaDo, garraDaRival, mercadoDoSetor, motivoParaNaoOperarNegocio, operarNegocio, somarDemanda, type AnoDoNegocio, type OperacaoNegocio, ehOperacaoDeNegocio } from './negocio.ts';
+import { anoDoNegocio, atratividade, economiaDo, garraDaRival, mercadoDaEmpresa, mercadoDoSetor, motivoParaNaoOperarNegocio, operarNegocio, somarDemanda, type AnoDoNegocio, type OperacaoNegocio, ehOperacaoDeNegocio } from './negocio.ts';
 import type { Momento } from './pais.ts';
 import { aleatorio, criarRng, misturar, normal, sortear, type Rng } from './rng.ts';
 import { CONCORRENCIA, DESVIO_TRACAO, REVERSAO_TRACAO, SORTE_DO_NEGOCIO, subsidiariasDoRival, volatilidadeDaEmpresa } from './regras.ts';
@@ -63,12 +63,14 @@ export function concorrentesNoSetor(e: EstadoVida, setor: string | undefined): E
 
 /** A concorrente principal de uma empresa do grupo (a mais atraente de fora no setor dela: a ameaça maior), se houver. */
 export function principalDe(e: EstadoVida, emp: Entidade): Entidade | undefined {
+  if (emp.t['pais']) return undefined;
   return concorrentesNoSetor(e, emp.t['setor'])[0];
 }
 
 /** As empresas de quem joga que produzem (as que têm concorrentes): as que ocupam um lugar no grupo. */
 function doGrupoQueProduzem(e: EstadoVida): Entidade[] {
-  return Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && !deFora(x) && x.vivo !== false && !x.q['holding'] && x.n['capacidade'] !== undefined);
+  // As do Brasil: lá fora, o mercado é agregado (a filial não tem concorrente de verdade).
+  return Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && !deFora(x) && !x.t['pais'] && x.vivo !== false && !x.q['holding'] && x.n['capacidade'] !== undefined);
 }
 
 /** O sorteio das concorrentes não gasta o da vida: cada uma tem o dela, por ano. */
@@ -129,7 +131,7 @@ export function abrirConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], set
   const doGrupo = doGrupoQueProduzem(e).filter((x) => x.t['setor'] === setor);
   const referencia = Math.max(200_000, ...doGrupo.map((x) => x.n['demanda'] ?? 0));
   // O mercado tem tamanho: a concorrente não passa do que sobra dele.
-  const outras = Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.vivo !== false && x.t['setor'] === setor).reduce((t, x) => t + (x.n['demanda'] ?? 0), 0);
+  const outras = Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.vivo !== false && x.t['setor'] === setor && !x.t['pais']).reduce((t, x) => t + (x.n['demanda'] ?? 0), 0);
   const cabe = Math.max(0, mercadoDoSetor(e, eco) * 0.9 - outras);
   const demanda = Math.min(cabe, referencia * Math.exp(normal(rng, 0, 0.25)) * (forca / 50));
   if (!(demanda > 10_000)) return null;
@@ -281,14 +283,16 @@ function caberNoMercado(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const porSetor = new Map<string, Entidade[]>();
   for (const x of Object.values(e.entidades)) {
     if (x.tipo !== 'empresa' || x.vivo === false || !((x.n['demanda'] ?? 0) > 0)) continue;
-    const s = x.t['setor'] ?? '';
+    // Cada país tem o mercado dele: a filial lá fora cabe no de lá (mundo-das-empresas.ts).
+    const s = `${x.t['setor'] ?? ''}|${x.t['pais'] ?? ''}`;
     const l = porSetor.get(s);
     if (l) l.push(x);
     else porSetor.set(s, [x]);
   }
-  for (const [s, lista] of porSetor) {
+  for (const [chave, lista] of porSetor) {
     const total = lista.reduce((t, x) => t + (x.n['demanda'] ?? 0), 0);
-    let excesso = total - mercadoDoSetor(e, economiaDo(c.setores.get(s)));
+    let excesso = total - mercadoDaEmpresa(e, c, lista[0]!);
+    void chave;
     if (!(excesso > 0)) continue;
     for (const fora of [true, false]) {
       const quem = lista.filter((x) => deFora(x) === fora);
@@ -331,7 +335,7 @@ export function partesDoMercado(e: EstadoVida, c: Conteudo, setor: string): Part
   const lista: ParteDoMercado[] = [];
   let soma = 0;
   for (const x of Object.values(e.entidades)) {
-    if (x.tipo !== 'empresa' || x.vivo === false || (x.t['setor'] ?? '') !== setor || !((x.n['demanda'] ?? 0) > 0)) continue;
+    if (x.tipo !== 'empresa' || x.vivo === false || (x.t['setor'] ?? '') !== setor || x.t['pais'] || !((x.n['demanda'] ?? 0) > 0)) continue;
     const d = x.n['demanda'] ?? 0;
     soma += d;
     lista.push({ id: x.id, nome: x.nome, demanda: d, parte: d / total, doGrupo: !deFora(x) });

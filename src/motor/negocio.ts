@@ -33,6 +33,7 @@ import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
 import { diluirPeloAporte, pagarDividendos } from './societario.ts';
+import { cicloDoPais, defDoPais, mercadoNoPais, paisDaEmpresa } from './mundo-das-empresas.ts';
 import { abrirConcorrente, CONCORRENTES_POR_SETOR, concorrentesNoSetor, deFora, fimDaGuerra, guerraComAPrincipal, principalDe } from './concorrentes.ts';
 import { equipeDoApoio, estruturaDe, mudarCapacidade, mudarObra, obraPronta, parteNaCidade, produtivasDe } from './unidades.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
@@ -118,9 +119,17 @@ export function mercadoDoSetor(e: EstadoVida, eco: Economia): number {
  */
 export function espacoNoMercado(e: EstadoVida, c: Conteudo, emp: Entidade): number {
   const setor = emp.t['setor'] ?? '';
+  const pais = paisDaEmpresa(emp);
   let outras = 0;
-  for (const x of Object.values(e.entidades)) if (x.tipo === 'empresa' && x.vivo !== false && x.id !== emp.id && (x.t['setor'] ?? '') === setor) outras += x.n['demanda'] ?? 0;
-  return Math.max(0, mercadoDoSetor(e, economiaDo(c.setores.get(setor))) - outras);
+  for (const x of Object.values(e.entidades)) if (x.tipo === 'empresa' && x.vivo !== false && x.id !== emp.id && (x.t['setor'] ?? '') === setor && paisDaEmpresa(x) === pais) outras += x.n['demanda'] ?? 0;
+  return Math.max(0, mercadoDaEmpresa(e, c, emp) - outras);
+}
+
+/** O que o país da empresa compra do setor dela (o Brasil, ou o país da filial lá fora: mundo-das-empresas.ts). */
+export function mercadoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const setor = c.setores.get(emp.t['setor'] ?? '');
+  const pais = paisDaEmpresa(emp);
+  return pais ? mercadoNoPais(e, c, setor, pais, economiaDo(setor).peso) : mercadoDoSetor(e, economiaDo(setor));
 }
 
 /**
@@ -157,7 +166,8 @@ export function ocupacaoDe(e: EstadoVida, c: Conteudo, emp: Entidade): number {
 /** A demanda de fora: a parte da demanda que o país escolhido compra, pela relação, pelo crescimento dele, pelo acordo; a sanção fecha a porta. */
 export function exportacaoDe(e: EstadoVida, emp: Entidade): number {
   const para = emp.t['exporta'];
-  if (!para) return 0;
+  // A filial lá fora vende no mercado de lá: não exporta.
+  if (!para || paisDaEmpresa(emp)) return 0;
   const pais = e.entidades[para];
   if (!pais || pais.q['sancao']) return 0;
   const relacao = Math.max(0, pais.n['relacao'] ?? 50) / 50;
@@ -261,8 +271,14 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const acima = (n['demanda'] ?? 0) - espacoNoMercado(e, c, emp);
   if (acima > 0) somar(e, reg, id, 'demanda', -acima, 'mercado');
   const demanda = n['demanda'] ?? 0;
-  const teto = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
-  const bruto = (n['tracao'] ?? 0) / 100 + fase.empresa * (setor?.ciclo ?? 1) + fora + sorte + (atratividade(emp) - forcaDaConcorrente(emp)) * ATRATIVIDADE_NO_CRESCIMENTO;
+  const teto = mercadoDaEmpresa(e, c, emp) * FATIA_MAXIMA_DO_MERCADO;
+  // A filial lá fora (mundo-das-empresas.ts) anda com o ciclo de lá; a sanção de lá corta a clientela, o acordo ajuda.
+  const pais = paisDaEmpresa(emp);
+  const deLa = pais ? e.entidades[pais] : undefined;
+  const ciclo = pais
+    ? cicloDoPais(e, c, pais) * (setor?.ciclo ?? 1) + (deLa?.q['sancao'] ? -0.25 : 0) + (deLa?.q['acordo'] ? 0.02 : 0)
+    : fase.empresa * (setor?.ciclo ?? 1) + fora;
+  const bruto = (n['tracao'] ?? 0) / 100 + ciclo + sorte + (atratividade(emp) - forcaDaConcorrente(emp)) * ATRATIVIDADE_NO_CRESCIMENTO;
   const cresce = bruto > 0 ? bruto * Math.max(0, 1 - demanda / teto) : Math.max(-0.6, bruto);
   // Os números do ano vão arredondados (os reais, os centavos, os centésimos): o livro de cada empresa cabe no save.
   definirNumero(e, reg, id, 'demanda', Math.max(0, Math.round(demanda * (1 + cresce))), 'negocio');
@@ -275,14 +291,16 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const fracaoFora = procurado > 0 ? exportacaoDe(e, emp) / procurado : 0;
   // O dólar do ano: quem exporta recebe mais reais pelo que vende, quem importa paga mais caro pelo que compra.
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
+  // A filial lá fora vende e gasta na moeda de lá: com o dólar alto, tudo dela vale mais em reais.
+  const cambioDeLa = pais ? 1 + dolar : 1;
   // Na guerra de preços, todo mundo cobra menos.
-  const vendas = centavos(entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor'])));
+  const vendas = centavos(cambioDeLa * entregue * p.preco * (pais ? 1 : 1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor'])));
   // O insumo vem do setor fornecedor (a alta dele encarece; o fornecedor próprio vende a preço de custo).
   // O centro de distribuição barateia cada venda (o frete, a perda).
-  const variavel = centavos(entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp) * estrutura.fatorDoCentro);
+  const variavel = centavos(cambioDeLa * entregue * (1 - eco.margem) * p.custo * (pais ? 1 : 1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp) * estrutura.fatorDoCentro);
   // A folha anda com o mercado de trabalho (desemprego baixo, gente cara) e com a cidade de cada unidade (o salário e o
   // aluguel do lugar, comparados com os da sede); as unidades de apoio pagam o porte delas.
-  const fixo = centavos((estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e));
+  const fixo = centavos(cambioDeLa * (estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * (pais ? 1 : fatorDaMaoDeObra(e)));
   const campanha = centavos(vendas * (n['marketing'] ?? 0));
   const pesquisa = centavos(vendas * (n['pd'] ?? 0));
   const verbas = campanha + pesquisa;
@@ -291,11 +309,14 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const ebit = vendas + publicidade - variavel - fixo - verbas;
   // O juro do banco sai antes do imposto (o lucro é depois dele).
   const juros = centavos((n['divida'] ?? 0) * jurosDaEmpresa(e));
-  const imposto = centavos(Math.max(0, ebit - juros) * impostoDaEmpresa(e));
+  // Lá fora, o imposto é o de lá (mundo.json › estrangeiros › imposto) e vai para o governo de lá.
+  const imposto = centavos(Math.max(0, ebit - juros) * (pais ? (defDoPais(c, pais)?.imposto ?? impostoDaEmpresa(e)) : impostoDaEmpresa(e)));
   const lucro = ebit - juros - imposto;
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
-  const exportou = centavos(vendas * fracaoFora);
+  const exportou = pais ? 0 : centavos(vendas * fracaoFora);
+  // Quem compra e quem vende para a filial lá fora é o país de lá (a contraparte, como na exportação).
+  const mercadoDela = pais ?? 'mercado';
   let impostoDaMidia = 0;
   if (exportou > 0) somar(e, reg, id, 'caixa', exportou, 'exportacao', emp.t['exporta']!);
   if (!doGrupo) {
@@ -303,16 +324,16 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
     const liquido = vendas - exportou - (variavel + fixo + verbas);
     if (liquido !== 0) somar(e, reg, id, 'caixa', liquido, 'resultado', 'mercado');
   } else {
-    if (vendas - exportou > 0) somar(e, reg, id, 'caixa', vendas - exportou, 'vendas', 'mercado');
+    if (vendas - exportou > 0) somar(e, reg, id, 'caixa', vendas - exportou, 'vendas', mercadoDela);
     // O que ela compra de outras para produzir (o insumo, o frete, a campanha) é o consumo intermediário das contas
     // nacionais (demonstracoes.ts); a estrutura e a pesquisa são a folha e a casa dela. A campanha vai para a mídia: a
     // do grupo recebe de caixa para caixa (a consolidação elimina), o resto vai para o mercado.
-    const naMidia = campanhaNaMidia(e, c, reg, emp, campanha);
+    const naMidia = pais ? { pago: 0, imposto: 0 } : campanhaNaMidia(e, c, reg, emp, campanha);
     impostoDaMidia = naMidia.imposto;
-    if (variavel + campanha - naMidia.pago > 0) somar(e, reg, id, 'caixa', -(variavel + campanha - naMidia.pago), 'insumos', 'mercado');
-    if (fixo + pesquisa > 0) somar(e, reg, id, 'caixa', -(fixo + pesquisa), 'custos', 'mercado');
+    if (variavel + campanha - naMidia.pago > 0) somar(e, reg, id, 'caixa', -(variavel + campanha - naMidia.pago), 'insumos', mercadoDela);
+    if (fixo + pesquisa > 0) somar(e, reg, id, 'caixa', -(fixo + pesquisa), 'custos', mercadoDela);
   }
-  if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', 'tesouro');
+  if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', pais ?? 'tesouro');
   // O banco recebe o juro e a parcela (o dinheiro que volta para ele deixa de existir).
   if (juros >= 1) somar(e, reg, id, 'caixa', -juros, 'juros', 'banco');
   const parcela = centavos((n['divida'] ?? 0) * CREDITO_DA_EMPRESA.amortizacao);
@@ -323,7 +344,8 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
 
   // Os dividendos saem do lucro, na proporção que os donos decidiram, e do que há no caixa; sobem pelos sócios
   // (quem joga, a holding, a pessoa dona, o mercado), cada um pela parte dele (societario.ts).
-  const dividendos = lucro > 0 ? centavos(Math.min(Math.max(0, n['caixa'] ?? 0), lucro * (n['retirada'] ?? 0))) : 0;
+  // Sob a sanção de lá, o dividendo da filial fica retido no país (a remessa está bloqueada).
+  const dividendos = lucro > 0 && !deLa?.q['sancao'] ? centavos(Math.min(Math.max(0, n['caixa'] ?? 0), lucro * (n['retirada'] ?? 0))) : 0;
   pagarDividendos(e, reg, emp, dividendos);
 
   // O ano que não fecha: vende capacidade (pela metade do que custou) até o caixa voltar a zero, e demite junto.
@@ -408,7 +430,8 @@ export const SETOR_DA_MIDIA = 'cultura';
 
 /** As empresas de mídia do grupo de quem joga (as que vendem audiência), vivas e com negócio. */
 export function midiasDoGrupo(e: EstadoVida): Entidade[] {
-  return Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.vivo !== false && !deFora(x) && !x.q['holding'] && x.n['capacidade'] !== undefined && x.t['setor'] === SETOR_DA_MIDIA);
+  // A mídia do grupo no Brasil (a filial de mídia lá fora vende a audiência de lá, no mercado de lá).
+  return Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.vivo !== false && !deFora(x) && !paisDaEmpresa(x) && !x.q['holding'] && x.n['capacidade'] !== undefined && x.t['setor'] === SETOR_DA_MIDIA);
 }
 
 /** A audiência de uma empresa de mídia: a parte dela no que o país consome do setor (0 a 1). */
@@ -927,7 +950,7 @@ export function anoDosSetores(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void 
 
 /** A fatia do mercado do setor que a empresa tem (a demanda dela sobre o que o país compra do setor). */
 export function fatiaDoMercado(e: EstadoVida, c: Conteudo, emp: Entidade): number {
-  return (emp.n['demanda'] ?? 0) / mercadoDoSetor(e, economiaDo(c.setores.get(emp.t['setor'] ?? '')));
+  return (emp.n['demanda'] ?? 0) / mercadoDaEmpresa(e, c, emp);
 }
 
 /** O que vem por aí: a obra em andamento no setor fica pronta no ano que vem e diz para onde o preço vai. */

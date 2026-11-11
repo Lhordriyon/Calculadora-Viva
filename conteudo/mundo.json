@@ -1480,7 +1480,11 @@
       "rival": "celeste",
       "compra": ["industria", "agro"],
       "relacao": 52,
-      "forca": 90
+      "forca": 90,
+      "tamanho": 12.5,
+      "imposto": 0.21,
+      "custoDeVida": 1.9,
+      "cidades": ["Porto Norte", "Nova Albion", "Vale do Ferro"]
     },
     {
       "id": "celeste",
@@ -1496,7 +1500,11 @@
       "rival": "federacao",
       "compra": ["agro"],
       "relacao": 50,
-      "forca": 85
+      "forca": 85,
+      "tamanho": 8.5,
+      "imposto": 0.25,
+      "custoDeVida": 0.8,
+      "cidades": ["Cidade Celeste", "Porto Jade", "Monte Seda"]
     },
     {
       "id": "liga",
@@ -1510,7 +1518,11 @@
       "crise": 0.01,
       "compra": ["agro", "industria"],
       "relacao": 50,
-      "forca": 70
+      "forca": 70,
+      "tamanho": 8.5,
+      "imposto": 0.28,
+      "custoDeVida": 1.7,
+      "cidades": ["Ponta Atlântica", "Baía das Ligas", "Velha Hansa"]
     },
     {
       "id": "pacto",
@@ -1524,7 +1536,11 @@
       "crise": 0.02,
       "compra": ["industria", "comercio"],
       "relacao": 55,
-      "forca": 45
+      "forca": 45,
+      "tamanho": 1.5,
+      "imposto": 0.3,
+      "custoDeVida": 0.7,
+      "cidades": ["Porto Austral", "Rio do Pacto", "Alto Andino"]
     }
   ],
   "noticias": {

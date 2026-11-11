@@ -23,12 +23,15 @@ import { controladaPor, diluirPeloAporte, formaCiclo, liberarParticipadas, mudar
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 import { movimentar } from './economia.ts';
+import { defDoPais, oPais } from './mundo-das-empresas.ts';
+import type { Parceiro } from './constantes.ts';
 import { moverEmpresa } from './empresa.ts';
 
 export type OperacaoGrupo =
   | { tipo: 'criarHolding'; valor: number }
   | { tipo: 'paraAHolding'; empresa: string; holding: string }
-  | { tipo: 'fundarSubsidiaria'; controladora: string; setor: string; valor: number }
+  /** Com `pais`, a filial lá fora (mundo-das-empresas.ts): vende no mercado daquele país. */
+  | { tipo: 'fundarSubsidiaria'; controladora: string; setor: string; valor: number; pais?: Parceiro }
   | { tipo: 'aportarNaControlada'; de: string; para: string; valor: number }
   | { tipo: 'dividendosDaControlada'; empresa: string; fracao: number }
   | { tipo: 'venderParticipacao'; empresa: string; fracao: number };
@@ -88,6 +91,12 @@ export function motivoParaNaoOperarGrupo(e: EstadoVida, c: Conteudo, op: Operaca
       if (!lugarLivre(e)) return `já são ${MAX_EMPRESAS} empresas no grupo`;
       if (!setoresDeEmpresa(c).some((s) => s.id === op.setor)) return 'escolha o ramo';
       if (!(op.valor >= CAPITAL_MINIMO_EMPRESA)) return `o mínimo para abrir é ${formatarDinheiro(CAPITAL_MINIMO_EMPRESA)}`;
+      if (op.pais) {
+        const la = e.entidades[op.pais];
+        if (!la || !c.mundo.estrangeiros.some((x) => x.id === op.pais)) return 'escolha o país';
+        if (la.q['sancao']) return `sob sanção, ${oPais(c, op.pais)} não deixa empresa brasileira abrir filial`;
+        if ((la.n['relacao'] ?? 50) < 30) return `com a relação fria, ${oPais(c, op.pais)} não aprova a filial`;
+      }
       return op.valor > (mae.n['caixa'] ?? 0) + 0.5 ? `o caixa ${aEmpresa(mae, 'da')} não tem ${formatarDinheiro(op.valor)}` : null;
     }
     case 'aportarNaControlada': {
@@ -146,10 +155,20 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       // inclui o caixa) desce o mesmo tanto, e a filha entra pela parte dela (sem contar duas vezes).
       somar(e, reg, mae.id, 'caixa', -op.valor, 'capital', lugar);
       somar(e, reg, mae.id, 'valor', -Math.min(op.valor, Math.max(0, mae.n['valor'] ?? 0)), 'empresa');
-      const filha = fundar(e, c, reg, { setor: op.setor, valor: op.valor, de: mae.id, dona: refDaEmpresa(mae) }, origem, lugar)!;
+      // A filial lá fora leva o nome da controladora e o do país.
+      const base = mae.nome.replace(/ Participações$/, '');
+      const nome = op.pais ? `${base} ${defDoPais(c, op.pais)?.nome ?? ''}`.trim() : undefined;
+      const filha = fundar(e, c, reg, { setor: op.setor, valor: op.valor, de: mae.id, dona: refDaEmpresa(mae), pais: op.pais }, origem, lugar, nome)!;
       // Quem cuida da subsidiária é a diretoria dela: ela depende pouco de quem joga.
       definirNumero(e, reg, lugar, 'dependencia', 15);
       const ramo = c.setores.get(op.setor)?.nome ?? op.setor;
+      if (op.pais) {
+        const cidade = defDoPais(c, op.pais)?.cidades[0] ?? '';
+        return {
+          texto: `${aEmpresa(mae, 'A')} abriu ${aEmpresa(filha)}, de ${ramo}, ${oPais(c, op.pais, 'na')}, com ${formatarDinheiro(op.valor)} do caixa dela e a sede em ${cidade}. Ela vende no mercado de lá, paga o imposto de lá e sente o dólar e a relação com o Brasil.`,
+          resumo: `abriu uma filial ${oPais(c, op.pais, 'na')}`,
+        };
+      }
       return {
         texto: `${aEmpresa(mae, 'A')} fundou ${aEmpresa(filha)}, de ${ramo}, com ${formatarDinheiro(op.valor)} do caixa dela. É outra pessoa jurídica: tem o caixa, a estrutura e as contas dela.`,
         resumo: `fundou a subsidiária ${filha.nome}`,

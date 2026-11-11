@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, custoDoLobby, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor, textoDosCustos } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
-import { CamadasDaEmpresa, EstruturaDoGrupo } from './Grupo.tsx';
+import { CamadasDaEmpresa, EstruturaDoGrupo, OsMaisRicos } from './Grupo.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
@@ -1201,6 +1201,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
         <EntrePessoas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         {vida.idade >= 18 && <BrincarDeDeus vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         {vida.idade >= 18 && <Grupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
+        {vida.idade >= 18 && <OsMaisRicos vida={vida} conteudo={conteudo} />}
         {vida.idade >= 18 && <Bens vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}
         <Investimentos vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         {(vida.idade >= 18 || titulosDe(vida).length > 0) && <Tesouro vida={vida} conteudo={conteudo} aoOperar={aoOperar} />}

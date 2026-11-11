@@ -626,6 +626,14 @@ export const DefEstrangeiro = z.strictObject({
   relacao: z.number().min(0).max(100),
   /** A força militar dele (0 a 100), contra a capacidade daqui no fim de uma guerra (guerra.ts). */
   forca: z.number().min(0).max(100),
+  /**
+   * O grupo no mundo (I-166): o tamanho da economia dele (quantas vezes o PIB do Brasil), o imposto das empresas de lá,
+   * o custo de vida (1 é o do Brasil na média) e as cidades em que uma filial abre unidades.
+   */
+  tamanho: z.number().gt(0).max(40),
+  imposto: z.number().min(0).max(0.6),
+  custoDeVida: z.number().min(0.3).max(3),
+  cidades: z.array(z.string().min(3)).min(2),
 });
 export type DefEstrangeiro = z.infer<typeof DefEstrangeiro>;
 

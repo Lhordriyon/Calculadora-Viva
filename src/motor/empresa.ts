@@ -198,6 +198,8 @@ interface Fundacao {
   dona?: string | undefined;
   /** Uma holding: pessoa jurídica sem operação própria, que vive das participações. */
   holding?: boolean | undefined;
+  /** O país de fora da filial (mundo-das-empresas.ts): ela vende lá, com as unidades nas cidades de lá. */
+  pais?: string | undefined;
 }
 
 /** A empresa nasce no lugar `id` (o valor já veio de algum lugar): tudo vai para o livro, e a fundação vira a causa do que ela causar. */
@@ -210,6 +212,7 @@ export function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, 
   // A pessoa jurídica: o número permanente e quem a controla (societario.ts).
   garantirRegistro(e, emp);
   if (f.dona && f.dona !== 'eu') definirTexto(e, reg, id, 'dona', f.dona);
+  if (f.pais) definirTexto(e, reg, id, 'pais', f.pais);
   if (f.holding) {
     // A holding não produz: o capital fica no caixa, e o valor dela é o caixa (as participações entram pela parte de cada subsidiária).
     definirTexto(e, reg, id, 'setor', 'financas');
@@ -594,7 +597,8 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
     if (noVermelho && ano.cortou > 0) insolventes.add(emp.id);
     antes += ano.empregosAntes;
     depois += ano.empregosDepois;
-    impostos += ano.imposto;
+    // O imposto da filial lá fora vai para o governo de lá: não baixa a dívida daqui.
+    if (!emp.t['pais']) impostos += ano.imposto;
     exportacaoBarrada(e, emp);
   }
   // As contas nacionais (I-161): o que o grupo adicionou ao PIB, e o crescimento que isso puxa (antes das concorrentes,
@@ -631,7 +635,8 @@ function pesoNoPib(e: EstadoVida, reg: Mudanca[]): void {
   if (!pais || !(pib > 0)) return;
   let va = 0;
   for (const emp of empresasDe(e)) {
-    if (emp.q['holding'] || emp.n['capacidade'] === undefined) continue;
+    // O valor que a filial lá fora adiciona é do PIB de lá.
+    if (emp.q['holding'] || emp.n['capacidade'] === undefined || emp.t['pais']) continue;
     let insumos = 0;
     for (const m of reg) if (m.c === `${emp.id}.caixa` && (m.r === 'insumos' || m.r === 'publicidade') && (m.d ?? 0) < 0) insumos -= m.d!;
     va += Math.max(0, (emp.n['receita'] ?? 0) - insumos);

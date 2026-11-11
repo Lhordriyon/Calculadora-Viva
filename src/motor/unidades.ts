@@ -86,7 +86,9 @@ export function formaQueProduz(c: Conteudo, emp: Entidade): string {
 /** O custo de vida de uma cidade do catálogo pelo nome (1 quando ela não está no catálogo). */
 export function custoDaCidade(c: Conteudo, nome: string | undefined): number {
   const cidade = c.mundo.cidades.find((x) => x.nome === nome);
-  return cidade ? custoDeVidaDa(cidade) : 1;
+  if (cidade) return custoDeVidaDa(cidade);
+  // A cidade de um país de fora tem o custo de vida de lá (mundo.json › estrangeiros › custoDeVida).
+  return c.mundo.estrangeiros.find((x) => x.cidades.includes(nome ?? ''))?.custoDeVida ?? 1;
 }
 
 /** A cidade da sede da empresa: a da unidade marcada sede (ou a da maior); sem unidades, a de quem joga. */
@@ -283,7 +285,9 @@ export function apagarUnidade(e: EstadoVida, reg: Mudanca[], un: Entidade): void
 export function garantirUnidades(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, origem = 0, cidade?: string): void {
   if (emp.q['holding'] || emp.vivo === false || emp.n['capacidade'] === undefined || emp.registro === undefined) return;
   if (produtivasDe(e, emp).length > 0) return;
-  const un = abrirUnidade(e, reg, emp, formaQueProduz(c, emp), cidade ?? e.entidades['lugar']?.nome ?? 'São Paulo', origem, unidadesDe(e, emp).length === 0);
+  // A filial lá fora abre a sede na primeira cidade do país dela.
+  const deFora = emp.t['pais'] ? c.mundo.estrangeiros.find((x) => x.id === emp.t['pais'])?.cidades[0] : undefined;
+  const un = abrirUnidade(e, reg, emp, formaQueProduz(c, emp), cidade ?? deFora ?? e.entidades['lugar']?.nome ?? 'São Paulo', origem, unidadesDe(e, emp).length === 0);
   un.nome = rotulo(c, un);
   if ((emp.n['capacidade'] ?? 0) !== 0) somar(e, reg, un.id, 'capacidade', emp.n['capacidade']!, 'negocio');
   if ((emp.n['obra'] ?? 0) !== 0) somar(e, reg, un.id, 'obra', emp.n['obra']!, 'negocio');
@@ -440,7 +444,9 @@ export function motivoParaNaoOperarUnidade(e: EstadoVida, c: Conteudo, op: Opera
     if (emp.q['holding']) return 'a holding não tem operação própria: quem produz são as subsidiárias';
     if (emp.n['capacidade'] === undefined) return 'a empresa ainda não opera';
     if (unidadesDe(e, emp).length >= UNIDADES.maximo) return `a empresa já tem ${UNIDADES.maximo} unidades`;
-    if (!c.mundo.cidades.some((x) => x.nome === op.cidade)) return 'cidade desconhecida';
+    // A filial lá fora abre unidades nas cidades do país dela; a empresa daqui, nas do Brasil.
+    const deLa = emp.t['pais'] ? c.mundo.estrangeiros.find((x) => x.id === emp.t['pais'])?.cidades : undefined;
+    if (deLa ? !deLa.includes(op.cidade) : !c.mundo.cidades.some((x) => x.nome === op.cidade)) return deLa ? 'escolha uma cidade do país da filial' : 'cidade desconhecida';
     const apoio = apoioPara(c, op.forma, emp);
     if (apoio) {
       const { custo } = porteDoApoioNovo(emp, apoio.id);
@@ -467,6 +473,7 @@ export function motivoParaNaoOperarUnidade(e: EstadoVida, c: Conteudo, op: Opera
   if (!para || para.id === emp.id) return 'escolha outra empresa do seu grupo';
   if (para.q['holding']) return 'a holding não tem operação própria';
   if (para.n['capacidade'] === undefined) return 'a empresa de destino ainda não opera';
+  if ((para.t['pais'] ?? '') !== (emp.t['pais'] ?? '')) return 'a unidade fica no país dela: a outra empresa vende em outro país';
   if (ultima) return 'é a única que produz: a empresa ficaria sem operação';
   if (ehDeApoio(un) ? !apoioPara(c, un.t['forma'] ?? '', para) : para.t['setor'] !== emp.t['setor']) return 'a outra empresa é de outro setor';
   if (unidadesDe(e, para).length >= UNIDADES.maximo) return `a outra empresa já tem ${UNIDADES.maximo} unidades`;
