@@ -264,7 +264,8 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const teto = mercadoDoSetor(e, eco) * FATIA_MAXIMA_DO_MERCADO;
   const bruto = (n['tracao'] ?? 0) / 100 + fase.empresa * (setor?.ciclo ?? 1) + fora + sorte + (atratividade(emp) - forcaDaConcorrente(emp)) * ATRATIVIDADE_NO_CRESCIMENTO;
   const cresce = bruto > 0 ? bruto * Math.max(0, 1 - demanda / teto) : Math.max(-0.6, bruto);
-  somar(e, reg, id, 'demanda', demanda * cresce, 'negocio');
+  // Os números do ano vão arredondados (os reais, os centavos, os centésimos): o livro de cada empresa cabe no save.
+  definirNumero(e, reg, id, 'demanda', Math.max(0, Math.round(demanda * (1 + cresce))), 'negocio');
 
   // Vende o que a capacidade dá conta, no preço escolhido; o resto da procura vira fila.
   const p = PRECOS[preco(emp)];
@@ -275,26 +276,26 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // O dólar do ano: quem exporta recebe mais reais pelo que vende, quem importa paga mais caro pelo que compra.
   const dolar = (fase.cambio ?? 0) * DOLAR_NO_CAIXA;
   // Na guerra de preços, todo mundo cobra menos.
-  const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor']));
+  const vendas = centavos(entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor'])));
   // O insumo vem do setor fornecedor (a alta dele encarece; o fornecedor próprio vende a preço de custo).
   // O centro de distribuição barateia cada venda (o frete, a perda).
-  const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp) * estrutura.fatorDoCentro;
+  const variavel = centavos(entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp) * estrutura.fatorDoCentro);
   // A folha anda com o mercado de trabalho (desemprego baixo, gente cara) e com a cidade de cada unidade (o salário e o
   // aluguel do lugar, comparados com os da sede); as unidades de apoio pagam o porte delas.
-  const fixo = (estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e);
-  const campanha = vendas * (n['marketing'] ?? 0);
-  const pesquisa = vendas * (n['pd'] ?? 0);
+  const fixo = centavos((estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e));
+  const campanha = centavos(vendas * (n['marketing'] ?? 0));
+  const pesquisa = centavos(vendas * (n['pd'] ?? 0));
   const verbas = campanha + pesquisa;
   // A mídia do grupo (I-162) vende audiência: a campanha que as irmãs compraram dela antes de ela fechar o ano é receita.
   const publicidade = doGrupo ? publicidadeRecebida(reg, id) : 0;
   const ebit = vendas + publicidade - variavel - fixo - verbas;
   // O juro do banco sai antes do imposto (o lucro é depois dele).
-  const juros = (n['divida'] ?? 0) * jurosDaEmpresa(e);
-  const imposto = Math.max(0, ebit - juros) * impostoDaEmpresa(e);
+  const juros = centavos((n['divida'] ?? 0) * jurosDaEmpresa(e));
+  const imposto = centavos(Math.max(0, ebit - juros) * impostoDaEmpresa(e));
   const lucro = ebit - juros - imposto;
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
-  const exportou = vendas * fracaoFora;
+  const exportou = centavos(vendas * fracaoFora);
   let impostoDaMidia = 0;
   if (exportou > 0) somar(e, reg, id, 'caixa', exportou, 'exportacao', emp.t['exporta']!);
   if (!doGrupo) {
@@ -314,7 +315,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', 'tesouro');
   // O banco recebe o juro e a parcela (o dinheiro que volta para ele deixa de existir).
   if (juros >= 1) somar(e, reg, id, 'caixa', -juros, 'juros', 'banco');
-  const parcela = (n['divida'] ?? 0) * CREDITO_DA_EMPRESA.amortizacao;
+  const parcela = centavos((n['divida'] ?? 0) * CREDITO_DA_EMPRESA.amortizacao);
   if (parcela >= 1) {
     somar(e, reg, id, 'caixa', -parcela, 'amortizacao', 'banco');
     somar(e, reg, id, 'divida', -parcela, 'amortizacao');
@@ -322,7 +323,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
 
   // Os dividendos saem do lucro, na proporção que os donos decidiram, e do que há no caixa; sobem pelos sócios
   // (quem joga, a holding, a pessoa dona, o mercado), cada um pela parte dele (societario.ts).
-  const dividendos = lucro > 0 ? Math.min(Math.max(0, n['caixa'] ?? 0), lucro * (n['retirada'] ?? 0)) : 0;
+  const dividendos = lucro > 0 ? centavos(Math.min(Math.max(0, n['caixa'] ?? 0), lucro * (n['retirada'] ?? 0))) : 0;
   pagarDividendos(e, reg, emp, dividendos);
 
   // O ano que não fecha: vende capacidade (pela metade do que custou) até o caixa voltar a zero, e demite junto.
@@ -343,24 +344,33 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const tecnologia = (e.entidades['pais']?.n['tecnologia'] ?? 50) - 50;
   // O laboratório faz o P&D render mais (unidades.ts); a geração do produto que passou da idade puxa para baixo (I-160).
   const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 * estrutura.fatorDoLaboratorio + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade - velhiceDoProduto(e, emp);
-  somar(e, reg, id, 'qualidade', (Math.max(0, Math.min(100, alvoQualidade)) - (n['qualidade'] ?? 50)) * 0.25, 'negocio');
+  // Perto do alvo, a qualidade e a marca andam centésimos: só vão para o livro quando andam um décimo ou mais.
+  const passoQualidade = (Math.max(0, Math.min(100, alvoQualidade)) - (n['qualidade'] ?? 50)) * 0.25;
+  if (Math.abs(passoQualidade) >= 0.1 || n['qualidade'] === undefined) definirNumero(e, reg, id, 'qualidade', centavos((n['qualidade'] ?? 50) + passoQualidade), 'negocio');
   // A fama de quem manda e a mídia própria são de quem joga: puxam a marca das empresas do grupo, não a das concorrentes.
   const fama = doGrupo ? (e.entidades['eu']?.n['fama'] ?? 0) : 0;
   // A campanha só na mídia do grupo alcança a audiência dela, não o país inteiro (mídia pequena, marca que anda devagar).
   const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 * alcanceDaCampanha(e, c, emp) + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (doGrupo && temMidia(e) ? 10 : 0);
-  somar(e, reg, id, 'marca', (Math.max(0, Math.min(100, alvoMarca)) - (n['marca'] ?? 50)) * 0.25, 'negocio');
+  const passoMarca = (Math.max(0, Math.min(100, alvoMarca)) - (n['marca'] ?? 50)) * 0.25;
+  if (Math.abs(passoMarca) >= 0.1 || n['marca'] === undefined) definirNumero(e, reg, id, 'marca', centavos((n['marca'] ?? 50) + passoMarca), 'negocio');
 
   // O valor vai para os fundamentos: o caixa e a obra, mais o maior entre os ativos a preço de venda e o lucro vezes o múltiplo.
   const ativos = (n['capacidade'] ?? 0) * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS + estrutura.ativosDoApoio;
   const multiplo = eco.multiplo * (emp.q['na_bolsa'] ? 1 + PREMIO_DA_BOLSA : 1);
   const alvo = Math.max(0, Math.max(0, n['caixa'] ?? 0) + (n['obra'] ?? 0) * eco.giro + Math.max(ativos, multiplo * Math.max(0, lucro)) - (n['divida'] ?? 0));
-  somar(e, reg, id, 'valor', (alvo - (n['valor'] ?? 0)) * 0.5, 'empresa');
-  definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
-  definirNumero(e, reg, id, 'receita', vendas + publicidade, 'negocio');
-  definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
+  definirNumero(e, reg, id, 'valor', Math.round((n['valor'] ?? 0) + (alvo - (n['valor'] ?? 0)) * 0.5), 'empresa');
+  definirNumero(e, reg, id, 'lucro', Math.round(lucro), 'empresa');
+  definirNumero(e, reg, id, 'receita', Math.round(vendas + publicidade), 'negocio');
+  // O imposto do ano só importa para a folha de quem joga: a concorrente não guarda.
+  if (doGrupo) definirNumero(e, reg, id, 'impostos', Math.round(imposto), 'negocio');
   // A disputa é das empresas do grupo com as de fora (as de fora decidem a delas em concorrentes.ts).
   if (doGrupo) concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
   return { vendas, lucro, imposto: imposto + impostoDaMidia, dividendos, cortou, empregosAntes, empregosDepois: empregosNaCidadeDe(e, c, emp) };
+}
+
+/** Arredonda para centavos (os números do negócio no livro). */
+function centavos(v: number): number {
+  return Math.round(v * 100) / 100;
 }
 
 // ---------------------------------------------------------------- o produto (I-160)
@@ -438,7 +448,8 @@ export function alcanceDaCampanha(e: EstadoVida, c: Conteudo, emp: Entidade): nu
 function campanhaNaMidia(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, campanha: number): { pago: number; imposto: number } {
   if (!(campanha >= 1)) return { pago: 0, imposto: 0 };
   const escolhida = midiaEscolhida(e, emp);
-  const partes: [Entidade, number][] = escolhida ? [[escolhida, campanha]] : midiasDoGrupo(e).filter((m) => m.id !== emp.id).map((m) => [m, campanha * audienciaDe(e, c, m)]);
+  // Pela audiência, só o que faz diferença (1% da campanha ou mais): a mídia pequena não vira dois lançamentos de troco por ano.
+  const partes: [Entidade, number][] = escolhida ? [[escolhida, campanha]] : midiasDoGrupo(e).filter((m) => m.id !== emp.id).map((m): [Entidade, number] => [m, centavos(campanha * audienciaDe(e, c, m))]).filter(([, v]) => v >= campanha * 0.01);
   let pago = 0;
   let imposto = 0;
   for (const [m, v] of partes) {

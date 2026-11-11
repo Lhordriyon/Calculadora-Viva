@@ -12,7 +12,7 @@ import { defCampo, entidadeDe, lerCaminho, patrimonioDe, separar } from './campo
 import type { Conteudo } from './conteudo.ts';
 import { abaterDivida, contrairEmprestimo, multiplicarDivida, renegociar } from './dividas.ts';
 import { movimentar } from './economia.ts';
-import { abrirCapital, abrirPorEfeito, fecharEmpresa, multiplicarEmpresa, recomprar, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
+import { abrirCapital, abrirPorEfeito, empresaComSubsidiarias, fecharEmpresa, multiplicarEmpresa, recomprar, rodadaDeInvestimento, venderParte, venderSubsidiarias } from './empresa.ts';
 import { decidirNoNegocio, valorNaEmpresa } from './negocio.ts';
 import type { Efeitos } from './esquema.ts';
 import { definirNumero, definirTexto, ganhar, perder, somar, somarQualidade } from './livro.ts';
@@ -186,9 +186,12 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   if (ef.fecharEmpresa) ctx.valores['sobra'] = fecharEmpresa(e, reg, ef.fecharEmpresa.sobra);
   if (ef.venderSubsidiarias) {
     const v = ef.venderSubsidiarias;
-    const subs = e.entidades['empresa']?.n['subsidiarias'] ?? 0;
+    // As subsidiárias pequenas (o contador dentro do valor) podem estar em qualquer empresa sua no grupo (a concorrente
+    // comprada vem com as dela): vende da que você cuida de perto, ou da sua que tiver mais.
+    const id = empresaComSubsidiarias(e);
+    const subs = (id ? e.entidades[id]?.n['subsidiarias'] : 0) ?? 0;
     const quantas = v.fracao !== undefined ? Math.ceil(subs * v.fracao) : v.quantas;
-    ctx.valores['venda'] = venderSubsidiarias(e, c, reg, v.premio ?? 1, undefined, quantas).preco;
+    ctx.valores['venda'] = id ? venderSubsidiarias(e, c, reg, v.premio ?? 1, id, quantas).preco : 0;
   }
   if (ef.abrirCapital) ctx.valores['venda'] = abrirCapital(e, reg, origem);
 

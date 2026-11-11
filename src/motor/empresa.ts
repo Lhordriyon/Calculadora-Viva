@@ -434,6 +434,16 @@ export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number, id =
   return volta;
 }
 
+/**
+ * A empresa sua (de quem joga direto) com as subsidiárias pequenas do contador: a que você cuida de perto, se tiver
+ * alguma; senão, a que tiver mais (a concorrente comprada vem com as dela).
+ */
+export function empresaComSubsidiarias(e: EstadoVida): string | undefined {
+  const minhas = empresasDe(e).filter((x) => donaDe(x) === 'eu' && (x.n['subsidiarias'] ?? 0) >= 1);
+  if (minhas.some((x) => x.id === PRINCIPAL)) return PRINCIPAL;
+  return minhas.sort((a, b) => (b.n['subsidiarias'] ?? 0) - (a.n['subsidiarias'] ?? 0))[0]?.id;
+}
+
 /** Vende subsidiárias (uma, até dez; depois, um décimo delas, ou `quantas`): sai a fatia delas do valor, e a parte de quem joga vira dinheiro. */
 export function venderSubsidiarias(e: EstadoVida, c: Conteudo, reg: Mudanca[], premio: number, id = PRINCIPAL, quantas?: number): { preco: number; vendidas: number } {
   const emp = empresaDe(e, id);
@@ -497,8 +507,12 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const fora = exteriorNaEmpresa(e, c, emp.t['setor'] ?? '', fase.cambio ?? 0);
   const ano = anoDoNegocio(e, c, emp, fase, reg, fora, sorte);
   if (emp.q['na_bolsa'] && humor !== 0) somar(e, reg, id, 'valor', (n['valor'] ?? 0) * PESO_DA_BOLSA * humor, 'bolsa');
-  definirNumero(e, reg, id, 'ocupacao', Math.min(10, ocupacaoDe(e, c, emp)), 'negocio');
-  definirNumero(e, reg, id, 'funcionarios', Math.min(3_000_000, funcionariosDe(e, c, emp)), 'negocio');
+  // A ocupação e a equipe vão para o livro quando mudam de verdade (2 pontos da ocupação, 1% das pessoas): em regime, elas
+  // oscilam um fio todo ano, e cada empresa do grupo escreveria duas linhas de troco por ano.
+  const ocupacao = Math.round(Math.min(10, ocupacaoDe(e, c, emp)) * 100) / 100;
+  if (n['ocupacao'] === undefined || Math.abs(ocupacao - (n['ocupacao'] ?? 0)) >= 0.02) definirNumero(e, reg, id, 'ocupacao', ocupacao, 'negocio');
+  const funcionarios = Math.min(3_000_000, funcionariosDe(e, c, emp));
+  if (n['funcionarios'] === undefined || Math.abs(funcionarios - (n['funcionarios'] ?? 0)) >= Math.max(1, 0.01 * (n['funcionarios'] ?? 0))) definirNumero(e, reg, id, 'funcionarios', funcionarios, 'negocio');
   const alvo = alvoDaTracao(e, c, emp, carga);
   somar(e, reg, id, 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
   return ano;

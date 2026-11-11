@@ -66,8 +66,9 @@ function comMidia(semente: number): { e: EstadoVida; industria: string; midia: s
 
 describe('teste 5: a mídia vende audiência', () => {
   it('a empresa de mídia tem audiência (a parte dela no setor) e recebe pela campanha de quem anuncia nela', () => {
-    const { e, midia } = comMidia(1);
+    const { e, industria, midia } = comMidia(1);
     umAno(e);
+    fazer(e, { tipo: 'anunciar', empresa: industria, midia });
     const m = e.entidades[midia]!;
     expect(audienciaDe(e, c, m)).toBeGreaterThan(0);
     expect(audienciaDe(e, c, m)).toBeLessThan(1);
@@ -84,6 +85,9 @@ describe('teste 6: o marketing do grupo na mídia do grupo', () => {
   it('a verba de marketing sai do caixa de quem contrata e entra no de quem presta, na parte da audiência; o resto vai para o mercado', () => {
     const { e, industria, midia } = comMidia(2);
     umAno(e);
+    // Uma mídia com 5% da audiência do país (a parte só entra quando passa de 1% da campanha).
+    const m = e.entidades[midia]!;
+    m.n['demanda'] = mercadoDoSetor(e, economiaDo(c.setores.get('cultura'))) * 0.05;
     const reg = umAno(e);
     const pago = reg.filter((x) => x.c === `${industria}.caixa` && x.r === 'publicidade' && x.p === midia).reduce((s, x) => s - x.d!, 0);
     const recebido = reg.filter((x) => x.c === `${midia}.caixa` && x.r === 'publicidade' && x.p === industria).reduce((s, x) => s + x.d!, 0);
@@ -95,8 +99,9 @@ describe('teste 6: o marketing do grupo na mídia do grupo', () => {
   });
 
   it('na consolidada, a campanha interna some da receita e do custo do grupo (o lucro do grupo não muda com ela)', () => {
-    const { e } = comMidia(3);
+    const { e, industria, midia } = comMidia(3);
     umAno(e);
+    fazer(e, { tipo: 'anunciar', empresa: industria, midia });
     umAno(e);
     const g = consolidada(e);
     expect(g.receitaInterna).toBeGreaterThan(0);

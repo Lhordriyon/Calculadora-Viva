@@ -29,7 +29,7 @@ import { definirNumero, definirTexto, ganhar, perder, somar } from './livro.ts';
 import { anoDoNegocio, atratividade, economiaDo, garraDaRival, mercadoDoSetor, motivoParaNaoOperarNegocio, operarNegocio, somarDemanda, type AnoDoNegocio, type OperacaoNegocio, ehOperacaoDeNegocio } from './negocio.ts';
 import type { Momento } from './pais.ts';
 import { aleatorio, criarRng, misturar, normal, sortear, type Rng } from './rng.ts';
-import { CONCORRENCIA, DESVIO_TRACAO, REVERSAO_TRACAO, SORTE_DO_NEGOCIO, volatilidadeDaEmpresa } from './regras.ts';
+import { CONCORRENCIA, DESVIO_TRACAO, REVERSAO_TRACAO, SORTE_DO_NEGOCIO, subsidiariasDoRival, volatilidadeDaEmpresa } from './regras.ts';
 import { controladaPor, proximoRegistro, refDaPessoa } from './societario.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 import { unidadesDe } from './unidades.ts';
@@ -142,6 +142,10 @@ export function abrirConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], set
   // Ela já existia antes de quem joga reparar: a clientela é a dela, e ela não depende de ninguém da vida.
   somarDemanda(e, c, reg, emp, Math.max(0, demanda - (emp.n['demanda'] ?? 0)));
   definirNumero(e, reg, id, 'dependencia', 0);
+  // As subsidiárias pequenas dela, dentro do valor (a mesma régua de tamanho de antes da concorrente de verdade): vêm
+  // junto quando ela é comprada.
+  const pequenas = subsidiariasDoRival(capital);
+  if (pequenas > 0) somar(e, reg, id, 'subsidiarias', pequenas);
   for (const campo of ['qualidade', 'marca']) definirNumero(e, reg, id, campo, Math.max(5, Math.min(95, forca + normal(rng, 0, 3))), 'negocio');
   // A sede numa cidade do catálogo (o mesmo sorteio dela).
   const sede = unidadesDe(e, emp)[0];

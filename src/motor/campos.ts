@@ -420,6 +420,8 @@ const EMPRESA: Record<string, DefCampo> = {
   participacoes: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
   /** A parte de quem joga, direta e indireta (pela holding e pelas sócias), de 0 a 1. */
   parte_efetiva: { tipo: 'num', sistema: 'dinheiro', derivado: true },
+  /** As subsidiárias do grupo inteiro: as pequenas, dentro do valor de cada empresa, e as de verdade. */
+  subsidiarias_do_grupo: { tipo: 'num', sistema: 'dinheiro', derivado: true },
   /** Há quantos anos a geração do produto está nas lojas (negocio.ts › idadeDoProduto). */
   produto_idade: { tipo: 'num', sistema: 'dinheiro', derivado: true },
 };
@@ -834,6 +836,13 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.tipo === 'empresa' ? valorDasParticipacoes(e, en) : 0;
       case 'parte_efetiva':
         return en.tipo === 'empresa' ? parteEfetiva(e, en) : 0;
+      case 'subsidiarias_do_grupo': {
+        // As subsidiárias pequenas de todas as empresas do grupo (o contador dentro do valor) e as de verdade (as
+        // empresas que outra empresa do grupo controla).
+        let n = 0;
+        for (const x of empresasDe(e)) n += (x.n['subsidiarias'] ?? 0) + (donaDe(x)[0] === '#' ? 1 : 0);
+        return n;
+      }
       case 'produto_idade':
         return en.tipo === 'empresa' ? Math.max(0, e.ano - (en.q['lancamento']?.ano ?? en.nascimento ?? e.ano)) : 0;
       case 'sozinho':

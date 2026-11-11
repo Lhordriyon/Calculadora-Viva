@@ -111,7 +111,7 @@
   {
     "id": "subsidiaria_esquecida",
     "idade": [25, 95],
-    "condicoes": { "empresa.subsidiarias": { "min": 8 } },
+    "condicoes": { "empresa.subsidiarias_do_grupo": { "min": 8 } },
     "peso": 3,
     "texto": "A auditoria d{empresa:o|a} {empresa} achou uma subsidiária que ninguém lembrava ter comprado: [uma fábrica de parafusos em Joinville que dá lucro|um galpão vazio em Manaus com o aluguel em dia|uma rádio AM no interior de Goiás|uma empresa com sede numa caixa postal].",
     "resumo": "descobriu uma subsidiária esquecida no próprio grupo",
@@ -184,7 +184,7 @@
   {
     "id": "conglomerado_com_desconto",
     "idade": [25, 95],
-    "condicoes": { "marcas": ["empresa.na_bolsa"], "empresa.subsidiarias": { "min": 10 } },
+    "condicoes": { "marcas": ["empresa.na_bolsa"], "empresa.subsidiarias_do_grupo": { "min": 10 } },
     "peso": 3,
     "texto": "Um analista de banco de [vinte e quatro|vinte e seis] anos publicou que {empresa:o|a} {empresa} vale menos que a soma das partes: \"um conglomerado sem foco\". A ação caiu; o seu almoço de domingo também.",
     "resumo": "viu um analista chamar o próprio grupo de conglomerado sem foco",
