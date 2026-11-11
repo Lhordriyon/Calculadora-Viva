@@ -492,6 +492,8 @@
       {
         "texto": "Vender uma parte para encerrar o caso",
         "resumo": "vendeu parte da empresa para encerrar uma investigação de monopólio",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você vendeu uma fatia para um concorrente e o caso foi arquivado. O truste encolheu, mas ficou seu.",
           "efeitos": { "venderEmpresa": { "fracao": 0.25, "premio": 0.9 }, "empresa.tracao": -3 }
@@ -500,7 +502,7 @@
       {
         "texto": "Vender subsidiárias para encerrar o caso",
         "resumo": "vendeu subsidiárias para encerrar uma investigação de monopólio",
-        "condicoes": { "empresa.subsidiarias": { "min": 3 } },
+        "condicoes": { "empresa.dona": "eu", "empresa.subsidiarias": { "min": 3 } },
         "bloqueio": "a empresa não tem subsidiárias para vender",
         "resultado": {
           "texto": "Um terço das subsidiárias foi para concorrentes, por {venda}, e o caso foi arquivado. O truste acabou; o grupo, não.",

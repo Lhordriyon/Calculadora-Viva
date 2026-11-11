@@ -152,6 +152,8 @@
       {
         "texto": "Vender a preço de banana",
         "resumo": "vendeu o negócio da família na crise",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Um grupo grande comprou tudo por {venda}, uma fração do que valia. Você ficou com o dinheiro e com a culpa dos almoços de domingo.",
           "efeitos": {

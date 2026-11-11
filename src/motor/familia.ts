@@ -6,7 +6,9 @@
  * iniciativa: um storylet de personagem, escolhido pela regra dele (traço,
  * situação, saliência).
  */
-import { anosDaMarca, idadeDe, ler } from './campos.ts';
+import { mexerNaConcorrente, principalDe } from './concorrentes.ts';
+import { refDaPessoa } from './societario.ts';
+import { anosDaMarca, donaDe, idadeDe, ler } from './campos.ts';
 import { ESCOLHA_RECUSAR, ESCOLHA_SEGUIR, PROPOSTA, propostaDoGestor, textoDaProposta } from './diretoria.ts';
 import { empresaDe, nomeDaEmpresa } from './empresa.ts';
 import { GESTOR, RIVAL } from './regras.ts';
@@ -524,7 +526,14 @@ function rivalNoAno(e: EstadoVida, c: Conteudo, emp: Entidade | undefined, regAn
     if (quebra?.ano === e.ano && !rival.q['quebrou']) ganhar(e, regAno, 'rival', 'quebrou', quebra.causa ?? null, 'negocio');
     return;
   }
-  const negocio = nomeDaEmpresa(e, c.setores.get(setor), sortear(e.rng, c.mundo.sobrenomes));
+  // A concorrente de verdade sem dono à vista (concorrentes.ts) ganha o dono que chega: o nome é o dela.
+  const real = principalDe(e, emp);
+  const semDono = real && donaDe(real) === 'mercado' && real.t['socia'] === undefined ? real : undefined;
+  const negocio = semDono?.nome ?? nomeDaEmpresa(e, c.setores.get(setor), sortear(e.rng, c.mundo.sobrenomes));
+  const assumir = (reg: Mudanca[]): void => {
+    const r = e.entidades['rival'];
+    if (semDono && r) definirTexto(e, reg, semDono.id, 'dona', refDaPessoa(r));
+  };
   // Na concorrente nova, quem tem motivo pode ser o dono: a memória vai junto com a pessoa.
   const conhecido = nova ? conhecidoQueConcorre(e) : undefined;
   if (conhecido && aleatorio(e.rng) < RIVAL.conhecido) {
@@ -532,6 +541,7 @@ function rivalNoAno(e: EstadoVida, c: Conteudo, emp: Entidade | undefined, regAn
       levarParaAEmpresa(e, conhecido, 'rival', reg);
       definirTexto(e, reg, 'rival', 'negocio', negocio);
       definirTexto(e, reg, 'rival', 'setor', setor);
+      assumir(reg);
     });
     return;
   }
@@ -540,7 +550,10 @@ function rivalNoAno(e: EstadoVida, c: Conteudo, emp: Entidade | undefined, regAn
   delete en.n['saude'];
   en.t['negocio'] = negocio;
   en.t['setor'] = setor;
-  acontecer(e, c, 'rival', 'rival_chegou', (reg) => chegar(e, 'rival', en, reg));
+  acontecer(e, c, 'rival', 'rival_chegou', (reg) => {
+    chegar(e, 'rival', en, reg);
+    assumir(reg);
+  });
 }
 
 /** Quem da vida pode abrir a concorrente: um ex ou um amigo da vida adulta, em idade de empreender, magoado ou distante. */
@@ -600,7 +613,8 @@ function conferirGestor(e: EstadoVida, c: Conteudo, emp: Entidade, regAno: Mudan
   } else if (seguida && lucro > 0) somar(e, regAno, 'gestor', 'confianca', GESTOR.seguiu, 'relacoes');
   if (Number(ler(e, 'gestor', 'confianca') ?? 60) < GESTOR.saida || Number(ler(e, 'gestor', 'magoa') ?? 0) >= GESTOR.magoaQueLeva) {
     acontecer(e, c, 'gestor', 'gestor_saiu', (reg) => {
-      if (emp.n['concorrente'] !== undefined) somar(e, reg, emp.id, 'concorrente', GESTOR.leva, 'negocio');
+      // Quem sai leva o que sabe para a concorrente (a de verdade fica mais forte; sem ela, o número).
+      mexerNaConcorrente(e, reg, emp, GESTOR.leva);
     });
     partir(e, 'gestor', regAno);
   }

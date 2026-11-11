@@ -19,7 +19,7 @@ import { aEmpresa, fundar, liquidoDe, lugarLivre, setoresDeEmpresa, tirarDeQuemJ
 import { definirNumero, somar } from './livro.ts';
 import { momentoDoPais } from './pais.ts';
 import { CAPITAL_MINIMO_EMPRESA, MAX_EMPRESAS, precoDeVenda } from './regras.ts';
-import { controladaPor, formaCiclo, mudarDona } from './societario.ts';
+import { controladaPor, diluirPeloAporte, formaCiclo, liberarParticipadas, mudarDona } from './societario.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 import { movimentar } from './economia.ts';
@@ -165,7 +165,7 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       somar(e, reg, para.id, 'caixa', op.valor, 'aporte', de.id);
       somar(e, reg, para.id, 'valor', op.valor, 'empresa');
       // Os outros sócios não puseram nada: a parte da controladora cresce.
-      if (parte < 1) definirNumero(e, reg, para.id, 'participacao', Math.min(1 - (para.n['participacao_socia'] ?? 0), (parte * antes + op.valor) / (antes + op.valor)));
+      if (parte < 1 || (para.n['participacao_socia'] ?? 0) > 0) diluirPeloAporte(e, reg, para, op.valor, antes);
       return { texto: `${aEmpresa(de, 'A')} pôs ${formatarDinheiro(op.valor)} no caixa ${aEmpresa(para, 'da')}.`, resumo: `aportou ${formatarDinheiro(op.valor)} na controlada ${para.nome}` };
     }
     case 'dividendosDaControlada': {
@@ -188,6 +188,8 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       somar(e, reg, mae.id, 'valor', preco, 'empresa');
       if (parte - vendida < 0.005) {
         // A empresa continua existindo, fora do grupo: com o nome, o caixa, a clientela e a história (missão Capitalismo vivo).
+        // O que ela controlava fica no grupo: o preço foi o do negócio dela sozinha.
+        liberarParticipadas(e, reg, emp);
         definirNumero(e, reg, emp.id, 'participacao', 1 - (emp.n['participacao_socia'] ?? 0));
         mudarDona(e, reg, emp, 'mercado', 1 - (emp.n['participacao_socia'] ?? 0));
         const nome = emp.nome;

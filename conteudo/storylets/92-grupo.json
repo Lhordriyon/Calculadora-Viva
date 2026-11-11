@@ -93,6 +93,8 @@
       {
         "texto": "Vender antes que alguém pergunte",
         "resumo": "vendeu uma subsidiária esquecida sem perguntar o que era",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Saiu por {venda}, sem perguntas de nenhum dos lados. O comprador parecia saber mais do que você.",
           "efeitos": { "venderSubsidiarias": { "quantas": 1, "premio": 0.8 }, "felicidade": 1 }
@@ -136,6 +138,8 @@
       {
         "texto": "Vender",
         "resumo": "vendeu uma subsidiária por um preço acima do balanço",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Saiu por {venda}. A diretoria comemorou; os funcionários de lá ganharam um logo novo e um chefe que fala inglês nas reuniões.",
           "efeitos": { "venderSubsidiarias": { "quantas": 1, "premio": 1.5 }, "felicidade": 2 }
@@ -162,6 +166,8 @@
       {
         "texto": "Vender o que não é o foco",
         "resumo": "vendeu um terço das subsidiárias para agradar o mercado",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "O mercado aplaudiu: {empresa:o|a} {empresa} ficou menor, mais rápida e {venda} mais rica. O analista virou palestrante.",
           "efeitos": { "venderSubsidiarias": { "fracao": 0.3, "premio": 1.1 }, "empresa.tracao": 2 }

@@ -421,9 +421,11 @@ describe('uma vida com guerra', () => {
     for (const h of e.historico) {
       if (h.causa !== 'regra') continue;
       for (const m of h.mudancas ?? []) {
+        // Mudar de lugar no grupo não é escrever estado novo (o que vai junto já estava lá).
+        if (m.r === 'papel') continue;
         const [ent, campo] = m.c.split('.') as [string, string];
-        const chave = `${ent.replace(/^(bem|empresa|filho|irmao|ex|amigo)\d+$/, '$1').replace(/^(ctr|tit|prm)\d+[a-z]?$/, '$1')}.${campo}`;
-        if (!declaradas.has(chave)) fora.add(chave);
+        const chave = `${ent.replace(/^empresaR\d+$/, 'empresaR').replace(/^(bem|empresa|filho|irmao|ex|amigo|unidade)\d+$/, '$1').replace(/^(ctr|tit|prm)\d+[a-z]?$/, '$1')}.${campo}`;
+        if (!declaradas.has(chave) && !declaradas.has(`${chave.split('.')[0]}.*`)) fora.add(chave);
       }
     }
     expect([...fora]).toEqual([]);

@@ -587,6 +587,8 @@
       {
         "texto": "Vender o negócio",
         "resumo": "vendeu o negócio da família",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você vendeu por {venda}, menos do que valia e mais do que esperava.",
           "efeitos": {

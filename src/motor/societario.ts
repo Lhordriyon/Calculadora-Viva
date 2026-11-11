@@ -27,13 +27,25 @@ import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
  */
 export function garantirRegistro(e: EstadoVida, emp: Entidade): number {
   if (emp.registro !== undefined && emp.registro >= 1) return emp.registro;
+  proximoRegistro(e);
+  emp.registro = e.proximoRegistro!++;
+  return emp.registro;
+}
+
+/**
+ * O próximo número da vida (o das empresas e o das unidades, um contador só: um número nunca se repete), sem gastá-lo.
+ * O save de antes do contador começa depois do maior número em uso.
+ */
+export function proximoRegistro(e: EstadoVida): number {
   if (e.proximoRegistro === undefined) {
     let maior = 0;
-    for (const x of Object.values(e.entidades)) if (x.tipo === 'empresa') maior = Math.max(maior, x.registro ?? 0);
+    for (const x of Object.values(e.entidades)) {
+      if (x.tipo === 'empresa') maior = Math.max(maior, x.registro ?? 0);
+      if (x.tipo === 'unidade') maior = Math.max(maior, Number(x.id.slice('unidade'.length)) || 0);
+    }
     e.proximoRegistro = maior + 1;
   }
-  emp.registro = e.proximoRegistro++;
-  return emp.registro;
+  return e.proximoRegistro;
 }
 
 /** A entidade de quem é dono pela referência: quem joga, a empresa (pelo registro) ou a pessoa (pelo número); undefined para o mercado. */
@@ -102,7 +114,10 @@ export function formaCiclo(e: EstadoVida, emp: Entidade, nova: string): boolean 
 
 /** Muda quem controla a empresa, e a parte dela: o livro guarda a troca (é a propriedade que mudou de mão, não dinheiro). */
 export function mudarDona(e: EstadoVida, reg: Mudanca[], emp: Entidade, dona: string, participacao: number): void {
-  if (formaCiclo(e, emp, dona)) throw new Error(`a propriedade de ${emp.id} por ${dona} formaria um ciclo`);
+  if (formaCiclo(e, emp, dona)) {
+    const acima = dona[0] === '#' ? empresaDoRegistro(e, dona) : undefined;
+    throw new Error(`a propriedade de ${emp.id} (#${emp.registro}) por ${dona} formaria um ciclo (${acima?.id}: dona ${acima ? donaDe(acima) : '?'}, sócia ${acima?.t['socia'] ?? '-'})`);
+  }
   definirTexto(e, reg, emp.id, 'dona', dona);
   definirNumero(e, reg, emp.id, 'participacao', Math.max(0, Math.min(1 - (emp.n['participacao_socia'] ?? 0), participacao)));
 }
@@ -130,8 +145,9 @@ export function pagarDividendos(e: EstadoVida, reg: Mudanca[], emp: Entidade, to
       somar(e, reg, id, 'caixa', -v, 'dividendos', quem.id);
       somar(e, reg, quem.id, 'caixa', v, 'dividendos', id);
     } else {
-      somar(e, reg, id, 'caixa', -v, 'dividendos', quem.id);
-      somar(e, reg, quem.id, 'dinheiro', v, 'dividendos', id);
+      // A fortuna de quem é de fora da família (o dono da concorrente) não é modelada: o que ela recebe volta para a
+      // economia (a conta do mercado), como o consumo e o investimento dela.
+      somar(e, reg, id, 'caixa', -v, 'dividendos', 'mercado');
     }
     pago += v;
   }
@@ -161,6 +177,53 @@ export function anoDaHolding(e: EstadoVida, reg: Mudanca[], emp: Entidade): void
   definirNumero(e, reg, id, 'impostos', 0, 'negocio');
   if (lucro > 0) pagarDividendos(e, reg, emp, Math.min(Math.max(0, emp.n['caixa'] ?? 0), lucro * (emp.n['retirada'] ?? 0)));
   definirNumero(e, reg, id, 'valor', Math.max(0, emp.n['caixa'] ?? 0), 'empresa');
+}
+
+/**
+ * A empresa sai da vida ou do grupo, e as participações dela não ficam sem dono: na fusão, vão para a que absorveu
+ * (`para`); no resto (a quebra, o encerramento, a venda da empresa sozinha), sobem para quem era dona dela, na parte que
+ * ela tinha (o resto fica com os outros sócios dela, no mercado). A mudança vai para o livro.
+ */
+export function liberarParticipadas(e: EstadoVida, reg: Mudanca[], emp: Entidade, para?: Entidade): void {
+  const ref = refDaEmpresa(emp);
+  const acima = donaDe(emp);
+  const parte = acima === 'mercado' ? 1 : (emp.n['participacao'] ?? 1);
+  for (const x of participadasDe(e, emp)) {
+    if (x.id === emp.id) continue;
+    if (donaDe(x) === ref) {
+      const nova = para ? refDaEmpresa(para) : acima;
+      const fracao = para ? (x.n['participacao'] ?? 1) : (x.n['participacao'] ?? 1) * parte;
+      if (formaCiclo(e, x, nova)) mudarDona(e, reg, x, 'mercado', x.n['participacao'] ?? 1);
+      else mudarDona(e, reg, x, nova, fracao);
+    }
+    if (x.t['socia'] === ref) {
+      const nova = para ? refDaEmpresa(para) : acima;
+      if (nova === 'mercado' || nova === donaDe(x) || formaCiclo(e, x, nova)) {
+        definirTexto(e, reg, x.id, 'socia', '');
+        definirNumero(e, reg, x.id, 'participacao_socia', 0);
+      } else {
+        definirTexto(e, reg, x.id, 'socia', nova);
+        if (!para) definirNumero(e, reg, x.id, 'participacao_socia', (x.n['participacao_socia'] ?? 0) * parte);
+      }
+    }
+  }
+}
+
+/**
+ * A controladora põe `valor` numa empresa que valia `antes` (o aporte, a capitalização para uma compra): a parte dela
+ * cresce para o que ela tinha mais o que pôs, e a de quem não pôs (a sócia e o mercado) encolhe na mesma proporção.
+ * A soma das partes continua até 100%.
+ */
+export function diluirPeloAporte(e: EstadoVida, reg: Mudanca[], emp: Entidade, valor: number, antes: number, ganho = valor): void {
+  const parte = emp.n['participacao'] ?? 1;
+  const a = Math.max(0, antes);
+  if (!(valor > 0) || !(a + ganho > 0)) return;
+  // A empresa passou a valer `antes + ganho`: quem não pôs continua com o que tinha, numa fatia menor.
+  const fica = a / (a + ganho);
+  const socia = emp.n['participacao_socia'] ?? 0;
+  const novaSocia = socia * fica;
+  if (socia > 0) definirNumero(e, reg, emp.id, 'participacao_socia', novaSocia);
+  if (parte < 1) definirNumero(e, reg, emp.id, 'participacao', Math.min(1 - novaSocia, (parte * a + valor) / (a + ganho)));
 }
 
 /** As empresas de que esta é dona ou sócia (as participações dela), vivas. */

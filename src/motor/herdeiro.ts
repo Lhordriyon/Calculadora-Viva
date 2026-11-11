@@ -518,15 +518,36 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   if (pais) for (const id of encomendasPendentes(antiga, c).keys()) pais.n['defesa'] = Math.min(100, (pais.n['defesa'] ?? 50) + (defSistema(c, id)?.capacidade ?? 0));
   // As empresas da família passam inteiras para o herdeiro (menos o que pagou a partilha), com a idade, a tração e o jeito de tocar.
   // A primeira é a que ele toca de perto.
-  const herdadas = empresasDe(antiga).filter((x) => (espolio.participacoes[x.id] ?? 0) > 0.001);
+  let herdadas = empresasDe(antiga).filter((x) => (espolio.participacoes[x.id] ?? 0) > 0.001);
+  // A subsidiária vai com a controladora: a que a partilha vendeu leva as dela junto.
+  for (let mudou = true; mudou; ) {
+    const refs = new Set(herdadas.map((x) => refDaEmpresa(x)));
+    const antes = herdadas.length;
+    herdadas = herdadas.filter((x) => donaDe(x)[0] !== '#' || refs.has(donaDe(x)));
+    mudou = herdadas.length !== antes;
+  }
   herdadas.forEach((empresa, i) => {
     const copia = recausar(copiaDe(empresa), abertura.id);
     copia.id = SLOTS[i]!;
     copia.n['participacao'] = espolio.participacoes[empresa.id]!;
     e.entidades[copia.id] = copia;
   });
+  // As concorrentes de verdade dos setores herdados continuam no mercado (concorrentes.ts); o dono que não está na vida
+  // nova deixa o capital no mercado.
+  const setoresHerdados = new Set(herdadas.map((x) => x.t['setor'] ?? ''));
+  const pessoasNovas = new Set(Object.values(e.entidades).filter((x) => x.tipo === 'pessoa' && x.pessoa !== undefined).map((x) => `p${x.pessoa}`));
+  const deFora = Object.values(antiga.entidades).filter((x) => x.tipo === 'empresa' && x.id.startsWith('empresaR') && x.vivo !== false && setoresHerdados.has(x.t['setor'] ?? ''));
+  for (const x of deFora) {
+    const copia = recausar(copiaDe(x), abertura.id);
+    if ((copia.t['dona'] ?? '')[0] === 'p' && !pessoasNovas.has(copia.t['dona']!)) copia.t['dona'] = 'mercado';
+    if ((copia.t['socia'] ?? '')[0] === 'p' && !pessoasNovas.has(copia.t['socia']!)) {
+      delete copia.t['socia'];
+      delete copia.n['participacao_socia'];
+    }
+    e.entidades[copia.id] = copia;
+  }
   // Os estabelecimentos (a fábrica, a loja, o laboratório) vão com as empresas, pelo número delas.
-  const refs = new Set(herdadas.map((x) => refDaEmpresa(x)));
+  const refs = new Set([...herdadas, ...deFora].map((x) => refDaEmpresa(x)));
   for (const u of Object.values(antiga.entidades)) {
     if (u.tipo === 'unidade' && u.vivo !== false && refs.has(u.t['empresa'] ?? '')) e.entidades[u.id] = recausar(copiaDe(u), abertura.id);
   }

@@ -9,7 +9,8 @@
       "ator.negocio": true,
       "marcas": [
         "empresa.na_bolsa"
-      ]
+      ],
+      "empresa.dona": "eu"
     },
     "texto": "{ator}, de {ator.negocio}, lançou uma oferta pelas ações da sua empresa: paga 30% acima da cotação a quem vender. Com menos da metade das ações nas suas mãos, quem escolhe o dono agora é o mercado.",
     "resumo": "viu {ator.quem} lançar uma oferta pelo controle da sua empresa",
@@ -73,6 +74,9 @@
   {
     "id": "a_opa_do_fundo",
     "apenasAgendado": true,
+    "condicoes": {
+      "empresa.dona": "eu"
+    },
     "texto": "Um fundo de fora, com nome de três letras e escritório em lugar nenhum, lançou uma oferta pelas ações da sua empresa: 30% acima da cotação. Com menos da metade das ações nas suas mãos, o controle está à venda, queira você ou não.",
     "resumo": "viu um fundo de fora lançar uma oferta pelo controle da sua empresa",
     "escolhas": [

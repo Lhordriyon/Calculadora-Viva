@@ -48,6 +48,11 @@ const PESSOAS = [...PROXIMOS, ...DA_REDE] as const;
 export const ESCRITAS_DO_MOTOR: string[] = [
   // as unidades operacionais (unidades.ts): a sede que a empresa ganha, a obra que fica pronta e a capacidade que muda
   ...['empresa', 'forma', 'cidade', 'capacidade', 'obra', 'porte', 'sede'].map((x) => `unidade.${x}`),
+  // as concorrentes de verdade (concorrentes.ts): empresas do motor fora do grupo, como os contratos e as unidades; o
+  // conteúdo fala delas pela empresa de quem joga (a força da concorrente, a guerra, a quebra) e pela rival
+  'empresaR.*',
+  // quem controla a empresa (societario.ts): a participação que sobe quando a dona sai da vida
+  'empresa.dona',
   // o sonho que passa adiante (projetos.ts › passarSonho, bloco S3): o filho mais velho vivo o recebe
   ...FILHOS.map((f) => `${f}.sonho`),
   // a rival e o gestor que vêm com a empresa (familia.ts › genteDaEmpresa, diretoria.ts)
@@ -314,6 +319,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro', 'a_opa_da_rival', 'a_opa_do_fundo', 'o_dia_do_sonho_estrela', 'o_dia_do_sonho_imperio', 'o_dia_do_sonho_presidencia', 'o_dia_do_sonho_familia_grande', 'o_dia_do_sonho_amor_da_vida', 'e_agora', 'o_sonho_que_ficou', 'a_pasta_do_sonho'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(['empresa.dona'], 'societário: quem controla recebe os dividendos, decide pela empresa e conta no patrimônio de quem joga', true),
   ...ler(CONQUISTAS_DO_PODER, 'poder: cada conquista vem uma vez só', true),
   ...ler(MERCADOS, 'mercados: o preço do setor na empresa, a concorrente que sai na sobra e a demissão de quem trabalha nele', true),
   ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
@@ -555,8 +561,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['eu.vivo', 'unidade.*', 'lugar.nome', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
-    escreve: ['unidade.*', 'pessoa.magoa', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    le: ['eu.vivo', 'eu.nome', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    escreve: ['unidade.*', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',
@@ -650,7 +656,7 @@ export const ETAPAS_DO_ANO = [
       'lugar.desemprego',
       ...FASE,
     ],
-    escreve: [...LADO_DE_LA, 'pessoa.*', ...BOLSO, 'ctr.*', 'empresa.concorrente', 'empresa.cartel', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
+    escreve: [...LADO_DE_LA, 'pessoa.*', ...BOLSO, 'ctr.*', 'empresa.concorrente', 'empresa.cartel', 'empresa.dona', 'empresa.qualidade', 'empresa.marca', 'eu.felicidade', 'eu.namoro', 'eu.casado', 'eu.voltou_com_o_ex', 'eu.viuvo', 'eu.herdou', 'eu.negocio_familiar', 'eu.remorso', 'eu.despediu', 'agenda'],
   },
   {
     id: 'trabalho',

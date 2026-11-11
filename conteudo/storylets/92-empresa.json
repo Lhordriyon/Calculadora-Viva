@@ -12,6 +12,8 @@
       {
         "texto": "Pôr dinheiro do bolso",
         "resumo": "pôs dinheiro do bolso para salvar a empresa",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é de outra empresa do grupo: o dinheiro teria de vir da controladora",
         "condicoes": { "dinheiro": { "min": 20000 } },
         "bloqueio": "não tem R$ 20 mil na conta",
         "efeitos": { "negocio": { "aporte": 20000 } },
@@ -162,6 +164,8 @@
       {
         "texto": "Vender um pedaço da sua parte",
         "resumo": "vendeu um pedaço da própria empresa para um fundo",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Em vez de dinheiro novo na empresa, dinheiro no seu bolso: você vendeu um pedaço da sua parte por {venda}.",
           "efeitos": { "venderEmpresa": { "fracao": 0.2, "premio": 1.2 }, "felicidade": 2 }
@@ -183,6 +187,8 @@
       {
         "texto": "Abrir capital",
         "resumo": "levou a própria empresa para a bolsa",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "No dia da estreia, a ação subiu. Você vendeu um pedaço da sua parte por {venda} e passou a explicar o balanço para gente que nunca viu a empresa por dentro.",
           "efeitos": { "abrirCapital": true, "felicidade": 4 }
@@ -220,6 +226,8 @@
       {
         "texto": "Vender tudo antes que caia mais",
         "resumo": "vendeu a parte na empresa no meio da queda",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você vendeu a sua parte por {venda}, abaixo do que valia no mês passado. Dorme melhor; lê menos jornal.",
           "efeitos": { "venderEmpresa": { "fracao": 1, "premio": 0.8 }, "marcas": ["vendeu_empresa"], "felicidade": 1 }
@@ -256,6 +264,8 @@
       {
         "texto": "Vender tudo",
         "resumo": "vendeu a própria empresa por uma fortuna",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você assinou, recebeu {venda} e saiu do prédio com uma caixa de papelão e um sorriso que não cabia nela.",
           "efeitos": { "venderEmpresa": { "fracao": 1, "premio": 1.5 }, "marcas": ["vendeu_empresa"], "felicidade": 3 }
@@ -297,6 +307,8 @@
       {
         "texto": "Vender para ela",
         "resumo": "vendeu a empresa para o concorrente gigante",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "A rede comprou {empresa:o|a} {empresa} por {venda}, trocou a placa e manteve você por três meses de transição.",
           "efeitos": { "venderEmpresa": { "fracao": 1, "premio": 0.9 }, "marcas": ["vendeu_empresa"], "felicidade": -1 }
@@ -406,6 +418,8 @@
       {
         "texto": "Vender e viver",
         "resumo": "vendeu a empresa para cuidar da saúde",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você vendeu {empresa:o|a} {empresa} por {venda} e descobriu que a vida tem sábado.",
           "efeitos": { "venderEmpresa": { "fracao": 1 }, "marcas": ["vendeu_empresa"], "saude": 4, "felicidade": 4 }

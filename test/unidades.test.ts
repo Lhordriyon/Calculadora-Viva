@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
-import { empresaDoRegistro, refDaEmpresa } from '../src/motor/campos.ts';
+import { empresaDoRegistro, empresasDe, refDaEmpresa } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar, type Operacao } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { lugarLivre, regraDaEmpresa } from '../src/motor/empresa.ts';
@@ -240,7 +240,7 @@ describe('teste 2: a separação operacional (a subsidiária é empresa; a unida
     const emp = e.entidades['empresa']!;
     // Como era antes: sem unidade nenhuma.
     for (const u of unidadesDe(e, emp)) delete e.entidades[u.id];
-    const empresas = Object.values(e.entidades).filter((x) => x.tipo === 'empresa').length;
+    const empresas = empresasDe(e).length;
     const cap = emp.n['capacidade']!;
     const obra = emp.n['obra']!;
     const volta = lerSave(escreverSave({ ...saveVazio(), vida: e }), c).vida!;
@@ -249,7 +249,8 @@ describe('teste 2: a separação operacional (a subsidiária é empresa; a unida
     regraDaEmpresa(volta, c, momentoTipico('normal'), reg);
     lancar(volta, entrada, reg);
     const novo = volta.entidades['empresa']!;
-    expect(Object.values(volta.entidades).filter((x) => x.tipo === 'empresa').length).toBe(empresas);
+    // Nenhuma empresa nova no grupo (a concorrente de verdade que aparece é de fora: concorrentes.ts).
+    expect(empresasDe(volta).length).toBe(empresas);
     const sede = unidadesDe(volta, novo);
     expect(sede).toHaveLength(1);
     // A obra de antes ficou pronta no ano, na sede: a capacidade da sede é a de antes mais a obra (menos o que o ano cortou).

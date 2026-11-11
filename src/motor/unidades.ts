@@ -27,7 +27,7 @@ import { novaEntidade } from './pessoas.ts';
 import { aEmpresa } from './empresa.ts';
 import { custoDaObra, economiaDo, ofertaDe, precoDoSetor } from './negocio.ts';
 import { UNIDADES, VALOR_DE_VENDA_DOS_ATIVOS } from './regras.ts';
-import { controladaPor } from './societario.ts';
+import { controladaPor, proximoRegistro } from './societario.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
@@ -250,16 +250,9 @@ export function contaDaUnidade(e: EstadoVida, c: Conteudo, un: Entidade, giro: n
 
 /** O número da unidade nova (o mesmo contador do registro das empresas: um número nunca se repete na vida). */
 function idDaUnidade(e: EstadoVida): string {
-  if (e.proximoRegistro === undefined) {
-    let maior = 0;
-    for (const x of Object.values(e.entidades)) {
-      if (x.tipo === 'empresa') maior = Math.max(maior, x.registro ?? 0);
-      if (x.tipo === 'unidade') maior = Math.max(maior, Number(x.id.slice('unidade'.length)) || 0);
-    }
-    e.proximoRegistro = maior + 1;
-  }
-  let id = `unidade${e.proximoRegistro++}`;
-  while (e.entidades[id]) id = `unidade${e.proximoRegistro++}`;
+  proximoRegistro(e);
+  let id = `unidade${e.proximoRegistro!++}`;
+  while (e.entidades[id]) id = `unidade${e.proximoRegistro!++}`;
   return id;
 }
 

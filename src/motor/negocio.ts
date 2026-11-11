@@ -32,7 +32,8 @@ import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
-import { pagarDividendos } from './societario.ts';
+import { diluirPeloAporte, pagarDividendos } from './societario.ts';
+import { abrirConcorrente, CONCORRENTES_POR_SETOR, concorrentesNoSetor, deFora, fimDaGuerra, guerraComAPrincipal, principalDe } from './concorrentes.ts';
 import { equipeDoApoio, estruturaDe, mudarCapacidade, mudarObra, obraPronta, parteNaCidade, produtivasDe } from './unidades.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import type { Momento } from './pais.ts';
@@ -247,6 +248,8 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const setor = c.setores.get(emp.t['setor'] ?? '');
   const eco = economiaDo(setor);
   const empregosAntes = empregosNaCidadeDe(e, c, emp);
+  /** A empresa é de quem joga (as de fora são as concorrentes, concorrentes.ts). */
+  const doGrupo = !deFora(emp);
 
   // A obra do ano passado fica pronta, na unidade em que foi feita (unidades.ts).
   obraPronta(e, c, reg, emp);
@@ -288,9 +291,15 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
   const exportou = vendas * fracaoFora;
-  if (vendas - exportou > 0) somar(e, reg, id, 'caixa', vendas - exportou, 'vendas', 'mercado');
   if (exportou > 0) somar(e, reg, id, 'caixa', exportou, 'exportacao', emp.t['exporta']!);
-  if (variavel + fixo + verbas > 0) somar(e, reg, id, 'caixa', -(variavel + fixo + verbas), 'custos', 'mercado');
+  if (!doGrupo) {
+    // A concorrente (concorrentes.ts) anota o resultado do mercado num lançamento só: o livro dela é o mais curto que fecha.
+    const liquido = vendas - exportou - (variavel + fixo + verbas);
+    if (liquido !== 0) somar(e, reg, id, 'caixa', liquido, 'resultado', 'mercado');
+  } else {
+    if (vendas - exportou > 0) somar(e, reg, id, 'caixa', vendas - exportou, 'vendas', 'mercado');
+    if (variavel + fixo + verbas > 0) somar(e, reg, id, 'caixa', -(variavel + fixo + verbas), 'custos', 'mercado');
+  }
   if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', 'tesouro');
   // O banco recebe o juro e a parcela (o dinheiro que volta para ele deixa de existir).
   if (juros >= 1) somar(e, reg, id, 'caixa', -juros, 'juros', 'banco');
@@ -324,8 +333,9 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // O laboratório faz o P&D render mais (unidades.ts).
   const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 * estrutura.fatorDoLaboratorio + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade;
   somar(e, reg, id, 'qualidade', (Math.max(0, Math.min(100, alvoQualidade)) - (n['qualidade'] ?? 50)) * 0.25, 'negocio');
-  const fama = e.entidades['eu']?.n['fama'] ?? 0;
-  const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (temMidia(e) ? 10 : 0);
+  // A fama de quem manda e a mídia própria são de quem joga: puxam a marca das empresas do grupo, não a das concorrentes.
+  const fama = doGrupo ? (e.entidades['eu']?.n['fama'] ?? 0) : 0;
+  const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (doGrupo && temMidia(e) ? 10 : 0);
   somar(e, reg, id, 'marca', (Math.max(0, Math.min(100, alvoMarca)) - (n['marca'] ?? 50)) * 0.25, 'negocio');
 
   // O valor vai para os fundamentos: o caixa e a obra, mais o maior entre os ativos a preço de venda e o lucro vezes o múltiplo.
@@ -336,7 +346,8 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
   definirNumero(e, reg, id, 'receita', vendas, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
-  concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
+  // A disputa é das empresas do grupo com as de fora (as de fora decidem a delas em concorrentes.ts).
+  if (doGrupo) concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
   return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosNaCidadeDe(e, c, emp) };
 }
 
@@ -554,7 +565,7 @@ function aportarNoNegocio(e: EstadoVida, reg: Mudanca[], emp: Entidade, valor: n
   movimentar(e, reg, { dinheiro: -valor, contraparte: id }, 'eu', 'aporte');
   somar(e, reg, id, 'caixa', valor, 'aporte', 'eu');
   somar(e, reg, id, 'valor', valor, 'empresa');
-  if (parte < 1) somar(e, reg, id, 'participacao', (parte * antes + valor) / (antes + valor) - parte);
+  if (parte < 1 || (emp.n['participacao_socia'] ?? 0) > 0) diluirPeloAporte(e, reg, emp, valor, antes);
 }
 
 /**
@@ -635,6 +646,11 @@ export function garraDaRival(e: EstadoVida, c: Conteudo, emp: Entidade): number 
 }
 
 function concorrenciaDoAno(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, lucro: number, vendas: number, garra = 1): void {
+  const principal = principalDe(e, emp);
+  if (principal) {
+    disputaComAConcorrente(e, c, reg, emp, principal, lucro, vendas, garra);
+    return;
+  }
   const id = emp.id;
   const forca = emp.n['concorrente'] ?? 50;
   const vantagem = atratividade(emp) - forca / 50;
@@ -663,6 +679,38 @@ function concorrenciaDoAno(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Enti
     alvo = 45;
   }
   definirNumero(e, reg, id, 'concorrente', Math.round(Math.max(0, Math.min(100, alvo))), 'negocio');
+}
+
+/**
+ * A disputa com a concorrente de verdade (concorrentes.ts): a reação dela (o marketing e o P&D) é decisão dela, no ano
+ * dela; aqui, a guerra de preços contra quem cobra o popular e atrai mais (as duas cobram menos, e quem atrai menos
+ * perde clientela), e a concorrente nova que o lucro alto chama (uma empresa a mais no setor, até duas). A força que o
+ * conteúdo lê segue a principal no fim do ano das concorrentes.
+ */
+function disputaComAConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, principal: Entidade, lucro: number, vendas: number, garra: number): void {
+  const id = emp.id;
+  const vantagem = atratividade(emp) - atratividade(principal);
+  const sobra = ofertaDe(e, emp.t['setor']) / 100 - 1;
+  const recente = (q: string, anos: number): boolean => (emp.q[q]?.ano ?? -99) >= e.ano - anos;
+  const guerra = emp.q['guerra'];
+  if (guerra) {
+    guerraComAPrincipal(e, reg, emp, principal, null, false);
+    if (preco(emp) !== 'popular' || e.ano - guerra.ano >= CONCORRENCIA.anosDeGuerra) {
+      perder(e, reg, id, 'guerra');
+      fimDaGuerra(e, reg, principal);
+    }
+  } else if (!emp.q['cartel'] && preco(emp) === 'popular' && vantagem > 0 && aleatorio(e.rng) < CONCORRENCIA.chanceDeGuerra * garra) {
+    const causa = entradaQueMudou(e, `${id}.preco`);
+    ganhar(e, reg, id, 'guerra', causa);
+    guerraComAPrincipal(e, reg, emp, principal, causa, true);
+    // A guerra de preços magoa o dono da concorrente: ele lembra disso na hora de vender (empresa.ts › adquirir).
+    if (id === 'empresa' && e.entidades['rival']) somar(e, reg, 'rival', 'magoa', RIVAL.magoaDaGuerra, 'negocio');
+  }
+  if (vendas > 0 && lucro / vendas > CONCORRENCIA.margemQueAtrai && !recente('concorrente_novo', 5) && concorrentesNoSetor(e, emp.t['setor']).length < CONCORRENTES_POR_SETOR && aleatorio(e.rng) < CONCORRENCIA.chanceDeEntrar * (1 + 3 * Math.max(0, -sobra))) {
+    const causa = entradaQueMudou(e, `${id}.preco`);
+    const nova = abrirConcorrente(e, c, reg, emp.t['setor'] ?? '', 65, causa ?? 0);
+    if (nova) ganhar(e, reg, id, 'concorrente_novo', causa);
+  }
 }
 
 // ---------------------------------------------------------------- os mercados de cada setor (bloco H3)
@@ -742,7 +790,9 @@ export function previsaoDoSetor(e: EstadoVida, setor: string | undefined): strin
 
 /** A empresa da vida no setor fornecedor (a integração vertical), se houver. */
 export function fornecedorProprio(e: EstadoVida, emp: Entidade, insumo: string): Entidade | undefined {
-  return Object.values(e.entidades).find((x) => x.tipo === 'empresa' && x.vivo !== false && x.id !== emp.id && x.t['setor'] === insumo && x.n['capacidade'] !== undefined);
+  // Só o grupo de quem joga vende a preço de custo para ele mesmo: a concorrente do fornecedor não é fornecedor próprio.
+  if (deFora(emp)) return undefined;
+  return Object.values(e.entidades).find((x) => x.tipo === 'empresa' && !deFora(x) && x.vivo !== false && x.id !== emp.id && x.t['setor'] === insumo && x.n['capacidade'] !== undefined);
 }
 
 /**

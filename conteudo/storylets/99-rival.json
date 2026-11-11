@@ -238,6 +238,8 @@
       {
         "texto": "Vender tudo para {ator}",
         "resumo": "vendeu a empresa para {ator.quem}, a concorrência",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Você assinou na sobremesa: {venda} na conta. {ator} pagou a conta do almoço também, que é o tipo de coisa que quem ganha faz.",
           "efeitos": {
@@ -253,6 +255,8 @@
       {
         "texto": "Vender metade e virar sócio",
         "resumo": "vendeu metade da empresa para {ator.quem}",
+        "condicoes": { "empresa.dona": "eu" },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela",
         "resultado": {
           "texto": "Metade é de {ator} agora, por {venda}. A reunião de sócios virou a reunião de rivais, só que com o mesmo café.",
           "efeitos": {

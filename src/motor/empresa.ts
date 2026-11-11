@@ -34,10 +34,12 @@
  */
 import { anoDaHolding, garantirRegistro, profundidade } from './societario.ts';
 import { fecharUnidadesDe, garantirUnidades, mudarCapacidade, moverUnidade, unidadesDe } from './unidades.ts';
+import { anoDasConcorrentes, mexerNaConcorrente, principalDe } from './concorrentes.ts';
+import { diluirPeloAporte, liberarParticipadas, mudarDona, refDaPessoa } from './societario.ts';
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
-import { donaDe, empresasDe, entidadeDe, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { donaDe, empresaDoRegistro, empresasDe, entidadeDe, refDaEmpresa, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import { decidir, porqueDaResposta } from './decisao.ts';
 import type { Ativo } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -292,7 +294,7 @@ function mover(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
     anotar(reg, `${de}.${campo}`, -v, 'papel');
     anotar(reg, `${para}.${campo}`, v, 'papel');
   }
-  for (const [campo, v] of Object.entries(en.t)) reg.push({ c: `${para}.${campo}`, t: v });
+  for (const [campo, v] of Object.entries(en.t)) reg.push({ c: `${para}.${campo}`, t: v, r: 'papel' });
   for (const q of Object.keys(en.q)) reg.push({ c: `${de}.${q}`, q: -1 }, { c: `${para}.${q}`, q: 1 });
   e.entidades[para] = { ...en, id: para };
   delete e.entidades[de];
@@ -300,7 +302,8 @@ function mover(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
 
 /** Leva a empresa para outro id (para fora do grupo, quando a parte inteira foi vendida): o livro anota a troca de lugar, e o número dela vai junto. */
 export function moverEmpresa(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
-  if (e.entidades[para]) throw new Error(`o lugar ${para} já está ocupado`);
+  // O lugar de uma empresa que já saiu da vida (encerrada, sem nada) pode receber outra, como na fundação.
+  if (e.entidades[para] && e.entidades[para]!.vivo !== false) throw new Error(`o lugar ${para} já está ocupado`);
   mover(e, reg, de, para);
 }
 
@@ -313,8 +316,8 @@ function trocar(e: EstadoVida, reg: Mudanca[], a: string, b: string): void {
     anotar(reg, `${a}.${campo}`, d, 'papel');
     anotar(reg, `${b}.${campo}`, -d, 'papel');
   }
-  for (const [campo, v] of Object.entries(eb.t)) if (ea.t[campo] !== v) reg.push({ c: `${a}.${campo}`, t: v });
-  for (const [campo, v] of Object.entries(ea.t)) if (eb.t[campo] !== v) reg.push({ c: `${b}.${campo}`, t: v });
+  for (const [campo, v] of Object.entries(eb.t)) if (ea.t[campo] !== v) reg.push({ c: `${a}.${campo}`, t: v, r: 'papel' });
+  for (const [campo, v] of Object.entries(ea.t)) if (eb.t[campo] !== v) reg.push({ c: `${b}.${campo}`, t: v, r: 'papel' });
   for (const q of new Set([...Object.keys(ea.q), ...Object.keys(eb.q)])) {
     const va = ea.q[q]?.v;
     const vb = eb.q[q]?.v;
@@ -353,12 +356,19 @@ export function reorganizarGrupo(e: EstadoVida, reg: Mudanca[], preferida?: stri
  * fala dela), sem setor nem qualidades; se era a que quem joga tocava, a
  * maior das outras toma o lugar no fim da entrada (reorganizarGrupo).
  */
+/** A empresa de fora (a concorrente que quebrou) sai da vida: o livro zera o que ela tinha, e as unidades fecham junto. */
+export function encerrarEmpresa(e: EstadoVida, reg: Mudanca[], id: string): void {
+  encerrar(e, reg, id);
+}
+
 function encerrar(e: EstadoVida, reg: Mudanca[], id = PRINCIPAL, sustento?: { para: string; origem: number }): void {
   const emp = e.entidades[id];
   if (!emp) return;
   const sustentava = Boolean(emp.q['sustenta']);
-  // Os estabelecimentos fecham junto (os que a fusão levou já são da que ficou).
+  // Os estabelecimentos fecham junto (os que a fusão levou já são da que ficou), e as participações dela não ficam sem
+  // dono: vão para a que absorveu, na fusão, ou sobem para quem era dona dela (societario.ts).
   fecharUnidadesDe(e, reg, emp);
+  liberarParticipadas(e, reg, emp, sustento ? e.entidades[sustento.para] : undefined);
   // O caixa que sobrou paga quem a empresa devia (a rescisão, o fornecedor) ou vai junto com quem a comprou.
   const caixa = emp.n['caixa'] ?? 0;
   if (caixa !== 0) reg.push({ c: `${id}.caixa`, d: -caixa, r: 'encerramento', p: 'mercado' });
@@ -391,7 +401,21 @@ export function venderParte(e: EstadoVida, reg: Mudanca[], fracao: number, premi
 
 /** A empresa fecha as portas: volta para quem joga a fração `sobra` da parte dele. Devolve quanto voltou. */
 export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number, id = PRINCIPAL): number {
-  if (!empresaDe(e, id)) return 0;
+  const emp = empresaDe(e, id);
+  if (!emp) return 0;
+  // A subsidiária fecha sozinha (responsabilidade limitada, missão Capitalismo vivo): o que sobra do caixa vai para a
+  // controladora, na parte dela; ninguém acima paga a conta, e as outras empresas do grupo seguem como estavam.
+  const acima = donaDe(emp)[0] === '#' ? empresaDoRegistro(e, donaDe(emp)) : undefined;
+  if (acima && acima.vivo !== false) {
+    const volta = Math.min(Math.max(0, emp.n['caixa'] ?? 0), Math.max(0, emp.n['valor'] ?? 0) * (emp.n['participacao'] ?? 1) * sobra);
+    if (volta > 0) {
+      somar(e, reg, id, 'caixa', -volta, 'encerramento', acima.id);
+      somar(e, reg, acima.id, 'caixa', volta, 'encerramento', id);
+      somar(e, reg, acima.id, 'valor', volta, 'empresa');
+    }
+    encerrar(e, reg, id);
+    return 0;
+  }
   const volta = parteNaEmpresa(e, id) * sobra;
   if (volta > 0) {
     // A sobra sai do caixa da empresa e, no que faltar, de quem compra o que ela tinha (o mercado).
@@ -555,6 +579,9 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
     impostos += ano.imposto;
     exportacaoBarrada(e, emp);
   }
+  // As concorrentes de verdade andam o ano delas (concorrentes.ts), depois das do grupo, que já reagiram a elas; o
+  // imposto delas também vai para o Tesouro.
+  impostos += anoDasConcorrentes(e, c, fase, reg).imposto;
   // Os empregos que as empresas abriram e fecharam mexem no desemprego da cidade (o trabalho de quem joga e o da família leem).
   empregosNaCidade(e, reg, antes, depois);
   // O imposto que elas pagaram entra no Tesouro e baixa a dívida pública (em pontos do PIB).
@@ -601,7 +628,7 @@ export type OperacaoEmpresa =
   /** Vende a parte de quem joga, pelo preço da fase do país. */
   | { tipo: 'vender'; empresa?: string }
   /** Compra uma concorrente, que vira subsidiária (uma compra por ano); três compras fazem um truste. */
-  | { tipo: 'adquirir'; empresa?: string }
+  | { tipo: 'adquirir'; empresa?: string; fracao?: number }
   /** Vende subsidiárias (uma, até dez; depois, um décimo delas). */
   | { tipo: 'venderSubsidiaria'; empresa?: string }
   /** A empresa absorve outra de quem joga, que vira subsidiária dela. */
@@ -670,7 +697,13 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
   if (op.tipo === 'retirada' && Math.abs((emp.n['retirada'] ?? 0) - op.fracao) < 1e-9) return 'já é assim';
   if (op.tipo === 'adquirir') {
     if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
-    if (custoDaAquisicao(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaAquisicao(e, id))}`;
+    const fracao = op.fracao ?? FRACAO_DA_COMPRA;
+    if (!(fracao > 0.5 && fracao <= 1)) return 'a compra é do controle: mais da metade';
+    // A compradora paga do caixa dela; o que faltar, quem joga põe.
+    const custo = custoDaAquisicao(e, id, fracao);
+    const temAlvo = alvoDaAquisicao(e, id) !== undefined;
+    if (custo > liquidoDe(e) + (temAlvo ? Math.max(0, emp.n['caixa'] ?? 0) : 0) + 0.5) return `precisa de ${formatarDinheiro(custo)}`;
+    if (temAlvo && !lugarLivre(e)) return `o grupo já tem ${MAX_EMPRESAS} empresas: a comprada continua sendo uma empresa`;
     if (fezNoAno(e, 'empresa:adquirir')) return 'uma tentativa por ano';
   }
   // A bolsa de verdade (bloco H7): emitir, recomprar e a oferta hostil são jogadas de quem está na bolsa.
@@ -682,9 +715,12 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
   }
   if (op.tipo === 'opa') {
     const dono = e.entidades['rival'];
-    if (id !== PRINCIPAL || !dono || dono.vivo === false) return 'a concorrência não tem dono à vista';
+    const alvo = alvoDaAquisicao(e, id);
+    // Com a concorrente de verdade, a oferta vai à bolsa dela, tenha ou não dono à vista.
+    if (!alvo && (id !== PRINCIPAL || !dono || dono.vivo === false)) return 'a concorrência não tem dono à vista';
     if ((emp.n['valor'] ?? 0) < MINIMO_AQUISICAO) return `a empresa precisa valer ${formatarDinheiro(MINIMO_AQUISICAO)}`;
-    if (custoDaOpa(e, id) > liquidoDe(e) + 0.5) return `precisa de ${formatarDinheiro(custoDaOpa(e, id))}`;
+    if (custoDaOpa(e, id) > liquidoDe(e) + (alvo ? Math.max(0, emp.n['caixa'] ?? 0) : 0) + 0.5) return `precisa de ${formatarDinheiro(custoDaOpa(e, id))}`;
+    if (alvo && !lugarLivre(e)) return `o grupo já tem ${MAX_EMPRESAS} empresas: a comprada continua sendo uma empresa`;
     if (ofertaRecente(e)) return `uma oferta a cada ${BOLSA.anosEntreOfertas} anos`;
   }
   if (op.tipo === 'venderSubsidiaria' && (emp.n['subsidiarias'] ?? 0) < 1) return 'ela não tem subsidiárias';
@@ -714,8 +750,24 @@ function fezNoAno(e: EstadoVida, ref: string): boolean {
 /** Empresa que vale menos que isto ainda não compra ninguém. */
 export const MINIMO_AQUISICAO = 1_000_000;
 
-/** O preço de uma concorrente: uma fração do valor da própria empresa. */
-export function custoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
+/** Quanto da concorrente a compra leva, sem dizer: o controle com folga (o antigo dono fica com o resto). */
+export const FRACAO_DA_COMPRA = 0.8;
+/** O prêmio de controle: quem compra a maioria paga um pouco mais que o preço do dia. */
+export const PREMIO_DE_CONTROLE = 0.1;
+
+/** A concorrente que a empresa compraria: a principal de verdade do setor dela (concorrentes.ts), se houver. */
+export function alvoDaAquisicao(e: EstadoVida, id = PRINCIPAL): Entidade | undefined {
+  const emp = empresaDe(e, id);
+  return emp && emp.n['capacidade'] !== undefined ? principalDe(e, emp) : undefined;
+}
+
+/**
+ * O preço de uma concorrente. A de verdade: o valor dela, na fração comprada, pelo preço do dia (o preço do setor, com o
+ * prêmio de controle e o desconto de quem tem nome no mercado). Sem ela: uma fração do valor da própria empresa.
+ */
+export function custoDaAquisicao(e: EstadoVida, id = PRINCIPAL, fracao = FRACAO_DA_COMPRA): number {
+  const alvo = alvoDaAquisicao(e, id);
+  if (alvo) return Math.max(0, alvo.n['valor'] ?? 0) * fracao * precoDaAquisicao(e, id);
   return (empresaDe(e, id)?.n['valor'] ?? 0) * CUSTO_AQUISICAO * precoDaAquisicao(e, id);
 }
 
@@ -727,7 +779,66 @@ export function precoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
   const emp = empresaDe(e, id);
   if (!emp) return 1;
   // Quem tem nome no mercado negocia melhor (até 20% a menos).
-  return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (0.6 + (0.8 * (emp.n['concorrente'] ?? 50)) / 100) * (1 - influenciaNegocios(e) / 500);
+  const nome = 1 - influenciaNegocios(e) / 500;
+  // A concorrente de verdade tem valor próprio: o preço do dia é o do setor, com o prêmio de controle.
+  if (alvoDaAquisicao(e, id)) return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (1 + PREMIO_DE_CONTROLE) * nome;
+  return precoDoSetor(ofertaDe(e, emp.t['setor'])) * (0.6 + (0.8 * (emp.n['concorrente'] ?? 50)) / 100) * nome;
+}
+
+/**
+ * A compra da concorrente de verdade (missão Capitalismo vivo, teste 4): ela não é fundida nem some. A compradora paga
+ * do caixa dela (o que faltar, quem joga põe, como aporte), o dinheiro vai para quem vendeu (o dono, ou os acionistas
+ * no mercado), e a comprada vem para o grupo com o mesmo número, o caixa, as unidades, a clientela, a marca e a dívida
+ * dela, controlada pela compradora na fração comprada; o resto fica com o antigo dono (a sócia) ou no mercado. O mercado
+ * fica mais fechado: a próxima concorrente principal chega mais fraca.
+ */
+function comprarAConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, alvo: Entidade, dono: Entidade | undefined, preco: number, fracao: number, hostil: boolean, origem: number): { texto: string; resumo: string } {
+  const id = emp.id;
+  const lugar = lugarLivre(e)!;
+  const falta = Math.max(0, preco - Math.max(0, emp.n['caixa'] ?? 0));
+  if (falta > 0) porNaEmpresa(e, c, reg, id, tirarDeQuemJoga(e, reg, falta, id), falta, true);
+  // O caixa da compradora paga quem vendeu: o dono, na conta dele, ou o mercado; o valor dela desce o mesmo tanto (a
+  // comprada entra pela parte dela, sem contar duas vezes).
+  // Quem vendeu (o dono, ou os acionistas) recebe pela economia: a fortuna de quem é de fora da família não é modelada.
+  const pago = Math.min(preco, Math.max(0, emp.n['caixa'] ?? 0));
+  somar(e, reg, id, 'caixa', -pago, 'aquisicao', 'mercado');
+  somar(e, reg, id, 'valor', -Math.min(pago, Math.max(0, emp.n['valor'] ?? 0)), 'empresa');
+  const nome = alvo.nome;
+  const daRival = dono !== undefined && donaDe(alvo) === refDaPessoa(dono);
+  moverEmpresa(e, reg, alvo.id, lugar);
+  const comprada = e.entidades[lugar]!;
+  // O antigo dono fica com o resto, como sócio minoritário (na hostil, o resto está no mercado).
+  if (fracao < 1 && daRival && !hostil) {
+    definirTexto(e, reg, lugar, 'socia', refDaPessoa(dono));
+    definirNumero(e, reg, lugar, 'participacao_socia', 1 - fracao);
+  }
+  mudarDona(e, reg, comprada, refDaEmpresa(emp), fracao);
+  if (comprada.q['guerra']) perder(e, reg, lugar, 'guerra');
+  if (emp.q['guerra']) perder(e, reg, id, 'guerra');
+  somar(e, reg, id, 'tracao', 2);
+  // O mercado fica mais fechado: a próxima concorrente principal chega com menos força.
+  if (emp.n['concorrente'] !== undefined) definirNumero(e, reg, id, 'concorrente', Math.max(0, (emp.n['concorrente'] ?? 50) - 15), 'negocio');
+  let fica = '';
+  if (dono && daRival) {
+    if (!hostil && !e.entidades['gestor'] && idadeDe(e, dono) < 67) {
+      levarParaAEmpresa(e, 'rival', 'gestor', reg);
+      fica = ` ${dono.nome} ficou para tocar o negócio com você${fracao < 1 ? `, com ${Math.round((1 - fracao) * 100)}% da empresa` : ''}.`;
+    } else {
+      partir(e, 'rival', reg);
+      if (hostil) fica = ` ${dono.nome} saiu do conselho sem apertar a sua mão.`;
+    }
+  }
+  somarQualidade(e, reg, id, 'aquisicoes', 1, origem);
+  const truste = (emp.q['aquisicoes']?.v ?? 0) >= AQUISICOES_TRUSTE && ganhar(e, reg, id, 'truste', origem);
+  if (truste) somar(e, reg, id, 'tracao', 5);
+  const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
+  const parte = `${Math.round(fracao * 100)}%`;
+  return {
+    texto: hostil
+      ? `A oferta hostil deu certo: ${aEmpresa(emp)} comprou ${parte} ${aEmpresa({ nome, genero: comprada.genero }, 'da')} na bolsa, por ${formatarDinheiro(preco)}, com o prêmio aos acionistas. Ela continua de pé, com o nome, as unidades e a clientela, agora no seu grupo.${fica}${fim}`
+      : `${aEmpresa(emp, 'A')} comprou ${parte} ${aEmpresa({ nome, genero: comprada.genero }, 'da')}, por ${formatarDinheiro(preco)}. Ela continua de pé, com o nome, as unidades e a clientela, agora no seu grupo.${fica}${fim}`,
+    resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : hostil ? `tomou ${aEmpresa({ nome, genero: comprada.genero })} numa oferta hostil` : `comprou ${parte} ${aEmpresa({ nome, genero: comprada.genero }, 'da')}`,
+  };
 }
 
 /** Põe dinheiro de quem joga na empresa: o valor sobe e, com sócios, a parte de quem joga também. */
@@ -739,7 +850,8 @@ function porNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, va
   somar(e, reg, id, 'valor', ganho);
   if (noCaixa) somar(e, reg, id, 'caixa', valor, 'aporte', 'eu');
   else crescerNegocio(e, c, reg, id, antes > 0 ? ganho / antes : 0);
-  if (parte < 1) somar(e, reg, id, 'participacao', (parte * antes + valor) / (antes + ganho) - parte);
+  // A parte de quem pôs cresce; a de quem não pôs (a sócia, o mercado) encolhe na mesma proporção (societario.ts).
+  if (parte < 1 || (emp.n['participacao_socia'] ?? 0) > 0) diluirPeloAporte(e, reg, emp, valor, antes, ganho);
 }
 
 const RETIRADA_TEXTO = (fracao: number): string =>
@@ -763,7 +875,7 @@ export function recomprar(e: EstadoVida, reg: Mudanca[], id = PRINCIPAL): number
   const falta = Math.max(0, BOLSA.controle - (emp?.n['participacao'] ?? 1));
   if (!emp || falta <= 0) return 0;
   const pago = tirarDeQuemJoga(e, reg, custoDaRecompra(e, id), 'mercado');
-  somar(e, reg, id, 'participacao', falta);
+  somar(e, reg, id, 'participacao', Math.min(falta, 1 - (emp.n['participacao_socia'] ?? 0) - (emp.n['participacao'] ?? 1)));
   return pago;
 }
 
@@ -778,8 +890,11 @@ export function custoDaOpa(e: EstadoVida, id = PRINCIPAL): number {
  */
 export function chanceDaOpa(e: EstadoVida, c: Conteudo, id = PRINCIPAL): number {
   const emp = empresaDe(e, id);
-  if (!emp || !e.entidades['rival']) return 0;
-  const chance = 0.45 + influenciaNegocios(e) / 300 - (garraDaRival(e, c, emp) - 1) * 0.25 - (precoDaAquisicao(e, id) > 1 ? 0.1 : 0);
+  const alvo = alvoDaAquisicao(e, id);
+  if (!emp || (!e.entidades['rival'] && !alvo)) return 0;
+  // A garra é do dono da concorrente; com o capital disperso no mercado, ninguém briga pela empresa.
+  const garra = !alvo || donaDe(alvo) !== refDaPessoa(e.entidades['rival']) ? (alvo ? 1 : garraDaRival(e, c, emp)) : garraDaRival(e, c, emp);
+  const chance = 0.45 + influenciaNegocios(e) / 300 - (garra - 1) * 0.25 - (precoDaAquisicao(e, id) > 1 ? 0.1 : 0);
   return Math.min(0.9, Math.max(0.1, chance));
 }
 
@@ -840,15 +955,21 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     const hostil = op.tipo === 'opa';
     // Quem vende é o dono (bloco H6): ele decide pelo que lembra de quem joga (a guerra de preços magoa) e pela força da
     // concorrente (a fraca vende mais fácil). O não fica no livro, com o porquê, e a tentativa do ano acabou.
-    const dono = id === PRINCIPAL && e.entidades['rival']?.vivo !== false ? e.entidades['rival'] : undefined;
-    if (dono && hostil && aleatorio(e.rng) >= chanceDaOpa(e, c, id)) {
+    const alvo = alvoDaAquisicao(e, id);
+    const rival = e.entidades['rival'];
+    // Quem decide é o dono da concorrente: a pessoa da rival (quando a de verdade é dela) ou, sem ela, ninguém (o mercado vende pelo preço).
+    const dono = alvo ? (rival && rival.vivo !== false && donaDe(alvo) === refDaPessoa(rival) ? rival : undefined) : id === PRINCIPAL && rival?.vivo !== false ? rival : undefined;
+    if ((dono || alvo) && hostil && aleatorio(e.rng) >= chanceDaOpa(e, c, id)) {
       // A oferta que falha custa os bancos e os advogados, e os acionistas ficam com o dono: a concorrência sai mais unida.
       const perdido = tirarDeQuemJoga(e, reg, custoDaOpa(e, id) * BOLSA.custoDaOferta, 'mercado');
-      if (emp.n['concorrente'] !== undefined) definirNumero(e, reg, id, 'concorrente', Math.min(100, (emp.n['concorrente'] ?? 50) + BOLSA.forcaQueFica), 'negocio');
-      somar(e, reg, 'rival', 'magoa', BOLSA.magoaDaOferta);
+      mexerNaConcorrente(e, reg, emp, BOLSA.forcaQueFica);
+      if (dono) somar(e, reg, 'rival', 'magoa', BOLSA.magoaDaOferta);
+      const nomeDela = alvo?.nome ?? dono?.t['negocio'] ?? 'a concorrente';
       return {
-        texto: `A oferta hostil por ${dono.t['negocio'] ?? 'a concorrente'} não passou: os acionistas ficaram com ${dono.nome}. Os bancos e os advogados custaram ${formatarDinheiro(perdido)}, e a concorrência saiu mais unida.`,
-        resumo: `perdeu a oferta hostil pela concorrente de ${dono.nome}`,
+        texto: dono
+          ? `A oferta hostil por ${nomeDela} não passou: os acionistas ficaram com ${dono.nome}. Os bancos e os advogados custaram ${formatarDinheiro(perdido)}, e a concorrência saiu mais unida.`
+          : `A oferta hostil por ${nomeDela} não passou: os acionistas não venderam. Os bancos e os advogados custaram ${formatarDinheiro(perdido)}, e a concorrência saiu mais unida.`,
+        resumo: dono ? `perdeu a oferta hostil pela concorrente de ${dono.nome}` : `perdeu a oferta hostil por ${nomeDela}`,
       };
     }
     if (dono && !hostil) {
@@ -862,6 +983,8 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
         };
       }
     }
+    // A concorrente de verdade continua sendo uma pessoa jurídica: passa a ser controlada pela compradora (concorrentes.ts).
+    if (alvo) return comprarAConcorrente(e, c, reg, emp, alvo, dono, hostil ? custoDaOpa(e, id) : custoDaAquisicao(e, id, op.tipo === 'adquirir' ? (op.fracao ?? FRACAO_DA_COMPRA) : FRACAO_DA_COMPRA), op.tipo === 'adquirir' ? (op.fracao ?? FRACAO_DA_COMPRA) : FRACAO_DA_COMPRA, hostil, origem);
     // A concorrente vale mais dentro da empresa (clientes, marca, menos briga de preço) e o mercado fica mais fechado.
     // O negócio que entra vale o preço justo; o que se paga é o do dia (barato na baixa, caro na alta).
     const justo = (emp.n['valor'] ?? 0) * CUSTO_AQUISICAO;
@@ -874,7 +997,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     // Ela vira subsidiária, com as subsidiárias que já tinha.
     const delas = subsidiariasDoRival(custo);
     somar(e, reg, id, 'subsidiarias', 1 + delas);
-    const rival = dono?.t['negocio'] ?? nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes));
+    const daConcorrente = dono?.t['negocio'] ?? nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes));
     // O dono fica para tocar o negócio (o gestor), se a cadeira está vaga e ele está em idade de trabalhar; senão, sai de cena.
     let fica = '';
     if (dono) {
@@ -893,9 +1016,9 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
     return {
       texto: hostil
-        ? `A oferta hostil deu certo: ${aEmpresa(emp)} comprou ${rival} na bolsa${junto}, por ${formatarDinheiro(custo)}, com o prêmio aos acionistas.${fica}${fim}`
-        : `${aEmpresa(emp, 'A')} comprou a concorrente ${rival}${junto}, por ${formatarDinheiro(custo)}.${fica}${fim}`,
-      resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : hostil ? `tomou a concorrente ${rival} numa oferta hostil` : `comprou a concorrente ${rival}`,
+        ? `A oferta hostil deu certo: ${aEmpresa(emp)} comprou ${daConcorrente} na bolsa${junto}, por ${formatarDinheiro(custo)}, com o prêmio aos acionistas.${fica}${fim}`
+        : `${aEmpresa(emp, 'A')} comprou a concorrente ${daConcorrente}${junto}, por ${formatarDinheiro(custo)}.${fica}${fim}`,
+      resumo: truste ? `montou um truste com ${aEmpresa(emp)}` : hostil ? `tomou a concorrente ${daConcorrente} numa oferta hostil` : `comprou a concorrente ${daConcorrente}`,
     };
   }
   if (op.tipo === 'emitir') {
