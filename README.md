@@ -15,34 +15,34 @@
 
 ---
 
-## 🆕 Novidades: Ascensão AAA · a simulação conferida e o Android cuidado (10/11/2026)
+## 🆕 Novidades: Capitalismo vivo · o grupo de empresas vira uma economia (11/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o jogo foi investigado de ponta a ponta antes de qualquer mudança, e o que entrou veio com medida de antes e depois.
-> - **O evento se lê inteiro.** Com a letra grande do celular, o texto do evento ficava cortado em mais da metade dos eventos, com a história antiga ainda na tela. Agora a história cede antes de o texto ser cortado.
-> - **A família de quem herda faz sentido.** O velório da avó não chega mais décadas depois da morte dela na vida de quem herdou, e os pais de quem herda são de uma geração antes.
-> - **O mercado tem tamanho.** A empresa não passa mais de 100% do que o país compra do setor, nem comprando todas as concorrentes.
-> - **A infância é da criança.** Até os 12 anos, o noticiário do país sai da linha do tempo (continua na folha País e nas causas do que acontecer com a família).
-> - **O jogo não cai calado.** Se algo quebrar, aparece uma tela com saída (abrir de novo, exportar o save, voltar à cópia), e o save que não grava avisa.
-> - **O Android com a cara do jogo.** O ícone, a tela de abertura e a janela do app estão no noite e ouro; o toque nas escolhas vibra de leve (dá para desligar no menu).
-> - **Mais rápido para voltar a uma vida longa**, e o número do cabeçalho que muda dá um pulso de cor.
+> **O que mudou:** as empresas deixaram de ser números que sobem e viraram uma economia de verdade.
+> - **Holding e subsidiárias de verdade.** Cada empresa é uma pessoa jurídica, com número, caixa e dono. A holding guarda as participações e recebe os dividendos; a subsidiária tem o balanço dela e pode quebrar sozinha, sem levar o grupo. Dá para ter até 12 empresas.
+> - **Fábricas, lojas, laboratórios.** Cada empresa trabalha em unidades, cada uma numa cidade: no interior a estrutura sai mais barata, e os empregos ficam na cidade da unidade. O laboratório faz a pesquisa render mais; o centro de distribuição barateia cada venda.
+> - **A concorrente é uma empresa.** Ela tem dono, caixa e clientes, decide sozinha e reage a você: investe quando fica para trás, entra na guerra de preços, quebra. Comprá-la leva o controle (51%, 80% ou 100%) sem fundir: ela continua de pé, agora no seu grupo.
+> - **O Cade olha a compra que concentra o mercado**: pode aprovar, pedir a venda de uma unidade ou barrar.
+> - **A sua mídia vende audiência**: a empresa de cultura e internet do grupo recebe a campanha das outras, e você escolhe se a campanha fica em casa ou vai para o país inteiro.
+> - **O produto envelhece**, e lançar a geração nova é decisão.
+> - **O conselho pode tocar o dia a dia** de uma empresa, no mandato conservador ou arrojado, e o que ele decide aparece na linha do tempo.
+> - **O grupo pesa no PIB** pelo que ele adiciona (o que vende menos o que compra), e a folha mostra a conta do grupo sem o que uma empresa pagou à outra.
 
 > [!TIP]
 > **Para testar:**
-> - Jogue pelo app com a letra do celular como você usa e leia os eventos: o texto deve aparecer inteiro na maioria deles.
-> - Morra e toque em "Continuar como…": a vida de quem herda não traz mais velório atrasado.
-> - Abra o menu: em "O aparelho", ligue e desligue a vibração.
-> - Feche o app no meio de uma vida longa e abra de novo.
+> - Abra uma empresa, passe um ano e abra **Dinheiro → a empresa → Por dentro → Mercado**: a concorrente tem nome, caixa e a parte dela no mercado. Compre 80% dela e veja que ela continua lá, no seu grupo.
+> - Em **A estrutura do grupo**, crie a holding, ponha a empresa dentro e funde uma subsidiária de cultura e internet; na empresa, em **Produto e mídia**, anuncie na mídia do grupo.
+> - Em **Unidades**, construa uma fábrica (ou loja) numa cidade do interior; em **Quem decide**, entregue o dia a dia ao conselho com o mandato arrojado e passe alguns anos.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🔎 A auditoria da simulação (`npm run auditoria`) e os invariantes do estado no túnel | 📖 Um arranjo do evento para texto muito longo com a letra 1,45 (um em cada cinco ainda rola por dentro) |
-| 🧬 O tempo das marcas pelo calendário e a família de quem herda | 🧒 A vida que quem herda já tinha (o casamento e os filhos que a vida anterior contou) |
-| 🏪 O mercado com tamanho para todo ganho | 🎚️ A riqueza das vidas mais perto do Brasil real (decisão do dono) |
-| 📱 A casca do Android no noite e ouro, e o APK testado num Android emulado | 📲 O teste num aparelho físico (só o dono tem) |
-| 🛟 A tela de recuperação e o aviso do save | 🎲 A sorte grande, a despedida em várias cenas, ensinar o caminho (a fila do loop) |
+| 🏛️ Holding, subsidiárias com balanço próprio, sócios, nenhum ciclo, sem dupla contagem | 📦 Vários produtos dentro da mesma empresa (várias marcas são várias empresas) e o estoque |
+| 🏭 Unidades com cidade, capacidade, laboratório e centro de distribuição | 🧑‍💼 Os executivos com nome (só o gestor tem rosto) |
+| 🥊 Concorrentes de verdade que decidem sozinhas; partes do mercado somando 100% | 🌎 Concorrentes de verdade fora dos setores do seu grupo (lá o mercado é agregado) |
+| 🤝 Comprar o controle sem fundir; a falência da subsidiária sozinha; o Cade | 🔍 A investigação da guerra de preços de quem domina o mercado |
+| 📈 O PIB pelo valor adicionado, a consolidada, a mídia e o conselho | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada um dos 778.947 anos das vidas sorteadas e escolhidas (e em todos os anos das gerações das dinastias), sem um problema; o dinheiro fechou nas 4,14 milhões de entradas, as dívidas nas 4,74 milhões, nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. A auditoria (160 dinastias de 4 gerações) achou e ajudou a corrigir um erro que só aparecia na passagem entre gerações, e terminou sem problema. O resto ficou onde estava, como devia (as correções são de coerência, não de equilíbrio): saturação na 5ª vida 53,0% (era 53,2%), 904 assinaturas de vida por 1.000 (903), o porquê à vista em 41,7% dos acontecimentos (41,8%), patrimônio mediano ao morrer R$ 3,6 milhões (3,7) e 480,3 toques por vida (478,6; o teto de 480 ficou 0,3 acima). Na interface, a régua da tela passou de 52 para 58 critérios, todos aprovados.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema. O dinheiro fechou nas 4,15 milhões de entradas e as dívidas nas 4,77 milhões; nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Nas vidas com empresa, 63,7% tiveram concorrente de verdade. Foram 967 concorrentes que quebraram e 1.560 compras que preservaram a comprada (todas pequenas demais para o Cade). Os conselhos decidiram em 9.098 anos, houve 9.770 lançamentos de produto e o maior grupo chegou a 0,52% do PIB. O resto ficou onde estava: saturação na 5ª vida 52,8% (era 53,0%), 906 assinaturas de vida por 1.000 (904), o porquê à vista em 41,8% dos acontecimentos (41,7%), patrimônio mediano da cautelosa R$ 25 milhões (26) e 483,0 toques por vida (480,3; o teto informativo é 480). O save mediano foi de 505 para 535 KB, e o maior da amostra ficou em 863 KB (o limite é 1 MB). A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
@@ -149,7 +149,8 @@ flowchart LR
 
 ## 🚧 O que o jogo ainda não tem
 
-- 🏢 O título do Tesouro comprado pela empresa (o caixa dela já existe), a empresa que pega empréstimo no banco e o orçamento do governo item por item
+- 🏢 O título do Tesouro comprado pela empresa e o orçamento do governo item por item
+- 📦 Vários produtos dentro da mesma empresa, o estoque das unidades e os executivos com nome
 - ⚖️ A legitimidade de quem governa medida à parte da popularidade
 - 🛡️ A ocupação de território, as alianças militares e a guerra entre os países de fora
 - 💔 O ex que continua existindo depois do fim do namoro, e as relações entre os personagens (a mãe com o pai, o amigo com o par)

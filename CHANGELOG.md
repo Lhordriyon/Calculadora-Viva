@@ -18,6 +18,7 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 📦 **O produto envelhece**: depois de oito anos a geração perde qualidade, e lançar a nova custa do caixa.
 - 🧑‍⚖️ **O conselho e o Cade** (`governanca.ts`): cada empresa pode ter o dia a dia tocado pelo conselho, no mandato conservador ou arrojado, e o que ele decide vai para a linha do tempo; a compra que concentra o mercado passa pelo Cade (livre, aprovada, com a venda de uma unidade ou barrada).
 - 📱 **A folha do grupo em camadas** (`src/ui/Grupo.tsx`): a estrutura (quem é dona de quem, a consolidada, o PIB) e, em cada empresa, as unidades, o mercado, o produto e a mídia, e quem decide.
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; o dinheiro fechou nas 4,15 milhões de entradas e as dívidas nas 4,77 milhões; nenhuma história morta (`subsidiaria_esquecida` e `conglomerado_com_desconto` passaram a ler as subsidiárias do grupo inteiro); 63,7% das vidas com empresa tiveram concorrente de verdade, 967 concorrentes quebraram, 1.560 compras preservaram a comprada, os conselhos decidiram em 9.098 anos e o maior grupo chegou a 0,52% do PIB. Saturação V5 52,8% (53,0%), assinaturas 906 (904), porquê à vista 41,8% (41,7%), patrimônio mediano da cautelosa R$ 25 milhões (26), toques 483,0 (480,3; teto 480), save mediano 535 KB (505) e máximo 863 KB (779). Telas: 58 de 58 critérios.
 
 ## 🛡️ Ascensão AAA · A simulação conferida e o Android cuidado · 10/11/2026
 
