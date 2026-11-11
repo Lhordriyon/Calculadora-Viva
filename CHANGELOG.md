@@ -4,6 +4,16 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🌍 O grupo no mundo · Filiais em cada país e os mais ricos · 11/11/2026
+
+> [!NOTE]
+> O dono pediu filiais em cada país, a fatia de mercado de cada país em cada setor e no mundo, os funcionários do grupo inteiro, a riqueza da empresa diante do planeta e a posição dele entre os 10 mais ricos do país e das maiores empresas (11/11).
+
+- 🌍 **A filial lá fora** (`mundo-das-empresas.ts`): uma subsidiária com país, que vende no mercado de lá (o tamanho de cada país é a razão do PIB dele para o do Brasil), cresce com o ciclo de lá, paga o imposto de lá, recebe e paga com o país de contraparte, ganha com o dólar alto e tem as unidades nas cidades de lá. Sob sanção, a clientela cai e o dividendo fica retido; abrir pede a relação de 30 ou mais.
+- 🗺️ **O grupo no mundo**: os funcionários por país, a fatia do grupo em cada setor (em cada país e no mundo) e o peso diante do PIB do Brasil e do planeta (umas 50 vezes o Brasil), na estrutura do grupo.
+- 🏆 **Os mais ricos e as maiores**: as 10 maiores fortunas e as 10 maiores empresas do país (fictícias, as mesmas na vida inteira, do tamanho do país), com você e as suas no lugar em que estão.
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta; 55 filiais lá fora. Saturação V5 52,7%, assinaturas 906, porquê à vista 41,8%, toques 483,1, save mediano 534 KB (o maior da amostra, 1.465 KB, passou de 1 MB nesta rodada). Telas: 58 de 58 critérios.
+
 ## 🏭 Capitalismo vivo · O grupo de empresas vira uma economia · 11/11/2026
 
 > [!NOTE]

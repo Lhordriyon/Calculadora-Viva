@@ -15,7 +15,7 @@
 
 ---
 
-## 🆕 Novidades: Capitalismo vivo · o grupo de empresas vira uma economia (11/11/2026)
+## 🆕 Novidades: Capitalismo vivo e o grupo no mundo (11/11/2026)
 
 > [!IMPORTANT]
 > **O que mudou:** as empresas deixaram de ser números que sobem e viraram uma economia de verdade.
@@ -27,12 +27,16 @@
 > - **O produto envelhece**, e lançar a geração nova é decisão.
 > - **O conselho pode tocar o dia a dia** de uma empresa, no mandato conservador ou arrojado, e o que ele decide aparece na linha do tempo.
 > - **O grupo pesa no PIB** pelo que ele adiciona (o que vende menos o que compra), e a folha mostra a conta do grupo sem o que uma empresa pagou à outra.
+> - **Filiais em cada país.** A filial na Federação do Norte, na República Celeste, na Liga Atlântica ou no Pacto do Sul vende no mercado de lá, paga o imposto de lá, ganha com o dólar alto e sente a relação com o Brasil (sob sanção, o dividendo fica preso lá).
+> - **O grupo no mundo**: quantas pessoas trabalham no grupo (e em que país), a fatia dele em cada setor em cada país e no mundo, e quanto ele vale diante do PIB do Brasil e do planeta.
+> - **Os mais ricos e as maiores**: as 10 maiores fortunas e as 10 maiores empresas do país, com você e as suas no lugar em que estão.
 
 > [!TIP]
 > **Para testar:**
 > - Abra uma empresa, passe um ano e abra **Dinheiro → a empresa → Por dentro → Mercado**: a concorrente tem nome, caixa e a parte dela no mercado. Compre 80% dela e veja que ela continua lá, no seu grupo.
 > - Em **A estrutura do grupo**, crie a holding, ponha a empresa dentro e funde uma subsidiária de cultura e internet; na empresa, em **Produto e mídia**, anuncie na mídia do grupo.
 > - Em **Unidades**, construa uma fábrica (ou loja) numa cidade do interior; em **Quem decide**, entregue o dia a dia ao conselho com o mandato arrojado e passe alguns anos.
+> - Em **A estrutura do grupo → Uma filial lá fora**, escolha um país e abra a filial; passe um ano e veja em **No mundo** a fatia dela lá e no mundo. Abra **Os mais ricos e as maiores** e veja onde você está.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
@@ -40,9 +44,10 @@
 | 🏭 Unidades com cidade, capacidade, laboratório e centro de distribuição | 🧑‍💼 Os executivos com nome (só o gestor tem rosto) |
 | 🥊 Concorrentes de verdade que decidem sozinhas; partes do mercado somando 100% | 🌎 Concorrentes de verdade fora dos setores do seu grupo (lá o mercado é agregado) |
 | 🤝 Comprar o controle sem fundir; a falência da subsidiária sozinha; o Cade | 🔍 A investigação da guerra de preços de quem domina o mercado |
-| 📈 O PIB pelo valor adicionado, a consolidada, a mídia e o conselho | 📲 O teste num aparelho físico (só o dono tem) |
+| 📈 O PIB pelo valor adicionado, a consolidada, a mídia e o conselho | 🌍 Concorrentes de verdade lá fora, e o tamanho de cada país andando por conta própria |
+| 🌍 Filiais em cada país, a fatia por país e no mundo, os mais ricos e as maiores | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema. O dinheiro fechou nas 4,15 milhões de entradas e as dívidas nas 4,77 milhões; nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Nas vidas com empresa, 63,7% tiveram concorrente de verdade. Foram 967 concorrentes que quebraram e 1.560 compras que preservaram a comprada (todas pequenas demais para o Cade). Os conselhos decidiram em 9.098 anos, houve 9.770 lançamentos de produto e o maior grupo chegou a 0,52% do PIB. O resto ficou onde estava: saturação na 5ª vida 52,8% (era 53,0%), 906 assinaturas de vida por 1.000 (904), o porquê à vista em 41,8% dos acontecimentos (41,7%), patrimônio mediano da cautelosa R$ 25 milhões (26) e 483,0 toques por vida (480,3; o teto informativo é 480). O save mediano foi de 505 para 535 KB, e o maior da amostra ficou em 863 KB (o limite é 1 MB). A régua da tela passou nos 58 critérios.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema. O dinheiro fechou nas 4,15 milhões de entradas e as dívidas nas 4,77 milhões; nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Nas vidas com empresa, 63,7% tiveram concorrente de verdade: 989 quebraram, 1.538 compras preservaram a comprada (todas pequenas demais para o Cade) e 55 filiais abriram lá fora. Os conselhos decidiram em 9.283 anos, houve 9.863 lançamentos de produto e o maior grupo chegou a 0,55% do PIB. O resto ficou onde estava: saturação na 5ª vida 52,7% (era 53,0%), 906 assinaturas de vida por 1.000 (904), o porquê à vista em 41,8% dos acontecimentos (41,7%), patrimônio mediano da cautelosa R$ 25 milhões (26) e 483,1 toques por vida (480,3; o teto informativo é 480). O save mediano foi de 505 para 534 KB; o maior da amostra passou de 1 MB nesta rodada (1.465 KB; nas duas anteriores, 863 e 1.151): são as vidas com muitas empresas, e o caminho para elas é o livro compacto (os anos antigos em resumo). A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
