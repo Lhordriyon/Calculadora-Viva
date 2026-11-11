@@ -10,6 +10,7 @@
  * (saúde perdida, dívida contraída, chance de morrer). Gastar dinheiro ou
  * perder felicidade com certeza é custo, não risco.
  */
+import { formaQueProduz } from './unidades.ts';
 import { acoesDoVerbo, jaAgiu } from './acoes.ts';
 import { defBem, defDoBem, moradiaDe } from './bens.ts';
 import { carreiraDe, chanceDeEntrar, salarioDoCargo } from './carreira.ts';
@@ -849,6 +850,15 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   if (grupo.length < 2 && idade <= 55 && (emp.n['valor'] ?? 0) >= 2e7 && liquido >= 1e6) {
     const ramo = setores.find((s) => s !== emp.t['setor']) ?? 'tecnologia';
     return [{ tipo: 'abrir', setor: ramo, valor: Math.floor(liquido * 0.4) }];
+  }
+  // O grupo de verdade (missão Capitalismo vivo): com duas empresas, a que não é tocada de perto vai para o conselho,
+  // com o mandato arrojado; com fila de pedidos e caixa, a de perto cresce numa unidade em outra cidade (a mais barata).
+  const outra = grupo.find((x) => x.id !== emp.id && !x.q['holding'] && x.n['capacidade'] !== undefined && pode(e, c, { tipo: 'governanca', empresa: x.id, autonomia: 'delegada', mandato: 'arrojado' }));
+  if (outra && (outra.t['autonomia'] ?? 'manual') === 'manual') return [{ tipo: 'governanca', empresa: outra.id, autonomia: 'delegada', mandato: 'arrojado' }];
+  if ((emp.n['ocupacao'] ?? 1) > 1.2 && (emp.n['valor'] ?? 0) >= 2e7 && aleatorio(rng) < 0.3) {
+    const interior = c.mundo.cidades.find((x) => x.marcas.includes('interior') && x.nome !== e.entidades['lugar']?.nome)?.nome;
+    const op: Operacao = { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade: interior ?? 'Campinas', fracao: 0.25 };
+    if (interior && pode(e, c, op)) return [op];
   }
   return [];
 }

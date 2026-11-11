@@ -1462,6 +1462,19 @@ l('| Portão | Situação | Valor |');
 l('|---|---|---|');
 for (const [nome, ok, detalhe] of portoesH6) l(`| ${nome} | ${ok ? '✅' : '❌'} | ${detalhe} |`);
 l();
+l('## O capitalismo vivo (missão Capitalismo vivo)');
+l();
+{
+  const comEmpresa = vidas.filter((v) => v.vivo.concorrente);
+  const soma = (f: (v: (typeof vidas)[number]) => number): number => vidas.reduce((s, v) => s + f(v), 0);
+  const cade: Record<string, number> = {};
+  for (const v of vidas) for (const [k, n] of Object.entries(v.vivo.cade)) cade[k] = (cade[k] ?? 0) + n;
+  const pesos = vidas.map((v) => v.vivo.pesoNoPib).filter((x) => x > 0).sort((a, b) => a - b);
+  l(
+    `Nos setores em que o grupo produz, a concorrência é feita de empresas de verdade (concorrentes.ts), que rodam o mesmo negócio e decidem sozinhas. Vidas com concorrente de verdade: ${pct(comEmpresa.length / Math.max(1, vidas.length))}; concorrentes que quebraram: ${num(soma((v) => v.vivo.quebras), 0)}; compras que preservaram a comprada: ${num(soma((v) => v.vivo.compras), 0)} (o Cade: ${Object.entries(cade).map(([k, n]) => `${k} ${n}`).join(', ') || 'nenhuma análise'}). Unidades construídas pela folha: ${num(soma((v) => v.vivo.unidades), 0)}; anos com decisão de conselho: ${num(soma((v) => v.vivo.conselhos), 0)}; lançamentos de produto: ${num(soma((v) => v.vivo.lancamentos), 0)}; campanha paga à mídia do grupo: ${formatarDinheiro(soma((v) => v.vivo.naMidia))}. O peso do grupo no PIB, pelo valor adicionado, entre as vidas que pesaram: mediana ${pesos.length ? pesos[Math.floor(pesos.length / 2)]!.toFixed(4).replace('.', ',') : '0'}%, máximo ${pesos.length ? pesos.at(-1)!.toFixed(2).replace('.', ',') : '0'}%.`,
+  );
+}
+l();
 l('## O sonho da vida (bloco S1)');
 l();
 l('Aos 15, a pergunta do que quer da vida (a estrela, o império, o topo do país); no primeiro namoro sério, a do amor (a casa cheia, o amor para a vida toda). Cada sonho é um projeto com cenas próprias e um fim que o cartão conta.');

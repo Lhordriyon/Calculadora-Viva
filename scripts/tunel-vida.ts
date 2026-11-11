@@ -435,6 +435,12 @@ export interface Vida {
   capitulos: Partial<Record<TipoDeCapitulo, number>>;
   /** A rival e o gestor (bloco H6): a concorrência com nome, o rival que já era da vida, o gestor, as propostas seguidas e recusadas, os avisos e as saídas. */
   comRosto: { rival: boolean; conhecido: boolean; gestor: boolean; seguidas: number; recusadas: number; avisos: number; saidas: number };
+  /**
+   * O capitalismo vivo (missão Capitalismo vivo): se a vida teve empresa com concorrente de verdade, quantas concorrentes
+   * quebraram, as compras que preservaram a comprada, as decisões do Cade, as unidades construídas, os anos de decisão de
+   * conselho, os lançamentos de produto, a campanha paga à mídia do grupo e o maior peso do grupo no PIB (em %).
+   */
+  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number };
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
@@ -1235,6 +1241,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       avisos: e.historico.filter((h) => h.ref === 'regra:gestor_avisou').length,
       saidas: e.historico.filter((h) => h.ref === 'regra:gestor_saiu').length,
     },
+    vivo: capitalismoVivo(e),
     sonhos: sonhosDoLivro(e, c),
     bolsa: {
       emissoes: e.historico.filter((h) => h.ref === 'empresa:emitir').length,
@@ -1471,4 +1478,39 @@ export function executar(c: Conteudo, t: Tarefa): Resultado {
   if (t.tipo === 'jogador') return rodarJogador(c, t);
   if (t.tipo === 'dinastia') return rodarDinastia(c, t);
   return { tipo: 'origem', vida: medir(c, jogar(c, t.estrategia, t.semente, undefined, t.origem), t.estrategia) };
+}
+
+/** O que a vida fez do capitalismo vivo, lido do livro e do estado (missão Capitalismo vivo). */
+function capitalismoVivo(e: EstadoVida): Vida['vivo'] {
+  const cade: Record<string, number> = {};
+  let compras = 0;
+  let naMidia = 0;
+  let peso = 0;
+  let pesoMax = 0;
+  for (const h of e.historico) {
+    if (h.ref === 'empresa:adquirir' || h.ref === 'empresa:opa') {
+      if (h.texto.includes('Ela continua de pé')) compras++;
+      const decisao = h.texto.includes('Cade barrou') ? 'barrada' : h.texto.includes('O Cade aprovou com uma condição') ? 'condicao' : h.texto.includes('O Cade aprovou depois') ? 'concentrada' : h.texto.includes('O Cade analisou') ? 'aprovada' : h.texto.includes('Ela continua de pé') ? 'livre' : null;
+      if (decisao) cade[decisao] = (cade[decisao] ?? 0) + 1;
+    }
+    for (const m of h.mudancas ?? []) {
+      if (m.r === 'publicidade' && (m.d ?? 0) > 0) naMidia += m.d!;
+      if (m.c === 'pais.peso_do_grupo' && m.d !== undefined) {
+        peso += m.d;
+        pesoMax = Math.max(pesoMax, peso);
+      }
+    }
+  }
+  return {
+    concorrente: e.historico.some((h) => h.mudancas?.some((m) => m.c.startsWith('empresaR') && m.c.endsWith('.fundada'))),
+    // A concorrente que quebrou fica no estado, fechada (concorrentes.ts › quebrarConcorrente).
+    quebras: Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.id.startsWith('empresaR') && x.vivo === false).length,
+    compras,
+    cade,
+    unidades: e.historico.filter((h) => h.ref === 'unidade:construirUnidade').length,
+    conselhos: e.historico.filter((h) => h.ref === 'conselho:decidiu').length,
+    lancamentos: e.historico.reduce((s, h) => s + (h.mudancas?.filter((m) => m.r === 'lancamento' && m.c.endsWith('.caixa') && !m.c.startsWith('empresaR')).length ?? 0), 0),
+    naMidia,
+    pesoNoPib: pesoMax,
+  };
 }

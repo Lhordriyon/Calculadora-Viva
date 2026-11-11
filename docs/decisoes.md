@@ -2078,3 +2078,47 @@ O dono pediu uma atualização grande ("Operação Trajetória: Ascensão AAA"),
 - **Os toques ficaram 0,3 acima do teto informativo** (480,3, contra 478,6 antes): nenhuma mudança da missão acrescenta toque de propósito, e o outro pai de verdade na vida de quem herda (vivo, com as histórias dele) é conteúdo legítimo. Não mexi nos robôs para baixar o número: seria ajustar a régua ao resultado.
 - **`quem_manda_se_voce_faltar` ganhou o peso 4** da história irmã (`tudo_pela_sua_mesa`): já era rara (0,0% das vidas), e com a ordem dos sorteios mudada nesta missão saiu das 10.000 vidas.
 - **O Android sem aparelho nem emulador aqui.** O SDK do Android não é alcançável deste ambiente, e não pedi acesso a mais. O que fiz no lugar: o workflow do Android passou a conferir o APK (o pacote, as permissões e o jogo desta build dentro dele) e, no disparo manual, a instalar num Android emulado no CI (abre, começa uma vida, fecha à força e a vida continua). No branch, isso roda sem publicar nada.
+
+## A missão Capitalismo vivo (11/11)
+
+O dono pediu que o sistema empresarial vire uma economia corporativa viva (I-156 a I-165 em `docs/ideias.md`, com a auditoria de antes). A ordem foi a pedida: propriedade e identidade, unidades, concorrentes e mercado, contas nacionais, produto, mídia, governança, regulação, interface, e o túnel.
+
+**O que entrou, com o teste de cada pedido do dono.**
+
+| Pedido | Onde | Teste |
+|---|---|---|
+| 1 · A holding e duas subsidiárias independentes | `societario.ts`, `grupo.ts` | `test/societario.test.ts` |
+| 2 · Subsidiária não é unidade | `unidades.ts` | `test/unidades.test.ts` |
+| 3 · A concorrência controlada pela IA | `concorrentes.ts` | `test/concorrentes.test.ts` |
+| 4 · Comprar 80% sem fundir | `empresa.ts › comprarAConcorrente` | idem |
+| 5 · A mídia vende audiência | `negocio.ts › campanhaNaMidia`, `audienciaDe` | `test/economia-do-grupo.test.ts` |
+| 6 · O marketing do grupo na mídia do grupo | idem, e a operação `anunciar` | idem |
+| 7 · O conselho com autonomia e mandato | `governanca.ts` | idem |
+| 8 · O monopólio e o Cade | `demonstracoes.ts › analiseDoCade` | idem |
+| 9 · A falência da subsidiária, sozinha | `empresa.ts › fecharEmpresa`, `societario.ts › liberarParticipadas` | `test/concorrentes.test.ts` |
+| 10 · A individual e a consolidada | `demonstracoes.ts` | `test/economia-do-grupo.test.ts` |
+| 11 · O PIB pelo valor adicionado | `empresa.ts › pesoNoPib`, `demonstracoes.ts › contasNacionais` | idem |
+| 12 · A dinastia e o save | `herdeiro.ts`, `salvar.ts` | `test/societario.test.ts`, `test/unidades.test.ts` |
+
+**Decisões tomadas sozinho.**
+
+- **O número permanente da empresa é um atributo, como o número da pessoa**, e o mesmo contador dá o número das unidades: um número nunca se repete na vida. A propriedade se escreve pelo número (`#7`), então a empresa que troca de lugar no grupo (a de perto, a que vai para fora) continua dona e continua dela.
+- **O valor guardado de cada empresa é o do negócio dela sozinha**; a parte de quem joga é a soma da parte efetiva (direta e pelas outras) vezes esse valor. A holding guarda o caixa como valor (há invariante). Sem isso, o capital que a holding pôs nas filhas contava duas vezes.
+- **Uma sócia por empresa**, além da controladora e do mercado (os minoritários dispersos): cobre o antigo dono que fica com 20% e a associada. Mais sócias corporativas por empresa ficam para depois.
+- **A unidade é entidade do motor, como o contrato e o bem**: o conteúdo fala dela pela empresa. A estrutura segue a cidade em 40% (o salário e o aluguel), comparada com a da sede: a empresa de uma unidade só se comporta exatamente como antes (o túnel rápido deu os mesmos números das quatro estratégias).
+- **O laboratório e o centro de distribuição são as unidades de apoio**: não vendem, têm porte (a estrutura por ano) e mudam o negócio (o P&D rende até 50% mais; cada venda custa até 5% menos) com o porte certo para as vendas de hoje. O estoque não foi modelado.
+- **A concorrente de verdade existe só nos setores em que o grupo produz** (até duas por setor) e fica fora do radar quando o grupo sai do setor: o save e a CPU por vida têm teto. Ela anota o resultado do mercado num lançamento só, e o valor adicionado dela é estimado pela margem do setor.
+- **A força da concorrente que o conteúdo lê (50 é parelha) passa a ser a atratividade da mais atraente de fora**: o conteúdo inteiro continua valendo, e o que mexia no número (o gestor que vai para a concorrência, a oferta hostil que falha) mexe na qualidade e na marca dela.
+- **A fortuna de quem é de fora da família não é modelada**: o dividendo da concorrente e o preço da compra vão para a conta do mercado. O dinheiro dessa pessoa não seria lido por ninguém.
+- **A compra leva o controle (80% por padrão; 51% ou 100% na folha)**, paga do caixa da compradora (o que faltar, quem joga põe como aporte), e o antigo dono fica com o resto como sócio. O contador antigo de subsidiárias continua para o conteúdo e para o save antigo, sem empresa inventada.
+- **A subsidiária quebra sozinha**: o que sobra do caixa vai para a controladora, e ninguém acima paga a conta. A controladora que sai da vida deixa as participações para quem era dona dela; a que é vendida sozinha deixa as dela no grupo (o preço foi o do negócio dela).
+- **O aporte de quem controla dilui a sócia na proporção** (achado pelo túnel: a soma das partes passava de 100% por um milionésimo).
+- **Valor adicionado = o que a empresa vendeu (com a publicidade) menos o que comprou de outras para produzir (o insumo, o frete, a campanha)**; a estrutura e a pesquisa são a casa dela. O peso do grupo no PIB é guardado no país (`pais.peso_do_grupo`), e o valor adicionado a mais puxa o crescimento pela metade (a outra metade sai do resto da economia): só o grupo do tamanho de um país mexe no PIB.
+- **A mídia é o setor de cultura e internet**: ela recebe a parte da audiência dela na campanha das irmãs, ou a campanha inteira de quem escolhe anunciar só nela (que alcança só essa audiência, com um piso de 40%). A campanha que as concorrentes compram vai para o mercado.
+- **O conselho não tem rosto**: só o gestor da empresa de perto é uma pessoa. O conselho decide pela heurística que já existia (a do gestor e dos robôs), no jeito do mandato, e a proposta do gestor some quando o conselho toca o dia a dia. A consultiva mostra a sugestão do ano na folha, sem fazer nada.
+- **A régua do Cade é a do HHI**: livre abaixo de 1.500 depois da compra (ou com o aumento abaixo de 100); a partir de 2.500 com aumento de 200, a comprada vende uma unidade (se tiver mais de uma); a partir de 5.000, barrada (os advogados custam 1% do preço). A guerra de preços de quem domina não virou investigação.
+- **Uma linha de produto por pessoa jurídica**: a geração envelhece depois de oito anos (até 10 pontos de qualidade a menos), e lançar a nova custa 4% das vendas; várias marcas são várias empresas. Vários produtos dentro da mesma empresa ficam para depois.
+- **O grupo vai a 12 empresas** (o dono pediu mais de cinco).
+- **As escolhas do conteúdo que vendem ou abrem o capital da empresa de perto pedem que ela seja de quem joga direto** (`empresa.dona`), e o "pôr dinheiro do bolso" da quebra também: a da holding se decide pela controladora, como na folha.
+- **Duas histórias novas leem o que é novo**: `o_grupo_no_pib` (o grupo com 0,05% do PIB ou mais) e `o_produto_envelheceu` (a geração com nove anos ou mais, com a escolha de lançar a nova).
+- **Os robôs arrojados delegam a segunda empresa ao conselho e crescem com uma unidade no interior**: sem isso, o túnel não passaria pelos conselhos e pelas unidades.

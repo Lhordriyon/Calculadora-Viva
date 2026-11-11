@@ -567,8 +567,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['eu.vivo', 'eu.nome', 'pais.peso_do_grupo', 'pais.crescimento', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
-    escreve: ['unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    le: [...LADO_DE_LA, 'eu.vivo', 'eu.nome', 'pais.peso_do_grupo', 'pais.crescimento', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    escreve: [...LADO_DE_LA, 'unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',

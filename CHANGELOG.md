@@ -4,6 +4,21 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🏭 Capitalismo vivo · O grupo de empresas vira uma economia · 11/11/2026
+
+> [!NOTE]
+> O dono pediu que o sistema empresarial vire uma economia corporativa viva: pessoas jurídicas de verdade, holdings, subsidiárias, unidades, produtos, concorrentes que são empresas, mídia, poder de mercado e regulação, conselhos com autonomia, e a ligação com o PIB (11/11). A ordem foi a pedida, e cada pedido tem um teste (`docs/decisoes.md › A missão Capitalismo vivo`).
+
+- 🏛️ **A empresa é pessoa jurídica** (`societario.ts`, `grupo.ts`): número permanente, dona (você, outra empresa, uma pessoa ou o mercado) e sócia; a holding não opera, vive dos dividendos e paga a estrutura; a subsidiária nasce com capital do caixa da controladora, recebe aporte e pode ser vendida em parte ou inteira (a vendida continua viva fora do grupo). Nenhum ciclo, as partes até 100%, sem dupla contagem no patrimônio. O grupo vai a 12 empresas.
+- 🏭 **As unidades** (`unidades.ts`): a fábrica, a loja, a clínica, o laboratório e o centro de distribuição são estabelecimentos da empresa, não empresas; a capacidade é a soma das que produzem; a cidade pesa no salário e no aluguel e no desemprego dela; construir, fechar, vender funcionando e transferir entre empresas do grupo.
+- 🥊 **As concorrentes de verdade** (`concorrentes.ts`): nos setores do grupo, a concorrente é uma empresa com dono, caixa, unidades e clientela, que roda o mesmo negócio, decide sozinha e reage a você (o marketing e o P&D, a guerra de preços, a concorrente nova que o lucro chama, a quebra). As partes do mercado somam 100% com o resto (os importados e os pequenos).
+- 🤝 **Comprar não é fundir**: a compra leva o controle (51%, 80% ou 100%), e a comprada continua de pé, com o nome, as unidades, a marca e a clientela; o antigo dono fica com o resto como sócio. A subsidiária quebra sozinha, sem levar o grupo.
+- 📈 **O PIB pelo valor adicionado** (`demonstracoes.ts`): o grupo pesa no PIB pelo que vende menos o que compra de outras empresas, e o que adiciona a mais puxa o crescimento. A demonstração consolidada tira o que uma empresa do grupo pagou a outra e separa a parte dos outros sócios.
+- 📺 **A mídia vende audiência**: a empresa de cultura e internet do grupo recebe a campanha das irmãs, de caixa para caixa; quem anuncia só nela guarda o dinheiro no grupo e alcança só a audiência dela.
+- 📦 **O produto envelhece**: depois de oito anos a geração perde qualidade, e lançar a nova custa do caixa.
+- 🧑‍⚖️ **O conselho e o Cade** (`governanca.ts`): cada empresa pode ter o dia a dia tocado pelo conselho, no mandato conservador ou arrojado, e o que ele decide vai para a linha do tempo; a compra que concentra o mercado passa pelo Cade (livre, aprovada, com a venda de uma unidade ou barrada).
+- 📱 **A folha do grupo em camadas** (`src/ui/Grupo.tsx`): a estrutura (quem é dona de quem, a consolidada, o PIB) e, em cada empresa, as unidades, o mercado, o produto e a mídia, e quem decide.
+
 ## 🛡️ Ascensão AAA · A simulação conferida e o Android cuidado · 10/11/2026
 
 > [!NOTE]

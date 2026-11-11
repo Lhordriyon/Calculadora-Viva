@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, custoDoLobby, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor, textoDosCustos } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
+import { CamadasDaEmpresa, EstruturaDoGrupo } from './Grupo.tsx';
 import { bensDe, credorDe, devedorDe, empresasDe, investidoDe, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, promissoriasDe, quemE, titulosDe } from '../motor/campos.ts';
 import { motivoParaNaoOperar, NOMES_PADRAO, perfilDe, type Operacao } from '../motor/carteira.ts';
 import { ATIVOS, PADROES, PERFIS, RETIRADAS, type Ativo, type Padrao, type Perfil } from '../motor/constantes.ts';
@@ -11,7 +12,7 @@ import { naMao, propostaDeAcordo, taxaRealDe } from '../motor/dividas.ts';
 import { padraoDe } from '../motor/economia.ts';
 import { dicaDaChance } from '../motor/acoes.ts';
 import { decidir } from '../motor/decisao.ts';
-import { aEmpresa, ajusteDaVenda, cargaDaMesa, chanceDaOpa, custoDaAquisicao, custoDaOpa, custoDaRecompra, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
+import { aEmpresa, ajusteDaVenda, alvoDaAquisicao, cargaDaMesa, chanceDaOpa, custoDaAquisicao, custoDaOpa, custoDaRecompra, liquidoDe, lugarLivre, precoDaAquisicao, PRINCIPAL, setoresDeEmpresa, vendaDaParte, vendaDeSubsidiarias, vendaNaEstreia } from '../motor/empresa.ts';
 import { custoDaObra, custoDeExportar, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, ocupacaoDe, procura, VERBAS, type Preco, type Salario } from '../motor/negocio.ts';
 import { PARCEIROS } from '../motor/constantes.ts';
 import { comArtigo, custoDaCompra, defDoBem, ehImovel, parcelaDe, taxaDeAluguel } from '../motor/bens.ts';
@@ -387,6 +388,7 @@ function CartaoDaEmpresa({
         </>
       )}
       <NegocioDaEmpresa vida={vida} conteudo={conteudo} emp={emp} aoOperar={aoOperar} />
+      <CamadasDaEmpresa vida={vida} conteudo={conteudo} emp={emp} aoOperar={aoOperar} />
       <p class="nota">
         <b>Dividendos.</b> Quanto do lucro do ano vai para os donos; o resto fica no caixa e paga as obras.
       </p>
@@ -413,6 +415,12 @@ function CartaoDaEmpresa({
         Pôr {formatarDinheiro(valor)} na empresa
       </button>
       {motivoAporte && <p class="nota">Agora não: {motivoAporte}.</p>}
+      {alvoDaAquisicao(vida, id) ? (
+        <p class="nota">
+          <b>A concorrência.</b> {aEmpresa(alvoDaAquisicao(vida, id)!, 'A')} é uma empresa de verdade, com dono, caixa e unidades: a parte dela no mercado e a compra estão na camada Mercado.
+        </p>
+      ) : (
+      <>
       <button class="botao secundario" type="button" disabled={motivoCompra !== null} onClick={() => aoOperar({ tipo: 'adquirir', empresa: id })}>
         Comprar uma concorrente ({formatarDinheiro(custoDaAquisicao(vida, id))}, {Math.round(precoDaAquisicao(vida, id) * 100)}% do preço justo)
         {dono && (
@@ -426,6 +434,8 @@ function CartaoDaEmpresa({
           ? `Comprar concorrentes: ${motivoCompra}.`
           : `Ela vira subsidiária, com as subsidiárias que já tinha. ${emp.q['truste'] ? 'Já é um truste: mais compras, mais mercado (e mais olhos do governo).' : `Três compras fazem um truste (${emp.q['aquisicoes']?.v ?? 0} até agora).`}`}
       </p>
+      </>
+      )}
       {subsidiarias.vendidas > 0 && (
         <button class="botao secundario" type="button" disabled={vida.pendente !== null} onClick={() => aoOperar({ tipo: 'venderSubsidiaria', empresa: id })}>
           Vender {subsidiarias.vendidas === 1 ? 'uma subsidiária' : `${subsidiarias.vendidas} subsidiárias`} ({formatarDinheiro(subsidiarias.preco)})
@@ -545,6 +555,7 @@ function Grupo({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
           {carga > 1.05 ? ` A sua mesa está a ${Math.round(carga * 100)}%: com mais de uma empresa dependendo de você, o seu talento se divide entre elas. Delegar libera a mesa.` : ''}
         </p>
       )}
+      <EstruturaDoGrupo vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
       <ul class="vagas" aria-label="Empresas">
         {empresas.map((emp) => (
           <li key={emp.id}>
