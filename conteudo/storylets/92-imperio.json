@@ -465,6 +465,7 @@
   {
     "id": "quem_manda_se_voce_faltar",
     "idade": [55, 95],
+    "peso": 4,
     "condicoes": { "empresa.dependencia": { "min": 60 }, "empresa.valor": { "min": 50000000 } },
     "texto": "Um investidor faz a pergunta que ninguém faz: \"Se você morrer amanhã, quem manda n{empresa:o|a} {empresa}?\" O silêncio na sala responde por todo mundo.",
     "resumo": "ouviu de um investidor que ninguém mandaria na empresa sem você",
