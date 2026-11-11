@@ -2,7 +2,7 @@
 
 [![CI e deploy](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/ci.yml)
 [![App Android](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml/badge.svg)](https://github.com/Lhordriyon/Calculadora-Viva/actions/workflows/android.yml)
-![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-S3%3A%20o%20sonho%20que%20passa%20adiante-D9A321)
+![Atualização](https://img.shields.io/badge/atualiza%C3%A7%C3%A3o-Ascens%C3%A3o%20AAA-D9A321)
 ![Histórias](https://img.shields.io/badge/hist%C3%B3rias-903-2EA043)
 ![Vidas testadas](https://img.shields.io/badge/t%C3%BAnel-10.000%20vidas%20por%20push-1F6FEB)
 ![Idioma](https://img.shields.io/badge/idioma-pt--BR-009C3B)
@@ -15,29 +15,34 @@
 
 ---
 
-## 🆕 Novidades: S3 · O sonho que passa adiante (07/11/2026)
+## 🆕 Novidades: Ascensão AAA · a simulação conferida e o Android cuidado (10/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o sonho não morre com quem sonhou, e você vê o caminho dele acontecendo.
-> - **O caminho à vista.** Cada etapa de um sonho vira uma linha ✦ na linha do tempo: "✦ Virar estrela: gente que sabe quem você é. 2 de 3 etapas do sonho." Na última, "agora falta só ele".
-> - **O sonho passa adiante.** Quem morre com um sonho de pé deixa esse sonho para quem continua a história. E o sonho que não veio pode ser contado a um filho em vida: ele aparece com o sonho nas mãos, e você decide se conta o que deu errado, se dá o dinheiro do começo ou se pede que ele siga o próprio sonho.
-> - **A pasta do sonho.** No primeiro ano, quem herda acha uma pasta escrita SONHO, com três clipes, uma mancha de café e anotações nas margens ("não desistir", "ligar pro primo", "tentar de novo em março"). Dá para terminar o que foi começado, seguir as anotações, rir e chorar, ou guardar a pasta numa gaveta e viver o seu.
-> - **De quem era.** A folha Planos diz "o sonho de Larissa, que agora é seu", e quando ele se realiza: "Era o sonho de Larissa, e agora é história." O cartão da vida também conta.
+> **O que mudou:** o jogo foi investigado de ponta a ponta antes de qualquer mudança, e o que entrou veio com medida de antes e depois.
+> - **O evento se lê inteiro.** Com a letra grande do celular, o texto do evento ficava cortado em mais da metade dos eventos, com a história antiga ainda na tela. Agora a história cede antes de o texto ser cortado.
+> - **A família de quem herda faz sentido.** O velório da avó não chega mais décadas depois da morte dela na vida de quem herdou, e os pais de quem herda são de uma geração antes.
+> - **O mercado tem tamanho.** A empresa não passa mais de 100% do que o país compra do setor, nem comprando todas as concorrentes.
+> - **A infância é da criança.** Até os 12 anos, o noticiário do país sai da linha do tempo (continua na folha País e nas causas do que acontecer com a família).
+> - **O jogo não cai calado.** Se algo quebrar, aparece uma tela com saída (abrir de novo, exportar o save, voltar à cópia), e o save que não grava avisa.
+> - **O Android com a cara do jogo.** O ícone, a tela de abertura e a janela do app estão no noite e ouro; o toque nas escolhas vibra de leve (dá para desligar no menu).
+> - **Mais rápido para voltar a uma vida longa**, e o número do cabeçalho que muda dá um pulso de cor.
 
 > [!TIP]
 > **Para testar:**
-> - Escolha um sonho aos 15 e acompanhe as linhas ✦ na linha do tempo.
-> - Morra com um sonho de pé, toque em "Continuar como…" e abra a pasta do sonho no primeiro ano.
-> - Ou deixe um sonho vencer o prazo e, em "o sonho que ficou", conte-o a quem vem depois.
+> - Jogue pelo app com a letra do celular como você usa e leia os eventos: o texto deve aparecer inteiro na maioria deles.
+> - Morra e toque em "Continuar como…": a vida de quem herda não traz mais velório atrasado.
+> - Abra o menu: em "O aparelho", ligue e desligue a vibração.
+> - Feche o app no meio de uma vida longa e abra de novo.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| ✦ As etapas do sonho na linha do tempo | 🎲 A sorte grande: uma chance extraordinária por vida |
-| 🧬 O sonho de pé que passa a quem herda | 🕯️ A despedida em várias cenas |
-| 📁 A pasta do sonho, com quatro jeitos de recebê-lo | 🧑‍🏫 Ensinar o caminho a alguém |
-| 🧑‍🍼 O filho com o sonho nas mãos | 🔁 A rival que volta na vida seguinte |
+| 🔎 A auditoria da simulação (`npm run auditoria`) e os invariantes do estado no túnel | 📖 Um arranjo do evento para texto muito longo com a letra 1,45 (um em cada cinco ainda rola por dentro) |
+| 🧬 O tempo das marcas pelo calendário e a família de quem herda | 🧒 A vida que quem herda já tinha (o casamento e os filhos que a vida anterior contou) |
+| 🏪 O mercado com tamanho para todo ganho | 🎚️ A riqueza das vidas mais perto do Brasil real (decisão do dono) |
+| 📱 A casca do Android no noite e ouro, e o APK testado num Android emulado | 📲 O teste num aparelho físico (só o dono tem) |
+| 🛟 A tela de recuperação e o aviso do save | 🎲 A sorte grande, a despedida em várias cenas, ensinar o caminho (a fila do loop) |
 
-No túnel de vento (10.000 vidas), quase metade das gerações herdeiras das dinastias (48,4% de 368) começou a vida com o sonho de quem veio antes, e 44 delas o realizaram. As linhas ✦ das etapas levaram o porquê à vista de 38,6% para 41,8% dos acontecimentos. O dinheiro fechou nas 4,13 milhões de entradas, nenhuma estratégia domina e nenhuma história ficou de fora. A variedade ficou onde estava (saturação de 53,2% na 5ª vida e de 87,1% na 20ª), com 903 histórias por 1.000 vidas, e os toques ficaram em 478,6 por vida. Uma correção pelo caminho: a revelação da dívida escondida quase nunca chegava ao par e sumiu do túnel numa rodada; agora a dívida de quem é casado vai direto ao par. Os blocos anteriores estão no [`CHANGELOG.md`](CHANGELOG.md).
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada um dos 778.947 anos das vidas sorteadas e escolhidas (e em todos os anos das gerações das dinastias), sem um problema; o dinheiro fechou nas 4,14 milhões de entradas, as dívidas nas 4,74 milhões, nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. A auditoria (160 dinastias de 4 gerações) achou e ajudou a corrigir um erro que só aparecia na passagem entre gerações, e terminou sem problema. O resto ficou onde estava, como devia (as correções são de coerência, não de equilíbrio): saturação na 5ª vida 53,0% (era 53,2%), 904 assinaturas de vida por 1.000 (903), o porquê à vista em 41,7% dos acontecimentos (41,8%), patrimônio mediano ao morrer R$ 3,6 milhões (3,7) e 480,3 toques por vida (478,6; o teto de 480 ficou 0,3 acima). Na interface, a régua da tela passou de 52 para 58 critérios, todos aprovados.
 
 ## 🗺️ Os blocos do dono
 
@@ -168,9 +173,9 @@ Precisa de Node 22.18 ou mais novo.
 ```sh
 npm install
 npm run dev        # jogo em http://localhost:5173
-npm run verificar  # tipos, testes, validador de conteúdo, túnel de vento e build
+npm run verificar  # tipos, testes, validador de conteúdo, auditoria, túnel de vento e build
 ```
 
-Outros comandos: `npm run validar` (só o conteúdo), `npm run tunel` (10.000 vidas simuladas → `docs/metricas.md`), `npm run vida -- 42 aleatoria` (imprime uma vida inteira jogada por um robô) e `npm run telas -- URL` (a régua da tela: 52 critérios de interface em sete tamanhos de tela e letra, contra a build no ar).
+Outros comandos: `npm run validar` (só o conteúdo), `npm run tunel` (10.000 vidas simuladas → `docs/metricas.md`), `npm run vida -- 42 aleatoria` (imprime uma vida inteira jogada por um robô) `npm run auditoria` (a integridade da simulação, ano a ano, em dinastias) e `npm run telas -- URL` (a régua da tela: 58 critérios de interface em sete tamanhos de tela e letra, contra a build no ar).
 
 Para escrever eventos, veja [`docs/conteudo.md`](docs/conteudo.md). O método de trabalho e as regras do projeto estão em [`CLAUDE.md`](CLAUDE.md).

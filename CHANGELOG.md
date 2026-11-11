@@ -4,6 +4,25 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🛡️ Ascensão AAA · A simulação conferida e o Android cuidado · 10/11/2026
+
+> [!NOTE]
+> O dono pediu uma atualização grande, com prioridade para a experiência no Android e para a simulação causal, medida pela qualidade e não pelo tamanho do código (10/11). Primeiro veio a investigação; cada mudança tem a linha de base e a medida depois em `docs/decisoes.md`.
+
+- 🔎 **A auditoria da simulação** (`npm run auditoria`, `src/motor/invariantes.ts`): o estado inteiro conferido depois de cada ano, em dinastias; o túnel passou a conferir os invariantes em toda vida e trava se achar problema. Na investigação, 5.613 vidas sem um erro de conta.
+- 🧬 **O tempo das marcas pelo calendário** (`campos.ts › anosDaMarca`): na vida de quem herda, a marca herdada contava o tempo pela idade de quem morreu; 169 de 345 velórios de herdeiros vinham com 2 anos ou mais de atraso, e agora nenhum.
+- 👪 **A família de quem herda** (`herdeiro.ts`, `pessoas.ts`, `origem.ts`): os pais do par e do amigo que herdam nascem uma geração antes; quem se separou do outro pai deixa o ex no lugar dele (e não um pai inventado, morto antes do irmão mais novo); o par de quem é adulto é adulto; o amigo de infância não nasce depois de quem joga.
+- 🏪 **O mercado tem tamanho para todo ganho** (`negocio.ts › somarDemanda`, `espacoNoMercado`): a compra, a fusão, o contrato e a clientela da rival cabem no que sobra do mercado do setor, somando as empresas de quem joga; a folha não mostra mais 141% do mercado.
+- 💔 **A viuvez de quem é** (`campos.ts › sozinho`): `pai_namorando_de_novo` e `mae_quer_morar_junto` liam a viuvez de quem joga; passam a ler a pessoa.
+- 📖 **O evento se lê inteiro** (`Palco.tsx`, `estilo.css`): a história cede antes de o texto do evento rolar; com a letra 1,45, os eventos cortados caíram de 56% para 21%, e nunca com a história ainda na tela.
+- 🧒 **A infância sem noticiário** (`formato.ts › naLinhaDoTempo`): até os 12, a notícia do país fica no livro e fora da linha do tempo.
+- 🛟 **O jogo não cai** (`Fronteira.tsx`, `salvar.ts`, `App.tsx`): a tela de recuperação, o erro do motor que avisa, o save que libera espaço e avisa, e a cópia de segurança que só troca depois de o jogo desenhar.
+- ⚡ **Abrir e tocar mais rápido**: as entradas antigas só são desenhadas perto da tela (abrir uma vida de 75 anos: −22% com a CPU 4× mais lenta).
+- 📳 **O toque que se sente** (`vibrar.ts`, `Cabecalho.tsx`, `CartaoVida.tsx`): a vibração curta com chave no menu, o pulso do número que muda e a morte que chega antes do resto do cartão.
+- 📱 **A casca do Android** (`android/`, `scripts/icones.ts`): o ícone, a abertura e a janela no noite e ouro; o workflow confere o APK e, no disparo manual, joga num Android emulado (`scripts/android-emulador.sh`).
+- 📏 **A régua da tela** passou de 52 para 58 critérios (a leitura do evento e as falhas tratadas).
+- 📊 **No túnel** (10.000 vidas): o estado conferido depois de cada um dos 778.947 anos, sem um problema; o dinheiro fechou nas 4,14 milhões de entradas e as dívidas nas 4,74 milhões; nenhuma história morta (`quem_manda_se_voce_faltar` ganhou o peso 4 da irmã, `tudo_pela_sua_mesa`); saturação V5 53,0% (53,2%), assinaturas 904 (903), porquê à vista 41,7% (41,8%), patrimônio mediano R$ 3,6 milhões (3,7), toques 480,3 (478,6; teto 480). Telas: 58 de 58 critérios.
+
 ## 🧬 S3 · O sonho que passa adiante · 07/11/2026
 
 > [!NOTE]

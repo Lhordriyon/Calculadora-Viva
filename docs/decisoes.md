@@ -2054,6 +2054,8 @@ O dono pediu uma atualização grande ("Operação Trajetória: Ascensão AAA"),
 | Armazenamento que recusa gravar | falhava calado | a cópia sai para a vida caber; se não bastar, avisa uma vez | idem |
 | Memória em 8 vidas seguidas pela interface | (não medido) | 9 a 11 MB depois de cada vida, sem crescer; 0 erros | Chromium, coleta de lixo forçada |
 | Critérios da régua da tela | 52 | 58 (a leitura do evento e as falhas tratadas) | `npm run telas` |
+| Túnel de vento (10.000 vidas): saturação V5 / assinaturas / porquê à vista / patrimônio mediano / toques | 53,2% / 903 / 41,8% / R$ 3,7 mi / 478,6 | 53,0% / 904 / 41,7% / R$ 3,6 mi / 480,3 | `npm run tunel`: a coerência mudou, o equilíbrio não; os toques passaram 0,3 do teto informativo de 480 |
+| Portões informativos reprovados | 11 | 12 (dois que reprovavam aprovam, e dois que aprovavam reprovam: a taxa da coroa, de poucos casos, e os toques) | idem |
 
 **Decisões tomadas sozinho.**
 
@@ -2073,4 +2075,6 @@ O dono pediu uma atualização grande ("Operação Trajetória: Ascensão AAA"),
 - **A vibração só nas decisões e nos momentos** (a escolha de um evento, a ação, o marco, o sonho realizado, a morte), nunca no "viver mais 1 ano", que é o toque mais repetido; com chave no menu, guardada no aparelho e fora do save.
 - **A morte não ganhou um toque a mais**: o nome, os anos e a frase da morte chegam antes, e o resto do cartão um instante depois. Uma tela só para a morte custaria um toque por vida, e o teto de toques já está no limite.
 - **O pulso do cabeçalho só nos quatro atributos e só para variações de 2 ou mais**: o dinheiro muda todo ano, e o vaivém de um ponto piscaria sem dizer nada.
+- **Os toques ficaram 0,3 acima do teto informativo** (480,3, contra 478,6 antes): nenhuma mudança da missão acrescenta toque de propósito, e o outro pai de verdade na vida de quem herda (vivo, com as histórias dele) é conteúdo legítimo. Não mexi nos robôs para baixar o número: seria ajustar a régua ao resultado.
+- **`quem_manda_se_voce_faltar` ganhou o peso 4** da história irmã (`tudo_pela_sua_mesa`): já era rara (0,0% das vidas), e com a ordem dos sorteios mudada nesta missão saiu das 10.000 vidas.
 - **O Android sem aparelho nem emulador aqui.** O SDK do Android não é alcançável deste ambiente, e não pedi acesso a mais. O que fiz no lugar: o workflow do Android passou a conferir o APK (o pacote, as permissões e o jogo desta build dentro dele) e, no disparo manual, a instalar num Android emulado no CI (abre, começa uma vida, fecha à força e a vida continua). No branch, isso roda sem publicar nada.
