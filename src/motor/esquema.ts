@@ -502,6 +502,8 @@ export const DefSetor = z.strictObject({
   parteDoInsumo: z.number().min(0).max(0.8).optional(),
   id,
   nome: z.string(),
+  /** O estabelecimento que produz no setor (a fábrica, a loja, a clínica): a unidade operacional (unidades.ts). */
+  unidade: z.strictObject({ id, nome: z.string(), f: z.boolean() }).optional(),
   /** 0 = não sente o ciclo; 1 = sente como a média; 2 = sente o dobro. */
   ciclo: z.number().min(0).max(3),
   crescimento: z.number().min(-0.05).max(0.05),
@@ -908,6 +910,13 @@ export const Mundo = z.strictObject({
     // Os trechos escolhem pelo estado, como nos storylets (a demissão de quem é rico não vem com cesta básica).
     z.strictObject({ textos: z.array(z.string()).min(1), resumo: z.string().min(3), trechos: z.record(z.string().regex(/^[a-z_]+$/), z.array(Trecho).min(2)).optional() }),
   ),
+  /**
+   * As unidades de apoio (unidades.ts): o estabelecimento que não vende, mas muda o negócio da empresa dona dele (o
+   * laboratório faz o P&D render mais; o centro de distribuição barateia cada venda), nos setores que listam.
+   */
+  apoios: z
+    .array(z.strictObject({ id: z.enum(['laboratorio', 'centro']), nome: z.string(), f: z.boolean(), efeito: z.enum(['pesquisa', 'logistica']), descricao: z.string().min(10), setores: z.array(id).min(1) }))
+    .optional(),
   /** Setores da economia (o emprego de quem joga e dos pais pertence a um). */
   setores: z.array(DefSetor).min(6),
   /** Os países de fora, um por id, e o que o mundo lá fora conta na linha do tempo. */

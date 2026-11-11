@@ -11,7 +11,7 @@
  */
 import { ATIVOS, FILHOS, IRMAOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { abrirContas } from './moeda.ts';
-import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos , donaDe } from './campos.ts';
+import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos, donaDe, refDaEmpresa } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
@@ -525,6 +525,12 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     copia.n['participacao'] = espolio.participacoes[empresa.id]!;
     e.entidades[copia.id] = copia;
   });
+  // Os estabelecimentos (a fábrica, a loja, o laboratório) vão com as empresas, pelo número delas.
+  const refs = new Set(herdadas.map((x) => refDaEmpresa(x)));
+  for (const u of Object.values(antiga.entidades)) {
+    if (u.tipo === 'unidade' && u.vivo !== false && refs.has(u.t['empresa'] ?? '')) e.entidades[u.id] = recausar(copiaDe(u), abertura.id);
+  }
+  if (antiga.proximoRegistro !== undefined) e.proximoRegistro = antiga.proximoRegistro;
 
   // Os bens passam ao herdeiro (sem a mudança: quem herda mora onde já morava). Se a conta e a empresa
   // não pagaram a partilha, os mais baratos são vendidos e a sobra vira dinheiro.

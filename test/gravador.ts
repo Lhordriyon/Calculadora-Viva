@@ -27,7 +27,8 @@ const DO_ANO = new Set(['e', 'c', 'memoria', 'reg', 'inicio', 'idRegras', 'fim']
 export function generico(id: string): string {
   if (PESSOAS.has(papelBase(id))) return 'pessoa';
   if (FORA.has(id)) return 'fora';
-  if (/^empresa\d*$/.test(id)) return 'empresa';
+  if (/^empresa(R?\d+)?$/.test(id)) return 'empresa';
+  if (/^unidade\d/.test(id)) return 'unidade';
   if (/^bem\d/.test(id)) return 'bem';
   if (id.startsWith('ctr')) return 'ctr';
   if (/^tit\d/.test(id)) return 'tit';

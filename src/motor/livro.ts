@@ -140,7 +140,7 @@ export function fecharMudancas(reg: Mudanca[]): Mudanca[] {
 const DO_PATRIMONIO = new Set<string>(['dinheiro', ...ATIVOS]);
 const E_CONTA = new Set<string>(CONTAS);
 
-const SEM_DINHEIRO = /^(bem|ctr|tit|prm)|^(lugar|pais|ilha|ator)$/;
+const SEM_DINHEIRO = /^(bem|ctr|tit|prm|unidade)|^(lugar|pais|ilha|ator)$/;
 
 /**
  * O tipo de uma entidade pelo id, mesmo que ela já tenha saído da vida (a empresa vendida, o colega do emprego que

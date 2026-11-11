@@ -310,6 +310,22 @@ const PROMISSORIA: Record<string, DefCampo> = {
   atraso: { tipo: 'num', sistema: 'relacoes', limites: [0, 99] },
 };
 
+/**
+ * A unidade operacional (unidades.ts, missão Capitalismo vivo, I-158): o estabelecimento de uma pessoa jurídica (a
+ * fábrica, a loja, o laboratório), com a empresa dona pelo número dela, a forma, a cidade, a capacidade que vende (a
+ * da empresa é a soma das unidades que produzem), a obra que fica pronta no ano que vem e, na unidade de apoio, o porte
+ * (a estrutura por ano). Não é uma subsidiária: não tem caixa, nem sócios, nem dívida.
+ */
+const UNIDADE: Record<string, DefCampo> = {
+  nome: { tipo: 'texto', sistema: 'dinheiro', derivado: true },
+  empresa: { tipo: 'texto', sistema: 'dinheiro' },
+  forma: { tipo: 'texto', sistema: 'dinheiro' },
+  cidade: { tipo: 'texto', sistema: 'mundo' },
+  capacidade: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  obra: { tipo: 'num', sistema: 'dinheiro', reais: true },
+  porte: { tipo: 'num', sistema: 'dinheiro', reais: true },
+};
+
 /** Os mercados de cada setor (negocio.ts › anoDosSetores): a oferta relativa e a obra que fica pronta no ano que vem, em % (100 é o equilíbrio). */
 const SETOR: Record<string, DefCampo> = {
   nome: { tipo: 'texto', sistema: 'mundo', derivado: true },
@@ -411,6 +427,7 @@ export function camposDe(ent: string): Record<string, DefCampo> {
   if (ent.startsWith('prm')) return PROMISSORIA;
   if ((CONTAS as readonly string[]).includes(ent)) return CONTA;
   if (ent.startsWith('setor_')) return SETOR;
+  if (ent.startsWith('unidade')) return UNIDADE;
   return PESSOA;
 }
 

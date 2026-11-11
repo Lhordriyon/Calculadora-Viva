@@ -18,6 +18,7 @@ import { donaDe, empresaDoRegistro, parteEfetiva, refDaEmpresa, todasAsEmpresas 
 import { movimentar } from './economia.ts';
 import { definirNumero, definirTexto, somar } from './livro.ts';
 import { HOLDING } from './regras.ts';
+import { ehDeApoio } from './unidades.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
 /**
@@ -175,6 +176,18 @@ export function participadasDe(e: EstadoVida, emp: Entidade): Entidade[] {
 export function conferirPropriedade(e: EstadoVida): string[] {
   const problemas: string[] = [];
   const registros = new Map<number, string>();
+  const unidadesDaEmpresa = new Map<string, Entidade[]>();
+  for (const u of Object.values(e.entidades)) {
+    if (u.tipo !== 'unidade') continue;
+    const ref = u.t['empresa'] ?? '';
+    const dona = ref ? empresaDoRegistro(e, ref) : undefined;
+    if (!dona || dona.vivo === false) problemas.push(`${u.id} é de uma empresa que não existe mais (${ref})`);
+    for (const campo of ['capacidade', 'obra', 'porte']) if ((u.n[campo] ?? 0) < -0.5) problemas.push(`${u.id}.${campo} negativo`);
+    if (ehDeApoio(u) && (u.n['capacidade'] ?? 0) !== 0) problemas.push(`${u.id} é de apoio e tem capacidade`);
+    const lista = unidadesDaEmpresa.get(ref);
+    if (lista) lista.push(u);
+    else unidadesDaEmpresa.set(ref, [u]);
+  }
   for (const emp of todasAsEmpresas(e)) {
     const r = emp.registro;
     if (r !== undefined) {
@@ -193,6 +206,19 @@ export function conferirPropriedade(e: EstadoVida): string[] {
     if (emp.q['holding'] && (emp.n['capacidade'] ?? 0) > 0) problemas.push(`${emp.id} é holding e tem capacidade própria`);
     // O valor guardado da holding é o caixa dela (as participações entram pela parte de cada subsidiária): sem isso, o
     // capital que ela pôs nas filhas contava duas vezes no patrimônio.
+    // A unidade operacional não é subsidiária (unidades.ts): a capacidade da empresa é a soma das unidades que produzem,
+    // a obra também, e a holding não tem unidade.
+    const minhas = unidadesDaEmpresa.get(refDaEmpresa(emp)) ?? [];
+    if (emp.vivo !== false && emp.registro !== undefined) {
+      if (emp.q['holding'] && minhas.length > 0) problemas.push(`${emp.id} é holding e tem unidades operacionais`);
+      if (!emp.q['holding'] && (emp.n['capacidade'] ?? 0) > 0 && !minhas.some((u) => !ehDeApoio(u))) problemas.push(`${emp.id} tem capacidade e nenhuma unidade que produz`);
+      for (const campo of ['capacidade', 'obra'] as const) {
+        if (minhas.length === 0) continue;
+        const soma = minhas.reduce((s, u) => s + (ehDeApoio(u) ? 0 : (u.n[campo] ?? 0)), 0);
+        const dela = emp.n[campo] ?? 0;
+        if (Math.abs(soma - dela) > 1 + Math.abs(dela) * 1e-9) problemas.push(`${emp.id}: a ${campo} (${dela.toFixed(0)}) não é a soma das unidades (${soma.toFixed(0)})`);
+      }
+    }
     if (emp.q['holding'] && Math.abs((emp.n['valor'] ?? 0) - Math.max(0, emp.n['caixa'] ?? 0)) > 1 + Math.abs(emp.n['caixa'] ?? 0) * 1e-9) problemas.push(`${emp.id} é holding e o valor (${(emp.n['valor'] ?? 0).toFixed(0)}) não é o caixa (${(emp.n['caixa'] ?? 0).toFixed(0)})`);
   }
   return problemas;

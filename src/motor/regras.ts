@@ -484,6 +484,24 @@ export const MAX_EMPRESAS = 12;
  */
 export const HOLDING = { estrutura: 150_000 } as const;
 /**
+ * As unidades operacionais (unidades.ts, missão Capitalismo vivo): quantas por empresa (a lista cabe no celular), quanto
+ * da estrutura segue o custo de vida da cidade (o salário e o aluguel), o que vale a unidade vendida funcionando (do que
+ * custaria construir), o porte certo do laboratório e do centro de distribuição (das vendas) e o que eles fazem com ele
+ * (o P&D rende até 50% mais; cada venda custa até 5% menos), o que custa construir uma de apoio (o porte vezes 3) e o
+ * custo de uma pessoa por ano nelas.
+ */
+export const UNIDADES = {
+  maximo: 8,
+  pesoDaCidade: 0.4,
+  vendaFuncionando: 0.8,
+  laboratorio: { porte: 0.02, efeito: 0.5 },
+  centro: { porte: 0.015, efeito: 0.05 },
+  obraDoApoio: 3,
+  porPessoa: 90_000,
+  /** A obra de uma unidade nova que produz, como fração da capacidade da empresa (a de 25% é a padrão). */
+  fracoes: [0.1, 0.25, 0.5, 1],
+} as const;
+/**
  * A concorrente comprada vem com as subsidiárias dela, pelo tamanho: nenhuma até uns R$ 4 milhões, umas 8 com
  * R$ 300 milhões, 27 com R$ 3 bilhões. É o que leva um grupo às centenas.
  */

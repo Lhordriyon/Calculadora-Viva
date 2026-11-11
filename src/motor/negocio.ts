@@ -33,6 +33,7 @@ import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
 import { pagarDividendos } from './societario.ts';
+import { equipeDoApoio, estruturaDe, mudarCapacidade, mudarObra, obraPronta, parteNaCidade, produtivasDe } from './unidades.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import type { Momento } from './pais.ts';
 import {
@@ -170,6 +171,17 @@ export function empregosDe(c: Conteudo, emp: Entidade): number {
   return Math.max(1, Math.round(base / eco.produtividade));
 }
 
+/** Os empregos de todas as unidades: as que produzem (pelas vendas) e as de apoio (pelo porte). */
+export function funcionariosDe(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  return Math.round(empregosDe(c, emp) + equipeDoApoio(e, emp));
+}
+
+/** Os empregos que a empresa tem na cidade de quem joga (as unidades que ficam nela). */
+export function empregosNaCidadeDe(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const cidade = e.entidades['lugar']?.nome ?? '';
+  return empregosDe(c, emp) * parteNaCidade(e, emp, cidade) + equipeDoApoio(e, emp, cidade);
+}
+
 // ---------------------------------------------------------------- o começo do negócio
 
 /**
@@ -193,7 +205,8 @@ export function garantirFundamentos(e: EstadoVida, c: Conteudo, reg: Mudanca[], 
     capacidade = valor / Math.max(1, eco.multiplo * lucroPorVenda);
     caixa = valor * 0.05;
   }
-  somar(e, reg, id, 'capacidade', capacidade, 'negocio');
+  // A estrutura nasce numa unidade (a sede: a fábrica, a loja), na cidade de quem joga (unidades.ts).
+  mudarCapacidade(e, c, reg, emp, capacidade, 'negocio');
   somarDemanda(e, c, reg, emp, capacidade * (capital !== undefined ? DEMANDA_DA_FUNDACAO : 0.95));
   if (capital !== undefined) {
     // O capital entra no caixa (de quem pôs) e a estrutura sai dele (para quem vendeu a loja, a máquina).
@@ -217,7 +230,7 @@ export interface AnoDoNegocio {
   dividendos: number;
   /** Capacidade vendida para fechar as contas (0 = o ano fechou). */
   cortou: number;
-  /** Empregos de antes e de agora. */
+  /** Empregos na cidade de quem joga, de antes e de agora (as unidades que ficam nela). */
   empregosAntes: number;
   empregosDepois: number;
 }
@@ -233,14 +246,11 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const n = emp.n;
   const setor = c.setores.get(emp.t['setor'] ?? '');
   const eco = economiaDo(setor);
-  const empregosAntes = empregosDe(c, emp);
+  const empregosAntes = empregosNaCidadeDe(e, c, emp);
 
-  // A obra do ano passado fica pronta.
-  const obra = n['obra'] ?? 0;
-  if (obra > 0) {
-    somar(e, reg, id, 'obra', -obra, 'negocio');
-    somar(e, reg, id, 'capacidade', obra, 'negocio');
-  }
+  // A obra do ano passado fica pronta, na unidade em que foi feita (unidades.ts).
+  obraPronta(e, c, reg, emp);
+  const estrutura = estruturaDe(e, c, emp);
 
   // A demanda anda: o momento (a tração), o ciclo do setor, o mundo lá fora, a sorte e o quanto o produto atrai; o
   // mercado tem tamanho (perto do teto, o ganho some; a perda vale inteira).
@@ -264,9 +274,11 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // Na guerra de preços, todo mundo cobra menos.
   const vendas = entregue * p.preco * (1 + Math.max(0, setor?.cambio ?? 0) * dolar) * (emp.q['guerra'] ? 1 - CONCORRENCIA.corteNaGuerra : 1) * precoDoSetor(ofertaDe(e, emp.t['setor']));
   // O insumo vem do setor fornecedor (a alta dele encarece; o fornecedor próprio vende a preço de custo).
-  const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp);
-  // A folha anda com o mercado de trabalho: desemprego baixo, gente cara.
-  const fixo = capacidade * eco.fixo * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e);
+  // O centro de distribuição barateia cada venda (o frete, a perda).
+  const variavel = entregue * (1 - eco.margem) * p.custo * (1 + Math.max(0, -(setor?.cambio ?? 0)) * dolar) * fatorDoInsumo(e, c, emp) * estrutura.fatorDoCentro;
+  // A folha anda com o mercado de trabalho (desemprego baixo, gente cara) e com a cidade de cada unidade (o salário e o
+  // aluguel do lugar, comparados com os da sede); as unidades de apoio pagam o porte delas.
+  const fixo = (estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e);
   const verbas = vendas * ((n['marketing'] ?? 0) + (n['pd'] ?? 0));
   const ebit = vendas - variavel - fixo - verbas;
   // O juro do banco sai antes do imposto (o lucro é depois dele).
@@ -299,7 +311,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   if (caixa < 0) {
     const porReal = eco.giro * VALOR_DE_VENDA_DOS_ATIVOS;
     cortou = Math.min(n['capacidade'] ?? 0, -caixa / porReal);
-    somar(e, reg, id, 'capacidade', -cortou, 'corte');
+    mudarCapacidade(e, c, reg, emp, -cortou, 'corte');
     somar(e, reg, id, 'caixa', cortou * porReal, 'venda_de_ativos', 'mercado');
     // O que nem a venda cobre, os donos perdem (o fornecedor que não recebeu).
     const falta = n['caixa'] ?? 0;
@@ -309,14 +321,15 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // A qualidade anda para o que o P&D, a tecnologia do país e o salário sustentam; a marca, para o que o marketing,
   // a qualidade, a fama de quem manda e a mídia própria sustentam.
   const tecnologia = (e.entidades['pais']?.n['tecnologia'] ?? 50) - 50;
-  const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade;
+  // O laboratório faz o P&D render mais (unidades.ts).
+  const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 * estrutura.fatorDoLaboratorio + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade;
   somar(e, reg, id, 'qualidade', (Math.max(0, Math.min(100, alvoQualidade)) - (n['qualidade'] ?? 50)) * 0.25, 'negocio');
   const fama = e.entidades['eu']?.n['fama'] ?? 0;
   const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (temMidia(e) ? 10 : 0);
   somar(e, reg, id, 'marca', (Math.max(0, Math.min(100, alvoMarca)) - (n['marca'] ?? 50)) * 0.25, 'negocio');
 
   // O valor vai para os fundamentos: o caixa e a obra, mais o maior entre os ativos a preço de venda e o lucro vezes o múltiplo.
-  const ativos = (n['capacidade'] ?? 0) * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS;
+  const ativos = (n['capacidade'] ?? 0) * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS + estrutura.ativosDoApoio;
   const multiplo = eco.multiplo * (emp.q['na_bolsa'] ? 1 + PREMIO_DA_BOLSA : 1);
   const alvo = Math.max(0, Math.max(0, n['caixa'] ?? 0) + (n['obra'] ?? 0) * eco.giro + Math.max(ativos, multiplo * Math.max(0, lucro)) - (n['divida'] ?? 0));
   somar(e, reg, id, 'valor', (alvo - (n['valor'] ?? 0)) * 0.5, 'empresa');
@@ -324,7 +337,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   definirNumero(e, reg, id, 'receita', vendas, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
   concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
-  return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosDe(c, emp) };
+  return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosNaCidadeDe(e, c, emp) };
 }
 
 /** Quem joga tem rádio, jornal ou emissora: a mídia própria fala bem das empresas dele. */
@@ -350,7 +363,7 @@ export function empregosNaCidade(e: EstadoVida, reg: Mudanca[], antes: number, d
 
 export type OperacaoNegocio =
   | { tipo: 'preco'; empresa?: string; nivel: Preco }
-  | { tipo: 'expandir'; empresa?: string; fracao: number }
+  | { tipo: 'expandir'; empresa?: string; fracao: number; unidade?: string }
   | { tipo: 'cortar'; empresa?: string; fracao: number }
   | { tipo: 'verbas'; empresa?: string; marketing: number; pd: number }
   | { tipo: 'salario'; empresa?: string; nivel: Salario }
@@ -391,6 +404,7 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
       return Math.abs((n['marketing'] ?? 0) - op.marketing) < 1e-9 && Math.abs((n['pd'] ?? 0) - op.pd) < 1e-9 ? 'as verbas já são essas' : null;
     case 'expandir':
       if ((n['obra'] ?? 0) > 0) return 'já tem uma obra em andamento';
+      if (op.unidade && !produtivasDe(e, emp).some((u) => u.id === op.unidade)) return 'essa unidade não produz para esta empresa';
       return custoDaObra(c, emp, op.fracao, e) > (n['caixa'] ?? 0) ? `a obra custa ${Math.round(custoDaObra(c, emp, op.fracao, e)).toLocaleString('pt-BR')} reais e o caixa não tem` : null;
     case 'cortar':
       return (n['capacidade'] ?? 0) <= 0 ? 'não há o que cortar' : null;
@@ -444,13 +458,14 @@ export function operarNegocio(e: EstadoVida, c: Conteudo, op: OperacaoNegocio, r
       const custo = custoDaObra(c, emp, op.fracao, e);
       const nova = (emp.n['capacidade'] ?? 0) * op.fracao;
       somar(e, reg, id, 'caixa', -custo, 'obra', 'mercado');
-      somar(e, reg, id, 'obra', nova, 'negocio');
+      // A obra cresce a unidade escolhida (ou a sede).
+      mudarObra(e, c, reg, emp, nova, op.unidade ? e.entidades[op.unidade] : undefined);
       return { texto: `${nomeDaEmpresa} começou uma obra para crescer ${Math.round(op.fracao * 100)}%. Fica pronta no ano que vem.`, resumo: `mandou ${nomeDaEmpresa} crescer ${Math.round(op.fracao * 100)}%` };
     }
     case 'cortar': {
       const eco = economiaDo(c.setores.get(emp.t['setor'] ?? ''));
       const corte = (emp.n['capacidade'] ?? 0) * op.fracao;
-      somar(e, reg, id, 'capacidade', -corte, 'corte');
+      mudarCapacidade(e, c, reg, emp, -corte, 'corte');
       somar(e, reg, id, 'caixa', corte * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS, 'venda_de_ativos', 'mercado');
       return { texto: `${nomeDaEmpresa} fechou ${Math.round(op.fracao * 100)}% da estrutura e vendeu o que dava. A demissão saiu na sexta.`, resumo: `cortou ${Math.round(op.fracao * 100)}% de ${nomeDaEmpresa}` };
     }
@@ -520,13 +535,13 @@ export function decidirNoNegocio(
     const fracao = Math.min(d.expandir, Math.max(0, emp.n['caixa'] ?? 0) / Math.max(1, (emp.n['capacidade'] ?? 0) * porReal));
     if (fracao > 0.01) {
       somar(e, reg, id, 'caixa', -custoDaObra(c, emp, fracao, e), 'obra', 'mercado');
-      somar(e, reg, id, 'obra', (emp.n['capacidade'] ?? 0) * fracao, 'negocio');
+      mudarObra(e, c, reg, emp, (emp.n['capacidade'] ?? 0) * fracao);
     }
   }
   if (d.cortar !== undefined) {
     const eco = economiaDo(c.setores.get(emp.t['setor'] ?? ''));
     const corte = (emp.n['capacidade'] ?? 0) * d.cortar;
-    somar(e, reg, id, 'capacidade', -corte, 'corte');
+    mudarCapacidade(e, c, reg, emp, -corte, 'corte');
     somar(e, reg, id, 'caixa', corte * eco.giro * VALOR_DE_VENDA_DOS_ATIVOS, 'venda_de_ativos', 'mercado');
   }
 }
@@ -554,7 +569,7 @@ export function valorNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: s
   if (delta > 0) {
     const f = valor > 0 ? delta / valor : 0;
     if (f > 0) {
-      somar(e, reg, id, 'capacidade', (n['capacidade'] ?? 0) * f, 'negocio');
+      mudarCapacidade(e, c, reg, emp, (n['capacidade'] ?? 0) * f, 'negocio');
       somarDemanda(e, c, reg, emp, (n['demanda'] ?? 0) * f);
     }
   } else if (delta < 0) {
@@ -563,7 +578,7 @@ export function valorNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: s
     const resto = -delta - paga;
     if (resto > 0) {
       const porReal = economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro * VALOR_DE_VENDA_DOS_ATIVOS;
-      somar(e, reg, id, 'capacidade', -Math.min(n['capacidade'] ?? 0, resto / porReal), 'corte');
+      mudarCapacidade(e, c, reg, emp, -Math.min(n['capacidade'] ?? 0, resto / porReal), 'corte');
     }
   }
   somar(e, reg, id, 'valor', Math.max(-valor, delta), 'empresa');

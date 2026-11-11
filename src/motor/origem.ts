@@ -79,6 +79,12 @@ const REGIOES: Record<string, string> = {
 };
 /** As regiões que um lugar pode ter (`lugar.regiao`). */
 export const REGIOES_DO_BRASIL: readonly string[] = [...new Set(Object.values(REGIOES))];
+
+/** O custo de vida da cidade (perto de 1 na média): São Paulo, as capitais do Sudeste, as outras capitais e o interior. */
+export function custoDeVidaDa(cidade: { uf: string; marcas: readonly string[] }): number {
+  const regiao = REGIOES[cidade.uf] ?? 'sudeste';
+  return cidade.marcas.includes('cidade_sp') ? 1.4 : cidade.marcas.includes('capital') ? (regiao === 'sudeste' ? 1.25 : 1.1) : 0.9;
+}
 /** Desemprego de referência por região (taxa anual). */
 const DESEMPREGO: Record<string, number> = { norte: 0.09, nordeste: 0.11, centro_oeste: 0.065, sudeste: 0.075, sul: 0.055 };
 
@@ -124,7 +130,7 @@ export function gerarOrigem(e: EstadoVida, c: Conteudo, op: EscolhaOrigem = {}):
   lugar.t['uf'] = cidade.uf;
   lugar.t['regiao'] = regiao;
   lugar.n['desemprego'] = (DESEMPREGO[regiao] ?? 0.08) + (capital ? 0.01 : 0) + normal(rng, 0, 0.008);
-  lugar.n['custo_vida'] = cidade.marcas.includes('cidade_sp') ? 1.4 : capital ? (regiao === 'sudeste' ? 1.25 : 1.1) : 0.9;
+  lugar.n['custo_vida'] = custoDeVidaDa(cidade);
   for (const m of cidade.marcas) lugar.q[m] = { v: 1, ano: e.ano, idade: 0, causa: null };
   const pais = novaEntidade({ id: 'pais', tipo: 'jurisdicao', nome: 'Brasil' });
   pais.n['inflacao'] = 4.5;

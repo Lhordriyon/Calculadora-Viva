@@ -188,7 +188,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
     const v = ef.venderSubsidiarias;
     const subs = e.entidades['empresa']?.n['subsidiarias'] ?? 0;
     const quantas = v.fracao !== undefined ? Math.ceil(subs * v.fracao) : v.quantas;
-    ctx.valores['venda'] = venderSubsidiarias(e, reg, v.premio ?? 1, undefined, quantas).preco;
+    ctx.valores['venda'] = venderSubsidiarias(e, c, reg, v.premio ?? 1, undefined, quantas).preco;
   }
   if (ef.abrirCapital) ctx.valores['venda'] = abrirCapital(e, reg, origem);
 

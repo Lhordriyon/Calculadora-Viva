@@ -33,6 +33,7 @@
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
 import { anoDaHolding, garantirRegistro, profundidade } from './societario.ts';
+import { fecharUnidadesDe, garantirUnidades, mudarCapacidade, moverUnidade, unidadesDe } from './unidades.ts';
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
@@ -77,7 +78,7 @@ import {
   volatilidadeDaEmpresa,
 } from './regras.ts';
 import { aleatorio, normal, sortear } from './rng.ts';
-import { anoDoNegocio, empregosDe, empregosNaCidade, entradaQueMudou, garantirFundamentos, garraDaRival, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, somarDemanda, type AnoDoNegocio } from './negocio.ts';
+import { anoDoNegocio, empregosNaCidade, funcionariosDe, entradaQueMudou, garantirFundamentos, garraDaRival, lobbyDoAno, ocupacaoDe, ofertaDe, precoDoSetor, somarDemanda, type AnoDoNegocio } from './negocio.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Genero, Mudanca } from './tipos.ts';
 
@@ -263,7 +264,7 @@ export function multiplicarEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], f
 function crescerNegocio(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, fracao: number): void {
   const emp = empresaDe(e, id);
   if (!emp || !(fracao > 0)) return;
-  if (emp.n['capacidade'] !== undefined) somar(e, reg, id, 'capacidade', (emp.n['capacidade'] ?? 0) * fracao, 'negocio');
+  if (emp.n['capacidade'] !== undefined) mudarCapacidade(e, c, reg, emp, (emp.n['capacidade'] ?? 0) * fracao, 'negocio');
   // A estrutura dela vem inteira; os clientes, até onde o mercado comporta.
   if (emp.n['demanda'] !== undefined) somarDemanda(e, c, reg, emp, (emp.n['demanda'] ?? 0) * fracao);
 }
@@ -356,6 +357,8 @@ function encerrar(e: EstadoVida, reg: Mudanca[], id = PRINCIPAL, sustento?: { pa
   const emp = e.entidades[id];
   if (!emp) return;
   const sustentava = Boolean(emp.q['sustenta']);
+  // Os estabelecimentos fecham junto (os que a fusão levou já são da que ficou).
+  fecharUnidadesDe(e, reg, emp);
   // O caixa que sobrou paga quem a empresa devia (a rescisão, o fornecedor) ou vai junto com quem a comprou.
   const caixa = emp.n['caixa'] ?? 0;
   if (caixa !== 0) reg.push({ c: `${id}.caixa`, d: -caixa, r: 'encerramento', p: 'mercado' });
@@ -404,7 +407,7 @@ export function fecharEmpresa(e: EstadoVida, reg: Mudanca[], sobra: number, id =
 }
 
 /** Vende subsidiárias (uma, até dez; depois, um décimo delas, ou `quantas`): sai a fatia delas do valor, e a parte de quem joga vira dinheiro. */
-export function venderSubsidiarias(e: EstadoVida, reg: Mudanca[], premio: number, id = PRINCIPAL, quantas?: number): { preco: number; vendidas: number } {
+export function venderSubsidiarias(e: EstadoVida, c: Conteudo, reg: Mudanca[], premio: number, id = PRINCIPAL, quantas?: number): { preco: number; vendidas: number } {
   const emp = empresaDe(e, id);
   const subs = emp?.n['subsidiarias'] ?? 0;
   if (!emp || subs < 1) return { preco: 0, vendidas: 0 };
@@ -413,7 +416,8 @@ export function venderSubsidiarias(e: EstadoVida, reg: Mudanca[], premio: number
   const fatia = Math.max(0, emp.n['valor'] ?? 0) * fracao;
   somar(e, reg, id, 'valor', -fatia);
   // A subsidiária vendida leva a estrutura e os clientes dela.
-  for (const campo of ['capacidade', 'demanda']) if (emp.n[campo] !== undefined) somar(e, reg, id, campo, -(emp.n[campo] ?? 0) * Math.min(1, fracao), 'negocio');
+  if (emp.n['capacidade'] !== undefined) mudarCapacidade(e, c, reg, emp, -(emp.n['capacidade'] ?? 0) * Math.min(1, fracao), 'negocio');
+  if (emp.n['demanda'] !== undefined) somar(e, reg, id, 'demanda', -(emp.n['demanda'] ?? 0) * Math.min(1, fracao), 'negocio');
   somar(e, reg, id, 'subsidiarias', -vendidas);
   const preco = fatia * (emp.n['participacao'] ?? 1) * premio;
   if (preco > 0) movimentar(e, reg, { dinheiro: preco, contraparte: 'mercado' });
@@ -466,7 +470,7 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const ano = anoDoNegocio(e, c, emp, fase, reg, fora, sorte);
   if (emp.q['na_bolsa'] && humor !== 0) somar(e, reg, id, 'valor', (n['valor'] ?? 0) * PESO_DA_BOLSA * humor, 'bolsa');
   definirNumero(e, reg, id, 'ocupacao', Math.min(10, ocupacaoDe(e, c, emp)), 'negocio');
-  definirNumero(e, reg, id, 'funcionarios', Math.min(3_000_000, empregosDe(c, emp)), 'negocio');
+  definirNumero(e, reg, id, 'funcionarios', Math.min(3_000_000, funcionariosDe(e, c, emp)), 'negocio');
   const alvo = alvoDaTracao(e, c, emp, carga);
   somar(e, reg, id, 'tracao', (alvo - tracao) * REVERSAO_TRACAO + normal(e.rng, 0, DESVIO_TRACAO), 'empresa');
   return ano;
@@ -909,7 +913,7 @@ export function operarEmpresa(e: EstadoVida, c: Conteudo, op: OperacaoEmpresa, r
     };
   }
   if (op.tipo === 'venderSubsidiaria') {
-    const { preco, vendidas } = venderSubsidiarias(e, reg, precoDeVenda(momentoDoPais(e).empresa), id);
+    const { preco, vendidas } = venderSubsidiarias(e, c, reg, precoDeVenda(momentoDoPais(e).empresa), id);
     const qual = vendidas === 1 ? `a subsidiária ${nomeDaEmpresa(e, c.setores.get(emp.t['setor'] ?? ''), sortear(e.rng, c.mundo.sobrenomes))}` : `${vendidas} subsidiárias`;
     return { texto: `${aEmpresa(emp, 'A')} vendeu ${qual} por ${formatarDinheiro(preco)}.`, resumo: `vendeu ${vendidas === 1 ? 'uma subsidiária' : `${vendidas} subsidiárias`} ${aEmpresa(emp, 'da')}` };
   }
@@ -968,6 +972,10 @@ function fundir(e: EstadoVida, c: Conteudo, reg: Mudanca[], alvo: string, absorv
     somar(e, reg, absorvida, 'caixa', -caixaDela, 'fusao', alvo);
     somar(e, reg, alvo, 'caixa', caixaDela, 'fusao', absorvida);
   }
+  // Os estabelecimentos da absorvida (a fábrica, a loja) passam a ser da que fica: a capacidade e a obra vêm com eles.
+  garantirUnidades(e, c, reg, a, origem);
+  garantirUnidades(e, c, reg, b, origem);
+  for (const u of unidadesDe(e, b)) moverUnidade(e, reg, u, a);
   for (const campo of ['capacidade', 'obra']) if ((b.n[campo] ?? 0) > 0) somar(e, reg, alvo, campo, b.n[campo]!, 'negocio');
   // Os clientes da absorvida passam a ser da que fica (a dela zera antes, para o mercado contar uma vez só).
   const clientesDela = b.n['demanda'] ?? 0;
