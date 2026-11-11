@@ -78,7 +78,7 @@ export function aplicarEfeitos(e: EstadoVida, c: Conteudo, ef: Efeitos | undefin
   // A empresa nasce antes dos caminhos: "empresa.tracao" no mesmo bloco já vale para ela.
   if (ef.abrirEmpresa) ctx.valores['capital'] = abrirPorEfeito(e, c, reg, ef.abrirEmpresa, ator, origem);
   if (ef.empresaFator !== undefined) multiplicarEmpresa(e, c, reg, ef.empresaFator);
-  if (ef.negocio) decidirNoNegocio(e, c, reg, ef.negocio);
+  if (ef.negocio) decidirNoNegocio(e, c, reg, ef.negocio, origem);
   if (ef.rodada) ctx.valores['rodada'] = rodadaDeInvestimento(e, reg, ef.rodada.parte);
 
   // Campos por caminho ("mae.vinculo": 10, "ator.ocupacao": {"definir": "..."}).

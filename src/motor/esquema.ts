@@ -259,6 +259,8 @@ const EFEITOS_FIXOS = {
       cortar: z.number().gt(0).max(0.9).optional(),
       demanda: z.number().min(-0.9).max(2).optional(),
       aporte: z.number().positive().optional(),
+      /** Lança a geração nova do produto (negocio.ts, I-160), se o caixa pagar. */
+      lancar: z.literal(true).optional(),
     })
     .optional(),
   /** Investidores compram esta parte da empresa pelo valor de agora: o dinheiro deles entra na empresa e a parte de quem joga encolhe. */

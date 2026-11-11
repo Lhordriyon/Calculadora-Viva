@@ -139,6 +139,7 @@ function escritasDe(ef: Efeitos, atores: readonly string[] | undefined): { camin
     if (n.expandir !== undefined) out.push({ caminho: 'empresa.obra', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' });
     if (n.cortar !== undefined) out.push({ caminho: 'empresa.capacidade', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' });
     if (n.aporte !== undefined) out.push({ caminho: 'eu.dinheiro', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' }, { caminho: 'empresa.valor', sistema: 'dinheiro' });
+    if (n.lancar) out.push({ caminho: 'empresa.lancamento', sistema: 'historia' }, { caminho: 'empresa.qualidade', sistema: 'dinheiro' }, { caminho: 'empresa.caixa', sistema: 'dinheiro' });
   }
   if (ef.rodada) out.push({ caminho: 'empresa.valor', sistema: 'dinheiro' }, { caminho: 'empresa.participacao', sistema: 'dinheiro' });
   if (ef.venderEmpresa || ef.fecharEmpresa) {

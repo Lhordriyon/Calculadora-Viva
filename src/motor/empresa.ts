@@ -33,8 +33,10 @@
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
 import { anoDaHolding, garantirRegistro, profundidade } from './societario.ts';
-import { fecharUnidadesDe, garantirUnidades, mudarCapacidade, moverUnidade, unidadesDe } from './unidades.ts';
+import { fecharUnidadesDe, garantirUnidades, mudarCapacidade, moverUnidade, operarUnidade, produtivasDe, unidadesDe } from './unidades.ts';
 import { anoDasConcorrentes, mexerNaConcorrente, principalDe } from './concorrentes.ts';
+import { analiseDoCade } from './demonstracoes.ts';
+import { anoDosConselhos } from './governanca.ts';
 import { diluirPeloAporte, liberarParticipadas, mudarDona, refDaPessoa } from './societario.ts';
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
@@ -225,6 +227,8 @@ export function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, 
   // Nasce dependendo de quem abriu; com sócios, eles dividem o comando.
   somar(e, reg, id, 'dependencia', DEPENDENCIA_INICIAL * (f.participacao ?? 1));
   ganhar(e, reg, id, 'fundada', origem);
+  // A primeira geração do produto chega com ela (I-160).
+  ganhar(e, reg, id, 'lancamento', origem);
   // O capital vira negócio: uma parte compra a estrutura (a loja, a máquina), o resto fica no caixa.
   garantirFundamentos(e, c, reg, emp, f.valor, f.de ?? 'mercado');
   return emp;
@@ -579,11 +583,16 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
     impostos += ano.imposto;
     exportacaoBarrada(e, emp);
   }
+  // As contas nacionais (I-161): o que o grupo adicionou ao PIB, e o crescimento que isso puxa (antes das concorrentes,
+  // que fecham o ano fazendo a clientela do setor caber no mercado do PIB novo).
+  pesoNoPib(e, reg);
   // As concorrentes de verdade andam o ano delas (concorrentes.ts), depois das do grupo, que já reagiram a elas; o
   // imposto delas também vai para o Tesouro.
   impostos += anoDasConcorrentes(e, c, fase, reg).imposto;
   // Os empregos que as empresas abriram e fecharam mexem no desemprego da cidade (o trabalho de quem joga e o da família leem).
   empregosNaCidade(e, reg, antes, depois);
+  // Os conselhos com autonomia decidem o ano que vem, dentro do mandato que quem joga deu (governanca.ts).
+  anoDosConselhos(e, c, empresasDe(e));
   // O imposto que elas pagaram entra no Tesouro e baixa a dívida pública (em pontos do PIB).
   const pib = e.entidades['pais']?.n['pib'] ?? 0;
   if (impostos > 0 && pib > 0) somar(e, reg, 'pais', 'divida', -(impostos / pib) * 100, 'impostos_das_empresas');
@@ -594,6 +603,33 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   if (!afundando) return;
   if (afundando.id !== PRINCIPAL) trocar(e, reg, PRINCIPAL, afundando.id);
   e.agenda.push({ evento: QUEBRA, ano: e.ano, origem: e.entidades[PRINCIPAL]!.q['fundada']?.causa ?? null });
+}
+
+/**
+ * O que o grupo pesa no PIB (I-161): o valor adicionado das empresas dele no ano (as vendas e a publicidade menos o que
+ * compraram de outras para produzir), em % do PIB, sem a holding (o dividendo que ela recebe já é valor das filhas). O
+ * valor adicionado a mais (ou a menos) que no ano anterior puxa o crescimento pela metade (a outra metade sai do resto da
+ * economia, que perdeu o cliente ou o trabalhador): só o grupo do tamanho de um país mexe no PIB.
+ */
+function pesoNoPib(e: EstadoVida, reg: Mudanca[]): void {
+  const pais = e.entidades['pais'];
+  const pib = pais?.n['pib'] ?? 0;
+  if (!pais || !(pib > 0)) return;
+  let va = 0;
+  for (const emp of empresasDe(e)) {
+    if (emp.q['holding'] || emp.n['capacidade'] === undefined) continue;
+    let insumos = 0;
+    for (const m of reg) if (m.c === `${emp.id}.caixa` && (m.r === 'insumos' || m.r === 'publicidade') && (m.d ?? 0) < 0) insumos -= m.d!;
+    va += Math.max(0, (emp.n['receita'] ?? 0) - insumos);
+  }
+  const peso = Math.round(Math.min(100, (100 * va) / pib) * 10_000) / 10_000;
+  const antes = pais.n['peso_do_grupo'] ?? 0;
+  if (peso !== antes) definirNumero(e, reg, 'pais', 'peso_do_grupo', peso, 'empresa');
+  const impulso = (peso - antes) * 0.5;
+  if (Math.abs(impulso) >= 0.01) {
+    definirNumero(e, reg, 'pais', 'crescimento', Math.round(((pais.n['crescimento'] ?? 0) + impulso) * 100) / 100, 'empresa');
+    definirNumero(e, reg, 'pais', 'pib', Math.round(pib * (1 + impulso / 100)), 'empresa');
+  }
 }
 
 /**
@@ -795,6 +831,17 @@ export function precoDaAquisicao(e: EstadoVida, id = PRINCIPAL): number {
 function comprarAConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, alvo: Entidade, dono: Entidade | undefined, preco: number, fracao: number, hostil: boolean, origem: number): { texto: string; resumo: string } {
   const id = emp.id;
   const lugar = lugarLivre(e)!;
+  // A compra que concentra o mercado passa pelo Cade (demonstracoes.ts › analiseDoCade): a barrada custa os advogados e
+  // não acontece; a aprovada com condição sai com a venda de uma unidade da comprada.
+  const cade = analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id);
+  const nomeDela = aEmpresa({ nome: alvo.nome, genero: alvo.genero });
+  if (cade.decisao === 'barrada') {
+    const advogados = tirarDeQuemJoga(e, reg, preco * 0.01, 'mercado');
+    return {
+      texto: `O Cade barrou a compra ${aEmpresa({ nome: alvo.nome, genero: alvo.genero }, 'da')}: com ela, o mercado ficaria com o índice de concentração em ${Math.round(cade.depois).toLocaleString('pt-BR')} (era ${Math.round(cade.antes).toLocaleString('pt-BR')}), um quase monopólio. Os advogados custaram ${formatarDinheiro(advogados)}.`,
+      resumo: `teve a compra de ${nomeDela} barrada pelo Cade`,
+    };
+  }
   const falta = Math.max(0, preco - Math.max(0, emp.n['caixa'] ?? 0));
   if (falta > 0) porNaEmpresa(e, c, reg, id, tirarDeQuemJoga(e, reg, falta, id), falta, true);
   // O caixa da compradora paga quem vendeu: o dono, na conta dele, ou o mercado; o valor dela desce o mesmo tanto (a
@@ -831,7 +878,16 @@ function comprarAConcorrente(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: En
   somarQualidade(e, reg, id, 'aquisicoes', 1, origem);
   const truste = (emp.q['aquisicoes']?.v ?? 0) >= AQUISICOES_TRUSTE && ganhar(e, reg, id, 'truste', origem);
   if (truste) somar(e, reg, id, 'tracao', 5);
-  const fim = truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '';
+  // A condição do Cade: a comprada vende a menor unidade que produz (se tiver mais de uma), funcionando, ao mercado.
+  let condicao = '';
+  if (cade.decisao === 'condicao') {
+    const menor = produtivasDe(e, comprada).at(-1);
+    if (menor && produtivasDe(e, comprada).length > 1) {
+      operarUnidade(e, c, { tipo: 'venderUnidade', unidade: menor.id }, reg, origem);
+      condicao = ' O Cade aprovou com uma condição: a comprada vendeu uma unidade, para o mercado não fechar de vez.';
+    } else condicao = ' O Cade aprovou depois de olhar de perto: o mercado ficou mais concentrado.';
+  } else if (cade.decisao === 'aprovada') condicao = ' O Cade analisou e aprovou.';
+  const fim = (truste ? ' Com essa, metade do mercado tem o seu sobrenome: é um truste, e o governo vai reparar.' : '') + condicao;
   const parte = `${Math.round(fracao * 100)}%`;
   return {
     texto: hostil

@@ -11,9 +11,9 @@ import { PARCEIROS } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { aEmpresa, ehOperacaoDeEmpresa, empresaDe, operarEmpresa } from './empresa.ts';
 import { definirTexto } from './livro.ts';
-import { custoDaObra, ehOperacaoDeNegocio, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, NOME_DO_PRECO, ofertaDe, operarNegocio, VERBAS } from './negocio.ts';
+import { custoDaObra, ehOperacaoDeNegocio, idadeDoProduto, NIVEIS_DE_PRECO, NIVEIS_DE_SALARIO, NOME_DO_PRECO, ofertaDe, operarNegocio, VERBAS } from './negocio.ts';
 import { nivelDe } from './pais.ts';
-import { BOLSA, GESTOR } from './regras.ts';
+import { BOLSA, GESTOR, PRODUTO } from './regras.ts';
 import { aleatorio, criarRng, misturar, sortear, type Rng } from './rng.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
@@ -54,6 +54,8 @@ export function jogadasDoNegocio(estrategia: string, e: EstadoVida, c: Conteudo,
     if (ocupacao > 1.2 && ofertaDe(e, emp.t['setor']) < 110) tentar({ tipo: 'expandir', fracao: 0.25, empresa: id });
     else if (ocupacao < 0.55) tentar({ tipo: 'cortar', fracao: 0.2, empresa: id });
     if ((n['divida'] ?? 0) > 0) tentar({ tipo: 'pagar', empresa: id });
+    // A geração do produto que passou da idade é trocada (I-160): a cautelosa espera mais.
+    if (idadeDoProduto(e, emp) >= PRODUTO.envelhece + 1) tentar({ tipo: 'lancar', empresa: id });
     // No prejuízo, paga o piso; com lucro e fila de pedidos, volta a pagar o de mercado.
     if ((n['lucro'] ?? 0) < 0 && emp.t['salario'] !== 'piso') tentar({ tipo: 'salario', nivel: 'piso', empresa: id });
     else if ((n['lucro'] ?? 0) > 0 && ocupacao > 1 && emp.t['salario'] === 'piso') tentar({ tipo: 'salario', nivel: 'mercado', empresa: id });
@@ -63,6 +65,8 @@ export function jogadasDoNegocio(estrategia: string, e: EstadoVida, c: Conteudo,
     // Na bolsa, emite ações antes de pegar crédito (bloco H7): a obra sai sem dívida, e a parte de quem joga encolhe.
     if (ocupacao > 1.1 && !tentar({ tipo: 'expandir', fracao: 0.5, empresa: id }) && !tentar({ tipo: 'expandir', fracao: 0.25, empresa: id }) && !tentar({ tipo: 'emitir', empresa: id }))
       tentar({ tipo: 'emprestimo', valor: Math.round(custoDaObra(c, emp, 0.5, e)), empresa: id });
+    // A arriscada troca a geração do produto antes de ela envelhecer (I-160).
+    if (idadeDoProduto(e, emp) >= PRODUTO.envelhece - 1) tentar({ tipo: 'lancar', empresa: id });
     if ((n['qualidade'] ?? 50) >= 65 && emp.t['preco'] !== 'premium') tentar({ tipo: 'preco', nivel: 'premium', empresa: id });
     // Com a empresa grande e os impostos altos, a arriscada contrata lobby (uma vez a cada tanto).
     if (!e.entidades['eu']?.q['lobista'] && (n['valor'] ?? 0) >= 50e6 && nivelDe(e, 'impostos') >= 1 && aleatorio(rng) < 0.2) tentar({ tipo: 'lobby', empresa: id });
@@ -94,6 +98,8 @@ export function propostaDoGestor(e: EstadoVida, c: Conteudo): Operacao | null {
   const g = e.entidades['gestor'];
   const emp = empresaDe(e);
   if (!g || g.vivo === false || !emp || emp.n['capacidade'] === undefined) return null;
+  // Com o conselho tocando o dia a dia (governanca.ts), o gestor não propõe: quem decide é o mandato.
+  if (emp.t['autonomia'] === 'delegada' || emp.t['autonomia'] === 'autonoma') return null;
   return jogadasDoNegocio(jeitoDoGestor(g), e, c, emp, sorteioDaProposta(e), (op) => motivoParaNaoOperar(e, c, op) === null)[0] ?? null;
 }
 

@@ -28,7 +28,7 @@ import { criarRng, misturar } from './rng.ts';
 import { CICLO_DO_SETOR } from './regras.ts';
 import { novaEntidade } from './pessoas.ts';
 import { aleatorio, normal } from './rng.ts';
-import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
+import { CONCORRENCIA, CREDITO_DA_EMPRESA, PRODUTO } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
@@ -282,8 +282,12 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // A folha anda com o mercado de trabalho (desemprego baixo, gente cara) e com a cidade de cada unidade (o salário e o
   // aluguel do lugar, comparados com os da sede); as unidades de apoio pagam o porte delas.
   const fixo = (estrutura.capacidadePelaCidade * eco.fixo + estrutura.porteDoApoio) * SALARIOS[salario(emp)].fixo * fatorDaMaoDeObra(e);
-  const verbas = vendas * ((n['marketing'] ?? 0) + (n['pd'] ?? 0));
-  const ebit = vendas - variavel - fixo - verbas;
+  const campanha = vendas * (n['marketing'] ?? 0);
+  const pesquisa = vendas * (n['pd'] ?? 0);
+  const verbas = campanha + pesquisa;
+  // A mídia do grupo (I-162) vende audiência: a campanha que as irmãs compraram dela antes de ela fechar o ano é receita.
+  const publicidade = doGrupo ? publicidadeRecebida(reg, id) : 0;
+  const ebit = vendas + publicidade - variavel - fixo - verbas;
   // O juro do banco sai antes do imposto (o lucro é depois dele).
   const juros = (n['divida'] ?? 0) * jurosDaEmpresa(e);
   const imposto = Math.max(0, ebit - juros) * impostoDaEmpresa(e);
@@ -291,6 +295,7 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
 
   // O caixa: entra o que vendeu (de fora, do país que comprou), saem os custos e o imposto.
   const exportou = vendas * fracaoFora;
+  let impostoDaMidia = 0;
   if (exportou > 0) somar(e, reg, id, 'caixa', exportou, 'exportacao', emp.t['exporta']!);
   if (!doGrupo) {
     // A concorrente (concorrentes.ts) anota o resultado do mercado num lançamento só: o livro dela é o mais curto que fecha.
@@ -298,7 +303,13 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
     if (liquido !== 0) somar(e, reg, id, 'caixa', liquido, 'resultado', 'mercado');
   } else {
     if (vendas - exportou > 0) somar(e, reg, id, 'caixa', vendas - exportou, 'vendas', 'mercado');
-    if (variavel + fixo + verbas > 0) somar(e, reg, id, 'caixa', -(variavel + fixo + verbas), 'custos', 'mercado');
+    // O que ela compra de outras para produzir (o insumo, o frete, a campanha) é o consumo intermediário das contas
+    // nacionais (demonstracoes.ts); a estrutura e a pesquisa são a folha e a casa dela. A campanha vai para a mídia: a
+    // do grupo recebe de caixa para caixa (a consolidação elimina), o resto vai para o mercado.
+    const naMidia = campanhaNaMidia(e, c, reg, emp, campanha);
+    impostoDaMidia = naMidia.imposto;
+    if (variavel + campanha - naMidia.pago > 0) somar(e, reg, id, 'caixa', -(variavel + campanha - naMidia.pago), 'insumos', 'mercado');
+    if (fixo + pesquisa > 0) somar(e, reg, id, 'caixa', -(fixo + pesquisa), 'custos', 'mercado');
   }
   if (imposto > 0) somar(e, reg, id, 'caixa', -imposto, 'imposto', 'tesouro');
   // O banco recebe o juro e a parcela (o dinheiro que volta para ele deixa de existir).
@@ -330,12 +341,13 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   // A qualidade anda para o que o P&D, a tecnologia do país e o salário sustentam; a marca, para o que o marketing,
   // a qualidade, a fama de quem manda e a mídia própria sustentam.
   const tecnologia = (e.entidades['pais']?.n['tecnologia'] ?? 50) - 50;
-  // O laboratório faz o P&D render mais (unidades.ts).
-  const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 * estrutura.fatorDoLaboratorio + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade;
+  // O laboratório faz o P&D render mais (unidades.ts); a geração do produto que passou da idade puxa para baixo (I-160).
+  const alvoQualidade = 35 + (n['pd'] ?? 0) * 600 * estrutura.fatorDoLaboratorio + tecnologia * 0.2 + SALARIOS[salario(emp)].qualidade - velhiceDoProduto(e, emp);
   somar(e, reg, id, 'qualidade', (Math.max(0, Math.min(100, alvoQualidade)) - (n['qualidade'] ?? 50)) * 0.25, 'negocio');
   // A fama de quem manda e a mídia própria são de quem joga: puxam a marca das empresas do grupo, não a das concorrentes.
   const fama = doGrupo ? (e.entidades['eu']?.n['fama'] ?? 0) : 0;
-  const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (doGrupo && temMidia(e) ? 10 : 0);
+  // A campanha só na mídia do grupo alcança a audiência dela, não o país inteiro (mídia pequena, marca que anda devagar).
+  const alvoMarca = 30 + (n['marketing'] ?? 0) * 600 * alcanceDaCampanha(e, c, emp) + ((n['qualidade'] ?? 50) - 50) * 0.3 + fama / 5 + (doGrupo && temMidia(e) ? 10 : 0);
   somar(e, reg, id, 'marca', (Math.max(0, Math.min(100, alvoMarca)) - (n['marca'] ?? 50)) * 0.25, 'negocio');
 
   // O valor vai para os fundamentos: o caixa e a obra, mais o maior entre os ativos a preço de venda e o lucro vezes o múltiplo.
@@ -344,11 +356,106 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
   const alvo = Math.max(0, Math.max(0, n['caixa'] ?? 0) + (n['obra'] ?? 0) * eco.giro + Math.max(ativos, multiplo * Math.max(0, lucro)) - (n['divida'] ?? 0));
   somar(e, reg, id, 'valor', (alvo - (n['valor'] ?? 0)) * 0.5, 'empresa');
   definirNumero(e, reg, id, 'lucro', lucro, 'empresa');
-  definirNumero(e, reg, id, 'receita', vendas, 'negocio');
+  definirNumero(e, reg, id, 'receita', vendas + publicidade, 'negocio');
   definirNumero(e, reg, id, 'impostos', imposto, 'negocio');
   // A disputa é das empresas do grupo com as de fora (as de fora decidem a delas em concorrentes.ts).
   if (doGrupo) concorrenciaDoAno(e, c, reg, emp, lucro, vendas, garraDaRival(e, c, emp));
-  return { vendas, lucro, imposto, dividendos, cortou, empregosAntes, empregosDepois: empregosNaCidadeDe(e, c, emp) };
+  return { vendas, lucro, imposto: imposto + impostoDaMidia, dividendos, cortou, empregosAntes, empregosDepois: empregosNaCidadeDe(e, c, emp) };
+}
+
+// ---------------------------------------------------------------- o produto (I-160)
+
+/** Há quantos anos a geração do produto está nas lojas (desde o lançamento; sem lançamento, desde a fundação). */
+export function idadeDoProduto(e: EstadoVida, emp: Entidade): number {
+  return Math.max(0, e.ano - (emp.q['lancamento']?.ano ?? emp.nascimento ?? e.ano));
+}
+
+/** Quanto a qualidade que o produto sustenta cai pela idade da geração. */
+export function velhiceDoProduto(e: EstadoVida, emp: Entidade): number {
+  return Math.min(PRODUTO.maximo, PRODUTO.porAno * Math.max(0, idadeDoProduto(e, emp) - PRODUTO.envelhece));
+}
+
+/** O que custa lançar a geração nova: uma fração das vendas do ano, com um piso. */
+export function custoDoLancamento(emp: Entidade): number {
+  return Math.max(PRODUTO.minimo, (emp.n['receita'] ?? 0) * PRODUTO.custo);
+}
+
+/** A geração nova chega: o caixa paga o desenvolvimento e a campanha, e a qualidade e a marca sobem na hora. */
+export function lancarProduto(e: EstadoVida, reg: Mudanca[], emp: Entidade, causa: number | null): void {
+  const id = emp.id;
+  const custo = custoDoLancamento(emp);
+  somar(e, reg, id, 'caixa', -custo, 'lancamento', 'mercado');
+  if (emp.q['lancamento']) perder(e, reg, id, 'lancamento');
+  ganhar(e, reg, id, 'lancamento', causa);
+  somar(e, reg, id, 'qualidade', Math.min(100 - (emp.n['qualidade'] ?? 50), PRODUTO.qualidade), 'negocio');
+  somar(e, reg, id, 'marca', Math.min(100 - (emp.n['marca'] ?? 50), PRODUTO.marca), 'negocio');
+}
+
+// ---------------------------------------------------------------- a mídia (I-162)
+
+/** O setor que vende audiência (a TV, o rádio, o jornal, o streaming, a agência): o de cultura e internet. */
+export const SETOR_DA_MIDIA = 'cultura';
+
+/** As empresas de mídia do grupo de quem joga (as que vendem audiência), vivas e com negócio. */
+export function midiasDoGrupo(e: EstadoVida): Entidade[] {
+  return Object.values(e.entidades).filter((x) => x.tipo === 'empresa' && x.vivo !== false && !deFora(x) && !x.q['holding'] && x.n['capacidade'] !== undefined && x.t['setor'] === SETOR_DA_MIDIA);
+}
+
+/** A audiência de uma empresa de mídia: a parte dela no que o país consome do setor (0 a 1). */
+export function audienciaDe(e: EstadoVida, c: Conteudo, m: Entidade): number {
+  return Math.max(0, Math.min(1, (m.n['demanda'] ?? 0) / mercadoDoSetor(e, economiaDo(c.setores.get(SETOR_DA_MIDIA)))));
+}
+
+/** O que a mídia já recebeu de campanha neste ano (as irmãs que fecharam o ano antes dela). */
+function publicidadeRecebida(reg: readonly Mudanca[], id: string): number {
+  let v = 0;
+  for (const m of reg) if (m.c === `${id}.caixa` && m.r === 'publicidade' && (m.d ?? 0) > 0) v += m.d!;
+  return v;
+}
+
+/** A mídia do grupo em que a empresa anuncia por decisão de quem joga (a folha), se ela ainda for do grupo. */
+function midiaEscolhida(e: EstadoVida, emp: Entidade): Entidade | undefined {
+  const id = emp.t['anuncia'];
+  const m = id ? e.entidades[id] : undefined;
+  return m && m.id !== emp.id && m.vivo !== false && !deFora(m) && m.t['setor'] === SETOR_DA_MIDIA && m.n['capacidade'] !== undefined ? m : undefined;
+}
+
+/**
+ * Quanto a campanha alcança (1 é o país inteiro, comprando no mercado): só na mídia do grupo, a audiência dela, com um
+ * piso (quem assiste é cliente) e o país inteiro a partir de uns 10% de audiência.
+ */
+export function alcanceDaCampanha(e: EstadoVida, c: Conteudo, emp: Entidade): number {
+  const m = midiaEscolhida(e, emp);
+  return m ? Math.min(1, 0.4 + 6 * audienciaDe(e, c, m)) : 1;
+}
+
+/**
+ * A campanha do ano vai para a mídia. Quem escolheu anunciar na mídia do grupo põe nela a verba inteira; quem não
+ * escolheu compra no mercado, e a mídia do grupo recebe a parte da audiência dela. O dinheiro sai do caixa de quem
+ * contrata e entra no de quem presta, no mesmo lançamento; se a mídia já fechou o ano, a campanha entra na receita e no
+ * lucro dela na hora, com o imposto. Devolve o que foi para a mídia do grupo e o imposto que ela pagou depois do ano.
+ */
+function campanhaNaMidia(e: EstadoVida, c: Conteudo, reg: Mudanca[], emp: Entidade, campanha: number): { pago: number; imposto: number } {
+  if (!(campanha >= 1)) return { pago: 0, imposto: 0 };
+  const escolhida = midiaEscolhida(e, emp);
+  const partes: [Entidade, number][] = escolhida ? [[escolhida, campanha]] : midiasDoGrupo(e).filter((m) => m.id !== emp.id).map((m) => [m, campanha * audienciaDe(e, c, m)]);
+  let pago = 0;
+  let imposto = 0;
+  for (const [m, v] of partes) {
+    if (!(v >= 1)) continue;
+    somar(e, reg, emp.id, 'caixa', -v, 'publicidade', m.id);
+    somar(e, reg, m.id, 'caixa', v, 'publicidade', emp.id);
+    pago += v;
+    if (!reg.some((x) => x.c === `${m.id}.lucro`)) continue;
+    // A mídia já fechou o ano: a campanha entra agora, com o imposto dela.
+    const imp = v * impostoDaEmpresa(e);
+    somar(e, reg, m.id, 'receita', v, 'negocio');
+    somar(e, reg, m.id, 'impostos', imp, 'negocio');
+    somar(e, reg, m.id, 'lucro', v - imp, 'empresa');
+    if (imp >= 1) somar(e, reg, m.id, 'caixa', -imp, 'imposto', 'tesouro');
+    imposto += imp;
+  }
+  return { pago, imposto };
 }
 
 /** Quem joga tem rádio, jornal ou emissora: a mídia própria fala bem das empresas dele. */
@@ -381,9 +488,13 @@ export type OperacaoNegocio =
   | { tipo: 'exportar'; empresa?: string; para: Parceiro | '' }
   | { tipo: 'emprestimo'; empresa?: string; valor: number }
   | { tipo: 'pagar'; empresa?: string }
-  | { tipo: 'lobby'; empresa?: string };
+  | { tipo: 'lobby'; empresa?: string }
+  /** Onde a empresa põe a campanha: na mídia do grupo (o id dela) ou no mercado (''). */
+  | { tipo: 'anunciar'; empresa?: string; midia: string }
+  /** Lança a geração nova do produto (I-160). */
+  | { tipo: 'lancar'; empresa?: string };
 
-const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar', 'emprestimo', 'pagar', 'lobby']);
+const TIPOS = new Set(['preco', 'expandir', 'cortar', 'verbas', 'salario', 'exportar', 'emprestimo', 'pagar', 'lobby', 'anunciar', 'lancar']);
 export function ehOperacaoDeNegocio(op: { tipo: string }): op is OperacaoNegocio {
   return TIPOS.has(op.tipo);
 }
@@ -423,6 +534,18 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
       const limite = limiteDeCredito(c, emp, e);
       if (!(op.valor > 0)) return 'diga quanto';
       return op.valor > limite + 1 ? (limite < 1 ? 'o banco não empresta mais para ela' : `o banco empresta até ${Math.round(limite).toLocaleString('pt-BR')} reais`) : null;
+    }
+    case 'lancar':
+      if (emp.n['capacidade'] === undefined) return 'a empresa ainda não opera';
+      if (idadeDoProduto(e, emp) < PRODUTO.intervalo) return 'o produto de agora ainda é novo';
+      return custoDoLancamento(emp) > (n['caixa'] ?? 0) ? `o lançamento custa ${Math.round(custoDoLancamento(emp)).toLocaleString('pt-BR')} reais e o caixa não tem` : null;
+    case 'anunciar': {
+      if (deFora(emp)) return 'essa empresa não é sua';
+      if ((emp.t['anuncia'] ?? '') === op.midia) return 'já é assim';
+      if (op.midia === '') return null;
+      const m = e.entidades[op.midia];
+      if (!m || m.id === emp.id || m.vivo === false || deFora(m) || m.t['setor'] !== SETOR_DA_MIDIA || m.n['capacidade'] === undefined) return 'escolha uma empresa de mídia do seu grupo';
+      return null;
     }
     case 'lobby':
       if (e.entidades['eu']?.q['lobista']) return 'o lobby já está trabalhando';
@@ -487,6 +610,22 @@ export function operarNegocio(e: EstadoVida, c: Conteudo, op: OperacaoNegocio, r
         texto: `${nomeDaEmpresa} pegou ${Math.round(op.valor).toLocaleString('pt-BR')} reais no banco, a ${(jurosDaEmpresa(e) * 100).toFixed(1).replace('.', ',')}% ao ano acima da inflação. O dinheiro não existia: o banco o criou ao emprestar.`,
         resumo: `pegou um empréstimo para ${nomeDaEmpresa}`,
       };
+    case 'lancar': {
+      const idade = idadeDoProduto(e, emp);
+      const custo = custoDoLancamento(emp);
+      lancarProduto(e, reg, emp, null);
+      return {
+        texto: `${nomeDaEmpresa} lançou a geração nova do produto, por ${Math.round(custo).toLocaleString('pt-BR')} reais: a de antes estava ${idade === 1 ? 'há um ano' : `há ${idade} anos`} nas prateleiras.`,
+        resumo: `lançou a geração nova do produto de ${nomeDaEmpresa}`,
+      };
+    }
+    case 'anunciar': {
+      definirTexto(e, reg, id, 'anuncia', op.midia);
+      const m = op.midia ? e.entidades[op.midia] : undefined;
+      return m
+        ? { texto: `${nomeDaEmpresa} passou a pôr a campanha inteira ${m.genero === 'm' ? 'no' : 'na'} ${m.nome}: o dinheiro fica no grupo, e a marca chega a quem assiste.`, resumo: `pôs a campanha de ${nomeDaEmpresa} na mídia do grupo` }
+        : { texto: `${nomeDaEmpresa} voltou a comprar a campanha no mercado: a marca chega ao país inteiro.`, resumo: `pôs a campanha de ${nomeDaEmpresa} no mercado` };
+    }
     case 'lobby': {
       const custo = custoDoLobby(emp);
       somar(e, reg, id, 'caixa', -custo, 'lobby', 'mercado');
@@ -529,7 +668,9 @@ export function decidirNoNegocio(
     cortar?: number | undefined;
     demanda?: number | undefined;
     aporte?: number | undefined;
+    lancar?: true | undefined;
   },
+  causa: number | null = null,
 ): void {
   const emp = e.entidades['empresa'];
   if (!emp || emp.tipo !== 'empresa' || emp.vivo === false || emp.n['capacidade'] === undefined) return;
@@ -540,6 +681,8 @@ export function decidirNoNegocio(
   if (d.marketing !== undefined) somar(e, reg, id, 'marketing', d.marketing - (emp.n['marketing'] ?? 0), 'negocio');
   if (d.pd !== undefined) somar(e, reg, id, 'pd', d.pd - (emp.n['pd'] ?? 0), 'negocio');
   if (d.demanda !== undefined) somar(e, reg, id, 'demanda', (emp.n['demanda'] ?? 0) * d.demanda, 'negocio');
+  // A geração nova do produto, se o caixa pagar (sem caixa, a história fica, e o produto continua o de antes).
+  if (d.lancar && custoDoLancamento(emp) <= (emp.n['caixa'] ?? 0)) lancarProduto(e, reg, emp, causa);
   if (d.expandir !== undefined) {
     // O caixa paga o que der da obra.
     const porReal = economiaDo(c.setores.get(emp.t['setor'] ?? '')).giro * precoDoSetor(ofertaDe(e, emp.t['setor']));

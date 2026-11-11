@@ -1,5 +1,31 @@
 [
   {
+    "id": "o_grupo_no_pib",
+    "idade": [25, 90],
+    "condicoes": { "pais.peso_do_grupo": { "min": 0.05 }, "empresa.valor": true },
+    "peso": 3,
+    "texto": "Um economista mostrou na TV um gráfico de barras: o que o seu grupo produz, tirando o que compra dos outros, já é {pais.peso_do_grupo}% do PIB do Brasil. [No bar da esquina, o garçom perguntou se você era o dono do PIB|O seu tio mandou o print no grupo da família com três pontos de exclamação|Um deputado citou o número num discurso, sem dizer se era elogio].",
+    "resumo": "viu o próprio grupo virar uma fatia do PIB",
+    "escolhas": [
+      {
+        "texto": "Dar a entrevista que pedem há meses",
+        "resumo": "deu entrevista sobre o tamanho do próprio grupo",
+        "resultado": {
+          "texto": "Você falou de emprego, de imposto pago e de futuro. Metade do país achou visionário; a outra metade, um aviso.",
+          "efeitos": { "eu.fama": 3, "eu.popularidade": 2, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Pedir discrição à assessoria",
+        "resumo": "pediu discrição sobre o tamanho do próprio grupo",
+        "resultado": {
+          "texto": "A assessoria recusou três convites e mandou uma nota de quatro linhas. Quem é grande demais aprende a ser chato de propósito.",
+          "efeitos": { "eu.popularidade": -1, "felicidade": 1 }
+        }
+      }
+    ]
+  },
+  {
     "id": "duas_empresas_uma_agenda",
     "idade": [22, 85],
     "condicoes": { "empresas": { "min": 2 }, "empresa.valor": true },

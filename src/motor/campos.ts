@@ -190,6 +190,8 @@ const PAIS: Record<string, DefCampo> = {
   cambio: { tipo: 'num', sistema: 'mundo', reais: true, centavos: true, limites: [1.5, 20] },
   /** O tamanho do país (pais.ts): o PIB em reais de hoje, que anda com o crescimento, e a população, que anda com a transição demográfica, a saúde e a pobreza. */
   pib: { tipo: 'num', sistema: 'mundo', reais: true },
+  /** O que o grupo de quem joga adiciona ao PIB (o valor adicionado dele, em % do PIB; demonstracoes.ts). */
+  peso_do_grupo: { tipo: 'num', sistema: 'mundo', limites: [0, 100], casas: 2 },
   populacao: { tipo: 'num', sistema: 'mundo', milhoes: true },
   /** Derivados do resto (campos.ts › indicadoresDoPais): o PIB por habitante, a desigualdade (Gini, 0 a 1) e o desenvolvimento humano (IDH, 0 a 1, como o da ONU). */
   pib_per_capita: { tipo: 'num', sistema: 'mundo', derivado: true, reais: true },
@@ -405,6 +407,11 @@ const EMPRESA: Record<string, DefCampo> = {
   subsidiarias: { tipo: 'num', sistema: 'poder', limites: [0, Infinity] },
   /** Quem controla: 'eu' (quem joga), '#<registro>' (outra empresa), 'p<número>' (uma pessoa) ou 'mercado' (o capital disperso). A parte dela é `participacao`. */
   dona: { tipo: 'texto', sistema: 'poder' },
+  /** A mídia do grupo em que a empresa põe a campanha (o id dela; vazio: o mercado). */
+  anuncia: { tipo: 'texto', sistema: 'dinheiro' },
+  /** Quem decide o dia a dia (governanca.ts): manual, consultiva, delegada ou autonoma; e o jeito que o conselho recebeu. */
+  autonomia: { tipo: 'texto', sistema: 'poder' },
+  mandato: { tipo: 'texto', sistema: 'poder' },
   /** A segunda sócia, se houver (uma empresa ou quem joga): a associada, a minoritária, a outra metade da joint venture. */
   socia: { tipo: 'texto', sistema: 'poder' },
   /** A parte da segunda sócia (a soma com a da controladora não passa de 1; o resto é do mercado). */
@@ -413,6 +420,8 @@ const EMPRESA: Record<string, DefCampo> = {
   participacoes: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
   /** A parte de quem joga, direta e indireta (pela holding e pelas sócias), de 0 a 1. */
   parte_efetiva: { tipo: 'num', sistema: 'dinheiro', derivado: true },
+  /** Há quantos anos a geração do produto está nas lojas (negocio.ts › idadeDoProduto). */
+  produto_idade: { tipo: 'num', sistema: 'dinheiro', derivado: true },
 };
 
 export function camposDe(ent: string): Record<string, DefCampo> {
@@ -825,6 +834,8 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.tipo === 'empresa' ? valorDasParticipacoes(e, en) : 0;
       case 'parte_efetiva':
         return en.tipo === 'empresa' ? parteEfetiva(e, en) : 0;
+      case 'produto_idade':
+        return en.tipo === 'empresa' ? Math.max(0, e.ano - (en.q['lancamento']?.ano ?? en.nascimento ?? e.ano)) : 0;
       case 'sozinho':
         return semOOutro(e, ent);
       case 'gosto':

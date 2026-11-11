@@ -490,6 +490,12 @@ export const HOLDING = { estrutura: 150_000 } as const;
  * (o P&D rende até 50% mais; cada venda custa até 5% menos), o que custa construir uma de apoio (o porte vezes 3) e o
  * custo de uma pessoa por ano nelas.
  */
+/**
+ * O ciclo de vida do produto (negocio.ts, I-160): a geração envelhece depois de 8 anos (a qualidade que ela sustenta cai
+ * 1,5 ponto por ano, até 10), e lançar a nova custa 4% das vendas do ano (no mínimo R$ 20 mil), devolve 6 pontos de
+ * qualidade e 4 de marca na hora e só vale a partir do segundo ano da geração.
+ */
+export const PRODUTO = { envelhece: 8, porAno: 1.5, maximo: 10, custo: 0.04, minimo: 20_000, qualidade: 6, marca: 4, intervalo: 2 } as const;
 export const UNIDADES = {
   maximo: 8,
   pesoDaCidade: 0.4,

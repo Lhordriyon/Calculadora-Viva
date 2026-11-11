@@ -12,6 +12,7 @@
  */
 import { ehOperacaoDeGrupo, motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { ehOperacaoDeUnidade, motivoParaNaoOperarUnidade, operarUnidade, type OperacaoUnidade } from './unidades.ts';
+import { ehOperacaoDeGovernanca, motivoParaNaoOperarGovernanca, operarGovernanca, type OperacaoGovernanca } from './governanca.ts';
 import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase, type Padrao, type Perfil } from './constantes.ts';
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -93,6 +94,7 @@ function nomeDaEmpresaDe(e: EstadoVida, id?: string): string {
 export type Operacao =
   | OperacaoGrupo
   | OperacaoUnidade
+  | OperacaoGovernanca
   | OperacaoEmpresa
   | OperacaoNegocio
   /** Da conta para os investimentos: numa classe, ou pelo perfil. */
@@ -134,6 +136,7 @@ export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): s
   if (e.pendente) return 'responda o cartão do ano primeiro';
   if (ehOperacaoDeGrupo(op)) return motivoParaNaoOperarGrupo(e, c, op);
   if (ehOperacaoDeUnidade(op)) return motivoParaNaoOperarUnidade(e, c, op);
+  if (ehOperacaoDeGovernanca(op)) return motivoParaNaoOperarGovernanca(e, op);
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
   if (ehOperacaoDeNegocio(op)) return motivoParaNaoOperarNegocio(e, c, op);
   if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
@@ -188,6 +191,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
   };
   if (ehOperacaoDeGrupo(op)) return lancarCom('grupo', (id) => operarGrupo(e, c, op, reg, id));
   if (ehOperacaoDeUnidade(op)) return lancarCom('unidade', (id) => operarUnidade(e, c, op, reg, id));
+  if (ehOperacaoDeGovernanca(op)) return lancarCom('governanca', () => operarGovernanca(e, op, reg));
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
   if (ehOperacaoDeNegocio(op)) return lancarCom('negocio', () => operarNegocio(e, c, op, reg, nomeDaEmpresaDe(e, op.empresa)));
   if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));

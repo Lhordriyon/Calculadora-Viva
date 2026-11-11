@@ -53,6 +53,10 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   'empresaR.*',
   // quem controla a empresa (societario.ts): a participação que sobe quando a dona sai da vida
   'empresa.dona',
+  // as contas nacionais (empresa.ts › pesoNoPib): o que o grupo adiciona ao PIB
+  'pais.peso_do_grupo',
+  // a geração do produto (negocio.ts, I-160): o conselho e a concorrente lançam a nova
+  'empresa.lancamento',
   // o sonho que passa adiante (projetos.ts › passarSonho, bloco S3): o filho mais velho vivo o recebe
   ...FILHOS.map((f) => `${f}.sonho`),
   // a rival e o gestor que vêm com a empresa (familia.ts › genteDaEmpresa, diretoria.ts)
@@ -320,6 +324,8 @@ export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['empresa.dona'], 'societário: quem controla recebe os dividendos, decide pela empresa e conta no patrimônio de quem joga', true),
+  ...ler(['empresa.lancamento'], 'produto: a geração que passou da idade puxa a qualidade para baixo, e quem decide troca por uma nova', true),
+  ...ler(['pais.peso_do_grupo'], 'contas nacionais: o valor adicionado a mais do grupo puxa o crescimento do país pela metade', true),
   ...ler(CONQUISTAS_DO_PODER, 'poder: cada conquista vem uma vez só', true),
   ...ler(MERCADOS, 'mercados: o preço do setor na empresa, a concorrente que sai na sobra e a demissão de quem trabalha nele', true),
   ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
@@ -561,8 +567,8 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['eu.vivo', 'eu.nome', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
-    escreve: ['unidade.*', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    le: ['eu.vivo', 'eu.nome', 'pais.peso_do_grupo', 'pais.crescimento', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    escreve: ['unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',

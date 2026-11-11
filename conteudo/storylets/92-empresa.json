@@ -1,5 +1,31 @@
 [
   {
+    "id": "o_produto_envelheceu",
+    "idade": [20, 85],
+    "condicoes": { "marcas": ["empresa.lancamento"], "empresa.produto_idade": { "min": 9 }, "empresa.capacidade": true },
+    "peso": 2,
+    "texto": "O produto {empresa:do|da} {empresa} está nas prateleiras há {empresa.produto_idade} anos. [O cliente mais fiel mandou uma foto do concorrente com a legenda \"e aí?\"|O vendedor parou de mostrar o catálogo na reunião|A sobrinha disse que é \"coisa de tio\", com carinho]. O pessoal da pesquisa tem a geração nova na gaveta.",
+    "resumo": "viu o produto da própria empresa ficar velho",
+    "escolhas": [
+      {
+        "texto": "Lançar a geração nova",
+        "resumo": "lançou a geração nova do produto",
+        "resultado": {
+          "texto": "Lançamento com coquetel, vídeo e o mesmo cliente fiel na primeira fila. A conta veio do caixa; a cara nova, também.",
+          "efeitos": { "negocio": { "lancar": true }, "felicidade": 1 }
+        }
+      },
+      {
+        "texto": "Espremer o produto mais um ano",
+        "resumo": "segurou o produto velho mais um ano",
+        "resultado": {
+          "texto": "Você trocou a embalagem e manteve o resto. Economizou agora; o produto continua perdendo fôlego, um ano de cada vez.",
+          "efeitos": { "empresa.marca": -2, "felicidade": -1 }
+        }
+      }
+    ]
+  },
+  {
     "id": "empresa_quebrou",
     "apenasAgendado": true,
     "condicoes": { "empresa.valor": true },
