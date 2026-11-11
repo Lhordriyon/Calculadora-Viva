@@ -382,8 +382,21 @@ const EMPRESA: Record<string, DefCampo> = {
    * na tração nessa proporção, a morte de quem manda custa valor e quem compra desconta.
    */
   dependencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
-  /** Empresas que ela comprou ou absorveu e que seguem com o nome delas, dentro do valor dela: vender uma dá dinheiro sem largar o resto. */
+  /**
+   * As marcas que ela absorveu antes de as subsidiárias serem pessoas jurídicas (a missão Capitalismo vivo): ficam dentro
+   * do valor dela, e vender uma dá dinheiro sem largar o resto. As compras de agora criam subsidiárias de verdade.
+   */
   subsidiarias: { tipo: 'num', sistema: 'poder', limites: [0, Infinity] },
+  /** Quem controla: 'eu' (quem joga), '#<registro>' (outra empresa), 'p<número>' (uma pessoa) ou 'mercado' (o capital disperso). A parte dela é `participacao`. */
+  dona: { tipo: 'texto', sistema: 'poder' },
+  /** A segunda sócia, se houver (uma empresa ou quem joga): a associada, a minoritária, a outra metade da joint venture. */
+  socia: { tipo: 'texto', sistema: 'poder' },
+  /** A parte da segunda sócia (a soma com a da controladora não passa de 1; o resto é do mercado). */
+  participacao_socia: { tipo: 'num', sistema: 'dinheiro', limites: [0, 1] },
+  /** O que as participações dela em outras empresas valem (a holding), pela parte de cada uma: calculado de baixo para cima. */
+  participacoes: { tipo: 'num', sistema: 'dinheiro', derivado: true, reais: true },
+  /** A parte de quem joga, direta e indireta (pela holding e pelas sócias), de 0 a 1. */
+  parte_efetiva: { tipo: 'num', sistema: 'dinheiro', derivado: true },
 };
 
 export function camposDe(ent: string): Record<string, DefCampo> {
@@ -492,17 +505,96 @@ export function ordemDaEmpresa(id: string): number {
   return Number(id.slice('empresa'.length) || 1);
 }
 
-/** A parte de quem joga numa empresa (sem dizer qual, a que ele cuida de perto), em reais (0 sem ela). Conta no patrimônio, mas só vira dinheiro pela retirada ou pela venda. */
+// ---------------------------------------------------------------- a propriedade (missão Capitalismo vivo, I-156 e I-157)
+
+/** A referência de uma empresa na propriedade de outra: '#' e o número permanente dela. */
+export function refDaEmpresa(emp: Entidade): string {
+  return `#${emp.registro ?? 0}`;
+}
+
+/** A empresa com este número permanente (viva ou não), pelo registro. */
+export function empresaDoRegistro(e: EstadoVida, ref: string | undefined): Entidade | undefined {
+  if (!ref || ref[0] !== '#') return undefined;
+  const r = Number(ref.slice(1));
+  for (const id in e.entidades) {
+    const x = e.entidades[id]!;
+    if (x.tipo === 'empresa' && x.registro === r) return x;
+  }
+  return undefined;
+}
+
+/**
+ * Quem controla a empresa: o que está escrito, ou (a empresa de antes da propriedade escrita, num save antigo) quem joga
+ * nos lugares do grupo dele e o mercado nos outros.
+ */
+export function donaDe(emp: Entidade): string {
+  return emp.t['dona'] || (LUGARES.has(emp.id) ? QUEM_JOGA : 'mercado');
+}
+const LUGARES = new Set<string>(Array.from({ length: MAX_EMPRESAS }, (_, i) => (i === 0 ? 'empresa' : `empresa${i + 1}`)));
+
+/**
+ * A parte de `quem` ('eu', '#<registro>' ou 'p<número>') na empresa, direta e indireta: a da controladora e a da sócia,
+ * e, quando uma delas é outra empresa, a parte de `quem` nela vezes a dela. Um ciclo de propriedade (proibido, e o
+ * invariante acusa) para no primeiro passo repetido em vez de girar para sempre.
+ */
+export function parteEfetiva(e: EstadoVida, emp: Entidade, quem = QUEM_JOGA, visitadas: ReadonlySet<string> = new Set()): number {
+  if (visitadas.has(emp.id)) return 0;
+  const vistas = new Set(visitadas).add(emp.id);
+  let total = 0;
+  const pares: [string, number][] = [[donaDe(emp), emp.n['participacao'] ?? 1]];
+  if (emp.t['socia']) pares.push([emp.t['socia'], emp.n['participacao_socia'] ?? 0]);
+  for (const [dona, parte] of pares) {
+    if (!(parte > 0)) continue;
+    if (dona === quem) total += parte;
+    else if (dona[0] === '#') {
+      const acima = empresaDoRegistro(e, dona);
+      if (acima && acima.vivo !== false) total += parte * parteEfetiva(e, acima, quem, vistas);
+    }
+  }
+  return Math.min(1, total);
+}
+
+/** Todas as empresas vivas do mundo: as do grupo de quem joga, as concorrentes e as que ele tem só uma parte. */
+export function todasAsEmpresas(e: EstadoVida): Entidade[] {
+  const saida: Entidade[] = [];
+  for (const id in e.entidades) {
+    const x = e.entidades[id]!;
+    if (x.tipo === 'empresa' && x.vivo !== false) saida.push(x);
+  }
+  return saida;
+}
+
+/** O que as participações de uma empresa em outras valem (a holding), de baixo para cima e pela parte de cada uma. */
+export function valorDasParticipacoes(e: EstadoVida, emp: Entidade, visitadas: ReadonlySet<string> = new Set()): number {
+  if (visitadas.has(emp.id)) return 0;
+  const vistas = new Set(visitadas).add(emp.id);
+  const ref = refDaEmpresa(emp);
+  let total = 0;
+  for (const x of todasAsEmpresas(e)) {
+    let parte = 0;
+    if (donaDe(x) === ref) parte += x.n['participacao'] ?? 1;
+    if (x.t['socia'] === ref) parte += x.n['participacao_socia'] ?? 0;
+    if (parte > 0) total += parte * (Math.max(0, x.n['valor'] ?? 0) + valorDasParticipacoes(e, x, vistas));
+  }
+  return total;
+}
+
+/**
+ * A parte de quem joga numa empresa (sem dizer qual, a que ele cuida de perto), em reais (0 sem ela): o valor do negócio
+ * dela sozinha vezes a parte efetiva dele. O valor guardado não inclui as participações (a holding vale o caixa dela; as
+ * subsidiárias entram cada uma pela parte), então nada conta duas vezes. Conta no patrimônio, mas só vira dinheiro pela
+ * retirada, pelos dividendos ou pela venda.
+ */
 export function parteNaEmpresa(e: EstadoVida, id = 'empresa'): number {
   const emp = e.entidades[id];
   if (!emp || emp.vivo === false) return 0;
-  return Math.max(0, emp.n['valor'] ?? 0) * (emp.n['participacao'] ?? 1);
+  return Math.max(0, emp.n['valor'] ?? 0) * parteEfetiva(e, emp);
 }
 
-/** A parte de quem joga em todas as empresas dele. */
+/** A parte de quem joga em todas as empresas do mundo (as do grupo dele, e as concorrentes em que ele tem participação). */
 export function parteNasEmpresas(e: EstadoVida): number {
   let total = 0;
-  for (const emp of empresasDe(e)) total += parteNaEmpresa(e, emp.id);
+  for (const emp of todasAsEmpresas(e)) total += parteNaEmpresa(e, emp.id);
   return total;
 }
 
@@ -712,6 +804,10 @@ export function ler(e: EstadoVida, ent: string, campo: string): number | string 
         return en.genero ?? 'm';
       case 'quem':
         return quemE(ent, en);
+      case 'participacoes':
+        return en.tipo === 'empresa' ? valorDasParticipacoes(e, en) : 0;
+      case 'parte_efetiva':
+        return en.tipo === 'empresa' ? parteEfetiva(e, en) : 0;
       case 'sozinho':
         return semOOutro(e, ent);
       case 'gosto':

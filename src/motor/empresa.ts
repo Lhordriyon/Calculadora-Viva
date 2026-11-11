@@ -32,10 +32,11 @@
  * na medida em que elas dependem dele. Delegar (conselho, carta branca, sair
  * de cena, a bolsa) é decisão do jogador, com o que ela custa e o que causa.
  */
+import { anoDaHolding, garantirRegistro, profundidade } from './societario.ts';
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
-import { empresasDe, entidadeDe, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { donaDe, empresasDe, entidadeDe, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import { decidir, porqueDaResposta } from './decisao.ts';
 import type { Ativo } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -188,15 +189,32 @@ interface Fundacao {
   tracao?: number | undefined;
   /** De onde veio o capital (quem joga, outra pessoa, o mercado): a contraparte do caixa que nasce. */
   de?: string | undefined;
+  /** Quem controla ('eu', '#<registro>' da empresa-mãe, 'p<número>' da pessoa): sem ela, quem joga (missão Capitalismo vivo). */
+  dona?: string | undefined;
+  /** Uma holding: pessoa jurídica sem operação própria, que vive das participações. */
+  holding?: boolean | undefined;
 }
 
 /** A empresa nasce no lugar `id` (o valor já veio de algum lugar): tudo vai para o livro, e a fundação vira a causa do que ela causar. */
-function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, origem: number, id: string): Entidade | null {
+export function fundar(e: EstadoVida, c: Conteudo, reg: Mudanca[], f: Fundacao, origem: number, id: string, nomeDado?: string): Entidade | null {
   if (empresaDe(e, id) || !(f.valor > 0)) return null;
   const setor = c.setores.get(f.setor);
-  const nome = nomeNovo(e, setor);
+  const nome = nomeDado ?? nomeNovo(e, setor);
   const emp = novaEntidade({ id, tipo: 'empresa', nome, genero: generoDoNome(e, nome), nascimento: e.ano, vivo: true });
   e.entidades[id] = emp;
+  // A pessoa jurídica: o número permanente e quem a controla (societario.ts).
+  garantirRegistro(e, emp);
+  if (f.dona && f.dona !== 'eu') definirTexto(e, reg, id, 'dona', f.dona);
+  if (f.holding) {
+    // A holding não produz: o capital fica no caixa, e o valor dela é o caixa (as participações entram pela parte de cada subsidiária).
+    definirTexto(e, reg, id, 'setor', 'financas');
+    ganhar(e, reg, id, 'holding', origem);
+    ganhar(e, reg, id, 'fundada', origem);
+    somar(e, reg, id, 'participacao', f.participacao ?? 1);
+    somar(e, reg, id, 'caixa', f.valor, 'capital', f.de ?? 'mercado');
+    somar(e, reg, id, 'valor', f.valor);
+    return emp;
+  }
   definirTexto(e, reg, id, 'setor', setor?.id ?? 'comercio');
   somar(e, reg, id, 'valor', f.valor);
   somar(e, reg, id, 'tracao', f.tracao ?? setor?.tracao ?? 4);
@@ -279,6 +297,12 @@ function mover(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
   delete e.entidades[de];
 }
 
+/** Leva a empresa para outro id (para fora do grupo, quando a parte inteira foi vendida): o livro anota a troca de lugar, e o número dela vai junto. */
+export function moverEmpresa(e: EstadoVida, reg: Mudanca[], de: string, para: string): void {
+  if (e.entidades[para]) throw new Error(`o lugar ${para} já está ocupado`);
+  mover(e, reg, de, para);
+}
+
 /** Troca duas empresas de lugar (a que quem joga toca e outra): o livro anota a diferença de cada campo e qualidade. */
 function trocar(e: EstadoVida, reg: Mudanca[], a: string, b: string): void {
   const ea = e.entidades[a]!;
@@ -313,7 +337,10 @@ export function reorganizarGrupo(e: EstadoVida, reg: Mudanca[], preferida?: stri
   if (empresaDe(e)) return;
   const outras = empresasDe(e);
   if (outras.length === 0) return;
-  const escolhida = (preferida ? empresaDe(e, preferida) : undefined) ?? outras.reduce((a, b) => (parteNaEmpresa(e, b.id) > parteNaEmpresa(e, a.id) ? b : a));
+  // A holding não opera: o lugar da que quem joga toca vai para a maior das que produzem (a holding só se não houver outra).
+  const operam = outras.filter((x) => !x.q['holding']);
+  const candidatas = operam.length > 0 ? operam : outras;
+  const escolhida = (preferida ? empresaDe(e, preferida) : undefined) ?? candidatas.reduce((a, b) => (parteNaEmpresa(e, b.id) > parteNaEmpresa(e, a.id) ? b : a));
   mover(e, reg, escolhida.id, PRINCIPAL);
 }
 
@@ -426,6 +453,10 @@ function anoDaEmpresa(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Momento, 
   const id = emp.id;
   const n = emp.n;
   const setor = c.setores.get(emp.t['setor'] ?? '');
+  if (emp.q['holding']) {
+    anoDaHolding(e, reg, emp);
+    return { vendas: 0, lucro: n['lucro'] ?? 0, imposto: 0, dividendos: 0, cortou: 0, empregosAntes: 0, empregosDepois: 0 };
+  }
   garantirFundamentos(e, c, reg, emp);
   const valor = n['valor'] ?? 0;
   const tracao = n['tracao'] ?? 0;
@@ -499,7 +530,10 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   // O lobby contratado (ou a regra sob medida) pode baixar os impostos do país (negocio.ts).
   lobbyDoAno(e, c);
   ofertaContraVoce(e, c);
-  const empresas = empresasDe(e);
+  // Toda empresa tem o número permanente dela (as de antes da propriedade escrita ganham agora); as de baixo fecham o ano
+  // antes, para o dividendo subir até a holding no mesmo ano.
+  for (const emp of empresasDe(e)) garantirRegistro(e, emp);
+  const empresas = empresasDe(e).sort((a, b) => profundidade(e, b) - profundidade(e, a));
   if (empresas.length === 0) return;
   const carga = cargaDaMesa(e);
   const humor = humorDaBolsa(c, fase, mercado);
@@ -524,7 +558,8 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   if (impostos > 0 && pib > 0) somar(e, reg, 'pais', 'divida', -(impostos / pib) * 100, 'impostos_das_empresas');
   if (!c.porId.has(QUEBRA) || e.agenda.some((a) => a.evento === QUEBRA)) return;
   // Afunda a empresa que não pagou as contas dois anos seguidos, a que ficou sem estrutura ou a que está abaixo do piso de valor.
-  const afundando = empresasDe(e).find((x) => insolventes.has(x.id) || (x.n['valor'] ?? 0) < PISO_EMPRESA || (x.n['capacidade'] !== undefined && (x.n['capacidade'] ?? 0) < PISO_EMPRESA));
+  // A holding não afunda pelo valor: ele é o caixa que ela distribuiu (o que ela tem são as participações).
+  const afundando = empresasDe(e).find((x) => !x.q['holding'] && (insolventes.has(x.id) || (x.n['valor'] ?? 0) < PISO_EMPRESA || (x.n['capacidade'] !== undefined && (x.n['capacidade'] ?? 0) < PISO_EMPRESA)));
   if (!afundando) return;
   if (afundando.id !== PRINCIPAL) trocar(e, reg, PRINCIPAL, afundando.id);
   e.agenda.push({ evento: QUEBRA, ano: e.ano, origem: e.entidades[PRINCIPAL]!.q['fundada']?.causa ?? null });
@@ -620,6 +655,10 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
   const id = op.empresa ?? PRINCIPAL;
   const emp = empresaDe(e, id);
   if (!emp) return id === PRINCIPAL ? 'você não tem empresa' : 'essa empresa não é mais sua';
+  // A holding não tem negócio próprio: compra, funde, emite e vai à bolsa pelas subsidiárias (grupo.ts).
+  if (emp.q['holding'] && ['adquirir', 'opa', 'fundir', 'venderSubsidiaria', 'emitir', 'recomprar', 'abrirCapital'].includes(op.tipo)) return 'a holding não tem negócio próprio: isso se faz por uma subsidiária';
+  // Quem joga mexe direto só na parte que é dele; a da subsidiária é da controladora dela (grupo.ts).
+  if (donaDe(emp) !== 'eu' && ['aportar', 'vender', 'retirada', 'emitir', 'recomprar', 'abrirCapital', 'fundir', 'venderSubsidiaria'].includes(op.tipo)) return 'essa empresa é de outra empresa do grupo: decida pela controladora dela';
   if (op.tipo === 'aportar') {
     if (!(op.valor >= 1)) return 'escolha quanto pôr';
     if (op.valor > liquidoDe(e) + 0.5) return 'não há tanto dinheiro';
@@ -656,6 +695,7 @@ export function motivoParaNaoOperarEmpresa(e: EstadoVida, c: Conteudo, op: Opera
   }
   if (op.tipo === 'cuidar') {
     if (id === PRINCIPAL) return 'você já cuida desta';
+    if (emp.q['holding']) return 'a holding não tem chão de fábrica para tocar: cuide de uma das empresas dela';
     if (e.agenda.some((a) => a.evento === QUEBRA)) return 'a que você toca está no osso';
   }
   return null;
@@ -701,7 +741,7 @@ function porNaEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], id: string, va
 const RETIRADA_TEXTO = (fracao: number): string =>
   fracao <= 0 ? 'reinvestir todo o lucro' : `tirar ${Math.round(fracao * 100)}% do lucro de dividendo`;
 
-const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sexta'];
+const ORDINAL = ['', 'primeira', 'segunda', 'terceira', 'quarta', 'quinta', 'sexta', 'sétima', 'oitava', 'nona', 'décima', 'décima primeira', 'décima segunda'];
 
 const subsidiariasTexto = (n: number): string => (n === 1 ? 'uma subsidiária' : `${n.toLocaleString('pt-BR')} subsidiárias`);
 

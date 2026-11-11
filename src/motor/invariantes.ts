@@ -17,6 +17,7 @@ import { conferirDividas } from './contas.ts';
 import type { Conteudo } from './conteudo.ts';
 import { dinheiroDoMundo } from './moeda.ts';
 import { espacoNoMercado } from './negocio.ts';
+import { conferirPropriedade } from './societario.ts';
 import type { EstadoVida } from './tipos.ts';
 
 /** Anos entre as gerações de sangue: pai e mãe são pelo menos isto mais velhos, e os filhos, isto mais novos. */
@@ -79,7 +80,8 @@ export function conferirEstado(e: EstadoVida, c?: Conteudo): string[] {
     }
   }
 
-  // ---- as empresas
+  // ---- as empresas: a propriedade (o registro, as partes, a dona viva, nenhum ciclo) e o negócio
+  problemas.push(...conferirPropriedade(e));
   for (const en of Object.values(e.entidades)) {
     if (en.tipo !== 'empresa') continue;
     if ((en.n['caixa'] ?? 0) < -0.5) problemas.push(`${en.id}: caixa negativo (${(en.n['caixa'] ?? 0).toFixed(2)})`);

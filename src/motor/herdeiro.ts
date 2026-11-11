@@ -11,7 +11,7 @@
  */
 import { ATIVOS, FILHOS, IRMAOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { abrirContas } from './moeda.ts';
-import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos } from './campos.ts';
+import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos , donaDe } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
@@ -221,7 +221,8 @@ function partilhar(antiga: EstadoVida, herdeiroEhOPar = false, irmaos = 0): Espo
   for (const a of ATIVOS) heranca[a] = (caixa[a] ?? 0) * fica;
   // O que a conta não pagou sai de cada empresa na mesma proporção.
   const participacoes: Record<string, number> = {};
-  for (const emp of empresasDe(antiga)) participacoes[emp.id] = (emp.n['participacao'] ?? 1) * (naEmpresa > 0 ? 1 - daEmpresa / naEmpresa : 1);
+  // Só a parte que era de quem morreu muda de mão; a subsidiária continua da holding, com a mesma parte (a holding é que passa).
+  for (const emp of empresasDe(antiga)) participacoes[emp.id] = (emp.n['participacao'] ?? 1) * (donaDe(emp) === 'eu' && naEmpresa > 0 ? 1 - daEmpresa / naEmpresa : 1);
   // Cada título fica com a mesma fração que a conta: o que saiu deles foi vendido para pagar a partilha.
   const titulos = titulosAntes > 0 ? (emTitulos * fica) / titulosAntes : 0;
   return { heranca, participacoes, deixou: total - sai, doConjuge, imposto, doacao, doIrmaos, dosBens, titulos };

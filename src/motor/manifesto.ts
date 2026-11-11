@@ -481,7 +481,7 @@ export interface EtapaDoAno {
 /** O bolso de quem joga: o dinheiro, a dívida e as classes da carteira (quem paga saca delas, na ordem de liquidez). */
 const BOLSO = ['eu.dinheiro', 'eu.divida', ...ATIVOS.map((a) => `eu.${a}`)];
 /** O patrimônio (campos.ts › patrimonioTotal): o bolso, os títulos do Tesouro, a parte nas empresas, os bens e o que corre entre pessoas. */
-const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item', 'prm.saldo', 'prm.credor', 'prm.devedor'];
+const PATRIMONIO = [...BOLSO, 'tit.valor', 'empresa.valor', 'empresa.participacao', 'empresa.dona', 'empresa.socia', 'empresa.participacao_socia', 'empresa.vivo', 'bem.valor', 'bem.financiado', 'bem.vivo', 'bem.item', 'prm.saldo', 'prm.credor', 'prm.devedor'];
 const POLITICAS_DO_PAIS = POLITICAS.map((p) => `pais.pol_${p}`);
 /** O saldo das contas do país (moeda.ts). */
 const CONTAS_DO_PAIS = CONTAS.map((x) => `${x}.dinheiro`);
@@ -553,7 +553,7 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: ['pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
+    le: ['eu.vivo', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
     escreve: ['pessoa.magoa', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {

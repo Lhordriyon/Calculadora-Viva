@@ -10,6 +10,7 @@
  * disparou. Toda operação vira uma entrada do livro (tipo "dinheiro", causa "acao"):
  * é decisão do jogador, mas não gasta a ficha do ano.
  */
+import { ehOperacaoDeGrupo, motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { ATIVOS, LIQUIDEZ, PADROES, PERFIL_PADRAO, PERFIS, type Ativo, type Fase, type Padrao, type Perfil } from './constantes.ts';
 import { investidoDe } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -89,6 +90,7 @@ function nomeDaEmpresaDe(e: EstadoVida, id?: string): string {
 }
 
 export type Operacao =
+  | OperacaoGrupo
   | OperacaoEmpresa
   | OperacaoNegocio
   /** Da conta para os investimentos: numa classe, ou pelo perfil. */
@@ -128,6 +130,7 @@ const DE: Record<Ativo, string> = { renda_fixa: 'da renda fixa', acoes: 'das aç
 export function motivoParaNaoOperar(e: EstadoVida, c: Conteudo, op: Operacao): string | null {
   if (!e.vivo) return 'esta vida já terminou';
   if (e.pendente) return 'responda o cartão do ano primeiro';
+  if (ehOperacaoDeGrupo(op)) return motivoParaNaoOperarGrupo(e, c, op);
   if (ehOperacaoDeEmpresa(op)) return motivoParaNaoOperarEmpresa(e, c, op);
   if (ehOperacaoDeNegocio(op)) return motivoParaNaoOperarNegocio(e, c, op);
   if (ehOperacaoDeBem(op)) return motivoParaNaoOperarBem(e, c, op);
@@ -180,6 +183,7 @@ export function operar(e: EstadoVida, c: Conteudo, op: Operacao): Entrada {
     if (causas && causas.length > 0) entrada.causas = causas;
     return lancar(e, entrada, reg);
   };
+  if (ehOperacaoDeGrupo(op)) return lancarCom('grupo', (id) => operarGrupo(e, c, op, reg, id));
   if (ehOperacaoDeEmpresa(op)) return lancarCom('empresa', (id) => operarEmpresa(e, c, op, reg, id));
   if (ehOperacaoDeNegocio(op)) return lancarCom('negocio', () => operarNegocio(e, c, op, reg, nomeDaEmpresaDe(e, op.empresa)));
   if (ehOperacaoDeBem(op)) return lancarCom('bens', (id) => operarBem(e, c, op, reg, id));

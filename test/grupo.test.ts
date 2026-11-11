@@ -89,17 +89,21 @@ function livroFecha(e: EstadoVida, inicio: Foto): void {
 }
 
 describe('várias empresas', () => {
-  it('abre até cinco, cada uma no seu lugar e com nome próprio; a sexta espera', () => {
+  it(`abre até ${MAX_EMPRESAS}, cada uma no seu lugar e com nome próprio; a seguinte espera`, () => {
     const e = adulto(1, { dinheiro: 1_000_000 });
     for (let i = 0; i < MAX_EMPRESAS; i++) abrir(e, i % 2 ? 'tecnologia' : 'comercio', 10000 + 1000 * i);
-    expect(empresasDe(e).map((x) => x.id)).toEqual(['empresa', 'empresa2', 'empresa3', 'empresa4', 'empresa5']);
+    expect(empresasDe(e).map((x) => x.id)).toEqual(Array.from({ length: MAX_EMPRESAS }, (_, i) => (i === 0 ? 'empresa' : `empresa${i + 1}`)));
     expect(new Set(empresasDe(e).map((x) => x.nome)).size).toBe(MAX_EMPRESAS);
-    expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 })).toMatch(/5 empresas/);
+    expect(motivoParaNaoOperar(e, c, { tipo: 'abrir', setor: 'comercio', valor: 10000 })).toMatch(new RegExp(`${MAX_EMPRESAS} empresas`));
     expect(ler(e, 'eu', 'empresas')).toBe(MAX_EMPRESAS);
-    expect(parteNasEmpresas(e)).toBeCloseTo(60000);
+    const capital = Array.from({ length: MAX_EMPRESAS }, (_, i) => 10000 + 1000 * i).reduce((a, b) => a + b, 0);
+    expect(parteNasEmpresas(e)).toBeCloseTo(capital);
     // O dinheiro só trocou de lugar.
     expect(patrimonioTotal(e)).toBeCloseTo(1_040_000);
-    expect(e.historico.at(-1)!.texto).toMatch(/quinta empresa/);
+    expect(e.historico.some((h) => /quinta empresa/.test(h.texto))).toBe(true);
+    expect(e.historico.at(-1)!.texto).toMatch(/décima segunda empresa/);
+    // Toda empresa tem o número permanente dela, e nenhum se repete.
+    expect(new Set(empresasDe(e).map((x) => x.registro)).size).toBe(MAX_EMPRESAS);
   });
 
   it('cuidar de outra troca as duas de lugar: o conteúdo e o “Trabalhar” passam a falar dela', () => {

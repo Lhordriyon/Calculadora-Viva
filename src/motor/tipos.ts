@@ -41,6 +41,11 @@ export interface Entidade {
    * número, a pessoa é o papel (o save de antes da identidade).
    */
   pessoa?: number;
+  /**
+   * A empresa, de uma vez por todas (a pessoa jurídica; missão Capitalismo vivo): o número permanente dela, que viaja
+   * com ela quando ela muda de lugar no grupo e fica com ela depois de fechar. A propriedade se escreve por ele.
+   */
+  registro?: number;
 }
 
 /**
@@ -173,6 +178,8 @@ export interface EstadoVida {
   ocupacoes?: Ocupacao[];
   /** O número da próxima pessoa que entrar na vida. */
   proximaPessoa?: number;
+  /** O número permanente da próxima empresa (o registro; a missão Capitalismo vivo). */
+  proximoRegistro?: number;
 }
 
 export interface Antepassado {

@@ -60,6 +60,7 @@ const Entidade = z.object({
   t: Textos,
   q: z.record(z.string(), Qualidade),
   pessoa: z.optional(z.number()),
+  registro: z.optional(z.number()),
 });
 
 const Mudanca = z.object({
@@ -137,6 +138,7 @@ const Vida = z.object({
   dinastia: z.optional(z.object({ geracao: z.number(), antepassados: z.array(Antepassado) })),
   ocupacoes: z.optional(z.array(z.object({ papel: z.string(), pessoa: z.number(), desde: z.number() }))),
   proximaPessoa: z.optional(z.number()),
+  proximoRegistro: z.optional(z.number()),
 });
 
 /** A memória da versão 1 não tinha `acoes`: lê as duas. */

@@ -32,6 +32,7 @@ import { CONCORRENCIA, CREDITO_DA_EMPRESA } from './regras.ts';
 import type { Conteudo } from './conteudo.ts';
 import type { DefSetor } from './esquema.ts';
 import { movimentar } from './economia.ts';
+import { pagarDividendos } from './societario.ts';
 import { definirNumero, definirTexto, ganhar, lancar, novaEntrada, perder, somar } from './livro.ts';
 import type { Momento } from './pais.ts';
 import {
@@ -287,14 +288,10 @@ export function anoDoNegocio(e: EstadoVida, c: Conteudo, emp: Entidade, fase: Mo
     somar(e, reg, id, 'divida', -parcela, 'amortizacao');
   }
 
-  // Os dividendos saem do lucro, na proporção que os donos decidiram, e do que há no caixa.
-  const parte = n['participacao'] ?? 1;
+  // Os dividendos saem do lucro, na proporção que os donos decidiram, e do que há no caixa; sobem pelos sócios
+  // (quem joga, a holding, a pessoa dona, o mercado), cada um pela parte dele (societario.ts).
   const dividendos = lucro > 0 ? Math.min(Math.max(0, n['caixa'] ?? 0), lucro * (n['retirada'] ?? 0)) : 0;
-  if (dividendos >= 1) {
-    somar(e, reg, id, 'caixa', -dividendos * parte, 'dividendos', 'eu');
-    movimentar(e, reg, { dinheiro: dividendos * parte, contraparte: id }, 'eu', 'dividendos');
-    if (parte < 1) somar(e, reg, id, 'caixa', -dividendos * (1 - parte), 'dividendos', 'mercado');
-  }
+  pagarDividendos(e, reg, emp, dividendos);
 
   // O ano que não fecha: vende capacidade (pela metade do que custou) até o caixa voltar a zero, e demite junto.
   let cortou = 0;
@@ -383,6 +380,7 @@ export function motivoParaNaoOperarNegocio(e: EstadoVida, c: Conteudo, op: Opera
   const id = op.empresa ?? 'empresa';
   const emp = e.entidades[id];
   if (!emp || emp.tipo !== 'empresa' || emp.vivo === false) return 'essa empresa não existe';
+  if (emp.q['holding']) return 'a holding não tem operação própria: quem produz e vende são as subsidiárias';
   const n = emp.n;
   switch (op.tipo) {
     case 'preco':

@@ -476,7 +476,13 @@ export const GARGALO_DO_DONO = 0.8;
 // ---- o grupo de empresas (incremento 9: mais de uma empresa, subsidiárias, fusões e bolsa)
 
 /** Empresas de uma vez (a que quem joga toca e as outras); para abrir mais, venda ou junte duas. */
-export const MAX_EMPRESAS = 5;
+export const MAX_EMPRESAS = 12;
+
+/**
+ * A holding (missão Capitalismo vivo): a estrutura dela por ano (o escritório, a auditoria, o conselho), paga do caixa,
+ * em reais de hoje.
+ */
+export const HOLDING = { estrutura: 150_000 } as const;
 /**
  * A concorrente comprada vem com as subsidiárias dela, pelo tamanho: nenhuma até uns R$ 4 milhões, umas 8 com
  * R$ 300 milhões, 27 com R$ 3 bilhões. É o que leva um grupo às centenas.
