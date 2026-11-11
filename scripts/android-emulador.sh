@@ -24,21 +24,36 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"
 
 echo "== o emulador (Android API $API, x86_64)"
 yes | "$BIN/sdkmanager" --licenses > /dev/null 2>&1 || true
-"$BIN/sdkmanager" --install "platform-tools" "emulator" "$IMAGEM" > /dev/null
+yes | timeout 900 "$BIN/sdkmanager" --install "platform-tools" "emulator" "$IMAGEM" 2>&1 | grep -v -E "^\[=*|^ *$" | tail -5 || true
+if [ ! -d "$SDK/system-images/android-${API}/default/x86_64" ]; then
+  echo "✗ a imagem do Android não foi instalada em $SDK/system-images/android-${API}/default/x86_64"
+  exit 1
+fi
 echo no | "$BIN/avdmanager" create avd --force -n trajetoria -k "$IMAGEM" --device "pixel_6" > /dev/null
-"$SDK/emulator/emulator" -avd trajetoria -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -camera-back none -camera-front none > emulador.log 2>&1 &
-"$ADB" wait-for-device
+ls -l /dev/kvm || true
+timeout 60 "$SDK/emulator/emulator" -accel-check 2>&1 | tail -3 || true
+"$SDK/emulator/emulator" -avd trajetoria -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -camera-back none -camera-front none -memory 3072 > emulador.log 2>&1 &
+EMULADOR=$!
+# Até 8 minutos para ligar, vigiando o processo: se o emulador cai, o log dele explica por quê (antes, o script
+# esperava o aparelho para sempre e o passo estourava o tempo sem dizer nada).
 ligou=""
-for _ in $(seq 1 180); do
-  if [ "$("$ADB" shell getprop sys.boot_completed 2> /dev/null | tr -d '\r')" = "1" ]; then
+for i in $(seq 1 240); do
+  if ! kill -0 "$EMULADOR" 2> /dev/null; then
+    echo "✗ o emulador saiu antes de ligar; o fim do log dele:"
+    tail -60 emulador.log
+    exit 1
+  fi
+  if [ "$(timeout 10 "$ADB" shell getprop sys.boot_completed 2> /dev/null | tr -d '\r')" = "1" ]; then
     ligou=1
+    echo "o emulador ligou em $((i * 2)) s"
     break
   fi
+  [ $((i % 30)) -eq 0 ] && echo "… esperando o emulador ligar ($((i * 2)) s)"
   sleep 2
 done
 if [ -z "$ligou" ]; then
-  echo "✗ o emulador não ligou em 6 minutos"
-  tail -40 emulador.log
+  echo "✗ o emulador não ligou em 8 minutos; o fim do log dele:"
+  tail -60 emulador.log
   exit 1
 fi
 "$ADB" shell input keyevent 82 > /dev/null 2>&1 || true
@@ -48,15 +63,15 @@ echo "Android $("$ADB" shell getprop ro.build.version.release | tr -d '\r') (API
 "$ADB" shell dumpsys webviewupdate 2> /dev/null | grep -i -m1 "Current WebView package" || true
 
 abrir() {
-  "$ADB" shell am start -W -n "$PACOTE/.MainActivity" > /dev/null
+  timeout 60 "$ADB" shell am start -W -n "$PACOTE/.MainActivity" > /dev/null || true
   sleep "${1:-20}"
 }
 
 # A árvore de acessibilidade da tela (a WebView entra nela quando alguém pede): tenta algumas vezes.
 arvore() {
   for _ in 1 2 3 4 5 6; do
-    "$ADB" shell uiautomator dump /sdcard/tela.xml > /dev/null 2>&1 || true
-    "$ADB" exec-out cat /sdcard/tela.xml > tela.xml 2> /dev/null || true
+    timeout 40 "$ADB" shell uiautomator dump /sdcard/tela.xml > /dev/null 2>&1 || true
+    timeout 20 "$ADB" exec-out cat /sdcard/tela.xml > tela.xml 2> /dev/null || true
     if grep -q -E "$1" tela.xml 2> /dev/null; then
       return 0
     fi
@@ -80,7 +95,7 @@ centro() {
 }
 
 echo "== 1. instalar e abrir"
-"$ADB" install -r "$APK" > /dev/null
+timeout 180 "$ADB" install -r "$APK"
 "$ADB" logcat -c
 abrir 25
 if ! "$ADB" shell pidof "$PACOTE" > /dev/null; then
@@ -104,7 +119,7 @@ case "$foco" in
 esac
 
 echo "== 2. o jogo desenhou"
-"$ADB" exec-out screencap > tela.raw
+timeout 30 "$ADB" exec-out screencap > tela.raw
 node "$AQUI/android-tela.cjs" tela.raw
 
 echo "== 3. começar uma vida"
