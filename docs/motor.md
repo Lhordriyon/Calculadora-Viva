@@ -451,3 +451,16 @@ Uma estratégia fixa que vence as outras em idade média de morte, patrimônio m
 ## Determinismo
 
 Mesma semente e mesmas decisões dão a mesma vida, mesmo salvando e recarregando a cada passo (há teste, com a ficha do ano). A interface sorteia a semente com `crypto.getRandomValues`; o túnel deriva as suas de uma semente fixa, então `docs/metricas.md` só muda quando o motor ou o conteúdo mudam.
+
+## Os invariantes do estado (`invariantes.ts`; missão Ascensão AAA)
+
+`conferirEstado(e, c)` devolve os problemas do estado inteiro, vazio quando tudo vale. Não muda nada, e o jogo não a chama: quem usa é a auditoria (`npm run auditoria`), o túnel (depois de cada ano de toda vida, e trava se achar) e os testes (`test/integridade.test.ts`).
+
+- **Os números:** todo campo numérico é finito, está declarado em `campos.ts` e fica dentro do limite dele (o campo com base conta a base).
+- **O dinheiro:** a soma de todo o dinheiro do mundo é zero, com uma folga de centavos de ponto flutuante que cresce com o PIB (`folgaDoDinheiro`: R$ 100, ou o PIB × 10⁻¹¹); a dívida de quem joga e o financiado de cada bem batem com os contratos (`conferirDividas`); a conta, os investimentos e a dívida de quem joga não ficam negativos.
+- **O tempo:** o ano é o nascimento mais a idade; ninguém nasce no futuro nem morre antes de nascer; quem morreu tem o ano da morte; pai e mãe são pelo menos 12 anos mais velhos que quem joga, e os filhos, 12 mais novos.
+- **As empresas:** o caixa não fica negativo, a parte de quem joga fica entre zero e tudo, e a demanda cabe no que sobra do mercado do setor (`negocio.ts › espacoNoMercado`).
+
+**O tempo de uma marca** (`campos.ts › anosDaMarca`) é o ano de agora menos o ano em que ela veio. As condições (`marcaHa`), a pressa das vontades, a união que vira viuvez e a folha Família usam essa conta. Dentro de uma vida é o mesmo que a idade de agora menos a idade em que a marca veio; na vida de quem herda, a marca copiada da vida anterior guarda a idade de quem morreu, e só o ano continua certo.
+
+**A auditoria** (`scripts/auditoria.ts`) joga dinastias (as quatro estratégias, as origens sorteadas e as das pontas: a miséria, a fortuna, a coroa e o regime) e confere depois de cada ano os invariantes, as contas de cada entrada nova, o velório no ano da morte ou no seguinte, quem age num storylet de personagem vivo, o par adulto de quem é adulto e os irmãos nascidos com a mãe viva; no fim de cada vida, que o livro fecha para toda entidade.

@@ -124,6 +124,15 @@ Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fund
 
 - [x] S1 (03/11): o sonho. Aos 15, a vida pergunta o que você quer dela (virar estrela, construir um império, governar o país, ou ainda não sei) e, com o namoro, o que você quer do amor (a casa cheia ou um amor para a vida toda). O sonho é um plano com as etapas do estado e prazo longo; cada um tem três cenas em pontos diferentes do caminho; a conquista é um marco dourado, e o cartão da vida diz como cada sonho terminou. Os sonhos têm vaga própria, à parte dos planos, e o marco não toma a vaga de um ponto de virada (I-141)
 
+**A missão "Ascensão AAA" (10/11; I-144 a I-155).** O dono pediu uma atualização grande, com prioridade para a experiência no Android e para a simulação causal, medida pela qualidade. A ordem: investigar antes de mexer, corrigir pela causa, medir antes e depois, publicar e convidar ao teste; a auditoria final vem depois do retorno dele. A linha de base, as medidas e as decisões estão em `docs/decisoes.md › A missão Ascensão AAA`.
+
+- [x] A investigação: a auditoria independente (5.613 vidas em dinastias, sem um erro de conta), os retornos reais medidos, as fotos da interface na letra do dono, o desempenho com a CPU limitada e a casca do Android
+- [x] A simulação: o tempo das marcas pelo calendário, a família de quem herda, o mercado com tamanho para todo ganho, a viuvez de quem é; `npm run auditoria` e os invariantes do estado no túnel
+- [x] A experiência: o evento que se lê inteiro, a infância sem noticiário, o jogo que não cai, abrir e tocar mais rápido, o toque que se sente e o momento da morte
+- [x] O Android: o ícone, a abertura e a janela no noite e ouro; o APK conferido e jogado num Android emulado no CI
+- [ ] O teste do dono na versão publicada, e a auditoria final depois do retorno dele
+- O que ficou para decidir com o dono: o arranjo do evento para texto muito longo com a letra 1,45, a riqueza das vidas contra o Brasil real, e a vida que quem herda já tinha (o casamento e os filhos que a vida anterior contou)
+
 **O S2, o segundo ato (04/11; o dono aprovou o projeto, I-142).** O sonho do S1 acaba por volta dos 50, e a segunda metade da vida fica sem direção; o sonho realizado é uma linha dourada, sem o momento. Pular os anos sem decisão foi medido e descartado: 77% dos anos já têm uma decisão, e os trechos sem nenhuma têm mediana de 1 ano.
 
 A linha de base (200 vidas dos robôs, com o S1):

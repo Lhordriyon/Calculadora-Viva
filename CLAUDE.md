@@ -8,7 +8,7 @@ A visão em uma troca: o jogador pensa "eu posso tentar qualquer coisa", e o jog
 
 1. Leia este arquivo e o começo de `docs/roteiro.md` (o estado e a próxima fatia). Os outros docs são consulta: busque com grep a seção que a tarefa pede, não leia inteiros (`decisoes.md`, `ideias.md`, `metricas.md`, `motor.md` e `arquitetura.md` somam mais de 250 KB). Toda ideia nova entra em `docs/ideias.md` antes de entrar no código.
 2. Escolha o incremento de maior impacto pelo método abaixo.
-3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, túnel inteiro e build). Se mexeu na interface, também `npm run telas` contra a build.
+3. Ciclo curto enquanto trabalha: `npx tsc -p .`, `npx vitest run test/<arquivo>` e `npm run tunel:rapido` (2.000 vidas, cerca de 1 min, relatório em `dist-tunel.md`). Commits pequenos e descritivos. Antes de cada push, uma vez: `npm run verificar` (tipos, testes, validador, auditoria, túnel inteiro e build). Se mexeu na interface, também `npm run telas` contra a build.
 4. Push na `main` (o CI publica no GitHub Pages). Sem permissão, abra um PR e diga isso.
 5. Atualize as Novidades do README (o que a atualização trouxe e o que não trouxe) e o `CHANGELOG.md`. Termine com: o que mudou, métricas antes e depois, o que foi decidido sozinho e por quê, link do jogo e o que jogar para testar.
 
@@ -18,6 +18,7 @@ Armadilhas que já custaram caro:
 - Comando longo roda em segundo plano, e a notificação avisa quando acaba. Consultar o andamento repetidas vezes gasta contexto à toa.
 - Filtre as saídas (`| tail`, `grep`): cada resposta relê o contexto inteiro.
 - Interface se mede na escala do dono: 360 × 780 com a letra do sistema em 1,0, 1,15 e 1,45, nos dois temas, além de 390 × 844. O V1 foi medido só num celular comum e quebrou no aparelho dele.
+- O SDK do Android não é alcançável do ambiente em nuvem (nem há emulador): a build do APK e o teste num Android emulado rodam no CI. Mexeu em `android/`? Depois do push no branch, dispare o workflow "App Android" nele (constrói, confere o APK e joga no emulador, sem publicar) antes de levar para a `main`.
 - A CPU absoluta muda de máquina para máquina (depois de um reinício, a mesma versão mediu 46 e 63 ms por vida). Para saber se o código ficou mais caro, compare em A/B na mesma máquina: uma worktree da versão anterior e as duas rodadas alternadas.
 
 ## Como pensar (nesta ordem; nunca inverta)
@@ -134,13 +135,14 @@ src/motor/             motor puro, sem UI: roda em Node e no navegador
   conteudo.ts          indexa o conteúdo já lido, sem Zod (o navegador usa direto)
   validacao.ts         checagens além do esquema (leitores, sistemas, personagens, cadeias)
   manifesto.ts         o que as regras do motor leem e escrevem (para o validador) e as etapas do ano, cada uma com o que lê e escreve
+  invariantes.ts       o que tem de valer depois de qualquer passo do motor: números finitos e nos limites, o dinheiro do mundo somando zero, as dívidas nos contratos, o tempo e a família coerentes, a clientela dentro do mercado (a auditoria, o túnel e os testes chamam; o jogo não)
   regras.ts            números de equilíbrio (ritmo, mortalidade, juros, família, amor…)
   constantes.ts        atributos, papéis, verbos, classes, tipos de família
-src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança e a gravação da vida (o caminho não tomado); exportar e importar pelo menu
+src/jogo/salvar.ts     save versionado no localStorage (zod/mini), com cópia de segurança (trocada só depois de o jogo desenhar) e a gravação da vida (o caminho não tomado); exportar e importar pelo menu; o save que não grava libera a cópia, tenta de novo e avisa; as saídas da tela de recuperação
 src/conteudo.ts        conteúdo embutido no bundle (já validado no CI)
-src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, Projetos (a folha Planos), CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), voltar.ts (o voltar fecha a folha), Icones (SVG), estilo.css (tema noite e ouro)
-scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), medidas, uma-vida, icones (Node com TypeScript nativo)
-android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz
+src/ui/                Preact: App, Abertura, Cabecalho, LinhaDoTempo, Palco, Familia, Dinheiro, Carreira, Pais, Projetos (a folha Planos), CartaoVida; Folha (a folha que sobe, com o Fechar fora da rolagem), Fronteira (a tela de recuperação quando o desenho quebra), voltar.ts (o voltar fecha a folha), vibrar.ts (a vibração curta, com chave no menu), exportar.ts (o save que sai do aparelho), Icones (SVG), estilo.css (tema noite e ouro)
+scripts/               validar, tunel (orquestra as tarefas e analisa), tunel-vida (uma vida e as tarefas), tunel-trabalhador (um por núcleo), auditoria (os invariantes ano a ano, em dinastias), medidas, uma-vida, icones (Node com TypeScript nativo); telas.cjs (a régua da tela); android-emulador.sh e android-tela.cjs (o APK num Android emulado, no CI)
+android/               app Android (Capacitor): o jogo vai dentro do APK, offline; capacitor.config.json na raiz; o ícone, a abertura e a janela no noite e ouro (res/values e values-night › fundo; os PNGs saem do `npm run icones`)
 test/                  Vitest
 ```
 
@@ -151,13 +153,14 @@ Detalhes do motor em `docs/motor.md`; formato e guia de escrita em `docs/conteud
 | Comando | O que faz |
 |---|---|
 | `npm run dev` | jogo local com recarga |
-| `npm run verificar` | tudo que o CI roda: tipos, testes, validador, túnel, build |
+| `npm run verificar` | tudo que o CI roda: tipos, testes, validador, auditoria, túnel, build |
 | `npm run validar` | só o conteúdo (esquema, ids, caminhos, leitores, personagens, cadeias) |
-| `npm run tunel` | 10.000 vidas simuladas, um trabalhador por núcleo → `docs/metricas.md`; falha se uma meta quebrar |
+| `npm run auditoria` | a integridade da simulação: dinastias de até 4 gerações com o estado conferido depois de cada ano (os invariantes, as contas de cada entrada, o velório no tempo, quem age vivo, o livro fechando); `--dinastias=N --geracoes=G --extremos`; falha se achar problema |
+| `npm run tunel` | 10.000 vidas simuladas, um trabalhador por núcleo → `docs/metricas.md`; falha se uma meta quebrar (inclusive um invariante do estado em qualquer ano de qualquer vida) |
 | `npm run tunel:rapido` | 2.000 vidas → `dist-tunel.md` (não toca nas métricas oficiais); `--paralelo=1` roda sem trabalhadores |
 | `npm run vida -- 42 cautelosa` | imprime uma vida inteira (semente e estratégia) |
-| `npm run telas -- URL` | a régua da tela: 52 critérios de interface na matriz de telas e letras, contra a build no ar (`npx vite build && npx vite preview`); Playwright fora do `package.json` |
-| `npm run icones` | redesenha os PNGs do PWA |
+| `npm run telas -- URL` | a régua da tela: 58 critérios de interface (com a leitura do evento e as falhas tratadas) na matriz de telas e letras, contra a build no ar (`npx vite build && npx vite preview`); Playwright fora do `package.json` |
+| `npm run icones` | redesenha os PNGs do PWA e os ícones do app Android |
 | `npm run build:android` | monta o jogo para o app Android (`dist-android`) e copia para `android/`; o APK sai no CI (`.github/workflows/android.yml`) |
 
 Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apagável (sem `enum`, sem propriedades no construtor) e imports com `.ts`.
@@ -206,7 +209,7 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | Fichas por ano: 1 criança, 2 adolescente, 3 adulto, 2 depois dos 65; a mesma ação não repete no ano | agente | a agência tem custo de oportunidade; o dono pediu anos mais vividos |
 | Dinheiro, empresa, bens, vaga, eleição e testamento não gastam ficha | agente | é gestão, não o que se vive no ano; a decisão aparece no livro como do jogador |
 | O empurrão de quem governa soma ao crescimento do país (aquecer ajuda a sair da crise) | agente | o estímulo prendia o país numa crise sem fim (o dono viveu uma) |
-| O mundo tem tamanho: empresa até ~R$ 20 tri, investimento que rende até R$ 5 tri, no máximo 3 milhões de funcionários | agente | o dono viu 957 milhões de funcionários e uma herdeira com R$ 357 tri em títulos; estado impossível quebra o Brasil real |
+| O mundo tem tamanho: a clientela de uma empresa cabe no mercado do setor (uma parte do PIB), investimento que rende até R$ 5 tri, no máximo 3 milhões de funcionários | agente | o dono viu 957 milhões de funcionários e uma herdeira com R$ 357 tri em títulos; estado impossível quebra o Brasil real |
 | Popularidade é a imagem pública: pesa em toda eleição e segue para o mandato | agente | 103 efeitos do conteúdo mexiam nela sem consequência para quem não tinha cargo |
 | A empresa depende de quem manda (talento, freio do tamanho, morte, venda); só decisões mudam isso | agente | das 250 ideias do dono, as que mudam a história e não só a despesa: mandar sem centralizar e construir o que sobrevive a você |
 | Mais de uma empresa, empresa-mãe com centenas de subsidiárias, fusões; vender ou abrir o capital de cada uma | dono | "eu só posso ter uma empresa": o grupo vira história (comprar, juntar, listar, vender aos pedaços) |
@@ -339,3 +342,15 @@ Node 22.18+ roda os scripts TypeScript direto (sem build). Use só sintaxe apag�
 | O sonho passa adiante: o que não veio, contado a quem vem depois, vai para o filho mais velho vivo (o campo `sonho`); sem ele, o sonho que quem morreu ainda tinha de pé; quem continua a história começa a vida com ele de pé, com a abertura de causa, e pode guardar a pasta numa gaveta; o cartão diz de quem era | agente (bloco S3, I-143: o dono pediu a próxima volta do loop) | o sonho que não vinha morria com a vida, e a dinastia continuava sem nada do que quem morreu queria |
 | Passar o sonho conta como consequência própria na régua dos dilemas | agente (bloco S3) | sem isso, "fazer as pazes com o que foi" (felicidade +5) parecia melhor em tudo que passar o sonho adiante |
 | O caminho do sonho é perceptível: cada etapa nova vira uma linha ✦ na linha do tempo (uma vez por contagem, com o começo do sonho de causa); quem herda um sonho acha a pasta do sonho no primeiro ano; a folha Planos e o fim do sonho dizem de quem ele era | dono (07/11: "tem que ser divertida e legal e perceptível!") | o progresso do sonho só aparecia na folha Planos, e o sonho herdado chegava como uma linha da abertura |
+| Os invariantes do estado valem depois de cada ano de toda vida (`invariantes.ts`): números finitos e nos limites, o dinheiro do mundo somando zero, as dívidas nos contratos, o tempo e a família coerentes, a clientela dentro do mercado; o túnel e a auditoria travam o contrário | agente (missão Ascensão AAA, I-148) | o túnel só conferia as contas entrada por entrada e o estado no fim da vida; os erros de tempo e de família entre gerações passavam |
+| "Há quantos anos" de uma marca sai do calendário (`anosDaMarca`: o ano de agora menos o ano da marca), nunca da idade de quem joga | agente (missão AAA, I-144) | a marca herdada guarda a idade de quem morreu: 169 de 345 velórios de herdeiros chegavam com 2 anos ou mais de atraso (o maior, 36) |
+| Quem herda tem pais de uma geração antes (20 a 38 anos); o par de quem é adulto tem pelo menos 18, e o de quem é menor, um ano a menos ou dois a mais; ninguém nasce depois do ano em que aparece | agente (missão AAA, I-145) | a "mãe" do par ou do amigo que herdava podia ser mais nova que ele, e o par de quem tinha 19 podia ter 17 |
+| Todo ganho de demanda (a compra, a fusão, o contrato, a clientela da rival) cabe no que sobra do mercado do setor, somando as empresas de quem joga nele; o que o país compra de uma empresa não passa do que ele compra do setor | agente (missão AAA, I-146) | só o crescimento orgânico olhava o mercado: a folha chegava a mostrar 141% do que o país compra do setor |
+| A viuvez e a separação do pai e da mãe se leem na pessoa (`ator.sozinho`); a marca `viuvo` é de quem joga | agente (missão AAA, I-147) | bastava quem joga ficar viúvo para a mãe, casada, "namorar de novo" |
+| Durante um evento, o texto dele vale mais que a história de trás: a história cede antes de o texto rolar por dentro, e o que sobraria dela em menos de uma linha e meia não aparece; o tamanho do texto do evento acompanha a letra do sistema sem degrau | agente (missão AAA, I-152) | com a letra do dono (1,45), 56% dos eventos tinham o texto cortado com a história ainda na tela |
+| Até os 12 anos, o noticiário do país fica no livro e fora da linha do tempo | agente (missão AAA, I-153) | um quarto das entradas da primeira infância era eleição, ciclo e mundo lá fora; com a letra grande, uma notícia ocupa a faixa da história |
+| O jogo não fica mudo nem em branco quando algo quebra: a tela de recuperação com saídas, o erro do motor que avisa e guarda a vida, o save que não grava libera a cópia e avisa; a cópia de segurança só troca depois de o jogo desenhar | agente (missão AAA, I-150) | um erro do motor fazia o toque não responder, calado; um save que derruba o desenho era tela em branco para sempre; o armazenamento cheio perdia a vida sem aviso |
+| Só as entradas antigas da linha do tempo (todas menos as últimas 48) deixam de ser desenhadas fora da tela | agente (missão AAA, I-151) | abrir uma vida de 75 anos ficou 22% mais rápido; com todas, a rolagem até o ano novo media alturas estimadas e parava fora do lugar |
+| A vibração curta só nas decisões e nos momentos (a escolha, a ação, o marco, o sonho realizado, a morte), com chave no menu, guardada no aparelho; o número do cabeçalho que muda 2 pontos ou mais dá um pulso de cor; a morte chega antes do resto do cartão, sem toque a mais | agente (missão AAA, I-154 e I-155) | a consequência do toque precisa se sentir na hora; vibrar a cada ano cansaria, e um toque a mais por vida estouraria o teto de toques |
+| O ícone, a abertura e a janela do app Android usam as cores do jogo (o fundo claro ou escuro pelo tema do aparelho), e saem do mesmo `npm run icones` | agente (missão AAA, I-149) | o APK ainda abria com a identidade antiga (terracota e creme) e uma janela cinza antes de o jogo pintar |
+| O APK é conferido no CI (o pacote, as permissões e o jogo da build dentro dele) e, no disparo manual, jogado num Android emulado (abre, começa uma vida, fecha à força, a vida continua); fora da `main` nada é publicado | agente (missão AAA) | daqui não há aparelho nem SDK do Android: sem isso, um erro só do Android só aparecia no celular do dono |

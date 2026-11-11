@@ -117,13 +117,14 @@ Chaves fixas e caminhos. Caminho sem ponto é de quem joga; `ator.x` é do papel
   "marcas": ["iate"], "marcas": ["senhorio"],                   // bens: a qualidade de cada item (mundo.json › bens › marca); senhorio = tem imóvel alugado
   "familia": "religiosa", "traco": ["ansioso", "timido"],      // texto: igual a um, ou a um dentre vários
   "mae.vivo": true, "ator.traco": "gastador", "ator.idade": { "min": 13, "max": 17 },
+  "ator.sozinho": true,                                         // o pai ou a mãe sem o outro (morto há 2 anos ou mais, ausente, ou separados) e a avó; "viuvo" é a viuvez de quem joga, não a deles
   "lugar.regiao": "nordeste", "lugar.capital": true, "lugar.desemprego": { "min": 0.095 },
   "paquera": { "min": 2 },                                      // qualidade numérica (contador)
   "genero": "f", "inflacao": { "min": 9 },
   "setor": "saude", "ator.setor": ["industria", "construcao"],  // setor de trabalho (12, em mundo.json › setores)
   "marcas": ["todas", "estas"], "algumaMarca": ["uma", "destas"], "semMarcas": ["nenhuma", "ator.ausente"],
   // fase do país: "marcas": ["pais.expansao"] ou "algumaMarca": ["pais.recessao", "pais.crise"]
-  "marcaHa": [{ "marca": "fumante", "min": 12 }, { "marca": "ator.faleceu", "max": 0 }]
+  "marcaHa": [{ "marca": "fumante", "min": 12 }, { "marca": "ator.faleceu", "max": 0 }]   // anos do calendário desde que a marca veio (vale também para a marca que quem herda recebeu da vida anterior)
 }
 ```
 

@@ -2020,3 +2020,57 @@ O dono pediu a próxima volta do loop ("Atualização", depois da proposta do S3
 - **Passar e largar o sonho contam como consequências próprias na régua dos dilemas:** sem isso, "fazer as pazes com o que foi" (felicidade +5) parecia melhor em tudo que passar o sonho adiante.
 - **"Ver os netos crescerem" saiu do "sonho que ficou"** para dar lugar a contar o sonho; ele continua no "e agora?" e na folha Planos.
 - **A dívida de quem é casado vai direto ao par** (o peso `aoAlvo` 4 no tema do segredo): a revelação da dívida chegava ao par 2 vezes em 10.000 vidas no S2, e nenhuma na primeira rodada do S3, o que matava a história no túnel. O S3 não mexeu em segredos; o tema vivia no limite do ruído.
+
+## A missão Ascensão AAA (10/11)
+
+O dono pediu uma atualização grande ("Operação Trajetória: Ascensão AAA"), com prioridade para a experiência no Android e para a simulação causal, e com um critério: a evolução medida da qualidade, não a quantidade de código. A ordem foi investigar antes de mexer, corrigir pela causa, medir antes e depois, publicar e só então convidar ao teste. As ideias são a I-144 a I-155.
+
+**A investigação (antes de qualquer mudança).**
+
+- **O núcleo contábil está íntegro.** Uma auditoria independente jogou 5.613 vidas em dinastias de até 6 gerações (401 mil anos, 257 mil conferências do estado, 1,58 milhão de entradas do livro) conferindo ano a ano o que o túnel só conferia no fim da vida. Achou zero número não finito, zero campo fora do limite ou sem declaração, zero dívida fora dos contratos, zero caixa negativo, zero entrada que não fecha, zero erro lançado; o maior resto do dinheiro do mundo foi R$ 5,99 (num país de trilhões).
+- **O país e os investimentos estão no lugar** (8.488 anos em 120 vidas): renda fixa 3,3% ao ano de retorno real; ações 7,5% de média e 5,9% geométrico, com desvio de 17,6; fundos imobiliários 5,0% geométrico; cripto +15,7% de média e −0,4% geométrico, com desvio de 52; dólar 0,0%; inflação 4,6%; Selic 8,75%; juro real 4,1%; crescimento 2,0%; desemprego 8,4%; dívida de 80% do PIB.
+- **Os erros estavam na camada causal e no tempo**, quase todos na passagem entre gerações, e na casca do Android. A tabela abaixo é a linha de base e a medida depois.
+
+**Medidas, antes e depois.**
+
+| O que | Antes | Depois | Como foi medido |
+|---|---|---|---|
+| Velórios de herdeiros com 2 anos ou mais de atraso | 169 de 345 (127 com mais de 11 anos; o maior, 36) | 0 de 371 | 96 dinastias de 4 gerações |
+| Pai ou mãe com menos de 12 anos a mais que quem herda (o par e o amigo) | 106 conferências de ano | 0 | idem |
+| Empresa com a demanda acima do mercado inteiro do setor | 34 conferências (até 176%) | 0 | idem |
+| Vendas maiores que o mercado inteiro do setor | 37 conferências (até 2,9×) | o que o país compra de uma empresa não passa do que ele compra do setor | idem |
+| Pessoa viva com −1 ano (o amigo de infância) | 30 | 0 | idem |
+| Irmão nascido depois da morte da mãe (quem morreu tinha se separado do outro pai) | 43 conferências numa dinastia de 160 | 0 | `npm run auditoria` (160 dinastias de 4 gerações), achado no próprio `verificar` |
+| Adulto de 19 a 21 com par de 17 | 4 | 0 | idem |
+| Texto do evento cortado (rola por dentro), letra 1,45 | 56,4% dos eventos, 3,5 linhas escondidas na mediana | 20,6%, 2,7 linhas, e nunca com a história ainda na tela | 3 vidas jogadas pela interface, 360 × 780 |
+| Idem, letra 1,15 | 9,4% | 0% | idem |
+| História durante o evento, letra 1,45 (mediana) | 107 px | 139 px | idem |
+| Notícias do país na linha do tempo dos 0 aos 5 / dos 6 aos 12 | 24,4% / 18,1% das entradas | 0% / 0% (continuam no livro) | 120 vidas dos robôs |
+| Abrir uma vida de 75 anos, CPU 4× mais lenta | 862 ms | 669 ms (−22%) | A/B alternado, 9 rodadas de cada |
+| Toque do ano aos 75, CPU 4× mais lenta (mediana) | 62 ms | 56 ms (−10%) | idem |
+| Abrir o jogo sem save | 328 ms | 328 ms | idem |
+| Erro do motor num toque | o toque não fazia nada, calado, e o erro se repetia | a folha avisa, a vida fica como estava, exportar e tentar de novo | `npm run telas`, grupo falhas |
+| Save que derruba o desenho | tela em branco | tela de recuperação com quatro saídas | idem |
+| Armazenamento que recusa gravar | falhava calado | a cópia sai para a vida caber; se não bastar, avisa uma vez | idem |
+| Memória em 8 vidas seguidas pela interface | (não medido) | 9 a 11 MB depois de cada vida, sem crescer; 0 erros | Chromium, coleta de lixo forçada |
+| Critérios da régua da tela | 52 | 58 (a leitura do evento e as falhas tratadas) | `npm run telas` |
+
+**Decisões tomadas sozinho.**
+
+- **O tempo das marcas é o do calendário** (`campos.ts › anosDaMarca`): dentro de uma vida é o mesmo número de antes (a idade de agora menos a idade em que a marca veio), então nenhuma vida de primeira geração muda; entre vidas é o certo. Preferi isso a refazer a idade das marcas herdadas uma a uma: a causa era a régua, não as marcas.
+- **O mercado tem tamanho para todo ganho, e o grupo divide o mesmo mercado.** O crescimento orgânico continua travando em 30% do mercado do setor; a compra e a fusão podem levar até o mercado inteiro (o monopólio existe), e duas empresas de quem joga no mesmo setor somam contra o mesmo teto. A estrutura comprada vem inteira: quem compra a última concorrente de um mercado saturado fica com as fábricas e sem cliente novo.
+- **`sozinho` é um campo derivado da pessoa** (o outro morreu há dois anos ou mais, é ausente, ou os dois se separaram; a avó mora só), e não uma marca nova: sai do estado que já existe, vale para os dois storylets que liam a viuvez errada e para o conteúdo que vier.
+- **O outro pai de quem herda é quem era o par de quem morreu quando quem herda chegou à vida** (`herdeiro.ts › outroPaiDe`, pela lista de quem ocupou cada papel). Achado pela própria auditoria no `verificar`: quem se separava do outro pai deixava, na vida nova, um pai ou mãe inventado "morto há muito tempo", às vezes antes de o irmão mais novo nascer, enquanto o ex de verdade seguia vivo. Agora o ex entra no lugar (vivo ou não, com a marca `pais_separados`); sem ex na vida (o filho adotado sem par, o ex que saiu), o inventado morre depois do último filho. Fica de fora o caso em que quem morreu tinha um par novo, que não é o outro pai: o par novo continua no lugar do outro pai, com a metade da herança que a lei dá a ele.
+- **O par de quem é adulto tem pelo menos 18; antes dos 18, um ano a menos ou dois a mais.** Antes, o par nascia com 16 a 18 para quem tinha 14, e com 17 para quem tinha de 19 a 21.
+- **A riqueza das vidas não mudou.** A vida mediana dos robôs termina com R$ 3,7 milhões, e quem nasce sem fortuna, com R$ 1,9 milhão: é generoso para o Brasil real, mas vem de robôs disciplinados (64% abrem empresa, todos investem todo ano) e de retornos que medem certo, não de um erro de conta. Mudar isso é mudar o jogo, e fica para o dono decidir.
+- **Durante um evento, ler o evento inteiro vale mais que ver a história de trás.** A regra da C1 guardava três linhas da história e deixava o texto do evento rolar; com a letra do dono, isso cortava o texto em mais da metade dos eventos. Agora a história cede antes, e o que sobraria dela em menos de uma linha e meia não aparece (era a "fresta" que o dono já tinha recusado). A mediana da história nos eventos subiu, porque o cartão ficou mais justo.
+- **O texto do evento acompanha a letra do sistema sem degrau**: 19 px contra os 17 da história quando a tela comporta, chegando ao tamanho da história conforme a letra cresce (`clamp` com a largura do palco). A primeira versão trocava de tamanho num limiar, e a régua acusou o salto de 88 px na história entre duas letras vizinhas ("um arranjo só").
+- **Com a letra 1,45, um em cada cinco eventos ainda rola por dentro**: texto longo com três ou quatro opções não cabe em 780 px de altura. Chegar a zero pede outro arranjo do evento (ler primeiro, escolher depois), que muda a regra "as opções ficam sempre à vista": fica para o dono decidir.
+- **Até os 12 anos, o noticiário do país não entra na linha do tempo.** A notícia continua no livro (o porquê do que ela causar aponta para ela), e o selo da economia e a folha País mostram o país em qualquer idade.
+- **Só as entradas antigas deixam de ser desenhadas fora da tela** (todas menos as últimas 48): com todas, a rolagem até o ano novo media alturas estimadas e parava fora do lugar (a régua acusou: o texto da última entrada sumia da tela).
+- **A cópia de segurança só é trocada depois de o jogo desenhar** (`salvar.ts › confirmarAbertura`): antes, o save que o esquema aceita e a tela não aguenta virava a cópia na hora de derrubar o jogo, e não havia para onde voltar.
+- **O erro de `operar` (as folhas) continua calado**: a folha já mostra o motivo de cada operação que não dá, e um toque duplo num botão que deixou de valer não merece uma folha de erro.
+- **A vibração só nas decisões e nos momentos** (a escolha de um evento, a ação, o marco, o sonho realizado, a morte), nunca no "viver mais 1 ano", que é o toque mais repetido; com chave no menu, guardada no aparelho e fora do save.
+- **A morte não ganhou um toque a mais**: o nome, os anos e a frase da morte chegam antes, e o resto do cartão um instante depois. Uma tela só para a morte custaria um toque por vida, e o teto de toques já está no limite.
+- **O pulso do cabeçalho só nos quatro atributos e só para variações de 2 ou mais**: o dinheiro muda todo ano, e o vaivém de um ponto piscaria sem dizer nada.
+- **O Android sem aparelho nem emulador aqui.** O SDK do Android não é alcançável deste ambiente, e não pedi acesso a mais. O que fiz no lugar: o workflow do Android passou a conferir o APK (o pacote, as permissões e o jogo desta build dentro dele) e, no disparo manual, a instalar num Android emulado no CI (abre, começa uma vida, fecha à força e a vida continua). No branch, isso roda sem publicar nada.
