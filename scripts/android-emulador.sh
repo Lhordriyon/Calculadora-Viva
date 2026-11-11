@@ -29,7 +29,16 @@ if [ ! -d "$SDK/system-images/android-${API}/default/x86_64" ]; then
   echo "✗ a imagem do Android não foi instalada em $SDK/system-images/android-${API}/default/x86_64"
   exit 1
 fi
-echo no | "$BIN/avdmanager" create avd --force -n trajetoria -k "$IMAGEM" --device "pixel_6" > /dev/null
+# Uma pasta só para o aparelho virtual, a mesma para quem cria e para quem liga: na primeira rodada com o log, o
+# avdmanager criou o aparelho numa pasta e o emulador procurou em outra ("Unknown AVD name").
+export ANDROID_AVD_HOME="$PWD/avd"
+mkdir -p "$ANDROID_AVD_HOME"
+echo no | "$BIN/avdmanager" create avd --force -n trajetoria -k "$IMAGEM" --device "pixel_6" --path "$ANDROID_AVD_HOME/trajetoria.avd" > /dev/null
+if [ ! -f "$ANDROID_AVD_HOME/trajetoria.ini" ]; then
+  # O avdmanager com --path escreve a pasta do aparelho; o arquivo que o emulador procura aponta para ela.
+  printf 'avd.ini.encoding=UTF-8\npath=%s\npath.rel=avd/trajetoria.avd\ntarget=android-%s\n' "$ANDROID_AVD_HOME/trajetoria.avd" "$API" > "$ANDROID_AVD_HOME/trajetoria.ini"
+fi
+echo "aparelhos virtuais que o emulador enxerga: $("$SDK/emulator/emulator" -list-avds | tr '\n' ' ')"
 ls -l /dev/kvm || true
 timeout 60 "$SDK/emulator/emulator" -accel-check 2>&1 | tail -3 || true
 "$SDK/emulator/emulator" -avd trajetoria -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -camera-back none -camera-front none -memory 3072 > emulador.log 2>&1 &
