@@ -143,7 +143,7 @@ function MoverCaixa({ vida, conteudo, aoOperar, de }: Base & { de: Entidade }) {
         ))}
       </div>
       <Acao vida={vida} conteudo={conteudo} aoOperar={(op) => (setTexto(''), aoOperar(op))} op={{ tipo: 'transferirCaixa', de: de.id, para: destino.id, valor }} explica={explica}>
-        Mover {formatarDinheiro(valor)} para {destino.nome}
+        {valor >= 1 ? `Mover ${formatarDinheiro(valor)} para ${destino.nome}` : `Digite quanto mover para ${destino.nome}`}
       </Acao>
     </>
   );
