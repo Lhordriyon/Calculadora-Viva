@@ -470,5 +470,174 @@
         }
       }
     ]
+  },
+  {
+    "id": "o_mais_rico_na_tv",
+    "idade": [
+      16,
+      90
+    ],
+    "condicoes": {
+      "eu.estrato": {
+        "max": 7
+      },
+      "pais.mais_rico": true
+    },
+    "peso": 1,
+    "repetivel": true,
+    "intervalo": 15,
+    "texto": "{pais.mais_rico}, a pessoa mais rica do país, deu entrevista no horário nobre: [o segredo é acordar às quatro e tomar banho gelado|começou do zero, com um empréstimo pequeno do pai|o problema do Brasil é que ninguém quer trabalhar|reclamou do imposto e do sinal de internet no iate]. [Na padaria, ninguém comentou outra coisa|O seu tio mandou o vídeo três vezes no grupo da família|O apresentador riu de tudo, até do que não era piada].",
+    "resumo": "viu a pessoa mais rica do país dar conselhos na TV",
+    "escolhas": [
+      {
+        "texto": "Acordar às quatro no dia seguinte",
+        "resumo": "tentou acordar às quatro como a pessoa mais rica do país",
+        "resultado": {
+          "texto": "Você acordou às quatro, tomou banho gelado e às dez estava dormindo na cadeira. Rico não ficou; com frio, sim.",
+          "efeitos": {
+            "felicidade": -1,
+            "inteligencia": 1
+          }
+        }
+      },
+      {
+        "texto": "Mudar de canal",
+        "resumo": "mudou de canal no meio da entrevista da pessoa mais rica do país",
+        "resultado": {
+          "texto": "No outro canal passava um programa de culinária. Você aprendeu um molho e ficou mais feliz do que ficaria com o banho gelado.",
+          "efeitos": {
+            "felicidade": 2,
+            "saude": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_maior_empresa_na_cidade",
+    "idade": [
+      18,
+      62
+    ],
+    "condicoes": {
+      "renda": {
+        "min": 12000
+      },
+      "semMarcas": [
+        "aposentado",
+        "a_maior_do_pais"
+      ],
+      "eu.estrato": {
+        "max": 5
+      },
+      "pais.maior_empresa": true
+    },
+    "peso": 1,
+    "texto": "A maior empresa do país, {pais.maior_empresa}, vai abrir uma unidade na sua cidade. [A prefeitura já fala em mil vagas|O aluguel do bairro subiu antes de a obra começar|O seu primo já mandou o currículo duas vezes, para garantir].",
+    "resumo": "viu a maior empresa do país chegar à cidade",
+    "escolhas": [
+      {
+        "texto": "Mandar o currículo",
+        "resumo": "mandou o currículo para a maior empresa do país",
+        "teste": {
+          "atributo": "inteligencia",
+          "dificuldade": 60
+        },
+        "sucesso": {
+          "texto": "Três entrevistas, um teste de inglês e um crachá com o logo que você via na TV. O salário veio maior, e a fila do refeitório, também.",
+          "efeitos": {
+            "rendaFator": 1.2,
+            "felicidade": 3
+          },
+          "resumo": "foi contratado pela maior empresa do país"
+        },
+        "fracasso": {
+          "texto": "O e-mail automático agradeceu o interesse e desejou sucesso. Você desejou o mesmo para a empresa, com outras palavras.",
+          "efeitos": {
+            "felicidade": -2,
+            "inteligencia": 1
+          }
+        }
+      },
+      {
+        "texto": "Ficar onde está",
+        "resumo": "ficou no emprego quando a maior empresa do país chegou à cidade",
+        "resultado": {
+          "texto": "Você ficou com o chefe que conhece e o caminho que sabe de cor. Na hora do rush, agradeceu a cada sinal fechado da obra nova.",
+          "efeitos": {
+            "felicidade": 1,
+            "eu.popularidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_mais_rico_quer_a_sua_empresa",
+    "idade": [
+      25,
+      90
+    ],
+    "condicoes": {
+      "empresa.valor": {
+        "min": 10000000
+      },
+      "eu.estrato": {
+        "max": 7
+      },
+      "pais.mais_rico": true
+    },
+    "peso": 2,
+    "texto": "{pais.mais_rico}, a pessoa mais rica do país, mandou um recado pelo advogado: quer comprar {empresa}. [O almoço foi marcado num restaurante sem cardápio|A proposta veio numa pasta de couro com as suas iniciais|O advogado disse que a oferta vale até sexta].",
+    "resumo": "recebeu a proposta da pessoa mais rica do país pela empresa",
+    "escolhas": [
+      {
+        "texto": "Vender tudo pelo preço dele",
+        "resumo": "vendeu a empresa para a pessoa mais rica do país",
+        "resultado": {
+          "texto": "Você assinou antes da sobremesa: {venda} na conta. Na saída, {pais.mais_rico} disse que você negocia bem. Você não soube se era elogio.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 1,
+              "premio": 1.3
+            },
+            "felicidade": 2
+          }
+        },
+        "condicoes": {
+          "empresa.dona": "eu"
+        },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela"
+      },
+      {
+        "texto": "Vender metade e virar sócio dele",
+        "resumo": "vendeu metade da empresa para a pessoa mais rica do país",
+        "resultado": {
+          "texto": "Metade é dele agora, por {venda}. Nas reuniões, ele chega atrasado e sai mais cedo; o dinheiro, chega na hora.",
+          "efeitos": {
+            "venderEmpresa": {
+              "fracao": 0.5,
+              "premio": 1.2
+            },
+            "eu.influencia": 2
+          }
+        },
+        "condicoes": {
+          "empresa.dona": "eu"
+        },
+        "bloqueio": "a empresa é da holding: quem vende é a controladora dela"
+      },
+      {
+        "texto": "Dizer que não está à venda",
+        "resumo": "recusou vender a empresa para a pessoa mais rica do país",
+        "resultado": {
+          "texto": "\"Não está à venda.\" O advogado anotou, guardou a pasta e disse que o cliente dele não costuma ouvir isso duas vezes.",
+          "efeitos": {
+            "eu.influencia": 1,
+            "felicidade": 2
+          }
+        }
+      }
+    ]
   }
 ]

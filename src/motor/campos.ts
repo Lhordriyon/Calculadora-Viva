@@ -196,6 +196,12 @@ const PAIS: Record<string, DefCampo> = {
   cambio: { tipo: 'num', sistema: 'mundo', reais: true, centavos: true, limites: [1.5, 20] },
   /** O tamanho do país (pais.ts): o PIB em reais de hoje, que anda com o crescimento, e a população, que anda com a transição demográfica, a saúde e a pobreza. */
   pib: { tipo: 'num', sistema: 'mundo', reais: true },
+  /**
+   * A pessoa mais rica do país e a maior empresa (lugar.ts › anoDosGrandes): o nome de quem está em primeiro nas
+   * listas, para o motor contar quando muda e o conteúdo falar dela ("você" quando é quem joga ou uma empresa dele).
+   */
+  mais_rico: { tipo: 'texto', sistema: 'mundo' },
+  maior_empresa: { tipo: 'texto', sistema: 'mundo' },
   /** O que o grupo de quem joga adiciona ao PIB (o valor adicionado dele, em % do PIB; demonstracoes.ts). */
   peso_do_grupo: { tipo: 'num', sistema: 'mundo', limites: [0, 100], casas: 2 },
   populacao: { tipo: 'num', sistema: 'mundo', milhoes: true },

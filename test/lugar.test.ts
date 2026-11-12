@@ -11,9 +11,9 @@ import { regraDaEmpresa } from '../src/motor/empresa.ts';
 import { conferirEstado } from '../src/motor/invariantes.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import { lancar, novaEntrada, somar } from '../src/motor/livro.ts';
-import { anoDoLugar, ESTRATOS, lugarNoPais, marcosDoGrupo, percentilDaRiqueza } from '../src/motor/lugar.ts';
+import { anoDoLugar, anoDosGrandes, ESTRATOS, lugarNoPais, marcosDoGrupo, percentilDaRiqueza } from '../src/motor/lugar.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
-import { grupoNoMundo } from '../src/motor/mundo-das-empresas.ts';
+import { grupoNoMundo, maisRicosDoPais } from '../src/motor/mundo-das-empresas.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { porqueDe } from '../src/motor/virada.ts';
 import { nascer } from '../src/motor/vida.ts';
@@ -180,5 +180,48 @@ describe('os marcos do grupo (I-171)', () => {
     expect(linha[0]!.texto).toMatch(/mil funcionários/);
     expect(linha[0]!.causas?.length).toBe(1);
     expect(e.entidades['eu']!.q['grupo_mil']?.causa).toBe(linha[0]!.id);
+  });
+});
+
+describe('os grandes do país vivem (I-173)', () => {
+  it('a fortuna de quem está na lista anda com o setor da empresa dela: a falta sobe, a sobra derruba', () => {
+    const e = adulto(30, 100_000);
+    const antes = maisRicosDoPais(e, c).lista[0]!;
+    expect(antes.de).toMatch(/^don[oa] de /);
+    const setor = `setor_${antes.setor}`;
+    e.entidades[setor]!.n['oferta'] = 70;
+    const alta = maisRicosDoPais(e, c).lista.find((x) => x.nome === antes.nome)!.valor;
+    e.entidades[setor]!.n['oferta'] = 140;
+    const sobra = maisRicosDoPais(e, c).lista.find((x) => x.nome === antes.nome)!.valor;
+    expect(alta).toBeGreaterThan(antes.valor);
+    expect(sobra).toBeLessThan(antes.valor);
+  });
+
+  it('quando o primeiro lugar troca de verdade, o país conta, com quem passou quem; com folga, uma vez', () => {
+    const e = adulto(31, 100_000);
+    const lista = maisRicosDoPais(e, c).lista;
+    // Quem estava em primeiro "era" o segundo de hoje, bem mais pobre: a troca vira notícia.
+    e.entidades['pais']!.t['mais_rico'] = lista[1]!.nome;
+    anoDosGrandes(e, c, []);
+    const noticia = e.historico.filter((h) => h.ref === 'grandes:mais_rico');
+    expect(noticia).toHaveLength(1);
+    expect(noticia[0]!.texto).toContain(`${lista[0]!.nome}, ${lista[0]!.de}, passou ${lista[1]!.nome}`);
+    expect(e.entidades['pais']!.t['mais_rico']).toBe(lista[0]!.nome);
+    anoDosGrandes(e, c, []);
+    expect(e.historico.filter((h) => h.ref?.startsWith('grandes:'))).toHaveLength(1);
+  });
+
+  it('quem joga no topo não vira notícia dos grandes (o lugar já conta), nem a troca de antes dos 13', () => {
+    const e = adulto(32, 1e12);
+    e.entidades['pais']!.t['mais_rico'] = 'Fulano de Tal';
+    const reg: Mudanca[] = [];
+    anoDosGrandes(e, c, reg);
+    expect(e.historico.some((h) => h.ref?.startsWith('grandes:'))).toBe(false);
+    expect(e.entidades['pais']!.t['mais_rico']).toBe('você');
+    const crianca = nascer(c, { semente: 33, ano: 2026 });
+    crianca.idade = 8;
+    crianca.entidades['pais']!.t['mais_rico'] = 'Fulano de Tal';
+    anoDosGrandes(crianca, c, []);
+    expect(crianca.historico.some((h) => h.ref?.startsWith('grandes:'))).toBe(false);
   });
 });

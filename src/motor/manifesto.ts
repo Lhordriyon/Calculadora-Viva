@@ -14,7 +14,7 @@ const MERCADOS = SETORES.flatMap((s) => [`setor_${s}.oferta`, `setor_${s}.obra`]
 const NOMES_DOS_MERCADOS = SETORES.map((s) => `setor_${s}.nome`);
 /** As conquistas da influência (influencia.ts): qualidades de quem joga, uma por degrau de cada esfera. */
 /** O lugar no país e os marcos do grupo (lugar.ts): a faixa, a mais alta, e as qualidades que vêm uma vez por vida. */
-const LUGAR = ['eu.estrato', 'eu.estrato_max'];
+const LUGAR = ['eu.estrato', 'eu.estrato_max', 'pais.mais_rico', 'pais.maior_empresa'];
 const MARCOS_DO_LUGAR = ['eu.entre_os_mais_ricos', 'eu.o_mais_rico_do_pais', 'eu.grupo_mil', 'eu.grupo_dez_mil', 'eu.grupo_cem_mil', 'eu.grupo_um_milhao', 'eu.milesimo_do_mercado', 'eu.centesimo_do_mercado', 'eu.grupo_la_fora', 'eu.entre_as_maiores', 'eu.a_maior_do_pais'];
 const CONQUISTAS_DO_PODER = ['eu.conquista_querida', 'eu.conquista_referencia', 'eu.conquista_portas', 'eu.conquista_voz', 'eu.conquista_reis', 'eu.conquista_trono', 'eu.conquista_mercado', 'eu.conquista_magnata', 'eu.conquista_potencia'];
 /** O que as esferas da influência leem (influencia.ts). */
@@ -726,7 +726,7 @@ export const ETAPAS_DO_ANO = [
     nome: 'o lugar no país e os marcos do grupo: a faixa nova, a volta e a queda, com o porquê',
     // A riqueza de quem joga e a dos pais, a régua do país (o PIB per capita e o Gini), a lista dos mais ricos e das
     // maiores empresas, os funcionários e as fatias do grupo; o porquê lê o livro.
-    le: [...PATRIMONIO, ...LUGAR, ...MARCOS_DO_LUGAR, 'eu.genero', 'eu.vivo', 'eu.nome', 'pessoa.*', 'pais.pib', 'pais.populacao', 'pais.pobreza', 'pais.educacao', 'pais.*', 'empresa.*', 'unidade.*', 'empresaR.*', 'setor.*', 'livro'],
+    le: [...PATRIMONIO, ...LUGAR, ...MARCOS_DO_LUGAR, 'eu.genero', 'eu.vivo', 'eu.nome', 'pessoa.*', 'pais.pib', 'pais.populacao', 'pais.pobreza', 'pais.educacao', 'pais.*', 'empresa.*', 'unidade.*', 'empresaR.*', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'livro'],
     escreve: [...LUGAR, ...MARCOS_DO_LUGAR],
   },
   {

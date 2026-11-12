@@ -446,7 +446,7 @@ export interface Vida {
    * O mundo à vista (I-170 a I-172): a faixa do lugar no nascimento, no fim e a mais alta; as linhas do lugar depois
    * do nascimento (as douradas à parte) e os marcos do grupo e da lista dos mais ricos que a vida teve.
    */
-  lugar: { nasceu: number; final: number; maximo: number; linhas: number; douradas: number; marcos: string[] };
+  lugar: { nasceu: number; final: number; maximo: number; linhas: number; douradas: number; marcos: string[]; grandes: number };
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
@@ -1493,8 +1493,10 @@ function lugarDaVida(e: EstadoVida): Vida['lugar'] {
   let nasceu = 0;
   let linhas = 0;
   let douradas = 0;
+  let grandes = 0;
   for (const h of e.historico) {
     const ref = h.ref ?? '';
+    if (ref.startsWith('grandes:')) grandes++;
     if (ref.startsWith('lugar:nasceu:')) nasceu = Number(ref.split(':')[2]);
     else if (ref.startsWith('lugar:') || ref.startsWith('porte:')) {
       linhas++;
@@ -1502,7 +1504,7 @@ function lugarDaVida(e: EstadoVida): Vida['lugar'] {
     }
   }
   const marcos = Object.keys(eu.q).filter((q) => MARCOS_DO_GRUPO.some((m) => m.id === q) || q === 'entre_os_mais_ricos' || q === 'o_mais_rico_do_pais');
-  return { nasceu, final: eu.n['estrato'] ?? 0, maximo: eu.n['estrato_max'] ?? 0, linhas, douradas, marcos };
+  return { nasceu, final: eu.n['estrato'] ?? 0, maximo: eu.n['estrato_max'] ?? 0, linhas, douradas, marcos, grandes };
 }
 
 function capitalismoVivo(e: EstadoVida): Vida['vivo'] {

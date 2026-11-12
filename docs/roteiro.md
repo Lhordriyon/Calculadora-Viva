@@ -132,7 +132,7 @@ Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fund
 
 - [x] O lugar no país para todo jogador: a faixa da riqueza na distribuição do Brasil real, com a linha do nascimento, a faixa nova, a queda com causa e a volta, o marco dourado a partir do 1%, a folha Dinheiro e o cartão da vida
 - [x] Os marcos do grupo na linha do tempo (funcionários, a fatia do setor, a filial com gente lá fora, as maiores do país) e as histórias que o lugar e o tamanho destravam
-- [ ] Os grandes do país vivem: as maiores empresas e os mais ricos andam com o setor e com o PIB, os mais ricos são donos das maiores, e o país conta quem passou quem (I-173)
+- [x] Os grandes do país vivem: as maiores empresas e os mais ricos andam com o setor e com o PIB, os mais ricos são donos das maiores, e o país conta quem passou quem (I-173)
 
 - [x] A investigação: a auditoria independente (5.613 vidas em dinastias, sem um erro de conta), os retornos reais medidos, as fotos da interface na letra do dono, o desempenho com a CPU limitada e a casca do Android
 - [x] A simulação: o tempo das marcas pelo calendário, a família de quem herda, o mercado com tamanho para todo ganho, a viuvez de quem é; `npm run auditoria` e os invariantes do estado no túnel

@@ -17,6 +17,7 @@ import type { Conteudo } from './conteudo.ts';
 import type { DefEstrangeiro, DefSetor } from './esquema.ts';
 import { aleatorio, criarRng, misturar, normal, sortear } from './rng.ts';
 import { RESTO_DO_MUNDO } from './regras.ts';
+import { ofertaDe, precoDoSetor } from './negocio.ts';
 import type { Entidade, EstadoVida } from './tipos.ts';
 
 /** O país da empresa (um dos quatro de fora), ou undefined para a do Brasil. */
@@ -154,6 +155,8 @@ export interface NoRanking {
   de: string;
   /** É quem joga, ou uma empresa do grupo dele. */
   seu: boolean;
+  /** O setor da empresa (ou o da grande de quem é dono), para o texto do país. */
+  setor?: string;
 }
 
 /** O sorteio das listas: o mesmo na vida inteira, e o ano só mexe a fortuna de cada um um pouco. */
@@ -166,23 +169,75 @@ function doAno(e: EstadoVida, i: number): number {
   return Math.exp(normal(criarRng(misturar(e.semente, e.ano, 8123, i)), 0, 0.08));
 }
 
+/** O preço do setor neste ano (negocio.ts): as grandes e os donos delas sobem na alta e encolhem na sobra. */
+function precoDoAno(e: EstadoVida, setor: string): number {
+  return precoDoSetor(ofertaDe(e, setor));
+}
+
+interface Grande {
+  nome: string;
+  setor: DefSetor;
+  /** A fração do PIB que ela vale com o setor no preço de equilíbrio. */
+  base: number;
+}
+
+interface Rico {
+  nome: string;
+  genero: 'f' | 'm';
+  base: number;
+}
+
+/** O sorteio das listas, guardado pela vida (a semente e o sobrenome): é o mesmo do começo ao fim, e sorteá-lo todo ano custaria. */
+const SORTEIOS = new Map<string, { grandes: Grande[]; ricos: Rico[] }>();
+
 /**
- * Os 10 mais ricos do país (fictícios, os mesmos na vida inteira), do tamanho do PIB: o primeiro perto de 1,4% dele e o
- * décimo perto de 0,15%; e quem joga entra na posição dele (a lista mostra até onde ele está, se estiver fora dos 10).
+ * As 10 grandes do país e os 10 mais ricos (fictícios), sorteados uma vez por vida: o nome, o setor e o tamanho de
+ * cada grande (a primeira perto de 4,5% do PIB) e de cada fortuna (a primeira perto de 1,4%). O i-ésimo mais rico é
+ * dono da i-ésima grande.
  */
-export function maisRicosDoPais(e: EstadoVida, c: Conteudo): { lista: NoRanking[]; posicao: number } {
-  const rng = sorteioDasListas(e, 8111);
-  const pib = pibDoPais(e, c);
+function sorteioDoPais(e: EstadoVida, c: Conteudo): { grandes: Grande[]; ricos: Rico[] } {
+  const chave = `${e.semente}|${e.sobrenome}`;
+  const guardado = SORTEIOS.get(chave);
+  if (guardado) return guardado;
   const setores = [...c.setores.values()].filter((s) => s.empresas && s.empresas.length > 0);
   const familia = e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
   const sobrenomes = c.mundo.sobrenomes.filter((x) => x !== familia);
-  const outros: NoRanking[] = [];
+  const rr = sorteioDasListas(e, 8111);
+  const ricos: Rico[] = [];
   for (let i = 0; i < 10; i++) {
-    const genero = aleatorio(rng) < 0.3 ? 'f' : 'm';
-    const nome = `${sortear(rng, c.mundo.nomes[genero])} ${sortear(rng, sobrenomes)}`;
-    const valor = pib * 0.014 * Math.pow(0.78, i) * Math.exp(normal(rng, 0, 0.1)) * doAno(e, i);
-    outros.push({ nome, valor, de: sortear(rng, setores).nome, seu: false });
+    const genero = aleatorio(rr) < 0.3 ? 'f' : 'm';
+    const nome = `${sortear(rr, c.mundo.nomes[genero])} ${sortear(rr, sobrenomes)}`;
+    const base = 0.014 * Math.pow(0.78, i) * Math.exp(normal(rr, 0, 0.1));
+    // O setor de antes (a fortuna sem dona): sorteado para a lista continuar com os mesmos nomes no save de antes.
+    sortear(rr, setores);
+    ricos.push({ nome, genero, base });
   }
+  const rg = sorteioDasListas(e, 8117);
+  const grandes: Grande[] = [];
+  for (let i = 0; i < 10; i++) {
+    const s = sortear(rg, setores);
+    const nome = sortear(rg, s.empresas!).replaceAll('{sobrenome}', sortear(rg, sobrenomes)).replaceAll('{nome}', sortear(rg, c.mundo.nomes.m)).replaceAll('{o|a}', 'o');
+    grandes.push({ nome, setor: s, base: 0.045 * Math.pow(0.8, i) * Math.exp(normal(rg, 0, 0.1)) });
+  }
+  if (SORTEIOS.size >= 64) SORTEIOS.delete(SORTEIOS.keys().next().value!);
+  const r = { grandes, ricos };
+  SORTEIOS.set(chave, r);
+  return r;
+}
+
+/**
+ * Os 10 mais ricos do país (fictícios, os mesmos na vida inteira), do tamanho do PIB: o primeiro perto de 1,4% dele e o
+ * décimo perto de 0,15%. Cada um é dono de uma das grandes, e a fortuna anda com o setor dela (a alta sobe, a sobra
+ * derruba); quem joga entra na posição dele (a lista mostra até onde ele está, se estiver fora dos 10).
+ */
+export function maisRicosDoPais(e: EstadoVida, c: Conteudo): { lista: NoRanking[]; posicao: number } {
+  const pib = pibDoPais(e, c);
+  const { grandes, ricos } = sorteioDoPais(e, c);
+  const outros: NoRanking[] = ricos.map((r, i) => {
+    const g = grandes[i]!;
+    const valor = pib * r.base * doAno(e, i) * Math.pow(precoDoAno(e, g.setor.id), 1.2);
+    return { nome: r.nome, valor, de: `${r.genero === 'f' ? 'dona' : 'dono'} de ${g.nome}`, seu: false, setor: g.setor.id };
+  });
   const voce = e.entidades['eu']!;
   const eu: NoRanking = { nome: `${voce.nome} ${e.sobrenome}`, valor: patrimonioTotal(e), de: 'você', seu: true };
   const todos = [...outros, eu].sort((a, b) => b.valor - a.valor);
@@ -192,25 +247,23 @@ export function maisRicosDoPais(e: EstadoVida, c: Conteudo): { lista: NoRanking[
 
 /**
  * As 10 maiores empresas do país pelo valor: as grandes fictícias (as mesmas na vida inteira, a primeira perto de 4,5%
- * do PIB), as concorrentes de verdade e as do grupo de quem joga no Brasil; as filiais lá fora não entram.
+ * do PIB, andando com o preço do setor), as concorrentes de verdade e as do grupo de quem joga no Brasil; as filiais
+ * lá fora não entram.
  */
 export function maioresEmpresasDoPais(e: EstadoVida, c: Conteudo): NoRanking[] {
-  const rng = sorteioDasListas(e, 8117);
   const pib = pibDoPais(e, c);
-  const setores = [...c.setores.values()].filter((s) => s.empresas && s.empresas.length > 0);
-  const familia = e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
-  const sobrenomes = c.mundo.sobrenomes.filter((x) => x !== familia);
-  const lista: NoRanking[] = [];
-  for (let i = 0; i < 10; i++) {
-    const s = sortear(rng, setores);
-    const nome = sortear(rng, s.empresas!).replaceAll('{sobrenome}', sortear(rng, sobrenomes)).replaceAll('{nome}', sortear(rng, c.mundo.nomes.m)).replaceAll('{o|a}', 'o');
-    lista.push({ nome, valor: pib * 0.045 * Math.pow(0.8, i) * Math.exp(normal(rng, 0, 0.1)) * doAno(e, 100 + i), de: s.nome, seu: false });
-  }
+  const lista: NoRanking[] = sorteioDoPais(e, c).grandes.map((g, i) => ({
+    nome: g.nome,
+    valor: pib * g.base * doAno(e, 100 + i) * Math.pow(precoDoAno(e, g.setor.id), 1.5),
+    de: g.setor.nome,
+    seu: false,
+    setor: g.setor.id,
+  }));
   for (const x of Object.values(e.entidades)) {
     if (x.tipo !== 'empresa' || x.vivo === false || x.q['holding'] || paisDaEmpresa(x)) continue;
     const seu = !x.id.startsWith('empresaR');
     if (!seu && x.n['capacidade'] === undefined) continue;
-    lista.push({ nome: x.nome, valor: Math.max(0, x.n['valor'] ?? 0), de: c.setores.get(x.t['setor'] ?? '')?.nome ?? '', seu });
+    lista.push({ nome: x.nome, valor: Math.max(0, x.n['valor'] ?? 0), de: c.setores.get(x.t['setor'] ?? '')?.nome ?? '', seu, ...(x.t['setor'] ? { setor: x.t['setor'] } : {}) });
   }
   return lista.sort((a, b) => b.valor - a.valor).slice(0, 10);
 }

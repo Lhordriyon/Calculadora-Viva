@@ -14,8 +14,8 @@
 import type { Conteudo } from './conteudo.ts';
 import { empresasDe, indicadoresDoPais, patrimonioDe, patrimonioTotal } from './campos.ts';
 import { ATIVOS } from './constantes.ts';
-import { ganhar, lancar, novaEntrada, somar } from './livro.ts';
-import { fatiasDoGrupo, grupoNoMundo, maioresEmpresasDoPais, maisRicosDoPais, oPais } from './mundo-das-empresas.ts';
+import { definirTexto, ganhar, lancar, novaEntrada, somar } from './livro.ts';
+import { fatiasDoGrupo, grupoNoMundo, maioresEmpresasDoPais, maisRicosDoPais, oPais, type NoRanking } from './mundo-das-empresas.ts';
 import type { Parceiro } from './constantes.ts';
 import { PAIS_EM_2026 } from './regras.ts';
 import type { Entrada, EstadoVida, Mudanca } from './tipos.ts';
@@ -478,6 +478,81 @@ export function lugarNaVida(e: EstadoVida): string | null {
   const chegou = maximo > fim && maximo > de ? `; no auge, ${emQue(maximo)}` : '';
   if (de === fim) return `${comeco} e terminou ${emQue(fim)}${chegou}.`.replace(`${comeco} e terminou`, `${comeco} e terminou a vida`);
   return `${comeco} ${emQue(de)} e terminou ${emQue(fim)}${chegou}.`;
+}
+
+// ---------------------------------------------------------------- os grandes do país (I-173)
+
+/** "Você" nas listas: quem joga, ou uma empresa do grupo dele (o lugar e os marcos do grupo contam isso). */
+export const VOCE = 'você';
+/** Uma notícia dos grandes a cada três anos, no máximo: o primeiro lugar que troca todo ano seria noticiário. */
+const INTERVALO_DOS_GRANDES = 6;
+/** Para tomar o primeiro lugar, é preciso passar quem estava lá por 15% (sem isso, dois do mesmo tamanho trocam todo ano). */
+const FOLGA_DO_PRIMEIRO = 1.15;
+
+/** Quantos anos desde a última notícia dos grandes (o livro, de trás para a frente, até o intervalo). */
+function noticiaRecente(e: EstadoVida): boolean {
+  for (let i = e.historico.length - 1; i >= 0; i--) {
+    const h = e.historico[i]!;
+    if (h.ano <= e.ano - INTERVALO_DOS_GRANDES) return false;
+    if (h.ref?.startsWith('grandes:')) return true;
+  }
+  return false;
+}
+
+/** O setor em alta ou em baixa, para o porquê da troca de lugar ("o setor de construção está em alta"). */
+function momentoDoSetor(e: EstadoVida, c: Conteudo, setor: string | undefined, quem: 'ganhou' | 'perdeu', oQue: string): string {
+  if (!setor) return '';
+  const nome = (c.setores.get(setor)?.nome ?? setor).toLowerCase();
+  const oferta = e.entidades[`setor_${setor}`]?.n['oferta'] ?? 100;
+  if (quem === 'ganhou' && oferta < 96) return ` O setor de ${nome} está em alta, e ${oQue} subiu com ele.`;
+  if (quem === 'perdeu' && oferta > 104) return ` A sobra no setor de ${nome} encolheu ${oQue} de quem estava em primeiro.`;
+  return '';
+}
+
+/** O primeiro de uma lista, com a folga: quem estava lá continua até alguém passá-lo por 15%. */
+function primeiroComFolga(lista: readonly NoRanking[], antes: string | undefined): NoRanking | undefined {
+  const topo = lista[0];
+  if (!topo || !antes) return topo;
+  const velho = lista.find((x) => (x.seu ? VOCE : x.nome) === antes);
+  return velho && topo.valor < velho.valor * FOLGA_DO_PRIMEIRO ? velho : topo;
+}
+
+/**
+ * O ano dos grandes: quem está em primeiro entre os mais ricos e entre as maiores empresas do país. Quando o primeiro
+ * lugar troca entre os outros (não com quem joga, que o lugar e os marcos do grupo já contam), vira notícia, com o
+ * setor que fez a troca; até os 12 anos, e a menos de três anos da última notícia, muda em silêncio.
+ */
+export function anoDosGrandes(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
+  const pais = e.entidades['pais'];
+  if (!pais) return;
+  const ricos = maisRicosDoPais(e, c).lista;
+  const empresas = maioresEmpresasDoPais(e, c);
+  const antesRico = pais.t['mais_rico'];
+  const antesEmpresa = pais.t['maior_empresa'];
+  const rico = primeiroComFolga(ricos, antesRico);
+  const empresa = primeiroComFolga(empresas, antesEmpresa);
+  if (!rico || !empresa) return;
+  const nomeRico = rico.seu ? VOCE : rico.nome;
+  const nomeEmpresa = empresa.seu ? VOCE : empresa.nome;
+  const noticias: { ref: string; texto: string; resumo: string; campo: string; valor: string }[] = [];
+  const pode = e.idade >= 13 && !noticiaRecente(e);
+  if (antesRico !== nomeRico) {
+    if (pode && antesRico && antesRico !== VOCE && !rico.seu) {
+      const antes = ricos.find((x) => x.nome === antesRico);
+      noticias.push({ ref: 'grandes:mais_rico', campo: 'mais_rico', valor: nomeRico, texto: `${rico.nome}, ${rico.de}, passou ${antesRico} e é agora a pessoa mais rica do país.${momentoDoSetor(e, c, rico.setor, 'ganhou', 'a fortuna') || momentoDoSetor(e, c, antes?.setor, 'perdeu', 'a fortuna')}`, resumo: `${rico.nome} virou a pessoa mais rica do país` });
+    } else definirTexto(e, reg, 'pais', 'mais_rico', nomeRico, 'grandes');
+  }
+  if (antesEmpresa !== nomeEmpresa) {
+    if (pode && noticias.length === 0 && antesEmpresa && antesEmpresa !== VOCE && !empresa.seu) {
+      const antes = empresas.find((x) => x.nome === antesEmpresa);
+      noticias.push({ ref: 'grandes:maior_empresa', campo: 'maior_empresa', valor: nomeEmpresa, texto: `${empresa.nome} passou ${antesEmpresa} e é agora a maior empresa do país.${momentoDoSetor(e, c, empresa.setor, 'ganhou', 'o valor') || momentoDoSetor(e, c, antes?.setor, 'perdeu', 'o valor')}`, resumo: `${empresa.nome} virou a maior empresa do país` });
+    } else definirTexto(e, reg, 'pais', 'maior_empresa', nomeEmpresa, 'grandes');
+  }
+  for (const n of noticias) {
+    const r: Mudanca[] = [];
+    definirTexto(e, r, 'pais', n.campo, n.valor, 'grandes');
+    lancar(e, novaEntrada(e, { tipo: 'mundo', causa: 'regra', ref: n.ref, texto: n.texto, resumo: n.resumo }), r);
+  }
 }
 
 /** A entrada é um marco dourado do lugar ou do grupo (formato.ts › ehMarco). */

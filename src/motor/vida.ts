@@ -32,7 +32,7 @@ import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
-import { anoDoLugar, lugarAoNascer, marcosDoGrupo } from './lugar.ts';
+import { anoDoLugar, anoDosGrandes, lugarAoNascer, marcosDoGrupo } from './lugar.ts';
 import { ETAPAS_DO_ANO, type IdEtapa } from './manifesto.ts';
 import { gerarOrigem, limparNome, type EscolhaOrigem } from './origem.ts';
 import { novaEntidade, registrarPessoas } from './pessoas.ts';
@@ -260,6 +260,7 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   lugar: (x) => {
     anoDoLugar(x.e, x.c, x.reg);
     marcosDoGrupo(x.e, x.c);
+    anoDosGrandes(x.e, x.c, x.reg);
   },
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   regras: (x) => {

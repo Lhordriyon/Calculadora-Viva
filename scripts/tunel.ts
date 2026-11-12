@@ -1475,7 +1475,7 @@ l();
   );
 }
 l();
-l('## O mundo à vista (I-170 a I-172)');
+l('## O mundo à vista (I-170 a I-173)');
 l();
 {
   const n = Math.max(1, vidas.length);
@@ -1496,6 +1496,8 @@ l();
     const total = Math.max(1, matriz[a]!.reduce((s, x) => s + x, 0));
     l(`| ${nomes[a]} (${num(matriz[a]!.reduce((s, x) => s + x, 0), 0)} vidas) | ${matriz[a]!.map((x) => pct(x / total)).join(' | ')} |`);
   }
+  l();
+  l(`Os grandes do país (I-173): a pessoa mais rica e a maior empresa trocaram de lugar, com notícia, ${num(vidas.reduce((s, v) => s + (v.lugar.grandes ?? 0), 0) / n, 2)} vezes por vida.`);
   l();
   l(`Vidas que chegaram a cada marco: ${[...marcos.entries()].sort((x, y) => y[1] - x[1]).map(([k, v]) => `${k.replaceAll('_', ' ')} ${num(v, 0)}`).join(' · ') || 'nenhum'}.`);
 }
