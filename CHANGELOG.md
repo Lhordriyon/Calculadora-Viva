@@ -4,6 +4,16 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🏗️ A diretoria com poder · Constrói, abre filial e compra a concorrente sozinha · 12/11/2026
+
+> [!NOTE]
+> O dono pediu mais autoridade e liberdade para a CEO e a diretoria: construir fábricas, filiais, lojas e escritórios e comprar concorrente por conta própria, começando com autonomia total (12/11).
+
+- 🔓 **Carta branca de saída** para toda empresa do grupo, menos a de perto e a holding.
+- 🏗️ **A unidade nova** do setor, na cidade mais barata, do tamanho da fila de pedidos; **a filial lá fora** quando a empresa passa de R$ 100 milhões; **a compra da concorrente inteira** quando ela está barata e o Cade não barra. Sempre com o caixa da empresa, e assinado pela CEO na linha do tempo.
+- 🤝 A diretoria não dilui sócia: o aporte de uma subsidiária com sócia e a concorrente que tem sócia ficam para quem joga.
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta. As diretorias construíram 5.618 unidades, abriram 83 filiais e compraram 51 concorrentes. Saturação V5 52,8%, assinaturas 905, porquê à vista 42,8%, toques 483,2, save mediano 531 KB (o maior, 1.348 KB). Telas: 58 de 58.
+
 ## 💸 O comando claro · Mover caixa, CEOs com carta branca e botões que explicam · 12/11/2026
 
 > [!NOTE]

@@ -15,28 +15,28 @@
 
 ---
 
-## 🆕 Novidades: O comando claro (12/11/2026)
+## 🆕 Novidades: A diretoria com poder (12/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** mandar no grupo ficou fácil de entender, e quem dirige as subsidiárias ganhou alcance.
-> - **Mover caixa em qualquer valor.** Da holding para a sua conta, da holding para uma subsidiária e da subsidiária de volta para a holding: você escolhe o destino, digita o valor (ou toca em um décimo, a metade, tudo), e o botão diz o que vai acontecer. Se houver sócios, eles recebem a parte deles.
-> - **Cada subsidiária tem CEO com nome**, que assina o que a diretoria decide na linha do tempo ("A CEO Jaqueline Moreira, do Studio Eduardo, com o mandato conservador que você deu, …"). A subsidiária nova já nasce com o dia a dia nas mãos dela.
-> - **Carta branca**, o quinto nível de autonomia: além do negócio inteiro, a diretoria cuida do caixa. Pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.
-> - **Cada botão diz o que faz.** Embaixo de cada botão da holding e das subsidiárias (criar a holding, pôr a empresa nela, fundar, os dividendos, vender parte, mover caixa) e de cada escolha do negócio (o preço, o salário, o marketing, a pesquisa, a autonomia, o mandato), uma frase com o que acontece e o que muda.
+> **O que mudou:** a CEO e a diretoria de cada empresa do grupo mandam de verdade, desde o primeiro dia.
+> - **Autonomia total de saída.** Toda empresa do grupo começa com carta branca, menos a que você cuida de perto e a holding. Se quiser, você dá menos autonomia em **Quem decide**.
+> - **Fábricas, lojas e escritórios.** Quando há fila de pedidos, a diretoria constrói a unidade do setor (a fábrica, a loja, o escritório, a clínica, a escola…) na cidade mais barata, do tamanho da fila.
+> - **Filial lá fora.** Quando a empresa passa de R$ 100 milhões, a diretoria abre uma filial no país de melhor relação.
+> - **Compra da concorrente.** Quando a concorrente está barata e o Cade não barra, a diretoria compra a empresa inteira, e ela vem para o grupo.
+> - **Com o caixa da empresa, nunca com o seu.** Cada decisão aparece na linha do tempo assinada pela CEO ("A CEO Jaqueline Moreira, do Studio Eduardo, … construiu um escritório em Sobral e comprou a concorrente Monteiro & Associados inteira").
 
 > [!TIP]
 > **Para testar:**
-> - Com uma empresa, abra **Dinheiro → A estrutura do grupo**, crie a holding, ponha a empresa nela e funde uma subsidiária: leia a frase embaixo de cada botão.
-> - Em **Mover caixa**, mande um valor da holding para a sua conta, ou da holding para a subsidiária.
-> - Na subsidiária, em **Por dentro → Quem decide**, veja o nome da CEO, escolha **carta branca para a diretoria** e passe uns anos: ela cuida do caixa sozinha, e a linha do tempo conta.
+> - Crie a holding e funde uma subsidiária (ou compre uma concorrente). Passe uns anos e leia a linha do tempo: a CEO constrói, compra e abre filial sozinha.
+> - Em **Por dentro → Quem decide**, a frase da carta branca diz tudo o que a diretoria pode fazer; troque para menos autonomia e veja ela parar.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 💸 Mover caixa em qualquer valor, nos três sentidos | 🧑‍💼 A CEO como pessoa da vida (com relação e memória); por ora, ela tem nome e assina |
-| 🧑‍💼 CEOs com nome e a carta branca que cuida do caixa | 🏗️ A diretoria construindo fábricas e comprando concorrentes sozinha |
-| 📖 A frase do que cada botão faz | 📲 O teste num aparelho físico (só o dono tem) |
+| 🏗️ A diretoria que constrói, abre filial e compra a concorrente sozinha | 🤝 A diretoria comprando uma parte só (sobraria uma sócia, que é decisão sua) |
+| 🔓 Autonomia total de saída nas empresas do grupo | 🧑‍💼 A CEO como pessoa da vida (com relação e memória) |
+| 💸 Mover caixa, CEOs com nome e a frase de cada botão (a atualização anterior) | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,19 milhões e 4,82 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Com as subsidiárias nascendo com o dia a dia delegado, as diretorias decidiram em 9.461 anos (eram 9.283), e 63 filiais abriram lá fora. O resto ficou onde estava: saturação na 5ª vida 52,7%, 906 assinaturas de vida por 1.000, o porquê à vista em 42,7% dos acontecimentos, patrimônio mediano da cautelosa R$ 27 milhões, 483,0 toques por vida (o teto informativo é 480) e o save mediano em 530 KB. A régua da tela passou nos 58 critérios.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,21 milhões e 4,83 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. As diretorias, sozinhas, construíram 5.618 unidades, abriram 83 filiais lá fora e compraram 51 concorrentes; decidiram em 19.935 anos (eram 9.461), e as filiais lá fora chegaram a 147 (eram 63). O resto ficou onde estava: saturação na 5ª vida 52,8%, 905 assinaturas de vida por 1.000, o porquê à vista em 42,8% dos acontecimentos, patrimônio mediano da cautelosa R$ 27 milhões, 483,2 toques por vida (o teto informativo é 480) e o save mediano em 531 KB (o maior, 1.348 KB). A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
