@@ -4,6 +4,17 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🧭 O mundo à vista · O seu lugar no país, para todo jogador · 12/11/2026
+
+> [!NOTE]
+> O dono achou o grupo no mundo pouco perceptível ("quero que seja perceptível para qualquer player") e pediu que a simulação evoluísse sem ele (12/11).
+
+- 🧭 **O lugar no país** (`lugar.ts`): a faixa da riqueza de quem joga (e da família, na juventude) na distribuição do Brasil real, que anda com o PIB por pessoa e com o Gini do país do jogo. A primeira linha da vida diz onde a família está; a partir dos 18, a faixa nova, a queda com causa e a volta viram linhas com o porquê; entrar no 1% e acima é marco dourado. A folha Dinheiro mostra o lugar; o cartão conta do berço ao fim.
+- 🏭 **Os marcos do grupo na linha do tempo**: os funcionários (mil, dez mil, cem mil, um milhão), a fatia do setor no Brasil (um real de cada mil e um de cada cem), a filial com gente lá fora e a lista das 10 maiores empresas do país, cada um uma vez, com a decisão que mais fez o grupo.
+- 🎭 **Dez histórias novas** que o lugar e o tamanho destravam (`93-lugar.json`) e onze epitáfios.
+- 🎓 A bolsa na faculdade pesa mais: estava a um passo de nunca aparecer.
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta. 71,7% das vidas têm alguma linha do lugar ou do grupo além do nascimento (1,56 por vida). Saturação V5 52,8%, assinaturas 901, porquê à vista 42,8%, toques 483,0, save mediano 534 KB (o maior, 1.041 KB). Telas: 58 de 58.
+
 ## 🌍 O grupo no mundo · Filiais em cada país e os mais ricos · 11/11/2026
 
 > [!NOTE]

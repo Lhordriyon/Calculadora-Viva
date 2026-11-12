@@ -15,39 +15,31 @@
 
 ---
 
-## 🆕 Novidades: Capitalismo vivo e o grupo no mundo (11/11/2026)
+## 🆕 Novidades: O mundo à vista (12/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** as empresas deixaram de ser números que sobem e viraram uma economia de verdade.
-> - **Holding e subsidiárias de verdade.** Cada empresa é uma pessoa jurídica, com número, caixa e dono. A holding guarda as participações e recebe os dividendos; a subsidiária tem o balanço dela e pode quebrar sozinha, sem levar o grupo. Dá para ter até 12 empresas.
-> - **Fábricas, lojas, laboratórios.** Cada empresa trabalha em unidades, cada uma numa cidade: no interior a estrutura sai mais barata, e os empregos ficam na cidade da unidade. O laboratório faz a pesquisa render mais; o centro de distribuição barateia cada venda.
-> - **A concorrente é uma empresa.** Ela tem dono, caixa e clientes, decide sozinha e reage a você: investe quando fica para trás, entra na guerra de preços, quebra. Comprá-la leva o controle (51%, 80% ou 100%) sem fundir: ela continua de pé, agora no seu grupo.
-> - **O Cade olha a compra que concentra o mercado**: pode aprovar, pedir a venda de uma unidade ou barrar.
-> - **A sua mídia vende audiência**: a empresa de cultura e internet do grupo recebe a campanha das outras, e você escolhe se a campanha fica em casa ou vai para o país inteiro.
-> - **O produto envelhece**, e lançar a geração nova é decisão.
-> - **O conselho pode tocar o dia a dia** de uma empresa, no mandato conservador ou arrojado, e o que ele decide aparece na linha do tempo.
-> - **O grupo pesa no PIB** pelo que ele adiciona (o que vende menos o que compra), e a folha mostra a conta do grupo sem o que uma empresa pagou à outra.
-> - **Filiais em cada país.** A filial na Federação do Norte, na República Celeste, na Liga Atlântica ou no Pacto do Sul vende no mercado de lá, paga o imposto de lá, ganha com o dólar alto e sente a relação com o Brasil (sob sanção, o dividendo fica preso lá).
-> - **O grupo no mundo**: quantas pessoas trabalham no grupo (e em que país), a fatia dele em cada setor em cada país e no mundo, e quanto ele vale diante do PIB do Brasil e do planeta.
-> - **Os mais ricos e as maiores**: as 10 maiores fortunas e as 10 maiores empresas do país, com você e as suas no lugar em que estão.
+> **O que mudou:** o seu lugar no mundo agora aparece na própria história, para qualquer jogador, com empresa ou sem.
+> - **O seu lugar no país.** A primeira linha da vida diz onde a sua família está na riqueza do Brasil ("pelo que a sua família tem, você nasceu na metade de baixo do país"). A partir dos 18, a linha do tempo conta quando você sobe para uma faixa nova ("você entrou para o 1% mais rico do país: só cerca de 1,5 milhão de adultos no Brasil têm tanto quanto você"), quando cai e quando volta, com o porquê ("porque aos 22, você abriu a empresa"). Entrar no 1% e acima é marco dourado.
+> - **A régua é a do Brasil real**: a metade do país tem até uns R$ 35 mil, e o 1% mais rico começa perto de R$ 2 milhões. Ela anda com o país do jogo, com o PIB por pessoa e com a desigualdade.
+> - **O grupo na história.** Mil, dez mil, cem mil e um milhão de funcionários; um real de cada mil e um de cada cem do que o país gasta no setor; a filial lá fora com gente trabalhando; a lista das 10 maiores empresas do país. Cada marco vem uma vez, com a decisão que mais fez o grupo crescer.
+> - **O mundo reage ao seu lugar**: o convite do clube, a lista da revista, os amigos que somem quando o dinheiro vai embora, o primeiro da família nos 10% mais ricos, o sindicato dos dez mil funcionários, a avenida com o seu nome, o ministro que quer anunciar o seu investimento, o logo numa vitrine lá fora, a segurança de quem é bilionário.
+> - **A folha Dinheiro** mostra o seu lugar e quantos adultos têm menos que você; **o cartão da vida** conta do berço ao fim ("nasceu na metade de baixo do país e terminou no 1% mais rico").
 
 > [!TIP]
 > **Para testar:**
-> - Abra uma empresa, passe um ano e abra **Dinheiro → a empresa → Por dentro → Mercado**: a concorrente tem nome, caixa e a parte dela no mercado. Compre 80% dela e veja que ela continua lá, no seu grupo.
-> - Em **A estrutura do grupo**, crie a holding, ponha a empresa dentro e funde uma subsidiária de cultura e internet; na empresa, em **Produto e mídia**, anuncie na mídia do grupo.
-> - Em **Unidades**, construa uma fábrica (ou loja) numa cidade do interior; em **Quem decide**, entregue o dia a dia ao conselho com o mandato arrojado e passe alguns anos.
-> - Em **A estrutura do grupo → Uma filial lá fora**, escolha um país e abra a filial; passe um ano e veja em **No mundo** a fatia dela lá e no mundo. Abra **Os mais ricos e as maiores** e veja onde você está.
+> - Comece uma vida e leia a primeira linha: onde a sua família está no país.
+> - Junte dinheiro, ou abra uma empresa, e passe os anos: a faixa nova aparece na linha do tempo com o porquê, e no 1% ela vem em dourado.
+> - Abra a folha **Dinheiro**: o seu lugar está logo abaixo do patrimônio.
+> - No fim, o cartão da vida conta de onde você saiu e aonde chegou.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🏛️ Holding, subsidiárias com balanço próprio, sócios, nenhum ciclo, sem dupla contagem | 📦 Vários produtos dentro da mesma empresa (várias marcas são várias empresas) e o estoque |
-| 🏭 Unidades com cidade, capacidade, laboratório e centro de distribuição | 🧑‍💼 Os executivos com nome (só o gestor tem rosto) |
-| 🥊 Concorrentes de verdade que decidem sozinhas; partes do mercado somando 100% | 🌎 Concorrentes de verdade fora dos setores do seu grupo (lá o mercado é agregado) |
-| 🤝 Comprar o controle sem fundir; a falência da subsidiária sozinha; o Cade | 🔍 A investigação da guerra de preços de quem domina o mercado |
-| 📈 O PIB pelo valor adicionado, a consolidada, a mídia e o conselho | 🌍 Concorrentes de verdade lá fora, e o tamanho de cada país andando por conta própria |
-| 🌍 Filiais em cada país, a fatia por país e no mundo, os mais ricos e as maiores | 📲 O teste num aparelho físico (só o dono tem) |
+| 🧭 O lugar no país para todo jogador, com o porquê | 🏃 As maiores empresas e os mais ricos andando com o ciclo do setor deles (a próxima) |
+| 🏭 Os marcos do grupo na linha do tempo | 🌍 Concorrentes de verdade lá fora e uma lista dos mais ricos do mundo |
+| 🎭 Dez histórias que o lugar e o tamanho do grupo destravam | ⚖️ A sua decisão sobre o nível de riqueza do jogo (30% de quem nasce na metade de baixo termina no 1%) |
+| 🃏 O cartão do berço ao fim | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema. O dinheiro fechou nas 4,15 milhões de entradas e as dívidas nas 4,77 milhões; nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Nas vidas com empresa, 63,7% tiveram concorrente de verdade: 989 quebraram, 1.538 compras preservaram a comprada (todas pequenas demais para o Cade) e 55 filiais abriram lá fora. Os conselhos decidiram em 9.283 anos, houve 9.863 lançamentos de produto e o maior grupo chegou a 0,55% do PIB. O resto ficou onde estava: saturação na 5ª vida 52,7% (era 53,0%), 906 assinaturas de vida por 1.000 (904), o porquê à vista em 41,8% dos acontecimentos (41,7%), patrimônio mediano da cautelosa R$ 25 milhões (26) e 483,1 toques por vida (480,3; o teto informativo é 480). O save mediano foi de 505 para 534 KB; o maior da amostra passou de 1 MB nesta rodada (1.465 KB; nas duas anteriores, 863 e 1.151): são as vidas com muitas empresas, e o caminho para elas é o livro compacto (os anos antigos em resumo). A régua da tela passou nos 58 critérios.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,18 milhões e 4,80 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Toda vida tem a linha do nascimento, e 71,7% têm pelo menos mais uma linha do lugar ou do grupo (1,56 por vida, 0,38 delas douradas). A mobilidade, pela régua do Brasil real: de quem nasce na metade de baixo, 10% terminam nela, 60% sobem para a metade de cima e 30% chegam ao 1% mais rico. Os marcos do grupo: 110 vidas passaram de mil funcionários, 43 de dez mil e 18 de cem mil; 88 chegaram a um real de cada mil do setor, 26 a um de cada cem; 33 empregaram gente lá fora; 36 entraram na lista dos 10 mais ricos do país e 3 chegaram ao primeiro lugar. O resto ficou onde estava: saturação na 5ª vida 52,8% (era 52,7%), 901 assinaturas de vida por 1.000 (906), o porquê à vista em 42,8% dos acontecimentos (41,8%), patrimônio mediano da cautelosa R$ 27 milhões (25), 483,0 toques por vida (483,1; o teto informativo é 480) e o save mediano em 534 KB (o maior da amostra, 1.041 KB). A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
