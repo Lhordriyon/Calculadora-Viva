@@ -4,6 +4,17 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 💸 O comando claro · Mover caixa, CEOs com carta branca e botões que explicam · 12/11/2026
+
+> [!NOTE]
+> O dono pediu que os botões de controle da empresa, das subsidiárias e da holding digam o que fazem, mais autonomia para os CEOs das subsidiárias e o poder de mover caixa em qualquer valor da holding para a conta dele e para as subsidiárias (12/11).
+
+- 💸 **Mover caixa em qualquer valor** (`transferirCaixa`): da empresa que é sua direto para a sua conta, da controladora para a controlada e de volta, no valor digitado ou pelos atalhos; os sócios recebem a parte deles, e o valor da holding continua igual ao caixa.
+- 🧑‍💼 **Os CEOs das subsidiárias**: cada empresa do grupo que não é a de perto tem CEO com nome, que assina as decisões; a **carta branca** (o quinto nível de autonomia) cuida também do caixa; a subsidiária nova já nasce com o dia a dia delegado.
+- 📖 **Cada botão diz o que faz**: uma frase embaixo de cada botão da estrutura e de cada escolha do negócio, da autonomia e do mandato.
+- ✍️ A empresa da família leva "a" (a Ribeiro Rodrigues Participações).
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta. As diretorias decidiram em 9.461 anos (eram 9.283). Saturação V5 52,7%, assinaturas 906, porquê à vista 42,7%, toques 483,0, save mediano 530 KB. Telas: 58 de 58.
+
 ## 🧭 O mundo à vista · O seu lugar no país, para todo jogador · 12/11/2026
 
 > [!NOTE]

@@ -15,33 +15,28 @@
 
 ---
 
-## 🆕 Novidades: O mundo à vista (12/11/2026)
+## 🆕 Novidades: O comando claro (12/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** o seu lugar no mundo agora aparece na própria história, para qualquer jogador, com empresa ou sem.
-> - **O seu lugar no país.** A primeira linha da vida diz onde a sua família está na riqueza do Brasil ("pelo que a sua família tem, você nasceu na metade de baixo do país"). A partir dos 18, a linha do tempo conta quando você sobe para uma faixa nova ("você entrou para o 1% mais rico do país: só cerca de 1,5 milhão de adultos no Brasil têm tanto quanto você"), quando cai e quando volta, com o porquê ("porque aos 22, você abriu a empresa"). Entrar no 1% e acima é marco dourado.
-> - **A régua é a do Brasil real**: a metade do país tem até uns R$ 35 mil, e o 1% mais rico começa perto de R$ 2 milhões. Ela anda com o país do jogo, com o PIB por pessoa e com a desigualdade.
-> - **O grupo na história.** Mil, dez mil, cem mil e um milhão de funcionários; um real de cada mil e um de cada cem do que o país gasta no setor; a filial lá fora com gente trabalhando; a lista das 10 maiores empresas do país. Cada marco vem uma vez, com a decisão que mais fez o grupo crescer.
-> - **O mundo reage ao seu lugar**: o convite do clube, a lista da revista, os amigos que somem quando o dinheiro vai embora, o primeiro da família nos 10% mais ricos, o sindicato dos dez mil funcionários, a avenida com o seu nome, o ministro que quer anunciar o seu investimento, o logo numa vitrine lá fora, a segurança de quem é bilionário.
-> - **A folha Dinheiro** mostra o seu lugar e quantos adultos têm menos que você; **o cartão da vida** conta do berço ao fim ("nasceu na metade de baixo do país e terminou no 1% mais rico").
-> - **Os grandes do país vivem.** As 10 maiores empresas e os 10 mais ricos sobem na alta do setor deles e caem na sobra, e cada um dos mais ricos é dono de uma das maiores. Quando o primeiro lugar troca, o país conta quem passou quem ("Simone Lopes, dona de Entregas do Joaquim, passou Raquel Xavier e é agora a pessoa mais rica do país"). E eles aparecem na sua vida: o mais rico dando conselho na TV, a maior empresa chegando à sua cidade, o mais rico querendo comprar a sua empresa.
+> **O que mudou:** mandar no grupo ficou fácil de entender, e quem dirige as subsidiárias ganhou alcance.
+> - **Mover caixa em qualquer valor.** Da holding para a sua conta, da holding para uma subsidiária e da subsidiária de volta para a holding: você escolhe o destino, digita o valor (ou toca em um décimo, a metade, tudo), e o botão diz o que vai acontecer. Se houver sócios, eles recebem a parte deles.
+> - **Cada subsidiária tem CEO com nome**, que assina o que a diretoria decide na linha do tempo ("A CEO Jaqueline Moreira, do Studio Eduardo, com o mandato conservador que você deu, …"). A subsidiária nova já nasce com o dia a dia nas mãos dela.
+> - **Carta branca**, o quinto nível de autonomia: além do negócio inteiro, a diretoria cuida do caixa. Pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.
+> - **Cada botão diz o que faz.** Embaixo de cada botão da holding e das subsidiárias (criar a holding, pôr a empresa nela, fundar, os dividendos, vender parte, mover caixa) e de cada escolha do negócio (o preço, o salário, o marketing, a pesquisa, a autonomia, o mandato), uma frase com o que acontece e o que muda.
 
 > [!TIP]
 > **Para testar:**
-> - Comece uma vida e leia a primeira linha: onde a sua família está no país.
-> - Junte dinheiro, ou abra uma empresa, e passe os anos: a faixa nova aparece na linha do tempo com o porquê, e no 1% ela vem em dourado.
-> - Abra a folha **Dinheiro**: o seu lugar está logo abaixo do patrimônio.
-> - No fim, o cartão da vida conta de onde você saiu e aonde chegou.
+> - Com uma empresa, abra **Dinheiro → A estrutura do grupo**, crie a holding, ponha a empresa nela e funde uma subsidiária: leia a frase embaixo de cada botão.
+> - Em **Mover caixa**, mande um valor da holding para a sua conta, ou da holding para a subsidiária.
+> - Na subsidiária, em **Por dentro → Quem decide**, veja o nome da CEO, escolha **carta branca para a diretoria** e passe uns anos: ela cuida do caixa sozinha, e a linha do tempo conta.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🧭 O lugar no país para todo jogador, com o porquê | 🔎 Olhar uma a uma as histórias que quase nunca aparecem (a próxima) |
-| 🏭 Os marcos do grupo na linha do tempo | 🌍 Concorrentes de verdade lá fora e uma lista dos mais ricos do mundo |
-| 🎭 Dez histórias que o lugar e o tamanho do grupo destravam | ⚖️ A sua decisão sobre o nível de riqueza do jogo (30% de quem nasce na metade de baixo termina no 1%) |
-| 🃏 O cartão do berço ao fim | 📲 O teste num aparelho físico (só o dono tem) |
-| 🏃 Os grandes do país andando com o setor, e quem passou quem | |
+| 💸 Mover caixa em qualquer valor, nos três sentidos | 🧑‍💼 A CEO como pessoa da vida (com relação e memória); por ora, ela tem nome e assina |
+| 🧑‍💼 CEOs com nome e a carta branca que cuida do caixa | 🏗️ A diretoria construindo fábricas e comprando concorrentes sozinha |
+| 📖 A frase do que cada botão faz | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,19 milhões e 4,82 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Toda vida tem a linha do nascimento, e 71,0% têm pelo menos mais uma linha do lugar ou do grupo (1,56 por vida, 0,38 delas douradas). A mobilidade, pela régua do Brasil real: de quem nasce na metade de baixo, 10% terminam nela, 60% sobem para a metade de cima e 29% chegam ao 1% mais rico. Os marcos do grupo: 128 vidas passaram de mil funcionários, 45 de dez mil e 16 de cem mil; 76 chegaram a um real de cada mil do setor e 21 a um de cada cem; 44 empregaram gente lá fora; 34 entraram na lista dos 10 mais ricos do país e 8 chegaram ao primeiro lugar. O primeiro lugar entre os grandes trocou, com notícia, 1,73 vez por vida. O resto ficou onde estava: saturação na 5ª vida 52,7% (era 52,7%), 906 assinaturas de vida por 1.000 (906), o porquê à vista em 42,7% dos acontecimentos (41,8%), patrimônio mediano da cautelosa R$ 27 milhões (25), 483,1 toques por vida (483,1; o teto informativo é 480) e o save mediano em 529 KB (o maior da amostra, 1.115 KB). A régua da tela passou nos 58 critérios. No caminho, a auditoria achou um defeito antigo (o sobrinho que herda podia ter um pai de 12 anos), que foi corrigido, e as 42 histórias que quase nunca apareciam ganharam peso.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,19 milhões e 4,82 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Com as subsidiárias nascendo com o dia a dia delegado, as diretorias decidiram em 9.461 anos (eram 9.283), e 63 filiais abriram lá fora. O resto ficou onde estava: saturação na 5ª vida 52,7%, 906 assinaturas de vida por 1.000, o porquê à vista em 42,7% dos acontecimentos, patrimônio mediano da cautelosa R$ 27 milhões, 483,0 toques por vida (o teto informativo é 480) e o save mediano em 530 KB. A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
