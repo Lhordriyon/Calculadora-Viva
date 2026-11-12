@@ -1,0 +1,540 @@
+[
+  {
+    "id": "o_convite_do_clube",
+    "idade": [
+      28,
+      80
+    ],
+    "condicoes": {
+      "eu.estrato": {
+        "min": 4
+      }
+    },
+    "peso": 2,
+    "texto": "Chegou um envelope de papel grosso, com o seu nome escrito à mão: o clube mais fechado da cidade convida você para sócio. A joia custa o preço de um carro; [o almoço de domingo não tem preço no cardápio|a piscina tem mais funcionário do que banhista|o estatuto proíbe falar de dinheiro, que é o assunto de todas as mesas].",
+    "resumo": "recebeu o convite do clube mais fechado da cidade",
+    "escolhas": [
+      {
+        "texto": "Entrar para o clube",
+        "resumo": "entrou para o clube mais fechado da cidade",
+        "resultado": {
+          "texto": "No primeiro almoço, três pessoas pediram o seu cartão e uma pediu um favor. Você voltou para casa com a agenda cheia e a sensação de ter pago para trabalhar.",
+          "efeitos": {
+            "dinheiro": -150000,
+            "eu.influencia": 3,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Agradecer e ficar com o bar de sempre",
+        "resumo": "recusou o convite do clube e ficou com o bar de sempre",
+        "resultado": {
+          "texto": "O dono do bar soube e mandou uma porção por conta da casa. Ninguém ali sabe quanto você tem, e é por isso que você volta.",
+          "efeitos": {
+            "felicidade": 3,
+            "eu.popularidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_lista_da_revista",
+    "idade": [
+      30,
+      92
+    ],
+    "condicoes": {
+      "eu.estrato": {
+        "min": 5
+      }
+    },
+    "peso": 2,
+    "texto": "Uma revista de economia vai publicar a lista das maiores fortunas do país e quer você nela, com foto e tudo. Pelas contas deles, só alguns milhares de brasileiros têm o que você tem. [O fotógrafo já mandou três opções de fundo|A repórter perguntou qual foi o seu primeiro emprego|Querem saber se você ainda pega metrô].",
+    "resumo": "foi chamado para a lista das maiores fortunas do país",
+    "escolhas": [
+      {
+        "texto": "Posar para a foto",
+        "resumo": "posou para a lista das maiores fortunas do país",
+        "resultado": {
+          "texto": "A foto saiu de terno e meio sorriso. O porteiro recortou e colou na guarita; o seu tio mandou no grupo da família perguntando quando sai o empréstimo.",
+          "efeitos": {
+            "eu.fama": 4,
+            "eu.popularidade": -1,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Pagar um advogado para ficar de fora",
+        "resumo": "pagou um advogado para ficar fora da lista das maiores fortunas",
+        "resultado": {
+          "texto": "Você saiu da lista com um parágrafo: \"fortuna estimada, dono discreto\". Discreto e mais pobre o valor do advogado.",
+          "efeitos": {
+            "dinheiro": -60000,
+            "eu.fama": -1,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "os_amigos_de_antes",
+    "idade": [
+      30,
+      92
+    ],
+    "condicoes": {
+      "eu.estrato_max": {
+        "min": 4
+      },
+      "eu.estrato": {
+        "max": 2
+      }
+    },
+    "peso": 3,
+    "texto": "Desde que o dinheiro foi embora, o telefone parou de tocar. Os convites sumiram, e quem chamava você de parceiro agora chama de \"aquele\". [O porteiro do prédio antigo continua dando bom-dia|O garçom do restaurante de antes fingiu não reconhecer você|Só uma pessoa da época do dinheiro mandou mensagem no aniversário].",
+    "resumo": "viu os amigos do tempo do dinheiro sumirem",
+    "escolhas": [
+      {
+        "texto": "Procurar quem estava lá antes do dinheiro",
+        "resumo": "procurou os amigos de antes do dinheiro",
+        "resultado": {
+          "texto": "A conversa começou sem graça e terminou às duas da manhã. Eles nunca souberam quanto você teve; souberam quem você era.",
+          "efeitos": {
+            "felicidade": 5,
+            "eu.popularidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Tentar voltar à roda de qualquer jeito",
+        "resumo": "tentou voltar à roda de quem tem dinheiro",
+        "resultado": {
+          "texto": "Você pagou o jantar de quatro pessoas que olharam o relógio a noite inteira. A roda continua girando; você, do lado de fora.",
+          "efeitos": {
+            "dinheiro": -15000,
+            "felicidade": -3,
+            "eu.influencia": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_primeiro_da_familia",
+    "idade": [
+      22,
+      80
+    ],
+    "condicoes": {
+      "eu.estrato": {
+        "min": 3
+      },
+      "classe_origem": {
+        "max": 1
+      }
+    },
+    "peso": 3,
+    "texto": "Ninguém da sua família chegou aqui antes: os 10% mais ricos do país. [A sua avó ainda guarda o pão de ontem para amanhã|No almoço de domingo, o primo pediu dica de investimento e a tia pediu dinheiro|A sua mãe conta para as vizinhas, baixinho, como quem conta um milagre].",
+    "resumo": "foi o primeiro da família a entrar nos 10% mais ricos do país",
+    "escolhas": [
+      {
+        "texto": "Quitar a casa da família",
+        "resumo": "quitou a casa da família",
+        "resultado": {
+          "texto": "A escritura chegou num envelope pardo. Ninguém disse muita coisa; a sua mãe passou a mão no papel como se fosse fazer um bolo.",
+          "efeitos": {
+            "dinheiro": -80000,
+            "mae.vinculo": 8,
+            "felicidade": 4
+          }
+        },
+        "condicoes": {
+          "mae.vivo": true
+        },
+        "bloqueio": "sua mãe já não está aqui para ver"
+      },
+      {
+        "texto": "Guardar: quem veio de baixo sabe que pode voltar",
+        "resumo": "guardou o dinheiro porque sabe de onde veio",
+        "resultado": {
+          "texto": "Você manteve o carro velho e a reserva grande. O medo de voltar é a herança mais antiga da família, e ainda protege.",
+          "efeitos": {
+            "investir": 30000,
+            "felicidade": -1,
+            "eu.saude": -1
+          }
+        }
+      },
+      {
+        "texto": "Comemorar com quem ajudou a chegar",
+        "resumo": "comemorou com a família a chegada aos 10% mais ricos",
+        "resultado": {
+          "texto": "Churrasco para trinta, com a avó na cabeceira. Pela primeira vez, a conta foi sua e ninguém discutiu.",
+          "efeitos": {
+            "dinheiro": -8000,
+            "felicidade": 4,
+            "eu.popularidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_sindicato_dos_dez_mil",
+    "idade": [
+      25,
+      85
+    ],
+    "condicoes": {
+      "marcas": [
+        "grupo_dez_mil"
+      ],
+      "empresa.valor": true
+    },
+    "peso": 2,
+    "texto": "Dez mil funcionários têm sindicato, e o sindicato tem pauta: reajuste acima da inflação, plano de saúde para a família e o fim da hora extra de domingo. [A assembleia foi no estacionamento da fábrica|O carro de som parou na frente da sede|A líder da comissão trabalhou dez anos na linha de produção].",
+    "resumo": "negociou com o sindicato dos dez mil funcionários do grupo",
+    "escolhas": [
+      {
+        "texto": "Dar o reajuste",
+        "resumo": "deu o reajuste que o sindicato pediu",
+        "resultado": {
+          "texto": "A assembleia aplaudiu, a folha engordou e a rotatividade caiu. O caixa sentiu no mês seguinte; a fábrica, no ano.",
+          "efeitos": {
+            "negocio": {
+              "salario": "acima"
+            },
+            "eu.popularidade": 3,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Meio a meio: a inflação e o plano de saúde",
+        "resumo": "negociou o reajuste da inflação com o sindicato",
+        "resultado": {
+          "texto": "Ninguém saiu feliz, e por isso todo mundo assinou. Na saída, a líder da comissão apertou a sua mão sem sorrir.",
+          "efeitos": {
+            "negocio": {
+              "salario": "mercado"
+            },
+            "eu.popularidade": 1,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Segurar a folha e encarar a greve",
+        "resumo": "segurou a folha e encarou a greve dos funcionários",
+        "resultado": {
+          "texto": "Três semanas de linha parada e cliente ligando para a concorrente. A folha ficou igual; a reputação, não.",
+          "efeitos": {
+            "negocio": {
+              "demanda": -0.06
+            },
+            "eu.popularidade": -4,
+            "felicidade": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_avenida_com_o_seu_nome",
+    "idade": [
+      30,
+      90
+    ],
+    "condicoes": {
+      "marcas": [
+        "grupo_cem_mil"
+      ]
+    },
+    "peso": 2,
+    "texto": "Numa cidade do interior, metade das famílias tem alguém trabalhando para o grupo. A câmara de vereadores quer dar o seu nome à avenida principal. [A placa já está encomendada|O padre da matriz é contra, por princípio|A escola estadual da avenida tem goteira desde 2019].",
+    "resumo": "ganhou a proposta de uma avenida com o próprio nome",
+    "escolhas": [
+      {
+        "texto": "Aceitar a homenagem",
+        "resumo": "virou nome de avenida numa cidade do interior",
+        "resultado": {
+          "texto": "Teve banda, discurso e uma placa que o primeiro caminhão entortou. O GPS de meio país agora fala o seu nome.",
+          "efeitos": {
+            "eu.fama": 2,
+            "eu.popularidade": 1,
+            "felicidade": 2
+          }
+        }
+      },
+      {
+        "texto": "Recusar e pagar a reforma da escola",
+        "resumo": "recusou a avenida e pagou a reforma da escola",
+        "resultado": {
+          "texto": "A avenida continua com o nome de um coronel; a escola, sem goteira. Na formatura, a turma inteira falou de você no discurso.",
+          "efeitos": {
+            "dinheiro": -1500000,
+            "eu.popularidade": 4,
+            "felicidade": 3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_cade_olha_o_grupo",
+    "idade": [
+      25,
+      90
+    ],
+    "condicoes": {
+      "marcas": [
+        "metade_do_mercado"
+      ],
+      "empresa.valor": true
+    },
+    "peso": 3,
+    "texto": "Com metade do mercado nas mãos do grupo, o Cade abriu uma investigação: quem dita o preço do setor pode estar ditando demais. [O processo tem 400 páginas e o seu nome em 312|Um concorrente pequeno deu entrevista chorando|O jornal fez um infográfico com o seu rosto no meio de uma teia].",
+    "resumo": "virou alvo do Cade por dominar metade do mercado",
+    "escolhas": [
+      {
+        "texto": "Baixar o preço para acalmar o órgão",
+        "resumo": "baixou o preço para acalmar o Cade",
+        "resultado": {
+          "texto": "O processo esfriou e o cliente agradeceu. A margem foi embora junto com as manchetes.",
+          "efeitos": {
+            "negocio": {
+              "preco": "popular"
+            },
+            "eu.popularidade": 2,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Contratar o melhor escritório de Brasília",
+        "resumo": "contratou o melhor escritório de Brasília contra o Cade",
+        "resultado": {
+          "texto": "Os advogados cobraram por hora e as horas foram muitas. O processo virou um acordo que ninguém lê.",
+          "efeitos": {
+            "dinheiro": -3000000,
+            "eu.influencia": 1,
+            "felicidade": -1
+          }
+        }
+      },
+      {
+        "texto": "Enfrentar o processo na Justiça",
+        "resumo": "enfrentou o Cade na Justiça",
+        "teste": {
+          "chance": 0.5
+        },
+        "sucesso": {
+          "texto": "O juiz entendeu que ser grande não é crime. O concorrente pequeno deu outra entrevista, agora sem chorar.",
+          "efeitos": {
+            "eu.influencia": 2,
+            "felicidade": 2
+          }
+        },
+        "fracasso": {
+          "texto": "A multa saiu com sete dígitos e o selo de \"abuso de poder econômico\". O valor do grupo encolheu no pregão do dia seguinte.",
+          "efeitos": {
+            "empresaFator": 0.92,
+            "eu.popularidade": -3,
+            "felicidade": -2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_logo_no_aeroporto",
+    "idade": [
+      25,
+      90
+    ],
+    "condicoes": {
+      "marcas": [
+        "fatia_no_mundo"
+      ]
+    },
+    "peso": 2,
+    "texto": "Num aeroporto do outro lado do mundo, você viu o logo do grupo numa vitrine, com o preço numa moeda que você nem sabe pronunciar. [Uma criança apontou para a caixa e pediu para a mãe|O vendedor jurou que o produto era de lá mesmo|Ao lado, a concorrente estava em promoção].",
+    "resumo": "viu o logo do grupo numa vitrine do outro lado do mundo",
+    "escolhas": [
+      {
+        "texto": "Tirar uma foto e mandar para a família",
+        "resumo": "mandou para a família a foto do logo do grupo lá fora",
+        "resultado": {
+          "texto": "A foto rodou o grupo da família com 47 figurinhas. A sua mãe imprimiu e pôs na geladeira, ao lado do boletim de quando você tinha nove anos.",
+          "efeitos": {
+            "felicidade": 4,
+            "eu.fama": 1
+          }
+        }
+      },
+      {
+        "texto": "Anotar o preço da concorrente",
+        "resumo": "anotou o preço da concorrente numa vitrine lá fora",
+        "resultado": {
+          "texto": "Você passou o voo fazendo contas no guardanapo. Chegou em casa com um plano e sem lembrar o que jantou.",
+          "efeitos": {
+            "eu.influencia": 1,
+            "felicidade": -1,
+            "eu.saude": -1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_ministro_liga",
+    "idade": [
+      28,
+      92
+    ],
+    "condicoes": {
+      "marcas": [
+        "entre_as_maiores"
+      ],
+      "empresa.valor": true
+    },
+    "peso": 2,
+    "texto": "O ministro da Economia ligou: o governo quer anunciar um investimento do grupo no mesmo discurso em que vai falar do PIB. [A assessoria já mandou o rascunho com o seu nome em negrito|O fotógrafo oficial quer vocês dois de capacete numa obra|A oposição já marcou entrevista para o dia seguinte].",
+    "resumo": "foi chamado pelo governo para anunciar um investimento do grupo",
+    "escolhas": [
+      {
+        "texto": "Anunciar a fábrica nova ao lado do governo",
+        "resumo": "anunciou ao lado do governo um investimento do grupo",
+        "resultado": {
+          "texto": "Capacete, foto e manchete. A obra começou no mês seguinte, e o seu telefone em Brasília passou a ser atendido no primeiro toque.",
+          "efeitos": {
+            "negocio": {
+              "expandir": 0.1
+            },
+            "eu.influencia": 3,
+            "eu.popularidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Dizer que empresa não sobe em palanque",
+        "resumo": "recusou anunciar investimento num palanque do governo",
+        "resultado": {
+          "texto": "O ministro desligou educado e anotou o seu nome numa lista. A oposição elogiou você em público, o que é pior.",
+          "efeitos": {
+            "eu.influencia": -2,
+            "eu.popularidade": 2,
+            "felicidade": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a_seguranca_da_lista",
+    "idade": [
+      25,
+      95
+    ],
+    "condicoes": {
+      "marcas": [
+        "entre_os_mais_ricos"
+      ]
+    },
+    "peso": 3,
+    "texto": "Desde que o seu nome saiu na lista dos 10 mais ricos do país, a portaria anota a placa de todo carro parado na rua. [Um desconhecido perguntou na padaria se você era você|A escola dos sobrinhos pediu uma reunião sobre segurança|O seu horário de academia apareceu num fórum da internet].",
+    "resumo": "sentiu o peso de estar na lista dos 10 mais ricos do país",
+    "escolhas": [
+      {
+        "texto": "Carro blindado e quatro seguranças",
+        "resumo": "passou a andar de carro blindado e com seguranças",
+        "resultado": {
+          "texto": "A padaria agora vem até você, e o mundo fica do outro lado de um vidro de quatro centímetros. Seguro, e um pouco sozinho.",
+          "efeitos": {
+            "dinheiro": -900000,
+            "felicidade": -2,
+            "eu.saude": 1
+          }
+        }
+      },
+      {
+        "texto": "Continuar indo à padaria a pé",
+        "resumo": "continuou indo à padaria a pé, mesmo na lista dos mais ricos",
+        "teste": {
+          "chance": 0.85
+        },
+        "sucesso": {
+          "texto": "O padeiro continua errando o seu troco de propósito, para você voltar. Rico de verdade é quem ainda tem padaria.",
+          "efeitos": {
+            "felicidade": 3,
+            "eu.popularidade": 2
+          }
+        },
+        "fracasso": {
+          "texto": "Dois homens, um carro e quarenta minutos que você não esquece. O dinheiro voltou para o banco; o sono, não.",
+          "efeitos": {
+            "dinheiro": -400000,
+            "felicidade": -8,
+            "eu.saude": -3
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "o_mais_rico_do_pais",
+    "idade": [
+      25,
+      98
+    ],
+    "condicoes": {
+      "marcas": [
+        "o_mais_rico_do_pais"
+      ]
+    },
+    "peso": 4,
+    "texto": "A pessoa mais rica do país é você. Um jornal fez a conta: gastando um milhão por dia, levaria séculos para acabar. [Um deputado pediu, no plenário, que você pagasse a dívida do estado dele|Na TV, perguntaram se dinheiro traz felicidade e esperaram a sua resposta|A sua mãe ainda pergunta se você está comendo direito].",
+    "resumo": "virou a pessoa mais rica do país",
+    "escolhas": [
+      {
+        "texto": "Prometer doar metade em vida",
+        "resumo": "prometeu doar metade da fortuna em vida",
+        "resultado": {
+          "texto": "A primeira parcela saiu no mês seguinte, para hospitais e escolas. Os jornais duvidaram; os hospitais, não.",
+          "efeitos": {
+            "patrimonioFator": 0.9,
+            "eu.popularidade": 8,
+            "felicidade": 3
+          }
+        }
+      },
+      {
+        "texto": "Dizer que ainda não é o bastante",
+        "resumo": "disse na TV que a fortuna ainda não era o bastante",
+        "resultado": {
+          "texto": "A frase virou meme em uma hora e capa em um dia. O mercado gostou; o resto do país, menos.",
+          "efeitos": {
+            "eu.influencia": 2,
+            "eu.popularidade": -4,
+            "felicidade": 1
+          }
+        }
+      },
+      {
+        "texto": "Não dar entrevista e ir pescar",
+        "resumo": "foi pescar no dia em que virou a pessoa mais rica do país",
+        "resultado": {
+          "texto": "O peixe não sabia de nada, e isso fez bem. Na volta, o telefone tinha 212 chamadas e você ligou só para casa.",
+          "efeitos": {
+            "felicidade": 4,
+            "eu.fama": -1
+          }
+        }
+      }
+    ]
+  }
+]

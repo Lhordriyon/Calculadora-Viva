@@ -13,6 +13,9 @@ import { ATIVOS, CONTAS, FILHOS, PARCEIROS, POLITICAS, SETORES } from './constan
 const MERCADOS = SETORES.flatMap((s) => [`setor_${s}.oferta`, `setor_${s}.obra`]);
 const NOMES_DOS_MERCADOS = SETORES.map((s) => `setor_${s}.nome`);
 /** As conquistas da influência (influencia.ts): qualidades de quem joga, uma por degrau de cada esfera. */
+/** O lugar no país e os marcos do grupo (lugar.ts): a faixa, a mais alta, e as qualidades que vêm uma vez por vida. */
+const LUGAR = ['eu.estrato', 'eu.estrato_max'];
+const MARCOS_DO_LUGAR = ['eu.entre_os_mais_ricos', 'eu.o_mais_rico_do_pais', 'eu.grupo_mil', 'eu.grupo_dez_mil', 'eu.grupo_cem_mil', 'eu.grupo_um_milhao', 'eu.um_quarto_do_mercado', 'eu.metade_do_mercado', 'eu.fatia_no_mundo', 'eu.entre_as_maiores', 'eu.a_maior_do_pais'];
 const CONQUISTAS_DO_PODER = ['eu.conquista_querida', 'eu.conquista_referencia', 'eu.conquista_portas', 'eu.conquista_voz', 'eu.conquista_reis', 'eu.conquista_trono', 'eu.conquista_mercado', 'eu.conquista_magnata', 'eu.conquista_potencia'];
 /** O que as esferas da influência leem (influencia.ts). */
 const ESFERAS = ['pessoa.vinculo', 'pessoa.vivo', 'pessoa.ausente', 'eu.fama', 'eu.cargo', 'eu.popularidade', 'eu.lobista', 'eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico', 'bem.item', 'empresa.valor', 'empresa.vivo', 'empresa.truste'];
@@ -63,6 +66,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...RIVAL_E_GESTOR,
   // as conquistas da influência (influencia.ts)
   ...CONQUISTAS_DO_PODER,
+  ...LUGAR,
+  ...MARCOS_DO_LUGAR,
   // os mercados de cada setor (negocio.ts)
   ...MERCADOS,
   // a concorrência e o banco da empresa (negocio.ts)
@@ -327,6 +332,8 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(['empresa.lancamento'], 'produto: a geração que passou da idade puxa a qualidade para baixo, e quem decide troca por uma nova', true),
   ...ler(['pais.peso_do_grupo'], 'contas nacionais: o valor adicionado a mais do grupo puxa o crescimento do país pela metade', true),
   ...ler(CONQUISTAS_DO_PODER, 'poder: cada conquista vem uma vez só', true),
+  ...ler(LUGAR, 'lugar: a faixa de agora decide se a mudança é subida ou queda, e a mais alta, se é faixa nova ou volta', true),
+  ...ler(MARCOS_DO_LUGAR, 'lugar: cada marco do grupo e da lista dos mais ricos vem uma vez só', true),
   ...ler(MERCADOS, 'mercados: o preço do setor na empresa, a concorrente que sai na sobra e a demissão de quem trabalha nele', true),
   ...ler(['empresa.divida', 'empresa.concorrente', 'empresa.guerra', 'empresa.concorrente_novo', 'empresa.concorrente_quebrou'], 'negócio: o juro e a parcela do banco, a concorrente que reage, a guerra de preços e quem chega ou quebra', true),
   ...ler(CONTAS.map((x) => `${x}.dinheiro`), 'moeda: o crédito dos bancos, o caixa do governo e o câmbio andam pelo saldo das contas', true),
@@ -713,6 +720,14 @@ export const ETAPAS_DO_ANO = [
     // Quando o segredo deixa de importar é condição do conteúdo (mundo.json › segredos › acaba), que pode ler qualquer coisa.
     le: ['*'],
     escreve: ['pessoa.sabe_*', 'pessoa.escondido_*', 'pessoa.confianca', 'agenda'],
+  },
+  {
+    id: 'lugar',
+    nome: 'o lugar no país e os marcos do grupo: a faixa nova, a volta e a queda, com o porquê',
+    // A riqueza de quem joga e a dos pais, a régua do país (o PIB per capita e o Gini), a lista dos mais ricos e das
+    // maiores empresas, os funcionários e as fatias do grupo; o porquê lê o livro.
+    le: [...PATRIMONIO, ...LUGAR, ...MARCOS_DO_LUGAR, 'eu.genero', 'eu.vivo', 'eu.nome', 'pessoa.*', 'pais.pib', 'pais.populacao', 'pais.pobreza', 'pais.educacao', 'pais.*', 'empresa.*', 'unidade.*', 'empresaR.*', 'setor.*', 'livro'],
+    escreve: [...LUGAR, ...MARCOS_DO_LUGAR],
   },
   {
     id: 'regras',

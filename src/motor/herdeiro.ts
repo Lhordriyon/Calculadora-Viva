@@ -20,6 +20,7 @@ import { herdarACoroa } from './sucessao.ts';
 import { influenciaAlvo } from './poder.ts';
 import type { Conteudo } from './conteudo.ts';
 import { resgatarDe } from './economia.ts';
+import { lugarAoNascer } from './lugar.ts';
 import { definirTexto, ganhar, lancar, novaEntrada } from './livro.ts';
 import { PASTA_DO_SONHO, qualidadeDoProjeto } from './projetos.ts';
 import { criarPersonagem, nomeLivre, novaEntidade, registrarPessoas } from './pessoas.ts';
@@ -712,6 +713,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   eu.n['influencia'] = Math.round(influenciaAlvo(e, c));
   // As contas do país abrem com a vida nova (moeda.ts): o dinheiro de quem herdou sai do que circula, e a soma dá zero.
   abrirContas(e);
+  // O lugar no país com o que veio da herança (lugar.ts).
+  lugarAoNascer(e, c, true);
   return e;
 }
 

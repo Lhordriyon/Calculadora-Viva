@@ -90,6 +90,12 @@ const PESSOA: Record<string, DefCampo> = {
   /** Profissão escolhida na folha Carreira (id de mundo.json › carreiras) e o cargo nela (0 = o primeiro). */
   carreira: { tipo: 'texto', sistema: 'carreira' },
   nivel: { tipo: 'num', sistema: 'carreira', limites: [0, 5] },
+  /**
+   * O lugar no país (lugar.ts): a faixa da riqueza de quem joga (e da família, na juventude) na do país, de 0 (os 10%
+   * mais pobres) a 9 (a pessoa mais rica do país), e a mais alta a que chegou. O motor escreve; o conteúdo lê.
+   */
+  estrato: { tipo: 'num', sistema: 'dinheiro', limites: [0, 9] },
+  estrato_max: { tipo: 'num', sistema: 'dinheiro', limites: [0, 9] },
   /** Quanto o mundo escuta você (0 a 100): dinheiro, cargo, fama, bens e mídia. Decide eleições e portas que se abrem. */
   influencia: { tipo: 'num', sistema: 'poder', limites: [0, 100] },
   /** Quanto gente que você não conhece sabe quem você é (0 a 100). */

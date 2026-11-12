@@ -1,3 +1,4 @@
+import { ESTRATOS, lugarNoPais } from '../motor/lugar.ts';
 import { useEffect, useState } from 'preact/hooks';
 import { atratividade, forcaDaConcorrente, jurosDaEmpresa, limiteDeCredito as limiteDoBanco, custoDoLobby, fatiaDoMercado, ofertaDe, precoDoSetor, previsaoDoSetor, textoDaConcorrencia, textoDoSetor, textoDosCustos } from '../motor/negocio.ts';
 import { Folha } from './Folha.tsx';
@@ -1183,6 +1184,23 @@ function BrincarDeDeus({ vida, conteudo, aoOperar }: Omit<Props, 'aoFechar'>) {
   );
 }
 
+/**
+ * O seu lugar no país (lugar.ts): a faixa e quantos adultos do país têm menos, ou a posição na lista dos 10 mais ricos.
+ * Na juventude, o lugar é o da família.
+ */
+function SeuLugar({ vida, conteudo }: { vida: EstadoVida; conteudo: Conteudo }) {
+  const lugar = lugarNoPais(vida, conteudo);
+  const daFamilia = vida.idade < 30 && lugar.riqueza > patrimonioTotal(vida) + 1;
+  const onde = lugar.posicao > 0 ? (lugar.posicao === 1 ? 'a pessoa mais rica do país' : `o ${lugar.posicao}º lugar entre os mais ricos do país`) : ESTRATOS[lugar.estrato]!.nome;
+  const frente = lugar.posicao > 0 ? '' : ` · à frente de ${(Math.min(99.99, lugar.percentil * 100)).toLocaleString('pt-BR', { maximumFractionDigits: lugar.percentil >= 0.99 ? 2 : 0 })}% dos adultos`;
+  return (
+    <p class="meta lugar-no-pais">
+      {daFamilia ? 'O lugar da sua família no país' : 'O seu lugar no país'}: <b>{onde}</b>
+      {frente}
+    </p>
+  );
+}
+
 export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
 
   const eu = vida.entidades['eu']!;
@@ -1196,6 +1214,7 @@ export function Dinheiro({ vida, conteudo, aoOperar, aoFechar }: Props) {
           {divida >= 1 ? ` · dívida ${formatarDinheiro(divida)}` : ''}
           {eu.q['nome_sujo'] ? ' · nome sujo' : ''}
         </p>
+        <SeuLugar vida={vida} conteudo={conteudo} />
         <Extrato vida={vida} />
         <Dividas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />
         <EntrePessoas vida={vida} conteudo={conteudo} aoOperar={aoOperar} />

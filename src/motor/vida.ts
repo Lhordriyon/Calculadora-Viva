@@ -32,6 +32,7 @@ import { regraDoPoder } from './poder.ts';
 import { personagensAgem, regraDoAmor, regrasDosPersonagens } from './familia.ts';
 import { ganhar, lancar, perder, somar } from './livro.ts';
 import { morrer } from './morte.ts';
+import { anoDoLugar, lugarAoNascer, marcosDoGrupo } from './lugar.ts';
 import { ETAPAS_DO_ANO, type IdEtapa } from './manifesto.ts';
 import { gerarOrigem, limparNome, type EscolhaOrigem } from './origem.ts';
 import { novaEntidade, registrarPessoas } from './pessoas.ts';
@@ -128,6 +129,8 @@ export function nascer(c: Conteudo, op: OpcoesNascimento): EstadoVida {
   abrirContas(e);
   // Os mercados de cada setor (negocio.ts): cada um começa perto do equilíbrio.
   abrirSetores(e, c);
+  // O lugar no país (lugar.ts): onde a família está na riqueza do país, a primeira linha sobre isso na vida.
+  lugarAoNascer(e, c);
   return e;
 }
 
@@ -253,6 +256,11 @@ const ETAPAS: Record<IdEtapa, (x: Ano) => void> = {
   // Os projetos (projetos.ts): a meta alcançada é conquista; o prazo passado, fracasso; com o ano já vivido.
   projetos: (x) => anoDosProjetos(x.e, x.c),
   segredos: (x) => anoDosSegredos(x.e, x.c),
+  // O lugar no país e os marcos do grupo (lugar.ts): a faixa nova, a volta e a queda, com o porquê.
+  lugar: (x) => {
+    anoDoLugar(x.e, x.c, x.reg);
+    marcosDoGrupo(x.e, x.c);
+  },
   // As regras miúdas do ano (economia, idade, vínculos) ficam numa entrada invisível do livro.
   regras: (x) => {
     x.e.somaFelicidade += x.e.entidades['eu']!.n['felicidade'] ?? 0;

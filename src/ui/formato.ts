@@ -1,3 +1,4 @@
+import { ehMarcoDoMundo } from '../motor/lugar.ts';
 import { ATIVOS, FILHOS } from '../motor/constantes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Parentesco } from '../motor/herdeiro.ts';
@@ -124,7 +125,7 @@ function sonhoRealizado(h: Entrada, c: Conteudo): boolean {
  * conquistas da influência e o sonho realizado: o destaque dourado da linha do tempo e a vibração do momento.
  */
 export function ehMarco(h: Entrada, c: Conteudo): boolean {
-  return ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && c.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || sonhoRealizado(h, c);
+  return ((h.tipo === 'evento' || h.tipo === 'acao') && h.ref !== undefined && c.porId.get(h.ref)?.marco === true) || (h.ref?.startsWith('conquista:') ?? false) || ehMarcoDoMundo(h) || sonhoRealizado(h, c);
 }
 
 /** Os efeitos visíveis de uma entrada, para os chips da linha do tempo. */

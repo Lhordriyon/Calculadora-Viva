@@ -3,6 +3,7 @@
  * seguidas, a vida de origem escolhida e a dinastia. Cada tarefa depende só da semente: o resultado é o mesmo rodando
  * aqui ou num trabalhador, e o túnel junta tudo na ordem das tarefas.
  */
+import { MARCOS_DO_GRUPO } from '../src/motor/lugar.ts';
 import { OFERTAS_CONTRA } from '../src/motor/empresa.ts';
 import { diaDoSonho, E_AGORA, SONHO_QUE_FICOU } from '../src/motor/projetos.ts';
 const CONTRA: ReadonlySet<string> = new Set(OFERTAS_CONTRA);
@@ -441,6 +442,11 @@ export interface Vida {
    * conselho, os lançamentos de produto, a campanha paga à mídia do grupo e o maior peso do grupo no PIB (em %).
    */
   vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number };
+  /**
+   * O mundo à vista (I-170 a I-172): a faixa do lugar no nascimento, no fim e a mais alta; as linhas do lugar depois
+   * do nascimento (as douradas à parte) e os marcos do grupo e da lista dos mais ricos que a vida teve.
+   */
+  lugar: { nasceu: number; final: number; maximo: number; linhas: number; douradas: number; marcos: string[] };
   /** A bolsa (bloco H7): as emissões, as recompras, as ofertas hostis (tentadas e as que passaram) e as ofertas contra quem joga (e cada resposta). */
   bolsa: { emissoes: number; recompras: number; ofertas: number; passaram: number; contra: number; respostas: number[] };
   /** O sonho (bloco S1): os sonhos que a vida teve, os realizados e quantos acabaram (realizados ou não). */
@@ -1242,6 +1248,7 @@ export function medir(c: Conteudo, j: Jogada, estrategia: Estrategia): Vida {
       saidas: e.historico.filter((h) => h.ref === 'regra:gestor_saiu').length,
     },
     vivo: capitalismoVivo(e),
+    lugar: lugarDaVida(e),
     sonhos: sonhosDoLivro(e, c),
     bolsa: {
       emissoes: e.historico.filter((h) => h.ref === 'empresa:emitir').length,
@@ -1481,6 +1488,23 @@ export function executar(c: Conteudo, t: Tarefa): Resultado {
 }
 
 /** O que a vida fez do capitalismo vivo, lido do livro e do estado (missão Capitalismo vivo). */
+function lugarDaVida(e: EstadoVida): Vida['lugar'] {
+  const eu = e.entidades['eu']!;
+  let nasceu = 0;
+  let linhas = 0;
+  let douradas = 0;
+  for (const h of e.historico) {
+    const ref = h.ref ?? '';
+    if (ref.startsWith('lugar:nasceu:')) nasceu = Number(ref.split(':')[2]);
+    else if (ref.startsWith('lugar:') || ref.startsWith('porte:')) {
+      linhas++;
+      if (ref.startsWith('lugar:marco:') || ref.startsWith('porte:marco:')) douradas++;
+    }
+  }
+  const marcos = Object.keys(eu.q).filter((q) => MARCOS_DO_GRUPO.some((m) => m.id === q) || q === 'entre_os_mais_ricos' || q === 'o_mais_rico_do_pais');
+  return { nasceu, final: eu.n['estrato'] ?? 0, maximo: eu.n['estrato_max'] ?? 0, linhas, douradas, marcos };
+}
+
 function capitalismoVivo(e: EstadoVida): Vida['vivo'] {
   const cade: Record<string, number> = {};
   let compras = 0;

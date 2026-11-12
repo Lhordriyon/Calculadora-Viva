@@ -190,5 +190,16 @@
   "conquista_trono": { "epitafio": "Governos passaram; o telefone continuou tocando." },
   "conquista_mercado": { "epitafio": "Tinha crédito no banco e palavra no mercado." },
   "conquista_magnata": { "epitafio": "O setor esperava o seu movimento para fazer o dele." },
-  "conquista_potencia": { "epitafio": "Quando a empresa espirrava, o PIB pegava gripe." }
+  "conquista_potencia": { "epitafio": "Quando a empresa espirrava, o PIB pegava gripe." },
+  "entre_os_mais_ricos": { "epitafio": "Esteve na lista dos 10 mais ricos do país." },
+  "o_mais_rico_do_pais": { "epitafio": "Foi a pessoa mais rica do país, e mesmo assim ligava para casa." },
+  "grupo_mil": { "epitafio": "Deu emprego para mais de mil pessoas." },
+  "grupo_dez_mil": { "epitafio": "Dez mil famílias pagavam as contas com o salário do grupo." },
+  "grupo_cem_mil": { "epitafio": "Cem mil pessoas batiam ponto no grupo que construiu." },
+  "grupo_um_milhao": { "epitafio": "Um milhão de pessoas trabalhavam para o grupo que construiu." },
+  "um_quarto_do_mercado": { "epitafio": "Um quarto do mercado era do grupo." },
+  "metade_do_mercado": { "epitafio": "Metade do mercado era do grupo, e o Cade sabia." },
+  "fatia_no_mundo": { "epitafio": "O logo do grupo estava em vitrines do mundo inteiro." },
+  "entre_as_maiores": { "epitafio": "Construiu uma das 10 maiores empresas do país." },
+  "a_maior_do_pais": { "epitafio": "Construiu a maior empresa do país." }
 }

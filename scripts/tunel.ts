@@ -1475,6 +1475,31 @@ l();
   );
 }
 l();
+l('## O mundo à vista (I-170 a I-172)');
+l();
+{
+  const n = Math.max(1, vidas.length);
+  const comLinha = vidas.filter((v) => v.lugar.linhas > 0).length;
+  const linhas = vidas.reduce((s, v) => s + v.lugar.linhas, 0);
+  const douradas = vidas.reduce((s, v) => s + v.lugar.douradas, 0);
+  // A mobilidade pelo lugar no país: de onde nasceu (a metade de baixo, a de cima, o 1% e acima) para onde terminou.
+  const grupoDe = (k: number): number => (k <= 1 ? 0 : k <= 3 ? 1 : 2);
+  const nomes = ['a metade de baixo', 'a metade de cima (até os 10%)', 'o 1% e acima'];
+  const matriz = [0, 1, 2].map((a) => [0, 1, 2].map((b) => vidas.filter((v) => grupoDe(v.lugar.nasceu) === a && grupoDe(v.lugar.final) === b).length));
+  const marcos = new Map<string, number>();
+  for (const v of vidas) for (const m of v.lugar.marcos) marcos.set(m, (marcos.get(m) ?? 0) + 1);
+  l(`Todo jogador vê o próprio lugar no país (lugar.ts): a linha do nascimento e, a partir dos 18, a faixa nova, a queda com causa e a volta. Vidas com alguma linha do lugar ou do grupo depois do nascimento: ${pct(comLinha / n)}; linhas por vida: ${num(linhas / n, 2)} (douradas: ${num(douradas / n, 2)}).`);
+  l();
+  l('| Nasceu em ↓ · terminou em → | ' + nomes.join(' | ') + ' |');
+  l('|---|---|---|---|');
+  for (let a = 0; a < 3; a++) {
+    const total = Math.max(1, matriz[a]!.reduce((s, x) => s + x, 0));
+    l(`| ${nomes[a]} (${num(matriz[a]!.reduce((s, x) => s + x, 0), 0)} vidas) | ${matriz[a]!.map((x) => pct(x / total)).join(' | ')} |`);
+  }
+  l();
+  l(`Vidas que chegaram a cada marco: ${[...marcos.entries()].sort((x, y) => y[1] - x[1]).map(([k, v]) => `${k.replaceAll('_', ' ')} ${num(v, 0)}`).join(' · ') || 'nenhum'}.`);
+}
+l();
 l('## O sonho da vida (bloco S1)');
 l();
 l('Aos 15, a pergunta do que quer da vida (a estrela, o império, o topo do país); no primeiro namoro sério, a do amor (a casa cheia, o amor para a vida toda). Cada sonho é um projeto com cenas próprias e um fim que o cartão conta.');
