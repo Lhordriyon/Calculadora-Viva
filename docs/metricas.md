@@ -283,43 +283,43 @@ O ano é uma lista de 29 etapas, cada uma com o que lê e escreve declarado (`ma
 
 | Etapa | CPU por vida | Da CPU | Livro por vida | Lê deste ano, de | Lê do ano passado, de |
 |---|---|---|---|---|---|
-| exterior (o mundo lá fora: a economia de cada país, a relação, sanções e acordos) | 2,07 ms | 1,3% | 32,5 KB | — | guerra, pais, moeda, pesquisa, empresa, poder, coroa, iniciativas, diretor |
-| guerra (a defesa: o armamento encomendado chega, e a guerra começa, segue ou acaba) | 0,60 ms | 0,4% | 0,0 KB | exterior | pais, moeda, pesquisa, empresa, personagens, poder, coroa, iniciativas, diretor |
-| pais (o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote) | 4,65 ms | 3,0% | 58,7 KB | exterior, guerra | moeda, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, personagens, poder, coroa, regras, iniciativas, diretor |
+| exterior (o mundo lá fora: a economia de cada país, a relação, sanções e acordos) | 2,22 ms | 1,4% | 32,5 KB | — | guerra, pais, moeda, pesquisa, empresa, poder, coroa, iniciativas, diretor |
+| guerra (a defesa: o armamento encomendado chega, e a guerra começa, segue ou acaba) | 0,61 ms | 0,4% | 0,0 KB | exterior | pais, moeda, pesquisa, empresa, personagens, poder, coroa, iniciativas, diretor |
+| pais (o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote) | 4,78 ms | 3,0% | 58,7 KB | exterior, guerra | moeda, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, personagens, poder, coroa, regras, iniciativas, diretor |
 | moeda (o dinheiro: a inflação que vai para quem emitiu, o caixa do governo, o câmbio, o crédito dos bancos e a emissão do Banco Central) | 0,63 ms | 0,4% | 31,7 KB | guerra, pais | empresa, bens, tesouro, dividas, personagens, regras, iniciativas, diretor |
-| setores (os mercados de cada setor: a obra que fica pronta, a procura do ano e o preço que decide a obra do ano que vem) | 2,09 ms | 1,4% | 91,1 KB | pais | empresa, iniciativas, diretor |
-| pesquisa (a pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros) | 0,19 ms | 0,1% | 0,3 KB | guerra, pais | empresa, poder, coroa, iniciativas, diretor |
-| mercado (o mercado do ano: quanto cada classe de investimento rendeu) | 0,63 ms | 0,4% | 18,3 KB | pais | iniciativas, diretor |
-| economia (a economia de quem joga: inflação, juros, salário, imposto, gastos) | 1,86 ms | 1,2% | 27,9 KB | pais, mercado | empresa, bens, tesouro, dividas, promissorias, personagens, trabalho, carreira, poder, coroa, iniciativas, diretor |
-| empresa (as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra) | 9,69 ms | 6,3% | 44,9 KB | tudo o que veio antes | bens, tesouro, dividas, promissorias, privacao, corpo, personagens, trabalho, carreira, poder, coroa, padrao, projetos, segredos, lugar, regras, morte, amor, iniciativas, diretor |
-| bens (os bens: valor, manutenção, aluguel e o financiamento) | 1,18 ms | 0,8% | 14,3 KB | pais, moeda, mercado, economia, empresa | tesouro, dividas, promissorias, personagens, trabalho, carreira, poder, coroa, regras, iniciativas, diretor |
-| tesouro (os títulos do Tesouro: o cupom do ano e o que venceu) | 0,32 ms | 0,2% | 2,5 KB | pais, moeda, economia, empresa, bens | dividas, promissorias, personagens, regras, iniciativas, diretor |
-| dividas (as dívidas: a parcela do acordo, o limite, o que caduca e o nome) | 0,42 ms | 0,3% | 0,3 KB | pais, moeda, economia, empresa, bens, tesouro | promissorias, personagens, trabalho, carreira, poder, coroa, regras, iniciativas, diretor |
-| promissorias (os empréstimos entre pessoas: a parcela, o atraso que magoa, a quitação e o calote) | 0,34 ms | 0,2% | 1,5 KB | pais, economia, empresa, bens, tesouro, dividas | personagens, segredos, iniciativas, diretor |
-| privacao (a privação: o buraco que nem o crédito cobriu) | 0,05 ms | 0,0% | 0,0 KB | economia | corpo, personagens, projetos, iniciativas, diretor |
-| corpo (o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto) | 1,99 ms | 1,3% | 21,5 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao | personagens, trabalho, carreira, poder, coroa, projetos, lugar, morte, iniciativas, diretor |
-| personagens (a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte) | 5,26 ms | 3,4% | 77,3 KB | exterior, guerra, pais, moeda, setores, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao, corpo | trabalho, carreira, poder, coroa, projetos, segredos, regras, morte, iniciativas, diretor |
-| trabalho (o trabalho de quem joga: salário e demissão) | 0,22 ms | 0,1% | 1,5 KB | pais, setores, empresa, promissorias, personagens | carreira, poder, coroa, iniciativas, diretor |
-| carreira (a carreira: promoção, fama e o fim da carreira) | 0,48 ms | 0,3% | 2,1 KB | guerra, pais, pesquisa, empresa, bens, promissorias, corpo, personagens, trabalho | poder, coroa, projetos, morte, iniciativas, diretor |
-| poder (o poder: influência, popularidade, mandato e queda) | 2,22 ms | 1,4% | 4,6 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, personagens, trabalho, carreira | coroa, morte, iniciativas, diretor |
-| coroa (a coroa: a ilha anda e quem tem coroa recebe a dotação da forma) | 0,15 ms | 0,1% | 0,0 KB | guerra, pais, pesquisa, empresa, trabalho, carreira, poder | iniciativas, diretor |
+| setores (os mercados de cada setor: a obra que fica pronta, a procura do ano e o preço que decide a obra do ano que vem) | 2,22 ms | 1,4% | 91,1 KB | pais | empresa, iniciativas, diretor |
+| pesquisa (a pesquisa: a tecnologia do país vira descoberta (a cura, o satélite, a patente) ou fuga de cérebros) | 0,20 ms | 0,1% | 0,3 KB | guerra, pais | empresa, poder, coroa, iniciativas, diretor |
+| mercado (o mercado do ano: quanto cada classe de investimento rendeu) | 0,70 ms | 0,4% | 18,3 KB | pais | iniciativas, diretor |
+| economia (a economia de quem joga: inflação, juros, salário, imposto, gastos) | 2,00 ms | 1,3% | 27,9 KB | pais, mercado | empresa, bens, tesouro, dividas, promissorias, personagens, trabalho, carreira, poder, coroa, iniciativas, diretor |
+| empresa (as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra) | 9,81 ms | 6,2% | 44,9 KB | tudo o que veio antes | bens, tesouro, dividas, promissorias, privacao, corpo, personagens, trabalho, carreira, poder, coroa, padrao, projetos, segredos, lugar, regras, morte, amor, iniciativas, diretor |
+| bens (os bens: valor, manutenção, aluguel e o financiamento) | 1,27 ms | 0,8% | 14,3 KB | pais, moeda, mercado, economia, empresa | tesouro, dividas, promissorias, personagens, trabalho, carreira, poder, coroa, regras, iniciativas, diretor |
+| tesouro (os títulos do Tesouro: o cupom do ano e o que venceu) | 0,35 ms | 0,2% | 2,5 KB | pais, moeda, economia, empresa, bens | dividas, promissorias, personagens, regras, iniciativas, diretor |
+| dividas (as dívidas: a parcela do acordo, o limite, o que caduca e o nome) | 0,45 ms | 0,3% | 0,3 KB | pais, moeda, economia, empresa, bens, tesouro | promissorias, personagens, trabalho, carreira, poder, coroa, regras, iniciativas, diretor |
+| promissorias (os empréstimos entre pessoas: a parcela, o atraso que magoa, a quitação e o calote) | 0,38 ms | 0,2% | 1,5 KB | pais, economia, empresa, bens, tesouro, dividas | personagens, segredos, iniciativas, diretor |
+| privacao (a privação: o buraco que nem o crédito cobriu) | 0,07 ms | 0,0% | 0,0 KB | economia | corpo, personagens, projetos, iniciativas, diretor |
+| corpo (o corpo e o humor de quem joga: idade, escola, marcas, dívida pesada, conforto) | 2,10 ms | 1,3% | 21,5 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao | personagens, trabalho, carreira, poder, coroa, projetos, lugar, morte, iniciativas, diretor |
+| personagens (a família e os amigos: saúde, vínculo, dinheiro, trabalho, morte) | 5,32 ms | 3,3% | 77,3 KB | exterior, guerra, pais, moeda, setores, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao, corpo | trabalho, carreira, poder, coroa, projetos, segredos, regras, morte, iniciativas, diretor |
+| trabalho (o trabalho de quem joga: salário e demissão) | 0,23 ms | 0,1% | 1,5 KB | pais, setores, empresa, promissorias, personagens | carreira, poder, coroa, iniciativas, diretor |
+| carreira (a carreira: promoção, fama e o fim da carreira) | 0,44 ms | 0,3% | 2,1 KB | guerra, pais, pesquisa, empresa, bens, promissorias, corpo, personagens, trabalho | poder, coroa, projetos, morte, iniciativas, diretor |
+| poder (o poder: influência, popularidade, mandato e queda) | 2,24 ms | 1,4% | 4,6 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, personagens, trabalho, carreira | coroa, morte, iniciativas, diretor |
+| coroa (a coroa: a ilha anda e quem tem coroa recebe a dotação da forma) | 0,14 ms | 0,1% | 0,0 KB | guerra, pais, pesquisa, empresa, trabalho, carreira, poder | iniciativas, diretor |
 | padrao (o padrão de vida: a conta que chega quando a reserva acaba) | 0,06 ms | 0,0% | 0,0 KB | pais, economia, empresa, bens, tesouro, dividas, promissorias, personagens | iniciativas, diretor |
-| projetos (os projetos: a meta alcançada vira conquista, o prazo passado vira fracasso) | 1,99 ms | 1,3% | 2,4 KB | tudo o que veio antes | segredos, lugar, regras, morte, amor, iniciativas, diretor |
-| segredos (os segredos: quem sabe pode contar, e a notícia que chega ao alvo agenda a revelação) | 2,32 ms | 1,5% | 0,0 KB | tudo o que veio antes | lugar, regras, morte, amor, iniciativas, diretor |
-| lugar (o lugar no país e os marcos do grupo: a faixa nova, a volta e a queda, com o porquê) | 4,41 ms | 2,9% | 1,4 KB | exterior, guerra, pais, moeda, setores, pesquisa, mercado, economia, empresa, bens, tesouro, dividas, promissorias, personagens, projetos, segredos | morte, iniciativas, diretor |
-| regras (fecha as regras do ano numa entrada invisível do livro) | 3,11 ms | 2,0% | 17,4 KB | pais, moeda, setores, empresa, bens, tesouro, dividas, privacao, corpo, personagens, projetos | iniciativas, diretor |
-| morte (a morte: a do corpo e a da violência) | 0,82 ms | 0,5% | 0,4 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao, corpo, personagens, trabalho, carreira, poder, coroa, projetos, lugar | iniciativas, diretor |
-| amor (o amor que aparece e o namoro que esfria) | 0,16 ms | 0,1% | 0,0 KB | empresa, promissorias, corpo, personagens | iniciativas, diretor |
-| iniciativas (o que os personagens resolvem fazer (o conteúdo)) | 26,32 ms | 17,1% | 2,2 KB | tudo o que veio antes | diretor |
-| diretor (o storylet do ano, o agendado ou a linha curta (o conteúdo)) | 17,63 ms | 11,5% | 1,6 KB | tudo o que veio antes | — |
-| fora das etapas (nascer, escolher, agir, operar e os robôs) | 61,69 ms | 40,2% | — | — | — |
+| projetos (os projetos: a meta alcançada vira conquista, o prazo passado vira fracasso) | 2,03 ms | 1,3% | 2,4 KB | tudo o que veio antes | segredos, lugar, regras, morte, amor, iniciativas, diretor |
+| segredos (os segredos: quem sabe pode contar, e a notícia que chega ao alvo agenda a revelação) | 2,38 ms | 1,5% | 0,0 KB | tudo o que veio antes | lugar, regras, morte, amor, iniciativas, diretor |
+| lugar (o lugar no país e os marcos do grupo: a faixa nova, a volta e a queda, com o porquê) | 4,48 ms | 2,8% | 1,4 KB | exterior, guerra, pais, moeda, setores, pesquisa, mercado, economia, empresa, bens, tesouro, dividas, promissorias, personagens, projetos, segredos | morte, iniciativas, diretor |
+| regras (fecha as regras do ano numa entrada invisível do livro) | 3,25 ms | 2,0% | 17,4 KB | pais, moeda, setores, empresa, bens, tesouro, dividas, privacao, corpo, personagens, projetos | iniciativas, diretor |
+| morte (a morte: a do corpo e a da violência) | 0,85 ms | 0,5% | 0,4 KB | guerra, pais, pesquisa, economia, empresa, bens, tesouro, dividas, promissorias, privacao, corpo, personagens, trabalho, carreira, poder, coroa, projetos, lugar | iniciativas, diretor |
+| amor (o amor que aparece e o namoro que esfria) | 0,15 ms | 0,1% | 0,0 KB | empresa, promissorias, corpo, personagens | iniciativas, diretor |
+| iniciativas (o que os personagens resolvem fazer (o conteúdo)) | 27,04 ms | 17,0% | 2,2 KB | tudo o que veio antes | diretor |
+| diretor (o storylet do ano, o agendado ou a linha curta (o conteúdo)) | 18,07 ms | 11,4% | 1,6 KB | tudo o que veio antes | — |
+| fora das etapas (nascer, escolher, agir, operar e os robôs) | 64,27 ms | 40,5% | — | — | — |
 
 O save de uma vida (amostra de 1040): mediana 531 KB, p90 652 KB, máximo 1348 KB; o livro é 97,2% dele. A vida de quem herda começa um livro novo, então o save de uma dinastia é o da geração que está viva.
 
 | Portão | Situação | Valor |
 |---|---|---|
 | O save de uma vida cabe no orçamento: o maior da amostra ≤ 1 MB | ❌ | 1348 KB (mediana 531 KB, 1040 vidas) |
-| A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada | ❌ | 153,54 ms (base 43,74 ms, teto 48,11 ms) |
+| A CPU por vida não passa de +10% da fatia 1.2 sem decisão registrada | ❌ | 158,73 ms (base 43,74 ms, teto 48,11 ms) |
 
 ## Os filhos (fatia 1.4a)
 
@@ -355,7 +355,7 @@ Entre as vidas com filhos (44,7%), a média é de 1,60 filhos.
 | Mobilidade nem determinista nem aleatória (Spearman entre 0,3 e 0,7) | ✅ | 0,36 |
 | Saturação V20 ≤ 95% | ✅ | 87,0% (base 95,9%) |
 | Assinaturas sem regressão | ✅ | 905 (base 893) |
-| CPU por vida ≤ 30 ms | ❌ | 153,54 ms (base 14,5 ms) |
+| CPU por vida ≤ 30 ms | ❌ | 158,73 ms (base 14,5 ms) |
 
 ## Portões do incremento 3
 
@@ -372,7 +372,7 @@ Entre as vidas com filhos (44,7%), a média é de 1,60 filhos.
 | Saturação V20 sem regressão (≤ 95%) | ✅ | 87,0% |
 | Assinaturas sem regressão (≥ 918) | ❌ | 905 |
 | Toques por vida ≤ 480 (três ações escolhidas por ano, cada uma em dois toques) | ❌ | 483,2 |
-| CPU por vida ≤ 30 ms | ❌ | 153,54 ms |
+| CPU por vida ≤ 30 ms | ❌ | 158,73 ms |
 
 ## Portões do incremento 5 (brincar de deus)
 
@@ -492,7 +492,7 @@ Entre as vidas com filhos (44,7%), a média é de 1,60 filhos.
 | Vidas com patrimônio negativo ao morrer | 1,0% |
 | Mudanças de estado causadas pelo jogador | 43,4% |
 | Toques por vida | 483,2 |
-| Tempo de CPU por vida | 153,54 ms |
+| Tempo de CPU por vida | 158,73 ms |
 | Ações (fichas usadas) por vida | 154,4 |
 | Mortes na família por vida | 4,9 |
 | Pontos de virada que vêm do mundo (não do jogador) | 9,1% |
