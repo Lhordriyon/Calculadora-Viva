@@ -16,7 +16,8 @@
 import { donaDe, empresaDoRegistro, parteNaEmpresa, refDaEmpresa } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { aEmpresa, fundar, liquidoDe, lugarLivre, setoresDeEmpresa, tirarDeQuemJoga } from './empresa.ts';
-import { definirNumero, somar } from './livro.ts';
+import { definirNumero, ganhar, perder, somar } from './livro.ts';
+import { holdingDaDupla, honorarioDaDupla, NOMES_DA_DUPLA, QUALIDADE_DA_DUPLA } from './valor.ts';
 import { ceoDe } from './governanca.ts';
 import { momentoDoPais } from './pais.ts';
 import { CAPITAL_MINIMO_EMPRESA, MAX_EMPRESAS, precoDeVenda } from './regras.ts';
@@ -40,9 +41,11 @@ export type OperacaoGrupo =
    * extraordinário), da controladora para a controlada (aporte) ou da controlada para a controladora (dividendo
    * extraordinário). Os sócios de quem paga recebem a parte deles.
    */
-  | { tipo: 'transferirCaixa'; de: string; para: string; valor: number };
+  | { tipo: 'transferirCaixa'; de: string; para: string; valor: number }
+  /** Contratar (ou dispensar) a dupla do valor na holding (valor.ts, I-179). */
+  | { tipo: 'dupla'; holding: string; contratar: boolean };
 
-const TIPOS = new Set(['criarHolding', 'paraAHolding', 'fundarSubsidiaria', 'aportarNaControlada', 'dividendosDaControlada', 'venderParticipacao', 'transferirCaixa']);
+const TIPOS = new Set(['criarHolding', 'paraAHolding', 'fundarSubsidiaria', 'aportarNaControlada', 'dividendosDaControlada', 'venderParticipacao', 'transferirCaixa', 'dupla']);
 export function ehOperacaoDeGrupo(op: { tipo: string }): op is OperacaoGrupo {
   return TIPOS.has(op.tipo);
 }
@@ -119,6 +122,16 @@ export function motivoParaNaoOperarGrupo(e: EstadoVida, c: Conteudo, op: Operaca
       if (!emp || !doGrupo(e, emp) || donaDe(emp) === 'eu') return 'essa empresa não é controlada por outra do seu grupo';
       if (!(op.fracao >= 0 && op.fracao <= 1)) return 'escolha a parte do lucro';
       return Math.abs((emp.n['retirada'] ?? 0) - op.fracao) < 1e-9 ? 'já é assim' : null;
+    }
+    case 'dupla': {
+      const h = viva(e, op.holding);
+      if (!h || !h.q['holding']) return 'a dupla do valor dirige uma holding';
+      if (donaDe(h) !== 'eu') return 'a holding precisa ser sua';
+      if (!op.contratar) return h.q[QUALIDADE_DA_DUPLA] ? null : 'a dupla não trabalha para esta holding';
+      if (h.q[QUALIDADE_DA_DUPLA]) return 'a dupla já dirige esta holding';
+      if (holdingDaDupla(e)) return 'a dupla já dirige outra holding sua';
+      const honorario = honorarioDaDupla(e, h);
+      return (h.n['caixa'] ?? 0) < honorario ? `o honorário do primeiro ano é ${formatarDinheiro(honorario)}, e o caixa da holding não tem` : null;
     }
     case 'transferirCaixa': {
       const de = viva(e, op.de);
@@ -214,6 +227,18 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       return {
         texto: `${aEmpresa(emp, 'A')} passa a distribuir ${Math.round(op.fracao * 100)}% do lucro${mae ? `, que sobe para ${aEmpresa(mae)}` : ''}.`,
         resumo: `mudou os dividendos ${aEmpresa(emp, 'da')}`,
+      };
+    }
+    case 'dupla': {
+      const h = e.entidades[op.holding]!;
+      if (!op.contratar) {
+        perder(e, reg, h.id, QUALIDADE_DA_DUPLA, 'dupla');
+        return { texto: `Você dispensou a dupla do valor ${aEmpresa(h, 'da')}. As diretorias voltam a decidir sem pedir a ninguém.`, resumo: 'dispensou a dupla do valor' };
+      }
+      ganhar(e, reg, h.id, QUALIDADE_DA_DUPLA, origem, 'dupla');
+      return {
+        texto: `${aEmpresa(h, 'A')} contratou a dupla do valor, ${NOMES_DA_DUPLA}. A partir de agora, o caixa de cada empresa sobe para a holding, a dívida acaba, a concorrente só se compra com margem de segurança e cada diretoria pede a eles antes de crescer. O honorário é de ${formatarDinheiro(honorarioDaDupla(e, h))} por ano.`,
+        resumo: 'contratou a dupla do valor para dirigir o grupo',
       };
     }
     case 'transferirCaixa': {

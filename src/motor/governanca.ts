@@ -27,6 +27,7 @@ import { custoDaObra } from './negocio.ts';
 import { fatorDaCidade, formaQueProduz, motivoParaNaoOperarUnidade, operarUnidade, unidadesDe, type OperacaoUnidade } from './unidades.ts';
 import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { formatarDinheiro } from './texto.ts';
+import { anoDaDupla, CRIVO, retornoDe, sobADupla } from './valor.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
 export const AUTONOMIAS = ['manual', 'consultiva', 'delegada', 'autonoma', 'carta_branca'] as const;
@@ -105,7 +106,7 @@ const CHANCE_DA_COMPRA = 0.4;
  * melhor relação quando a empresa passa de R$ 100 milhões; e a compra do controle da concorrente quando ela está
  * barata e o Cade não barra.
  */
-function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[], jaExpandiu: boolean, origem: number): string[] {
+function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[], jaExpandiu: boolean, origem: number, crivo = false): string[] {
   const resumos: string[] = [];
   const rng = criarRng(misturar(e.semente, e.ano, 3313, emp.registro ?? 0));
   const caixa = (): number => Math.max(0, emp.n['caixa'] ?? 0);
@@ -117,7 +118,9 @@ function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg
     // O tamanho da obra pela fila: meia estrutura a mais com a fila grande, um quarto com a pequena, um décimo se o caixa só der isso.
     const fracao = [fila >= 1.5 ? 0.5 : 0.25, 0.25, 0.1].find((f) => custoDaObra(c, emp, f, e) <= caixa() * 0.5);
     const op: OperacaoUnidade | undefined = cidade && fracao ? { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade, fracao } : undefined;
-    if (op && motivoParaNaoOperarUnidade(e, c, op) === null) {
+    if (op && motivoParaNaoOperarUnidade(e, c, op) === null && crivo && retornoDe(emp) < CRIVO.retornoDaObra) {
+      resumos.push(`a dupla do valor vetou a obra: a empresa devolve ${Math.round(retornoDe(emp) * 100)}% do que vale, e ela pede ${Math.round(CRIVO.retornoDaObra * 100)}%`);
+    } else if (op && motivoParaNaoOperarUnidade(e, c, op) === null) {
       operarUnidade(e, c, op, reg, origem);
       const nome = c.setores.get(emp.t['setor'] ?? '')?.unidade?.nome ?? 'unidade';
       resumos.push(`construiu ${c.setores.get(emp.t['setor'] ?? '')?.unidade?.f ? 'uma' : 'um'} ${nome} em ${cidade}`);
@@ -130,7 +133,9 @@ function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg
     paises.sort((a, b) => (b.en!.n['relacao'] ?? 0) - (a.en!.n['relacao'] ?? 0));
     const pais = paises[0]?.id as Parceiro | undefined;
     const op: OperacaoGrupo | undefined = pais ? { tipo: 'fundarSubsidiaria', controladora: emp.id, setor: emp.t['setor'] ?? '', valor: Math.round(caixa() * 0.2), pais } : undefined;
-    if (op && motivoParaNaoOperarGrupo(e, c, op) === null) {
+    if (op && motivoParaNaoOperarGrupo(e, c, op) === null && crivo && retornoDe(emp) < CRIVO.retornoDaFilial) {
+      resumos.push(`a dupla do valor vetou a filial ${oPais(c, pais!, 'na')}: a empresa devolve ${Math.round(retornoDe(emp) * 100)}% do que vale, e ela pede ${Math.round(CRIVO.retornoDaFilial * 100)}%`);
+    } else if (op && motivoParaNaoOperarGrupo(e, c, op) === null) {
       operarGrupo(e, c, op, reg, origem);
       resumos.push(`abriu uma filial ${oPais(c, pais!, 'na')}`);
     }
@@ -141,7 +146,10 @@ function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg
     // Compra inteira: a comprada vem para o grupo sem sócia (a parte que sobraria fica com quem vendeu, no mercado).
     const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
     const custo = custoDaAquisicao(e, emp.id, 1);
-    if (custo <= caixa() * 0.75 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
+    const preco = precoDaAquisicao(e, emp.id);
+    if (crivo && preco > CRIVO.margemDeSeguranca) {
+      resumos.push(`a dupla do valor vetou a compra da concorrente ${alvo.nome}: está a ${Math.round(preco * 100)}% do justo, sem margem de segurança`);
+    } else if (custo <= caixa() * 0.75 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
       const nome = alvo.nome;
       operarEmpresa(e, c, op, reg, origem);
       resumos.push(`comprou a concorrente ${nome} inteira`);
@@ -235,10 +243,16 @@ export function jogadasDoConselho(e: EstadoVida, c: Conteudo, emp: Entidade, niv
  * jogadas do jeito do mandato, e o ano de decisões vira uma entrada no livro, com a decisão de quem delegou de causa.
  */
 export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly Entidade[]): void {
+  // A dupla do valor decide primeiro (valor.ts): as diretorias do grupo dela se reportam a ela.
+  anoDaDupla(e, c);
   for (const emp of empresas) {
+    // A dupla pode ter vendido a empresa neste ano: ela saiu do grupo (deFora) e segue com a diretoria de lá.
+    if (emp.vivo === false || !e.entidades[emp.id] || deFora(emp)) continue;
     const nivel = autonomiaDe(emp);
     if (nivel !== 'delegada' && nivel !== 'autonoma' && nivel !== 'carta_branca') continue;
-    const ops = jogadasDoConselho(e, c, emp, nivel);
+    const crivo = sobADupla(e, emp);
+    // Com a dupla, dívida nenhuma: a diretoria não pega crédito no banco.
+    const ops = jogadasDoConselho(e, c, emp, nivel).filter((o) => !(crivo && o.tipo === 'emprestimo'));
     if (ops.length === 0 && nivel !== 'carta_branca') continue;
     const reg: Mudanca[] = [];
     const resumos: string[] = [];
@@ -254,10 +268,11 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
       resumos.push(operarNegocio(e, c, op, reg, emp.nome).resumo.replace(` de ${emp.nome}`, '').replace(` em ${emp.nome}`, '').replace(` ${emp.nome}`, ''));
     }
     if (nivel === 'carta_branca') {
-      resumos.push(...crescimentoDaCartaBranca(e, c, emp, reg, ops.some((o) => o.tipo === 'expandir'), entrada.id));
-      resumos.push(...caixaDaCartaBranca(e, c, emp, reg, entrada.id));
+      resumos.push(...crescimentoDaCartaBranca(e, c, emp, reg, ops.some((o) => o.tipo === 'expandir'), entrada.id, crivo));
+      // Com a dupla, o caixa é dela: a sobra sobe e o aporte desce pelas mãos dela (valor.ts › anoDaDupla).
+      if (!crivo) resumos.push(...caixaDaCartaBranca(e, c, emp, reg, entrada.id));
     }
-    if (reg.length === 0) continue;
+    if (reg.length === 0 && !resumos.some((r) => r.startsWith('a dupla do valor vetou'))) continue;
     const causa = entradaQueMudou(e, `${emp.id}.autonomia`);
     const lista = resumos.length > 1 ? `${resumos.slice(0, -1).join(', ')} e ${resumos.at(-1)}` : (resumos[0] ?? 'mexeu no negócio');
     entrada.texto = `${quemAssina(e, c, emp)} com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]}${causa !== null ? ' que você deu' : ''}, ${lista}.`;

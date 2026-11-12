@@ -2183,3 +2183,15 @@ O dono pediu mais autoridade para a CEO e a diretoria: construir fábricas, fili
 - **A filial lá fora, uma por empresa**, quando ela passa de R$ 100 milhões, no país de melhor relação (30 ou mais, sem sanção), em 12% dos anos em que dá.
 - **O país da filial ganhou um leitor no conteúdo**: o Cade não investiga a empresa de perto quando ela é uma filial lá fora.
 
+## A dupla do valor (12/11)
+
+O dono pediu para contratar dois investidores reais como CEOs, com o investimento em valor em toda a holding, autonomia de ponta a ponta acima da mesa diretora e das CEOs, e todos se reportando a eles antes (I-179).
+
+**Decisões tomadas sozinho.**
+
+- **A dupla é fictícia** (Augusto Prudente e Benedito Lacerda): os limites do jogo pedem personagens fictícios e genéricos, pelo risco legal, e um dos dois nomes pedidos é de alguém que já morreu. A filosofia é a mesma; trocar os nomes é decisão do dono, porque muda um limite que ele pôs.
+- **A dupla vive na holding** (uma por vez) e decide antes das diretorias, no mesmo ano: é o que "todos se reportam a eles antes" quer dizer no motor. A empresa de perto entra no caixa do grupo, mas não é vendida: quem a dirige é quem joga.
+- **Os números do investimento em valor**: a reserva de três meses de custos em cada empresa (o resto sobe), o dinheiro da holding para quem devolve 15% ou mais do que vale e tem fila, a obra só com 10% de retorno, a filial só com 12%, a compra só até 85% do justo (a margem de segurança), nenhum crédito, a dívida quitada por quem tem caixa, e o negócio de três anos ou mais que perde mais de 5% do valor vendido inteiro (o novo não é julgado: na primeira medida, a dupla vendia a subsidiária no primeiro ano, quando toda empresa ainda está no prejuízo).
+- **O honorário**: 0,2% do valor do grupo dela por ano, no mínimo R$ 2 milhões, pago pela holding.
+- **Os robôs não criam holding**: o túnel não passa pela dupla; os testes (`test/valor.test.ts`) conferem o ano dela, os vetos e as contas.
+

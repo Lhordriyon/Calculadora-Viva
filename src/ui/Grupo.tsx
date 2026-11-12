@@ -5,6 +5,7 @@
  * mídia, e a governança (quem decide o dia a dia). Cada botão é uma operação do motor (carteira.ts), com o motivo à vista
  * quando não dá.
  */
+import { CRIVO, honorarioDaDupla, NOMES_DA_DUPLA, QUALIDADE_DA_DUPLA, sobADupla } from '../motor/valor.ts';
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 import { donaDe, empresaDoRegistro, empresasDe, parteEfetiva, refDaEmpresa } from '../motor/campos.ts';
@@ -43,6 +44,41 @@ function Acao({ vida, conteudo, aoOperar, op, children, secundario = true, expli
       </button>
       {explica && <p class="nota explica">{explica}</p>}
       {motivo && <p class="nota">Agora não: {motivo}.</p>}
+    </>
+  );
+}
+
+/**
+ * A dupla do valor (valor.ts, I-179): contratar pela holding, ver o que ela fez no último ano e dispensar. Os nomes
+ * são fictícios, como todo personagem do jogo.
+ */
+function DuplaDoValor({ vida, conteudo, aoOperar, h }: Base & { h: Entidade }) {
+  const contratada = Boolean(h.q[QUALIDADE_DA_DUPLA]);
+  const ultimo = contratada ? vida.historico.filter((x) => x.ref === 'valor:decidiu').at(-1) : undefined;
+  return (
+    <>
+      <p class="nota">
+        <b>A dupla do valor.</b>{' '}
+        {contratada
+          ? `${NOMES_DA_DUPLA} dirigem o grupo pelo investimento em valor, acima das diretorias: o caixa sobe para a holding, dívida não existe, e cada diretoria pede a eles antes de construir, abrir filial ou comprar.`
+          : `${NOMES_DA_DUPLA} investem pelo valor há quarenta anos e aceitam dirigir a holding, acima de todas as diretorias.`}
+      </p>
+      {ultimo && <p class="nota explica">No último ano: {ultimo.texto.replace(/^A dupla do valor, [^,]+, que dirige [^,]+, /, '')}</p>}
+      {contratada ? (
+        <Acao vida={vida} conteudo={conteudo} aoOperar={aoOperar} op={{ tipo: 'dupla', holding: h.id, contratar: false }} explica="As diretorias voltam a decidir sozinhas, cada uma com a autonomia que tem, e o caixa volta a ficar em cada empresa.">
+          Dispensar a dupla do valor
+        </Acao>
+      ) : (
+        <Acao
+          vida={vida}
+          conteudo={conteudo}
+          aoOperar={aoOperar}
+          op={{ tipo: 'dupla', holding: h.id, contratar: true }}
+          explica={`Por ${formatarDinheiro(honorarioDaDupla(vida, h))} por ano, eles trazem para a holding o caixa que passa de três meses de custos, põem o dinheiro onde ele rende 15% ou mais, quitam a dívida, vendem o negócio que queima dinheiro e só deixam comprar a concorrente com margem de segurança (até 85% do justo).`}
+        >
+          Contratar a dupla do valor
+        </Acao>
+      )}
     </>
   );
 }
@@ -248,6 +284,7 @@ function EstruturaDecisoes({ vida, conteudo, aoOperar, temSubsidiaria }: Base & 
               </>
             )}
             <MoverCaixa {...base} de={h} />
+            <DuplaDoValor {...base} h={h} />
           </div>
         ))
       )}
@@ -504,6 +541,11 @@ function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade })
         ))}
       </div>
       <p class="nota explica">{O_QUE_DECIDE[atual]}</p>
+      {sobADupla(vida, emp) && (
+        <p class="nota explica">
+          Acima da diretoria, a dupla do valor ({NOMES_DA_DUPLA}): ela pede a eles antes de construir (retorno de {Math.round(CRIVO.retornoDaObra * 100)}%), de abrir filial ({Math.round(CRIVO.retornoDaFilial * 100)}%) e de comprar a concorrente (até {Math.round(CRIVO.margemDeSeguranca * 100)}% do justo); crédito no banco, nenhum.
+        </p>
+      )}
       <div class="escolhas-origem" role="group" aria-label="Mandato">
         {MANDATOS.map((m) => (
           <button type="button" class="chip-origem" key={m} aria-pressed={mandato === m} onClick={() => mudar(atual, m)}>
