@@ -2158,3 +2158,15 @@ O dono achou o grupo no mundo pouco perceptível e pediu que fosse perceptível 
 - **As histórias na beira ganharam o triplo do peso** (I-174): na terceira rodada, morreu mais uma (cobrir a tatuagem), sem relação com o que mudou. Das 63 que ficaram em 0,0% das vidas, as 42 que o diretor sorteia (não as agendadas, os marcos, as jogadas nem as ações) passaram a pesar o triplo, no mínimo 3. Quando elas podem acontecer continua igual; só a chance de saírem quando podem sobe. O túnel passou a mostrar a contagem das 20 que menos aparecem.
 - **O sobrinho que herda tem pais de uma geração antes, sempre** (achado da auditoria no caminho): o pai do sobrinho podia ser um irmão de 12 anos (um pai 11 anos mais velho que o filho). Só o irmão de 23 anos ou mais pode ser o pai, e o outro pai ou mãe fica de 20 a 38 anos antes de quem herda. Era um defeito antigo, num caminho raro; as vidas mudaram de rumo com esta missão e passaram por ele.
 
+## O comando claro (12/11)
+
+O dono pediu que os botões de controle da empresa, das subsidiárias e da holding digam o que fazem, mais autonomia para os CEOs das subsidiárias e o poder de mover caixa em qualquer valor da holding para a conta dele e da holding para as subsidiárias (I-175 a I-177).
+
+**Decisões tomadas sozinho.**
+
+- **Uma operação para mover caixa nos três sentidos** (`transferirCaixa`): para baixo é o aporte de sempre (com a diluição de quem não pôs nada); para cima e para a sua conta é um dividendo extraordinário, e cada dona recebe a parte dela (a sócia também). Só da empresa que é sua direto o dinheiro vai para a sua conta; a subsidiária manda para a controladora primeiro. Entre irmãs, não: cada uma tem os sócios dela.
+- **O CEO tem nome, mas não é uma pessoa da vida**: sai do sorteio da vida e do número da empresa (o mesmo do começo ao fim, nenhum campo novo no save) e assina o que a diretoria decide. Uma pessoa a mais por empresa seria estado que nada mais lê.
+- **A carta branca guarda de três meses a um ano de custos**: com um ano de reserva mínima, a primeira subsidiária pedia R$ 12 milhões à holding logo no primeiro ano.
+- **A subsidiária nova nasce com o dia a dia delegado** (o mandato conservador): a diretoria dela já cuidava da maior parte (ela depende pouco de quem joga); mais ou menos autonomia é decisão de quem joga.
+- **A empresa da família é "a"**: o nome que começa por qualquer um dos sobrenomes (e a holding, "Participações") leva o artigo feminino; antes, "o Ribeiro Rodrigues Participações".
+

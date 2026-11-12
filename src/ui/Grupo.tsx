@@ -7,13 +7,13 @@
  */
 import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
-import { donaDe, empresaDoRegistro, empresasDe, parteEfetiva } from '../motor/campos.ts';
+import { donaDe, empresaDoRegistro, empresasDe, parteEfetiva, refDaEmpresa } from '../motor/campos.ts';
 import { motivoParaNaoOperar, type Operacao } from '../motor/carteira.ts';
 import { concorrentesNoSetor, partesDoMercado } from '../motor/concorrentes.ts';
 import type { Conteudo } from '../motor/conteudo.ts';
 import { analiseDoCade, consolidada, contasNacionais } from '../motor/demonstracoes.ts';
 import { aEmpresa, custoDaAquisicao, FRACAO_DA_COMPRA, lugarLivre, setoresDeEmpresa } from '../motor/empresa.ts';
-import { AUTONOMIAS, autonomiaDe, jogadasDoConselho, MANDATOS, mandatoDe, NOME_DA_AUTONOMIA, type Autonomia, type Mandato } from '../motor/governanca.ts';
+import { AUTONOMIAS, autonomiaDe, ceoDe, jogadasDoConselho, MANDATOS, mandatoDe, NOME_DA_AUTONOMIA, O_QUE_DECIDE, O_QUE_O_MANDATO_FAZ, type Autonomia, type Mandato } from '../motor/governanca.ts';
 import { CAPITAL_MINIMO_HOLDING } from '../motor/grupo.ts';
 import { atratividade, audienciaDe, alcanceDaCampanha, custoDoLancamento, idadeDoProduto, midiasDoGrupo, SETOR_DA_MIDIA, velhiceDoProduto } from '../motor/negocio.ts';
 import { UNIDADES } from '../motor/regras.ts';
@@ -34,14 +34,81 @@ interface Base {
 const pct = (v: number, casas = 1): string => `${(v * 100).toFixed(casas).replace('.', ',')}%`;
 
 /** Um botão de operação: desabilitado com o motivo à vista. */
-function Acao({ vida, conteudo, aoOperar, op, children, secundario = true }: Base & { op: Operacao; children: ComponentChildren; secundario?: boolean }) {
+function Acao({ vida, conteudo, aoOperar, op, children, secundario = true, explica }: Base & { op: Operacao; children: ComponentChildren; secundario?: boolean; explica?: string }) {
   const motivo = motivoParaNaoOperar(vida, conteudo, op);
   return (
     <>
       <button class={secundario ? 'botao secundario' : 'botao'} type="button" disabled={motivo !== null} onClick={() => aoOperar(op)}>
         {children}
       </button>
+      {explica && <p class="nota explica">{explica}</p>}
       {motivo && <p class="nota">Agora não: {motivo}.</p>}
+    </>
+  );
+}
+
+/** "12.345.678" ou "12345678" → 12345678; vazio ou inválido, 0. */
+function lerValor(texto: string): number {
+  const n = Number(texto.replace(/\D/g, ''));
+  return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * Mover caixa (I-175): da empresa (a holding, em geral) para a sua conta, para uma controlada ou para a controladora,
+ * no valor que você digitar ou pelos atalhos; o botão diz o que acontece com os sócios.
+ */
+function MoverCaixa({ vida, conteudo, aoOperar, de }: Base & { de: Entidade }) {
+  const caixa = Math.max(0, Math.floor(de.n['caixa'] ?? 0));
+  const mae = donaDe(de)[0] === '#' ? empresaDoRegistro(vida, donaDe(de)) : undefined;
+  const filhas = empresasDe(vida).filter((x) => donaDe(x) === refDaEmpresa(de));
+  const destinos: { id: string; nome: string }[] = [
+    ...(donaDe(de) === 'eu' ? [{ id: 'eu', nome: 'a sua conta' }] : []),
+    ...(mae ? [{ id: mae.id, nome: `${aEmpresa(mae)} (a controladora)` }] : []),
+    ...filhas.map((x) => ({ id: x.id, nome: aEmpresa(x) })),
+  ];
+  const [para, setPara] = useState(destinos[0]?.id ?? '');
+  const [texto, setTexto] = useState('');
+  if (destinos.length === 0 || caixa < 1) return null;
+  const destino = destinos.find((d) => d.id === para) ?? destinos[0]!;
+  const valor = lerValor(texto);
+  const sobe = destino.id === 'eu' || destino.id === mae?.id;
+  const socios = (de.n['participacao'] ?? 1) < 1 || (de.n['participacao_socia'] ?? 0) > 0;
+  const explica = sobe
+    ? `O dinheiro sai do caixa ${aEmpresa(de, 'da')} e vai para ${destino.nome}, como dividendo extraordinário${socios ? '; os outros sócios recebem a parte deles' : ''}. ${aEmpresa(de, 'A')} fica com menos para obras e para a crise.`
+    : `O dinheiro sai do caixa ${aEmpresa(de, 'da')} e entra no ${aEmpresa(vida.entidades[destino.id] ?? de, 'da')}: serve para obra, crise ou dívida. Se ela tiver outros sócios, a parte da controladora cresce.`;
+  return (
+    <>
+      <p class="nota">
+        <b>Mover caixa.</b> {aEmpresa(de, 'A')} tem {formatarDinheiro(caixa)} em caixa.
+      </p>
+      <label class="nota rotulo-campo">
+        Para
+        <select class="campo" value={destino.id} onChange={(ev) => setPara((ev.target as HTMLSelectElement).value)}>
+          {destinos.map((d) => (
+            <option key={d.id} value={d.id}>
+              {capitalizar(d.nome)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label class="nota rotulo-campo">
+        Quanto, em reais
+        <input class="campo" type="text" inputMode="numeric" placeholder="0" value={texto ? valor.toLocaleString('pt-BR') : ''} onInput={(ev) => setTexto((ev.target as HTMLInputElement).value)} />
+      </label>
+      <div class="escolhas-origem" role="group" aria-label="Quanto mover">
+        {[
+          ['Um décimo', 0.1],
+          ['A metade', 0.5],
+          ['Tudo', 1],
+        ].map(([r, f]) => (
+          <button type="button" class="chip-origem" key={String(r)} aria-pressed={valor === Math.floor(caixa * Number(f))} onClick={() => setTexto(String(Math.floor(caixa * Number(f))))}>
+            {r}
+          </button>
+        ))}
+      </div>
+      <Acao vida={vida} conteudo={conteudo} aoOperar={(op) => (setTexto(''), aoOperar(op))} op={{ tipo: 'transferirCaixa', de: de.id, para: destino.id, valor }} explica={explica}>
+        Mover {formatarDinheiro(valor)} para {destino.nome}
+      </Acao>
     </>
   );
 }
@@ -148,7 +215,7 @@ function EstruturaDecisoes({ vida, conteudo, aoOperar, temSubsidiaria }: Base & 
           <p class="nota">
             <b>A holding.</b> Uma empresa que não produz: guarda as participações, recebe os dividendos das outras e paga uma estrutura pequena. As empresas dentro dela continuam pessoas jurídicas separadas.
           </p>
-          <Acao {...base} op={{ tipo: 'criarHolding', valor: capitalDaHolding }}>
+          <Acao {...base} op={{ tipo: 'criarHolding', valor: capitalDaHolding }} explica="Abre uma empresa que não vende nada e é dona das outras: o lucro delas sobe para ela, e você decide quanto sobe para a sua conta.">
             Criar a holding com {formatarDinheiro(capitalDaHolding)}
           </Acao>
         </>
@@ -159,7 +226,7 @@ function EstruturaDecisoes({ vida, conteudo, aoOperar, temSubsidiaria }: Base & 
               <b>{h.nome}.</b> Caixa de {formatarDinheiro(h.n['caixa'] ?? 0)} para fundar subsidiárias e pôr dinheiro nelas.
             </p>
             {diretas.slice(0, 3).map((x) => (
-              <Acao key={x.id} {...base} op={{ tipo: 'paraAHolding', empresa: x.id, holding: h.id }}>
+              <Acao key={x.id} {...base} op={{ tipo: 'paraAHolding', empresa: x.id, holding: h.id }} explica={`A sua parte ${aEmpresa(x, 'da')} passa a ser da holding: o lucro dela sobe para a holding, e não mais direto para você.`}>
                 Pôr {aEmpresa(x)} dentro {aEmpresa(h, 'da')}
               </Acao>
             ))}
@@ -175,11 +242,12 @@ function EstruturaDecisoes({ vida, conteudo, aoOperar, temSubsidiaria }: Base & 
                     ))}
                   </select>
                 </label>
-                <Acao {...base} op={{ tipo: 'fundarSubsidiaria', controladora: h.id, setor, valor: Math.max(100_000, Math.round(((h.n['caixa'] ?? 0) * 0.4) / 1000) * 1000) }}>
+                <Acao {...base} op={{ tipo: 'fundarSubsidiaria', controladora: h.id, setor, valor: Math.max(100_000, Math.round(((h.n['caixa'] ?? 0) * 0.4) / 1000) * 1000) }} explica="Abre uma empresa nova com o caixa da holding: ela tem caixa, contas e diretoria próprios, e a diretoria já toca o dia a dia.">
                   Fundar uma subsidiária com {formatarDinheiro(Math.max(100_000, Math.round(((h.n['caixa'] ?? 0) * 0.4) / 1000) * 1000))} do caixa dela
                 </Acao>
               </>
             )}
+            <MoverCaixa {...base} de={h} />
           </div>
         ))
       )}
@@ -191,19 +259,11 @@ function EstruturaDecisoes({ vida, conteudo, aoOperar, temSubsidiaria }: Base & 
               <p class="nota">
                 <b>{x.nome}.</b> {donaEmPalavras(vida, x)}.
               </p>
-              <Acao {...base} op={{ tipo: 'dividendosDaControlada', empresa: x.id, fracao: (x.n['retirada'] ?? 0) > 0 ? 0 : 0.6 }}>
+              <Acao {...base} op={{ tipo: 'dividendosDaControlada', empresa: x.id, fracao: (x.n['retirada'] ?? 0) > 0 ? 0 : 0.6 }} explica={(x.n['retirada'] ?? 0) > 0 ? 'Todo o lucro fica nela, para crescer; nada sobe para a controladora.' : 'Todo ano, 60% do lucro dela sobe para a controladora; o resto fica nela para crescer.'}>
                 {(x.n['retirada'] ?? 0) > 0 ? 'Reinvestir o lucro dela' : 'Mandar 60% do lucro dela para cima'}
               </Acao>
-              {(() => {
-                const mae = empresaDoRegistro(vida, donaDe(x));
-                const valor = Math.round(Math.max(0, (mae?.n['caixa'] ?? 0) * 0.25) / 1000) * 1000;
-                return mae && valor >= 1000 ? (
-                  <Acao {...base} op={{ tipo: 'aportarNaControlada', de: mae.id, para: x.id, valor }}>
-                    Pôr {formatarDinheiro(valor)} do caixa {aEmpresa(mae, 'da')} nela
-                  </Acao>
-                ) : null;
-              })()}
-              <Acao {...base} op={{ tipo: 'venderParticipacao', empresa: x.id, fracao: 0.25 }}>
+              <MoverCaixa {...base} de={x} />
+              <Acao {...base} op={{ tipo: 'venderParticipacao', empresa: x.id, fracao: 0.25 }} explica="Investidores compram um quarto da parte da controladora pelo preço do dia: o dinheiro entra no caixa da controladora, e o grupo passa a mandar menos nela.">
                 Vender um quarto da parte da controladora
               </Acao>
             </div>
@@ -426,6 +486,7 @@ function ProdutoEMidia({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade
 function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade }) {
   const atual = autonomiaDe(emp);
   const mandato = mandatoDe(emp);
+  const ceo = ceoDe(vida, conteudo, emp);
   const sugestao = jogadasDoConselho(vida, conteudo, emp, 'consultiva');
   const mudar = (a: Autonomia, m: Mandato): void => {
     if (a !== atual || m !== mandato) aoOperar({ tipo: 'governanca', empresa: emp.id, autonomia: a, mandato: m });
@@ -433,7 +494,7 @@ function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade })
   return (
     <>
       <p class="nota">
-        <b>Quem decide.</b> O conselho decide pela mesma régua do gestor, no jeito do mandato que você der, e só dentro do que a autonomia deixa. O que ele decidir vai para a linha do tempo.
+        <b>Quem decide.</b> {ceo ? `${ceo.genero === 'f' ? 'A CEO' : 'O CEO'} ${ceo.nome} e o conselho` : 'O conselho'} decidem pela mesma régua do gestor, no jeito do mandato que você der, e só dentro do que a autonomia deixa. O que decidirem vai para a linha do tempo.
       </p>
       <div class="escolhas-origem" role="group" aria-label="Autonomia">
         {AUTONOMIAS.map((a) => (
@@ -442,6 +503,7 @@ function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade })
           </button>
         ))}
       </div>
+      <p class="nota explica">{O_QUE_DECIDE[atual]}</p>
       <div class="escolhas-origem" role="group" aria-label="Mandato">
         {MANDATOS.map((m) => (
           <button type="button" class="chip-origem" key={m} aria-pressed={mandato === m} onClick={() => mudar(atual, m)}>
@@ -449,6 +511,7 @@ function Governanca({ vida, conteudo, aoOperar, emp }: Base & { emp: Entidade })
           </button>
         ))}
       </div>
+      <p class="nota explica">{O_QUE_O_MANDATO_FAZ[mandato]}</p>
       {atual === 'consultiva' && (
         <p class="nota">{sugestao.length === 0 ? 'O conselho não sugere nada este ano.' : `O conselho sugere: ${sugestao.map((s) => (s.tipo === 'retirada' ? `distribuir ${Math.round(s.fracao * 100)}% do lucro` : s.tipo)).join(', ')}.`}</p>
       )}

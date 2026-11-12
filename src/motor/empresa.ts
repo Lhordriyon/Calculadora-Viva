@@ -156,7 +156,8 @@ function nomeNovo(e: EstadoVida, setor: DefSetor | undefined): string {
 export function generoDoNome(e: EstadoVida, nome: string): Genero {
   const primeira = nome.split(' ')[0] ?? '';
   const sobrenome = e.sobrenome.split(' ').at(-1) ?? e.sobrenome;
-  if (primeira === sobrenome || primeira.startsWith(e.entidades['eu']!.nome)) return 'f';
+  // A empresa da família é "a" (a Silva, a Ribeiro Rodrigues Participações), com qualquer um dos sobrenomes.
+  if (primeira === sobrenome || e.sobrenome.split(' ').includes(primeira) || / Participações$/.test(nome) || primeira.startsWith(e.entidades['eu']!.nome)) return 'f';
   return /o$/i.test(primeira) ? 'm' : 'f';
 }
 

@@ -67,6 +67,17 @@ function sinalDinheiro(v: number): string {
 const OCUPACAO = (x: number): string => (x >= 1.15 ? 'fila de pedidos' : x >= 0.9 ? 'no ponto' : x >= 0.7 ? 'sobra um pouco' : 'estrutura parada');
 const NOME_DO_PRECO: Record<Preco, string> = { popular: 'Popular', medio: 'De mercado', premium: 'Premium' };
 const NOME_DO_SALARIO: Record<Salario, string> = { piso: 'Piso', mercado: 'Mercado', acima: 'Acima' };
+/** O que cada escolha do negócio faz (I-177), na frase que aparece embaixo dela. */
+const O_QUE_O_PRECO_FAZ: Record<Preco, string> = {
+  popular: 'Popular: vende mais e ganha menos em cada venda; a concorrente pode responder com a guerra de preços.',
+  medio: 'De mercado: o preço que o setor cobra; não atrai nem espanta cliente.',
+  premium: 'Premium: vende menos e ganha mais em cada venda; pede qualidade e marca para o cliente não ir embora.',
+};
+const O_QUE_O_SALARIO_FAZ: Record<Salario, string> = {
+  piso: 'Piso: a folha mais barata; a qualidade cai e gente boa vai embora.',
+  mercado: 'Mercado: o que o setor paga; a qualidade fica onde está.',
+  acima: 'Acima: a folha mais cara; a qualidade sobe e quase ninguém sai.',
+};
 
 /**
  * Tocar o negócio (negocio.ts): o preço, o salário, as verbas de marketing e de P&D, a obra que amplia, o corte que
@@ -94,10 +105,12 @@ function NegocioDaEmpresa({ vida, conteudo, emp, aoOperar }: { vida: EstadoVida;
         <b>Tocar o negócio.</b> O preço muda quanto se vende e quanto sobra de cada venda; o salário pesa na estrutura e na qualidade; o marketing faz a marca, e a pesquisa, o produto.
       </p>
       {chips('Preço', NIVEIS_DE_PRECO, (emp.t['preco'] as Preco | undefined) ?? 'medio', (x) => NOME_DO_PRECO[x], (x) => ({ tipo: 'preco', nivel: x, empresa: id }))}
+      <p class="nota explica">{O_QUE_O_PRECO_FAZ[(emp.t['preco'] as Preco | undefined) ?? 'medio']}</p>
       {chips('Salário', NIVEIS_DE_SALARIO, (emp.t['salario'] as Salario | undefined) ?? 'mercado', (x) => NOME_DO_SALARIO[x], (x) => ({ tipo: 'salario', nivel: x, empresa: id }))}
-      <p class="nota">Marketing, em % das vendas:</p>
+      <p class="nota explica">{O_QUE_O_SALARIO_FAZ[(emp.t['salario'] as Salario | undefined) ?? 'mercado']}</p>
+      <p class="nota">Marketing, em % das vendas (faz a marca, que traz cliente nos anos seguintes):</p>
       {chips('Marketing', VERBAS, (VERBAS.find((v) => Math.abs(v - (n['marketing'] ?? 0)) < 1e-9) ?? 0) as (typeof VERBAS)[number], pct, (x) => ({ tipo: 'verbas', marketing: x, pd: n['pd'] ?? 0, empresa: id }))}
-      <p class="nota">Pesquisa e desenvolvimento, em % das vendas:</p>
+      <p class="nota">Pesquisa e desenvolvimento, em % das vendas (melhora o produto, e ele envelhece mais devagar):</p>
       {chips('Pesquisa', VERBAS, (VERBAS.find((v) => Math.abs(v - (n['pd'] ?? 0)) < 1e-9) ?? 0) as (typeof VERBAS)[number], pct, (x) => ({ tipo: 'verbas', marketing: n['marketing'] ?? 0, pd: x, empresa: id }))}
       <div class="escolhas-origem" role="group" aria-label="Obra">
         {[0.25, 0.5, 1].map((f) => (

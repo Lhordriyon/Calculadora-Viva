@@ -16,13 +16,13 @@
 import { donaDe, empresaDoRegistro, parteNaEmpresa, refDaEmpresa } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { aEmpresa, fundar, liquidoDe, lugarLivre, setoresDeEmpresa, tirarDeQuemJoga } from './empresa.ts';
-import { definirNumero, somar } from './livro.ts';
+import { definirNumero, definirTexto, somar } from './livro.ts';
+import { ceoDe } from './governanca.ts';
 import { momentoDoPais } from './pais.ts';
 import { CAPITAL_MINIMO_EMPRESA, MAX_EMPRESAS, precoDeVenda } from './regras.ts';
-import { controladaPor, diluirPeloAporte, formaCiclo, liberarParticipadas, mudarDona } from './societario.ts';
+import { controladaPor, diluirPeloAporte, formaCiclo, liberarParticipadas, mudarDona, pagarDividendos } from './societario.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
-import { movimentar } from './economia.ts';
 import { defDoPais, oPais } from './mundo-das-empresas.ts';
 import type { Parceiro } from './constantes.ts';
 import { moverEmpresa } from './empresa.ts';
@@ -34,9 +34,15 @@ export type OperacaoGrupo =
   | { tipo: 'fundarSubsidiaria'; controladora: string; setor: string; valor: number; pais?: Parceiro }
   | { tipo: 'aportarNaControlada'; de: string; para: string; valor: number }
   | { tipo: 'dividendosDaControlada'; empresa: string; fracao: number }
-  | { tipo: 'venderParticipacao'; empresa: string; fracao: number };
+  | { tipo: 'venderParticipacao'; empresa: string; fracao: number }
+  /**
+   * Mover caixa em qualquer valor (I-175): da empresa que é sua direto para a sua conta (`para: 'eu'`, dividendo
+   * extraordinário), da controladora para a controlada (aporte) ou da controlada para a controladora (dividendo
+   * extraordinário). Os sócios de quem paga recebem a parte deles.
+   */
+  | { tipo: 'transferirCaixa'; de: string; para: string; valor: number };
 
-const TIPOS = new Set(['criarHolding', 'paraAHolding', 'fundarSubsidiaria', 'aportarNaControlada', 'dividendosDaControlada', 'venderParticipacao']);
+const TIPOS = new Set(['criarHolding', 'paraAHolding', 'fundarSubsidiaria', 'aportarNaControlada', 'dividendosDaControlada', 'venderParticipacao', 'transferirCaixa']);
 export function ehOperacaoDeGrupo(op: { tipo: string }): op is OperacaoGrupo {
   return TIPOS.has(op.tipo);
 }
@@ -114,6 +120,17 @@ export function motivoParaNaoOperarGrupo(e: EstadoVida, c: Conteudo, op: Operaca
       if (!(op.fracao >= 0 && op.fracao <= 1)) return 'escolha a parte do lucro';
       return Math.abs((emp.n['retirada'] ?? 0) - op.fracao) < 1e-9 ? 'já é assim' : null;
     }
+    case 'transferirCaixa': {
+      const de = viva(e, op.de);
+      if (!de || !doGrupo(e, de)) return 'essa empresa não é do seu grupo';
+      if (!(op.valor >= 1)) return 'escolha quanto mover';
+      if (op.valor > (de.n['caixa'] ?? 0) + 0.5) return `o caixa ${aEmpresa(de, 'da')} tem ${formatarDinheiro(Math.max(0, de.n['caixa'] ?? 0))}`;
+      if (op.para === 'eu') return donaDe(de) === 'eu' ? null : `${aEmpresa(de)} não é sua direto: o dinheiro dela sobe para ${aEmpresa(controladoraEmpresa(e, de) ?? de)} primeiro`;
+      const para = viva(e, op.para);
+      if (!para || !doGrupo(e, para)) return 'essa empresa não é do seu grupo';
+      if (donaDe(para) === refDaEmpresa(de) || donaDe(de) === refDaEmpresa(para)) return null;
+      return 'o caixa só anda entre uma empresa e quem a controla (e da que é sua direto para a sua conta)';
+    }
     case 'venderParticipacao': {
       const emp = viva(e, op.empresa);
       if (!emp || !doGrupo(e, emp) || !controladoraEmpresa(e, emp)) return 'essa empresa não é controlada por outra do seu grupo';
@@ -161,16 +178,20 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       const filha = fundar(e, c, reg, { setor: op.setor, valor: op.valor, de: mae.id, dona: refDaEmpresa(mae), pais: op.pais }, origem, lugar, nome)!;
       // Quem cuida da subsidiária é a diretoria dela: ela depende pouco de quem joga.
       definirNumero(e, reg, lugar, 'dependencia', 15);
+      // E a diretoria dela já toca o dia a dia (I-176): mais ou menos autonomia é decisão de quem joga, em Quem decide.
+      definirTexto(e, reg, lugar, 'autonomia', 'delegada');
+      const ceo = ceoDe(e, c, filha);
+      const quem = ceo ? ` ${ceo.genero === 'f' ? 'A CEO' : 'O CEO'}, ${ceo.nome}, toca o dia a dia; em Quem decide, você dá mais ou menos autonomia.` : '';
       const ramo = c.setores.get(op.setor)?.nome ?? op.setor;
       if (op.pais) {
         const cidade = defDoPais(c, op.pais)?.cidades[0] ?? '';
         return {
-          texto: `${aEmpresa(mae, 'A')} abriu ${aEmpresa(filha)}, de ${ramo}, ${oPais(c, op.pais, 'na')}, com ${formatarDinheiro(op.valor)} do caixa dela e a sede em ${cidade}. Ela vende no mercado de lá, paga o imposto de lá e sente o dólar e a relação com o Brasil.`,
+          texto: `${aEmpresa(mae, 'A')} abriu ${aEmpresa(filha)}, de ${ramo}, ${oPais(c, op.pais, 'na')}, com ${formatarDinheiro(op.valor)} do caixa dela e a sede em ${cidade}. Ela vende no mercado de lá, paga o imposto de lá e sente o dólar e a relação com o Brasil.${quem}`,
           resumo: `abriu uma filial ${oPais(c, op.pais, 'na')}`,
         };
       }
       return {
-        texto: `${aEmpresa(mae, 'A')} fundou ${aEmpresa(filha)}, de ${ramo}, com ${formatarDinheiro(op.valor)} do caixa dela. É outra pessoa jurídica: tem o caixa, a estrutura e as contas dela.`,
+        texto: `${aEmpresa(mae, 'A')} fundou ${aEmpresa(filha)}, de ${ramo}, com ${formatarDinheiro(op.valor)} do caixa dela. É outra pessoa jurídica: tem o caixa, a estrutura e as contas dela.${quem}`,
         resumo: `fundou a subsidiária ${filha.nome}`,
       };
     }
@@ -194,6 +215,33 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       return {
         texto: `${aEmpresa(emp, 'A')} passa a distribuir ${Math.round(op.fracao * 100)}% do lucro${mae ? `, que sobe para ${aEmpresa(mae)}` : ''}.`,
         resumo: `mudou os dividendos ${aEmpresa(emp, 'da')}`,
+      };
+    }
+    case 'transferirCaixa': {
+      const de = e.entidades[op.de]!;
+      const v = Math.min(op.valor, Math.max(0, de.n['caixa'] ?? 0));
+      // Para baixo é aporte (a mesma operação, com a diluição de quem não pôs nada).
+      if (op.para !== 'eu' && donaDe(e.entidades[op.para]!) === refDaEmpresa(de)) return operarGrupo(e, c, { tipo: 'aportarNaControlada', de: de.id, para: op.para, valor: v }, reg, origem);
+      // Para cima é dividendo extraordinário: cada dona recebe a parte dela (quem joga, a controladora, os sócios).
+      const antes = Math.max(0, de.n['caixa'] ?? 0);
+      pagarDividendos(e, reg, de, v);
+      somar(e, reg, de.id, 'valor', -Math.min(v, Math.max(0, de.n['valor'] ?? 0)), 'empresa');
+      const saiu = antes - Math.max(0, de.n['caixa'] ?? 0);
+      if (op.para === 'eu') {
+        const seu = v * (de.n['participacao'] ?? 1);
+        const socios = saiu - seu >= 1 ? ` Os sócios receberam ${formatarDinheiro(saiu - seu)}, a parte deles.` : '';
+        return {
+          texto: `${aEmpresa(de, 'A')} mandou ${formatarDinheiro(seu)} do caixa para a sua conta.${socios}`,
+          resumo: `tirou ${formatarDinheiro(seu)} do caixa ${aEmpresa(de, 'da')} para a própria conta`,
+        };
+      }
+      const mae = e.entidades[op.para]!;
+      const recebeu = v * (de.n['participacao'] ?? 1);
+      // O valor da controladora inclui o caixa (o da holding é o caixa).
+      if (recebeu >= 1) somar(e, reg, mae.id, 'valor', recebeu, 'empresa');
+      return {
+        texto: `${aEmpresa(de, 'A')} mandou ${formatarDinheiro(recebeu)} do caixa para ${aEmpresa(mae)}, a controladora.`,
+        resumo: `subiu ${formatarDinheiro(recebeu)} do caixa ${aEmpresa(de, 'da')} para ${aEmpresa(mae)}`,
       };
     }
     case 'venderParticipacao': {
@@ -230,13 +278,4 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
 /** O que a parte de quem joga no grupo vale, empresa por empresa (para a folha): sem dupla contagem, pela parte efetiva. */
 export function valorDoGrupoParaQuemJoga(e: EstadoVida, empresas: readonly Entidade[]): number {
   return empresas.reduce((s, x) => s + parteNaEmpresa(e, x.id), 0);
-}
-
-/** O dinheiro que sobe da holding para quem joga pela política dela: o mesmo que `pagarDividendos` faz no ano (aqui, uma retirada extraordinária do caixa). */
-export function retiradaDaHolding(e: EstadoVida, reg: Mudanca[], holding: Entidade, valor: number): number {
-  const v = Math.min(valor, Math.max(0, holding.n['caixa'] ?? 0));
-  if (v < 1) return 0;
-  somar(e, reg, holding.id, 'caixa', -v, 'dividendos', 'eu');
-  movimentar(e, reg, { dinheiro: v, contraparte: holding.id }, 'eu', 'dividendos');
-  return v;
 }

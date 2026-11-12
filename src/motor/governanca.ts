@@ -17,10 +17,14 @@ import { deFora } from './concorrentes.ts';
 import { jogadasDoNegocio } from './diretoria.ts';
 import { definirNumero, definirTexto, lancar, novaEntrada } from './livro.ts';
 import { ehOperacaoDeNegocio, entradaQueMudou, motivoParaNaoOperarNegocio, operarNegocio, type OperacaoNegocio } from './negocio.ts';
-import { criarRng, misturar } from './rng.ts';
+import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
+import { donaDe, empresaDoRegistro } from './campos.ts';
+import { aEmpresa } from './empresa.ts';
+import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
+import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
-export const AUTONOMIAS = ['manual', 'consultiva', 'delegada', 'autonoma'] as const;
+export const AUTONOMIAS = ['manual', 'consultiva', 'delegada', 'autonoma', 'carta_branca'] as const;
 export type Autonomia = (typeof AUTONOMIAS)[number];
 export const MANDATOS = ['conservador', 'arrojado'] as const;
 export type Mandato = (typeof MANDATOS)[number];
@@ -30,7 +34,72 @@ export const NOME_DA_AUTONOMIA: Record<Autonomia, string> = {
   consultiva: 'o conselho sugere',
   delegada: 'o conselho toca o dia a dia',
   autonoma: 'o conselho decide o negócio',
+  carta_branca: 'carta branca para a diretoria',
 };
+
+/** O que cada autonomia deixa a diretoria fazer, em palavras (a folha Quem decide). */
+export const O_QUE_DECIDE: Record<Autonomia, string> = {
+  manual: 'Você decide tudo; a diretoria só assina.',
+  consultiva: 'A diretoria sugere a jogada do ano aqui, e não faz nada sem você.',
+  delegada: 'A diretoria toca o dia a dia: o preço, o salário, o marketing, a pesquisa, crescer até um quarto, cortar, pagar a dívida, a geração nova do produto e quanto do lucro sobe.',
+  autonoma: 'Tudo do dia a dia, e também o crédito no banco e a exportação.',
+  carta_branca: 'O negócio inteiro e o caixa: pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.',
+};
+export const O_QUE_O_MANDATO_FAZ: Record<Mandato, string> = {
+  conservador: 'Conservador: protege o caixa, cresce devagar, corta cedo e paga a dívida.',
+  arrojado: 'Arrojado: aposta no crescimento, pega crédito e gasta em marca e pesquisa.',
+};
+
+/**
+ * A CEO ou o CEO de uma empresa do grupo (I-176): o nome sai do sorteio da vida e do número da empresa, sem campo no
+ * save; é quem assina o que a diretoria decide. A empresa que quem joga cuida de perto não tem: lá, quem dirige é você
+ * (e o gestor, que tem rosto).
+ */
+export function ceoDe(e: EstadoVida, c: Conteudo, emp: Entidade): { nome: string; genero: 'f' | 'm' } | undefined {
+  if (emp.id === 'empresa' || emp.q['holding']) return undefined;
+  const rng = criarRng(misturar(e.semente, emp.registro ?? 0, 4409));
+  const genero = aleatorio(rng) < 0.5 ? 'f' : 'm';
+  const familia = e.sobrenome.split(' ').at(-1) ?? '';
+  const sobrenomes = c.mundo.sobrenomes.filter((x) => x !== familia);
+  return { nome: `${sortear(rng, c.mundo.nomes[genero])} ${sortear(rng, sobrenomes)}`, genero };
+}
+
+/** "a CEO Ana Prado" ou "o conselho": quem assina as decisões da empresa. */
+function quemAssina(e: EstadoVida, c: Conteudo, emp: Entidade): string {
+  const ceo = ceoDe(e, c, emp);
+  const de = `${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome}`;
+  return ceo ? `${ceo.genero === 'f' ? 'A CEO' : 'O CEO'} ${ceo.nome}, ${de},` : `O conselho ${de},`;
+}
+
+/** A reserva que a diretoria com carta branca guarda: de três meses a um ano dos custos do ano. */
+const RESERVA_MINIMA = 0.25;
+const RESERVA_MAXIMA = 1;
+
+/** Com a carta branca, a diretoria cuida do caixa: o aporte que pede e a sobra que manda para cima (o que der). */
+function caixaDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[]): string[] {
+  const resumos: string[] = [];
+  const caixa = Math.max(0, emp.n['caixa'] ?? 0);
+  const custo = Math.max(0, (emp.n['receita'] ?? 0) - (emp.n['lucro'] ?? 0));
+  if (custo < 1) return resumos;
+  const dona = donaDe(emp);
+  const mae = dona[0] === '#' ? empresaDoRegistro(e, dona) : undefined;
+  if (caixa < custo * RESERVA_MINIMA && mae && mae.vivo !== false) {
+    const pedido = Math.round(Math.min(custo * RESERVA_MINIMA - caixa, Math.max(0, mae.n['caixa'] ?? 0) * 0.25));
+    const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: mae.id, para: emp.id, valor: pedido };
+    if (pedido >= 1000 && motivoParaNaoOperarGrupo(e, c, op) === null) {
+      operarGrupo(e, c, op, reg, -1);
+      resumos.push(`pediu ${formatarDinheiro(pedido)} para ${aEmpresa(mae)}`);
+    }
+  } else if (caixa > custo * RESERVA_MAXIMA && (mae || dona === 'eu')) {
+    const sobra = Math.round(caixa - custo * RESERVA_MAXIMA);
+    const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: emp.id, para: mae ? mae.id : 'eu', valor: sobra };
+    if (sobra >= 1000 && motivoParaNaoOperarGrupo(e, c, op) === null) {
+      operarGrupo(e, c, op, reg, -1);
+      resumos.push(`mandou ${formatarDinheiro(sobra)} de sobra para ${mae ? aEmpresa(mae) : 'a sua conta'}`);
+    }
+  }
+  return resumos;
+}
 export const NOME_DO_MANDATO: Record<Mandato, string> = { conservador: 'conservador', arrojado: 'arrojado' };
 
 /** O que o conselho pode decidir em cada autonomia (as jogadas do negócio; a retirada é a da folha). */
@@ -39,6 +108,7 @@ const PODE: Record<Autonomia, ReadonlySet<string>> = {
   consultiva: new Set(),
   delegada: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar']),
   autonoma: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar', 'emprestimo', 'exportar']),
+  carta_branca: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar', 'emprestimo', 'exportar']),
 };
 
 export function autonomiaDe(emp: Entidade): Autonomia {
@@ -84,9 +154,9 @@ export function jogadasDoConselho(e: EstadoVida, c: Conteudo, emp: Entidade, niv
 export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly Entidade[]): void {
   for (const emp of empresas) {
     const nivel = autonomiaDe(emp);
-    if (nivel !== 'delegada' && nivel !== 'autonoma') continue;
+    if (nivel !== 'delegada' && nivel !== 'autonoma' && nivel !== 'carta_branca') continue;
     const ops = jogadasDoConselho(e, c, emp, nivel);
-    if (ops.length === 0) continue;
+    if (ops.length === 0 && nivel !== 'carta_branca') continue;
     const reg: Mudanca[] = [];
     const resumos: string[] = [];
     for (const op of ops) {
@@ -98,6 +168,7 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
       if (motivoParaNaoOperarNegocio(e, c, op) !== null) continue;
       resumos.push(operarNegocio(e, c, op, reg, emp.nome).resumo.replace(` de ${emp.nome}`, '').replace(` em ${emp.nome}`, '').replace(` ${emp.nome}`, ''));
     }
+    if (nivel === 'carta_branca') resumos.push(...caixaDaCartaBranca(e, c, emp, reg));
     if (reg.length === 0) continue;
     const causa = entradaQueMudou(e, `${emp.id}.autonomia`);
     const lista = resumos.length > 1 ? `${resumos.slice(0, -1).join(', ')} e ${resumos.at(-1)}` : (resumos[0] ?? 'mexeu no negócio');
@@ -108,8 +179,8 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
         causa: 'regra',
         ref: 'conselho:decidiu',
         instancia: `conselho:decidiu#${emp.id}`,
-        texto: `O conselho ${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome}, com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]} que você deu, ${lista}.`,
-        resumo: `viu o conselho ${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome} decidir sozinho`,
+        texto: `${quemAssina(e, c, emp)} com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]} que você deu, ${lista}.`,
+        resumo: `viu a diretoria ${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome} decidir sozinha`,
         ...(causa !== null ? { causas: [causa] } : {}),
       }),
       reg,
