@@ -18,8 +18,13 @@ import { jogadasDoNegocio } from './diretoria.ts';
 import { definirNumero, definirTexto, lancar, novaEntrada } from './livro.ts';
 import { ehOperacaoDeNegocio, entradaQueMudou, motivoParaNaoOperarNegocio, operarNegocio, type OperacaoNegocio } from './negocio.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
-import { donaDe, empresaDoRegistro } from './campos.ts';
-import { aEmpresa } from './empresa.ts';
+import { donaDe, empresaDoRegistro, refDaEmpresa } from './campos.ts';
+import type { Parceiro } from './constantes.ts';
+import { analiseDoCade } from './demonstracoes.ts';
+import { aEmpresa, alvoDaAquisicao, custoDaAquisicao, motivoParaNaoOperarEmpresa, operarEmpresa, precoDaAquisicao, type OperacaoEmpresa } from './empresa.ts';
+import { oPais } from './mundo-das-empresas.ts';
+import { custoDaObra } from './negocio.ts';
+import { fatorDaCidade, formaQueProduz, motivoParaNaoOperarUnidade, operarUnidade, unidadesDe, type OperacaoUnidade } from './unidades.ts';
 import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { formatarDinheiro } from './texto.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
@@ -43,7 +48,7 @@ export const O_QUE_DECIDE: Record<Autonomia, string> = {
   consultiva: 'A diretoria sugere a jogada do ano aqui, e não faz nada sem você.',
   delegada: 'A diretoria toca o dia a dia: o preço, o salário, o marketing, a pesquisa, crescer até um quarto, cortar, pagar a dívida, a geração nova do produto e quanto do lucro sobe.',
   autonoma: 'Tudo do dia a dia, e também o crédito no banco e a exportação.',
-  carta_branca: 'O negócio inteiro e o caixa: pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.',
+  carta_branca: 'Tudo, com o caixa da empresa: o negócio inteiro; constrói fábricas, lojas e escritórios quando há fila de pedidos; abre filial lá fora quando a empresa passa de R$ 100 milhões; compra a concorrente quando ela está barata; pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.',
 };
 export const O_QUE_O_MANDATO_FAZ: Record<Mandato, string> = {
   conservador: 'Conservador: protege o caixa, cresce devagar, corta cedo e paga a dívida.',
@@ -75,26 +80,98 @@ function quemAssina(e: EstadoVida, c: Conteudo, emp: Entidade): string {
 const RESERVA_MINIMA = 0.25;
 const RESERVA_MAXIMA = 1;
 
+/** A cidade mais barata para uma unidade nova da empresa (as do país dela, para a filial lá fora). */
+function cidadeMaisBarata(e: EstadoVida, c: Conteudo, emp: Entidade): string | undefined {
+  const sede = unidadesDe(e, emp)[0]?.t['cidade'] ?? '';
+  const pais = emp.t['pais'];
+  const cidades = pais ? (c.mundo.estrangeiros.find((x) => x.id === pais)?.cidades ?? []) : c.mundo.cidades.map((x) => x.nome);
+  let melhor: { nome: string; f: number } | undefined;
+  for (const nome of cidades) {
+    const f = fatorDaCidade(c, nome, sede || nome);
+    if (!melhor || f < melhor.f) melhor = { nome, f };
+  }
+  return melhor?.nome;
+}
+
+/** O valor a partir do qual a diretoria com carta branca abre uma filial lá fora. */
+const VALOR_DA_FILIAL = 100_000_000;
+/** As chances do ano das decisões grandes da carta branca (a filial e a compra), para não virem todo ano. */
+const CHANCE_DA_FILIAL = 0.12;
+const CHANCE_DA_COMPRA = 0.4;
+
+/**
+ * O crescimento da carta branca (I-178), sempre com o caixa da empresa, nunca com o dinheiro de quem joga: a unidade
+ * nova (a fábrica, a loja, o escritório) na cidade mais barata quando há fila de pedidos; a filial lá fora no país de
+ * melhor relação quando a empresa passa de R$ 100 milhões; e a compra do controle da concorrente quando ela está
+ * barata e o Cade não barra.
+ */
+function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[], jaExpandiu: boolean, origem: number): string[] {
+  const resumos: string[] = [];
+  const rng = criarRng(misturar(e.semente, e.ano, 3313, emp.registro ?? 0));
+  const caixa = (): number => Math.max(0, emp.n['caixa'] ?? 0);
+  // A unidade nova, quando a procura passa da capacidade e não há obra em andamento.
+  const capacidade = emp.n['capacidade'] ?? 0;
+  const fila = capacidade > 0 ? (emp.n['demanda'] ?? 0) / capacidade : 0;
+  if (!jaExpandiu && fila >= 1.1 && (emp.n['obra'] ?? 0) <= 0) {
+    const cidade = cidadeMaisBarata(e, c, emp);
+    // O tamanho da obra pela fila: meia estrutura a mais com a fila grande, um quarto com a pequena, um décimo se o caixa só der isso.
+    const fracao = [fila >= 1.5 ? 0.5 : 0.25, 0.25, 0.1].find((f) => custoDaObra(c, emp, f, e) <= caixa() * 0.5);
+    const op: OperacaoUnidade | undefined = cidade && fracao ? { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade, fracao } : undefined;
+    if (op && motivoParaNaoOperarUnidade(e, c, op) === null) {
+      operarUnidade(e, c, op, reg, origem);
+      const nome = c.setores.get(emp.t['setor'] ?? '')?.unidade?.nome ?? 'unidade';
+      resumos.push(`construiu ${c.setores.get(emp.t['setor'] ?? '')?.unidade?.f ? 'uma' : 'um'} ${nome} em ${cidade}`);
+    }
+  }
+  // A filial lá fora: uma por empresa, no país de melhor relação, sem sanção.
+  const temFilial = Object.values(e.entidades).some((x) => x.tipo === 'empresa' && x.vivo !== false && x.t['pais'] && donaDe(x) === refDaEmpresa(emp));
+  if (!emp.t['pais'] && !temFilial && (emp.n['valor'] ?? 0) >= VALOR_DA_FILIAL && aleatorio(rng) < CHANCE_DA_FILIAL) {
+    const paises = c.mundo.estrangeiros.map((x) => ({ id: x.id, en: e.entidades[x.id] })).filter((x) => x.en && !x.en.q['sancao'] && (x.en.n['relacao'] ?? 0) >= 30);
+    paises.sort((a, b) => (b.en!.n['relacao'] ?? 0) - (a.en!.n['relacao'] ?? 0));
+    const pais = paises[0]?.id as Parceiro | undefined;
+    const op: OperacaoGrupo | undefined = pais ? { tipo: 'fundarSubsidiaria', controladora: emp.id, setor: emp.t['setor'] ?? '', valor: Math.round(caixa() * 0.2), pais } : undefined;
+    if (op && motivoParaNaoOperarGrupo(e, c, op) === null) {
+      operarGrupo(e, c, op, reg, origem);
+      resumos.push(`abriu uma filial ${oPais(c, pais!, 'na')}`);
+    }
+  }
+  // A compra do controle da concorrente: barata (o preço do dia até o justo), com o caixa sobrando e o Cade de acordo.
+  const alvo = alvoDaAquisicao(e, emp.id);
+  if (alvo && !((alvo.n['participacao_socia'] ?? 0) > 0) && emp.id !== 'empresa' && aleatorio(rng) < CHANCE_DA_COMPRA && precoDaAquisicao(e, emp.id) <= 1) {
+    // Compra inteira: a comprada vem para o grupo sem sócia (a parte que sobraria fica com quem vendeu, no mercado).
+    const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
+    const custo = custoDaAquisicao(e, emp.id, 1);
+    if (custo <= caixa() * 0.6 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
+      const nome = alvo.nome;
+      operarEmpresa(e, c, op, reg, origem);
+      resumos.push(`comprou a concorrente ${nome} inteira`);
+    }
+  }
+  return resumos;
+}
+
 /** Com a carta branca, a diretoria cuida do caixa: o aporte que pede e a sobra que manda para cima (o que der). */
-function caixaDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[]): string[] {
+function caixaDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[], origem: number): string[] {
   const resumos: string[] = [];
   const caixa = Math.max(0, emp.n['caixa'] ?? 0);
   const custo = Math.max(0, (emp.n['receita'] ?? 0) - (emp.n['lucro'] ?? 0));
   if (custo < 1) return resumos;
   const dona = donaDe(emp);
   const mae = dona[0] === '#' ? empresaDoRegistro(e, dona) : undefined;
-  if (caixa < custo * RESERVA_MINIMA && mae && mae.vivo !== false) {
+  // Com sócia, o aporte diluiria quem não pôs dinheiro: isso é decisão dos sócios, não da diretoria.
+  const temSocia = (emp.n['participacao_socia'] ?? 0) > 0;
+  if (caixa < custo * RESERVA_MINIMA && mae && mae.vivo !== false && !temSocia) {
     const pedido = Math.round(Math.min(custo * RESERVA_MINIMA - caixa, Math.max(0, mae.n['caixa'] ?? 0) * 0.25));
     const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: mae.id, para: emp.id, valor: pedido };
     if (pedido >= 1000 && motivoParaNaoOperarGrupo(e, c, op) === null) {
-      operarGrupo(e, c, op, reg, -1);
+      operarGrupo(e, c, op, reg, origem);
       resumos.push(`pediu ${formatarDinheiro(pedido)} para ${aEmpresa(mae)}`);
     }
   } else if (caixa > custo * RESERVA_MAXIMA && (mae || dona === 'eu')) {
     const sobra = Math.round(caixa - custo * RESERVA_MAXIMA);
     const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: emp.id, para: mae ? mae.id : 'eu', valor: sobra };
     if (sobra >= 1000 && motivoParaNaoOperarGrupo(e, c, op) === null) {
-      operarGrupo(e, c, op, reg, -1);
+      operarGrupo(e, c, op, reg, origem);
       resumos.push(`mandou ${formatarDinheiro(sobra)} de sobra para ${mae ? aEmpresa(mae) : 'a sua conta'}`);
     }
   }
@@ -108,12 +185,18 @@ const PODE: Record<Autonomia, ReadonlySet<string>> = {
   consultiva: new Set(),
   delegada: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar']),
   autonoma: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar', 'emprestimo', 'exportar']),
-  carta_branca: new Set(['preco', 'salario', 'verbas', 'expandir', 'cortar', 'pagar', 'retirada', 'lancar', 'emprestimo', 'exportar']),
+  // Com carta branca, crescer é construir a unidade nova na cidade mais barata (crescimentoDaCartaBranca), não ampliar a de sempre.
+  carta_branca: new Set(['preco', 'salario', 'verbas', 'cortar', 'pagar', 'retirada', 'lancar', 'emprestimo', 'exportar']),
 };
 
+/**
+ * A autonomia de uma empresa. Sem decisão de quem joga, toda empresa do grupo começa com carta branca (I-178): a CEO
+ * dirige; a que quem joga cuida de perto (e a holding, que não opera) começa no manual.
+ */
 export function autonomiaDe(emp: Entidade): Autonomia {
   const a = emp.t['autonomia'] as Autonomia | undefined;
-  return a && (AUTONOMIAS as readonly string[]).includes(a) ? a : 'manual';
+  if (a && (AUTONOMIAS as readonly string[]).includes(a)) return a;
+  return emp.id === 'empresa' || emp.q['holding'] ? 'manual' : 'carta_branca';
 }
 
 export function mandatoDe(emp: Entidade): Mandato {
@@ -159,6 +242,8 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
     if (ops.length === 0 && nivel !== 'carta_branca') continue;
     const reg: Mudanca[] = [];
     const resumos: string[] = [];
+    // A entrada do ano da diretoria nasce antes das decisões: o que ela constrói, abre ou compra aponta para ela.
+    const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'regra', ref: 'conselho:decidiu', instancia: `conselho:decidiu#${emp.id}`, texto: '' });
     for (const op of ops) {
       if (op.tipo === 'retirada') {
         definirNumero(e, reg, emp.id, 'retirada', op.fracao);
@@ -168,23 +253,17 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
       if (motivoParaNaoOperarNegocio(e, c, op) !== null) continue;
       resumos.push(operarNegocio(e, c, op, reg, emp.nome).resumo.replace(` de ${emp.nome}`, '').replace(` em ${emp.nome}`, '').replace(` ${emp.nome}`, ''));
     }
-    if (nivel === 'carta_branca') resumos.push(...caixaDaCartaBranca(e, c, emp, reg));
+    if (nivel === 'carta_branca') {
+      resumos.push(...crescimentoDaCartaBranca(e, c, emp, reg, ops.some((o) => o.tipo === 'expandir'), entrada.id));
+      resumos.push(...caixaDaCartaBranca(e, c, emp, reg, entrada.id));
+    }
     if (reg.length === 0) continue;
     const causa = entradaQueMudou(e, `${emp.id}.autonomia`);
     const lista = resumos.length > 1 ? `${resumos.slice(0, -1).join(', ')} e ${resumos.at(-1)}` : (resumos[0] ?? 'mexeu no negócio');
-    lancar(
-      e,
-      novaEntrada(e, {
-        tipo: 'dinheiro',
-        causa: 'regra',
-        ref: 'conselho:decidiu',
-        instancia: `conselho:decidiu#${emp.id}`,
-        texto: `${quemAssina(e, c, emp)} com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]} que você deu, ${lista}.`,
-        resumo: `viu a diretoria ${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome} decidir sozinha`,
-        ...(causa !== null ? { causas: [causa] } : {}),
-      }),
-      reg,
-    );
+    entrada.texto = `${quemAssina(e, c, emp)} com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]}${causa !== null ? ' que você deu' : ''}, ${lista}.`;
+    entrada.resumo = `viu a diretoria ${emp.genero === 'm' ? 'do' : 'da'} ${emp.nome} decidir sozinha`;
+    if (causa !== null) entrada.causas = [causa];
+    lancar(e, entrada, reg);
   }
 }
 

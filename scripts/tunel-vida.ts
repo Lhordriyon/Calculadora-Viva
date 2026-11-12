@@ -441,7 +441,7 @@ export interface Vida {
    * quebraram, as compras que preservaram a comprada, as decisões do Cade, as unidades construídas, os anos de decisão de
    * conselho, os lançamentos de produto, a campanha paga à mídia do grupo e o maior peso do grupo no PIB (em %).
    */
-  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number };
+  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number; diretoria: { unidades: number; filiais: number; compras: number } };
   /**
    * O mundo à vista (I-170 a I-172): a faixa do lugar no nascimento, no fim e a mais alta; as linhas do lugar depois
    * do nascimento (as douradas à parte) e os marcos do grupo e da lista dos mais ricos que a vida teve.
@@ -1540,5 +1540,16 @@ function capitalismoVivo(e: EstadoVida): Vida['vivo'] {
     pesoNoPib: pesoMax,
     // As filiais lá fora (I-166): a empresa que ganhou um país.
     filiais: e.historico.reduce((s, h) => s + (h.mudancas?.filter((m) => m.c.endsWith('.pais') && m.t !== undefined && m.t !== '').length ?? 0), 0),
+    // O que a diretoria com carta branca fez sozinha (I-178): a unidade nova, a filial lá fora e a compra da concorrente.
+    diretoria: (() => {
+      const d = { unidades: 0, filiais: 0, compras: 0 };
+      for (const h of e.historico) {
+        if (h.ref !== 'conselho:decidiu') continue;
+        if (/ construiu (um|uma) /.test(h.texto)) d.unidades++;
+        if (/ abriu uma filial /.test(h.texto)) d.filiais++;
+        if (/ comprou a concorrente /.test(h.texto)) d.compras++;
+      }
+      return d;
+    })(),
   };
 }

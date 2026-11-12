@@ -106,6 +106,8 @@ describe('teste 1: a holding e duas subsidiárias independentes', () => {
   it('o dividendo da subsidiária sobe para o caixa da holding, e só o que a holding distribui chega a quem joga', () => {
     const { e, holding, filhas } = grupo(2);
     for (const f of filhas) fazer(e, { tipo: 'dividendosDaControlada', empresa: f, fracao: 1 });
+    // O dividendo pela política, sem a diretoria mexendo no caixa (a carta branca é o padrão da subsidiária).
+    for (const f of filhas) fazer(e, { tipo: 'governanca', empresa: f, autonomia: 'manual', mandato: 'conservador' });
     fazer(e, { tipo: 'dividendosDaControlada', empresa: 'empresa', fracao: 1 });
     const h = e.entidades[holding]!;
     for (const f of [...filhas, 'empresa']) {

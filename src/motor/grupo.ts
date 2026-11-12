@@ -16,7 +16,7 @@
 import { donaDe, empresaDoRegistro, parteNaEmpresa, refDaEmpresa } from './campos.ts';
 import type { Conteudo } from './conteudo.ts';
 import { aEmpresa, fundar, liquidoDe, lugarLivre, setoresDeEmpresa, tirarDeQuemJoga } from './empresa.ts';
-import { definirNumero, definirTexto, somar } from './livro.ts';
+import { definirNumero, somar } from './livro.ts';
 import { ceoDe } from './governanca.ts';
 import { momentoDoPais } from './pais.ts';
 import { CAPITAL_MINIMO_EMPRESA, MAX_EMPRESAS, precoDeVenda } from './regras.ts';
@@ -178,10 +178,9 @@ export function operarGrupo(e: EstadoVida, c: Conteudo, op: OperacaoGrupo, reg: 
       const filha = fundar(e, c, reg, { setor: op.setor, valor: op.valor, de: mae.id, dona: refDaEmpresa(mae), pais: op.pais }, origem, lugar, nome)!;
       // Quem cuida da subsidiária é a diretoria dela: ela depende pouco de quem joga.
       definirNumero(e, reg, lugar, 'dependencia', 15);
-      // E a diretoria dela já toca o dia a dia (I-176): mais ou menos autonomia é decisão de quem joga, em Quem decide.
-      definirTexto(e, reg, lugar, 'autonomia', 'delegada');
+      // E a diretoria dela já começa com carta branca (I-178): menos autonomia é decisão de quem joga, em Quem decide.
       const ceo = ceoDe(e, c, filha);
-      const quem = ceo ? ` ${ceo.genero === 'f' ? 'A CEO' : 'O CEO'}, ${ceo.nome}, toca o dia a dia; em Quem decide, você dá mais ou menos autonomia.` : '';
+      const quem = ceo ? ` ${ceo.genero === 'f' ? 'A CEO' : 'O CEO'}, ${ceo.nome}, dirige com carta branca: constrói, abre filial e compra a concorrente com o caixa dela; em Quem decide, você dá menos autonomia se quiser.` : '';
       const ramo = c.setores.get(op.setor)?.nome ?? op.setor;
       if (op.pais) {
         const cidade = defDoPais(c, op.pais)?.cidades[0] ?? '';

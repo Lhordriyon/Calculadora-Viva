@@ -119,6 +119,8 @@ describe('teste 10: a demonstração individual e a consolidada', () => {
     const filha = lugarLivre(e)!;
     fazer(e, { tipo: 'fundarSubsidiaria', controladora: holding, setor: 'tecnologia', valor: 10_000_000 });
     fazer(e, { tipo: 'dividendosDaControlada', empresa: filha, fracao: 1 });
+    // O dividendo pela política, sem a diretoria mexendo no caixa (a carta branca é o padrão da subsidiária).
+    fazer(e, { tipo: 'governanca', empresa: filha, autonomia: 'manual', mandato: 'conservador' });
     fazer(e, { tipo: 'venderParticipacao', empresa: filha, fracao: 0.3 });
     e.entidades[filha]!.n['demanda'] = (e.entidades[filha]!.n['capacidade'] ?? 0) * 2;
     umAno(e);

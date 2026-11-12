@@ -68,6 +68,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   ...CONQUISTAS_DO_PODER,
   ...LUGAR,
   ...MARCOS_DO_LUGAR,
+  // a diretoria com carta branca (governanca.ts, I-178) abre a filial lá fora sozinha
+  'empresa.pais',
   // os mercados de cada setor (negocio.ts)
   ...MERCADOS,
   // a concorrência e o banco da empresa (negocio.ts)
@@ -328,6 +330,7 @@ export const SEGREDOS = (segredos: readonly { id: string; alvos: readonly string
 export const AGENDADOS_PELO_MOTOR = ['namoro', 'namoro_esfriou', 'irmao_nasce', 'casamento_do_irmao', 'padrinho_do_sobrinho', 'demissao', 'negocio_no_aperto', 'padrao_aperta', 'empresa_quebrou', 'queda_do_cargo', 'nome_sujo', 'depois_do_calote', 'greve_na_ilha', 'rua_contra_a_taxa_da_coroa', 'barco_de_mudanca', 'a_conta_da_coroa', 'a_ilha_cresceu', 'a_vacina_no_posto', 'satelite_na_tv', 'socio_da_patente', 'a_convocacao', 'filho_convocado', 'sucessao_coroa', 'sucessao_regime', 'o_bicho_herdeiro', 'a_opa_da_rival', 'a_opa_do_fundo', 'o_dia_do_sonho_estrela', 'o_dia_do_sonho_imperio', 'o_dia_do_sonho_presidencia', 'o_dia_do_sonho_familia_grande', 'o_dia_do_sonho_amor_da_vida', 'e_agora', 'o_sonho_que_ficou', 'a_pasta_do_sonho'];
 
 export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
+  ...ler(['empresa.pais'], 'o grupo no mundo: a filial vende no mercado do país dela, com o ciclo, o imposto e as cidades de lá', true),
   ...ler(['empresa.dona'], 'societário: quem controla recebe os dividendos, decide pela empresa e conta no patrimônio de quem joga', true),
   ...ler(['empresa.lancamento'], 'produto: a geração que passou da idade puxa a qualidade para baixo, e quem decide troca por uma nova', true),
   ...ler(['pais.peso_do_grupo'], 'contas nacionais: o valor adicionado a mais do grupo puxa o crescimento do país pela metade', true),
@@ -574,8 +577,10 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'empresa',
     nome: 'as empresas: o negócio do ano (vendas, custos, imposto, caixa, dividendos, obra), os empregos da cidade e a quebra',
-    le: [...LADO_DE_LA, 'eu.vivo', 'eu.nome', 'pais.peso_do_grupo', 'pais.crescimento', 'unidade.*', 'lugar.nome', 'pessoa.negocio', 'pessoa.setor', 'pessoa.pessoa', 'pessoa.traco', 'pessoa.magoa', ...ESFERAS, 'eu.lobista', 'eu.influencia', 'pais.governo', 'pais.desemprego', 'pais.pol_impostos', ...MERCADOS, ...NOMES_DOS_MERCADOS, 'pais.juros', 'pais.inflacao', 'ano.fase', 'ano.mercado', 'empresa.*', ...BOLSO, 'ctr.*', 'eu.influencia', 'eu.inteligencia', 'eu.fama', 'fora.acordo', 'fora.sancao', 'fora.relacao', 'fora.crescimento', 'fora.nome', 'fora.genero', 'pais.tecnologia', 'pais.pib', 'pais.divida', 'lugar.desemprego', 'lugar.capital', 'bem.item', ...POLITICAS_DO_PAIS],
-    escreve: [...LADO_DE_LA, 'unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    // A diretoria com carta branca (I-178) decide como quem joga decidiria pela folha: a compra da concorrente lê o
+    // patrimônio, a influência, os bens e os segredos (como a folha), então a etapa lê qualquer coisa.
+    le: ['*'],
+    escreve: [...LADO_DE_LA, 'unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pessoa.vinculo', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',

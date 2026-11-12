@@ -485,7 +485,7 @@
   {
     "id": "cade_investiga",
     "peso": 3, "idade": [25, 95],
-    "condicoes": { "marcas": ["empresa.truste"] },
+    "condicoes": { "marcas": ["empresa.truste"], "empresa.pais": false },
     "texto": "O órgão de defesa da concorrência abriu investigação contra {empresa:o|a} {empresa}: depois de tantas compras, ela domina o mercado. Pode haver multa ou divisão da empresa.",
     "resumo": "teve a empresa investigada por monopólio",
     "escolhas": [
