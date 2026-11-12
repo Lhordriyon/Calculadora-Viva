@@ -197,9 +197,9 @@
   "grupo_dez_mil": { "epitafio": "Dez mil famílias pagavam as contas com o salário do grupo." },
   "grupo_cem_mil": { "epitafio": "Cem mil pessoas batiam ponto no grupo que construiu." },
   "grupo_um_milhao": { "epitafio": "Um milhão de pessoas trabalhavam para o grupo que construiu." },
-  "um_quarto_do_mercado": { "epitafio": "Um quarto do mercado era do grupo." },
-  "metade_do_mercado": { "epitafio": "Metade do mercado era do grupo, e o Cade sabia." },
-  "fatia_no_mundo": { "epitafio": "O logo do grupo estava em vitrines do mundo inteiro." },
+  "milesimo_do_mercado": { "epitafio": "De cada mil reais gastos no setor, um era do grupo." },
+  "centesimo_do_mercado": { "epitafio": "De cada cem reais gastos no setor, um era do grupo." },
+  "grupo_la_fora": { "epitafio": "O grupo que construiu dava crachá em outra língua." },
   "entre_as_maiores": { "epitafio": "Construiu uma das 10 maiores empresas do país." },
   "a_maior_do_pais": { "epitafio": "Construiu a maior empresa do país." }
 }

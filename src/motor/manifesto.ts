@@ -15,7 +15,7 @@ const NOMES_DOS_MERCADOS = SETORES.map((s) => `setor_${s}.nome`);
 /** As conquistas da influência (influencia.ts): qualidades de quem joga, uma por degrau de cada esfera. */
 /** O lugar no país e os marcos do grupo (lugar.ts): a faixa, a mais alta, e as qualidades que vêm uma vez por vida. */
 const LUGAR = ['eu.estrato', 'eu.estrato_max'];
-const MARCOS_DO_LUGAR = ['eu.entre_os_mais_ricos', 'eu.o_mais_rico_do_pais', 'eu.grupo_mil', 'eu.grupo_dez_mil', 'eu.grupo_cem_mil', 'eu.grupo_um_milhao', 'eu.um_quarto_do_mercado', 'eu.metade_do_mercado', 'eu.fatia_no_mundo', 'eu.entre_as_maiores', 'eu.a_maior_do_pais'];
+const MARCOS_DO_LUGAR = ['eu.entre_os_mais_ricos', 'eu.o_mais_rico_do_pais', 'eu.grupo_mil', 'eu.grupo_dez_mil', 'eu.grupo_cem_mil', 'eu.grupo_um_milhao', 'eu.milesimo_do_mercado', 'eu.centesimo_do_mercado', 'eu.grupo_la_fora', 'eu.entre_as_maiores', 'eu.a_maior_do_pais'];
 const CONQUISTAS_DO_PODER = ['eu.conquista_querida', 'eu.conquista_referencia', 'eu.conquista_portas', 'eu.conquista_voz', 'eu.conquista_reis', 'eu.conquista_trono', 'eu.conquista_mercado', 'eu.conquista_magnata', 'eu.conquista_potencia'];
 /** O que as esferas da influência leem (influencia.ts). */
 const ESFERAS = ['pessoa.vinculo', 'pessoa.vivo', 'pessoa.ausente', 'eu.fama', 'eu.cargo', 'eu.popularidade', 'eu.lobista', 'eu.principe', 'eu.herdeiro_regime', 'eu.filho_de_politico', 'bem.item', 'empresa.valor', 'empresa.vivo', 'empresa.truste'];

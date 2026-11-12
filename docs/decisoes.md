@@ -2138,3 +2138,19 @@ O dono pediu filiais em cada país, a fatia de mercado de cada país em cada set
 - **Lá fora não há concorrente de verdade**: a filial disputa com o número de força antigo, e o mercado de lá é agregado. As unidades dela ficam nas cidades do país (três por país, fictícias, como os países) e não passam para uma empresa de outro país.
 - **As listas dos mais ricos e das maiores empresas são fictícias e saem do sorteio da vida**, as mesmas do começo ao fim, do tamanho do país (o primeiro perto de 1,4% do PIB e o décimo perto de 0,15%; a maior empresa perto de 4,5%), com uma variação de cada ano. Entram nelas quem joga, as empresas do grupo no Brasil e as concorrentes de verdade; as filiais lá fora, não. Nenhuma é guardada no save.
 - **O robô arrojado com a empresa de R$ 100 milhões abre uma filial no país de melhor relação**, uma vez, para o túnel passar pela filial.
+
+## O mundo à vista (12/11)
+
+O dono achou o grupo no mundo pouco perceptível e pediu que fosse perceptível para qualquer jogador, e que a simulação evoluísse sem ele (I-170 a I-173).
+
+**Decisões tomadas sozinho.**
+
+- **O lugar no país é de todo jogador**, não só de quem tem empresa: a faixa da riqueza na distribuição do país, do berço ao fim. É o número que todo jogador entende ("o 1% mais rico") e que conta a mobilidade social, que o túnel já media por quintil.
+- **A régua é a do Brasil real** (a riqueza por adulto: a metade de baixo até uns R$ 35 mil, os 10% mais ricos a partir de R$ 300 mil, o 1% a partir de R$ 2 milhões, o 0,1% a partir de R$ 12 milhões), e anda com o PIB per capita e com o Gini do país do jogo (o topo se afasta mais que o meio). A distribuição das origens do jogo é o sorteio de quem joga (mais vidas ricas do que o país tem), não o retrato do país. Com essa régua, a mobilidade dos robôs sai alta: de quem nasce na metade de baixo, 31% terminam no 1% mais rico. É a pergunta do nível de riqueza do jogo, que continua com o dono.
+- **Na juventude, o lugar é o da família**: os pais vivos pesam inteiros até os 21 e somem até os 30. Sem isso, todo adolescente rico aparecia nos 10% mais pobres.
+- **A queda só se conta com causa**: a decisão de um ano anterior que levou dinheiro (10% da riqueza ou mais), ou, para quem estava no 1%, a recessão ou a crise de um ano anterior. A família que deixa de pesar e a inflação lenta mudam a faixa em silêncio. Para cair, a riqueza precisa ficar 20% abaixo da porta (sem isso, quem mora na porta sobe e desce todo ano). A volta só se conta depois de uma queda contada.
+- **O porquê da subida é a decisão que mais trouxe ou pôs para render** nos últimos 20 anos: o que veio de fora (a herança, a venda) ou o que foi posto na empresa, nos investimentos e nos títulos. Comprar a casa financiada não conta (a dívida anda com o imóvel), nem o empréstimo de outra pessoa (a promissória é dívida).
+- **Os marcos do grupo foram calibrados pelo tamanho que as empresas do jogo alcançam**: nas vidas com empresa, a maior fatia de um setor no Brasil chega a 0,4% no 1% de cima e a maior empresa, a uns R$ 2 bilhões. Um quarto do mercado e a lista das 10 maiores do país não aconteceram em 2.000 vidas; ficaram os marcos de um real em cada mil e um em cada cem do que o país gasta no setor. A lista das 10 maiores continua como marco, sem história própria.
+- **Entrar no 1% e acima é marco dourado** (e o milhão de funcionários, o um em cada cem e a maior empresa do país): é o ponto mais alto da história do dinheiro de uma vida, como o sonho realizado.
+- **Cortado no caminho:** o Cade diante da metade do mercado (a metade do mercado não acontece no jogo; a compra que concentra já passa pelo Cade).
+

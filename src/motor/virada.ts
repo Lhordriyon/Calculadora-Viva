@@ -7,6 +7,7 @@
  * Causas podem ser do jogador (escolha, ação) ou do mundo (o pai que perdeu o
  * emprego, a avó que morreu).
  */
+import { lugarNaVida } from './lugar.ts';
 import { type Capitulo, capitulosDe, capitulosDoCartao } from './capitulos.ts';
 import { diaDoSonho } from './projetos.ts';
 import { conquistasDaVida } from './influencia.ts';
@@ -306,6 +307,8 @@ export interface ResumoVida {
   conquistas: string[];
   /** O sonho da vida (bloco S1): o nome e como acabou (realizado, pelo caminho, deixado para trás, de pé). */
   sonhos?: string[];
+  /** Do berço ao fim, pelo lugar no país (lugar.ts): "Nasceu na metade de baixo do país e terminou no 1% mais rico". */
+  lugar?: string;
   nome: string;
   nomeCompleto: string;
   genero: Genero;
@@ -409,6 +412,10 @@ export function resumirVida(e: EstadoVida, c: Conteudo): ResumoVida {
     epitafio: renderizar(modelo, ctx),
     conquistas: conquistasDaVida(e),
     sonhos: sonhosDaVida(e, c),
+    ...(() => {
+      const l = lugarNaVida(e);
+      return l ? { lugar: l } : {};
+    })(),
     geracao: e.dinastia?.geracao ?? 1,
     antepassados: e.dinastia?.antepassados ?? [],
     herdeiro: (() => {

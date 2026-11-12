@@ -128,6 +128,12 @@ Depois do H7: várias rivais por setor, fábricas e lojas como lugares, e o fund
 
 **A missão "Capitalismo vivo" (11/11; I-156 a I-165).** O dono pediu que o sistema empresarial vire uma economia corporativa viva. Entrou, na ordem pedida: a empresa como pessoa jurídica (o número, a dona, a sócia, a holding e as subsidiárias de verdade, sem dupla contagem); as unidades operacionais (a capacidade como soma das que produzem, a cidade, o laboratório e o centro de distribuição); as concorrentes de verdade nos setores do grupo, que rodam o mesmo negócio e decidem sozinhas, com as partes do mercado somando 100%; a compra que leva o controle sem fundir; a falência da subsidiária sozinha; o valor adicionado e o peso do grupo no PIB; a mídia que vende audiência e recebe a campanha das irmãs; o produto que envelhece; o conselho com autonomia e mandato; o Cade pelo HHI; a demonstração consolidada; e a folha do grupo em camadas. O que ficou de fora, com o motivo, está em `docs/ideias.md` (I-156 a I-165) e as decisões em `docs/decisoes.md › A missão Capitalismo vivo`. A auditoria final da Ascensão AAA continua esperando o teste do dono.
 
+**A missão "O mundo à vista" (12/11; I-170 a I-173).** O dono achou o grupo no mundo pouco perceptível ("quero que seja perceptível para qualquer player") e pediu que a simulação evoluísse sem ele. A ordem:
+
+- [x] O lugar no país para todo jogador: a faixa da riqueza na distribuição do Brasil real, com a linha do nascimento, a faixa nova, a queda com causa e a volta, o marco dourado a partir do 1%, a folha Dinheiro e o cartão da vida
+- [x] Os marcos do grupo na linha do tempo (funcionários, a fatia do setor, a filial com gente lá fora, as maiores do país) e as histórias que o lugar e o tamanho destravam
+- [ ] Os grandes do país vivem: as maiores empresas e os mais ricos andam com o setor e com o PIB, os mais ricos são donos das maiores, e o país conta quem passou quem (I-173)
+
 - [x] A investigação: a auditoria independente (5.613 vidas em dinastias, sem um erro de conta), os retornos reais medidos, as fotos da interface na letra do dono, o desempenho com a CPU limitada e a casca do Android
 - [x] A simulação: o tempo das marcas pelo calendário, a família de quem herda, o mercado com tamanho para todo ganho, a viuvez de quem é; `npm run auditoria` e os invariantes do estado no túnel
 - [x] A experiência: o evento que se lê inteiro, a infância sem noticiário, o jogo que não cai, abrir e tocar mais rápido, o toque que se sente e o momento da morte

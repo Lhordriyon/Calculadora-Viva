@@ -195,7 +195,7 @@
       ],
       "empresa.valor": true
     },
-    "peso": 2,
+    "peso": 3,
     "texto": "Dez mil funcionários têm sindicato, e o sindicato tem pauta: reajuste acima da inflação, plano de saúde para a família e o fim da hora extra de domingo. [A assembleia foi no estacionamento da fábrica|O carro de som parou na frente da sede|A líder da comissão trabalhou dez anos na linha de produção].",
     "resumo": "negociou com o sindicato dos dez mil funcionários do grupo",
     "escolhas": [
@@ -251,11 +251,11 @@
     ],
     "condicoes": {
       "marcas": [
-        "grupo_cem_mil"
+        "grupo_mil"
       ]
     },
-    "peso": 2,
-    "texto": "Numa cidade do interior, metade das famílias tem alguém trabalhando para o grupo. A câmara de vereadores quer dar o seu nome à avenida principal. [A placa já está encomendada|O padre da matriz é contra, por princípio|A escola estadual da avenida tem goteira desde 2019].",
+    "peso": 3,
+    "texto": "Numa cidade do interior, uma em cada três famílias tem alguém trabalhando para o grupo. A câmara de vereadores quer dar o seu nome à avenida principal. [A placa já está encomendada|O padre da matriz é contra, por princípio|A escola estadual da avenida tem goteira desde 2019].",
     "resumo": "ganhou a proposta de uma avenida com o próprio nome",
     "escolhas": [
       {
@@ -285,72 +285,6 @@
     ]
   },
   {
-    "id": "o_cade_olha_o_grupo",
-    "idade": [
-      25,
-      90
-    ],
-    "condicoes": {
-      "marcas": [
-        "metade_do_mercado"
-      ],
-      "empresa.valor": true
-    },
-    "peso": 3,
-    "texto": "Com metade do mercado nas mãos do grupo, o Cade abriu uma investigação: quem dita o preço do setor pode estar ditando demais. [O processo tem 400 páginas e o seu nome em 312|Um concorrente pequeno deu entrevista chorando|O jornal fez um infográfico com o seu rosto no meio de uma teia].",
-    "resumo": "virou alvo do Cade por dominar metade do mercado",
-    "escolhas": [
-      {
-        "texto": "Baixar o preço para acalmar o órgão",
-        "resumo": "baixou o preço para acalmar o Cade",
-        "resultado": {
-          "texto": "O processo esfriou e o cliente agradeceu. A margem foi embora junto com as manchetes.",
-          "efeitos": {
-            "negocio": {
-              "preco": "popular"
-            },
-            "eu.popularidade": 2,
-            "felicidade": -1
-          }
-        }
-      },
-      {
-        "texto": "Contratar o melhor escritório de Brasília",
-        "resumo": "contratou o melhor escritório de Brasília contra o Cade",
-        "resultado": {
-          "texto": "Os advogados cobraram por hora e as horas foram muitas. O processo virou um acordo que ninguém lê.",
-          "efeitos": {
-            "dinheiro": -3000000,
-            "eu.influencia": 1,
-            "felicidade": -1
-          }
-        }
-      },
-      {
-        "texto": "Enfrentar o processo na Justiça",
-        "resumo": "enfrentou o Cade na Justiça",
-        "teste": {
-          "chance": 0.5
-        },
-        "sucesso": {
-          "texto": "O juiz entendeu que ser grande não é crime. O concorrente pequeno deu outra entrevista, agora sem chorar.",
-          "efeitos": {
-            "eu.influencia": 2,
-            "felicidade": 2
-          }
-        },
-        "fracasso": {
-          "texto": "A multa saiu com sete dígitos e o selo de \"abuso de poder econômico\". O valor do grupo encolheu no pregão do dia seguinte.",
-          "efeitos": {
-            "empresaFator": 0.92,
-            "eu.popularidade": -3,
-            "felicidade": -2
-          }
-        }
-      }
-    ]
-  },
-  {
     "id": "o_logo_no_aeroporto",
     "idade": [
       25,
@@ -358,10 +292,10 @@
     ],
     "condicoes": {
       "marcas": [
-        "fatia_no_mundo"
+        "grupo_la_fora"
       ]
     },
-    "peso": 2,
+    "peso": 4,
     "texto": "Num aeroporto do outro lado do mundo, você viu o logo do grupo numa vitrine, com o preço numa moeda que você nem sabe pronunciar. [Uma criança apontou para a caixa e pediu para a mãe|O vendedor jurou que o produto era de lá mesmo|Ao lado, a concorrente estava em promoção].",
     "resumo": "viu o logo do grupo numa vitrine do outro lado do mundo",
     "escolhas": [
@@ -398,11 +332,11 @@
     ],
     "condicoes": {
       "marcas": [
-        "entre_as_maiores"
+        "milesimo_do_mercado"
       ],
       "empresa.valor": true
     },
-    "peso": 2,
+    "peso": 3,
     "texto": "O ministro da Economia ligou: o governo quer anunciar um investimento do grupo no mesmo discurso em que vai falar do PIB. [A assessoria já mandou o rascunho com o seu nome em negrito|O fotógrafo oficial quer vocês dois de capacete numa obra|A oposição já marcou entrevista para o dia seguinte].",
     "resumo": "foi chamado pelo governo para anunciar um investimento do grupo",
     "escolhas": [
@@ -441,13 +375,13 @@
       95
     ],
     "condicoes": {
-      "marcas": [
-        "entre_os_mais_ricos"
-      ]
+      "eu.estrato": {
+        "min": 7
+      }
     },
     "peso": 3,
-    "texto": "Desde que o seu nome saiu na lista dos 10 mais ricos do país, a portaria anota a placa de todo carro parado na rua. [Um desconhecido perguntou na padaria se você era você|A escola dos sobrinhos pediu uma reunião sobre segurança|O seu horário de academia apareceu num fórum da internet].",
-    "resumo": "sentiu o peso de estar na lista dos 10 mais ricos do país",
+    "texto": "Desde que o seu nome saiu entre os bilionários do país, a portaria anota a placa de todo carro parado na rua. [Um desconhecido perguntou na padaria se você era você|A escola dos sobrinhos pediu uma reunião sobre segurança|O seu horário de academia apareceu num fórum da internet].",
+    "resumo": "sentiu o peso de estar entre os bilionários do país",
     "escolhas": [
       {
         "texto": "Carro blindado e quatro seguranças",
@@ -463,7 +397,7 @@
       },
       {
         "texto": "Continuar indo à padaria a pé",
-        "resumo": "continuou indo à padaria a pé, mesmo na lista dos mais ricos",
+        "resumo": "continuou indo à padaria a pé, mesmo entre os bilionários do país",
         "teste": {
           "chance": 0.85
         },
@@ -486,19 +420,19 @@
     ]
   },
   {
-    "id": "o_mais_rico_do_pais",
+    "id": "o_primeiro_bilhao",
     "idade": [
       25,
       98
     ],
     "condicoes": {
-      "marcas": [
-        "o_mais_rico_do_pais"
-      ]
+      "eu.estrato": {
+        "min": 7
+      }
     },
     "peso": 4,
-    "texto": "A pessoa mais rica do país é você. Um jornal fez a conta: gastando um milhão por dia, levaria séculos para acabar. [Um deputado pediu, no plenário, que você pagasse a dívida do estado dele|Na TV, perguntaram se dinheiro traz felicidade e esperaram a sua resposta|A sua mãe ainda pergunta se você está comendo direito].",
-    "resumo": "virou a pessoa mais rica do país",
+    "texto": "A sua fortuna passou de um bilhão de reais. Um jornal fez a conta: gastando R$ 100 mil por dia, levaria mais de 27 anos para acabar. [Um deputado pediu, no plenário, que você pagasse a dívida do estado dele|Na TV, perguntaram se dinheiro traz felicidade e esperaram a sua resposta|A sua mãe ainda pergunta se você está comendo direito].",
+    "resumo": "viu a fortuna passar de um bilhão de reais",
     "escolhas": [
       {
         "texto": "Prometer doar metade em vida",
@@ -526,7 +460,7 @@
       },
       {
         "texto": "Não dar entrevista e ir pescar",
-        "resumo": "foi pescar no dia em que virou a pessoa mais rica do país",
+        "resumo": "foi pescar no dia em que a fortuna passou de um bilhão",
         "resultado": {
           "texto": "O peixe não sabia de nada, e isso fez bem. Na volta, o telefone tinha 212 chamadas e você ligou só para casa.",
           "efeitos": {

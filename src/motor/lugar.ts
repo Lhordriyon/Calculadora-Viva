@@ -15,7 +15,8 @@ import type { Conteudo } from './conteudo.ts';
 import { empresasDe, indicadoresDoPais, patrimonioDe, patrimonioTotal } from './campos.ts';
 import { ATIVOS } from './constantes.ts';
 import { ganhar, lancar, novaEntrada, somar } from './livro.ts';
-import { fatiasDoGrupo, grupoNoMundo, maioresEmpresasDoPais, maisRicosDoPais } from './mundo-das-empresas.ts';
+import { fatiasDoGrupo, grupoNoMundo, maioresEmpresasDoPais, maisRicosDoPais, oPais } from './mundo-das-empresas.ts';
+import type { Parceiro } from './constantes.ts';
 import { PAIS_EM_2026 } from './regras.ts';
 import type { Entrada, EstadoVida, Mudanca } from './tipos.ts';
 import { faseDe } from './pais.ts';
@@ -379,9 +380,9 @@ export const MARCOS_DO_GRUPO: readonly MarcoDoGrupo[] = [
   { id: 'grupo_dez_mil' },
   { id: 'grupo_cem_mil' },
   { id: 'grupo_um_milhao', ouro: true },
-  { id: 'um_quarto_do_mercado' },
-  { id: 'metade_do_mercado', ouro: true },
-  { id: 'fatia_no_mundo' },
+  { id: 'milesimo_do_mercado' },
+  { id: 'centesimo_do_mercado', ouro: true },
+  { id: 'grupo_la_fora' },
   { id: 'entre_as_maiores' },
   { id: 'a_maior_do_pais', ouro: true },
 ];
@@ -408,23 +409,27 @@ export function marcosDoGrupo(e: EstadoVida, c: Conteudo): void {
   for (const [id, n, texto] of FUNCIONARIOS) {
     if (!eu.q[id] && g.funcionarios >= n) marcos.push({ id, texto, resumo: `o grupo passou de ${gente(n)} funcionários` });
   }
-  const precisaFatia = !eu.q['um_quarto_do_mercado'] || !eu.q['metade_do_mercado'] || !eu.q['fatia_no_mundo'];
-  if (precisaFatia) {
+  if (!eu.q['milesimo_do_mercado'] || !eu.q['centesimo_do_mercado']) {
+    // A fatia do grupo no setor em que ele é maior no Brasil: um real de cada mil (o grupo que o setor nota) e um
+    // de cada cem (um gigante do país; dourado).
     let melhor: { setor: string; parte: number } | null = null;
-    let mundo: { setor: string; parte: number } | null = null;
     for (const f of fatiasDoGrupo(e, c)) {
       const br = f.porPais.find((p) => p.pais === 'brasil');
       if (br && (!melhor || br.parte > melhor.parte)) melhor = { setor: f.setor, parte: br.parte };
-      if (!mundo || f.mundo > mundo.parte) mundo = { setor: f.setor, parte: f.mundo };
     }
-    const nomeDo = (s: string): string => (c.setores.get(s)?.nome ?? s).toLowerCase();
-    if (melhor && melhor.parte >= 0.5 && !eu.q['metade_do_mercado']) {
-      marcos.push({ id: 'metade_do_mercado', texto: `Metade de tudo o que o país compra de ${nomeDo(melhor.setor)} sai do seu grupo (${Math.round(melhor.parte * 100)}%).`, resumo: `o grupo ficou com metade do mercado de ${nomeDo(melhor.setor)}` });
-    } else if (melhor && melhor.parte >= 0.25 && !eu.q['um_quarto_do_mercado']) {
-      marcos.push({ id: 'um_quarto_do_mercado', texto: `Um quarto de tudo o que o país compra de ${nomeDo(melhor.setor)} sai do seu grupo (${Math.round(melhor.parte * 100)}%).`, resumo: `o grupo ficou com um quarto do mercado de ${nomeDo(melhor.setor)}` });
+    const setor = melhor ? (c.setores.get(melhor.setor)?.nome ?? melhor.setor).toLowerCase() : '';
+    if (melhor && melhor.parte >= 0.01 && !eu.q['centesimo_do_mercado']) {
+      marcos.push({ id: 'centesimo_do_mercado', texto: `De cada cem reais que o país gasta com ${setor}, um vai para o seu grupo. Pouca empresa no Brasil chega aqui.`, resumo: `pôs o grupo com 1% de tudo o que o país gasta com ${setor}`, ...(eu.q['milesimo_do_mercado'] ? {} : { tambem: 'milesimo_do_mercado' }) });
+    } else if (melhor && melhor.parte >= 0.001 && !eu.q['milesimo_do_mercado']) {
+      marcos.push({ id: 'milesimo_do_mercado', texto: `De cada mil reais que o país gasta com ${setor}, um vai para o seu grupo. O setor já sabe o seu nome.`, resumo: `pôs o grupo com um real de cada mil que o país gasta com ${setor}` });
     }
-    if (mundo && mundo.parte >= 0.01 && !eu.q['fatia_no_mundo']) {
-      marcos.push({ id: 'fatia_no_mundo', texto: `No planeta inteiro, de cada 100 reais gastos com ${nomeDo(mundo.setor)}, ${Math.max(1, Math.round(mundo.parte * 100))} vão para o seu grupo.`, resumo: `o grupo chegou a ${Math.max(1, Math.round(mundo.parte * 100))}% do mercado mundial de ${nomeDo(mundo.setor)}` });
+  }
+  // A filial lá fora com gente: o grupo que emprega em outro país.
+  if (!eu.q['grupo_la_fora']) {
+    const fora = g.funcionariosPorPais.filter((p) => p.pais !== 'brasil' && p.funcionarios > 0).sort((a, b) => b.funcionarios - a.funcionarios)[0];
+    if (fora) {
+      const na = oPais(c, fora.pais as Parceiro, 'na');
+      marcos.push({ id: 'grupo_la_fora', texto: `Lá fora, ${gente(fora.funcionarios)} ${fora.funcionarios === 1 ? 'pessoa trabalha' : 'pessoas trabalham'} para o grupo ${na}: o crachá tem o seu logo e outra língua.`, resumo: `pôs o grupo para empregar gente ${na}` });
     }
   }
   // A lista das maiores do país: só quando a maior empresa do grupo chega perto do tamanho da décima.
@@ -451,6 +456,28 @@ export function marcosDoGrupo(e: EstadoVida, c: Conteudo): void {
     if (m.tambem) ganhar(e, r, 'eu', m.tambem, entrada.id, 'grupo');
     lancar(e, entrada, r);
   }
+}
+
+/** Onde no país: a faixa como complemento de "nasceu" ou "terminou" ("no 1% mais rico do país"). */
+function emQue(k: number): string {
+  return k === O_MAIS_RICO ? 'como a pessoa mais rica do país' : k === DEZ_MAIS_RICOS ? 'entre os 10 mais ricos do país' : ESTRATOS[k]!.em;
+}
+
+/**
+ * Do berço ao fim, para o cartão da vida: "Nasceu na metade de baixo do país e terminou no 1% mais rico (chegou ao
+ * 0,1%)". Sem a linha do nascimento (o save de antes do lugar), nada.
+ */
+export function lugarNaVida(e: EstadoVida): string | null {
+  const eu = e.entidades['eu'];
+  const nasceu = e.historico.find((h) => h.ref?.startsWith('lugar:nasceu:'));
+  if (!eu || !nasceu || eu.n['estrato'] === undefined) return null;
+  const de = Number(nasceu.ref!.split(':')[2]);
+  const fim = eu.n['estrato'];
+  const maximo = eu.n['estrato_max'] ?? fim;
+  const comeco = nasceu.ref && e.dinastia && (e.dinastia.geracao ?? 1) > 1 ? 'Começou' : 'Nasceu';
+  const chegou = maximo > fim && maximo > de ? `; no auge, ${emQue(maximo)}` : '';
+  if (de === fim) return `${comeco} e terminou ${emQue(fim)}${chegou}.`.replace(`${comeco} e terminou`, `${comeco} e terminou a vida`);
+  return `${comeco} ${emQue(de)} e terminou ${emQue(fim)}${chegou}.`;
 }
 
 /** A entrada é um marco dourado do lugar ou do grupo (formato.ts › ehMarco). */

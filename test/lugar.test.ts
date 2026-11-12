@@ -7,7 +7,9 @@ import { carregarConteudo } from '../scripts/disco.ts';
 import { patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar, type Operacao } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
+import { regraDaEmpresa } from '../src/motor/empresa.ts';
 import { conferirEstado } from '../src/motor/invariantes.ts';
+import { momentoTipico } from '../src/motor/pais.ts';
 import { lancar, novaEntrada, somar } from '../src/motor/livro.ts';
 import { anoDoLugar, ESTRATOS, lugarNoPais, marcosDoGrupo, percentilDaRiqueza } from '../src/motor/lugar.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
@@ -24,7 +26,12 @@ function adulto(semente: number, dinheiro: number): EstadoVida {
   e.idade = 40;
   e.ano += 40;
   e.agenda = [];
-  for (const p of ['mae', 'pai']) if (e.entidades[p]) e.entidades[p]!.vivo = false;
+  for (const p of ['mae', 'pai']) {
+    const x = e.entidades[p];
+    if (!x) continue;
+    x.vivo = false;
+    x.morte = e.ano - 1;
+  }
   const antes = dinheiroDoMundo(e);
   Object.assign(e.entidades['eu']!.n, { dinheiro, renda_fixa: 0, acoes: 0, fii: 0, dolar: 0, cripto: 0, divida: 0 });
   e.entidades['mercado']!.n['dinheiro']! -= dinheiroDoMundo(e) - antes;
@@ -40,7 +47,6 @@ function decisao(e: EstadoVida, valor: number, resumo: string): number {
   const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'escolha', ref: 'carteira:teste', texto: resumo, resumo });
   const reg: Mudanca[] = [];
   somar(e, reg, 'eu', 'dinheiro', valor, 'teste', 'mercado');
-  somar(e, reg, 'mercado', 'dinheiro', -valor, 'teste', 'eu');
   lancar(e, entrada, reg);
   e.ano++;
   e.idade++;
@@ -153,14 +159,19 @@ describe('o lugar na história (I-170)', () => {
 
 describe('os marcos do grupo (I-171)', () => {
   it('mil funcionários viram linha uma vez, com a decisão que fez o grupo de causa', () => {
-    const e = adulto(20, 400_000_000);
-    const op: Operacao = { tipo: 'abrir', setor: 'industria', valor: 150_000_000 };
+    const e = adulto(20, 4_000_000_000);
+    const op: Operacao = { tipo: 'abrir', setor: 'industria', valor: 2_000_000_000 };
     expect(motivoParaNaoOperar(e, c, op)).toBeNull();
     e.ano--;
     e.idade--;
     operar(e, c, op);
     e.ano++;
     e.idade++;
+    // Um ano de negócio: a fábrica fica pronta e contrata.
+    const reg: Mudanca[] = [];
+    const ano = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'ano', texto: '' });
+    regraDaEmpresa(e, c, momentoTipico('normal'), reg);
+    lancar(e, ano, reg);
     expect(grupoNoMundo(e, c).funcionarios).toBeGreaterThanOrEqual(1000);
     marcosDoGrupo(e, c);
     marcosDoGrupo(e, c);
