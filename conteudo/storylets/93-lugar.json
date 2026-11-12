@@ -10,7 +10,7 @@
         "min": 4
       }
     },
-    "peso": 2,
+    "peso": 1,
     "texto": "Chegou um envelope de papel grosso, com o seu nome escrito à mão: o clube mais fechado da cidade convida você para sócio. A joia custa o preço de um carro; [o almoço de domingo não tem preço no cardápio|a piscina tem mais funcionário do que banhista|o estatuto proíbe falar de dinheiro, que é o assunto de todas as mesas].",
     "resumo": "recebeu o convite do clube mais fechado da cidade",
     "escolhas": [
@@ -50,7 +50,7 @@
         "min": 5
       }
     },
-    "peso": 2,
+    "peso": 1,
     "texto": "Uma revista de economia vai publicar a lista das maiores fortunas do país e quer você nela, com foto e tudo. Pelas contas deles, só alguns milhares de brasileiros têm o que você tem. [O fotógrafo já mandou três opções de fundo|A repórter perguntou qual foi o seu primeiro emprego|Querem saber se você ainda pega metrô].",
     "resumo": "foi chamado para a lista das maiores fortunas do país",
     "escolhas": [
@@ -379,7 +379,7 @@
         "min": 7
       }
     },
-    "peso": 3,
+    "peso": 2,
     "texto": "Desde que o seu nome saiu entre os bilionários do país, a portaria anota a placa de todo carro parado na rua. [Um desconhecido perguntou na padaria se você era você|A escola dos sobrinhos pediu uma reunião sobre segurança|O seu horário de academia apareceu num fórum da internet].",
     "resumo": "sentiu o peso de estar entre os bilionários do país",
     "escolhas": [
@@ -430,7 +430,7 @@
         "min": 7
       }
     },
-    "peso": 4,
+    "peso": 2,
     "texto": "A sua fortuna passou de um bilhão de reais. Um jornal fez a conta: gastando R$ 100 mil por dia, levaria mais de 27 anos para acabar. [Um deputado pediu, no plenário, que você pagasse a dívida do estado dele|Na TV, perguntaram se dinheiro traz felicidade e esperaram a sua resposta|A sua mãe ainda pergunta se você está comendo direito].",
     "resumo": "viu a fortuna passar de um bilhão de reais",
     "escolhas": [
@@ -474,7 +474,7 @@
   {
     "id": "o_mais_rico_na_tv",
     "idade": [
-      16,
+      25,
       90
     ],
     "condicoes": {
@@ -516,7 +516,7 @@
   {
     "id": "a_maior_empresa_na_cidade",
     "idade": [
-      18,
+      24,
       62
     ],
     "condicoes": {

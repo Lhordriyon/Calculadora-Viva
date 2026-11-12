@@ -2976,6 +2976,7 @@
       30,
       99
     ],
+    "peso": 2,
     "condicoes": {
       "patrimonio": {
         "min": 1000000000.0
