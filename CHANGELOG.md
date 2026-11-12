@@ -4,6 +4,16 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🧓 A dupla do valor · Investimento em valor na holding, acima das diretorias · 12/11/2026
+
+> [!NOTE]
+> O dono pediu para contratar dois investidores famosos como CEOs, com a filosofia do investimento em valor em toda a holding, acima da mesa diretora e das CEOs, e todos se reportando a eles antes (12/11). Os personagens do jogo são fictícios pela regra do dono; a dupla tem nomes originais.
+
+- 🧓 **A dupla do valor** (`valor.ts`): a holding contrata Augusto Prudente e Benedito Lacerda por 0,2% do grupo ao ano. Eles decidem antes das diretorias: o caixa acima de três meses de custos sobe, o dinheiro vai para quem devolve 15% ou mais, a dívida é quitada, o negócio de três anos que perde mais de 5% do valor é vendido.
+- 📋 **As diretorias se reportam a eles**: sem crédito, a obra só com 10% de retorno, a filial só com 12%, a compra só até 85% do justo; os vetos entram na linha do tempo.
+- 🔢 O botão de mover caixa pede o valor quando nada foi digitado.
+- 📊 **No túnel** (10.000 vidas): o mesmo da atualização anterior (os robôs não criam holding); o estado conferido em todos os anos, sem um problema. A dupla tem quatro testes. Telas: 58 de 58.
+
 ## 🏗️ A diretoria com poder · Constrói, abre filial e compra a concorrente sozinha · 12/11/2026
 
 > [!NOTE]

@@ -15,28 +15,28 @@
 
 ---
 
-## 🆕 Novidades: A diretoria com poder (12/11/2026)
+## 🆕 Novidades: A dupla do valor (12/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a CEO e a diretoria de cada empresa do grupo mandam de verdade, desde o primeiro dia.
-> - **Autonomia total de saída.** Toda empresa do grupo começa com carta branca, menos a que você cuida de perto e a holding. Se quiser, você dá menos autonomia em **Quem decide**.
-> - **Fábricas, lojas e escritórios.** Quando há fila de pedidos, a diretoria constrói a unidade do setor (a fábrica, a loja, o escritório, a clínica, a escola…) na cidade mais barata, do tamanho da fila.
-> - **Filial lá fora.** Quando a empresa passa de R$ 100 milhões, a diretoria abre uma filial no país de melhor relação.
-> - **Compra da concorrente.** Quando a concorrente está barata e o Cade não barra, a diretoria compra a empresa inteira, e ela vem para o grupo.
-> - **Com o caixa da empresa, nunca com o seu.** Cada decisão aparece na linha do tempo assinada pela CEO ("A CEO Jaqueline Moreira, do Studio Eduardo, … construiu um escritório em Sobral e comprou a concorrente Monteiro & Associados inteira").
+> **O que mudou:** a holding pode contratar dois investidores que dirigem o grupo inteiro pelo investimento em valor, acima de todas as diretorias.
+> - **Augusto Prudente e Benedito Lacerda**, a dupla do valor (personagens fictícios, como todos do jogo), assumem a holding por um honorário de 0,2% do grupo por ano (no mínimo R$ 2 milhões).
+> - **Eles decidem primeiro, todo ano.** Trazem para a holding o caixa de cada empresa que passa de três meses de custos, põem o dinheiro onde ele rende 15% ou mais, quitam a dívida de quem pode e vendem o negócio de três anos ou mais que perde mais de 5% do que vale.
+> - **Todas as diretorias se reportam a eles antes.** Nada de crédito no banco; a obra nova só com 10% de retorno, a filial só com 12%, a compra da concorrente só até 85% do preço justo (a margem de segurança). O que eles vetam aparece na linha do tempo da diretoria.
+> - **Você manda neles**: contrata e dispensa na estrutura do grupo, e a empresa que você cuida de perto continua sua (eles não a vendem).
 
 > [!TIP]
 > **Para testar:**
-> - Crie a holding e funde uma subsidiária (ou compre uma concorrente). Passe uns anos e leia a linha do tempo: a CEO constrói, compra e abre filial sozinha.
-> - Em **Por dentro → Quem decide**, a frase da carta branca diz tudo o que a diretoria pode fazer; troque para menos autonomia e veja ela parar.
+> - Crie a holding, ponha a empresa nela e funde uma ou duas subsidiárias. Em **A estrutura do grupo**, toque em **Contratar a dupla do valor**.
+> - Passe uns anos e leia a linha do tempo: o ano da dupla, o dinheiro que sobe e desce, os vetos nas diretorias.
+> - Em **Por dentro → Quem decide**, cada empresa do grupo mostra que se reporta à dupla.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🏗️ A diretoria que constrói, abre filial e compra a concorrente sozinha | 🤝 A diretoria comprando uma parte só (sobraria uma sócia, que é decisão sua) |
-| 🔓 Autonomia total de saída nas empresas do grupo | 🧑‍💼 A CEO como pessoa da vida (com relação e memória) |
-| 💸 Mover caixa, CEOs com nome e a frase de cada botão (a atualização anterior) | 📲 O teste num aparelho físico (só o dono tem) |
+| 🧓 A dupla do valor, acima das diretorias, com o crivo do investimento em valor | 🪪 Os nomes reais que você pediu: os personagens do jogo são fictícios pela sua regra (risco legal); trocar é decisão sua |
+| 🏗️ A diretoria que constrói, abre filial e compra sozinha (a atualização anterior) | 🤖 Os robôs do túnel criando holding (por isso o túnel não passa pela dupla; os testes passam) |
+| 💸 Mover caixa, CEOs com nome e a frase de cada botão | 📲 O teste num aparelho físico (só o dono tem) |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,21 milhões e 4,83 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. As diretorias, sozinhas, construíram 5.618 unidades, abriram 83 filiais lá fora e compraram 51 concorrentes; decidiram em 19.935 anos (eram 9.461), e as filiais lá fora chegaram a 147 (eram 63). O resto ficou onde estava: saturação na 5ª vida 52,8%, 905 assinaturas de vida por 1.000, o porquê à vista em 42,8% dos acontecimentos, patrimônio mediano da cautelosa R$ 27 milhões, 483,2 toques por vida (o teto informativo é 480) e o save mediano em 531 KB (o maior, 1.348 KB). A régua da tela passou nos 58 critérios.
+No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,21 milhões e 4,83 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Como os robôs não criam holding, os números saíram iguais aos da atualização anterior (as diretorias construíram 5.618 unidades, abriram 83 filiais e compraram 51 concorrentes; saturação na 5ª vida 52,8%, 905 assinaturas por 1.000, o porquê à vista em 42,8%, 483,2 toques por vida, save mediano 531 KB). A dupla tem quatro testes próprios (o ano dela, o caixa que sobe, os vetos, a venda do negócio ruim, com as contas conferidas). A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 
