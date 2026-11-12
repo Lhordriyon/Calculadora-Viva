@@ -88,11 +88,12 @@ export function herdeiroPossivel(e: EstadoVida, c: Conteudo): Herdeiro | null {
   for (let i = 0; i < 30 && usados.has(nome); i++) nome = sortear(rng, c.mundo.nomes[genero]);
   // O sobrinho é filho de um dos irmãos: o que teve filhos e está vivo, senão o vivo, senão qualquer um (o save de
   // antes dos irmãos não tem nenhum, e o sobrinho tem pais que ninguém conheceu).
-  const irmaos = IRMAOS.map((id) => e.entidades[id]).filter((x): x is Entidade => x !== undefined);
+  // Só o irmão de 23 anos ou mais pode ser o pai ou a mãe do sobrinho: o de 12 fazia um pai 11 anos mais velho que o filho.
+  const irmaos = IRMAOS.map((id) => e.entidades[id]).filter((x): x is Entidade => x !== undefined && x.nascimento !== undefined && e.ano - x.nascimento >= 23);
   const vivoComFilhos = irmaos.find((x) => x.vivo !== false && (x.n['filhos'] ?? 0) > 0);
   const de = vivoComFilhos ?? irmaos.find((x) => x.vivo !== false) ?? irmaos.find((x) => (x.n['filhos'] ?? 0) > 0) ?? irmaos[0];
-  const idadeDoPai = de?.nascimento !== undefined ? e.ano - de.nascimento : e.idade;
-  const idade = Math.max(1, Math.min(idadeDoPai - 16, idadeDoPai - inteiro(rng, 22, 38)));
+  const idadeDoPai = de?.nascimento !== undefined ? e.ano - de.nascimento : Math.max(23, e.idade);
+  const idade = Math.max(1, idadeDoPai - inteiro(rng, 22, Math.min(38, idadeDoPai - 1)));
   return { parentesco: 'sobrinho', nome, genero, nascimento: e.ano - idade, ...(de ? { de: de.id } : {}) };
 }
 
@@ -416,7 +417,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
       const genero: Genero = slot === 'mae' ? 'f' : 'm';
       // Do sobrinho, o outro pai é da geração de quem morreu (o tio); do par e do amigo, os pais são de uma geração
       // antes de quem herda (com o ano de quem morreu, a "mãe" do herdeiro podia ser mais nova que ele).
-      const nascimento = sobrinho ? velho.nascimento! + inteiro(e.rng, -8, 8) : filho.nascimento - inteiro(e.rng, 20, 38);
+      // Os pais são sempre de uma geração antes de quem herda (20 a 38 anos), mesmo o tio de quem morreu jovem.
+      const nascimento = sobrinho ? limitar(velho.nascimento! + inteiro(e.rng, -8, 8), filho.nascimento - 38, filho.nascimento - 20) : filho.nascimento - inteiro(e.rng, 20, 38);
       const vivo = e.ano - nascimento < 92 && aleatorio(e.rng) < Math.max(0.1, 1 - (e.ano - nascimento - 55) / 40);
       const pai = novaEntidade({ id: slot, tipo: 'pessoa', nome: nomeLivre(e, c, genero), genero, nascimento, vivo });
       const traco = sortear(e.rng, c.mundo.tracos);
