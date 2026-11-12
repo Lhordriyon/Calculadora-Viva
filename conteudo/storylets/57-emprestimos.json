@@ -138,7 +138,7 @@
     "id": "devedor_some",
     "tipo": "npc",
     "ator": ["mae", "pai", "irmao", "amigo", "filho"],
-    "idade": [18, 110],
+    "peso": 3, "idade": [18, 110],
     "condicoes": { "ator.te_deve": { "min": 1 }, "ator.atraso_da_divida": { "min": 2 } },
     "texto": "{ator} [parou de responder no grupo da família|cancelou o almoço de domingo de novo|mudou de calçada quando viu você no mercado] desde que ficou devendo {ator.te_deve} a você.",
     "resumo": "viu {ator.quem} sumir por causa de uma dívida",

@@ -190,7 +190,7 @@
     "id": "filho_quer_capital",
     "tipo": "npc",
     "ator": ["filho"],
-    "idade": [45, 85],
+    "peso": 3, "idade": [45, 85],
     "condicoes": { "dinheiro": { "min": 60000 }, "ator.idade": { "min": 22, "max": 45 } },
     "texto": "{ator.quem} quer abrir [uma cervejaria artesanal|um estúdio de tatuagem|um aplicativo de entrega|uma clínica veterinária] e pediu um adiantamento da herança. Trouxe planilha, logotipo e um otimismo que você reconhece de algum lugar.",
     "resumo": "ouviu {ator.quem} pedir um adiantamento da herança",

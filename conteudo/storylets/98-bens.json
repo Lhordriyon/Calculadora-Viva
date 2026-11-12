@@ -269,7 +269,7 @@
   },
   {
     "id": "ilha_particular",
-    "idade": [25, 99],
+    "peso": 3, "idade": [25, 99],
     "condicoes": { "marcas": ["ilha"] },
     "texto": "Na sua ilha, o único barulho é o mar. Um velejador perdido pede para atracar no seu píer durante a tempestade.",
     "resumo": "recebeu um visitante inesperado na ilha particular",
@@ -383,7 +383,7 @@
   },
   {
     "id": "helicoptero_no_teto",
-    "idade": [20, 99],
+    "peso": 3, "idade": [20, 99],
     "condicoes": { "marcas": ["helicoptero"] },
     "repetivel": true,
     "intervalo": 4,
@@ -410,7 +410,7 @@
   },
   {
     "id": "festa_no_iate",
-    "idade": [20, 99],
+    "peso": 3, "idade": [20, 99],
     "condicoes": { "marcas": ["iate"] },
     "repetivel": true,
     "intervalo": 3,
@@ -437,7 +437,7 @@
   },
   {
     "id": "jatinho_para_onde",
-    "idade": [20, 99],
+    "peso": 3, "idade": [20, 99],
     "condicoes": { "marcas": ["jatinho"] },
     "repetivel": true,
     "intervalo": 3,
@@ -544,7 +544,7 @@
   },
   {
     "id": "dono_do_clube",
-    "idade": [25, 99],
+    "peso": 3, "idade": [25, 99],
     "condicoes": { "marcas": ["clube_de_futebol"] },
     "repetivel": true,
     "intervalo": 2,

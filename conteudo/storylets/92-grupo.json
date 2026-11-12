@@ -3,7 +3,7 @@
     "id": "o_grupo_no_pib",
     "idade": [25, 90],
     "condicoes": { "pais.peso_do_grupo": { "min": 0.05 }, "empresa.valor": true },
-    "peso": 3,
+    "peso": 9,
     "texto": "Um economista mostrou na TV um gráfico de barras: o que o seu grupo produz, tirando o que compra dos outros, já é {pais.peso_do_grupo}% do PIB do Brasil. [No bar da esquina, o garçom perguntou se você era o dono do PIB|O seu tio mandou o print no grupo da família com três pontos de exclamação|Um deputado citou o número num discurso, sem dizer se era elogio].",
     "resumo": "viu o próprio grupo virar uma fatia do PIB",
     "escolhas": [
@@ -112,7 +112,7 @@
     "id": "subsidiaria_esquecida",
     "idade": [25, 95],
     "condicoes": { "empresa.subsidiarias_do_grupo": { "min": 8 } },
-    "peso": 3,
+    "peso": 9,
     "texto": "A auditoria d{empresa:o|a} {empresa} achou uma subsidiária que ninguém lembrava ter comprado: [uma fábrica de parafusos em Joinville que dá lucro|um galpão vazio em Manaus com o aluguel em dia|uma rádio AM no interior de Goiás|uma empresa com sede numa caixa postal].",
     "resumo": "descobriu uma subsidiária esquecida no próprio grupo",
     "escolhas": [
@@ -155,7 +155,7 @@
     "id": "oferta_pela_subsidiaria",
     "idade": [25, 95],
     "condicoes": { "empresa.subsidiarias": { "min": 1 }, "empresa.valor": { "min": 5000000 } },
-    "peso": 3,
+    "peso": 9,
     "repetivel": true,
     "intervalo": 10,
     "texto": "Um fundo [estrangeiro|de pensão do Canadá|de um banco que patrocina até novela] quer comprar uma subsidiária d{empresa:o|a} {empresa}, a que menos dá trabalho, por bem mais do que ela vale no balanço.",
@@ -185,7 +185,7 @@
     "id": "conglomerado_com_desconto",
     "idade": [25, 95],
     "condicoes": { "marcas": ["empresa.na_bolsa"], "empresa.subsidiarias_do_grupo": { "min": 10 } },
-    "peso": 3,
+    "peso": 9,
     "texto": "Um analista de banco de [vinte e quatro|vinte e seis] anos publicou que {empresa:o|a} {empresa} vale menos que a soma das partes: \"um conglomerado sem foco\". A ação caiu; o seu almoço de domingo também.",
     "resumo": "viu um analista chamar o próprio grupo de conglomerado sem foco",
     "escolhas": [
@@ -235,7 +235,7 @@
     "id": "primeiro_balanco_na_bolsa",
     "idade": [25, 95],
     "condicoes": { "marcaHa": [{ "marca": "empresa.na_bolsa", "min": 1, "max": 2 }], "empresa.valor": true },
-    "peso": 6,
+    "peso": 18,
     "texto": "O primeiro balanço d{empresa:o|a} {empresa} na bolsa: [o lucro veio 20% maior e a ação caiu 8%, porque esperavam 22|um analista que nunca viu a fábrica rebaixou a recomendação|a teleconferência teve mais perguntas sobre a sua vida pessoal do que sobre a margem].",
     "resumo": "conheceu o humor da bolsa no primeiro balanço",
     "escolhas": [

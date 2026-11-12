@@ -465,7 +465,7 @@
   {
     "id": "quem_manda_se_voce_faltar",
     "idade": [55, 95],
-    "peso": 4,
+    "peso": 12,
     "condicoes": { "empresa.dependencia": { "min": 60 }, "empresa.valor": { "min": 50000000 } },
     "texto": "Um investidor faz a pergunta que ninguém faz: \"Se você morrer amanhã, quem manda n{empresa:o|a} {empresa}?\" O silêncio na sala responde por todo mundo.",
     "resumo": "ouviu de um investidor que ninguém mandaria na empresa sem você",
@@ -488,7 +488,7 @@
   },
   {
     "id": "a_empresa_anda_sozinha",
-    "idade": [25, 99],
+    "peso": 3, "idade": [25, 99],
     "condicoes": { "empresa.dependencia": { "max": 25 }, "empresa.valor": { "min": 5000000 } },
     "texto": "{empresa:O|A} {empresa} atravessou uma crise inteira, com recall, CPI e tudo, sem te ligar nenhuma vez. Você soube pelo jornal, e sorriu.",
     "resumo": "viu a própria empresa atravessar uma crise sem precisar de você",

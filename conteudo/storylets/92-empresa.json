@@ -232,7 +232,7 @@
   },
   {
     "id": "acionistas_furiosos",
-    "peso": 10,
+    "peso": 30,
     "idade": [25, 90],
     "condicoes": { "marcas": ["empresa.na_bolsa"], "pais.ret_acoes": { "max": -5 } },
     "tensao": 2,
@@ -486,7 +486,7 @@
     "id": "capa_de_revista",
     "idade": [25, 95],
     "condicoes": { "empresa.valor": { "min": 5000000000 } },
-    "peso": 5,
+    "peso": 15,
     "texto": "Uma revista de negócios pôs você na capa: {empresa:o|a} {empresa} passou de R$ 5 bilhões. [Seu tio imprimiu a capa e emoldurou.|O grupo da família mandou figurinha de unicórnio.|Um ex-professor mandou mensagem dizendo que sempre soube.]",
     "resumo": "virou capa de revista com a própria empresa",
     "escolhas": [

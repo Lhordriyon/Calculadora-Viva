@@ -664,7 +664,7 @@
   },
   {
     "id": "cofrinho_cheio",
-    "idade": [9, 15],
+    "peso": 3, "idade": [9, 15],
     "condicoes": { "cofrinho": { "min": 3 } },
     "texto": "O cofrinho de porquinho não fecha mais. Você chacoalha e ouve o barulho mais bonito do mundo.",
     "resumo": "encheu o primeiro cofrinho",

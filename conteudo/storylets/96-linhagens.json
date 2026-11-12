@@ -943,7 +943,7 @@
   },
   {
     "id": "anos_depois_do_poder",
-    "idade": [25, 99],
+    "peso": 3, "idade": [25, 99],
     "condicoes": { "algumaMarca": ["abdicou", "redemocratizou", "exilado", "ex_ditador"] },
     "texto": "Anos depois, um documentário sobre a sua família estreia num canal de streaming. Pedem uma entrevista: você conta a sua versão ou deixa os outros contarem?",
     "resumo": "contou a própria versão da história da família",
@@ -1021,7 +1021,7 @@
   {
     "id": "acusado_de_nepotismo",
     "idade": [18, 60],
-    "peso": 3,
+    "peso": 9,
     "condicoes": { "marcas": ["nepotismo"], "fama": { "min": 15 } },
     "texto": "Uma reportagem lista todos os papéis, vagas e contratos que você conseguiu por causa do sobrenome. A hashtag está em primeiro lugar.",
     "resumo": "foi acusad{o|a} de nepotismo",

@@ -195,7 +195,7 @@
       ],
       "empresa.valor": true
     },
-    "peso": 5,
+    "peso": 15,
     "texto": "Dez mil funcionários têm sindicato, e o sindicato tem pauta: reajuste acima da inflação, plano de saúde para a família e o fim da hora extra de domingo. [A assembleia foi no estacionamento da fábrica|O carro de som parou na frente da sede|A líder da comissão trabalhou dez anos na linha de produção].",
     "resumo": "negociou com o sindicato dos dez mil funcionários do grupo",
     "escolhas": [
@@ -254,7 +254,7 @@
         "grupo_mil"
       ]
     },
-    "peso": 3,
+    "peso": 9,
     "texto": "Numa cidade do interior, uma em cada três famílias tem alguém trabalhando para o grupo. A câmara de vereadores quer dar o seu nome à avenida principal. [A placa já está encomendada|O padre da matriz é contra, por princípio|A escola estadual da avenida tem goteira desde 2019].",
     "resumo": "ganhou a proposta de uma avenida com o próprio nome",
     "escolhas": [
@@ -295,7 +295,7 @@
         "grupo_la_fora"
       ]
     },
-    "peso": 4,
+    "peso": 12,
     "texto": "Num aeroporto do outro lado do mundo, você viu o logo do grupo numa vitrine, com o preço numa moeda que você nem sabe pronunciar. [Uma criança apontou para a caixa e pediu para a mãe|O vendedor jurou que o produto era de lá mesmo|Ao lado, a concorrente estava em promoção].",
     "resumo": "viu o logo do grupo numa vitrine do outro lado do mundo",
     "escolhas": [
@@ -336,7 +336,7 @@
       ],
       "empresa.valor": true
     },
-    "peso": 3,
+    "peso": 9,
     "texto": "O ministro da Economia ligou: o governo quer anunciar um investimento do grupo no mesmo discurso em que vai falar do PIB. [A assessoria já mandou o rascunho com o seu nome em negrito|O fotógrafo oficial quer vocês dois de capacete numa obra|A oposição já marcou entrevista para o dia seguinte].",
     "resumo": "foi chamado pelo governo para anunciar um investimento do grupo",
     "escolhas": [

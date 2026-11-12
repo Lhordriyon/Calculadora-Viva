@@ -1814,6 +1814,8 @@ l('## Storylets');
 l();
 l(`- **Mortos (nunca aparecem):** ${mortos.length ? mortos.map((m) => `\`${m}\``).join(', ') : 'nenhum'}`);
 l(`- **Raros (em menos de 0,5% das vidas):** ${raros.length ? raros.map((m) => `\`${m}\``).join(', ') : 'nenhum'}`);
+// As histórias na beira (I-174): a contagem, não a porcentagem arredondada, das 20 que menos aparecem (e ainda aparecem).
+l(`- **Na beira (as 20 que menos aparecem, em vidas de ${num(vidas.length, 0)}):** ${[...vidasCom].filter(([, n]) => n > 0).sort((a, b) => a[1] - b[1]).slice(0, 20).map(([id, n]) => `\`${id}\` ${n}`).join(' · ')}`);
 l(`- **Apresentados por vida:** ${num(media(vidas.map((v) => v.instancias.length)))} · **com causa anterior (cadeia):** ${num(media(vidas.map((v) => v.comCausa)))} · **maior distância causa→consequência:** ${num(media(vidas.map((v) => v.maiorDistancia)))} anos em média`);
 l(`- **Vidas com 3 pontos de virada no cartão:** ${pct(vidas.filter((v) => v.pontos >= 3).length / vidas.length)}`);
 l();

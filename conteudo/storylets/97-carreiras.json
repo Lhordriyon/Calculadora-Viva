@@ -58,7 +58,7 @@
   },
   {
     "id": "cliente_duvidoso",
-    "idade": [24, 70],
+    "peso": 3, "idade": [24, 70],
     "condicoes": { "carreira": ["advogado", "contador", "analista_investimentos"] },
     "texto": "Um cliente de terno caro quer contratar você para \"proteger o patrimônio\" de uma empresa com sede numa ilha que você nunca ouviu falar. Paga adiantado e em dólar.",
     "resumo": "decidiu sobre um cliente duvidoso",
@@ -122,7 +122,7 @@
   },
   {
     "id": "caso_do_poderoso",
-    "idade": [26, 75],
+    "peso": 3, "idade": [26, 75],
     "condicoes": { "carreira": ["juiz", "delegado"] },
     "texto": "Cai na sua mesa o processo de um político poderoso. Um emissário dele aparece no estacionamento para \"conversar sobre o futuro\".",
     "resumo": "decidiu o caso de um político poderoso",

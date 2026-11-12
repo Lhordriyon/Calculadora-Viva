@@ -46,7 +46,7 @@
     "id": "peso_do_sobrenome",
     "idade": [22, 75],
     "condicoes": { "dinastia": { "min": 2 } },
-    "peso": 3,
+    "peso": 9,
     "texto": "No banco, no cartório e no clube, o sobrenome {sobrenome} abre portas e cria expectativas. O gerente lembra de quem veio antes de você; o porteiro também, por outros motivos.",
     "resumo": "sentiu o peso do sobrenome da família",
     "escolhas": [
@@ -72,7 +72,7 @@
     "id": "pai_rico_filho_nobre_neto_pobre",
     "idade": [25, 80],
     "condicoes": { "dinastia": { "min": 3 }, "patrimonio": { "min": 1000000 } },
-    "peso": 4,
+    "peso": 12,
     "texto": "Terceira geração. O avô dizia que \"pai rico, filho nobre, neto pobre\" e todo mundo ria. Agora a fortuna da família, {patrimonio}, está na sua mão e o ditado parece menos engraçado.",
     "resumo": "encarou o ditado do pai rico, filho nobre, neto pobre",
     "escolhas": [
@@ -122,7 +122,7 @@
     "id": "carta_na_gaveta",
     "idade": [20, 90],
     "condicoes": { "dinastia": { "min": 2 } },
-    "peso": 2,
+    "peso": 6,
     "texto": "Arrumando as coisas da casa, você achou uma carta antiga, com a letra de quem veio antes de você: [\"cuida bem do que é nosso\"|\"não deixa ninguém te dizer quem você é\"|\"a família é o que fica\"]. Não tinha data, só uma mancha de café.",
     "resumo": "achou uma carta antiga da família",
     "escolhas": [

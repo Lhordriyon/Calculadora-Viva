@@ -60,7 +60,7 @@
   {
     "id": "o_credito_sumiu",
     "idade": [18, 99],
-    "peso": 3,
+    "peso": 9,
     "repetivel": true,
     "intervalo": 6,
     "condicoes": { "pais.moeda": { "max": -6 } },

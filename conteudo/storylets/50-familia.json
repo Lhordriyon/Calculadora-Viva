@@ -881,7 +881,7 @@
     "id": "caramelo_envelhece",
     "tipo": "npc",
     "ator": ["pet"],
-    "idade": [8, 100],
+    "peso": 3, "idade": [8, 100],
     "condicoes": { "pet.idade": { "min": 9 }, "pet.saude": { "max": 70 } },
     "texto": "{pet} está velhinh{pet:o|a}: [dorme o dia inteiro|não sobe mais no sofá|late para a porta sem ninguém]. O veterinário falou em remédio para a vida toda.",
     "resumo": "{ator.quem} envelheceu",

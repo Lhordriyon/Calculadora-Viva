@@ -484,7 +484,7 @@
   },
   {
     "id": "cade_investiga",
-    "idade": [25, 95],
+    "peso": 3, "idade": [25, 95],
     "condicoes": { "marcas": ["empresa.truste"] },
     "texto": "O órgão de defesa da concorrência abriu investigação contra {empresa:o|a} {empresa}: depois de tantas compras, ela domina o mercado. Pode haver multa ou divisão da empresa.",
     "resumo": "teve a empresa investigada por monopólio",
@@ -530,7 +530,7 @@
   },
   {
     "id": "jornal_e_o_aliado",
-    "idade": [25, 95],
+    "peso": 3, "idade": [25, 95],
     "condicoes": { "algumaMarca": ["jornal", "emissora", "radio"] },
     "repetivel": true,
     "intervalo": 5,

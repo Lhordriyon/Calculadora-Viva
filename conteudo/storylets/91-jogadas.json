@@ -2123,7 +2123,7 @@
         "bancou_campanha"
       ]
     },
-    "peso": 2,
+    "peso": 6,
     "texto": "Uma CPI quer saber de onde saiu o dinheiro da última eleição presidencial. O seu nome está no primeiro slide.",
     "resumo": "foi chamad{o|a} a uma CPI sobre a campanha que bancou",
     "escolhas": [
@@ -2976,7 +2976,7 @@
       30,
       99
     ],
-    "peso": 2,
+    "peso": 6,
     "condicoes": {
       "patrimonio": {
         "min": 1000000000.0
@@ -3090,7 +3090,7 @@
   },
   {
     "id": "convite_para_ministro",
-    "idade": [
+    "peso": 3, "idade": [
       35,
       85
     ],
@@ -3139,7 +3139,7 @@
   },
   {
     "id": "herdeiros_de_olho",
-    "idade": [
+    "peso": 3, "idade": [
       55,
       99
     ],
@@ -3203,7 +3203,7 @@
         "min": 50
       }
     },
-    "peso": 0.6,
+    "peso": 3,
     "texto": "A Câmara aprovou dar o seu nome a uma rua. É a rua do cemitério, mas é uma rua.",
     "resumo": "virou nome de rua",
     "efeitos": {

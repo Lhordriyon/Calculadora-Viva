@@ -843,7 +843,7 @@
     "id": "cobrir_a_tatuagem",
     "idade": [20, 70],
     "condicoes": { "marcas": ["tatuagem_do_amor", "separado"] },
-    "peso": 4,
+    "peso": 12,
     "texto": "O nome de quem já não está na sua vida continua no seu braço, em letra cursiva. Toda vez que você pega o ônibus de manga curta, alguém pergunta.",
     "resumo": "teve que decidir o que fazer com a tatuagem do ex",
     "escolhas": [
