@@ -137,11 +137,11 @@ function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg
   }
   // A compra do controle da concorrente: barata (o preço do dia até o justo), com o caixa sobrando e o Cade de acordo.
   const alvo = alvoDaAquisicao(e, emp.id);
-  if (alvo && !((alvo.n['participacao_socia'] ?? 0) > 0) && emp.id !== 'empresa' && aleatorio(rng) < CHANCE_DA_COMPRA && precoDaAquisicao(e, emp.id) <= 1) {
+  if (alvo && !((alvo.n['participacao_socia'] ?? 0) > 0) && emp.id !== 'empresa' && aleatorio(rng) < CHANCE_DA_COMPRA && precoDaAquisicao(e, emp.id) <= 1.05) {
     // Compra inteira: a comprada vem para o grupo sem sócia (a parte que sobraria fica com quem vendeu, no mercado).
     const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
     const custo = custoDaAquisicao(e, emp.id, 1);
-    if (custo <= caixa() * 0.6 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
+    if (custo <= caixa() * 0.75 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
       const nome = alvo.nome;
       operarEmpresa(e, c, op, reg, origem);
       resumos.push(`comprou a concorrente ${nome} inteira`);

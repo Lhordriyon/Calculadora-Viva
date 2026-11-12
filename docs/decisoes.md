@@ -2177,9 +2177,9 @@ O dono pediu mais autoridade para a CEO e a diretoria: construir fábricas, fili
 **Decisões tomadas sozinho.**
 
 - **Toda empresa do grupo começa com carta branca, menos a de perto e a holding.** A de perto é a que quem joga dirige (e o gestor propõe); a holding não opera. Quem preferir pode dar menos autonomia em Quem decide.
-- **A diretoria usa só o caixa da empresa**: a obra até metade do caixa, a compra até 60% dele, a filial com 20%. Na compra pela folha, o que falta sai da conta de quem joga; na da diretoria, nunca.
+- **A diretoria usa só o caixa da empresa**: a obra até metade do caixa, a compra até 75% dele, a filial com 20%. Na compra pela folha, o que falta sai da conta de quem joga; na da diretoria, nunca.
 - **Com carta branca, crescer é construir a unidade nova** na cidade mais barata (as do país dela, na filial), do tamanho da fila de pedidos (meia estrutura com a fila de 50%, um quarto com a menor); ampliar a unidade de sempre deixou de ser uma jogada dela.
-- **A compra é da concorrente inteira**, quando o preço do dia está até o justo e o Cade não barra, em 40% dos anos em que dá: a comprada vem sem sócia. A concorrente que já tem sócia fica para quem joga decidir, e o aporte que diluiria a sócia de uma subsidiária também.
+- **A compra é da concorrente inteira**, quando o preço do dia passa do justo em no máximo 5% e o Cade não barra, em 40% dos anos em que dá (com até o justo e 60% do caixa, foram só 6 compras em 2.000 vidas): a comprada vem sem sócia. A concorrente que já tem sócia fica para quem joga decidir, e o aporte que diluiria a sócia de uma subsidiária também.
 - **A filial lá fora, uma por empresa**, quando ela passa de R$ 100 milhões, no país de melhor relação (30 ou mais, sem sanção), em 12% dos anos em que dá.
 - **O país da filial ganhou um leitor no conteúdo**: o Cade não investiga a empresa de perto quando ela é uma filial lá fora.
 
