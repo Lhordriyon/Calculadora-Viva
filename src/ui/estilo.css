@@ -2095,6 +2095,7 @@ button {
 /* O que um botão ou uma escolha faz (I-177): a frase logo embaixo, menor e mais calma que a nota. */
 .nota.explica {
   margin-top: -0.2em;
+  margin-bottom: 0.8em;
   font-size: 0.92em;
   color: var(--texto-suave, inherit);
 }
