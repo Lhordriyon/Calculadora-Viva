@@ -13,7 +13,13 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 🏭 **Os marcos do grupo na linha do tempo**: os funcionários (mil, dez mil, cem mil, um milhão), a fatia do setor no Brasil (um real de cada mil e um de cada cem), a filial com gente lá fora e a lista das 10 maiores empresas do país, cada um uma vez, com a decisão que mais fez o grupo.
 - 🎭 **Dez histórias novas** que o lugar e o tamanho destravam (`93-lugar.json`) e onze epitáfios.
 - 🎓 A bolsa na faculdade pesa mais: estava a um passo de nunca aparecer.
-- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta. 71,7% das vidas têm alguma linha do lugar ou do grupo além do nascimento (1,56 por vida). Saturação V5 52,8%, assinaturas 901, porquê à vista 42,8%, toques 483,0, save mediano 534 KB (o maior, 1.041 KB). Telas: 58 de 58.
+
+**Segunda parte, no mesmo dia: os grandes do país vivem (I-173, I-174).**
+
+- 🏃 As 10 maiores empresas e os 10 mais ricos andam com o preço do setor deles, e o i-ésimo mais rico é dono da i-ésima; quando o primeiro lugar troca por 15% ou mais, o país conta quem passou quem, com o setor que fez a troca (no máximo uma vez a cada seis anos). Três histórias falam deles pelo nome.
+- 🔎 As 42 histórias sorteadas que quase nunca apareciam pesam o triplo, e o túnel mostra a contagem das 20 que menos aparecem: quatro histórias antigas morreram por acaso nas rodadas desta missão.
+- 👪 O sobrinho que herda tem pais de uma geração antes, sempre (a auditoria achou um pai de 12 anos).
+- 📊 **No túnel** (10.000 vidas): o estado conferido em todos os anos, sem um problema; as contas e as dívidas fecharam em todas as entradas; nenhuma história morta. 71,0% das vidas têm alguma linha do lugar ou do grupo além do nascimento (1,56 por vida); o primeiro lugar entre os grandes trocou 1,73 vez por vida. Saturação V5 52,7%, assinaturas 906, porquê à vista 42,7%, toques 483,1, save mediano 529 KB (o maior, 1.115 KB). Telas: 58 de 58.
 
 ## 🌍 O grupo no mundo · Filiais em cada país e os mais ricos · 11/11/2026
 
