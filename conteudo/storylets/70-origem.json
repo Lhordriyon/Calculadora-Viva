@@ -723,6 +723,7 @@
   {
     "id": "vestibular_preparado",
     "idade": [17, 19],
+    "peso": 4,
     "condicoes": { "estudo": { "min": 4 }, "semMarcas": ["cursando", "formado"] },
     "trechos": { "estudo_anos": [{ "se": { "estudo": { "min": 7 } }, "texto": "muitos" }, { "texto": "alguns" }] },
     "texto": "Você chegou ao ENEM com {estudo_anos} anos de estudo nas costas e um caderno de redações corrigidas.",
