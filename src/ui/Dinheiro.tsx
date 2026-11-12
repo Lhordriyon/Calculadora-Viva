@@ -1194,7 +1194,7 @@ function SeuLugar({ vida, conteudo }: { vida: EstadoVida; conteudo: Conteudo }) 
   const onde = lugar.posicao > 0 ? (lugar.posicao === 1 ? 'a pessoa mais rica do país' : `o ${lugar.posicao}º lugar entre os mais ricos do país`) : ESTRATOS[lugar.estrato]!.nome;
   const frente = lugar.posicao > 0 ? '' : ` · à frente de ${(Math.min(99.99, lugar.percentil * 100)).toLocaleString('pt-BR', { maximumFractionDigits: lugar.percentil >= 0.99 ? 2 : 0 })}% dos adultos`;
   return (
-    <p class="meta lugar-no-pais">
+    <p class="meta">
       {daFamilia ? 'O lugar da sua família no país' : 'O seu lugar no país'}: <b>{onde}</b>
       {frente}
     </p>

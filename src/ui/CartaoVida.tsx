@@ -93,7 +93,7 @@ export function CartaoVida({ resumo, endereco, aoFechar, aoNovaVida, aoContinuar
         ) : (
           resumo.origem && <p class="meta">Nasceu numa {resumo.origem}.</p>
         )}
-        {resumo.lugar && <p class="meta lugar-no-pais">{resumo.lugar}</p>}
+        {resumo.lugar && <p class="meta">{resumo.lugar}</p>}
         {resumo.causa && <p class="causa">Morreu {resumo.causa}.</p>}
         <div class="numeros">
           <div>

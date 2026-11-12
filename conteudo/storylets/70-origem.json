@@ -998,7 +998,7 @@
     "id": "bolsa_na_faculdade",
     "idade": [17, 20],
     "condicoes": { "marcas": ["bolsista"], "semMarcas": ["cursando", "formado"] },
-    "peso": 3,
+    "peso": 10,
     "texto": "Com o histórico de ex-bolsista, apareceu a chance de uma bolsa integral pelo programa do governo numa faculdade que você só via da janela do ônibus.",
     "resumo": "conseguiu bolsa integral na faculdade",
     "trechos": {
