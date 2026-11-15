@@ -265,7 +265,9 @@ export function abrirPorEfeito(e: EstadoVida, c: Conteudo, reg: Mudanca[], a: Ab
 /** O contrato grande, o escândalo, a crise do setor: a demanda (os clientes) e o valor andam juntos. */
 export function multiplicarEmpresa(e: EstadoVida, c: Conteudo, reg: Mudanca[], fator: number, id = PRINCIPAL): void {
   const emp = empresaDe(e, id);
-  if (!emp) return;
+  // A holding não tem negócio para valorizar: o valor dela é o caixa (a auditoria achou uma história multiplicando o
+  // valor da holding que ficou no lugar da empresa de perto).
+  if (!emp || emp.q['holding']) return;
   somar(e, reg, id, 'valor', (emp.n['valor'] ?? 0) * (fator - 1));
   if (emp.n['demanda'] !== undefined) somarDemanda(e, c, reg, emp, (emp.n['demanda'] ?? 0) * (fator - 1));
 }
@@ -612,6 +614,11 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   empregosNaCidade(e, reg, antes, depois);
   // Os conselhos com autonomia decidem o ano que vem, dentro do mandato que quem joga deu (governanca.ts).
   anoDosConselhos(e, c, empresasDe(e), mercado);
+  // Depois da dupla do valor e das diretorias (que movem o caixa da holding), o valor guardado da holding volta a ser o
+  // caixa dela, como no ano da holding (societario.ts): a auditoria achou uma holding com os dois diferentes.
+  for (const h of empresasDe(e)) {
+    if (h.q['holding'] && Math.abs((h.n['valor'] ?? 0) - Math.max(0, h.n['caixa'] ?? 0)) > 0.5) definirNumero(e, reg, h.id, 'valor', Math.max(0, h.n['caixa'] ?? 0), 'empresa');
+  }
   // O imposto que elas pagaram entra no Tesouro e baixa a dívida pública (em pontos do PIB).
   const pib = e.entidades['pais']?.n['pib'] ?? 0;
   if (impostos > 0 && pib > 0) somar(e, reg, 'pais', 'divida', -(impostos / pib) * 100, 'impostos_das_empresas');
