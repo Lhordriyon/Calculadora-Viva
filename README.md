@@ -15,28 +15,27 @@
 
 ---
 
-## 🆕 Novidades: A dupla do valor (12/11/2026)
+## 🆕 Novidades: A dupla do valor aloca de verdade (15/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a holding pode contratar dois investidores que dirigem o grupo inteiro pelo investimento em valor, acima de todas as diretorias.
-> - **Augusto Prudente e Benedito Lacerda**, a dupla do valor (personagens fictícios, como todos do jogo), assumem a holding por um honorário de 0,2% do grupo por ano (no mínimo R$ 2 milhões).
-> - **Eles decidem primeiro, todo ano.** Trazem para a holding o caixa de cada empresa que passa de três meses de custos, põem o dinheiro onde ele rende 15% ou mais, quitam a dívida de quem pode e vendem o negócio de três anos ou mais que perde mais de 5% do que vale.
-> - **Todas as diretorias se reportam a eles antes.** Nada de crédito no banco; a obra nova só com 10% de retorno, a filial só com 12%, a compra da concorrente só até 85% do preço justo (a margem de segurança). O que eles vetam aparece na linha do tempo da diretoria.
-> - **Você manda neles**: contrata e dispensa na estrutura do grupo, e a empresa que você cuida de perto continua sua (eles não a vendem).
+> **O que mudou:** a dupla do valor (Augusto Prudente e Benedito Lacerda, personagens fictícios) deixou de só barrar e empilhar caixa. Agora ela põe todo o capital da holding para trabalhar.
+> - **As CEOs pedem, a dupla banca.** Cada CEO que vê uma oportunidade (a fila de pedidos que pede uma fábrica, loja ou escritório novo; a concorrente barata; a filial lá fora) pede o dinheiro à dupla, com o retorno esperado. Ela aprova o que paga 10% ao ano (12% lá fora; a concorrente, só até 85% do preço justo) e manda o dinheiro da holding. O pedido e a resposta aparecem na linha do tempo.
+> - **Comprar na baixa.** Com caixa livre, a dupla põe dinheiro num negócio novo de um setor em baixa, para colher na volta do ciclo.
+> - **O resto fica aplicado.** O caixa livre da holding rende o mercado do ano: 25% em ações e o resto no Tesouro; na recessão ou na crise, 60% em ações, compradas na baixa.
+> - Continua valendo: o caixa das empresas acima de três meses de custos sobe para a holding, a dívida é quitada e o negócio de três anos que perde mais de 5% do valor é vendido.
 
 > [!TIP]
 > **Para testar:**
-> - Crie a holding, ponha a empresa nela e funde uma ou duas subsidiárias. Em **A estrutura do grupo**, toque em **Contratar a dupla do valor**.
-> - Passe uns anos e leia a linha do tempo: o ano da dupla, o dinheiro que sobe e desce, os vetos nas diretorias.
-> - Em **Por dentro → Quem decide**, cada empresa do grupo mostra que se reporta à dupla.
+> - Crie a holding, ponha a empresa nela, funde uma ou duas subsidiárias e contrate a dupla em **A estrutura do grupo**.
+> - Passe uns anos e leia a linha do tempo: os pedidos das CEOs ("pediu à dupla do valor R$ … para um escritório em … e levou"), o negócio comprado na baixa e quanto o caixa aplicado rendeu.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 🧓 A dupla do valor, acima das diretorias, com o crivo do investimento em valor | 🪪 Os nomes reais que você pediu: os personagens do jogo são fictícios pela sua regra (risco legal); trocar é decisão sua |
-| 🏗️ A diretoria que constrói, abre filial e compra sozinha (a atualização anterior) | 🤖 Os robôs do túnel criando holding (por isso o túnel não passa pela dupla; os testes passam) |
-| 💸 Mover caixa, CEOs com nome e a frase de cada botão | 📲 O teste num aparelho físico (só o dono tem) |
+| 📋 As CEOs pedem com o retorno esperado, e a dupla banca | 🧾 A carteira da holding ação por ação (ela rende como um todo, pelo mercado do ano) |
+| 📉 Negócio comprado na baixa do setor; caixa aplicado em ações e no Tesouro | 🤖 Os robôs do túnel criando holding (o túnel não passa pela dupla; os testes passam) |
+| 🧓 A dupla acima das diretorias (a atualização anterior) | 🪪 Os nomes reais: os personagens do jogo são fictícios pela sua regra; trocar é decisão sua |
 
-No túnel de vento (10.000 vidas), o estado inteiro foi conferido depois de cada ano de cada vida, sem um problema, e as contas e as dívidas fecharam em todas as entradas (4,21 milhões e 4,83 milhões); nenhuma história ficou de fora e nenhuma estratégia fixa vence em tudo. Como os robôs não criam holding, os números saíram iguais aos da atualização anterior (as diretorias construíram 5.618 unidades, abriram 83 filiais e compraram 51 concorrentes; saturação na 5ª vida 52,8%, 905 assinaturas por 1.000, o porquê à vista em 42,8%, 483,2 toques por vida, save mediano 531 KB). A dupla tem quatro testes próprios (o ano dela, o caixa que sobe, os vetos, a venda do negócio ruim, com as contas conferidas). A régua da tela passou nos 58 critérios.
+A verificação completa passou: 582 testes, a auditoria sem nenhum problema e o túnel de 10.000 vidas com as contas e as dívidas fechando em todas as entradas. Como os robôs não criam holding, os números do túnel não mudaram. A dupla tem sete testes próprios (o caixa que sobe, o pedido da CEO, a compra na baixa, a carteira que rende no normal e na recessão, a venda do negócio ruim), todos com as contas conferidas. A régua da tela passou nos 58 critérios.
 
 ## 🗺️ Os blocos do dono
 

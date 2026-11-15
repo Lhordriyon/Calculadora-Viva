@@ -4,6 +4,16 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📋 A dupla do valor aloca de verdade · As CEOs pedem, ela banca, compra na baixa e aplica o caixa · 15/11/2026
+
+> [!NOTE]
+> O dono testou a dupla e viu que ela só barrava: as CEOs não expandiam nem pediam nada, e o caixa da holding e das subsidiárias parava (12/11).
+
+- 📋 **As CEOs pedem, a dupla banca** (`valor.ts › pedirADupla`): a obra, a filial e a compra são pedidas com o retorno esperado; a dupla aprova o que paga 10% (12% lá fora; a compra até 85% do justo) e manda o dinheiro da holding.
+- 📉 **Comprar na baixa**: com caixa livre, a dupla põe dinheiro num negócio novo de um setor com o preço a 85% do normal ou menos.
+- 💼 **O caixa aplicado**: o caixa livre da holding rende o mercado do ano (25% em ações no normal, 60% na recessão ou na crise; o resto no Tesouro).
+- 📊 582 testes (sete da dupla), auditoria sem problema, túnel com as contas fechando; telas 58 de 58. Os robôs não criam holding: o túnel não mudou.
+
 ## 🧓 A dupla do valor · Investimento em valor na holding, acima das diretorias · 12/11/2026
 
 > [!NOTE]
