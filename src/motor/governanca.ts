@@ -135,8 +135,11 @@ function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg
     if (compraOk && aleatorio(rng) < CHANCE_DA_COMPRA) {
       const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
       const custo = custoDaAquisicao(e, emp.id, 1);
-      if (preco > CRIVO.margemDeSeguranca) {
-        resumos.push(`pediu à dupla do valor para comprar a concorrente ${alvo!.nome} e ouviu não: está a ${Math.round(preco * 100)}% do preço justo, sem margem de segurança (ela compra até ${Math.round(CRIVO.margemDeSeguranca * 100)}%)`);
+      // O negócio bom a dupla compra até o preço justo; o comum, só com margem de segurança.
+      const bom = retornoDe(alvo!) >= CRIVO.retornoDaObra;
+      const teto = bom ? CRIVO.precoDoBomNegocio : CRIVO.margemDeSeguranca;
+      if (preco > teto) {
+        resumos.push(`pediu à dupla do valor para comprar a concorrente ${alvo!.nome} e ouviu não: está a ${Math.round(preco * 100)}% do preço justo, ${bom ? 'e nem negócio bom ela compra acima do justo' : `sem margem de segurança (negócio comum, ela compra até ${Math.round(CRIVO.margemDeSeguranca * 100)}%)`}`);
         return resumos;
       }
       // O retorno de comprar com desconto: o lucro dela sobre o preço pago, mais o desconto que volta em uns três anos.

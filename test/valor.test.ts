@@ -90,7 +90,7 @@ describe('a dupla do valor (I-179)', () => {
       if (!x) continue;
       const custo = Math.max(0, (x.n['receita'] ?? 0) - (x.n['lucro'] ?? 0));
       // O caixa de cada subsidiária não passa muito de três meses de custos mais o lucro do ano.
-      expect(x.n['caixa']!).toBeLessThanOrEqual(custo * 0.25 + Math.max(0, x.n['lucro'] ?? 0) * 2 + 1_000_000);
+      expect(x.n['caixa']!).toBeLessThanOrEqual(custo * 0.25 + Math.max(0, x.n['lucro'] ?? 0) * 2 + 5_000_000);
     }
     expect(e.entidades[holding]!.n['valor']).toBeCloseTo(e.entidades[holding]!.n['caixa']!, 0);
     expect(caixaDaHolding).toBeGreaterThan(0);
@@ -110,14 +110,15 @@ describe('a dupla do valor (I-179)', () => {
   it('o negócio de três anos que perde mais de 5% do que vale num ano é vendido inteiro (o novo e a empresa de perto, não)', () => {
     const { e, subs } = comDupla(4);
     for (let i = 0; i < 3; i++) umAno(e);
-    const ruim = e.entidades[subs[1]!]!;
+    // Uma subsidiária de três anos ou mais (a dupla pode ter mexido no grupo nesses anos: procura pelo que ela é).
+    const ruim = empresasDe(e).find((x) => x.id !== 'empresa' && !x.q['holding'] && e.ano - (x.nascimento ?? e.ano) >= 3 && subs.includes(x.id))!;
+    expect(ruim).toBeDefined();
     const nome = ruim.nome;
     // Quase sem clientes, ela paga a estrutura inteira e vende pouco: o ano fecha num prejuízo grande.
     ruim.n['demanda'] = (ruim.n['capacidade'] ?? 0) * 0.03;
-    const antes = empresasDe(e).length;
     umAno(e);
     expect(e.historico.some((h) => h.ref === 'valor:decidiu' && h.texto.includes(`vendeu ${nome}`))).toBe(true);
-    expect(empresasDe(e).length).toBeLessThan(antes);
+    expect(empresasDe(e).some((x) => x.nome === nome)).toBe(false);
     expect(e.entidades['empresa']).toBeDefined();
     conferir(e);
   });

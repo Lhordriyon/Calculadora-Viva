@@ -12,7 +12,7 @@
  *   paga o custo do capital (10% ao ano; 12% lá fora; a compra só com margem de segurança, até 85% do justo) e manda o
  *   dinheiro, ou nega com o motivo (governanca.ts › crescimentoDaCartaBranca);
  * - **comprar na baixa**: com caixa livre, a dupla põe dinheiro num negócio de um setor em baixa (o preço do setor a
- *   85% do normal ou menos), para colher na volta do ciclo;
+ *   95% do normal ou menos), para colher na volta do ciclo;
  * - **o resto trabalha no mercado**: o caixa livre da holding fica aplicado, em ações compradas na baixa (60% numa
  *   recessão ou crise, 25% no normal) e no Tesouro, e rende o que o mercado do ano rendeu;
  * - **dívida, nenhuma**: a diretoria não pega crédito no banco, e a dupla quita a dívida de quem tem caixa;
@@ -52,8 +52,10 @@ export const CRIVO = {
   retornoDaFilial: 0.12,
   /** O preço do dia (fração do justo) até onde a compra da concorrente tem margem de segurança. */
   margemDeSeguranca: 0.85,
+  /** O negócio bom (devolve 10% ou mais do que vale) a dupla compra até o preço justo: bom negócio a preço justo. */
+  precoDoBomNegocio: 1,
   /** O preço do setor (fração do normal) a partir do qual a dupla compra um negócio nele: a baixa do ciclo. */
-  setorBarato: 0.85,
+  setorBarato: 0.95,
   /** A perda (sobre o valor) a partir da qual o negócio é vendido, e a idade a partir da qual ele é julgado. */
   perdaQueVende: -0.05,
   idadeParaJulgar: 3,
@@ -131,11 +133,22 @@ export function pedirADupla(e: EstadoVida, c: Conteudo, emp: Entidade, pedido: {
   const falta = Math.ceil(Math.max(0, pedido.custo - disponivel));
   if (falta > 0) {
     const livre = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
-    const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: h.id, para: emp.id, valor: falta };
-    if (falta > livre || motivoParaNaoOperarGrupo(e, c, op) !== null) {
-      return { aprovado: false, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue}; ela gostou (${pct(pedido.retorno)} de retorno esperado), mas a holding não tem como bancar agora` };
+    // O dinheiro desce pela cadeia de controle: da holding para a controlada dela, até a empresa que pediu.
+    const cadeia: Entidade[] = [];
+    for (let x: Entidade | undefined = emp, i = 0; x && x.id !== h.id && i < 6; i++) {
+      cadeia.unshift(x);
+      x = donaDe(x)[0] === '#' ? empresaDoRegistro(e, donaDe(x)) : undefined;
     }
-    operarGrupo(e, c, op, reg, origem);
+    const comSocia = cadeia.some((x) => (x.n['participacao_socia'] ?? 0) > 0);
+    const desce = cadeia.length > 0 && donaDe(cadeia[0]!) === refDaEmpresa(h) && !comSocia;
+    if (falta > livre || !desce) {
+      return { aprovado: false, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue}; ela gostou (${pct(pedido.retorno)} de retorno esperado), mas ${falta > livre ? 'a holding não tem como bancar agora' : 'o dinheiro da holding não chega a ela sem diluir um sócio'}` };
+    }
+    let de = h;
+    for (const para of cadeia) {
+      operarGrupo(e, c, { tipo: 'transferirCaixa', de: de.id, para: para.id, valor: falta }, reg, origem);
+      de = para;
+    }
   }
   return { aprovado: true, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue} e levou: ${pct(pedido.retorno)} de retorno esperado, acima dos ${pct(pedido.minimo)} que ela pede${falta > 0 ? `, com ${formatarDinheiro(falta)} da holding` : ''}` };
 }
@@ -198,7 +211,7 @@ export function anoDaDupla(e: EstadoVida, c: Conteudo, mercado?: Partial<Record<
   // Comprar na baixa: um negócio inteiro num setor em que o preço caiu (um a cada três anos, em média, com vaga no grupo).
   const sorteio = criarRng(misturar(e.semente, e.ano, 4421));
   const livreParaNegocio = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
-  if (livreParaNegocio >= 10_000_000 && lugarLivre(e) && aleatorio(sorteio) < 0.35) {
+  if (livreParaNegocio >= 10_000_000 && lugarLivre(e) && aleatorio(sorteio) < 0.5) {
     const setores = setoresDeEmpresa(c)
       .map((s) => ({ s, preco: precoDoSetor(ofertaDe(e, s.id)), tem: empresasDe(e).some((x) => x.t['setor'] === s.id && !x.t['pais']) }))
       .filter((x) => x.preco <= CRIVO.setorBarato)
