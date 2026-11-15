@@ -10,6 +10,7 @@
  * (saúde perdida, dívida contraída, chance de morrer). Gastar dinheiro ou
  * perder felicidade com certeza é custo, não risco.
  */
+import { donaDe } from './campos.ts';
 import { formaQueProduz } from './unidades.ts';
 import { PARCEIROS } from './constantes.ts';
 import { acoesDoVerbo, jaAgiu } from './acoes.ts';
@@ -847,6 +848,18 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
   if (momentoDoPais(e).id === 'expansao') {
     const bolsa = grupo.find((x) => pode(e, c, { tipo: 'abrirCapital', empresa: x.id }));
     if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];
+  }
+  // A holding e a dupla do valor (I-181): com a empresa de R$ 50 milhões, a arriscada cria a holding, põe a empresa
+  // nela e contrata a dupla, um passo por ano, para o túnel passar pela estrutura inteira.
+  const holding = grupo.find((x) => x.q['holding'] && donaDe(x) === 'eu');
+  if (!holding && (emp.n['valor'] ?? 0) >= 5e7 && liquido >= 3e6 && idade <= 60) {
+    const op: Operacao = { tipo: 'criarHolding', valor: Math.floor(liquido * 0.5) };
+    if (pode(e, c, op)) return [op];
+  }
+  if (holding) {
+    const direta = grupo.find((x) => !x.q['holding'] && pode(e, c, { tipo: 'paraAHolding', empresa: x.id, holding: holding.id }));
+    if (direta) return [{ tipo: 'paraAHolding', empresa: direta.id, holding: holding.id }];
+    if (pode(e, c, { tipo: 'dupla', holding: holding.id, contratar: true })) return [{ tipo: 'dupla', holding: holding.id, contratar: true }];
   }
   if (grupo.length < 2 && idade <= 55 && (emp.n['valor'] ?? 0) >= 2e7 && liquido >= 1e6) {
     const ramo = setores.find((s) => s !== emp.t['setor']) ?? 'tecnologia';

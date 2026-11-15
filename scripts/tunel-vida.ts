@@ -441,7 +441,7 @@ export interface Vida {
    * quebraram, as compras que preservaram a comprada, as decisões do Cade, as unidades construídas, os anos de decisão de
    * conselho, os lançamentos de produto, a campanha paga à mídia do grupo e o maior peso do grupo no PIB (em %).
    */
-  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number; diretoria: { unidades: number; filiais: number; compras: number } };
+  vivo: { concorrente: boolean; quebras: number; compras: number; cade: Record<string, number>; unidades: number; conselhos: number; lancamentos: number; naMidia: number; pesoNoPib: number; filiais: number; diretoria: { unidades: number; filiais: number; compras: number }; dupla: { anos: number; levou: number; negou: number; negocios: number; vendas: number; rendeu: number } };
   /**
    * O mundo à vista (I-170 a I-172): a faixa do lugar no nascimento, no fim e a mais alta; as linhas do lugar depois
    * do nascimento (as douradas à parte) e os marcos do grupo e da lista dos mais ricos que a vida teve.
@@ -1548,6 +1548,23 @@ function capitalismoVivo(e: EstadoVida): Vida['vivo'] {
         if (/ construiu (um|uma) /.test(h.texto)) d.unidades++;
         if (/ abriu uma filial /.test(h.texto)) d.filiais++;
         if (/ comprou a concorrente /.test(h.texto)) d.compras++;
+      }
+      return d;
+    })(),
+    // A dupla do valor (I-179 a I-181): os anos em que dirigiu, os pedidos das CEOs (aprovados e negados), os negócios
+    // comprados na baixa, os vendidos e quanto o caixa aplicado rendeu.
+    dupla: (() => {
+      const d = { anos: 0, levou: 0, negou: 0, negocios: 0, vendas: 0, rendeu: 0 };
+      for (const h of e.historico) {
+        if (h.ref === 'valor:decidiu') {
+          d.anos++;
+          if (/num negócio de /.test(h.texto)) d.negocios++;
+          if (/ vendeu /.test(h.texto)) d.vendas++;
+          for (const m of h.mudancas ?? []) if (m.r === 'carteira' && m.d !== undefined) d.rendeu += m.d;
+        } else if (h.ref === 'conselho:decidiu' && h.texto.includes('pediu à dupla do valor')) {
+          if (h.texto.includes(' e levou')) d.levou++;
+          else d.negou++;
+        }
       }
       return d;
     })(),
