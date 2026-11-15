@@ -13,6 +13,7 @@ import { lancar, novaEntrada } from '../src/motor/livro.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
 import { momentoTipico } from '../src/motor/pais.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
+import { unidadesDe } from '../src/motor/unidades.ts';
 import { holdingDaDupla, NOMES_DA_DUPLA, sobADupla } from '../src/motor/valor.ts';
 import { nascer } from '../src/motor/vida.ts';
 
@@ -35,10 +36,10 @@ function fazer(e: EstadoVida, op: Operacao): void {
   operar(e, c, op);
 }
 
-function umAno(e: EstadoVida): void {
+function umAno(e: EstadoVida, mercado?: { acoes: number; renda_fixa: number }): void {
   const reg: Mudanca[] = [];
   const entrada = novaEntrada(e, { tipo: 'regra', causa: 'regra', ref: 'ano', texto: '' });
-  regraDaEmpresa(e, c, momentoTipico('normal'), reg);
+  regraDaEmpresa(e, c, momentoTipico('normal'), reg, mercado);
   lancar(e, entrada, reg);
   e.ano++;
   e.idade++;
@@ -118,6 +119,57 @@ describe('a dupla do valor (I-179)', () => {
     expect(e.historico.some((h) => h.ref === 'valor:decidiu' && h.texto.includes(`vendeu ${nome}`))).toBe(true);
     expect(empresasDe(e).length).toBeLessThan(antes);
     expect(e.entidades['empresa']).toBeDefined();
+    conferir(e);
+  });
+
+  it('o caixa livre da holding trabalha: fica aplicado em ações e no Tesouro e rende o mercado do ano', () => {
+    const { e, holding } = comDupla(5);
+    umAno(e, { acoes: 0.2, renda_fixa: 0.06 });
+    const ano = e.historico.filter((h) => h.ref === 'valor:decidiu').at(-1)!;
+    expect(ano.texto).toMatch(/aplicados \(25% em ações, o resto no Tesouro\), que renderam/);
+    expect(ano.mudancas?.some((m) => m.c === `${holding}.caixa` && m.r === 'carteira' && (m.d ?? 0) > 0)).toBe(true);
+    // Na recessão, a dupla compra ações na baixa.
+    e.entidades['pais']!.q['recessao'] = { v: 1, ano: e.ano, idade: e.idade, causa: null };
+    umAno(e, { acoes: -0.1, renda_fixa: 0.06 });
+    expect(e.historico.filter((h) => h.ref === 'valor:decidiu').at(-1)!.texto).toMatch(/60% em ações compradas na baixa/);
+    expect(e.entidades[holding]!.n['valor']).toBeCloseTo(e.entidades[holding]!.n['caixa']!, 0);
+    conferir(e);
+  });
+
+  it('a CEO pede a obra à dupla: com retorno, leva o dinheiro da holding e constrói; sem retorno, ouve não', () => {
+    const { e, subs } = comDupla(6);
+    umAno(e);
+    const s = e.entidades[subs[0]!]!;
+    // Fila de pedidos e um bom retorno: a obra é pedida, aprovada e paga pela holding (o caixa da empresa subiu para ela).
+    s.n['demanda'] = (s.n['capacidade'] ?? 0) * 1.8;
+    s.n['lucro'] = (s.n['valor'] ?? 0) * 0.2;
+    s.n['receita'] = Math.max(s.n['receita'] ?? 0, s.n['lucro']! * 3);
+    const antes = unidadesDe(e, s).length;
+    // O ano do negócio recalcula o lucro; a dupla julga o do ano que fechou. Um ano basta para pedir.
+    let pediu: string | undefined;
+    for (let i = 0; i < 6 && !pediu; i++) {
+      s.n['demanda'] = (s.n['capacidade'] ?? 0) * 1.8;
+      umAno(e);
+      pediu = e.historico.filter((h) => h.ref === 'conselho:decidiu' && h.texto.includes('pediu à dupla do valor')).at(-1)?.texto;
+    }
+    expect(pediu).toBeDefined();
+    if (pediu!.includes('e levou')) expect(unidadesDe(e, s).length).toBeGreaterThan(antes);
+    else expect(pediu).toMatch(/ouviu não|não tem como bancar/);
+    conferir(e);
+  });
+
+  it('com o setor em baixa e caixa livre, a dupla põe dinheiro num negócio novo nele', () => {
+    const { e } = comDupla(7);
+    e.entidades['setor_saude']!.n['oferta'] = 140;
+    let comprou = false;
+    const antes = empresasDe(e).length;
+    for (let i = 0; i < 12 && !comprou; i++) {
+      e.entidades['setor_saude']!.n['oferta'] = 140;
+      umAno(e);
+      comprou = e.historico.some((h) => h.ref === 'valor:decidiu' && /num negócio de .+, com o setor em baixa/.test(h.texto));
+    }
+    expect(comprou).toBe(true);
+    expect(empresasDe(e).length).toBeGreaterThan(antes);
     conferir(e);
   });
 });

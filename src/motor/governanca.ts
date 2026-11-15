@@ -19,7 +19,7 @@ import { definirNumero, definirTexto, lancar, novaEntrada } from './livro.ts';
 import { ehOperacaoDeNegocio, entradaQueMudou, motivoParaNaoOperarNegocio, operarNegocio, type OperacaoNegocio } from './negocio.ts';
 import { aleatorio, criarRng, misturar, sortear } from './rng.ts';
 import { donaDe, empresaDoRegistro, refDaEmpresa } from './campos.ts';
-import type { Parceiro } from './constantes.ts';
+import type { Ativo, Parceiro } from './constantes.ts';
 import { analiseDoCade } from './demonstracoes.ts';
 import { aEmpresa, alvoDaAquisicao, custoDaAquisicao, motivoParaNaoOperarEmpresa, operarEmpresa, precoDaAquisicao, type OperacaoEmpresa } from './empresa.ts';
 import { oPais } from './mundo-das-empresas.ts';
@@ -27,7 +27,7 @@ import { custoDaObra } from './negocio.ts';
 import { fatorDaCidade, formaQueProduz, motivoParaNaoOperarUnidade, operarUnidade, unidadesDe, type OperacaoUnidade } from './unidades.ts';
 import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { formatarDinheiro } from './texto.ts';
-import { anoDaDupla, CRIVO, retornoDe, sobADupla } from './valor.ts';
+import { anoDaDupla, CRIVO, pedirADupla, retornoDe, sobADupla } from './valor.ts';
 import type { Entidade, EstadoVida, Mudanca } from './tipos.ts';
 
 export const AUTONOMIAS = ['manual', 'consultiva', 'delegada', 'autonoma', 'carta_branca'] as const;
@@ -49,7 +49,7 @@ export const O_QUE_DECIDE: Record<Autonomia, string> = {
   consultiva: 'A diretoria sugere a jogada do ano aqui, e não faz nada sem você.',
   delegada: 'A diretoria toca o dia a dia: o preço, o salário, o marketing, a pesquisa, crescer até um quarto, cortar, pagar a dívida, a geração nova do produto e quanto do lucro sobe.',
   autonoma: 'Tudo do dia a dia, e também o crédito no banco e a exportação.',
-  carta_branca: 'Tudo, com o caixa da empresa: o negócio inteiro; constrói fábricas, lojas e escritórios quando há fila de pedidos; abre filial lá fora quando a empresa passa de R$ 100 milhões; compra a concorrente quando ela está barata; pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano.',
+  carta_branca: 'Tudo, com o caixa da empresa: o negócio inteiro; constrói fábricas, lojas e escritórios quando há fila de pedidos; abre filial lá fora quando a empresa passa de R$ 100 milhões; compra a concorrente quando ela está barata; pede dinheiro à controladora quando o caixa não paga três meses de custos e manda para cima o que passa de um ano. Com a dupla do valor na holding, cada obra, filial e compra é pedida a ela antes.',
 };
 export const O_QUE_O_MANDATO_FAZ: Record<Mandato, string> = {
   conservador: 'Conservador: protege o caixa, cresce devagar, corta cedo e paga a dívida.',
@@ -103,54 +103,104 @@ const CHANCE_DA_COMPRA = 0.4;
 /**
  * O crescimento da carta branca (I-178), sempre com o caixa da empresa, nunca com o dinheiro de quem joga: a unidade
  * nova (a fábrica, a loja, o escritório) na cidade mais barata quando há fila de pedidos; a filial lá fora no país de
- * melhor relação quando a empresa passa de R$ 100 milhões; e a compra do controle da concorrente quando ela está
- * barata e o Cade não barra.
+ * melhor relação quando a empresa passa de R$ 100 milhões; e a compra da concorrente inteira quando ela está barata e
+ * o Cade não barra. Debaixo da dupla do valor (`crivo`, I-180), a diretoria não decide sozinha: vê a oportunidade do
+ * ano (a compra barata, a obra que a fila pede, a filial), pede o dinheiro à dupla com o retorno esperado, e só faz
+ * o que ela aprovar (valor.ts › pedirADupla), com o dinheiro que a holding mandar.
  */
 function crescimentoDaCartaBranca(e: EstadoVida, c: Conteudo, emp: Entidade, reg: Mudanca[], jaExpandiu: boolean, origem: number, crivo = false): string[] {
   const resumos: string[] = [];
   const rng = criarRng(misturar(e.semente, e.ano, 3313, emp.registro ?? 0));
   const caixa = (): number => Math.max(0, emp.n['caixa'] ?? 0);
-  // A unidade nova, quando a procura passa da capacidade e não há obra em andamento.
+  const nomeDaUnidade = (): string => {
+    const u = c.setores.get(emp.t['setor'] ?? '')?.unidade;
+    return `${u?.f ? 'uma' : 'um'} ${u?.nome ?? 'unidade'}`;
+  };
+  // As oportunidades do ano, na ordem: a compra barata, a obra que a fila pede, a filial lá fora.
+  const alvo = emp.id !== 'empresa' ? alvoDaAquisicao(e, emp.id) : undefined;
+  const preco = alvo ? precoDaAquisicao(e, emp.id) : 1;
+  const compraOk = alvo !== undefined && !((alvo.n['participacao_socia'] ?? 0) > 0) && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada';
   const capacidade = emp.n['capacidade'] ?? 0;
   const fila = capacidade > 0 ? (emp.n['demanda'] ?? 0) / capacidade : 0;
-  if (!jaExpandiu && fila >= 1.1 && (emp.n['obra'] ?? 0) <= 0) {
-    const cidade = cidadeMaisBarata(e, c, emp);
+  const cidade = cidadeMaisBarata(e, c, emp);
+  const temFilial = Object.values(e.entidades).some((x) => x.tipo === 'empresa' && x.vivo !== false && x.t['pais'] && donaDe(x) === refDaEmpresa(emp));
+  const paisDaFilial = (): Parceiro | undefined => {
+    const paises = c.mundo.estrangeiros.map((x) => ({ id: x.id, en: e.entidades[x.id] })).filter((x) => x.en && !x.en.q['sancao'] && (x.en.n['relacao'] ?? 0) >= 30);
+    paises.sort((a, b) => (b.en!.n['relacao'] ?? 0) - (a.en!.n['relacao'] ?? 0));
+    return paises[0]?.id as Parceiro | undefined;
+  };
+
+  if (crivo) {
+    // Debaixo da dupla: uma oportunidade por ano, pedida a ela.
+    if (compraOk && aleatorio(rng) < CHANCE_DA_COMPRA) {
+      const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
+      const custo = custoDaAquisicao(e, emp.id, 1);
+      if (preco > CRIVO.margemDeSeguranca) {
+        resumos.push(`pediu à dupla do valor para comprar a concorrente ${alvo!.nome} e ouviu não: está a ${Math.round(preco * 100)}% do preço justo, sem margem de segurança (ela compra até ${Math.round(CRIVO.margemDeSeguranca * 100)}%)`);
+        return resumos;
+      }
+      // O retorno de comprar com desconto: o lucro dela sobre o preço pago, mais o desconto que volta em uns três anos.
+      const retorno = Math.max(0, retornoDe(alvo!)) / preco + (1 / preco - 1) / 3;
+      const r = pedirADupla(e, c, emp, { oQue: `comprar a concorrente ${alvo!.nome} inteira`, custo, retorno, minimo: CRIVO.retornoDaObra }, reg, origem);
+      if (r.aprovado && custo <= caixa() + 0.5 && motivoParaNaoOperarEmpresa(e, c, op) === null) {
+        operarEmpresa(e, c, op, reg, origem);
+        resumos.push(r.texto);
+      } else if (!r.aprovado) resumos.push(r.texto);
+      return resumos;
+    }
+    if (!jaExpandiu && fila >= 1 && (emp.n['obra'] ?? 0) <= 0 && cidade) {
+      const fracao = fila >= 1.5 ? 0.5 : 0.25;
+      const op: OperacaoUnidade = { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade, fracao };
+      const custo = custoDaObra(c, emp, fracao, e);
+      // O retorno da obra: o que a empresa devolve sobre o que vale, com a fila que a estrutura nova vai atender.
+      const retorno = retornoDe(emp) * Math.min(1.3, fila);
+      const r = pedirADupla(e, c, emp, { oQue: `${nomeDaUnidade()} em ${cidade}`, custo, retorno, minimo: CRIVO.retornoDaObra }, reg, origem);
+      if (r.aprovado && motivoParaNaoOperarUnidade(e, c, op) === null) {
+        operarUnidade(e, c, op, reg, origem);
+        resumos.push(r.texto);
+      } else if (!r.aprovado) resumos.push(r.texto);
+      return resumos;
+    }
+    if (!emp.t['pais'] && !temFilial && (emp.n['valor'] ?? 0) >= VALOR_DA_FILIAL && aleatorio(rng) < CHANCE_DA_FILIAL) {
+      const pais = paisDaFilial();
+      if (!pais) return resumos;
+      const custo = Math.round(Math.max(caixa() * 0.2, (emp.n['valor'] ?? 0) * 0.05));
+      const op: OperacaoGrupo = { tipo: 'fundarSubsidiaria', controladora: emp.id, setor: emp.t['setor'] ?? '', valor: custo, pais };
+      // Lá fora, o retorno esperado desconta o risco de um mercado novo.
+      const r = pedirADupla(e, c, emp, { oQue: `uma filial ${oPais(c, pais, 'na')}`, custo, retorno: retornoDe(emp) * 0.9, minimo: CRIVO.retornoDaFilial }, reg, origem);
+      if (r.aprovado && motivoParaNaoOperarGrupo(e, c, op) === null) {
+        operarGrupo(e, c, op, reg, origem);
+        resumos.push(r.texto);
+      } else if (!r.aprovado) resumos.push(r.texto);
+    }
+    return resumos;
+  }
+
+  // Sem a dupla, a diretoria decide sozinha, com o caixa da empresa.
+  if (!jaExpandiu && fila >= 1.1 && (emp.n['obra'] ?? 0) <= 0 && cidade) {
     // O tamanho da obra pela fila: meia estrutura a mais com a fila grande, um quarto com a pequena, um décimo se o caixa só der isso.
     const fracao = [fila >= 1.5 ? 0.5 : 0.25, 0.25, 0.1].find((f) => custoDaObra(c, emp, f, e) <= caixa() * 0.5);
-    const op: OperacaoUnidade | undefined = cidade && fracao ? { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade, fracao } : undefined;
-    if (op && motivoParaNaoOperarUnidade(e, c, op) === null && crivo && retornoDe(emp) < CRIVO.retornoDaObra) {
-      resumos.push(`a dupla do valor vetou a obra: a empresa devolve ${Math.round(retornoDe(emp) * 100)}% do que vale, e ela pede ${Math.round(CRIVO.retornoDaObra * 100)}%`);
-    } else if (op && motivoParaNaoOperarUnidade(e, c, op) === null) {
+    const op: OperacaoUnidade | undefined = fracao ? { tipo: 'construirUnidade', empresa: emp.id, forma: formaQueProduz(c, emp), cidade, fracao } : undefined;
+    if (op && motivoParaNaoOperarUnidade(e, c, op) === null) {
       operarUnidade(e, c, op, reg, origem);
-      const nome = c.setores.get(emp.t['setor'] ?? '')?.unidade?.nome ?? 'unidade';
-      resumos.push(`construiu ${c.setores.get(emp.t['setor'] ?? '')?.unidade?.f ? 'uma' : 'um'} ${nome} em ${cidade}`);
+      resumos.push(`construiu ${nomeDaUnidade()} em ${cidade}`);
     }
   }
   // A filial lá fora: uma por empresa, no país de melhor relação, sem sanção.
-  const temFilial = Object.values(e.entidades).some((x) => x.tipo === 'empresa' && x.vivo !== false && x.t['pais'] && donaDe(x) === refDaEmpresa(emp));
   if (!emp.t['pais'] && !temFilial && (emp.n['valor'] ?? 0) >= VALOR_DA_FILIAL && aleatorio(rng) < CHANCE_DA_FILIAL) {
-    const paises = c.mundo.estrangeiros.map((x) => ({ id: x.id, en: e.entidades[x.id] })).filter((x) => x.en && !x.en.q['sancao'] && (x.en.n['relacao'] ?? 0) >= 30);
-    paises.sort((a, b) => (b.en!.n['relacao'] ?? 0) - (a.en!.n['relacao'] ?? 0));
-    const pais = paises[0]?.id as Parceiro | undefined;
+    const pais = paisDaFilial();
     const op: OperacaoGrupo | undefined = pais ? { tipo: 'fundarSubsidiaria', controladora: emp.id, setor: emp.t['setor'] ?? '', valor: Math.round(caixa() * 0.2), pais } : undefined;
-    if (op && motivoParaNaoOperarGrupo(e, c, op) === null && crivo && retornoDe(emp) < CRIVO.retornoDaFilial) {
-      resumos.push(`a dupla do valor vetou a filial ${oPais(c, pais!, 'na')}: a empresa devolve ${Math.round(retornoDe(emp) * 100)}% do que vale, e ela pede ${Math.round(CRIVO.retornoDaFilial * 100)}%`);
-    } else if (op && motivoParaNaoOperarGrupo(e, c, op) === null) {
+    if (op && motivoParaNaoOperarGrupo(e, c, op) === null) {
       operarGrupo(e, c, op, reg, origem);
       resumos.push(`abriu uma filial ${oPais(c, pais!, 'na')}`);
     }
   }
-  // A compra do controle da concorrente: barata (o preço do dia até o justo), com o caixa sobrando e o Cade de acordo.
-  const alvo = alvoDaAquisicao(e, emp.id);
-  if (alvo && !((alvo.n['participacao_socia'] ?? 0) > 0) && emp.id !== 'empresa' && aleatorio(rng) < CHANCE_DA_COMPRA && precoDaAquisicao(e, emp.id) <= 1.05) {
-    // Compra inteira: a comprada vem para o grupo sem sócia (a parte que sobraria fica com quem vendeu, no mercado).
+  // A compra da concorrente inteira: barata (o preço do dia até 5% acima do justo), com o caixa sobrando e o Cade de acordo.
+  if (compraOk && aleatorio(rng) < CHANCE_DA_COMPRA && preco <= 1.05) {
     const op: OperacaoEmpresa = { tipo: 'adquirir', empresa: emp.id, fracao: 1 };
     const custo = custoDaAquisicao(e, emp.id, 1);
-    const preco = precoDaAquisicao(e, emp.id);
-    if (crivo && preco > CRIVO.margemDeSeguranca) {
-      resumos.push(`a dupla do valor vetou a compra da concorrente ${alvo.nome}: está a ${Math.round(preco * 100)}% do justo, sem margem de segurança`);
-    } else if (custo <= caixa() * 0.75 && analiseDoCade(e, c, emp.t['setor'] ?? '', alvo.id).decisao !== 'barrada' && motivoParaNaoOperarEmpresa(e, c, op) === null) {
-      const nome = alvo.nome;
+    if (custo <= caixa() * 0.75 && motivoParaNaoOperarEmpresa(e, c, op) === null) {
+      const nome = alvo!.nome;
       operarEmpresa(e, c, op, reg, origem);
       resumos.push(`comprou a concorrente ${nome} inteira`);
     }
@@ -242,9 +292,9 @@ export function jogadasDoConselho(e: EstadoVida, c: Conteudo, emp: Entidade, niv
  * O ano dos conselhos (depois do das empresas): cada empresa do grupo com autonomia delegada ou autônoma decide as
  * jogadas do jeito do mandato, e o ano de decisões vira uma entrada no livro, com a decisão de quem delegou de causa.
  */
-export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly Entidade[]): void {
+export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly Entidade[], mercado?: Partial<Record<Ativo, number>>): void {
   // A dupla do valor decide primeiro (valor.ts): as diretorias do grupo dela se reportam a ela.
-  anoDaDupla(e, c);
+  anoDaDupla(e, c, mercado);
   for (const emp of empresas) {
     // A dupla pode ter vendido a empresa neste ano: ela saiu do grupo (deFora) e segue com a diretoria de lá.
     if (emp.vivo === false || !e.entidades[emp.id] || deFora(emp)) continue;
@@ -272,7 +322,7 @@ export function anoDosConselhos(e: EstadoVida, c: Conteudo, empresas: readonly E
       // Com a dupla, o caixa é dela: a sobra sobe e o aporte desce pelas mãos dela (valor.ts › anoDaDupla).
       if (!crivo) resumos.push(...caixaDaCartaBranca(e, c, emp, reg, entrada.id));
     }
-    if (reg.length === 0 && !resumos.some((r) => r.startsWith('a dupla do valor vetou'))) continue;
+    if (reg.length === 0 && !resumos.some((r) => r.startsWith('pediu à dupla do valor'))) continue;
     const causa = entradaQueMudou(e, `${emp.id}.autonomia`);
     const lista = resumos.length > 1 ? `${resumos.slice(0, -1).join(', ')} e ${resumos.at(-1)}` : (resumos[0] ?? 'mexeu no negócio');
     entrada.texto = `${quemAssina(e, c, emp)} com o mandato ${NOME_DO_MANDATO[mandatoDe(emp)]}${causa !== null ? ' que você deu' : ''}, ${lista}.`;

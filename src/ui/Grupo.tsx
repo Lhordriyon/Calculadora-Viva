@@ -60,7 +60,7 @@ function DuplaDoValor({ vida, conteudo, aoOperar, h }: Base & { h: Entidade }) {
       <p class="nota">
         <b>A dupla do valor.</b>{' '}
         {contratada
-          ? `${NOMES_DA_DUPLA} dirigem o grupo pelo investimento em valor, acima das diretorias: o caixa sobe para a holding, dívida não existe, e cada diretoria pede a eles antes de construir, abrir filial ou comprar.`
+          ? `${NOMES_DA_DUPLA} dirigem o grupo pelo investimento em valor, acima das diretorias: o caixa sobe para a holding e trabalha (nas obras e compras que as CEOs pedem, em negócios comprados na baixa, em ações e no Tesouro), e dívida não existe.`
           : `${NOMES_DA_DUPLA} investem pelo valor há quarenta anos e aceitam dirigir a holding, acima de todas as diretorias.`}
       </p>
       {ultimo && <p class="nota explica">No último ano: {ultimo.texto.replace(/^A dupla do valor, [^,]+, que dirige [^,]+, /, '')}</p>}
@@ -74,7 +74,7 @@ function DuplaDoValor({ vida, conteudo, aoOperar, h }: Base & { h: Entidade }) {
           conteudo={conteudo}
           aoOperar={aoOperar}
           op={{ tipo: 'dupla', holding: h.id, contratar: true }}
-          explica={`Por ${formatarDinheiro(honorarioDaDupla(vida, h))} por ano, eles trazem para a holding o caixa que passa de três meses de custos, põem o dinheiro onde ele rende 15% ou mais, quitam a dívida, vendem o negócio que queima dinheiro e só deixam comprar a concorrente com margem de segurança (até 85% do justo).`}
+          explica={`Por ${formatarDinheiro(honorarioDaDupla(vida, h))} por ano, eles põem todo o capital para trabalhar: trazem para a holding o caixa que passa de três meses de custos, bancam a obra, a filial e a compra que cada CEO pedir e que pague 10% ao ano (a concorrente, só até 85% do preço justo), compram negócios em setores em baixa, deixam o resto aplicado em ações e no Tesouro, quitam a dívida e vendem o negócio que queima dinheiro.`}
         >
           Contratar a dupla do valor
         </Acao>

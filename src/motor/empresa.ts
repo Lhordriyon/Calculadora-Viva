@@ -611,7 +611,7 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   // Os empregos que as empresas abriram e fecharam mexem no desemprego da cidade (o trabalho de quem joga e o da família leem).
   empregosNaCidade(e, reg, antes, depois);
   // Os conselhos com autonomia decidem o ano que vem, dentro do mandato que quem joga deu (governanca.ts).
-  anoDosConselhos(e, c, empresasDe(e));
+  anoDosConselhos(e, c, empresasDe(e), mercado);
   // O imposto que elas pagaram entra no Tesouro e baixa a dívida pública (em pontos do PIB).
   const pib = e.entidades['pais']?.n['pib'] ?? 0;
   if (impostos > 0 && pib > 0) somar(e, reg, 'pais', 'divida', -(impostos / pib) * 100, 'impostos_das_empresas');

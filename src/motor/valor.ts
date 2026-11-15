@@ -1,23 +1,32 @@
 /**
- * A dupla do valor (I-179, pedido do dono em 12/11): dois investidores contratados pela holding, que dirigem o grupo
- * inteiro pela filosofia do investimento em valor, acima das diretorias e das CEOs das subsidiárias.
+ * A dupla do valor (I-179, pedido do dono em 12/11; refeita em I-180 depois do teste dele: "eles não fazem nada com o
+ * caixa"): dois investidores contratados pela holding, que dirigem o grupo inteiro pelo investimento em valor, acima
+ * das diretorias e das CEOs das subsidiárias, e põem todo o capital para trabalhar.
  *
  * Os nomes são fictícios, como todo personagem do jogo (a regra do dono: personagens fictícios e genéricos, pelo risco
- * legal); a filosofia é a de sempre do investimento em valor:
+ * legal). O que eles fazem, todo ano, antes das diretorias:
  *
- * - **o capital é da holding**: o caixa das empresas que passa de três meses de custos sobe para ela todo ano, e ela o
- *   põe onde ele mais rende (a empresa que devolve 15% ou mais do que vale e tem fila de pedidos);
- * - **dívida, nenhuma**: a diretoria não pega crédito no banco, e a dupla quita a dívida de quem tem caixa para isso;
- * - **margem de segurança**: a compra da concorrente só sai pelo preço do dia até 85% do justo;
- * - **só cresce o que rende**: a unidade nova pede um retorno de 10% sobre o valor, a filial lá fora, 12%;
- * - **negócio ruim não melhora**: a subsidiária de três anos ou mais que perde mais de 5% do que vale num ano é vendida
- *   inteira (a nova não é julgada: toda empresa começa no prejuízo).
+ * - **o capital é da holding**: o caixa das empresas que passa de três meses de custos sobe para ela;
+ * - **as CEOs pedem, a dupla decide**: cada diretoria que vê uma oportunidade (a fila de pedidos que pede uma unidade
+ *   nova, a concorrente barata, a filial lá fora) pede o dinheiro à dupla, com o retorno esperado; ela aprova o que
+ *   paga o custo do capital (10% ao ano; 12% lá fora; a compra só com margem de segurança, até 85% do justo) e manda o
+ *   dinheiro, ou nega com o motivo (governanca.ts › crescimentoDaCartaBranca);
+ * - **comprar na baixa**: com caixa livre, a dupla põe dinheiro num negócio de um setor em baixa (o preço do setor a
+ *   85% do normal ou menos), para colher na volta do ciclo;
+ * - **o resto trabalha no mercado**: o caixa livre da holding fica aplicado, em ações compradas na baixa (60% numa
+ *   recessão ou crise, 25% no normal) e no Tesouro, e rende o que o mercado do ano rendeu;
+ * - **dívida, nenhuma**: a diretoria não pega crédito no banco, e a dupla quita a dívida de quem tem caixa;
+ * - **negócio ruim não melhora**: a subsidiária de três anos ou mais que perde mais de 5% do que vale num ano é vendida.
  *
- * Todos se reportam à dupla antes: o que ela veta entra na linha do tempo da diretoria ("a dupla do valor vetou…"),
- * e o ano da dupla é uma entrada do livro, com a contratação de causa. A empresa que quem joga cuida de perto entra no
- * caixa do grupo, mas não é vendida: quem a dirige é você.
+ * O ano da dupla é uma entrada do livro, com a contratação de causa; cada pedido entra na linha do tempo da diretoria
+ * que pediu. A empresa que quem joga cuida de perto entra no caixa do grupo, mas não é vendida: quem a dirige é você.
  */
 import type { Conteudo } from './conteudo.ts';
+import type { Ativo } from './constantes.ts';
+import { lugarLivre, setoresDeEmpresa } from './empresa.ts';
+import { ofertaDe, precoDoSetor } from './negocio.ts';
+import { faseDe } from './pais.ts';
+import { aleatorio, criarRng, misturar } from './rng.ts';
 import { donaDe, empresaDoRegistro, empresasDe, refDaEmpresa } from './campos.ts';
 import { aEmpresa } from './empresa.ts';
 import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
@@ -43,14 +52,17 @@ export const CRIVO = {
   retornoDaFilial: 0.12,
   /** O preço do dia (fração do justo) até onde a compra da concorrente tem margem de segurança. */
   margemDeSeguranca: 0.85,
-  /** O retorno de quem recebe o dinheiro da holding. */
-  retornoDoAporte: 0.15,
+  /** O preço do setor (fração do normal) a partir do qual a dupla compra um negócio nele: a baixa do ciclo. */
+  setorBarato: 0.85,
   /** A perda (sobre o valor) a partir da qual o negócio é vendido, e a idade a partir da qual ele é julgado. */
   perdaQueVende: -0.05,
   idadeParaJulgar: 3,
   /** A reserva de cada empresa: três meses dos custos do ano. */
   reserva: 0.25,
 } as const;
+
+/** A carteira da holding: a parte em ações na baixa (recessão ou crise) e no normal; o resto fica no Tesouro. */
+export const CARTEIRA = { acoesNaBaixa: 0.6, acoesNoNormal: 0.25 } as const;
 
 /** O honorário da dupla por ano: 0,2% do que vale o grupo dela, com o mínimo de R$ 2 milhões. */
 export const HONORARIO = { fracao: 0.002, minimo: 2_000_000 } as const;
@@ -96,6 +108,38 @@ export function honorarioDaDupla(e: EstadoVida, h: Entidade): number {
   return Math.round(Math.max(HONORARIO.minimo, valor * HONORARIO.fracao));
 }
 
+/** O que a holding guarda antes de pôr dinheiro em qualquer coisa: dois anos de honorário. */
+function reservaDaHolding(e: EstadoVida, h: Entidade): number {
+  return honorarioDaDupla(e, h) * 2;
+}
+
+const pct = (x: number): string => `${Math.round(x * 100)}%`;
+
+/**
+ * O pedido de uma diretoria à dupla (governanca.ts): o que quer fazer, quanto custa e o retorno esperado. A dupla
+ * aprova o que paga o mínimo dela e manda da holding o que faltar no caixa da empresa (acima da reserva de três meses);
+ * nega o que não paga, ou o que a holding não tem como bancar agora. A frase vai para a linha do tempo da diretoria.
+ */
+export function pedirADupla(e: EstadoVida, c: Conteudo, emp: Entidade, pedido: { oQue: string; custo: number; retorno: number; minimo: number }, reg: Mudanca[], origem: number): { aprovado: boolean; texto: string } {
+  const h = holdingDaDupla(e);
+  if (!h) return { aprovado: true, texto: '' };
+  const quanto = formatarDinheiro(pedido.custo);
+  if (pedido.retorno < pedido.minimo) {
+    return { aprovado: false, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue} e ouviu não: ${pct(pedido.retorno)} de retorno esperado não pagam os ${pct(pedido.minimo)} que ela pede` };
+  }
+  const disponivel = Math.max(0, (emp.n['caixa'] ?? 0) - custoDoAno(emp) * CRIVO.reserva);
+  const falta = Math.ceil(Math.max(0, pedido.custo - disponivel));
+  if (falta > 0) {
+    const livre = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
+    const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: h.id, para: emp.id, valor: falta };
+    if (falta > livre || motivoParaNaoOperarGrupo(e, c, op) !== null) {
+      return { aprovado: false, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue}; ela gostou (${pct(pedido.retorno)} de retorno esperado), mas a holding não tem como bancar agora` };
+    }
+    operarGrupo(e, c, op, reg, origem);
+  }
+  return { aprovado: true, texto: `pediu à dupla do valor ${quanto} para ${pedido.oQue} e levou: ${pct(pedido.retorno)} de retorno esperado, acima dos ${pct(pedido.minimo)} que ela pede${falta > 0 ? `, com ${formatarDinheiro(falta)} da holding` : ''}` };
+}
+
 function lista(itens: string[]): string {
   return itens.length > 1 ? `${itens.slice(0, -1).join(', ')} e ${itens.at(-1)}` : (itens[0] ?? '');
 }
@@ -104,7 +148,7 @@ function lista(itens: string[]): string {
  * O ano da dupla (antes das diretorias, que se reportam a ela): o honorário, o caixa que sobe, a dívida quitada, o
  * negócio ruim vendido e o capital posto onde ele mais rende. Uma entrada do livro, com a contratação de causa.
  */
-export function anoDaDupla(e: EstadoVida, c: Conteudo): void {
+export function anoDaDupla(e: EstadoVida, c: Conteudo, mercado?: Partial<Record<Ativo, number>>): void {
   const h = holdingDaDupla(e);
   if (!h || h.vivo === false) return;
   const entrada = novaEntrada(e, { tipo: 'dinheiro', causa: 'regra', ref: 'valor:decidiu', texto: '' });
@@ -151,18 +195,36 @@ export function anoDaDupla(e: EstadoVida, c: Conteudo): void {
     }
   }
   if (subiu >= 1) feitos.push(`trouxe ${formatarDinheiro(subiu)} de sobra das empresas para a holding`);
-  // O capital onde ele mais rende: a empresa da holding com o maior retorno, acima de 15%, e fila de pedidos.
-  const reservaDaHolding = honorarioDaDupla(e, h) * 2;
-  const livre = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding);
-  const melhor = doGrupoDaDupla(e, h)
-    .filter((x) => donaDe(x) === refDaEmpresa(h) && !x.q['holding'] && retornoDe(x) >= CRIVO.retornoDoAporte && (x.n['demanda'] ?? 0) >= (x.n['capacidade'] ?? Infinity) * 1.05 && !((x.n['participacao_socia'] ?? 0) > 0))
-    .sort((a, b) => retornoDe(b) - retornoDe(a))[0];
-  if (melhor && livre >= 100_000) {
-    const valor = Math.floor(livre * 0.5);
-    const op: OperacaoGrupo = { tipo: 'transferirCaixa', de: h.id, para: melhor.id, valor };
-    if (motivoParaNaoOperarGrupo(e, c, op) === null) {
-      operarGrupo(e, c, op, reg, entrada.id);
-      feitos.push(`pôs ${formatarDinheiro(valor)} ${aEmpresa(melhor, 'na')}, que devolve ${Math.round(retornoDe(melhor) * 100)}% do que vale por ano`);
+  // Comprar na baixa: um negócio inteiro num setor em que o preço caiu (um a cada três anos, em média, com vaga no grupo).
+  const sorteio = criarRng(misturar(e.semente, e.ano, 4421));
+  const livreParaNegocio = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
+  if (livreParaNegocio >= 10_000_000 && lugarLivre(e) && aleatorio(sorteio) < 0.35) {
+    const setores = setoresDeEmpresa(c)
+      .map((s) => ({ s, preco: precoDoSetor(ofertaDe(e, s.id)), tem: empresasDe(e).some((x) => x.t['setor'] === s.id && !x.t['pais']) }))
+      .filter((x) => x.preco <= CRIVO.setorBarato)
+      .sort((a, b) => Number(a.tem) - Number(b.tem) || a.preco - b.preco);
+    const alvo = setores[0];
+    if (alvo) {
+      const valor = Math.round(livreParaNegocio * 0.3);
+      const op: OperacaoGrupo = { tipo: 'fundarSubsidiaria', controladora: h.id, setor: alvo.s.id, valor };
+      if (motivoParaNaoOperarGrupo(e, c, op) === null) {
+        operarGrupo(e, c, op, reg, entrada.id);
+        feitos.push(`pôs ${formatarDinheiro(valor)} num negócio de ${alvo.s.nome.toLowerCase()}, com o setor em baixa (o preço a ${pct(alvo.preco)} do normal): quem compra na baixa colhe na volta`);
+      }
+    }
+  }
+  // O resto trabalha no mercado: o caixa livre da holding em ações (mais na baixa) e no Tesouro, com o retorno do ano.
+  const aplicado = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
+  if (mercado && aplicado >= 100_000) {
+    const fase = faseDe(e);
+    const emAcoes = fase === 'recessao' || fase === 'crise' ? CARTEIRA.acoesNaBaixa : CARTEIRA.acoesNoNormal;
+    const retorno = emAcoes * (mercado.acoes ?? 0) + (1 - emAcoes) * (mercado.renda_fixa ?? 0);
+    const rendeu = Math.round(aplicado * retorno);
+    if (Math.abs(rendeu) >= 1) {
+      // A cotação que mudou é o mercado que pagou (ou cobrou) por ela; o valor da holding é o caixa.
+      somar(e, reg, h.id, 'caixa', rendeu, 'carteira', 'reavaliacao');
+      somar(e, reg, h.id, 'valor', Math.max(-(h.n['valor'] ?? 0), rendeu), 'empresa');
+      feitos.push(`deixou ${formatarDinheiro(aplicado)} da holding aplicados (${pct(emAcoes)} em ações${emAcoes === CARTEIRA.acoesNaBaixa ? ' compradas na baixa' : ''}, o resto no Tesouro), que ${rendeu >= 0 ? `renderam ${formatarDinheiro(rendeu)}` : `perderam ${formatarDinheiro(-rendeu)}`} no ano`);
     }
   }
   if (reg.length === 0) return;

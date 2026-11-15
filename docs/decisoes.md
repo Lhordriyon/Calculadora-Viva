@@ -2195,3 +2195,14 @@ O dono pediu para contratar dois investidores reais como CEOs, com o investiment
 - **O honorário**: 0,2% do valor do grupo dela por ano, no mínimo R$ 2 milhões, pago pela holding.
 - **Os robôs não criam holding**: o túnel não passa pela dupla; os testes (`test/valor.test.ts`) conferem o ano dela, os vetos e as contas.
 
+## A dupla aloca de verdade (15/11)
+
+O dono testou a dupla do valor e viu o que ela era: só barrava, as CEOs não expandiam nem pediam nada, e o caixa da holding e das subsidiárias parava (I-180).
+
+**Decisões tomadas sozinho.**
+
+- **Pedir em vez de vetar.** Debaixo da dupla, a CEO vê uma oportunidade por ano (a concorrente barata, a obra que a fila pede, a filial) e pede o dinheiro com o retorno esperado; a dupla aprova o que paga o custo do capital e manda da holding o que faltar. Antes, o caixa subia para a holding e a diretoria ficava sem dinheiro para crescer: o grupo parava.
+- **O retorno esperado** é o que a empresa devolve sobre o que vale, vezes a fila (até 1,3) na obra; o lucro da concorrente sobre o preço pago, mais o desconto voltando em três anos, na compra; e 0,9 do retorno da empresa na filial (o risco do mercado novo).
+- **Comprar na baixa**: com R$ 10 milhões livres e vaga no grupo, em 35% dos anos, a dupla põe 30% do caixa livre num negócio novo do setor mais barato (o preço a 85% do normal ou menos), de preferência um em que o grupo ainda não está. O jogo não tem empresas avulsas à venda fora da concorrência do grupo; fundar na baixa do ciclo é o equivalente.
+- **A carteira é o caixa da holding rendendo**, sem campo novo: 25% em ações no normal, 60% na recessão ou na crise (comprar quando os outros vendem), o resto no Tesouro, com o retorno do mercado do ano; a cotação tem o mercado de contraparte, como nos investimentos de quem joga.
+
