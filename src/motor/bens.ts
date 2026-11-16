@@ -8,7 +8,7 @@
  * Todo ano o valor anda (imóvel com o mercado do ano), a manutenção e a
  * parcela saem da conta e o aluguel entra.
  */
-import { bensDe } from './campos.ts';
+import { bensDe, fronteiraEm } from './campos.ts';
 import { FASES } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { abrirContrato, contratosDe, fecharContrato, fecharSePago, financiamentoDe, mexerNoSaldo, modalidadeDe, origemDe } from './contratos.ts';
@@ -29,6 +29,7 @@ import {
   LANCE_DO_LEILAO,
   PARCELA_FINANCIAMENTO,
   PISO_VEICULO,
+  TETO_DO_BEM,
  INFLUENCIA_DA_MIDIA, PUBLICIDADE_DA_MIDIA } from './regras.ts';
 import { normal } from './rng.ts';
 
@@ -229,6 +230,9 @@ function mercadoMedioDeImoveis(c: Conteudo): number {
 }
 
 /** O ano dos bens: o valor anda (imóvel com o mercado), a manutenção e a parcela saem, o aluguel entra (anotado à parte). */
+/** Os preços do catálogo (mundo.json › bens) são em reais de 2026. */
+const ANO_DOS_PRECOS = 2026;
+
 export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
   const bens = bensDe(e);
   if (bens.length === 0) return;
@@ -248,7 +252,11 @@ export function regraDosBens(e: EstadoVida, c: Conteudo, reg: Mudanca[]): void {
     const valor = b.n['valor'] ?? 0;
     const imovel = ehImovel(def);
     // O imóvel acompanha o mercado de imóveis do ano acima ou abaixo do que um aluguel normal rende (o aluguel já é a outra parte do retorno).
-    const anda = def.valorizacao + (imovel ? (mercado - medio) * 0.8 : 0) + normal(e.rng, 0, def.desvio ?? (imovel ? 0.03 : 0.02));
+    // A valorização própria vale até o teto do bem diante do preço justo (o do catálogo andando com a fronteira do mundo);
+    // acima dele, o valor volta (etapa 02, TETO_DO_BEM).
+    const acima = Math.log(Math.max(1, valor) / Math.max(1, def.preco * (fronteiraEm(e.ano) / fronteiraEm(ANO_DOS_PRECOS))));
+    const propria = acima < TETO_DO_BEM.acima ? def.valorizacao : -TETO_DO_BEM.volta * (acima - TETO_DO_BEM.acima);
+    const anda = propria + (imovel ? (mercado - medio) * 0.8 : 0) + normal(e.rng, 0, def.desvio ?? (imovel ? 0.03 : 0.02));
     let novo = Math.max(0, valor * (1 + anda));
     if (def.categoria === 'veiculo') novo = Math.max(novo, def.preco * PISO_VEICULO);
     somar(e, reg, b.id, 'valor', novo - valor, 'bens');

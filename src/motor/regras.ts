@@ -67,6 +67,14 @@ export function parcelaPrice(saldo: number, taxa: number, anos: number): number 
 }
 /** O carro não vale menos que isto do preço (vira carro velho, não pó). */
 export const PISO_VEICULO = 0.12;
+/**
+ * O teto do valor de um bem (etapa 02): a valorização própria (mundo.json › bens › valorizacao, de 0,3% a 1% ao ano)
+ * vale enquanto o bem está até e^1,5 = 4,5 vezes acima do preço justo, que é o preço do catálogo (em reais de 2026)
+ * andando com a fronteira do mundo; acima disso, ela para e o valor volta 5% ao ano da distância. Sem o teto, a arte
+ * de 1% ao ano valia e^30 vezes o preço em 3.000 anos: a bancada achou um bem de 3,2 PIBs, e a herança que vendia os
+ * bens tirava do mercado mais dinheiro do que circulava. Numa vida, nenhum bem chega perto do teto.
+ */
+export const TETO_DO_BEM = { acima: 1.5, volta: 0.05 } as const;
 
 /** Poder: quanto a influência anda por ano na direção do alvo, e a popularidade de quem governa. */
 export const RITMO_INFLUENCIA = 0.25;

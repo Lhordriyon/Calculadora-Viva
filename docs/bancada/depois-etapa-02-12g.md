@@ -59,7 +59,7 @@ Sobrevivência sem intervenção: geração 1: 27/27; geração 2: 21/27; geraç
 | maior rendimento do ano / PIB | 1.7896e-7 [0.0000; 0.0421] | 2.7766e-7 [8.1204e-11; 0.2296] | 2.9055e-7 [0.0000; 0.1581] | 2.0549e-6 [0.0000; 0.1601] | 2.6061e-6 [2.4662e-9; 0.0227] |
 | dinheiro do mercado / PIB | 0.447 [0.411; 0.499] | 0.447 [0.430; 0.593] | 0.449 [0.433; 0.526] | 0.451 [0.408; 0.509] | 0.450 [0.429; 0.539] |
 | maior número em reais | 2.93e+13 [1.60e+13; 5.94e+13] | 4.14e+13 [2.20e+13; 8.60e+13] | 4.45e+13 [2.00e+13; 8.67e+13] | 4.95e+13 [1.19e+13; 1.12e+14] | 6.15e+13 [3.57e+13; 1.11e+14] |
-| resíduo do dinheiro (R$) | 7.6167e-3 [1.4648e-3; 0.0163] | 6.2656e-3 [1.7040e-3; 0.0477] | 7.6599e-3 [3.3534e-3; 0.0259] | 0.0115 [3.6381e-3; 0.0293] | 0.0125 [5.3711e-3; 0.0610] |
+| resíduo do dinheiro (R$) | 7.6167e-3 [1.4648e-3; 0.0163] | 6.2656e-3 [1.7040e-3; 0.0477] | 7.6599e-3 [3.3534e-3; 0.0388] | 0.0115 [3.6381e-3; 0.0307] | 0.0115 [5.3711e-3; 0.0610] |
 | save (KB) | 570 [85; 1215] | 365 [72; 935] | 346 [46; 1115] | 395 [65; 1496] | 428 [116; 1340] |
 
 ## Invariantes de escala (limites absolutos)
@@ -71,14 +71,14 @@ Sobrevivência sem intervenção: geração 1: 27/27; geração 2: 21/27; geraç
 | pibPerCapita | 0/27 | 0 | - |
 | salario | 0/27 | 0 | - |
 | patrimonio | 0/27 | 0 | - |
-| rendimento | 1/27 | 1 | trilionaria-cautelosa:202, geração 2, 2138 (aos 74): o dinheiro aplicado rendeu 23.0% do PIB no ano |
+| rendimento | 0/27 | 0 | - |
 | populacao | 0/27 | 0 | - |
 | moeda | 0/27 | 0 | - |
 | consolidado | 0/27 | 0 | - |
 | estado | 0/27 | 0 | - |
 | contas | 0/27 | 0 | - |
 
-## Comparação com a rodada de 2026-11-16T09:45
+## Comparação com a rodada de 2026-11-16T21:13
 
 | Dinastia | Primeira geração diferente | O que mudou nela |
 |---|---|---|
@@ -133,6 +133,6 @@ Sobrevivência sem intervenção: geração 1: 27/27; geração 2: 21/27; geraç
 | maior rendimento do ano / PIB | 1.1377e-7 | 1.7896e-7 | 9.8988e-8 | 2.7766e-7 | 2.8138e-7 | 2.9055e-7 | 3.0953e-5 | 2.0549e-6 | 1.9993e-5 | 2.6061e-6 |
 | dinheiro do mercado / PIB | 0.448 | 0.447 | 0.446 | 0.447 | 0.448 | 0.449 | 0.449 | 0.451 | 0.447 | 0.450 |
 | maior número em reais | 3.81e+13 | 2.93e+13 | 1.09e+14 | 4.14e+13 | 3.08e+14 | 4.45e+13 | 5.63e+15 | 4.95e+13 | 5.48e+16 | 6.15e+13 |
-| resíduo do dinheiro (R$) | 8.2580e-3 | 7.6167e-3 | 0.0186 | 6.2656e-3 | 0.0508 | 7.6599e-3 | 0.8750 | 0.0115 | 7.0283 | 0.0125 |
+| resíduo do dinheiro (R$) | 8.2580e-3 | 7.6167e-3 | 0.0186 | 6.2656e-3 | 0.0508 | 7.6599e-3 | 0.8750 | 0.0115 | 7.0283 | 0.0115 |
 | save (KB) | 604 | 570 | 385 | 365 | 386 | 346 | 399 | 395 | 382 | 428 |
 

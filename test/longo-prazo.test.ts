@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { aplicadoNoMercado, capacidadeDoMercado, fronteiraEm, indiceDeSalarios, parteQueCabe } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar, type Operacao } from '../src/motor/carteira.ts';
+import { regraDosBens } from '../src/motor/bens.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { idLivre } from '../src/motor/contratos.ts';
 import { lugarLivre, regraDaEmpresa } from '../src/motor/empresa.ts';
@@ -16,7 +17,7 @@ import { conferirEstado, FOLGA_DO_DINHEIRO } from '../src/motor/invariantes.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
 import { faseDoCrescimento, iniciarNumeros, momentoTipico, taxaDaPopulacao, tendenciaDe } from '../src/motor/pais.ts';
-import { criarPersonagem } from '../src/motor/pessoas.ts';
+import { criarPersonagem, novaEntidade } from '../src/motor/pessoas.ts';
 import { PAIS_EM_2026 } from '../src/motor/regras.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
 import { morrer, nascer } from '../src/motor/vida.ts';
@@ -258,5 +259,26 @@ describe('a economia aquecida é crescer acima do potencial', () => {
     // O país que encolhe não está aquecido, por pior que seja o potencial; a recessão é o PIB caindo.
     expect(faseDoCrescimento(-0.4, 'normal', -3)).toBe('normal');
     expect(faseDoCrescimento(-0.6, 'normal', 0.8)).toBe('recessao');
+  });
+});
+
+describe('o bem não vale mais que o mundo', () => {
+  it('a valorização própria para acima de 4,5 vezes o preço justo, e o valor volta', () => {
+    const e = nascer(c, { semente: 61, ano: 2026 });
+    const def = c.mundo.bens.filter((b) => b.valorizacao > 0).sort((a, b) => b.valorizacao - a.valorizacao)[0]!;
+    const caro = novaEntidade({ id: 'bem1', tipo: 'bem', nome: def.nome, nascimento: e.ano, vivo: true });
+    caro.t['item'] = def.id;
+    caro.n['valor'] = def.preco * 50;
+    e.entidades['bem1'] = caro;
+    const perto = novaEntidade({ id: 'bem2', tipo: 'bem', nome: def.nome, nascimento: e.ano, vivo: true });
+    perto.t['item'] = def.id;
+    perto.n['valor'] = def.preco;
+    e.entidades['bem2'] = perto;
+    for (let i = 0; i < 80; i++) regraDosBens(e, c, []);
+    // O que estava 50 vezes acima do preço volta para perto do teto (e^1,5 = 4,5 vezes).
+    expect(caro.n['valor']! / def.preco).toBeLessThan(8);
+    expect(caro.n['valor']! / def.preco).toBeGreaterThan(2);
+    // O que estava no preço anda com a valorização própria e o mercado (aqui, o do ano do nascimento, parado), longe do teto.
+    expect(perto.n['valor']! / def.preco).toBeLessThan(4.5);
   });
 });

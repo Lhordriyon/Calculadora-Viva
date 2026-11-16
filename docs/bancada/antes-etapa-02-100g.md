@@ -50,11 +50,12 @@ Sobrevivência sem intervenção: geração 1: 9/9; geração 2: 9/9; geração 
 |---|---|---|---|
 | precisao | 9/9 | 321378 | rica-arriscada:101, geração 8, 2298 (aos 47): pais.pib = 9.009e+15 |
 | residuo | 9/9 | 21345 | realeza-cautelosa:101, geração 12, 2432 (aos 77): o dinheiro do mundo soma R$ 136.00 |
-| pibPerCapita | 9/9 | 27094 | bilionaria-arriscada:101, geração 2, 2119 (aos 67): R$ 859.629 por pessoa (15.6× o de 2026) |
+| pibPerCapita | 9/9 | 26884 | bilionaria-arriscada:101, geração 3, 2135 (aos 59): R$ 1.669.032 por pessoa (30.4× o de 2026) |
 | salario | 6/9 | 469 | realeza-cautelosa:101, geração 4, 2176 (aos 53): salário de R$ 61.740 com o PIB per capita em R$ 7.205.320 |
 | patrimonio | 0/9 | 0 | - |
-| rendimento | 0/9 | 0 | - |
+| rendimento | 4/9 | 2535 | rica-arriscada:101, geração 8, 2295 (aos 44): o dinheiro aplicado rendeu R$ 1.643e+12, mais que o mercado comporta vezes o melhor retorno do ano (R$ 1.603e+12) |
 | populacao | 9/9 | 21944 | rica-arriscada:101, geração 20, 2677 (aos 34): 20 milhões de pessoas |
+| moeda | 1/9 | 13 | regime-arriscada:101, geração 63, 3959 (aos 30): o dinheiro do mercado está em -0.13 PIB |
 | consolidado | 0/9 | 0 | - |
 | estado | 4/9 | 63 | rica-arriscada:101, geração 18, 2588 (aos 7): bem1_2: financiado 0.00 contra o contrato 2362841.66 |
 | contas | 6/9 | 6203 | media-arriscada:101, geração 38, 3221 (aos 53): eu: -4.00 sem contraparte (a conversão não fecha) |

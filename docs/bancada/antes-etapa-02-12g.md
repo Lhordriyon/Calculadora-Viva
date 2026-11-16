@@ -68,11 +68,12 @@ Sobrevivência sem intervenção: geração 1: 27/27; geração 2: 20/27; geraç
 |---|---|---|---|
 | precisao | 24/27 | 2306 | realeza-cautelosa:202, geração 6, 2241 (aos 63): pais.pib = 9.159e+15 |
 | residuo | 3/27 | 62 | realeza-cautelosa:202, geração 12, 2414 (aos 51): o dinheiro do mundo soma R$ 120.00 |
-| pibPerCapita | 27/27 | 7680 | realeza-cautelosa:202, geração 2, 2105 (aos 55): R$ 854.696 por pessoa (15.6× o de 2026) |
+| pibPerCapita | 27/27 | 6965 | realeza-cautelosa:202, geração 2, 2121 (aos 71): R$ 1.700.355 por pessoa (31.0× o de 2026) |
 | salario | 9/27 | 109 | realeza-cautelosa:101, geração 4, 2176 (aos 53): salário de R$ 61.740 com o PIB per capita em R$ 7.205.320 |
 | patrimonio | 0/27 | 0 | - |
-| rendimento | 0/27 | 0 | - |
+| rendimento | 9/27 | 600 | bilionaria-arriscada:303, geração 6, 2233 (aos 44): o dinheiro aplicado rendeu R$ 5.596e+11, mais que o mercado comporta vezes o melhor retorno do ano (R$ 3.625e+11) |
 | populacao | 0/27 | 0 | - |
+| moeda | 0/27 | 0 | - |
 | consolidado | 0/27 | 0 | - |
 | estado | 0/27 | 0 | - |
 | contas | 0/27 | 0 | - |

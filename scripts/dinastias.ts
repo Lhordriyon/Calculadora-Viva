@@ -375,8 +375,16 @@ function jogarDinastia(cen: Cenario, semente: number, geracoes: number, anualNa?
       }
     }
     parentesco = h.parentesco;
+    // Na reprodução, as contas do país e o dinheiro da vida antes e depois da herança que abre a geração pedida.
+    const contas = (x: EstadoVida): string => {
+      const pib = x.entidades['pais']?.n['pib'] ?? 1;
+      const vida = dinheiroDoMundo(x) - ['mercado', 'banco', 'tesouro', 'bc', 'exterior'].reduce((s, id) => s + (x.entidades[id]?.n['dinheiro'] ?? 0), 0);
+      return `${['mercado', 'banco', 'tesouro', 'bc', 'exterior'].map((id) => `${id} ${((x.entidades[id]?.n['dinheiro'] ?? 0) / pib).toFixed(3)}`).join(' ')} | a vida ${(vida / pib).toFixed(3)} PIB (eu.dinheiro ${((x.entidades['eu']?.n['dinheiro'] ?? 0) / pib).toFixed(3)}, dívida ${((x.entidades['eu']?.n['divida'] ?? 0) / pib).toFixed(3)}) | bens ${(campos.valorDosBens(x) / pib).toFixed(3)} PIB em ${campos.bensDe(x).length}, o maior ${(Math.max(0, ...campos.bensDe(x).map((b) => b.n['valor'] ?? 0)) / pib).toFixed(4)} PIB | empresas ${(campos.parteNasEmpresas(x) / pib).toFixed(3)} PIB`;
+    };
+    if (anualNa === g + 1) console.log(`herança, antes: ${contas(e)}`);
     try {
       e = continuarComoHerdeiro(e, c);
+      if (anualNa === g + 1) console.log(`herança, depois: ${contas(e)}`);
     } catch (x) {
       d.fim = `erro do motor ao herdar na geração ${g}: ${(x as Error).message.slice(0, 200)}`;
       break;
