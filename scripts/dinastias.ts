@@ -81,8 +81,10 @@ const capacidadeDoMercado = (e: EstadoVida): number => {
  * Cada limite é um número fixo, com o porquê; nenhum cresce com o tamanho do país.
  * - precisao: acima de 2^53 um número de ponto flutuante deixa de guardar os reais um a um.
  * - residuo: a soma de todo o dinheiro do mundo é zero; R$ 100 de folga cobrem o arredondamento de cada lançamento.
- * - pibPerCapita: 30 vezes o de 2026 é mais do que o modelo alcança (a fronteira do mundo para em 8,2 vezes a de
- *   2026, e as melhores políticas dão uns 3,5 vezes de nível); abaixo de um quinto, o país teria regredido um século.
+ * - pibPerCapita: 50 vezes o de 2026 é mais do que o modelo alcança: a fronteira do mundo para em 8,2 vezes a de 2026,
+ *   a renda potencial de 2026 é 1,08 vez a de hoje, e as melhores políticas, escola e tecnologia somam 2,4 pontos ao
+ *   potencial (e^1,19 = 3,3 vezes de nível): uns 29 vezes, mais o que o grupo de quem joga acrescenta ao país (a bancada
+ *   viu 30,4). Abaixo de um quinto, o país teria regredido um século.
  * - salario: quem vive de salário e ganha menos de um vigésimo da renda média do país não é um trabalhador daquele país.
  * - patrimonio: toda a riqueza de um país fica em torno de 6 PIBs; ninguém tem mais do que isso sozinho.
  * - rendimento: o que o dinheiro aplicado de quem joga (a carteira e o caixa que a dupla aplica) rende no ano não passa
@@ -91,7 +93,7 @@ const capacidadeDoMercado = (e: EstadoVida): number => {
  * - populacao: abaixo de 20 milhões, o país perdeu nove em cada dez pessoas.
  * - moeda: o dinheiro que circula na economia (a conta do mercado) não fica negativo, e o caixa de uma empresa não passa de um PIB.
  */
-const LIMITES = { residuo: 100, pcMax: 30, pcMin: 0.2, salarioMin: 0.05, patrimonio: 6, populacaoMin: 2e7 } as const;
+const LIMITES = { residuo: 100, pcMax: 50, pcMin: 0.2, salarioMin: 0.05, patrimonio: 6, populacaoMin: 2e7 } as const;
 type Invariante = 'precisao' | 'residuo' | 'pibPerCapita' | 'salario' | 'patrimonio' | 'rendimento' | 'populacao' | 'moeda' | 'consolidado' | 'estado' | 'contas';
 
 interface Quebra {

@@ -463,6 +463,12 @@ export function precoDeVenda(faseEmpresa: number): number {
  */
 export const CAPACIDADE_DO_MERCADO = 5e12;
 export const PARTE_DO_MERCADO_NO_PIB = 5e12 / 1.17e13;
+/**
+ * As classes pequenas têm o tamanho delas (etapa 02): o mercado de cripto e o de fundos imobiliários do Brasil somam uns
+ * 2% a 3% do PIB cada. Um dono só não aplica mais que 3% do PIB em cada uma; o excedente fica parado. A bancada achou
+ * uma dinastia com 39% do PIB em cripto rendendo 53% do PIB num ano, que o mercado pagava sem ter o dinheiro.
+ */
+export const PARTE_DA_CLASSE_NO_PIB: Partial<Record<'cripto' | 'fii', number>> = { cripto: 0.03, fii: 0.03 };
 /** Gente que uma empresa consegue empregar no máximo (as maiores do mundo empregam uns 3 milhões). */
 export const MAX_FUNCIONARIOS = 3e6;
 /** Valor da empresa por pessoa empregada, enquanto ela é pequena. */

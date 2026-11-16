@@ -24,10 +24,10 @@ Nenhum limite cresce com o tamanho do país. Cada um diz o ano e a geração em 
 |---|---|---|
 | precisão | todo campo em reais abaixo de 2^53 | acima disso, o ponto flutuante deixa de guardar os reais um a um |
 | resíduo | o dinheiro do mundo soma zero com R$ 100 de folga | os centavos do arredondamento; a bancada mede R$ 0,03 |
-| PIB per capita | entre 1/5 e 30 vezes o de 2026 | 30 vezes passa do que o modelo alcança (a fronteira para em 8,2 vezes, e as melhores políticas dão uns 3,5 vezes de nível); 1/5 é um país que regrediu um século |
+| PIB per capita | entre 1/5 e 50 vezes o de 2026 | o modelo alcança umas 29 vezes (a fronteira para em 8,2; as melhores políticas, escola e tecnologia dão 3,3 vezes de nível) mais o que o grupo de quem joga acrescenta; 1/5 é um país que regrediu um século |
 | salário | quem vive de salário, dos 25 aos 60, ganha pelo menos 1/20 da renda média | o salário desligado do tamanho do país |
 | patrimônio | ninguém tem mais que 6 PIBs | toda a riqueza de um país fica em torno disso |
-| rendimento | o dinheiro aplicado de quem joga não rende mais que 20% do PIB num ano | o mercado inteiro é menor que um PIB |
+| rendimento | o que o dinheiro aplicado de quem joga (a carteira e o caixa que a dupla aplica) rende no ano não passa do que o mercado comporta de um dono vezes o melhor retorno do ano | mais que isso é dinheiro rendendo fora do mercado (era o caixa da holding antes) |
 | população | acima de 20 milhões | nove em cada dez pessoas sumiram |
 | moeda | o dinheiro do mercado não fica negativo; nenhuma empresa tem mais que um PIB em caixa | fluxos que não têm de onde vir |
 | consolidado | a parte de quem joga nas empresas é a soma, empresa por empresa, da parte efetiva vezes o valor; a holding vale o caixa | patrimônio contado duas vezes, ativo duplicado |

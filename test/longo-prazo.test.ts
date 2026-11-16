@@ -6,13 +6,14 @@
  */
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { aplicadoNoMercado, capacidadeDoMercado, fronteiraEm, indiceDeSalarios, parteQueCabe } from '../src/motor/campos.ts';
+import { aplicadoNoMercado, capacidadeDoMercado, fronteiraEm, indiceDeSalarios, parteQueCabe, parteQueCabeNaClasse } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar, type Operacao } from '../src/motor/carteira.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { conferirContas } from '../src/motor/contas.ts';
 import { idLivre } from '../src/motor/contratos.ts';
 import { lugarLivre, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
+import { economiaDoAno } from '../src/motor/economia.ts';
 import { conferirEstado, FOLGA_DO_DINHEIRO } from '../src/motor/invariantes.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
@@ -280,5 +281,20 @@ describe('o bem não vale mais que o mundo', () => {
     expect(caro.n['valor']! / def.preco).toBeGreaterThan(2);
     // O que estava no preço anda com a valorização própria e o mercado (aqui, o do ano do nascimento, parado), longe do teto.
     expect(perto.n['valor']! / def.preco).toBeLessThan(4.5);
+  });
+});
+
+describe('as classes pequenas têm o tamanho delas', () => {
+  it('a cripto rende só até 3% do PIB; o resto fica parado, sem ganhar nem perder; as ações seguem o mercado inteiro', () => {
+    const e = nascer(c, { semente: 71, ano: 2026 });
+    const eu = e.entidades['eu']!;
+    const pib = e.entidades['pais']!.n['pib']!;
+    Object.assign(eu.n, { dinheiro: 0, renda_fixa: 0, acoes: 0.03 * pib, fii: 0, dolar: 0, cripto: 0.3 * pib, renda: 0, custo: 0, divida: 0 });
+    expect(parteQueCabeNaClasse(e, 'cripto')).toBeCloseTo(0.1, 6);
+    expect(parteQueCabeNaClasse(e, 'acoes')).toBe(1);
+    economiaDoAno(e, [], { inflacao: 0 }, { cripto: 1, acoes: 0.2 });
+    // 100% sobre 3% do PIB: a cripto cresce 0,03 PIB, não 0,3.
+    expect(eu.n['cripto']! / pib).toBeCloseTo(0.33, 6);
+    expect(eu.n['acoes']! / pib).toBeCloseTo(0.036, 6);
   });
 });

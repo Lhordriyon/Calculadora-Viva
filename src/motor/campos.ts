@@ -4,7 +4,7 @@
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
 import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
-import { BOLSA, LONGO_PRAZO, MAX_EMPRESAS, MAX_FUNCIONARIOS, PAIS_EM_2026, PARTE_DO_MERCADO_NO_PIB, VALOR_POR_FUNCIONARIO } from './regras.ts';
+import { BOLSA, LONGO_PRAZO, MAX_EMPRESAS, MAX_FUNCIONARIOS, PAIS_EM_2026, PARTE_DA_CLASSE_NO_PIB, PARTE_DO_MERCADO_NO_PIB, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida, Qualidade } from './tipos.ts';
 
@@ -291,6 +291,15 @@ export function parteQueCabe(e: EstadoVida): number {
   const aplicado = aplicadoNoMercado(e);
   const cabe = capacidadeDoMercado(e);
   return aplicado > cabe ? cabe / aplicado : 1;
+}
+
+/** A parte de uma classe da carteira que rende: a do mercado inteiro e, nas classes pequenas, a do tamanho delas (cripto e fundos imobiliários). */
+export function parteQueCabeNaClasse(e: EstadoVida, classe: string, geral = parteQueCabe(e)): number {
+  const parte = (PARTE_DA_CLASSE_NO_PIB as Record<string, number | undefined>)[classe];
+  const naClasse = Math.max(0, e.entidades['eu']?.n[classe] ?? 0);
+  if (parte === undefined || naClasse <= 0) return geral;
+  const tamanho = parte * (e.entidades['pais']?.n['pib'] ?? PAIS_EM_2026.pib);
+  return Math.min(geral, tamanho / naClasse);
 }
 
 /** Um país de fora (mundo.json › estrangeiros): a economia dele e a relação com o Brasil. */

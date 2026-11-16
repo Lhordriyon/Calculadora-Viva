@@ -9,7 +9,7 @@
  * dívida é feita de contratos com o banco (contratos.ts): o saque no cheque
  * especial e o pagamento com o que sobra vão para eles também.
  */
-import { parteQueCabe, valorDosTitulos } from './campos.ts';
+import { parteQueCabe, parteQueCabeNaClasse, valorDosTitulos } from './campos.ts';
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { acompanharCaixa, creditoNovo, jurosDoAno, limiteDeCredito, rotativos, saldoDe } from './contratos.ts';
 import { anotar } from './livro.ts';
@@ -196,11 +196,12 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
   // Acima do que o mercado comporta, o excedente fica parado: rende (ou perde) só a parte que cabe.
   // O juro da renda fixa é pago pelo tesouro (os títulos); o resto é cotação, que ninguém paga.
   // O que cabe é uma parte do PIB, dividida com o caixa que as holdings de quem joga aplicam (campos.ts › parteQueCabe).
+  // Nas classes pequenas (cripto e fundos imobiliários), o tamanho delas também conta (PARTE_DA_CLASSE_NO_PIB).
   const cabe = parteQueCabe(e);
   for (const a of ATIVOS) {
     if (!n[a]) continue;
     const antesDaClasse = n[a];
-    n[a] = n[a] * (1 + (retornos[a] ?? 0) * cabe);
+    n[a] = n[a] * (1 + (retornos[a] ?? 0) * parteQueCabeNaClasse(e, a, cabe));
     fluxos.push(a === 'renda_fixa' ? { campo: a, d: n[a] - antesDaClasse, p: 'tesouro', r: 'rendimento' } : { campo: a, d: n[a] - antesDaClasse, p: 'reavaliacao', r: 'cotacao' });
   }
   const renda = n['renda'] ?? 0;
