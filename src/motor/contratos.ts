@@ -90,11 +90,15 @@ export function creditoNovo(e: EstadoVida): number {
   return Math.max(0, limiteDeCredito(eu.n['renda'] ?? 0) - saldoDe(rotativos(e)));
 }
 
-/** Um id que ninguém usa agora: a base, ou com uma letra no fim (ctr57, ctr57b…). */
+/**
+ * Um id que ninguém usa agora: a base, com uma letra no fim (ctr57, ctr57b…) ou, passadas as 25 letras, com um número
+ * (ctr57_2, ctr57_3…). O número também é conferido (etapa 02): a dinastia que herdava mais de 26 imóveis no mesmo ano
+ * dava o mesmo bem1_2 a dois deles, o segundo apagava o primeiro, e o financiamento ficava sem o imóvel.
+ */
 export function idLivre(e: EstadoVida, base: string): string {
   if (!e.entidades[base]) return base;
   for (const letra of 'bcdefghijklmnopqrstuvwxyz') if (!e.entidades[`${base}${letra}`]) return `${base}${letra}`;
-  return `${base}_${e.proximoId}`;
+  for (let i = Math.max(2, e.proximoId); ; i++) if (!e.entidades[`${base}_${i}`]) return `${base}_${i}`;
 }
 
 export interface NovoContrato {

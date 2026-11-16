@@ -9,6 +9,7 @@ import { carregarConteudo } from '../scripts/disco.ts';
 import { aplicadoNoMercado, capacidadeDoMercado, fronteiraEm, indiceDeSalarios, parteQueCabe } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar, type Operacao } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
+import { idLivre } from '../src/motor/contratos.ts';
 import { lugarLivre, regraDaEmpresa } from '../src/motor/empresa.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import { conferirEstado, FOLGA_DO_DINHEIRO } from '../src/motor/invariantes.ts';
@@ -228,5 +229,19 @@ describe('quem herda continua no mesmo país', () => {
     for (const id of ['banco', 'tesouro', 'bc', 'exterior']) expect(nova.entidades[id]!.n['dinheiro']).toBe(e.entidades[id]!.n['dinheiro']);
     expect(Math.abs(dinheiroDoMundo(nova))).toBeLessThan(FOLGA_DO_DINHEIRO);
     expect(nova.entidades['mercado']!.n['dinheiro']!).toBeGreaterThan(0);
+  });
+});
+
+describe('os ids da vida nova', () => {
+  it('passadas as 25 letras, o número também é conferido: dois imóveis herdados nunca ganham o mesmo id', () => {
+    const e = nascer(c, { semente: 51, ano: 2026 });
+    const usados = new Set<string>();
+    for (let i = 0; i < 40; i++) {
+      const id = idLivre(e, 'bem1');
+      expect(usados.has(id)).toBe(false);
+      usados.add(id);
+      e.entidades[id] = { ...e.entidades['eu']!, id, n: {}, t: {}, q: {} };
+    }
+    expect(usados.size).toBe(40);
   });
 });

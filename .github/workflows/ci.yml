@@ -29,6 +29,8 @@ jobs:
       - run: npm run validar
       - name: Auditoria da simulação (os invariantes do estado ano a ano, em dinastias)
         run: npm run auditoria
+      - name: Bancada de dinastias (12 gerações; falha se um invariante de escala quebrar)
+        run: npm run dinastias:ci
       - name: Túnel de vento (falha se uma meta quebrar)
         run: npm run tunel -- --sem-arquivo
       - run: npm run build
