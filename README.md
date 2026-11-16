@@ -15,27 +15,26 @@
 
 ---
 
-## 🆕 Novidades: A dupla do valor aloca de verdade (15/11/2026)
+## 🆕 Novidades: A dupla do valor, medida e destravada (16/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** a dupla do valor (Augusto Prudente e Benedito Lacerda, personagens fictícios) deixou de só barrar e empilhar caixa. Agora ela põe todo o capital da holding para trabalhar.
-> - **As CEOs pedem, a dupla banca.** Cada CEO que vê uma oportunidade (a fila de pedidos que pede uma fábrica, loja ou escritório novo; a concorrente barata; a filial lá fora) pede o dinheiro à dupla, com o retorno esperado. Ela aprova o que paga 10% ao ano (12% lá fora; a concorrente, só até 85% do preço justo) e manda o dinheiro da holding. O pedido e a resposta aparecem na linha do tempo.
-> - **Comprar na baixa.** Com caixa livre, a dupla põe dinheiro num negócio novo de um setor em baixa, para colher na volta do ciclo.
-> - **O resto fica aplicado.** O caixa livre da holding rende o mercado do ano: 25% em ações e o resto no Tesouro; na recessão ou na crise, 60% em ações, compradas na baixa.
-> - Continua valendo: o caixa das empresas acima de três meses de custos sobe para a holding, a dívida é quitada e o negócio de três anos que perde mais de 5% do valor é vendido.
+> **O que mudou:** pela primeira vez, as 10.000 vidas do túnel passam pela holding e pela dupla do valor. A medida mostrou que ela ainda barrava quase tudo, e isso foi corrigido.
+> - **Bom negócio a preço justo.** A dupla compra a concorrente que devolve 10% ou mais do que vale até o preço justo; só o negócio comum pede a margem de segurança (85%).
+> - **Compra na baixa mais frequente.** Basta o setor estar a 95% do preço normal.
+> - **O dinheiro chega a quem pediu.** O dinheiro da holding desce pela cadeia de controle até a empresa que pediu, mesmo que ela não seja filha direta.
+> - **Menos nãos sem sentido.** A CEO só leva a compra à dupla quando o preço está perto do teto dela; longe disso, pede a obra ou a filial.
+> - **Um defeito corrigido**: com a holding no lugar da empresa que você cuida de perto, uma história podia mudar o valor dela sem mudar o caixa.
 
 > [!TIP]
-> **Para testar:**
-> - Crie a holding, ponha a empresa nela, funde uma ou duas subsidiárias e contrate a dupla em **A estrutura do grupo**.
-> - Passe uns anos e leia a linha do tempo: os pedidos das CEOs ("pediu à dupla do valor R$ … para um escritório em … e levou"), o negócio comprado na baixa e quanto o caixa aplicado rendeu.
+> **Para testar:** crie a holding, ponha a empresa nela, funde subsidiárias e contrate a dupla. Passe uns dez anos e leia a linha do tempo: os negócios comprados na baixa, os pedidos das CEOs e o caixa aplicado.
 
 | ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
 |---|---|
-| 📋 As CEOs pedem com o retorno esperado, e a dupla banca | 🧾 A carteira da holding ação por ação (ela rende como um todo, pelo mercado do ano) |
-| 📉 Negócio comprado na baixa do setor; caixa aplicado em ações e no Tesouro | 🤖 Os robôs do túnel criando holding (o túnel não passa pela dupla; os testes passam) |
-| 🧓 A dupla acima das diretorias (a atualização anterior) | 🪪 Os nomes reais: os personagens do jogo são fictícios pela sua regra; trocar é decisão sua |
+| 📏 A dupla medida nas 10.000 vidas do túnel | 📋 Mais pedidos aprovados: as CEOs ainda ouvem mais não do que sim (66 a 9), quase sempre porque a obra não paga 10% |
+| 🛒 Negócios comprados de verdade (175 no túnel) | 🧾 A carteira da holding ação por ação |
+| 🔧 O valor da holding sempre igual ao caixa | 🪪 Os nomes reais: os personagens do jogo são fictícios pela sua regra |
 
-A verificação completa passou: 582 testes, a auditoria sem nenhum problema e o túnel de 10.000 vidas com as contas e as dívidas fechando em todas as entradas. Como os robôs não criam holding, os números do túnel não mudaram. A dupla tem sete testes próprios (o caixa que sobe, o pedido da CEO, a compra na baixa, a carteira que rende no normal e na recessão, a venda do negócio ruim), todos com as contas conferidas. A régua da tela passou nos 58 critérios.
+No túnel de vento (10.000 vidas), a dupla foi contratada em 53 vidas e dirigiu 532 anos: comprou 175 negócios na baixa, vendeu 32 que queimavam dinheiro, aprovou 9 pedidos das CEOs e negou 66. O caixa aplicado perdeu R$ 26 bilhões na soma (as holdings maiores atravessaram crises com a carteira em ações; na rodada anterior, a soma foi de +R$ 141 bilhões). O estado foi conferido depois de cada ano de cada vida, sem um problema; as contas e as dívidas fecharam; nenhuma história ficou de fora. O resto ficou onde estava: saturação na 5ª vida 52,4%, 904 assinaturas por 1.000, o porquê à vista em 42,9%, 483,7 toques por vida (o teto informativo é 480), save mediano 532 KB.
 
 ## 🗺️ Os blocos do dono
 

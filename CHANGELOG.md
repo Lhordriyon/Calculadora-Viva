@@ -4,6 +4,13 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 📏 A dupla do valor, medida e destravada · 16/11/2026
+
+- 📏 **O túnel passa pela dupla**: o robô arriscado cria a holding, põe a empresa nela e contrata a dupla (a partir dos 45); o relatório conta os anos, os pedidos, os negócios e o rendimento.
+- 🛒 **Destravada**: o bom negócio comprado até o preço justo; a compra na baixa com o setor a 95%; o dinheiro da holding descendo pela cadeia de controle; a CEO só pede a compra com o preço perto do teto.
+- 🔧 O valor da holding é o caixa em toda entrada do livro; a história que multiplica o valor da empresa não vale para a holding (achado da auditoria).
+- 📊 **No túnel** (10.000 vidas): a dupla em 53 vidas e 532 anos, 175 negócios comprados, 32 vendidos, 9 pedidos aprovados e 66 negados. Estado, contas e dívidas sem problema; nenhuma história morta. Saturação V5 52,4%, assinaturas 904, toques 483,7.
+
 ## 📋 A dupla do valor aloca de verdade · As CEOs pedem, ela banca, compra na baixa e aplica o caixa · 15/11/2026
 
 > [!NOTE]

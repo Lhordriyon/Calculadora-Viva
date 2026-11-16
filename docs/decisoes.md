@@ -2206,3 +2206,14 @@ O dono testou a dupla do valor e viu o que ela era: só barrava, as CEOs não ex
 - **Comprar na baixa**: com R$ 10 milhões livres e vaga no grupo, em 35% dos anos, a dupla põe 30% do caixa livre num negócio novo do setor mais barato (o preço a 85% do normal ou menos), de preferência um em que o grupo ainda não está. O jogo não tem empresas avulsas à venda fora da concorrência do grupo; fundar na baixa do ciclo é o equivalente.
 - **A carteira é o caixa da holding rendendo**, sem campo novo: 25% em ações no normal, 60% na recessão ou na crise (comprar quando os outros vendem), o resto no Tesouro, com o retorno do mercado do ano; a cotação tem o mercado de contraparte, como nos investimentos de quem joga.
 
+## A dupla medida no túnel (16/11)
+
+O dono pediu a próxima; o furo maior era a dupla do valor fora do túnel (os robôs não criavam holding), com números só de testes (I-181).
+
+**Decisões tomadas sozinho.**
+
+- **O robô arriscado cria a holding e contrata a dupla**, um passo por ano, com a empresa de R$ 50 milhões e a partir dos 45 anos (antes disso, com a empresa dentro da holding, a história da oferta da rival contra quem perdeu a maioria morria no túnel).
+- **A dupla ainda barrava quase tudo**: 1 pedido aprovado e 77 negados em 152 anos, e nenhum negócio comprado, com centenas de milhões parados. Mudou: o negócio bom (devolve 10% ou mais) é comprado até o preço justo, e só o comum pede a margem de 85%; a compra na baixa vale com o setor a 95% do normal (a 85% quase nunca acontece), em metade dos anos em que dá; o dinheiro da holding desce pela cadeia de controle até a empresa que pediu (antes, só chegava à filha direta); e a CEO só leva a compra à dupla com o preço até 10 pontos acima do teto (longe disso, pede a obra ou a filial).
+- **O valor da holding é o caixa em toda entrada do livro** (`livro.ts › lancar`): com a holding no lugar da empresa de perto, uma história que multiplicava o valor da empresa mexia no valor dela sem o caixa (a auditoria achou). A história deixou de valer para a holding, e o livro acerta os dois em qualquer entrada que mexa num deles.
+- **As histórias raras do par** (o par que viaja demais, a planilha, a saúde frágil) ganharam tensão 2: uma delas morreu numa rodada, sem relação com a mudança (I-174).
+
