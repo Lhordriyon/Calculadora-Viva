@@ -15,7 +15,7 @@ import { REF_SOUBE } from '../src/motor/segredos.ts';
 import { capitulosDe, type TipoDeCapitulo } from '../src/motor/capitulos.ts';
 import { CHAVES_CONDICAO, type Condicoes } from '../src/motor/esquema.ts';
 import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/motor/pais.ts';
-import { ATIVOS, type Fase } from '../src/motor/constantes.ts';
+import { ATIVOS, PARCEIROS, type Fase } from '../src/motor/constantes.ts';
 import { motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
 import { conferirEstado, folgaDoDinheiro } from '../src/motor/invariantes.ts';
@@ -837,6 +837,13 @@ export interface HistoriaDaDefesa {
 }
 
 /**
+ * A guerra de um país de fora com o Brasil (`federacao.guerra`…). A guerra de preços das empresas usa a mesma qualidade
+ * (`empresa.guerra`), e a medida a contava como guerra militar: a "guerra de 25 anos" do túnel era uma guerra de preços.
+ */
+const GUERRA_DE_VERDADE = new RegExp(`^(${PARCEIROS.join('|')})\\.guerra$`);
+const ehGuerraDeVerdade = (caminho: string): boolean => GUERRA_DE_VERDADE.test(caminho);
+
+/**
  * A defesa pelo livro: o nível da defesa, a capacidade de quem nasce e o crescimento saem do fim menos o que o livro
  * mudou; depois, ano a ano, o nível em vigor, o quanto a capacidade andou na regra do país, se o Brasil estava em
  * guerra (a qualidade guerra dos países de fora) e o crescimento do ano, mais as encomendas, as entregas e as notícias.
@@ -870,7 +877,7 @@ function defesaDaVida(e: EstadoVida): HistoriaDaDefesa {
       if (m.c === 'pais.pol_defesa' && m.d !== undefined) soma.nivel += m.d;
       if (m.c === 'pais.defesa' && m.d !== undefined) soma.defesa += m.d;
       if (m.c === 'pais.crescimento' && m.d !== undefined) soma.crescimento += m.d;
-      if (m.q !== undefined && /\.guerra$/.test(m.c) && m.c !== 'pais.guerra') mudouGuerra += m.q;
+      if (m.q !== undefined && ehGuerraDeVerdade(m.c)) mudouGuerra += m.q;
     }
   }
   let nivel = (n['pol_defesa'] ?? 1) - soma.nivel;
@@ -886,7 +893,7 @@ function defesaDaVida(e: EstadoVida): HistoriaDaDefesa {
       if (m.c === 'pais.pol_defesa' && m.d !== undefined) nivel += m.d;
       if (m.c === 'pais.defesa' && m.r === 'pais' && m.d !== undefined) andou += m.d;
       if (m.c === 'pais.crescimento' && m.d !== undefined) crescimento += m.d;
-      if (m.q !== undefined && /\.guerra$/.test(m.c) && m.c !== 'pais.guerra') {
+      if (m.q !== undefined && ehGuerraDeVerdade(m.c)) {
         if (m.q > 0 && emGuerra === 0) desde = h.ano;
         emGuerra += m.q;
         if (m.q < 0 && emGuerra === 0) t.duracoes.push(h.ano - desde);
