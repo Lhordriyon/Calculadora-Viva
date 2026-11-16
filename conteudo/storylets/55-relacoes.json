@@ -109,7 +109,7 @@
   },
   {
     "id": "amor_planilha",
-    "tipo": "npc",
+    "tensao": 2, "tipo": "npc",
     "ator": ["amor"],
     "idade": [22, 85],
     "condicoes": { "marcas": ["namoro"], "ator.traco": "mao_fechada" },
@@ -237,7 +237,7 @@
   },
   {
     "id": "amor_viaja_demais",
-    "tipo": "npc",
+    "tensao": 2, "tipo": "npc",
     "ator": ["amor"],
     "idade": [22, 75],
     "condicoes": { "marcas": ["namoro"], "ator.traco": "ausente", "amigo.vivo": true },
@@ -264,7 +264,7 @@
   },
   {
     "id": "amor_saude_fragil",
-    "tipo": "npc",
+    "tensao": 2, "tipo": "npc",
     "ator": ["amor"],
     "idade": [20, 95],
     "condicoes": { "marcas": ["namoro"], "ator.traco": "fragil" },
