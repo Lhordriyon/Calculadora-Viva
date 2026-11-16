@@ -252,9 +252,9 @@ describe('a economia aquecida é crescer acima do potencial', () => {
     expect(faseDoCrescimento(3.9, 'normal')).toBe('normal');
     expect(faseDoCrescimento(2.8, 'normal', 0.8)).toBe('expansao');
     expect(faseDoCrescimento(2.7, 'normal', 0.8)).toBe('normal');
-    // Sair pede a folga de um ponto.
-    expect(faseDoCrescimento(1.9, 'expansao', 0.8)).toBe('expansao');
-    expect(faseDoCrescimento(1.7, 'expansao', 0.8)).toBe('normal');
+    // Sair pede a folga de 1,25 ponto.
+    expect(faseDoCrescimento(1.6, 'expansao', 0.8)).toBe('expansao');
+    expect(faseDoCrescimento(1.5, 'expansao', 0.8)).toBe('normal');
     // O país que encolhe não está aquecido, por pior que seja o potencial; a recessão é o PIB caindo.
     expect(faseDoCrescimento(-0.4, 'normal', -3)).toBe('normal');
     expect(faseDoCrescimento(-0.6, 'normal', 0.8)).toBe('recessao');

@@ -15,26 +15,30 @@
 
 ---
 
-## 🆕 Novidades: A dupla do valor, medida e destravada (16/11/2026)
+## 🆕 Novidades: O universo que não explode (16/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** pela primeira vez, as 10.000 vidas do túnel passam pela holding e pela dupla do valor. A medida mostrou que ela ainda barrava quase tudo, e isso foi corrigido.
-> - **Bom negócio a preço justo.** A dupla compra a concorrente que devolve 10% ou mais do que vale até o preço justo; só o negócio comum pede a margem de segurança (85%).
-> - **Compra na baixa mais frequente.** Basta o setor estar a 95% do preço normal.
-> - **O dinheiro chega a quem pediu.** O dinheiro da holding desce pela cadeia de controle até a empresa que pediu, mesmo que ela não seja filha direta.
-> - **Menos nãos sem sentido.** A CEO só leva a compra à dupla quando o preço está perto do teto dela; longe disso, pede a obra ou a filial.
-> - **Um defeito corrigido**: com a holding no lugar da empresa que você cuida de perto, uma história podia mudar o valor dela sem mudar o caixa.
+> **O que mudou:** você mostrou um PIB de R$ 51 mil trilhões e uma holding de R$ 5 mil trilhões. A auditoria achou as causas (o PIB crescia 2% ao ano para sempre, a população sumia, o salário era o de 2026 num país milhares de vezes mais rico e o caixa da holding rendia sem teto). Esta atualização corrigiu a economia de longo prazo e criou uma bancada que joga a mesma família por até 100 gerações para provar.
+> - **O país cresce para um lugar.** O que cada pessoa produz persegue uma renda que anda com o mundo, e o mundo desacelera: em 100 gerações, o PIB per capita fica entre 2 e 8 vezes o de hoje (antes: 10³¹ vezes).
+> - **A população para de sumir.** Com menos gente do que o país já teve, as famílias voltam a crescer: ela para perto de 105 milhões (antes: 7.515 pessoas em 100 gerações).
+> - **O salário anda com o país.** Quem é contratado, eleito ou herda o trabalho ganha de acordo com o que cada pessoa do país produz.
+> - **A holding rende dentro do mercado.** O mercado comporta 43% do PIB de um dono só, dividido entre a sua carteira e o caixa que a dupla do valor aplica; o caixa parado das empresas perde a inflação, como a sua conta.
+> - **O dinheiro existe entre gerações.** Quem herda continua no mesmo país: as contas dos bancos e do governo passam inteiras (antes, a herança grande jogava o país numa depressão sem causa).
+> - **O ciclo é do país.** Num Brasil que envelhece, crescer 1% é um ano normal: o salário, as empresas e a aprovação do governo medem contra a tendência; e a economia aquecida é crescer acima do potencial.
 
 > [!TIP]
-> **Para testar:** crie a holding, ponha a empresa nela, funde subsidiárias e contrate a dupla. Passe uns dez anos e leia a linha do tempo: os negócios comprados na baixa, os pedidos das CEOs e o caixa aplicado.
+> **Para testar:** jogue uma dinastia de três ou quatro gerações e abra a folha País em cada uma: o PIB, a população e o PIB per capita continuam do tamanho de um país. Com a holding e a dupla, veja na linha do tempo quanto o caixa aplicado rendeu e se o mercado comportou tudo.
 
-| ✅ O que o bloco trouxe | ⏳ O que ele ainda não trouxe |
+| ✅ O que a atualização trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 📏 A dupla medida nas 10.000 vidas do túnel | 📋 Mais pedidos aprovados: as CEOs ainda ouvem mais não do que sim (66 a 9), quase sempre porque a obra não paga 10% |
-| 🛒 Negócios comprados de verdade (175 no túnel) | 🧾 A carteira da holding ação por ação |
-| 🔧 O valor da holding sempre igual ao caixa | 🪪 Os nomes reais: os personagens do jogo são fictícios pela sua regra |
+| 📏 A bancada de dinastias (até 100 gerações), no CI | 🧠 A rede neural: a próxima etapa é um explorador da bancada (sem servidor, não há dados de jogadores) |
+| 🌍 PIB, população e salário com escala de país | 🏆 Histórias para quem passou de R$ 1 trilhão |
+| 💼 A holding rendendo dentro do mercado | 🏠 O limite dos imóveis que as dinastias acumulam |
+| 🔢 Nenhum número acima de 2^53 em 100 gerações | 📉 Mais recessões no fim do século (o Brasil envelhece): medir se cansa |
 
-No túnel de vento (10.000 vidas), a dupla foi contratada em 53 vidas e dirigiu 532 anos: comprou 175 negócios na baixa, vendeu 32 que queimavam dinheiro, aprovou 9 pedidos das CEOs e negou 66. O caixa aplicado perdeu R$ 26 bilhões na soma (as holdings maiores atravessaram crises com a carteira em ações; na rodada anterior, a soma foi de +R$ 141 bilhões). O estado foi conferido depois de cada ano de cada vida, sem um problema; as contas e as dívidas fecharam; nenhuma história ficou de fora. O resto ficou onde estava: saturação na 5ª vida 52,4%, 904 assinaturas por 1.000, o porquê à vista em 42,9%, 483,7 toques por vida (o teto informativo é 480), save mediano 532 KB.
+RESUMO_DO_TUNEL
+
+O relatório completo, com as fórmulas de antes e de depois: [`docs/relatorio-etapa-02.md`](docs/relatorio-etapa-02.md).
 
 ## 🗺️ Os blocos do dono
 

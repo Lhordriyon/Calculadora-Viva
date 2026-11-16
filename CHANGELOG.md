@@ -4,6 +4,20 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🧪 O universo que não explode · Etapa 02, o laboratório de longo prazo · 16/11/2026
+
+> [!NOTE]
+> Depois da auditoria da etapa 01 (`docs/auditoria-neural.md`), o dono pediu uma bancada de dinastias longas, invariantes sem folga proporcional e a economia de longo prazo corrigida, sem a rede neural ainda.
+
+- 📏 **A bancada de dinastias** (`npm run dinastias`): a mesma família por até 100 gerações, nove cenários e sementes fixas, métricas por geração, comparação entre rodadas com a primeira geração diferente, reprodução ano a ano e onze invariantes de escala com limites absolutos. A versão curta roda no `verificar` e no CI.
+- 🌍 **O país cresce para uma renda potencial** que anda com uma fronteira do mundo que desacelera (1,4% em 2026, 8,2 vezes no limite); as políticas mudam o nível, não o ritmo para sempre. A população volta a crescer abaixo do tamanho que o país já teve.
+- 💵 **O salário anda com o país**: o de entrada (carreira, cargo eletivo, Casa Real, herdeiro adulto) pelo PIB per capita diante do de 2026; o de quem trabalha, pela tendência.
+- 💼 **O mercado tem o tamanho do PIB** (43%), dividido entre a carteira e o caixa que a dupla aplica; o juro da parte no Tesouro é pago pelo Tesouro; o caixa parado das empresas perde a inflação.
+- 🏦 **As contas do país passam a quem herda**; a folga do dinheiro do mundo é fixa (R$ 100), e todo campo em reais é conferido contra 2^53.
+- 📈 **O ciclo mede contra a tendência do país** (o salário, as empresas, a aprovação, a virada de fase); a economia aquecida é crescer acima do potencial; o portão das fases é o de um Brasil que envelhece.
+- 🔧 Achados da bancada e do túnel: dois imóveis herdados com o mesmo id (o financiamento ficava sem o imóvel) e a guerra de preços contada como guerra militar.
+- 📊 RESUMO_DO_CHANGELOG
+
 ## 📏 A dupla do valor, medida e destravada · 16/11/2026
 
 - 📏 **O túnel passa pela dupla**: o robô arriscado cria a holding, põe a empresa nela e contrata a dupla (a partir dos 45); o relatório conta os anos, os pedidos, os negócios e o rendimento.

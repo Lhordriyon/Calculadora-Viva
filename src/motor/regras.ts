@@ -587,8 +587,13 @@ export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
 export const DESVIO_DO_CRESCIMENTO = 1.05;
 /** A fase do ciclo é o nome do crescimento: a partir de quanto é expansão, normal e recessão (abaixo, crise). */
 export const LIMITES_DAS_FASES = { expansao: 4, normal: -0.5, recessao: -2.5 } as const;
-/** Para sair de uma fase, o crescimento precisa passar do limite com esta folga (sem ela, o país trocava de fase a cada ano). */
-export const FOLGA_DAS_FASES = { expansao: 1, recessao: 0.5, crise: 0.5 } as const;
+/**
+ * Para sair de uma fase, o crescimento precisa passar do limite com esta folga (sem ela, o país trocava de fase a cada
+ * ano). A da economia aquecida subiu de 1 para 1,25 ponto na etapa 02: com a aquecida medida acima do potencial e as
+ * recessões mais frequentes, o país passava de 18 viradas a cada 70 anos (medido em 400 vidas: 18,3 → 17,7, com a
+ * aquecida em 26% dos anos). A saída da recessão e da crise não mudou (a duração das crises é a mesma).
+ */
+export const FOLGA_DAS_FASES = { expansao: 1.25, recessao: 0.5, crise: 0.5 } as const;
 /**
  * Os choques: a crise (tira crescimento e põe inflação) e o boom de quem compra o que o Brasil vende. Vêm dos
  * países de fora (diplomacia.ts), vezes o peso deles no comércio, ou da fuga de capitais quando a dívida daqui

@@ -24,7 +24,7 @@ Nenhum limite cresce com o tamanho do país. Cada um diz o ano e a geração em 
 |---|---|---|
 | precisão | todo campo em reais abaixo de 2^53 | acima disso, o ponto flutuante deixa de guardar os reais um a um |
 | resíduo | o dinheiro do mundo soma zero com R$ 100 de folga | os centavos do arredondamento; a bancada mede R$ 0,03 |
-| PIB per capita | entre 1/5 e 15 vezes o de 2026 | 15 vezes passa do que a fronteira do mundo alcança; 1/5 é um país que regrediu um século |
+| PIB per capita | entre 1/5 e 30 vezes o de 2026 | 30 vezes passa do que o modelo alcança (a fronteira para em 8,2 vezes, e as melhores políticas dão uns 3,5 vezes de nível); 1/5 é um país que regrediu um século |
 | salário | quem vive de salário, dos 25 aos 60, ganha pelo menos 1/20 da renda média | o salário desligado do tamanho do país |
 | patrimônio | ninguém tem mais que 6 PIBs | toda a riqueza de um país fica em torno disso |
 | rendimento | o dinheiro aplicado de quem joga não rende mais que 20% do PIB num ano | o mercado inteiro é menor que um PIB |
@@ -69,14 +69,14 @@ O potencial era um ritmo, não um destino: 2% ao ano, para sempre.
 ```
 pot        = tendência(t) + políticas + 0,015 × (educação − 50) + 0,02 × (tecnologia − 50) − dívida − violência   (o ciclo é o mesmo)
 tendência  = 100 × (F(t)/F(t−1) − 1)  +  n(t)  +  limitar(2 × ln(y*/y), −6, 6)
-F(t)       = exp(0,012 × 85 × (1 − e^(−(t−2026)/85)))        a fronteira do mundo (1 em 2026, 2,77 no limite)
+F(t)       = exp(0,014 × 150 × (1 − e^(−(t−2026)/150)))      a fronteira do mundo (1 em 2026, 8,2 no limite)
 y*(t)      = y*(t−1) × F(t)/F(t−1)                            a renda potencial por pessoa (pais.renda_potencial)
-y*(2026)   = y(2026) × e^0,175                                19% acima da de hoje: os 2% de sempre em 2026
+y*(2026)   = y(2026) × e^0,075                                8% acima da de hoje: os 2% de sempre em 2026
 ```
 
-`y` é o PIB per capita e `n`, o crescimento da população. Em 2026: 1,2 (fronteira) + 0,45 (gente) + 0,35 (convergência) = 2%.
+`y` é o PIB per capita e `n`, o crescimento da população. Em 2026: 1,4 (fronteira) + 0,45 (gente) + 0,15 (convergência) = 2%.
 
-- **A fronteira desacelera** pela ideia do crescimento semi-endógeno: as ideias vêm de gente, e a população do mundo para de crescer neste século. É a hipótese mais forte do modelo. A alternativa (1,2% para sempre) deixaria o PIB composto, só mais devagar.
+- **A fronteira desacelera** pela ideia do crescimento semi-endógeno: as ideias vêm de gente, e a população do mundo para de crescer perto de 2085. Os 1,4% de 2026 são o ritmo por pessoa dos países ricos de 1990 a 2019; a escala de 150 anos deixa o avanço perto de 1% até o fim do século. É a hipótese mais forte do modelo. A alternativa (1,4% para sempre) deixaria o PIB composto, só mais devagar. Uma escala de 85 anos, testada primeiro, deixava o limite em 2,8 vezes, mas dava quase as mesmas recessões (a seção 3.7).
 - **O que antes mudava o ritmo agora muda o nível.** As políticas, a escola, a tecnologia, a dívida e a violência continuam somando ao potencial de cada ano; a convergência transforma um ponto a mais por ano em uns 65% a mais de renda no longo prazo (`e^(1/2)`). Entre o melhor e o pior país possível, umas 20 vezes, perto do que existe entre países de verdade.
 - **O grupo de quem joga**: o valor adicionado a mais que ele traz ao PIB (`empresa.ts › pesoNoPib`) ergue a renda potencial junto. A capacidade que ele construiu é do país, e a convergência não a desfaz.
 - **O save antigo** (`iniciarNumeros`): o país que seguiu o caminho comum ganha a renda potencial do ano dele; o que já tinha crescido demais fica com a renda que tem como potencial e para de compor, sem perder um real.
@@ -94,14 +94,14 @@ y*(2026)   = y(2026) × e^0,175                                19% acima da de h
 **Depois** (`campos.ts › indiceDeSalarios`):
 
 ```
-índice = limitar((y / y*) × e^0,175 × F(t), 0,3, 15)     o PIB per capita diante do de 2026 (no caminho comum)
+índice = limitar((y / y*) × e^0,075 × F(t), 0,3, 30)     o PIB per capita diante do de 2026 (no caminho comum)
 salário de entrada = salário do cargo × índice            carreira, cargo eletivo, Casa Real do Brasil, herdeiro adulto
 salário de quem trabalha: + (crescimento do setor − 0,8%) + (tendência − n)   a cada ano, mais o ciclo
 ```
 
 Os 0,8% são a média do que os setores davam; agora a produtividade vem do país, e o setor vale a diferença dele para a média. No save antigo cujo país cresceu demais, o índice é o do caminho comum (não salta 10 mil vezes).
 
-**Os preços do conteúdo ficam em reais de hoje** (o carro, a festa, a viagem). Com o país limitado a umas 3,3 vezes a renda de 2026 no caminho comum (e até umas 8 vezes nos melhores países da bancada), eles continuam pesando. Antes, com o PIB per capita 13 mil vezes o de 2026, nenhum preço dizia mais nada.
+**Os preços do conteúdo ficam em reais de hoje** (o carro, a festa, a viagem). Com o país a umas 2 vezes a renda de 2026 no fim da primeira vida e no máximo umas 9 vezes depois de séculos (no caminho comum), eles continuam pesando. Antes, com o PIB per capita 13 mil vezes o de 2026 na 12ª geração, nenhum preço dizia mais nada.
 
 ### 3.4 O dinheiro aplicado e a holding
 
@@ -137,6 +137,26 @@ BigInt e decimal foram avaliados e não adotados:
 - a interface formata `number`.
 
 A saída foi limitar os números pelo modelo e conferir o limite: com o país limitado, o maior número em reais da bancada de 100 gerações ficou em 5,7 × 10¹³, 160 vezes abaixo de 2^53; o invariante do motor trava o contrário. As folgas de cada entrada do livro (meio real mais 10⁻⁹ do maior valor da entrada) ficaram: não acumulam no tempo, e os valores de uma entrada agora são limitados.
+
+### 3.7 O ciclo contra a tendência, e as fases
+
+**Antes**: o momento do ano (`momentoDe`: o que move os salários, o crescimento das empresas e o rendimento da família), a aprovação do governo e a causa da virada de fase comparavam o crescimento com 2% fixos (`desvio = g − 2`); a fase era o crescimento absoluto (aquecida a partir de 4%, recessão abaixo de −0,5%, crise abaixo de −2,5%).
+
+**Depois**: `desvio = g − tendência` nos três; a economia aquecida é `g ≥ potencial + 2` (com o potencial de 2%, os 4% de sempre; encolhendo, nunca); a recessão e a crise continuam sendo o PIB caindo.
+
+O primeiro túnel rápido (2.000 vidas) mostrou por que: com o país envelhecido crescendo perto de 1%, o momento contra 2% fixos era uma recessão permanente nos salários e nas empresas, e o bilionário feito sumiu (0,00% de quem nasce sem fortuna; antes, 0,33%).
+
+As fases, medidas em 400 vidas (as mesmas sementes nas três colunas):
+
+| Fase | Antes | Primeira versão (fronteira de 1,2% em 85 anos, ciclo contra 2%) | Final |
+|---|---|---|---|
+| normal | 63,8% | 64,3% | 52,6% |
+| aquecida | 24,0% | 9,5% | 24,5% |
+| recessão | 9,8% | 19,9% | 17,7% |
+| crise | 2,4% | 6,3% | 5,3% |
+| crescimento médio da vida | 2,06% | 0,92% | 1,13% |
+
+A recessão quase dobrou porque o PIB passou a sentir a população encolhendo (o IBGE projeta a queda a partir de 2042). Ficou mais perto do Brasil real: de 1981 a 2023, o PIB caiu em 21% dos anos, e em 14% caiu mais de 2,5%. O portão do túnel "as fases têm o tamanho de antes" (do agente, incremento 8) virou "o tamanho de um Brasil que envelhece" (normal 45–72%, aquecida 15–30%, recessão 7–22%, crise 1–8%), com esse porquê registrado.
 
 ## 4. Os resultados comparados (mesmas sementes e condições)
 
