@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { carregarConteudo, lerFontes } from '../scripts/disco.ts';
 import { escreverSave, lerSave, saveVazio } from '../src/jogo/salvar.ts';
 import { acoesPossiveis } from '../src/motor/acoes.ts';
-import { momentoTipico, TIPICO } from '../src/motor/pais.ts';
+import { momentoDoPais, momentoTipico, TIPICO } from '../src/motor/pais.ts';
 import { ler, parteNaEmpresa, patrimonioDe, patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { aplicarEfeitos } from '../src/motor/efeitos.ts';
@@ -106,9 +106,13 @@ describe('abrir e tocar a empresa pela folha Dinheiro', () => {
     const antes = e.entidades['eu']!.n['dinheiro'] ?? 0;
     // Aberta por quem joga, sem sócios: depende 80% dele, e quem compra desconta um quarto disso.
     expect(descontoDaDependencia(e)).toBeCloseTo(DESCONTO_DA_DEPENDENCIA * 0.8);
+    // O desconto da crise mede o crescimento contra a tendência do país (etapa 02), não contra os 2% de 2026.
+    const momento = momentoDoPais(e);
+    expect(momento.id).toBe('crise');
+    expect(momento.empresa).toBeLessThan(0);
     const venda = operar(e, c, { tipo: 'vender' });
     const recebido = (e.entidades['eu']!.n['dinheiro'] ?? 0) - antes;
-    expect(recebido).toBeCloseTo(100000 * precoDeVenda(momentoTipico('crise').empresa) * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
+    expect(recebido).toBeCloseTo(100000 * precoDeVenda(momento.empresa) * (1 - DESCONTO_DA_DEPENDENCIA * 0.8));
     expect(recebido).toBeLessThan(100000);
     expect(empresaDe(e)).toBeUndefined();
     expect(e.entidades['empresa']!.nome).toBe(nome);

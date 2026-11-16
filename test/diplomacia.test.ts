@@ -272,8 +272,10 @@ describe('quem governa lá fora', () => {
   });
 
   it('romper derruba a relação, desfaz o acordo, dá popularidade e, muitas vezes, traz a sanção, que aponta para o rompimento', () => {
+    // A chance de sanção depois de romper é de uns 25% (26,5% antes da etapa 02 e 25,5% depois, em 200 sementes; as 40
+    // primeiras dão 5 por acaso): 80 sementes, e o piso de 15%.
     let sancoes = 0;
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 80; i++) {
       const e = presidente(misturar(15, i));
       e.entidades['liga']!.q['acordo'] = { v: 1, ano: e.ano, idade: e.idade, causa: null };
       const rel = e.entidades['liga']!.n['relacao']!;
@@ -293,7 +295,7 @@ describe('quem governa lá fora', () => {
         expect(e.historico.find((h) => h.id === sancao.causa)!.causas).toContain(ato.id);
       }
     }
-    expect(sancoes).toBeGreaterThanOrEqual(4);
+    expect(sancoes).toBeGreaterThanOrEqual(12);
   });
 });
 

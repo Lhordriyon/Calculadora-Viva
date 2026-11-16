@@ -15,7 +15,7 @@ import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.t
 import { conferirEstado, FOLGA_DO_DINHEIRO } from '../src/motor/invariantes.ts';
 import { ganhar, lancar, novaEntrada } from '../src/motor/livro.ts';
 import { dinheiroDoMundo } from '../src/motor/moeda.ts';
-import { iniciarNumeros, momentoTipico, taxaDaPopulacao, tendenciaDe } from '../src/motor/pais.ts';
+import { faseDoCrescimento, iniciarNumeros, momentoTipico, taxaDaPopulacao, tendenciaDe } from '../src/motor/pais.ts';
 import { criarPersonagem } from '../src/motor/pessoas.ts';
 import { PAIS_EM_2026 } from '../src/motor/regras.ts';
 import type { EstadoVida, Mudanca } from '../src/motor/tipos.ts';
@@ -69,13 +69,13 @@ function dar(e: EstadoVida, ent: string, campo: string, valor: number): void {
 }
 
 describe('o crescimento de longo prazo', () => {
-  it('a fronteira do mundo avança 1,2% em 2026, desacelera e tem fim (2,77 vezes a de 2026)', () => {
+  it('a fronteira do mundo avança 1,4% em 2026, desacelera e tem fim (8,2 vezes a de 2026)', () => {
     expect(fronteiraEm(2026)).toBe(1);
-    expect(fronteiraEm(2027) - 1).toBeCloseTo(0.012, 3);
+    expect(fronteiraEm(2027) - 1).toBeCloseTo(0.014, 3);
     const passos = [2100, 2300, 2600, 3000, 5000].map((a) => fronteiraEm(a + 1) / fronteiraEm(a) - 1);
     for (let i = 1; i < passos.length; i++) expect(passos[i]!).toBeLessThan(passos[i - 1]!);
-    expect(fronteiraEm(9999)).toBeLessThan(Math.exp(1.2 * 0.85) + 1e-9);
-    expect(fronteiraEm(9999)).toBeGreaterThan(2.7);
+    expect(fronteiraEm(9999)).toBeLessThan(Math.exp(1.4 * 1.5) + 1e-9);
+    expect(fronteiraEm(9999)).toBeGreaterThan(8);
   });
 
   it('em 2026, o país cresce o de sempre (perto de 2%): a fronteira, a gente a mais e a distância até a renda potencial', () => {
@@ -98,12 +98,12 @@ describe('o crescimento de longo prazo', () => {
     expect(tendenciaDe(e)).toBeGreaterThan(base);
   });
 
-  it('mil anos de caminho comum: o PIB per capita para perto de 3,3 vezes o de 2026, e a população para de encolher', () => {
+  it('mil anos de caminho comum: o PIB per capita para perto de 8,8 vezes o de 2026, e a população para de encolher', () => {
     const mil = paisEm(3026).entidades['pais']!.n;
     const dois = paisEm(4026).entidades['pais']!.n;
     const pc = mil['pib']! / mil['populacao']!;
-    expect(pc / PC_2026).toBeGreaterThan(2.6);
-    expect(pc / PC_2026).toBeLessThan(3.5);
+    expect(pc / PC_2026).toBeGreaterThan(7.5);
+    expect(pc / PC_2026).toBeLessThan(9.5);
     expect(mil['pib']!).toBeLessThan(Number.MAX_SAFE_INTEGER / 100);
     // A população encontra devagar (uns 200 anos de meia-vida) o tamanho em que as famílias voltam a crescer: quase a
     // mesma em 3026 e em 4026.
@@ -142,7 +142,7 @@ describe('o salário anda com o que cada pessoa do país produz', () => {
     n['pib'] = pib * 2;
     expect(indiceDeSalarios(e)).toBeCloseTo(2, 2);
     n['pib'] = pib * 1000;
-    expect(indiceDeSalarios(e)).toBe(15);
+    expect(indiceDeSalarios(e)).toBe(30);
     n['pib'] = pib / 1000;
     expect(indiceDeSalarios(e)).toBe(0.3);
   });
@@ -243,5 +243,20 @@ describe('os ids da vida nova', () => {
       e.entidades[id] = { ...e.entidades['eu']!, id, n: {}, t: {}, q: {} };
     }
     expect(usados.size).toBe(40);
+  });
+});
+
+describe('a economia aquecida é crescer acima do potencial', () => {
+  it('com o potencial de 2%, os 4% de sempre; com 0,8%, aquece a partir de 2,8%; encolhendo, nunca', () => {
+    expect(faseDoCrescimento(4, 'normal')).toBe('expansao');
+    expect(faseDoCrescimento(3.9, 'normal')).toBe('normal');
+    expect(faseDoCrescimento(2.8, 'normal', 0.8)).toBe('expansao');
+    expect(faseDoCrescimento(2.7, 'normal', 0.8)).toBe('normal');
+    // Sair pede a folga de um ponto.
+    expect(faseDoCrescimento(1.9, 'expansao', 0.8)).toBe('expansao');
+    expect(faseDoCrescimento(1.7, 'expansao', 0.8)).toBe('normal');
+    // O país que encolhe não está aquecido, por pior que seja o potencial; a recessão é o PIB caindo.
+    expect(faseDoCrescimento(-0.4, 'normal', -3)).toBe('normal');
+    expect(faseDoCrescimento(-0.6, 'normal', 0.8)).toBe('recessao');
   });
 });

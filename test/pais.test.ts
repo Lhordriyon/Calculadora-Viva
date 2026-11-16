@@ -14,6 +14,7 @@ import {
   anoDoPais,
   bolsoDoPais,
   defGoverno,
+  efeitoDasPoliticas,
   ESTATISTICAS,
   escolaPublica,
   faseDe,
@@ -25,6 +26,7 @@ import {
   TIPICO,
   votoDe,
 } from '../src/motor/pais.ts';
+import { CRESCIMENTO_POTENCIAL } from '../src/motor/regras.ts';
 import { misturar, criarRng } from '../src/motor/rng.ts';
 import type { EstadoVida } from '../src/motor/tipos.ts';
 import { chanceDeMorrer, nascer } from '../src/motor/vida.ts';
@@ -65,7 +67,8 @@ describe('o país em que se nasce', () => {
       const def = defGoverno(c, pais.t['governo'])!;
       expect(def).toBeDefined();
       for (const p of POLITICAS) expect(nivelDe(e, p)).toBe(def.politicas[p]);
-      expect(faseDe(e)).toBe(faseDoCrescimento(pais.n['crescimento']!));
+      // O país de quem nasce tem o potencial de 2026 com as políticas do governo (aquecida é acima dele).
+      expect(faseDe(e)).toBe(faseDoCrescimento(pais.n['crescimento']!, 'normal', CRESCIMENTO_POTENCIAL + efeitoDasPoliticas(e, c, 'potencial')));
       governos.add(def.id);
     }
     expect(governos.size).toBe(4);

@@ -25,6 +25,7 @@ import type { Exterior } from './diplomacia.ts';
 import {
   CALOTE,
   CHOQUE_DA_CRISE,
+  AQUECIDA_ACIMA_DO_POTENCIAL,
   CRESCIMENTO_POTENCIAL,
   LONGO_PRAZO,
   DEFESA,
@@ -91,10 +92,11 @@ export function defFase(c: Conteudo, fase: Fase): DefFase {
 }
 
 /** O nome do crescimento: expansão, normal, recessão ou crise. Sair da fase em que se está pede uma folga. */
-export function faseDoCrescimento(g: number, atual: Fase = 'normal'): Fase {
-  const expansao = LIMITES_DAS_FASES.expansao - (atual === 'expansao' ? FOLGA_DAS_FASES.expansao : 0);
+export function faseDoCrescimento(g: number, atual: Fase = 'normal', potencial: number = CRESCIMENTO_POTENCIAL): Fase {
+  // Aquecida é crescer acima do potencial (etapa 02); com o potencial de 2%, os 4% de sempre. Encolhendo, nunca.
+  const expansao = Math.max(0, potencial + AQUECIDA_ACIMA_DO_POTENCIAL) - (atual === 'expansao' ? FOLGA_DAS_FASES.expansao : 0);
   const folga = atual === 'recessao' ? FOLGA_DAS_FASES.recessao : atual === 'crise' ? FOLGA_DAS_FASES.crise : 0;
-  if (g >= expansao) return 'expansao';
+  if (g >= expansao && g >= 0) return 'expansao';
   if (g >= LIMITES_DAS_FASES.normal + folga) return 'normal';
   if (g >= LIMITES_DAS_FASES.recessao + (atual === 'crise' ? FOLGA_DAS_FASES.crise : 0)) return 'recessao';
   return 'crise';
@@ -116,10 +118,14 @@ export interface Momento {
   retorno: number;
   /** Quanto o dólar subiu (ou caiu) no ano, em fração: as empresas que exportam ou importam e o investimento em dólar sentem. */
   cambio?: number;
+  /** O potencial com que o ano do país nomeou a fase (anoDoPais). */
+  potencial?: number;
 }
 
-function momentoDe(id: Fase, crescimento: number, desemprego: number): Momento {
-  const desvio = crescimento - CRESCIMENTO_POTENCIAL;
+function momentoDe(id: Fase, crescimento: number, desemprego: number, tendencia: number = CRESCIMENTO_POTENCIAL): Momento {
+  // O ciclo é o crescimento diante da tendência do país (etapa 02): num país que envelheceu e cresce 0,8% ao ano, crescer
+  // 0,8% é um ano normal, não uma recessão nos salários e nas empresas.
+  const desvio = crescimento - tendencia;
   return {
     id,
     desemprego: Math.pow(Math.max(2, desemprego) / DESEMPREGO_NATURAL, 1.8),
@@ -132,7 +138,7 @@ function momentoDe(id: Fase, crescimento: number, desemprego: number): Momento {
 /** O momento de agora: a fase e o que o crescimento e o desemprego do país fazem com a vida. */
 export function momentoDoPais(e: EstadoVida): Momento {
   const n = e.entidades['pais']?.n ?? {};
-  return momentoDe(faseDe(e), n['crescimento'] ?? CRESCIMENTO_POTENCIAL, n['desemprego'] ?? DESEMPREGO_NATURAL);
+  return momentoDe(faseDe(e), n['crescimento'] ?? CRESCIMENTO_POTENCIAL, n['desemprego'] ?? DESEMPREGO_NATURAL, tendenciaDe(e));
 }
 
 /** Quanto do tempo o país passa em cada fase, no longo prazo (o túnel confere: docs/metricas.md). */
@@ -299,7 +305,7 @@ export function paisInicial(e: EstadoVida, c: Conteudo): void {
   });
   n['tecnologia'] = tecnologiaDeQuemNasce(e, c);
   n['defesa'] = defesaDeQuemNasce(e, c);
-  const fase = faseDoCrescimento(n['crescimento']!);
+  const fase = faseDoCrescimento(n['crescimento']!, 'normal', pot);
   if (fase !== 'normal') pais.q[fase] = { v: 1, ano: e.ano, idade: 0, causa: null };
   iniciarNumeros(e);
 }
@@ -670,9 +676,10 @@ export function rumoDoPais(e: EstadoVida, c: Conteudo): { potencial: number; nat
  * ou esfriou nos últimos três anos e quem decidiu as políticas que puxam o
  * crescimento (a posse do governo ou a reforma de quem joga), nos últimos oito.
  */
-function causasDaVirada(e: EstadoVida, melhorou: boolean, pot: number): number[] {
+function causasDaVirada(e: EstadoVida, melhorou: boolean, politicas: number): number[] {
   const causas: number[] = [];
-  const politicasPuxam = melhorou ? pot >= CRESCIMENTO_POTENCIAL + 0.25 : pot <= CRESCIMENTO_POTENCIAL - 0.25;
+  // O que as políticas (e a escola, a tecnologia, a dívida, a violência) somam ao potencial, além da tendência do país.
+  const politicasPuxam = melhorou ? politicas >= 0.25 : politicas <= -0.25;
   let decreto = false;
   let politica = !politicasPuxam;
   for (let k = e.historico.length - 1; k >= 0 && !(decreto && politica); k--) {
@@ -697,7 +704,7 @@ function causasDaVirada(e: EstadoVida, melhorou: boolean, pot: number): number[]
 }
 
 /** A fase mudou: a entrada visível que conta (o choque de fora, quando foi ele), com quem empurrou como causa. */
-function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 'crise' | 'boom' | null, pot: number, origem: number | null): void {
+function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 'crise' | 'boom' | null, politicas: number, origem: number | null): void {
   const def = defFase(c, nova);
   const melhorou = ORDEM_DAS_FASES[nova] > ORDEM_DAS_FASES[antes];
   const entrada = novaEntrada(e, { tipo: 'mundo', causa: 'regra', ref: `ciclo:${nova}`, ator: 'pais', texto: '' });
@@ -710,7 +717,7 @@ function virarFase(e: EstadoVida, c: Conteudo, antes: Fase, nova: Fase, deFora: 
   entrada.resumo = renderizar(def.resumo, ctx);
   // O choque de fora que virou a fase (a notícia da crise ou do boom lá fora) vem antes de quem empurrou daqui; a guerra, quando piorou.
   const guerra = melhorou ? null : comecoDaGuerra(e);
-  const causas = [...(doChoque && origem !== null ? [origem] : []), ...(guerra !== null ? [guerra] : []), ...causasDaVirada(e, melhorou, pot)];
+  const causas = [...(doChoque && origem !== null ? [origem] : []), ...(guerra !== null ? [guerra] : []), ...causasDaVirada(e, melhorou, politicas)];
   if (causas.length > 0) entrada.causas = causas;
   lancar(e, entrada, reg);
 }
@@ -742,6 +749,8 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   const tec0 = n['tecnologia'] ?? 50;
   const def0 = n['defesa'] ?? 50;
   const pot = potencialDe(e, c);
+  // A tendência do país (sem as políticas): o ano normal, contra o qual a aprovação e a virada de fase se medem.
+  const tendencia = tendenciaDe(e);
   // A guerra (guerra.ts): o crescimento perde, os preços sobem, o governo gasta mais (primarioDe) e a aprovação cai.
   const guerra = inimigoDe(e) !== undefined;
 
@@ -807,7 +816,7 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   // Aprovação: o emprego, a renda, os preços, a violência e o posto de saúde, mais o que as políticas agradam.
   const alvo =
     50 +
-    2.5 * (g - CRESCIMENTO_POTENCIAL) -
+    2.5 * (g - tendencia) -
     1.2 * (u - DESEMPREGO_NATURAL) -
     Math.max(0, pi - META_DE_INFLACAO) -
     0.2 * (vio - 22) +
@@ -853,10 +862,10 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   if (Math.abs(sobra) >= 0.05) somar(e, reg, 'pais', 'impulso', -sobra * (1 - MEMORIA_DO_IMPULSO), 'pais');
 
   const antes = faseDe(e);
-  const nova = faseDoCrescimento(n['crescimento']!, antes);
+  const nova = faseDoCrescimento(n['crescimento']!, antes, pot);
   // A virada só aponta para a notícia de fora se o choque veio de lá (a fuga de capitais é daqui).
-  if (nova !== antes) virarFase(e, c, antes, nova, deFora, pot, deFora === fora.deFora ? fora.origem : null);
-  return { ...momentoDoPais(e), cambio: fora.cambio };
+  if (nova !== antes) virarFase(e, c, antes, nova, deFora, pot - tendencia, deFora === fora.deFora ? fora.origem : null);
+  return { ...momentoDoPais(e), cambio: fora.cambio, potencial: pot };
 }
 
 // ---------------------------------------------------------------- o país na vida de quem joga

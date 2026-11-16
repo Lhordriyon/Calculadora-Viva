@@ -567,14 +567,21 @@ export const DEMOGRAFIA = { taxa2026: 0.45, porAno: 0.022, piso: -0.35, porSaude
 /**
  * O crescimento de longo prazo (etapa 02, I-183): o PIB é gente vezes o que cada pessoa produz. O que cada pessoa
  * produz persegue a renda potencial do país (`pais.renda_potencial`: a de equilíbrio com políticas médias), que anda
- * com a fronteira de produtividade do mundo. A fronteira avança 1,2% ao ano em 2026 e desacelera (as ideias vêm de
- * gente, e a população do mundo para de crescer neste século): a cada 85 anos o avanço cai a 37%, e a fronteira inteira
- * soma 2,77 vezes a de 2026. O país fecha 2% ao ano da distância (em log) até a renda potencial dele; em 2026 ela está
- * 19% acima da renda de hoje, o que dá os 2% de crescimento potencial de sempre (1,2 da fronteira, 0,45 de gente e
- * 0,35 de convergência). Escola, tecnologia, políticas, dívida e violência continuam somando e tirando pontos de
- * crescimento, mas agora mudam o nível para onde o país vai (cada ponto vale 50% de nível), não o ritmo para sempre.
+ * com a fronteira de produtividade do mundo. A fronteira avança 1,4% ao ano em 2026 (o ritmo por pessoa dos países
+ * ricos de 1990 a 2019) e desacelera (as ideias vêm de gente, e a população do mundo para de crescer perto de 2085):
+ * a cada 150 anos o avanço cai a 37%, e a fronteira inteira soma 8,2 vezes a de 2026. O país fecha 2% ao ano da
+ * distância (em log) até a renda potencial dele; em 2026 ela está 8% acima da renda de hoje, o que dá os 2% de
+ * crescimento potencial de sempre (1,4 da fronteira, 0,45 de gente e 0,15 de convergência). Escola, tecnologia,
+ * políticas, dívida e violência continuam somando e tirando pontos de crescimento, mas agora mudam o nível para onde o
+ * país vai (cada ponto vale uns 65% de nível), não o ritmo para sempre.
  */
-export const LONGO_PRAZO = { fronteira2026: 1.2, escala: 85, convergencia: 2, nivel: Math.exp(0.175), tetoDaConvergencia: 6 } as const;
+export const LONGO_PRAZO = { fronteira2026: 1.4, escala: 150, convergencia: 2, nivel: Math.exp(0.075), tetoDaConvergencia: 6 } as const;
+/**
+ * A economia aquecida é o crescimento acima do potencial (o hiato), não um número fixo (etapa 02): 2 pontos acima
+ * para entrar, como os 4% de sempre com o potencial de 2%. Num país que envelheceu e cresce 0,8% ao ano, 3% já é
+ * aquecer (a inflação e o desemprego do modelo já liam o hiato). A recessão e a crise continuam sendo o PIB caindo.
+ */
+export const AQUECIDA_ACIMA_DO_POTENCIAL = 2;
 /** Quanto do desvio do crescimento fica para o ano seguinte, e a sorte do ano (pontos percentuais). */
 export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
 export const DESVIO_DO_CRESCIMENTO = 1.05;

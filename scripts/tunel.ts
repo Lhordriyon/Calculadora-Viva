@@ -526,8 +526,11 @@ const portoes7 = [
 /** Incremento 8 (pedido do dono em 11/10/2026): o país vivo, com política e estatísticas que respondem a quem governa. */
 const portoes8 = [
   [
-    'As fases têm o tamanho de antes: normal 55–72%, expansão 15–30%, recessão 7–18%, crise 1–6% dos anos',
-    parteFase('normal') >= 0.55 && parteFase('normal') <= 0.72 && parteFase('expansao') >= 0.15 && parteFase('expansao') <= 0.3 && parteFase('recessao') >= 0.07 && parteFase('recessao') <= 0.18 && parteFase('crise') >= 0.01 && parteFase('crise') <= 0.06,
+    // Etapa 02: o país envelhece e a população encolhe (o IBGE projeta a queda a partir de 2042), e o PIB deixou de
+    // crescer 2% para sempre; as recessões ficaram mais perto do Brasil real (o PIB caiu em 21% dos anos de 1981 a 2023).
+    // Antes: normal 55–72%, recessão 7–18%, crise 1–6%. A economia aquecida (acima do potencial) ficou do tamanho de antes.
+    'As fases têm o tamanho de um Brasil que envelhece: normal 45–72%, aquecida 15–30%, recessão 7–22%, crise 1–8% dos anos',
+    parteFase('normal') >= 0.45 && parteFase('normal') <= 0.72 && parteFase('expansao') >= 0.15 && parteFase('expansao') <= 0.3 && parteFase('recessao') >= 0.07 && parteFase('recessao') <= 0.22 && parteFase('crise') >= 0.01 && parteFase('crise') <= 0.08,
     `${pct(parteFase('normal'))} / ${pct(parteFase('expansao'))} / ${pct(parteFase('recessao'))} / ${pct(parteFase('crise'))}`,
   ],
   ['O país não pisca: até 18 viradas de fase a cada 70 anos', viradasPor70 <= 18, num(viradasPor70, 1)],

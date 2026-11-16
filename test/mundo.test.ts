@@ -46,11 +46,11 @@ describe('o ciclo da economia', () => {
       for (let ano = 0; ano < 400; ano++) {
         e.ano++;
         const antes = faseDe(e);
-        anoDoPais(e, c, []);
+        const { potencial: pot } = anoDoPais(e, c, []);
         const depois = faseDe(e);
         vistas.add(depois);
-        // A fase é o nome do crescimento do ano (sair da fase de antes pede uma folga).
-        expect(depois).toBe(faseDoCrescimento(e.entidades['pais']!.n['crescimento']!, antes));
+        // A fase é o nome do crescimento do ano (sair da fase de antes pede uma folga); aquecida é acima do potencial.
+        expect(depois).toBe(faseDoCrescimento(e.entidades['pais']!.n['crescimento']!, antes, pot));
         if (depois === antes) continue;
         const anuncio = e.historico.at(-1)!;
         expect(anuncio.tipo).toBe('mundo');

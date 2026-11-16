@@ -246,8 +246,8 @@ export function indicadoresDoPais(pais: Entidade): { pibPerCapita: number; gini:
 }
 
 /**
- * A fronteira de produtividade do mundo, como índice (1 em 2026; tende a 2,77): o avanço de cada ano desacelera. Antes
- * de 2026, ela andava os 1,2% ao ano de hoje.
+ * A fronteira de produtividade do mundo, como índice (1 em 2026; tende a 8,2): o avanço de cada ano desacelera. Antes
+ * de 2026, ela andava os 1,4% ao ano de hoje.
  */
 export function fronteiraEm(ano: number): number {
   const t = ano - 2026;
@@ -257,8 +257,9 @@ export function fronteiraEm(ano: number): number {
 
 /**
  * Quanto se ganha a mais (ou a menos) do que em 2026 pelo mesmo trabalho: a renda por pessoa do país diante da renda
- * de 2026 do mundo dele. O salário de quem é contratado, o do cargo e a renda da família de quem nasce usam o índice;
- * o de quem já trabalha anda com a tendência (trabalho.ts, pais.ts › tendenciaDe). No mundo que seguiu o caminho comum é o PIB per capita
+ * de 2026 do mundo dele (entre 0,3 e 30). O salário de entrada da carreira, o do cargo eletivo, o da Casa Real do
+ * Brasil e o do herdeiro adulto usam o índice; o de quem já trabalha anda com a tendência (trabalho.ts, pais.ts ›
+ * tendenciaDe). Quem nasce, nasce em 2026, com o índice em 1. No mundo que seguiu o caminho comum é o PIB per capita
  * sobre o de 2026; no save de antes da renda potencial (a renda dele vira a potencial), é o do ano em que ele está.
  */
 export function indiceDeSalarios(e: EstadoVida): number {
@@ -266,7 +267,7 @@ export function indiceDeSalarios(e: EstadoVida): number {
   const potencial = n?.['renda_potencial'];
   if (!n || n['pib'] === undefined || n['populacao'] === undefined || !potencial) return 1;
   const porPessoa = n['pib'] / Math.max(1, n['populacao']);
-  return Math.max(0.3, Math.min(15, (porPessoa / potencial) * LONGO_PRAZO.nivel * fronteiraEm(e.ano)));
+  return Math.max(0.3, Math.min(30, (porPessoa / potencial) * LONGO_PRAZO.nivel * fronteiraEm(e.ano)));
 }
 
 /** O que o mercado comporta de dinheiro aplicado de um só dono: uma parte do PIB (os R$ 5 trilhões de 2026). */
