@@ -19,10 +19,11 @@
 
 > [!IMPORTANT]
 > **O que mudou:** você mostrou um PIB de R$ 51 mil trilhões e uma holding de R$ 5 mil trilhões. A auditoria achou as causas (o PIB crescia 2% ao ano para sempre, a população sumia, o salário era o de 2026 num país milhares de vezes mais rico e o caixa da holding rendia sem teto). Esta atualização corrigiu a economia de longo prazo e criou uma bancada que joga a mesma família por até 100 gerações para provar.
-> - **O país cresce para um lugar.** O que cada pessoa produz persegue uma renda que anda com o mundo, e o mundo desacelera: em 100 gerações, o PIB per capita fica entre 2 e 8 vezes o de hoje (antes: 10³¹ vezes).
-> - **A população para de sumir.** Com menos gente do que o país já teve, as famílias voltam a crescer: ela para perto de 105 milhões (antes: 7.515 pessoas em 100 gerações).
+> - **O país cresce para um lugar.** O que cada pessoa produz persegue uma renda que anda com o mundo, e o mundo desacelera: em 100 gerações, o PIB per capita fica entre 2,5 e 17 vezes o de hoje (antes: 10³¹ vezes).
+> - **A população para de sumir.** Com menos gente do que o país já teve, as famílias voltam a crescer: ela fica entre 100 e 120 milhões (antes: 7.515 pessoas em 100 gerações).
 > - **O salário anda com o país.** Quem é contratado, eleito ou herda o trabalho ganha de acordo com o que cada pessoa do país produz.
-> - **A holding rende dentro do mercado.** O mercado comporta 43% do PIB de um dono só, dividido entre a sua carteira e o caixa que a dupla do valor aplica; o caixa parado das empresas perde a inflação, como a sua conta.
+> - **A holding rende dentro do mercado.** O mercado comporta 43% do PIB de um dono só, dividido entre a sua carteira e o caixa que a dupla do valor aplica (cripto e fundos imobiliários, 3% cada); o que passa disso e o caixa parado das empresas perdem a inflação, como a sua conta.
+> - **Nada compõe para sempre.** A ilha que você funda e os bens (a arte, os imóveis) também ganharam limite: antes, um bem chegava a valer 3 PIBs.
 > - **O dinheiro existe entre gerações.** Quem herda continua no mesmo país: as contas dos bancos e do governo passam inteiras (antes, a herança grande jogava o país numa depressão sem causa).
 > - **O ciclo é do país.** Num Brasil que envelhece, crescer 1% é um ano normal: o salário, as empresas e a aprovação do governo medem contra a tendência; e a economia aquecida é crescer acima do potencial.
 
@@ -36,7 +37,7 @@
 | 💼 A holding rendendo dentro do mercado | 🏠 O limite dos imóveis que as dinastias acumulam |
 | 🔢 Nenhum número acima de 2^53 em 100 gerações | 📉 Mais recessões no fim do século (o Brasil envelhece): medir se cansa |
 
-RESUMO_DO_TUNEL
+No túnel de vento (10.000 vidas), nenhuma história morta, as contas e as dívidas fechando e nenhum portão novo falhando: saturação V5 52,4% → 53,6%, assinaturas 904 → 905, toques 483,7 → 485,2, CPU 184 → 182 ms por vida. As fases de uma vida mudaram: normal 64% → 50%, aquecida 23% → 27%, recessão 10% → 18%, crise 2% → 5% (o Brasil real teve o PIB caindo em 21% dos anos de 1981 a 2023). Na bancada de dinastias (27 de 12 gerações e 9 de 100), nenhum invariante de escala quebra; antes, a precisão, o resíduo do dinheiro, o PIB per capita, o salário, a população e as contas quebravam.
 
 O relatório completo, com as fórmulas de antes e de depois: [`docs/relatorio-etapa-02.md`](docs/relatorio-etapa-02.md).
 

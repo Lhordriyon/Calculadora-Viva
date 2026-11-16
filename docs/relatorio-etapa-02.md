@@ -83,7 +83,7 @@ y*(2026)   = y(2026) × e^0,075                                8% acima da de ho
 `y` é o PIB per capita e `n`, o crescimento da população. Em 2026: 1,4 (fronteira) + 0,45 (gente) + 0,15 (convergência) = 2%.
 
 - **A fronteira desacelera** pela ideia do crescimento semi-endógeno: as ideias vêm de gente, e a população do mundo para de crescer perto de 2085. Os 1,4% de 2026 são o ritmo por pessoa dos países ricos de 1990 a 2019; a escala de 150 anos deixa o avanço perto de 1% até o fim do século. É a hipótese mais forte do modelo. A alternativa (1,4% para sempre) deixaria o PIB composto, só mais devagar. Uma escala de 85 anos, testada primeiro, deixava o limite em 2,8 vezes, mas dava quase as mesmas recessões (a seção 3.7).
-- **O que antes mudava o ritmo agora muda o nível.** As políticas, a escola, a tecnologia, a dívida e a violência continuam somando ao potencial de cada ano; a convergência transforma um ponto a mais por ano em uns 65% a mais de renda no longo prazo (`e^(1/2)`). Entre o melhor e o pior país possível, umas 20 vezes, perto do que existe entre países de verdade.
+- **O que antes mudava o ritmo agora muda o nível.** As políticas, a escola, a tecnologia, a dívida e a violência continuam somando ao potencial de cada ano; a convergência transforma um ponto a mais por ano em uns 65% a mais de renda no longo prazo (`e^(1/2)`). Entre o melhor e o pior país possível, umas 40 vezes (o melhor soma 2,4 pontos ao potencial; o pior tira uns 5), da ordem do que existe entre países de verdade.
 - **O grupo de quem joga**: o valor adicionado a mais que ele traz ao PIB (`empresa.ts › pesoNoPib`) ergue a renda potencial junto. A capacidade que ele construiu é do país, e a convergência não a desfaz.
 - **O save antigo** (`iniciarNumeros`): o país que seguiu o caminho comum ganha a renda potencial do ano dele; o que já tinha crescido demais fica com a renda que tem como potencial e para de compor, sem perder um real.
 
@@ -142,7 +142,7 @@ BigInt e decimal foram avaliados e não adotados:
 - o save é JSON, e BigInt não serializa;
 - a interface formata `number`.
 
-A saída foi limitar os números pelo modelo e conferir o limite: com o país limitado, o maior número em reais da bancada de 100 gerações ficou em 5,7 × 10¹³, 160 vezes abaixo de 2^53; o invariante do motor trava o contrário. As folgas de cada entrada do livro (meio real mais 10⁻⁹ do maior valor da entrada) ficaram: não acumulam no tempo, e os valores de uma entrada agora são limitados.
+A saída foi limitar os números pelo modelo e conferir o limite: com o país limitado, o maior número em reais da bancada (27 dinastias de 12 gerações e 9 de 100) ficou em 1,4 × 10¹⁴, 60 vezes abaixo de 2^53; o invariante do motor trava o contrário. As folgas de cada entrada do livro (meio real mais 10⁻⁹ do maior valor da entrada) ficaram: não acumulam no tempo, e os valores de uma entrada agora são limitados.
 
 ### 3.7 O ciclo contra a tendência, e as fases
 
@@ -296,7 +296,23 @@ A diferença que quem joga um save antigo vai sentir é o ritmo: o país que est
 - **Depois**: 598 testes, todos passando. Os novos estão em `test/longo-prazo.test.ts`: a fronteira, a tendência de 2026, a convergência e o teto de 6%, mil anos de caminho comum, a população que volta a crescer, o save antigo, o índice dos salários, o mercado dividido entre a carteira e a holding, o rendimento da holding com o teto e o Tesouro de contraparte, a inflação do caixa parado, as contas do país na herança, o id livre, a economia aquecida pelo hiato, o teto dos bens, as classes pequenas e o excedente parado.
 - **Testes que mudaram de expectativa** (o comportamento mudou de propósito, e o teste mede o novo, explicitamente): o salário de entrada da carreira e o do vereador (vezes o índice), a dotação da Casa Real, a população do ano (com a população de antes), o caixa da holding depois do dividendo (com a inflação do caixa parado), a fase do país (com o potencial do ano), o preço de venda na crise (com o momento do estado). O teste da sanção depois do rompimento passou de 20 para 80 sementes: a taxa é a mesma de antes (26,5% e 25,5% em 200 sementes), mas as primeiras sementes dão menos por acaso.
 - `npm run validar`: sem erro e sem aviso. `npm run auditoria`: 160 dinastias de 4 gerações, nenhum problema, resto máximo de R$ 0,03. `npm run dinastias:ci` (no `verificar` e no CI): nenhum invariante quebrado.
-- Túnel de vento: TUNEL_DA_ETAPA
+- Túnel de vento (`npm run tunel`, 10.000 vidas, dentro do `verificar`): passou. Nenhuma história morta, as contas e as dívidas fechando em toda entrada, nenhuma estratégia vencendo em tudo. Comparado com a rodada oficial de antes da etapa:
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Saturação V5 / V20 | 52,4% / 86,6% | 53,6% / 86,8% |
+| Assinaturas de vida por 1.000 vidas (sem a origem) | 904 (567) | 905 (574) |
+| Mobilidade (Spearman da origem ao fim) | 0,37 | 0,33 |
+| Toques por vida | 483,7 | 485,2 |
+| CPU por vida (não é A/B: rodadas em dias diferentes) | 184 ms | 182 ms |
+| O maior save | 1.287 KB | 1.179 KB |
+| Fases de uma vida (normal / aquecida / recessão / crise) | 64% / 23% / 10% / 2% | 50% / 27% / 18% / 5% |
+| Demissões por vida / vindas de uma recessão ou crise | 0,54 / 31% | 0,53 / 47% |
+| Bilionário feito (de quem nasce sem fortuna) | 0,33% | 0,27% |
+| O PIB recorde (a história) | 6,9% das vidas | 2,3% |
+| A dupla do valor: pedidos aprovados / negados; o caixa aplicado rendeu | 9 / 66; −R$ 26 bilhões | 20 / 182; R$ 65 bilhões |
+
+Os portões que falham são os mesmos que já falhavam antes (o maior save, a CPU, os toques, a herança entre gerações, as assinaturas sem regressão, o voto e as centenas de subsidiárias); dois que falhavam passaram (a coroa que passa e o quintil mais rico ao mais pobre). O portão das fases mudou, com o porquê (seção 3.7).
 
 ## 7. As limitações que ficam
 

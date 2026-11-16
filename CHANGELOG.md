@@ -15,8 +15,9 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 - 💼 **O mercado tem o tamanho do PIB** (43%), dividido entre a carteira e o caixa que a dupla aplica; o juro da parte no Tesouro é pago pelo Tesouro; o caixa parado das empresas perde a inflação.
 - 🏦 **As contas do país passam a quem herda**; a folga do dinheiro do mundo é fixa (R$ 100), e todo campo em reais é conferido contra 2^53.
 - 📈 **O ciclo mede contra a tendência do país** (o salário, as empresas, a aprovação, a virada de fase); a economia aquecida é crescer acima do potencial; o portão das fases é o de um Brasil que envelhece.
+- 🏝️ **Nada compõe para sempre**: a ilha (a renda persegue um potencial da fronteira; a população, o espaço de um milhão), os bens (a valorização própria para acima de 4,5 vezes o preço justo), a cripto e os fundos imobiliários (até 3% do PIB por dono) e o excedente acima do mercado (perde a inflação).
 - 🔧 Achados da bancada e do túnel: dois imóveis herdados com o mesmo id (o financiamento ficava sem o imóvel) e a guerra de preços contada como guerra militar.
-- 📊 RESUMO_DO_CHANGELOG
+- 📊 598 testes (16 novos), auditoria sem problema, bancada sem invariante quebrado em 100 gerações. No túnel (10.000 vidas): nenhuma história morta, nenhum portão novo falhando, V5 53,6%, assinaturas 905, toques 485,2, 182 ms por vida; as fases de uma vida ficaram em 50% normal, 27% aquecida, 18% recessão e 5% crise (antes 64/23/10/2).
 
 ## 📏 A dupla do valor, medida e destravada · 16/11/2026
 
