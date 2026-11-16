@@ -197,12 +197,22 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
   // O juro da renda fixa é pago pelo tesouro (os títulos); o resto é cotação, que ninguém paga.
   // O que cabe é uma parte do PIB, dividida com o caixa que as holdings de quem joga aplicam (campos.ts › parteQueCabe).
   // Nas classes pequenas (cripto e fundos imobiliários), o tamanho delas também conta (PARTE_DA_CLASSE_NO_PIB).
+  // O excedente parado é dinheiro que não achou onde ser aplicado: perde a inflação, como a conta e o caixa parado das
+  // empresas (etapa 02). Sem isso, a fortuna acima do mercado crescia sem fim, com o rendimento da parte que cabe somando
+  // a um excedente que nunca perdia (a bancada viu uma família com 114% do PIB).
   const cabe = parteQueCabe(e);
   for (const a of ATIVOS) {
     if (!n[a]) continue;
     const antesDaClasse = n[a];
-    n[a] = n[a] * (1 + (retornos[a] ?? 0) * parteQueCabeNaClasse(e, a, cabe));
+    const parte = parteQueCabeNaClasse(e, a, cabe);
+    const parado = Math.max(0, antesDaClasse) * (1 - parte);
+    n[a] = antesDaClasse * (1 + (retornos[a] ?? 0) * parte);
     fluxos.push(a === 'renda_fixa' ? { campo: a, d: n[a] - antesDaClasse, p: 'tesouro', r: 'rendimento' } : { campo: a, d: n[a] - antesDaClasse, p: 'reavaliacao', r: 'cotacao' });
+    if (parado >= 1 && inflacao > 0) {
+      const perde = parado * (inflacao / (1 + inflacao));
+      n[a] -= perde;
+      fluxos.push({ campo: a, d: -perde, p: 'reavaliacao', r: 'inflacao' });
+    }
   }
   const renda = n['renda'] ?? 0;
   // Os juros de cada contrato (contratos.ts): o do momento no cheque especial e nos empréstimos em dia, o do acordo e a

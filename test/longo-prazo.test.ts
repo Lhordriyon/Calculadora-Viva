@@ -298,3 +298,18 @@ describe('as classes pequenas têm o tamanho delas', () => {
     expect(eu.n['acoes']! / pib).toBeCloseTo(0.036, 6);
   });
 });
+
+describe('o excedente parado perde a inflação', () => {
+  it('acima do que o mercado comporta, a carteira não rende e perde a inflação, como dinheiro parado', () => {
+    const e = nascer(c, { semente: 72, ano: 2026 });
+    const eu = e.entidades['eu']!;
+    const cabe = capacidadeDoMercado(e);
+    Object.assign(eu.n, { dinheiro: 0, renda_fixa: 4 * cabe, acoes: 0, fii: 0, dolar: 0, cripto: 0, renda: 0, custo: 0, divida: 0 });
+    const reg: Mudanca[] = [];
+    economiaDoAno(e, reg, { inflacao: 0.05 }, { renda_fixa: 0.1 });
+    // Um quarto rende 10%; os três quartos parados perdem 5% ÷ 1,05.
+    const esperado = 4 * cabe + cabe * 0.1 - 3 * cabe * (0.05 / 1.05);
+    expect(eu.n['renda_fixa']! / esperado).toBeCloseTo(1, 9);
+    expect(reg.some((m) => m.c === 'eu.renda_fixa' && m.r === 'inflacao' && m.p === 'reavaliacao')).toBe(true);
+  });
+});
