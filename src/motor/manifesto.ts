@@ -737,14 +737,15 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'regras',
     nome: 'fecha as regras do ano numa entrada invisível do livro',
-    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, ...LADO_DE_LA, 'eu.felicidade'],
+    // O livro acerta o valor da holding pelo caixa dela em toda entrada que mexe num dos dois (livro.ts › lancar).
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, ...LADO_DE_LA, 'eu.felicidade', 'empresa.caixa', 'empresa.valor', 'empresa.holding', 'empresa.vivo'],
     escreve: [...LADO_DE_LA, ],
   },
   {
     id: 'morte',
     nome: 'a morte: a do corpo e a da violência',
     // As causas de morte (mortes.json) leem as qualidades de quem joga e se quem elas citam ainda vive; a empresa sente a falta de quem mandava.
-    le: ['eu.*', ...PATRIMONIO, 'empresa.dependencia', 'empresa.demanda', 'empresa.nome', 'empresa.genero', 'lugar.capital', 'pais.saude', 'pais.violencia', 'pessoa.nome', 'pessoa.vivo'],
+    le: ['eu.*', ...PATRIMONIO, 'empresa.dependencia', 'empresa.demanda', 'empresa.nome', 'empresa.genero', 'empresa.holding', 'empresa.caixa', 'empresa.vivo', 'lugar.capital', 'pais.saude', 'pais.violencia', 'pessoa.nome', 'pessoa.vivo'],
     escreve: ['eu.vivo', 'eu.morte', 'empresa.valor', 'empresa.demanda'],
   },
   {

@@ -209,6 +209,19 @@ function espelhar(e: EstadoVida, reg: Mudanca[]): void {
 
 /** Registra uma entrada no histórico, já com as mudanças fechadas. */
 export function lancar(e: EstadoVida, entrada: Entrada, reg: Mudanca[]): Entrada {
+  // O valor guardado da holding é o caixa dela (societario.ts): o que mexeu num dos dois (a história que fala da
+  // empresa de perto, quando a holding ocupa o lugar dela; a dupla do valor; o aporte) acerta o outro aqui.
+  for (let i = 0, n = reg.length; i < n; i++) {
+    const m = reg[i]!;
+    if (m.d === undefined || !(m.c.endsWith('.caixa') || m.c.endsWith('.valor'))) continue;
+    const h = e.entidades[m.c.slice(0, m.c.indexOf('.'))];
+    if (!h || h.tipo !== 'empresa' || !h.q['holding'] || h.vivo === false) continue;
+    const dif = Math.max(0, h.n['caixa'] ?? 0) - (h.n['valor'] ?? 0);
+    if (Math.abs(dif) > 0.5) {
+      h.n['valor'] = (h.n['valor'] ?? 0) + dif;
+      reg.push({ c: `${h.id}.valor`, d: dif, r: 'empresa' });
+    }
+  }
   espelhar(e, reg);
   const mudancas = fecharMudancas(reg);
   if (mudancas.length > 0) entrada.mudancas = mudancas;

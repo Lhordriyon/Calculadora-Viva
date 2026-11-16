@@ -850,9 +850,10 @@ function decidirEmpresa(estrategia: Estrategia, e: EstadoVida, c: Conteudo, rng:
     if (bolsa) return [{ tipo: 'abrirCapital', empresa: bolsa.id }];
   }
   // A holding e a dupla do valor (I-181): com a empresa de R$ 50 milhões, a arriscada cria a holding, põe a empresa
-  // nela e contrata a dupla, um passo por ano, para o túnel passar pela estrutura inteira.
+  // nela e contrata a dupla, um passo por ano, para o túnel passar pela estrutura inteira. Só a partir dos 45: antes
+  // disso, a empresa de perto é dela direto, e as histórias da bolsa (a oferta contra quem perdeu a maioria) acontecem.
   const holding = grupo.find((x) => x.q['holding'] && donaDe(x) === 'eu');
-  if (!holding && (emp.n['valor'] ?? 0) >= 5e7 && liquido >= 3e6 && idade <= 60) {
+  if (!holding && (emp.n['valor'] ?? 0) >= 5e7 && liquido >= 3e6 && idade >= 45 && idade <= 60) {
     const op: Operacao = { tipo: 'criarHolding', valor: Math.floor(liquido * 0.5) };
     if (pode(e, c, op)) return [op];
   }
