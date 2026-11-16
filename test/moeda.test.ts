@@ -44,7 +44,11 @@ describe('o dinheiro existe (bloco $)', () => {
   });
 
   it('a impressora do Banco Central põe dinheiro novo na economia e acende a inflação', () => {
-    const base = viver(43, 'cautelosa', 30);
+    // Três vidas: o efeito varia com o caminho (em 10 sementes, de +1,4 a +3,4 pontos; +2,4 na média depois da etapa 02,
+    // +3,1 antes). Uma semente só media o caminho, não a regra.
+    const efeitos: number[] = [];
+    for (const semente of [43, 45, 47]) {
+    const base = viver(semente, 'cautelosa', 30);
     const comPolitica = (nivel: number): { e: EstadoVida; media: number } => {
       const e = structuredClone(base);
       e.entidades['pais']!.n['pol_moeda'] = nivel;
@@ -62,9 +66,12 @@ describe('o dinheiro existe (bloco $)', () => {
     const regular = comPolitica(1);
     const impressora = comPolitica(2);
     expect(impressora.e.entidades['pais']!.n['moeda']!).toBeGreaterThan(regular.e.entidades['pais']!.n['moeda']! + 5);
-    expect(impressora.media).toBeGreaterThan(regular.media + 1.5);
+    expect(impressora.media).toBeGreaterThan(regular.media);
+    efeitos.push(impressora.media - regular.media);
     expect(impressora.e.historico.some((h) => h.mudancas?.some((m) => m.c === 'tesouro.dinheiro' && m.r === 'emissao'))).toBe(true);
     expect(Math.abs(dinheiroDoMundo(impressora.e))).toBeLessThan(1e4);
+    }
+    expect(efeitos.reduce((s, x) => s + x, 0) / efeitos.length).toBeGreaterThan(1.5);
   });
 
   it('o que quem joga paga ao mercado entra na conta do mercado no mesmo lançamento', () => {
