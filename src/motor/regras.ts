@@ -740,11 +740,19 @@ export const COROA = {
  * renda por pessoa e a população crescem por ano, o que o reconhecimento soma às duas, o que a taxa da coroa tira da
  * renda, quanto cada forma da coroa espanta de gente e a sorte de um ano.
  */
+/**
+ * A ilha (coroa.ts). Etapa 02: a renda por pessoa crescia 2,5% ao ano e a população 1% ao ano, para sempre (o PIB da
+ * ilha passou de 2^53 na 37ª geração da bancada). Agora a renda por pessoa persegue um potencial que anda com a
+ * fronteira do mundo (`nivel`: e^0,75 = 2,1 vezes a renda da fundação, o que dá os uns 2,5% ao ano de antes nas
+ * primeiras décadas), e a população cresce o que o espaço deixa (`capacidade`: um milhão de pessoas, o tamanho de uma
+ * ilha-país); a fuga pela taxa e pela parte dos impostos continua valendo inteira.
+ */
 export const ILHA = {
   habitantes: 2300,
   porPessoa: 80_000,
   imposto: 0.2,
-  renda: 0.025,
+  nivel: 0.75,
+  capacidade: 1_000_000,
   populacao: 0.01,
   reconhecida: 0.01,
   taxaNaRenda: 0.01,

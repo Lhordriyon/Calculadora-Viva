@@ -20,6 +20,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { carregarConteudo } from './disco.ts';
 import { jaAgiu } from '../src/motor/acoes.ts';
+import * as campos from '../src/motor/campos.ts';
 import { defCampo, empresasDe, indicadoresDoPais, parteEfetiva, parteNasEmpresas, patrimonioTotal, todasAsEmpresas } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { conferirContas } from '../src/motor/contas.ts';
@@ -65,6 +66,14 @@ const SEMENTE_BASE = 101;
 const c = carregarConteudo();
 const PC_2026 = PAIS_EM_2026.pib / PAIS_EM_2026.populacao;
 const INTEIRO_SEGURO = Number.MAX_SAFE_INTEGER;
+/**
+ * O que o mercado comporta de um dono: o do motor que está rodando (a bancada também joga versões antigas, para comparar;
+ * antes da etapa 02, eram R$ 5 trilhões fixos).
+ */
+const capacidadeDoMercado = (e: EstadoVida): number => {
+  const doMotor = (campos as { capacidadeDoMercado?: (e: EstadoVida) => number }).capacidadeDoMercado;
+  return doMotor ? doMotor(e) : 5e12;
+};
 
 // ---------------------------------------------------------------- os invariantes de escala (absolutos)
 
@@ -76,11 +85,13 @@ const INTEIRO_SEGURO = Number.MAX_SAFE_INTEGER;
  *   2026, e as melhores políticas dão uns 3,5 vezes de nível); abaixo de um quinto, o país teria regredido um século.
  * - salario: quem vive de salário e ganha menos de um vigésimo da renda média do país não é um trabalhador daquele país.
  * - patrimonio: toda a riqueza de um país fica em torno de 6 PIBs; ninguém tem mais do que isso sozinho.
- * - rendimento: o que o dinheiro aplicado rende no ano não passa de 20% do PIB (o mercado inteiro é menor que um PIB).
+ * - rendimento: o que o dinheiro aplicado de quem joga (a carteira e o caixa que a dupla aplica) rende no ano não passa
+ *   do que o mercado comporta de um dono (campos.ts › capacidadeDoMercado) vezes o melhor retorno do ano: mais que isso
+ *   é dinheiro rendendo fora do mercado (o caixa da holding rendia assim antes da etapa 02).
  * - populacao: abaixo de 20 milhões, o país perdeu nove em cada dez pessoas.
  * - moeda: o dinheiro que circula na economia (a conta do mercado) não fica negativo, e o caixa de uma empresa não passa de um PIB.
  */
-const LIMITES = { residuo: 100, pcMax: 30, pcMin: 0.2, salarioMin: 0.05, patrimonio: 6, rendimento: 0.2, populacaoMin: 2e7 } as const;
+const LIMITES = { residuo: 100, pcMax: 30, pcMin: 0.2, salarioMin: 0.05, patrimonio: 6, populacaoMin: 2e7 } as const;
 type Invariante = 'precisao' | 'residuo' | 'pibPerCapita' | 'salario' | 'patrimonio' | 'rendimento' | 'populacao' | 'moeda' | 'consolidado' | 'estado' | 'contas';
 
 interface Quebra {
@@ -209,6 +220,7 @@ function viverGeracao(d: Dinastia, e: EstadoVida, g: number, precos: { p: number
     // O livro do ano: as contas de cada entrada e o que o dinheiro aplicado rendeu.
     let rendeu = 0;
     let rendeuNaHolding = 0;
+    const porCampo = new Map<string, number>();
     for (let i = conferidas; i < e.historico.length; i++) {
       const h = e.historico[i]!;
       for (const p of conferirContas(e, h)) quebrar('contas', p);
@@ -222,6 +234,8 @@ function viverGeracao(d: Dinastia, e: EstadoVida, g: number, precos: { p: number
         if (m.d === undefined) continue;
         if (m.r === 'carteira') rendeuNaHolding += m.d;
         else if (m.r === 'cotacao' || m.r === 'rendimento') rendeu += m.d;
+        else continue;
+        if (anual) porCampo.set(m.c, (porCampo.get(m.c) ?? 0) + m.d);
       }
     }
     conferidas = e.historico.length;
@@ -252,7 +266,14 @@ function viverGeracao(d: Dinastia, e: EstadoVida, g: number, precos: { p: number
     const patrimonio = patrimonioTotal(e);
     patrimonioMaximoSobrePib = Math.max(patrimonioMaximoSobrePib, patrimonio / pib);
     if (patrimonio > LIMITES.patrimonio * pib) quebrar('patrimonio', `patrimônio de ${(patrimonio / pib).toFixed(1)} PIBs`);
-    if (rendeuSobrePib > LIMITES.rendimento) quebrar('rendimento', `o dinheiro aplicado rendeu ${(100 * rendeuSobrePib).toFixed(1)}% do PIB no ano`);
+    // O teto do rendimento: o mercado de um dono vezes o melhor retorno do ano (os retornos vêm com uma casa: +0,05 ponto).
+    const melhor = Math.max(0, ...Object.keys(pais).filter((k) => k.startsWith('ret_')).map((k) => pais[k] ?? 0)) / 100 + 0.0005;
+    const tetoDoRendimento = capacidadeDoMercado(e) * melhor + 1;
+    if (rendeu + rendeuNaHolding > tetoDoRendimento) quebrar('rendimento', `o dinheiro aplicado rendeu R$ ${(rendeu + rendeuNaHolding).toExponential(3)}, mais que o mercado comporta vezes o melhor retorno do ano (R$ ${tetoDoRendimento.toExponential(3)})`);
+    if (anual && rendeuSobrePib > 0.1) {
+      const pais0 = e.entidades['pais']!.n;
+      console.log(`  >> rendeu ${(100 * rendeuSobrePib).toFixed(1)}% do PIB: ${[...porCampo].sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 5).map(([k, v]) => `${k} ${(v / pib).toFixed(3)} PIB`).join(', ')} | retornos do ano: ${Object.keys(pais0).filter((k) => k.startsWith('ret_')).map((k) => `${k.slice(4)} ${pais0[k]}%`).join(' ')}`);
+    }
     // O grupo sem contar duas vezes: a parte de quem joga é a soma, empresa por empresa, da parte efetiva vezes o valor;
     // e a holding vale o caixa dela (o que ela tem nas filhas já está nas filhas).
     let soma = 0;

@@ -9,13 +9,13 @@
  * A ilha (o começo da I-43): o país que quem joga fundou no Pacífico, com população, PIB e imposto. Ela anda todo ano
  * (a renda por pessoa e a gente que chega ou vai embora) e passa a quem herda.
  */
-import { indiceDeSalarios } from './campos.ts';
+import { fronteiraEm, indiceDeSalarios } from './campos.ts';
 import { FORMAS_DA_COROA, type FormaDaCoroa } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { definirNumero, definirTexto, somar } from './livro.ts';
 import { efeitoDasPoliticas } from './pais.ts';
 import { novaEntidade } from './pessoas.ts';
-import { COROA, ILHA, REACAO_DA_COROA } from './regras.ts';
+import { COROA, ILHA, LONGO_PRAZO, REACAO_DA_COROA } from './regras.ts';
 import { inteiro, normal } from './rng.ts';
 import { assumirAIlha } from './sucessao.ts';
 import { formatarDinheiro } from './texto.ts';
@@ -87,10 +87,18 @@ function anoDaIlha(e: EstadoVida, reg: Mudanca[]): void {
   const ilha = e.entidades['ilha']!;
   const reconhecida = (e.entidades['eu']?.q['pais_reconhecido']?.v ?? 0) > 0;
   const forma = paisDaCoroa(e) === 'ilha' ? formaDaCoroa(e, 'ilha') : 'salario';
-  const renda = ILHA.renda + (reconhecida ? ILHA.reconhecida : 0) - (forma === 'taxa' ? ILHA.taxaNaRenda : 0) + normal(e.rng, 0, ILHA.desvio);
-  const gente = ILHA.populacao + (reconhecida ? ILHA.reconhecida : 0) - ILHA.fuga[forma] + normal(e.rng, 0, ILHA.desvio / 2);
   const antes = Math.max(1, ilha.n['populacao'] ?? ILHA.habitantes);
   const porPessoa = (ilha.n['pib'] ?? antes * ILHA.porPessoa) / antes;
+  // A renda por pessoa persegue o potencial da ilha, que anda com a fronteira do mundo desde a fundação (etapa 02); ser
+  // reconhecida e a taxa da coroa mudam o nível para onde ela vai, como as políticas do país.
+  const fundacao = ilha.nascimento ?? e.ano;
+  const potencial = ILHA.porPessoa * Math.exp(ILHA.nivel) * (fronteiraEm(e.ano) / fronteiraEm(fundacao));
+  const fronteira = fronteiraEm(e.ano) / fronteiraEm(e.ano - 1) - 1;
+  const convergencia = (LONGO_PRAZO.convergencia / 100) * Math.log(potencial / Math.max(1, porPessoa));
+  const renda = fronteira + convergencia + (reconhecida ? ILHA.reconhecida : 0) - (forma === 'taxa' ? ILHA.taxaNaRenda : 0) + normal(e.rng, 0, ILHA.desvio);
+  // A gente chega no ritmo que o espaço deixa (até a capacidade da ilha); quem foge da coroa foge do mesmo jeito.
+  const espaco = Math.max(0, 1 - antes / ILHA.capacidade);
+  const gente = (ILHA.populacao + (reconhecida ? ILHA.reconhecida : 0)) * espaco - ILHA.fuga[forma] + normal(e.rng, 0, ILHA.desvio / 2);
   const populacao = Math.max(50, Math.round(antes * (1 + gente)));
   definirNumero(e, reg, 'ilha', 'populacao', populacao, 'ilha');
   definirNumero(e, reg, 'ilha', 'pib', Math.round(populacao * porPessoa * (1 + renda)), 'ilha');
