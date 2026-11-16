@@ -9,7 +9,7 @@
  * governa tem popularidade; abaixo do ponto crítico, o cargo balança (storylet
  * agendado). Decretos são storylets que mexem no país (`pais.impulso`).
  */
-import { empresasDe, entradaQueDefiniu, patrimonioTotal } from './campos.ts';
+import { empresasDe, entradaQueDefiniu, indiceDeSalarios, patrimonioTotal } from './campos.ts';
 import { CONQUISTAS, esferas, influenciaPolitica } from './influencia.ts';
 import { statusDosBens } from './bens.ts';
 import { noGenero, largarEmprego, tentouEsteAno } from './carreira.ts';
@@ -104,7 +104,7 @@ function assumir(e: EstadoVida, reg: Mudanca[], def: DefCargo, origem: number): 
   largarEmprego(e, reg);
   definirTexto(e, reg, 'eu', 'cargo', def.id);
   definirNumero(e, reg, 'eu', 'mandato', def.mandato);
-  definirNumero(e, reg, 'eu', 'renda', def.salario);
+  definirNumero(e, reg, 'eu', 'renda', Math.round(def.salario * indiceDeSalarios(e)));
   definirTexto(e, reg, 'eu', 'ocupacao', noGenero(def.nome, eu.genero));
   definirTexto(e, reg, 'eu', 'setor', 'publico');
   // O mandato começa com a imagem de quem ganhou, mais a lua de mel (quem venceu tem ao menos o crédito de quem votou).

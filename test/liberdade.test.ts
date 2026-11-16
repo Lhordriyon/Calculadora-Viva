@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
-import { bensDe, patrimonioTotal } from '../src/motor/campos.ts';
+import { bensDe, indiceDeSalarios, patrimonioTotal } from '../src/motor/campos.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
 import { regraDosBens } from '../src/motor/bens.ts';
 import { carreiraDe, regraDaCarreira } from '../src/motor/carreira.ts';
@@ -76,8 +76,11 @@ describe('carreira', () => {
     const e = adulto(5);
     expect(motivoParaNaoOperar(e, c, { tipo: 'candidatar', carreira: 'medico' })).toMatch(/exige/);
     // Insiste até passar (uma tentativa por ano).
+    let indice = 0;
     for (let i = 0; i < 20 && !carreiraDe(e, c); i++) {
       expect(motivoParaNaoOperar(e, c, { tipo: 'candidatar', carreira: 'vendedor' })).toBeNull();
+      // O salário de entrada é o do cargo vezes o que cada pessoa do país produz diante de 2026 (etapa 02).
+      indice = indiceDeSalarios(e);
       operar(e, c, { tipo: 'candidatar', carreira: 'vendedor' });
       if (!carreiraDe(e, c)) expect(motivoParaNaoOperar(e, c, { tipo: 'candidatar', carreira: 'vendedor' })).toMatch(/uma tentativa/);
       e.ano++;
@@ -85,7 +88,8 @@ describe('carreira', () => {
     }
     expect(carreiraDe(e, c)?.id).toBe('vendedor');
     expect(e.entidades['eu']!.t['setor']).toBe('comercio');
-    expect(e.entidades['eu']!.n['renda']).toBe(24000);
+    expect(e.entidades['eu']!.n['renda']).toBe(Math.round(24000 * indice));
+    expect(indice).toBeGreaterThan(1);
   });
 
   it('o cargo sobe com os anos, e uma demissão de storylet encerra a carreira', () => {
@@ -115,7 +119,7 @@ describe('poder', () => {
     const eu = e.entidades['eu']!;
     expect(eu.n['dinheiro']).toBeCloseTo(10_000_000 - vereador.campanha, 0);
     if (eu.t['cargo'] !== 'vereador') return; // perdeu (raro com essa influência): o resto não se aplica
-    expect(eu.n['renda']).toBe(vereador.salario);
+    expect(eu.n['renda']).toBe(Math.round(vereador.salario * indiceDeSalarios(e)));
     const fase = momentoTipico('normal');
     for (let i = 0; i < 6 && eu.t['cargo']; i++) regraDoPoder(e, c, fase, []);
     expect(eu.t['cargo']).toBe('');

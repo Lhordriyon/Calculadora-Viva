@@ -78,9 +78,10 @@ const INTEIRO_SEGURO = Number.MAX_SAFE_INTEGER;
  * - patrimonio: toda a riqueza de um país fica em torno de 6 PIBs; ninguém tem mais do que isso sozinho.
  * - rendimento: o que o dinheiro aplicado rende no ano não passa de 20% do PIB (o mercado inteiro é menor que um PIB).
  * - populacao: abaixo de 20 milhões, o país perdeu nove em cada dez pessoas.
+ * - moeda: o dinheiro que circula na economia (a conta do mercado) não fica negativo, e o caixa de uma empresa não passa de um PIB.
  */
 const LIMITES = { residuo: 100, pcMax: 15, pcMin: 0.2, salarioMin: 0.05, patrimonio: 6, rendimento: 0.2, populacaoMin: 2e7 } as const;
-type Invariante = 'precisao' | 'residuo' | 'pibPerCapita' | 'salario' | 'patrimonio' | 'rendimento' | 'populacao' | 'consolidado' | 'estado' | 'contas';
+type Invariante = 'precisao' | 'residuo' | 'pibPerCapita' | 'salario' | 'patrimonio' | 'rendimento' | 'populacao' | 'moeda' | 'consolidado' | 'estado' | 'contas';
 
 interface Quebra {
   n: number;
@@ -211,6 +212,12 @@ function viverGeracao(d: Dinastia, e: EstadoVida, g: number, precos: { p: number
     for (let i = conferidas; i < e.historico.length; i++) {
       const h = e.historico[i]!;
       for (const p of conferirContas(e, h)) quebrar('contas', p);
+      // Na série ano a ano: a entrada que moveu mais de um décimo do PIB em alguma conta do país (a causa de um salto).
+      if (anual) {
+        for (const m of h.mudancas ?? []) {
+          if (m.d !== undefined && /^(mercado|banco|tesouro|bc|fora)\.dinheiro$/.test(m.c) && Math.abs(m.d) > 0.1 * pib) console.log(`  >> ${h.tipo} ${h.ref ?? ''}: ${m.c} ${m.d.toExponential(2)} (${m.r ?? ''}) ${h.texto.slice(0, 90)}`);
+        }
+      }
       for (const m of h.mudancas ?? []) {
         if (m.d === undefined) continue;
         if (m.r === 'carteira') rendeuNaHolding += m.d;
@@ -240,6 +247,8 @@ function viverGeracao(d: Dinastia, e: EstadoVida, g: number, precos: { p: number
     if (e.vivo && e.idade >= 25 && e.idade <= 60 && assalariado(e) && (eu['renda'] ?? 0) > 0 && (eu['renda'] ?? 0) < LIMITES.salarioMin * pc) {
       quebrar('salario', `salário de R$ ${Math.round(eu['renda']!).toLocaleString('pt-BR')} com o PIB per capita em R$ ${Math.round(pc).toLocaleString('pt-BR')}`);
     }
+    if ((e.entidades['mercado']?.n['dinheiro'] ?? 0) < 0) quebrar('moeda', `o dinheiro do mercado está em ${((e.entidades['mercado']!.n['dinheiro'] ?? 0) / pib).toFixed(2)} PIB`);
+    for (const emp of todasAsEmpresas(e)) if ((emp.n['caixa'] ?? 0) > pib) quebrar('moeda', `${emp.id} tem ${((emp.n['caixa'] ?? 0) / pib).toFixed(1)} PIB em caixa`);
     const patrimonio = patrimonioTotal(e);
     patrimonioMaximoSobrePib = Math.max(patrimonioMaximoSobrePib, patrimonio / pib);
     if (patrimonio > LIMITES.patrimonio * pib) quebrar('patrimonio', `patrimônio de ${(patrimonio / pib).toFixed(1)} PIBs`);
@@ -423,7 +432,7 @@ function relatorio(r: Rodada, base?: Rodada): string {
   p();
   p('## Invariantes de escala (limites absolutos)');
   p();
-  const invs: Invariante[] = ['precisao', 'residuo', 'pibPerCapita', 'salario', 'patrimonio', 'rendimento', 'populacao', 'consolidado', 'estado', 'contas'];
+  const invs: Invariante[] = ['precisao', 'residuo', 'pibPerCapita', 'salario', 'patrimonio', 'rendimento', 'populacao', 'moeda', 'consolidado', 'estado', 'contas'];
   p('| Invariante | Dinastias que quebraram | Vezes | A primeira |');
   p('|---|---|---|---|');
   for (const inv of invs) {

@@ -2,6 +2,7 @@
  * A coroa recebe (bloco C): a forma da coroa (salário, parte dos impostos, taxa), a dotação que o tesouro ou a ilha paga,
  * o preço na aprovação, a ilha com população e PIB, a greve, a herança e o save antigo.
  */
+import { indiceDeSalarios } from '../src/motor/campos.ts';
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { motivoParaNaoOperar, operar } from '../src/motor/carteira.ts';
@@ -67,7 +68,8 @@ describe('a forma da coroa', () => {
   it('a dotação de cada forma: o salário fixo, uma fatia da arrecadação e uma fatia do PIB', () => {
     const e = monarca(10);
     const pib = e.entidades['pais']!.n['pib']!;
-    expect(dotacaoDe(e, c, 'pais', 'salario')).toBe(COROA.brasil.salario);
+    // O salário da Casa Real anda com o que cada pessoa do país produz (etapa 02).
+    expect(dotacaoDe(e, c, 'pais', 'salario')).toBe(Math.round(COROA.brasil.salario * indiceDeSalarios(e)));
     expect(dotacaoDe(e, c, 'pais', 'impostos')).toBeCloseTo(arrecadacaoDe(e, c, 'pais') * COROA.brasil.parte, 0);
     expect(dotacaoDe(e, c, 'pais', 'taxa')).toBeCloseTo(pib * COROA.brasil.taxa, 0);
     // A parte dos impostos fica entre o salário e a taxa, e a taxa é a maior.

@@ -6,7 +6,7 @@
  * nas profissões de palco. Tentar uma vaga não gasta ficha, mas é uma por ano.
  * Mudar de emprego por um storylet (a demissão, o bico) tira a carreira.
  */
-import { entradaQueDefiniu } from './campos.ts';
+import { entradaQueDefiniu, indiceDeSalarios } from './campos.ts';
 import { influenciaPessoal } from './influencia.ts';
 import { atende } from './condicoes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -134,7 +134,7 @@ export function operarCarreira(e: EstadoVida, c: Conteudo, op: OperacaoCarreira,
   definirTexto(e, reg, 'eu', 'ocupacao', nome);
   definirTexto(e, reg, 'eu', 'setor', def.setor);
   definirTexto(e, reg, 'eu', 'carreira', def.id);
-  definirNumero(e, reg, 'eu', 'renda', salarioDoCargo(def, 0));
+  definirNumero(e, reg, 'eu', 'renda', Math.round(salarioDoCargo(def, 0) * indiceDeSalarios(e)));
   if (def.estavel) ganhar(e, reg, 'eu', 'servidor', origem);
   const cargo = nomeDoCargo(def, 0, eu.genero);
   return {

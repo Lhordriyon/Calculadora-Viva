@@ -27,7 +27,7 @@ import { lugarLivre, setoresDeEmpresa } from './empresa.ts';
 import { ofertaDe, precoDoSetor } from './negocio.ts';
 import { faseDe } from './pais.ts';
 import { aleatorio, criarRng, misturar } from './rng.ts';
-import { donaDe, empresaDoRegistro, empresasDe, refDaEmpresa } from './campos.ts';
+import { donaDe, empresaDoRegistro, empresasDe, parteQueCabe, refDaEmpresa } from './campos.ts';
 import { aEmpresa } from './empresa.ts';
 import { motivoParaNaoOperarGrupo, operarGrupo, type OperacaoGrupo } from './grupo.ts';
 import { lancar, novaEntrada, somar } from './livro.ts';
@@ -111,6 +111,13 @@ export function honorarioDaDupla(e: EstadoVida, h: Entidade): number {
 }
 
 /** O que a holding guarda antes de pôr dinheiro em qualquer coisa: dois anos de honorário. */
+/** O caixa da holding que a dupla deixa aplicado no mercado (o que passa da reserva); zero sem a dupla ou abaixo de R$ 100 mil. */
+export function caixaAplicado(e: EstadoVida, h: Entidade): number {
+  if (!h.q['holding'] || !h.q[QUALIDADE_DA_DUPLA]) return 0;
+  const livre = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
+  return livre >= 100_000 ? livre : 0;
+}
+
 function reservaDaHolding(e: EstadoVida, h: Entidade): number {
   return honorarioDaDupla(e, h) * 2;
 }
@@ -227,17 +234,22 @@ export function anoDaDupla(e: EstadoVida, c: Conteudo, mercado?: Partial<Record<
     }
   }
   // O resto trabalha no mercado: o caixa livre da holding em ações (mais na baixa) e no Tesouro, com o retorno do ano.
-  const aplicado = Math.max(0, (h.n['caixa'] ?? 0) - reservaDaHolding(e, h));
-  if (mercado && aplicado >= 100_000) {
+  const aplicado = caixaAplicado(e, h);
+  if (mercado && aplicado > 0) {
     const fase = faseDe(e);
     const emAcoes = fase === 'recessao' || fase === 'crise' ? CARTEIRA.acoesNaBaixa : CARTEIRA.acoesNoNormal;
-    const retorno = emAcoes * (mercado.acoes ?? 0) + (1 - emAcoes) * (mercado.renda_fixa ?? 0);
-    const rendeu = Math.round(aplicado * retorno);
+    // O mercado tem tamanho (uma parte do PIB), e a holding o divide com a carteira de quem joga: acima do que ele
+    // comporta, só a parte que cabe rende ou perde, e o resto fica parado em caixa (a mesma regra dos investimentos).
+    const cabe = parteQueCabe(e);
+    const dasAcoes = Math.round(aplicado * cabe * emAcoes * (mercado.acoes ?? 0));
+    const doTesouro = Math.round(aplicado * cabe * (1 - emAcoes) * (mercado.renda_fixa ?? 0));
+    const rendeu = dasAcoes + doTesouro;
     if (Math.abs(rendeu) >= 1) {
-      // A cotação que mudou é o mercado que pagou (ou cobrou) por ela; o valor da holding é o caixa.
-      somar(e, reg, h.id, 'caixa', rendeu, 'carteira', 'reavaliacao');
+      // A cotação que mudou é o mercado que pagou (ou cobrou) por ela; o juro do título é o Tesouro que paga. O valor da holding é o caixa.
+      somar(e, reg, h.id, 'caixa', dasAcoes, 'carteira', 'reavaliacao');
+      somar(e, reg, h.id, 'caixa', doTesouro, 'carteira', 'tesouro');
       somar(e, reg, h.id, 'valor', Math.max(-(h.n['valor'] ?? 0), rendeu), 'empresa');
-      feitos.push(`deixou ${formatarDinheiro(aplicado)} da holding aplicados (${pct(emAcoes)} em ações${emAcoes === CARTEIRA.acoesNaBaixa ? ' compradas na baixa' : ''}, o resto no Tesouro), que ${rendeu >= 0 ? `renderam ${formatarDinheiro(rendeu)}` : `perderam ${formatarDinheiro(-rendeu)}`} no ano`);
+      feitos.push(`deixou ${formatarDinheiro(aplicado)} da holding aplicados (${pct(emAcoes)} em ações${emAcoes === CARTEIRA.acoesNaBaixa ? ' compradas na baixa' : ''}, o resto no Tesouro), que ${rendeu >= 0 ? `renderam ${formatarDinheiro(rendeu)}` : `perderam ${formatarDinheiro(-rendeu)}`} no ano${cabe < 1 ? ` (o mercado só comporta ${pct(cabe)} disso; o resto ficou parado)` : ''}`);
     }
   }
   if (reg.length === 0) return;

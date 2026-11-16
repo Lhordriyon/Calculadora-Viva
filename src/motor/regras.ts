@@ -448,8 +448,13 @@ export function precoDeVenda(faseEmpresa: number): number {
 
 // ---- o tamanho do mundo (auditoria de 11/10: sem isto, a empresa e a fortuna cresciam sem fim)
 
-/** Quanto o mercado comporta de dinheiro investido de uma só pessoa: o excedente fica parado (nem rende, nem perde). */
+/**
+ * Quanto o mercado comporta de dinheiro aplicado de um só dono (a carteira de quem joga somada ao caixa aplicado das
+ * holdings dele): o excedente fica parado (nem rende, nem perde). É uma parte do PIB, porque a bolsa e os títulos de
+ * um país têm o tamanho da economia dele: 43% do PIB, que são os R$ 5 trilhões de 2026 (economia.ts › capacidadeDoMercado).
+ */
 export const CAPACIDADE_DO_MERCADO = 5e12;
+export const PARTE_DO_MERCADO_NO_PIB = 5e12 / 1.17e13;
 /** Gente que uma empresa consegue empregar no máximo (as maiores do mundo empregam uns 3 milhões). */
 export const MAX_FUNCIONARIOS = 3e6;
 /** Valor da empresa por pessoa empregada, enquanto ela é pequena. */
@@ -558,7 +563,18 @@ export const CRESCIMENTO_POTENCIAL = 2;
  * ponto por ponto (vive-se mais), e a pobreza acima de 25 soma 0,006 (famílias maiores).
  */
 export const PAIS_EM_2026 = { pib: 1.17e13, populacao: 2.13e8 } as const;
-export const DEMOGRAFIA = { taxa2026: 0.45, porAno: 0.022, piso: -0.35, porSaude: 0.01, porPobreza: 0.006 } as const;
+export const DEMOGRAFIA = { taxa2026: 0.45, porAno: 0.022, piso: -0.35, porSaude: 0.01, porPobreza: 0.006, porEspaco: 0.5 } as const;
+/**
+ * O crescimento de longo prazo (etapa 02, I-183): o PIB é gente vezes o que cada pessoa produz. O que cada pessoa
+ * produz persegue a renda potencial do país (`pais.renda_potencial`: a de equilíbrio com políticas médias), que anda
+ * com a fronteira de produtividade do mundo. A fronteira avança 1,2% ao ano em 2026 e desacelera (as ideias vêm de
+ * gente, e a população do mundo para de crescer neste século): a cada 85 anos o avanço cai a 37%, e a fronteira inteira
+ * soma 2,77 vezes a de 2026. O país fecha 2% ao ano da distância (em log) até a renda potencial dele; em 2026 ela está
+ * 19% acima da renda de hoje, o que dá os 2% de crescimento potencial de sempre (1,2 da fronteira, 0,45 de gente e
+ * 0,35 de convergência). Escola, tecnologia, políticas, dívida e violência continuam somando e tirando pontos de
+ * crescimento, mas agora mudam o nível para onde o país vai (cada ponto vale 50% de nível), não o ritmo para sempre.
+ */
+export const LONGO_PRAZO = { fronteira2026: 1.2, escala: 85, convergencia: 2, nivel: Math.exp(0.175), tetoDaConvergencia: 6 } as const;
 /** Quanto do desvio do crescimento fica para o ano seguinte, e a sorte do ano (pontos percentuais). */
 export const PERSISTENCIA_DO_CRESCIMENTO = 0.8;
 export const DESVIO_DO_CRESCIMENTO = 1.05;

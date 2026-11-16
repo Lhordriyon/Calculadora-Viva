@@ -9,6 +9,7 @@
  * A ilha (o começo da I-43): o país que quem joga fundou no Pacífico, com população, PIB e imposto. Ela anda todo ano
  * (a renda por pessoa e a gente que chega ou vai embora) e passa a quem herda.
  */
+import { indiceDeSalarios } from './campos.ts';
 import { FORMAS_DA_COROA, type FormaDaCoroa } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
 import { definirNumero, definirTexto, somar } from './livro.ts';
@@ -51,7 +52,8 @@ export function arrecadacaoDe(e: EstadoVida, c: Conteudo, onde: OndeDaCoroa): nu
 /** Quanto a coroa recebe por ano numa forma (reais de hoje). */
 export function dotacaoDe(e: EstadoVida, c: Conteudo, onde: OndeDaCoroa, forma: FormaDaCoroa = formaDaCoroa(e, onde)): number {
   const regra = onde === 'pais' ? COROA.brasil : COROA.ilha;
-  if (forma === 'salario') return regra.salario;
+  // O salário da Casa Real é um salário público: anda com o que cada pessoa do país produz (campos.ts › indiceDeSalarios).
+  if (forma === 'salario') return onde === 'pais' ? Math.round(regra.salario * indiceDeSalarios(e)) : regra.salario;
   if (forma === 'impostos') return arrecadacaoDe(e, c, onde) * regra.parte;
   return (e.entidades[onde]?.n['pib'] ?? 0) * regra.taxa;
 }

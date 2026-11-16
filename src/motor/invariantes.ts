@@ -23,10 +23,18 @@ import type { EstadoVida } from './tipos.ts';
 /** Anos entre as gerações de sangue: pai e mãe são pelo menos isto mais velhos, e os filhos, isto mais novos. */
 export const ANOS_ENTRE_GERACOES = 12;
 
-/** Quanto o dinheiro do mundo pode sobrar da soma zero (os centavos da aritmética de ponto flutuante, que crescem com o tamanho do país). */
-export function folgaDoDinheiro(e: EstadoVida): number {
-  return Math.max(100, (e.entidades['pais']?.n['pib'] ?? 1e13) * 1e-11);
+/**
+ * Quanto o dinheiro do mundo pode sobrar da soma zero: os centavos da aritmética de ponto flutuante. Um número fixo
+ * (etapa 02): uma folga do tamanho do país crescia com ele e escondia o erro que crescia junto. Com o país limitado
+ * (pais.ts › tendenciaDe), a bancada de dinastias mediu no máximo R$ 0,02 em 25 gerações.
+ */
+export const FOLGA_DO_DINHEIRO = 100;
+export function folgaDoDinheiro(_e?: EstadoVida): number {
+  return FOLGA_DO_DINHEIRO;
 }
+
+/** Acima disto, um número em ponto flutuante deixa de guardar os reais um a um (2^53). */
+export const MAIOR_INTEIRO_EXATO = Number.MAX_SAFE_INTEGER;
 
 export function conferirEstado(e: EstadoVida, c?: Conteudo): string[] {
   const problemas: string[] = [];
@@ -45,6 +53,8 @@ export function conferirEstado(e: EstadoVida, c?: Conteudo): string[] {
         problemas.push(`${en.id}.${campo} não está declarado em campos.ts`);
         continue;
       }
+      // A precisão: os reais precisam caber no inteiro exato do ponto flutuante (etapa 02, A-01 da auditoria).
+      if (def.reais && Math.abs(v) > MAIOR_INTEIRO_EXATO) problemas.push(`${en.id}.${campo} = ${v.toExponential(3)} passa do maior inteiro exato (2^53): os reais deixam de ser guardados um a um`);
       if (def.limites) {
         const lido = v + (def.base ?? 0);
         if (lido < def.limites[0] - 1e-6 || lido > def.limites[1] + 1e-6) problemas.push(`${en.id}.${campo} = ${lido} fora de [${def.limites.join(', ')}]`);

@@ -263,6 +263,8 @@ export const ESCRITAS_DO_MOTOR: string[] = [
   // o país em números: o PIB anda com o crescimento, a população com a saúde, a pobreza e o tempo
   'pais.pib',
   'pais.populacao',
+  // a renda por pessoa para onde o país vai (etapa 02): anda com a fronteira do mundo
+  'pais.renda_potencial',
   // o ciclo econômico (fora do normal, a fase é uma qualidade do país, o nome do crescimento)
   'pais.expansao',
   'pais.recessao',
@@ -409,6 +411,8 @@ export const LEITURAS_DO_MOTOR: LeituraMotor[] = [
   ...ler(de(PARCEIROS, 'acordo'), 'mundo lá fora: o acordo soma crescimento e ajuda as empresas de quem vende para lá', true),
   ...ler(de(PARCEIROS, 'crise'), 'mundo lá fora: a crise de lá acaba quando a economia deles volta a crescer', false),
   ...ler(['pais.pib', 'pais.populacao'], 'país: o PIB e a população do ano seguinte partem dos deste; PIB per capita e IDH', true),
+  ...ler(['pais.renda_potencial'], 'país: o crescimento de longo prazo fecha a distância até a renda potencial (pais.ts › tendenciaDe)', true),
+  ...ler(['pais.renda_potencial'], 'trabalho: o salário de quem é contratado, eleito ou herda o trabalho anda com o que cada pessoa do país produz (campos.ts › indiceDeSalarios)', true),
   ...ler(['pais.cambio'], 'dólar: a inflação, o investimento em dólar e as empresas que exportam ou importam', true),
   ...ler(['eu.salario_em_dolar'], 'trabalho: o salário em dólar anda com o dólar, e a crise daqui não demite', true),
   ...ler(['eu.classe_origem'], 'escola pública: quem estuda nela sente a educação do país', true),
@@ -526,7 +530,7 @@ export const ETAPAS_DO_ANO = [
     id: 'exterior',
     nome: 'o mundo lá fora: a economia de cada país, a relação, sanções e acordos',
     // Sob o Regime, quem joga governa com a postura dele lá fora (diplomacia.ts › posturaDoGoverno).
-    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.regime', 'pais.tecnologia', 'pais.violencia', ...POLITICAS_DO_PAIS],
+    le: ['fora.*', 'eu.cargo', 'eu.genero', 'eu.mandato', 'pais.cambio', 'pais.crescimento', 'pais.divida', 'pais.educacao', 'pais.governo', 'pais.inflacao', 'pais.juros', 'pais.regime', 'pais.tecnologia', 'pais.violencia', 'pais.pib', 'pais.populacao', 'pais.renda_potencial', 'pais.saude', 'pais.pobreza', ...POLITICAS_DO_PAIS],
     escreve: ['ano.exterior', 'fora.*', 'pais.cambio'],
   },
   {
@@ -540,8 +544,8 @@ export const ETAPAS_DO_ANO = [
     id: 'pais',
     nome: 'o país: as estatísticas, a eleição, quem governa, a fase do ciclo e o calote',
     // O calote (tesouro.ts › darCalote): quem tem título e renda fixa perde, e a dívida encolhe. A guerra (fora.guerra) custa no ano.
-    le: [...LADO_DE_LA, 'ano.exterior', 'pais.moeda', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'fora.guerra', 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
-    escreve: [...LADO_DE_LA, 'ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
+    le: [...LADO_DE_LA, 'ano.exterior', 'pais.moeda', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'fora.guerra', 'pais.normal', 'pais.governo', 'pais.regime', 'pais.pib', 'pais.populacao', 'pais.renda_potencial', 'pais.calote', 'pais.coroa', 'eu.cargo', 'eu.mandato', 'eu.genero', 'eu.influencia', 'eu.popularidade', 'eu.derrubado', 'eu.ex_politico', 'eu.renunciou', 'eu.voto_*', 'tit.valor', 'tit.vencimento', ...BOLSO],
+    escreve: [...LADO_DE_LA, 'ano.fase', ...ESTATISTICAS, ...POLITICAS_DO_PAIS, ...FASE, 'pais.governo', 'pais.pib', 'pais.populacao', 'pais.renda_potencial', 'pais.calote', 'eu.popularidade', 'tit.valor', 'eu.renda_fixa', 'agenda'],
   },
   {
     id: 'moeda',
@@ -571,7 +575,9 @@ export const ETAPAS_DO_ANO = [
   {
     id: 'economia',
     nome: 'a economia de quem joga: inflação, juros, salário, imposto, gastos',
-    le: ['ano.mercado', ...BOLSO, 'ctr.*', 'tit.valor', 'eu.renda', 'eu.custo', 'eu.padrao', 'eu.aposentado', 'eu.servidor', 'eu.cargo', 'eu.nome_sujo', 'lugar.custo_vida', 'pais.inflacao', 'pais.juros', ...POLITICAS_DO_PAIS],
+    le: ['ano.mercado', ...BOLSO, 'ctr.*', 'tit.valor', 'eu.renda', 'eu.custo', 'eu.padrao', 'eu.aposentado', 'eu.servidor', 'eu.cargo', 'eu.nome_sujo', 'lugar.custo_vida', 'pais.inflacao', 'pais.juros', ...POLITICAS_DO_PAIS,
+      // O mercado comporta uma parte do PIB, dividida com o caixa que as holdings com a dupla do valor aplicam (campos.ts › parteQueCabe).
+      'pais.pib', 'empresa.caixa', 'empresa.holding', 'empresa.dupla_do_valor', 'empresa.vivo'],
     escreve: ['ano.economia', 'ano.inflacao', ...BOLSO, 'ctr.*'],
   },
   {
@@ -580,7 +586,7 @@ export const ETAPAS_DO_ANO = [
     // A diretoria com carta branca (I-178) decide como quem joga decidiria pela folha: a compra da concorrente lê o
     // patrimônio, a influência, os bens e os segredos (como a folha), então a etapa lê qualquer coisa.
     le: ['*'],
-    escreve: [...LADO_DE_LA, 'unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pessoa.magoa', 'pessoa.negocio', 'pessoa.vinculo', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
+    escreve: [...LADO_DE_LA, 'unidade.*', 'pais.peso_do_grupo', 'pais.crescimento', 'pais.pib', 'pais.renda_potencial', 'pessoa.magoa', 'pessoa.negocio', 'pessoa.vinculo', 'pais.pol_impostos', 'empresa.*', ...BOLSO, 'ctr.*', 'lugar.desemprego', 'pais.divida', 'agenda'],
   },
   {
     id: 'bens',
@@ -681,7 +687,9 @@ export const ETAPAS_DO_ANO = [
     nome: 'o trabalho de quem joga: salário e demissão',
     // Quem tem cargo (mandato, coroa, Regime) vive do cargo: nem o setor nem a demissão o alcançam.
     // O chefe magoado demite mais fácil.
-    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, 'ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...FASE],
+    le: [...MERCADOS, ...NOMES_DOS_MERCADOS, 'ano.fase', 'eu.renda', 'eu.setor', 'eu.servidor', 'eu.aposentado', 'eu.salario_em_dolar', 'eu.empreendedor', 'eu.socio', 'eu.herdeiro_negocio', 'eu.cargo', 'lugar.desemprego', 'pessoa.vinculo', 'pessoa.magoa', 'pessoa.vivo', ...FASE,
+      // O salário anda com o que cada pessoa do país produz (a tendência sem a gente a mais: pais.ts › tendenciaDe).
+      'pais.pib', 'pais.populacao', 'pais.renda_potencial', 'pais.saude', 'pais.pobreza'],
     escreve: ['eu.renda', 'agenda'],
   },
   {
@@ -702,7 +710,7 @@ export const ETAPAS_DO_ANO = [
     id: 'coroa',
     nome: 'a coroa: a ilha anda e quem tem coroa recebe a dotação da forma',
     // Quem herdou a ilha assume a coroa dela (sucessao.ts › assumirAIlha): o cargo, a imagem e a dotação.
-    le: ['ilha.*', 'eu.cargo', 'eu.renda', 'eu.micronacao', 'eu.pais_reconhecido', 'eu.herdeiro_ilha', 'eu.popularidade', 'lugar.nome', 'pais.coroa', 'pais.pib', ...POLITICAS_DO_PAIS],
+    le: ['ilha.*', 'eu.cargo', 'eu.renda', 'eu.micronacao', 'eu.pais_reconhecido', 'eu.herdeiro_ilha', 'eu.popularidade', 'lugar.nome', 'pais.coroa', 'pais.pib', 'pais.populacao', 'pais.renda_potencial', ...POLITICAS_DO_PAIS],
     escreve: ['ilha.*', 'eu.renda', 'eu.cargo', 'eu.popularidade', 'eu.herdeiro_ilha', 'agenda'],
   },
   {

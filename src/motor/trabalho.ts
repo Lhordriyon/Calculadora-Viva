@@ -12,7 +12,7 @@
  */
 import type { Conteudo } from './conteudo.ts';
 import { apertoDoSetor } from './negocio.ts';
-import { faseDe, type Momento } from './pais.ts';
+import { faseDe, tendenciaDe, taxaDaPopulacao, type Momento } from './pais.ts';
 import { patrimonioDe } from './campos.ts';
 import { somar } from './livro.ts';
 import { ANOS_DE_RESERVA, CHANCE_APERTO_NEGOCIO, DEMISSAO_JOGADOR, fatorDoChefe, IDADE_APOSENTADORIA, VARIACAO_NEGOCIO } from './regras.ts';
@@ -30,6 +30,9 @@ function agendarJa(e: EstadoVida, c: Conteudo, evento: string, origem: number | 
   e.agenda.push({ evento, ano: e.ano, origem });
 }
 
+/** O ganho de salário por ano que os setores davam, na média, antes de a produtividade vir do país (mundo.json › setores). */
+const PRODUTIVIDADE_DE_ANTES = 0.008;
+
 export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: Mudanca[]): void {
   const eu = e.entidades['eu']!;
   const renda = eu.n['renda'] ?? 0;
@@ -37,7 +40,12 @@ export function regraDoTrabalho(e: EstadoVida, c: Conteudo, fase: Momento, reg: 
   if (e.idade < 18 || e.idade >= IDADE_APOSENTADORIA || renda <= 0 || eu.q['aposentado'] || eu.t['cargo']) return;
   const setor = c.setores.get(eu.t['setor'] ?? '');
   const sente = setor?.ciclo ?? 1;
-  const crescimento = setor?.crescimento ?? 0.004;
+  // O salário acompanha o que cada pessoa do país produz (a tendência, sem o ciclo, que entra pela fase): os 0,8% ao
+  // ano que os setores davam na média já eram essa produtividade, e agora ela vem do país (mais no país que converge, zero no
+  // que chegou aonde ia). O setor continua valendo a diferença dele para a média.
+  const pais = e.entidades['pais']?.n;
+  const produtividade = pais?.['renda_potencial'] === undefined ? PRODUTIVIDADE_DE_ANTES : (tendenciaDe(e) - taxaDaPopulacao(e.ano, pais['saude'], pais['pobreza'], pais['populacao'])) / 100;
+  const crescimento = (setor?.crescimento ?? PRODUTIVIDADE_DE_ANTES) - PRODUTIVIDADE_DE_ANTES + produtividade;
   const dono = Boolean(eu.q['empreendedor'] || eu.q['socio'] || eu.q['herdeiro_negocio']);
   const estavel = Boolean(eu.q['servidor'] || setor?.estavel);
 

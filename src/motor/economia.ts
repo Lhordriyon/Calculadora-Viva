@@ -9,12 +9,11 @@
  * dívida é feita de contratos com o banco (contratos.ts): o saque no cheque
  * especial e o pagamento com o que sobra vão para eles também.
  */
-import { valorDosTitulos } from './campos.ts';
+import { parteQueCabe, valorDosTitulos } from './campos.ts';
 import { ATIVOS, LIQUIDEZ, PADRAO_PADRAO, PADROES, type Ativo, type Padrao } from './constantes.ts';
 import { acompanharCaixa, creditoNovo, jurosDoAno, limiteDeCredito, rotativos, saldoDe } from './contratos.ts';
 import { anotar } from './livro.ts';
 import {
-  CAPACIDADE_DO_MERCADO,
   GASTO_DA_SOBRA,
   GASTO_DO_PATRIMONIO,
   IDADE_GASTO_VELHICE,
@@ -196,8 +195,8 @@ export function economiaDoAno(e: EstadoVida, reg: Mudanca[], pais: PaisNoBolso =
   // Cada classe investida rende o que o mercado do ano deu a ela (acima da inflação).
   // Acima do que o mercado comporta, o excedente fica parado: rende (ou perde) só a parte que cabe.
   // O juro da renda fixa é pago pelo tesouro (os títulos); o resto é cotação, que ninguém paga.
-  const aplicado = ATIVOS.reduce((s, a) => s + Math.max(0, n[a] ?? 0), 0);
-  const cabe = aplicado > CAPACIDADE_DO_MERCADO ? CAPACIDADE_DO_MERCADO / aplicado : 1;
+  // O que cabe é uma parte do PIB, dividida com o caixa que as holdings de quem joga aplicam (campos.ts › parteQueCabe).
+  const cabe = parteQueCabe(e);
   for (const a of ATIVOS) {
     if (!n[a]) continue;
     const antesDaClasse = n[a];

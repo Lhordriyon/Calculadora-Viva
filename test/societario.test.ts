@@ -123,8 +123,12 @@ describe('teste 1: a holding e duas subsidiárias independentes', () => {
     lancar(e, entrada, reg);
     const recebido = reg.filter((m) => m.c === `${holding}.caixa` && m.r === 'dividendos' && (m.d ?? 0) > 0).reduce((s, m) => s + m.d!, 0);
     expect(recebido).toBeGreaterThan(0);
+    // O caixa parado perde a inflação do ano (etapa 02), como o dinheiro na conta de quem joga: vai para o Banco Central.
+    const inflacao = reg.filter((m) => m.c === `${holding}.caixa` && m.r === 'inflacao').reduce((s, m) => s + m.d!, 0);
+    const taxa = (e.entidades['pais']!.n['inflacao'] ?? 0) / 100;
+    expect(inflacao).toBeCloseTo(-(caixaAntes + recebido - HOLDING.estrutura) * (taxa / (1 + taxa)), -1);
     // A holding paga a estrutura dela e, com a retirada em zero, guarda o resto: nada chega à conta de quem joga.
-    expect(h.n['caixa']).toBeCloseTo(caixaAntes + recebido - HOLDING.estrutura, -1);
+    expect(h.n['caixa']).toBeCloseTo(caixaAntes + recebido - HOLDING.estrutura + inflacao, -1);
     expect(e.entidades['eu']!.n['dinheiro']).toBeCloseTo(contaAntes, -1);
     expect(h.n['lucro']).toBeCloseTo(recebido - HOLDING.estrutura, -1);
     expect(conferirContas(e, e.historico.at(-1)!)).toEqual([]);

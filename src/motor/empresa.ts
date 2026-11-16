@@ -37,11 +37,12 @@ import { fecharUnidadesDe, garantirUnidades, mudarCapacidade, moverUnidade, oper
 import { anoDasConcorrentes, mexerNaConcorrente, principalDe } from './concorrentes.ts';
 import { analiseDoCade } from './demonstracoes.ts';
 import { anoDosConselhos } from './governanca.ts';
+import { caixaAplicado } from './valor.ts';
 import { diluirPeloAporte, liberarParticipadas, mudarDona, refDaPessoa } from './societario.ts';
 import { exteriorNaEmpresa } from './diplomacia.ts';
 import { influenciaNegocios } from './influencia.ts';
 import { momentoDoPais, type Momento } from './pais.ts';
-import { donaDe, empresaDoRegistro, empresasDe, entidadeDe, refDaEmpresa, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
+import { parteQueCabe, todasAsEmpresas, donaDe, empresaDoRegistro, empresasDe, entidadeDe, refDaEmpresa, idadeDe, investidoDe, LUGARES_DE_EMPRESA, lerCaminho, parteNaEmpresa } from './campos.ts';
 import { decidir, porqueDaResposta } from './decisao.ts';
 import type { Ativo } from './constantes.ts';
 import type { Conteudo } from './conteudo.ts';
@@ -57,6 +58,7 @@ import {
   DESCONTO_DA_DEPENDENCIA,
   DESVIO_TRACAO,
   FRACAO_NA_ESTREIA,
+  META_DE_INFLACAO,
   GARGALO_DO_DONO,
   GOVERNANCA_DA_BOLSA,
   MAX_EMPRESAS,
@@ -614,6 +616,17 @@ export function regraDaEmpresa(e: EstadoVida, c: Conteudo, fase: Momento, reg: M
   empregosNaCidade(e, reg, antes, depois);
   // Os conselhos com autonomia decidem o ano que vem, dentro do mandato que quem joga deu (governanca.ts).
   anoDosConselhos(e, c, empresasDe(e), mercado);
+  // O caixa parado perde para a inflação, como o dinheiro de quem joga (etapa 02): o que a dupla do valor deixou
+  // aplicado, e que cabe no mercado, já rendeu acima dela. Sem isto, o caixa das empresas era um abrigo contra a inflação
+  // que a conta de ninguém mais tinha, e a bancada achou caixa parado de cinco PIBs.
+  const inflacao = (e.entidades['pais']?.n['inflacao'] ?? META_DE_INFLACAO) / 100;
+  if (inflacao > 0) {
+    const cabe = parteQueCabe(e);
+    for (const emp of todasAsEmpresas(e)) {
+      const parado = (emp.n['caixa'] ?? 0) - caixaAplicado(e, emp) * cabe;
+      if (parado >= 1) somar(e, reg, emp.id, 'caixa', -parado * (inflacao / (1 + inflacao)), 'inflacao', 'reavaliacao');
+    }
+  }
   // Depois da dupla do valor e das diretorias (que movem o caixa da holding), o valor guardado da holding volta a ser o
   // caixa dela, como no ano da holding (societario.ts): a auditoria achou uma holding com os dois diferentes.
   for (const h of empresasDe(e)) {
@@ -656,6 +669,10 @@ function pesoNoPib(e: EstadoVida, reg: Mudanca[]): void {
   if (Math.abs(impulso) >= 0.01) {
     definirNumero(e, reg, 'pais', 'crescimento', Math.round(((pais.n['crescimento'] ?? 0) + impulso) * 100) / 100, 'empresa');
     definirNumero(e, reg, 'pais', 'pib', Math.round(pib * (1 + impulso / 100)), 'empresa');
+    // A capacidade que o grupo construiu (ou fechou) é do país: a renda potencial anda junto, e a convergência não
+    // desfaz o que o grupo produz (etapa 02). Sem isto, o crescimento do país corrigia o grupo ano após ano.
+    const potencial = pais.n['renda_potencial'];
+    if (potencial !== undefined) definirNumero(e, reg, 'pais', 'renda_potencial', Math.round(potencial * (1 + impulso / 100)), 'empresa');
   }
 }
 

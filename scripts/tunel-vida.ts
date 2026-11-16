@@ -18,7 +18,7 @@ import { ESTATISTICAS, faseDe, governoAtual, type Estatistica } from '../src/mot
 import { ATIVOS, type Fase } from '../src/motor/constantes.ts';
 import { motivoParaNaoOperar, operar, perfilDe } from '../src/motor/carteira.ts';
 import { continuarComoHerdeiro, herdeiroPossivel } from '../src/motor/herdeiro.ts';
-import { conferirEstado } from '../src/motor/invariantes.ts';
+import { conferirEstado, folgaDoDinheiro } from '../src/motor/invariantes.ts';
 import type { EscolhaOrigem } from '../src/motor/origem.ts';
 import { jaAgiu } from '../src/motor/acoes.ts';
 import { lembrarVida, novaMemoria } from '../src/motor/memoria.ts';
@@ -1289,7 +1289,7 @@ export function contasDaVida(e: EstadoVida): Pick<Vida, 'contasErradas' | 'entra
   dividasErradas += noFim.length;
   // O dinheiro do mundo soma zero no fim da vida (moeda.ts): nada saiu do nada, nada sumiu.
   const resto = e.entidades['mercado'] ? dinheiroDoMundo(e) : 0;
-  if (Math.abs(resto) > Math.max(1e4, (e.entidades['pais']?.n['pib'] ?? 1e13) * 1e-7)) {
+  if (Math.abs(resto) > folgaDoDinheiro(e)) {
     contasErradas++;
     if (!exemploDeConta) exemploDeConta = `semente ${e.semente}, no fim: o dinheiro do mundo soma ${resto.toFixed(0)}, não zero`;
   }

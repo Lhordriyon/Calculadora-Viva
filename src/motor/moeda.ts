@@ -40,7 +40,7 @@ export function dinheiroDoMundo(e: EstadoVida): number {
  * que os bancos emprestaram e o Banco Central emitiu; o das pessoas e das empresas da vida sai do que circula. A soma de
  * tudo dá zero.
  */
-export function abrirContas(e: EstadoVida, reg?: Mudanca[]): void {
+export function abrirContas(e: EstadoVida, reg?: Mudanca[], antes?: EstadoVida): void {
   if (e.entidades['mercado']) return;
   const pib = e.entidades['pais']?.n['pib'] ?? PIB_PADRAO;
   const daVida = dinheiroDoMundo(e);
@@ -51,6 +51,18 @@ export function abrirContas(e: EstadoVida, reg?: Mudanca[]): void {
     bc: -(MOEDA.base + MOEDA.governo) * pib,
     exterior: 0,
   };
+  // Quem herda continua no mesmo país (etapa 02): os bancos, o governo, o Banco Central e lá fora ficam com o que
+  // tinham, e o mercado fica com o resto. Reabertas do zero, o dinheiro de uma família muito rica deixava o mercado
+  // negativo, e o país começava a vida nova numa depressão de anos que ninguém causou.
+  if (antes?.entidades['mercado']) {
+    let outras = 0;
+    for (const id of CONTAS) {
+      if (id === 'mercado') continue;
+      saldos[id] = antes.entidades[id]?.n['dinheiro'] ?? saldos[id];
+      outras += saldos[id];
+    }
+    saldos.mercado = -(daVida + outras);
+  }
   for (const id of CONTAS) {
     e.entidades[id] = novaEntidade({ id, tipo: 'conta', nome: NOMES_DAS_CONTAS[id] });
     if (reg) somar(e, reg, id, 'dinheiro', saldos[id], 'nascimento');

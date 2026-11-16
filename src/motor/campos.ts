@@ -4,7 +4,7 @@
  * O que não é campo é qualidade (valor 0 quando não existe).
  */
 import { ATIVOS, CLASSES, CONTAS, ENTIDADES, FILHOS, PARCEIROS, POLITICAS, papelBase } from './constantes.ts';
-import { BOLSA, MAX_EMPRESAS, MAX_FUNCIONARIOS, VALOR_POR_FUNCIONARIO } from './regras.ts';
+import { BOLSA, LONGO_PRAZO, MAX_EMPRESAS, MAX_FUNCIONARIOS, PAIS_EM_2026, PARTE_DO_MERCADO_NO_PIB, VALOR_POR_FUNCIONARIO } from './regras.ts';
 import { deQuando, gostoDe, humorDe, visaoDe } from './relacoes.ts';
 import type { Entidade, EstadoVida, Qualidade } from './tipos.ts';
 
@@ -205,6 +205,8 @@ const PAIS: Record<string, DefCampo> = {
   /** O que o grupo de quem joga adiciona ao PIB (o valor adicionado dele, em % do PIB; demonstracoes.ts). */
   peso_do_grupo: { tipo: 'num', sistema: 'mundo', limites: [0, 100], casas: 2 },
   populacao: { tipo: 'num', sistema: 'mundo', milhoes: true },
+  /** A renda por pessoa para onde o país vai com políticas médias (pais.ts › tendenciaDe): anda com a fronteira do mundo. */
+  renda_potencial: { tipo: 'num', sistema: 'mundo', reais: true },
   /** Derivados do resto (campos.ts › indicadoresDoPais): o PIB por habitante, a desigualdade (Gini, 0 a 1) e o desenvolvimento humano (IDH, 0 a 1, como o da ONU). */
   pib_per_capita: { tipo: 'num', sistema: 'mundo', derivado: true, reais: true },
   gini: { tipo: 'num', sistema: 'mundo', derivado: true, casas: 2 },
@@ -241,6 +243,53 @@ export function indicadoresDoPais(pais: Entidade): { pibPerCapita: number; gini:
   const dolares = Math.max(100, (pibPerCapita / Math.max(1, n['cambio'] ?? 5)) * PPC);
   const renda = Math.max(0.01, Math.min(1, (Math.log(dolares) - Math.log(100)) / (Math.log(75000) - Math.log(100))));
   return { pibPerCapita, gini, idh: Math.cbrt(saude * educacao * renda) };
+}
+
+/**
+ * A fronteira de produtividade do mundo, como índice (1 em 2026; tende a 2,77): o avanço de cada ano desacelera. Antes
+ * de 2026, ela andava os 1,2% ao ano de hoje.
+ */
+export function fronteiraEm(ano: number): number {
+  const t = ano - 2026;
+  if (t < 0) return Math.exp((LONGO_PRAZO.fronteira2026 / 100) * t);
+  return Math.exp((LONGO_PRAZO.fronteira2026 / 100) * LONGO_PRAZO.escala * (1 - Math.exp(-t / LONGO_PRAZO.escala)));
+}
+
+/**
+ * Quanto se ganha a mais (ou a menos) do que em 2026 pelo mesmo trabalho: a renda por pessoa do país diante da renda
+ * de 2026 do mundo dele. O salário de quem é contratado, o do cargo e a renda da família de quem nasce usam o índice;
+ * o de quem já trabalha anda com a tendência (trabalho.ts, pais.ts › tendenciaDe). No mundo que seguiu o caminho comum é o PIB per capita
+ * sobre o de 2026; no save de antes da renda potencial (a renda dele vira a potencial), é o do ano em que ele está.
+ */
+export function indiceDeSalarios(e: EstadoVida): number {
+  const n = e.entidades['pais']?.n;
+  const potencial = n?.['renda_potencial'];
+  if (!n || n['pib'] === undefined || n['populacao'] === undefined || !potencial) return 1;
+  const porPessoa = n['pib'] / Math.max(1, n['populacao']);
+  return Math.max(0.3, Math.min(15, (porPessoa / potencial) * LONGO_PRAZO.nivel * fronteiraEm(e.ano)));
+}
+
+/** O que o mercado comporta de dinheiro aplicado de um só dono: uma parte do PIB (os R$ 5 trilhões de 2026). */
+export function capacidadeDoMercado(e: EstadoVida): number {
+  return PARTE_DO_MERCADO_NO_PIB * (e.entidades['pais']?.n['pib'] ?? PAIS_EM_2026.pib);
+}
+
+/**
+ * O dinheiro de quem joga que está no mercado: a carteira dele e o caixa das holdings que a dupla do valor aplica.
+ * Acima do que o mercado comporta, só a parte que cabe rende (ou perde): `parteQueCabe` é essa fração, a mesma para a
+ * carteira e para a holding (economia.ts e valor.ts).
+ */
+export function aplicadoNoMercado(e: EstadoVida): number {
+  const n = e.entidades['eu']?.n ?? {};
+  let total = 0;
+  for (const a of ATIVOS) total += Math.max(0, n[a] ?? 0);
+  for (const emp of empresasDe(e)) if (emp.q['holding'] && emp.q['dupla_do_valor']) total += Math.max(0, emp.n['caixa'] ?? 0);
+  return total;
+}
+export function parteQueCabe(e: EstadoVida): number {
+  const aplicado = aplicadoNoMercado(e);
+  const cabe = capacidadeDoMercado(e);
+  return aplicado > cabe ? cabe / aplicado : 1;
 }
 
 /** Um país de fora (mundo.json › estrangeiros): a economia dele e a relação com o Brasil. */

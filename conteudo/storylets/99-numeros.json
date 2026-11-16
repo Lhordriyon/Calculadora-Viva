@@ -5,7 +5,7 @@
     "condicoes": { "pais.pib": { "min": 2.0e13 }, "pais.crescimento": { "min": 3 }, "renda": { "min": 1 }, "semMarcas": ["aposentado"] },
     "repetivel": true,
     "intervalo": 15,
-    "texto": "A economia cresceu {pais.crescimento}% e o PIB chegou a {pais.pib}, recorde da série. Dá {pais.pib_per_capita} por brasileiro, [o que ninguém conhece pessoalmente.|em média, que é onde mora a pegadinha.|segundo o telejornal, que estava animado.]",
+    "texto": "A economia cresceu {pais.crescimento}% e o PIB chegou a {pais.pib}, recorde da série. Dá {pais.pib_per_capita} por brasileiro, [o que ninguém conhece pessoalmente.|em média, que é onde mora a pegadinha.|segundo o telejornal, que estava animado.] Os economistas calculam que o país chega a {pais.renda_potencial} por pessoa, e [discordam do resto.|cada um culpa um governo diferente.|ninguém sabe dizer quando.]",
     "resumo": "viu o PIB bater recorde",
     "escolhas": [
       {

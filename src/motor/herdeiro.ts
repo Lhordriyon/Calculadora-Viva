@@ -11,7 +11,7 @@
  */
 import { ATIVOS, FILHOS, IRMAOS, PARCEIROS, ehFilho, type Ativo } from './constantes.ts';
 import { abrirContas } from './moeda.ts';
-import { bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos, donaDe, refDaEmpresa } from './campos.ts';
+import { indiceDeSalarios, bensDe, classeDoPatrimonio, empresasDe, filhosDe, filhosVivos, parteNaEmpresa, parteNasEmpresas, patrimonioTotal, titulosDe, valorDosBens, valorDosTitulos, donaDe, refDaEmpresa } from './campos.ts';
 import { defDoBem } from './bens.ts';
 import { financiamentoDe, idLivre } from './contratos.ts';
 import { aEmpresa, SLOTS } from './empresa.ts';
@@ -357,7 +357,7 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
     const ocupacao = sortear(e.rng, def.ocupacoes);
     eu.t['ocupacao'] = eu.genero === 'f' ? ocupacao.f : ocupacao.m;
     eu.t['setor'] = typeof ocupacao.setor === 'string' ? ocupacao.setor : eu.genero === 'f' ? ocupacao.setor.f : ocupacao.setor.m;
-    eu.n['renda'] = Math.round(naFaixa(e, def.renda) * 0.7);
+    eu.n['renda'] = Math.round(naFaixa(e, def.renda) * 0.7 * indiceDeSalarios(antiga));
     eu.n['custo'] = Math.round(18000 * (antiga.entidades['lugar']?.n['custo_vida'] ?? 1));
   }
   e.entidades['eu'] = eu;
@@ -713,8 +713,8 @@ export function continuarComoHerdeiro(antiga: EstadoVida, c: Conteudo): EstadoVi
   lancar(e, abertura, daAbertura);
   // A influência começa onde a vida nova está (patrimônio, bens, linhagem), não do zero.
   eu.n['influencia'] = Math.round(influenciaAlvo(e, c));
-  // As contas do país abrem com a vida nova (moeda.ts): o dinheiro de quem herdou sai do que circula, e a soma dá zero.
-  abrirContas(e);
+  // As contas do país continuam as da vida de antes (moeda.ts): o que mudou de mãos na herança sai do mercado ou entra nele, e a soma dá zero.
+  abrirContas(e, undefined, antiga);
   // O lugar no país com o que veio da herança (lugar.ts).
   lugarAoNascer(e, c, true);
   return e;

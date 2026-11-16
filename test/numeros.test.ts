@@ -37,7 +37,7 @@ describe('o país em números', () => {
       avancarAno(e, c);
       const n = e.entidades['pais']!.n;
       expect(n['pib']! / antes['pib']! - 1).toBeCloseTo(n['crescimento']! / 100, 6);
-      expect(n['populacao']! / antes['populacao']! - 1).toBeCloseTo(taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) / 100, 6);
+      expect(n['populacao']! / antes['populacao']! - 1).toBeCloseTo(taxaDaPopulacao(e.ano, n['saude'], n['pobreza'], antes['populacao']) / 100, 6);
     }
   });
 

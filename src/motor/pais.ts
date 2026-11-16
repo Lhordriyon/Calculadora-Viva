@@ -26,6 +26,7 @@ import {
   CALOTE,
   CHOQUE_DA_CRISE,
   CRESCIMENTO_POTENCIAL,
+  LONGO_PRAZO,
   DEFESA,
   DEMOGRAFIA,
   DESEMPREGO_NATURAL,
@@ -68,6 +69,8 @@ import type { EstadoVida, Mudanca } from './tipos.ts';
 export const ESTATISTICAS = ['crescimento', 'desemprego', 'inflacao', 'juros', 'divida', 'pobreza', 'violencia', 'saude', 'educacao', 'tecnologia', 'defesa', 'aprovacao'] as const;
 export type Estatistica = (typeof ESTATISTICAS)[number];
 
+export { fronteiraEm, indiceDeSalarios } from './campos.ts';
+import { fronteiraEm } from './campos.ts';
 const limitar = (v: number, min: number, max: number): number => (v < min ? min : v > max ? max : v);
 /** As estatísticas andam de décimo em décimo (o livro e a folha ficam legíveis). */
 const arred = (v: number): number => Math.round(v * 10) / 10 || 0;
@@ -230,7 +233,7 @@ export function proximaEleicaoGeral(ano: number): number {
 export function potencialDe(e: EstadoVida, c: Conteudo): number {
   const n = e.entidades['pais']!.n;
   return (
-    CRESCIMENTO_POTENCIAL +
+    tendenciaDe(e) +
     efeitoDasPoliticas(e, c, 'potencial') +
     0.015 * ((n['educacao'] ?? 50) - 50) +
     PESQUISA.potencial * ((n['tecnologia'] ?? 50) - 50) -
@@ -335,10 +338,35 @@ function migrarDefesa(e: EstadoVida, c: Conteudo): void {
   n['defesa'] = defesaDeQuemNasce(e, c);
 }
 
-/** Quanto a população cresce no ano (% ao ano): a transição demográfica, a saúde pública e a pobreza. */
-export function taxaDaPopulacao(ano: number, saude = 50, pobreza = 25): number {
+/**
+ * Quanto a população cresce no ano (% ao ano): a transição demográfica, a saúde pública, a pobreza e o espaço. Com
+ * menos gente do que o país já teve, morar e criar filho fica mais barato e as famílias voltam a crescer (0,5 ponto por
+ * unidade de log abaixo da população de 2026); com mais gente, o contrário. É o que faz a população parar de encolher
+ * num tamanho que depende da saúde e da pobreza, em vez de cair 0,35% ao ano para sempre.
+ */
+export function taxaDaPopulacao(ano: number, saude = 50, pobreza = 25, populacao: number = PAIS_EM_2026.populacao): number {
   const base = Math.max(DEMOGRAFIA.piso, DEMOGRAFIA.taxa2026 - DEMOGRAFIA.porAno * (ano - 2026));
-  return base + DEMOGRAFIA.porSaude * (saude - 50) + DEMOGRAFIA.porPobreza * (pobreza - 25);
+  const espaco = DEMOGRAFIA.porEspaco * Math.log(PAIS_EM_2026.populacao / Math.max(1, populacao));
+  return base + DEMOGRAFIA.porSaude * (saude - 50) + DEMOGRAFIA.porPobreza * (pobreza - 25) + espaco;
+}
+
+/** A renda por pessoa para onde um país de políticas médias vai, num mundo que seguiu o caminho comum desde 2026. */
+function rendaPotencialComum(ano: number): number {
+  return (PAIS_EM_2026.pib / PAIS_EM_2026.populacao) * LONGO_PRAZO.nivel * fronteiraEm(ano);
+}
+
+/**
+ * O crescimento para onde a economia volta com políticas médias (% ao ano): o avanço da fronteira, a gente a mais (ou
+ * a menos) e a distância até a renda potencial. Sem os números do país (o save de antes deles), os 2% de sempre.
+ */
+export function tendenciaDe(e: EstadoVida): number {
+  const n = e.entidades['pais']?.n;
+  const potencial = n?.['renda_potencial'];
+  if (!n || n['pib'] === undefined || n['populacao'] === undefined || potencial === undefined) return CRESCIMENTO_POTENCIAL;
+  const porPessoa = n['pib'] / Math.max(1, n['populacao']);
+  const fronteira = 100 * (fronteiraEm(e.ano) / fronteiraEm(e.ano - 1) - 1);
+  const convergencia = limitar(LONGO_PRAZO.convergencia * Math.log(potencial / Math.max(1, porPessoa)), -LONGO_PRAZO.tetoDaConvergencia, LONGO_PRAZO.tetoDaConvergencia);
+  return fronteira + taxaDaPopulacao(e.ano, n['saude'], n['pobreza'], n['populacao']) + convergencia;
 }
 
 /**
@@ -347,17 +375,32 @@ export function taxaDaPopulacao(ano: number, saude = 50, pobreza = 25): number {
  */
 export function iniciarNumeros(e: EstadoVida): void {
   const n = e.entidades['pais']?.n;
-  if (!n || n['pib'] !== undefined) return;
-  let pib: number = PAIS_EM_2026.pib;
+  if (!n) return;
+  if (n['pib'] !== undefined) {
+    // O save de antes da renda potencial: o país que seguiu o caminho comum ganha a potencial do ano dele; o que
+    // cresceu além dela fica onde está (a renda dele vira a potencial, e o PIB para de compor), sem perder um real.
+    if (n['renda_potencial'] === undefined) n['renda_potencial'] = Math.round(Math.max(rendaPotencialComum(e.ano), n['pib'] / Math.max(1, n['populacao'] ?? PAIS_EM_2026.populacao)));
+    return;
+  }
+  // O caminho comum desde 2026, com políticas médias: cada pessoa persegue a renda potencial, e a gente segue a demografia.
+  let porPessoa: number = PAIS_EM_2026.pib / PAIS_EM_2026.populacao;
   let populacao: number = PAIS_EM_2026.populacao;
   const passo = e.ano >= 2026 ? 1 : -1;
   for (let ano = 2026; ano !== e.ano; ano += passo) {
-    pib = passo > 0 ? pib * (1 + CRESCIMENTO_POTENCIAL / 100) : pib / (1 + CRESCIMENTO_POTENCIAL / 100);
-    const taxa = taxaDaPopulacao(passo > 0 ? ano + 1 : ano) / 100;
-    populacao = passo > 0 ? populacao * (1 + taxa) : populacao / (1 + taxa);
+    if (passo > 0) {
+      const fronteira = 100 * (fronteiraEm(ano + 1) / fronteiraEm(ano) - 1);
+      porPessoa *= 1 + (fronteira + LONGO_PRAZO.convergencia * Math.log(rendaPotencialComum(ano + 1) / porPessoa)) / 100;
+      populacao *= 1 + taxaDaPopulacao(ano + 1, 50, 25, populacao) / 100;
+    } else {
+      // Para trás (quem começa antes de 2026): os 2% de sempre, sem a população.
+      const taxa = taxaDaPopulacao(ano) / 100;
+      porPessoa /= 1 + (CRESCIMENTO_POTENCIAL - taxa * 100) / 100;
+      populacao /= 1 + taxa;
+    }
   }
-  n['pib'] = Math.round(pib);
+  n['pib'] = Math.round(porPessoa * populacao);
   n['populacao'] = Math.round(populacao);
+  n['renda_potencial'] = Math.round(e.ano >= 2026 ? rendaPotencialComum(e.ano) : porPessoa * LONGO_PRAZO.nivel);
 }
 
 /** Um país de antes do país vivo (save antigo): as estatísticas típicas da fase que ele tinha, com o centrão no governo. */
@@ -795,10 +838,12 @@ export function anoDoPais(e: EstadoVida, c: Conteudo, reg: Mudanca[], fora: Exte
   };
   for (const k of ESTATISTICAS) definirNumero(e, reg, 'pais', k, arred(valores[k]), 'pais');
   // O tamanho do país: o PIB anda com o crescimento real do ano; a população, com a demografia, a saúde, a pobreza e a guerra.
-  if (n['pib'] === undefined) iniciarNumeros(e);
+  iniciarNumeros(e);
   // Com os números já arredondados: o PIB cresce o mesmo que a folha País mostra.
   definirNumero(e, reg, 'pais', 'pib', Math.round(n['pib']! * (1 + n['crescimento']! / 100)), 'pais');
-  const taxa = taxaDaPopulacao(e.ano, n['saude'], n['pobreza']) - (guerra ? DEFESA.ano.populacao : 0);
+  // A renda potencial anda com a fronteira do mundo (cada vez mais devagar); o ano já virou (vida.ts › avancarAno).
+  definirNumero(e, reg, 'pais', 'renda_potencial', Math.round(n['renda_potencial']! * (fronteiraEm(e.ano) / fronteiraEm(e.ano - 1))), 'pais');
+  const taxa = taxaDaPopulacao(e.ano, n['saude'], n['pobreza'], n['populacao']) - (guerra ? DEFESA.ano.populacao : 0);
   definirNumero(e, reg, 'pais', 'populacao', Math.round(n['populacao']! * (1 + taxa / 100)), 'pais');
   if (voce) definirNumero(e, reg, 'eu', 'popularidade', aprovacao, 'pais');
   // Quem emprestou ao governo perde, e a dívida encolhe: a notícia do calote vem antes da virada da fase.
