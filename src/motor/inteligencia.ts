@@ -161,11 +161,11 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
     grupos.set(k, [...(grupos.get(k) ?? []), v]);
   }
   const resultado = (vs: readonly VidaObservada[]): { crescimento: number; p90: number; felicidade: number } => {
-    // A base é pelo menos um PIB por pessoa, e o que chegou de outras pessoas (herança, fundo da família) sai do fim.
+    // A base é pelo menos um PIB por pessoa, mais o que chegou de outras pessoas (herança, fundo da família).
     const cres = vs.map((v) => {
       const ini = v.anos[0]!;
       const recebido = v.anos.slice(1).reduce((t, f) => t + (f.recebido ?? 0), 0);
-      return Math.log10(Math.max(1, v.anos.at(-1)!.patrimonio - recebido) / Math.max(1, ini.mundo.pibPerCapita, ini.patrimonio)) / Math.max(1, (v.anos.length - 1) / 10);
+      return Math.log10(Math.max(1, v.anos.at(-1)!.patrimonio) / (Math.max(1, ini.mundo.pibPerCapita, ini.patrimonio) + recebido)) / Math.max(1, (v.anos.length - 1) / 10);
     });
     const fel = vs.map((v) => media(v.anos.map((f) => f.felicidade)));
     return { crescimento: quantil(cres, 0.5), p90: quantil(cres, 0.9), felicidade: media(fel) };
@@ -173,7 +173,9 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
   const tabela = [...grupos.entries()].filter(([k, vs]) => k !== 'nada' && vs.length >= 5).map(([k, vs]) => ({ k, vs, ...resultado(vs) }));
   for (const linha of tabela.sort((a, b) => b.crescimento - a.crescimento)) {
     const outros = tabela.filter((x) => x !== linha);
-    const domina = outros.length > 0 && outros.every((o) => linha.crescimento > o.crescimento && linha.p90 > o.p90 && linha.felicidade >= o.felicidade);
+    // Domina quem cresce mais na mediana com folga (0,1 ordem de grandeza por década, uns 26% a mais em dez anos), mais no
+    // p90, e não é mais triste: diferença menor que isso trato como empate, não como estratégia.
+    const domina = outros.length > 0 && outros.every((o) => linha.crescimento > o.crescimento + 0.1 && linha.p90 > o.p90 && linha.felicidade >= o.felicidade);
     r.estrategias.push({
       titulo: `Riqueza principalmente em ${linha.k}${domina ? ': candidata a estratégia dominante' : ''}`,
       natureza: domina ? 'hipotese' : 'fato',
@@ -404,7 +406,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       const b = v.anos[i]!;
       if (a.patrimonio < 10 * a.mundo.pibPerCapita) continue;
       anosOlhados++;
-      if (b.patrimonio - (b.recebido ?? 0) < a.patrimonio * 3) continue;
+      if (b.patrimonio < (a.patrimonio + (b.recebido ?? 0)) * 3) continue;
       const decidiu = v.registros.some((x) => x.ano === a.ano && x.tipo !== 'ano' && Math.abs(x.efeito.patrimonio) > 0.5 * a.patrimonio);
       if (!decidiu) saltos.push(exemplo(v, b.ano));
     }
@@ -488,7 +490,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
     const l = LIMIARES[tipo];
     const anomalia = tipo === 'crescimento_explosivo' || tipo === 'fortuna_nacional' || tipo === 'grupo_no_pib' || tipo === 'concentracao_de_mercado';
     (anomalia ? r.anomalias : r.comportamentos).push({
-      titulo: `${l.medida}: ${ext.length} vidas passam do limiar extremo (${l.extremo})`,
+      titulo: `${l.medida}: ${ext.length} vidas passam do limiar extremo (${String(l.extremo).replace(".", ",")})`,
       natureza: 'fato',
       confianca: confiancaPorN(ext.length, false),
       metrica: `o maior: ${numero(Math.max(...ext.map((x) => x.a.valor)))}; por que este limiar: ${l.porque}`,

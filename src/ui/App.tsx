@@ -217,7 +217,7 @@ export function App() {
       setFolha('cartao');
       vibrar('morte');
       // A observação da vida que acabou (só leitura, refeita pela gravação) roda depois de o cartão aparecer, fora do toque.
-      setTimeout(() => observarVidaQueAcabou(conteudo, nova, gravacao), 400);
+      setTimeout(() => void observarVidaQueAcabou(conteudo, nova, gravacao), 400);
     } else {
       guardar({ ...save, vida: nova, ...comGravacao });
       // O momento se sente: o marco e o sonho realizado que o toque trouxe; senão, o aceno curto de quem decidiu.

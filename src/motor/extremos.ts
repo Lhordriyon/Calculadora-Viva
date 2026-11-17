@@ -98,15 +98,15 @@ export function extremosDaVida(vida: VidaObservada): Achado[] {
     for (const a of r.areas) areas.add(a);
   }
   achar(saida, 'exploracao_total', areas.size / (AREAS.length - 1), vida.fim?.ano ?? vida.inicio, g);
-  // O maior salto do patrimônio em dez anos: a base é pelo menos dois PIBs por pessoa (o primeiro emprego não conta), e
-  // o que chegou de outras pessoas no meio (a herança, o fundo da família) sai do fim: é dinheiro que já existia.
+  // O maior salto do patrimônio em dez anos: a base é pelo menos dois PIBs por pessoa (o primeiro emprego não conta),
+  // mais o que chegou de outras pessoas no meio (a herança, o fundo da família): é dinheiro que já existia.
   let salto = 0;
   let anoDoSalto = vida.inicio;
   for (let i = 0; i < fotos.length; i++) {
     const j = fotos.findIndex((f) => f.ano >= fotos[i]!.ano + 10);
     if (j < 0) break;
     const recebido = fotos.slice(i + 1, j + 1).reduce((t, f) => t + (f.recebido ?? 0), 0);
-    const x = Math.max(0, fotos[j]!.patrimonio - recebido) / Math.max(2 * fotos[i]!.mundo.pibPerCapita, fotos[i]!.patrimonio, 1);
+    const x = Math.max(0, fotos[j]!.patrimonio) / (Math.max(2 * fotos[i]!.mundo.pibPerCapita, fotos[i]!.patrimonio, 1) + recebido);
     if (x > salto) {
       salto = x;
       anoDoSalto = fotos[j]!.ano;

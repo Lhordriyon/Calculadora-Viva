@@ -123,10 +123,10 @@ export function sinaisDe(vida: VidaObservada, de: number, ate: number): Sinais {
   }
   const anos = Math.max(1, ate - de + 1);
   // O crescimento é o do que quem joga fez: a base é pelo menos um PIB por pessoa (o primeiro salário não conta como
-  // fortuna), e o que chegou de outras pessoas na janela (a herança, o fundo da família) sai do fim.
+  // fortuna), mais o que chegou de outras pessoas na janela (a herança, o fundo da família): é dinheiro que já existia.
   const recebido = fotos.slice(1).reduce((t, f) => t + (f.recebido ?? 0), 0);
-  const patrIni = Math.max(1, primeira?.mundo.pibPerCapita ?? 1, primeira?.patrimonio ?? 1);
-  const patrFim = Math.max(1, (ultima?.patrimonio ?? 1) - recebido);
+  const patrIni = Math.max(1, primeira?.mundo.pibPerCapita ?? 1, primeira?.patrimonio ?? 1) + recebido;
+  const patrFim = Math.max(1, ultima?.patrimonio ?? 1);
   // As partes do patrimônio se medem sobre o que se tem (sem descontar a dívida): com o patrimônio perto de zero, a
   // parte aplicada não pode passar de 100%.
   const p = Math.max(1, ultima ? bruto(ultima) : 1);

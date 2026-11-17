@@ -366,16 +366,21 @@ describe('o aparelho e os saves de antes', () => {
     expect(lerObservacao().vidas.length).toBeLessThanOrEqual(2);
   });
 
-  it('a vida que acabou é observada pela gravação; sem gravação (o save de antes dela), pelo livro', () => {
+  it('a vida que acabou é observada pela gravação, em pedaços; sem gravação (o save de antes dela), pelo livro', async () => {
     const { e, inicio, comandos } = robo(3, 'cautelosa');
     const g = { ...novaGravacao(inicio, novaMemoria()), comandos };
-    expect(observarVidaQueAcabou(c, e, g)?.completa).toBe(true);
-    const peloLivro = observarVidaQueAcabou(c, e, undefined);
+    let vezes = 0;
+    const observada = await observarVidaQueAcabou(c, e, g, async () => void vezes++);
+    expect(observada?.completa).toBe(true);
+    // Devolveu a vez à interface ao longo do caminho, e o resultado é o mesmo de observar de uma vez.
+    expect(vezes).toBeGreaterThan(3);
+    expect(JSON.stringify(observada!.registros)).toBe(JSON.stringify(observarGravacao(c, g, { fonte: 'jogador', partida: observada!.partida }).vida.registros));
+    const peloLivro = await observarVidaQueAcabou(c, e, undefined);
     expect(peloLivro?.completa).toBe(false);
     expect(peloLivro!.registros.filter((r) => r.tipo === 'escolha').length).toBe(e.historico.filter((h) => h.escolha !== undefined).length);
     // A gravação de outra vida não serve: a observação cai para o livro.
     const outra = robo(4, 'arriscada');
-    expect(observarVidaQueAcabou(c, e, { ...novaGravacao(outra.inicio, novaMemoria()), comandos: outra.comandos })?.completa).toBe(false);
+    expect((await observarVidaQueAcabou(c, e, { ...novaGravacao(outra.inicio, novaMemoria()), comandos: outra.comandos }))?.completa).toBe(false);
     expect(lerObservacao().vidas).toHaveLength(3);
   });
 

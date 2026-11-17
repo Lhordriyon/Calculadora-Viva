@@ -9,7 +9,7 @@
 import type { Conteudo } from '../motor/conteudo.ts';
 import type { Gravacao } from '../motor/caminho.ts';
 import { extremosDaVida } from '../motor/extremos.ts';
-import { observarGravacao, observarPeloLivro, type Registro, type VidaObservada } from '../motor/observacao.ts';
+import { comecarObservacao, observarComando, observarPeloLivro, terminarObservacao, type Registro, type VidaObservada } from '../motor/observacao.ts';
 import { perfisDaVida, type Perfil } from '../motor/perfis.ts';
 import { saturacaoDaVida } from '../motor/saturacao.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
@@ -157,18 +157,29 @@ export function guardarVidaObservada(v: VidaObservada): void {
   gravarObservacao({ ...o, vidas, resumos: resumos.slice(-RESUMOS) });
 }
 
+/** Quantos comandos a observação refaz antes de devolver a vez à interface (uns 15 ms num computador, a 0,7 ms por comando). */
+const COMANDOS_POR_VEZ = 20;
+const cederAVez = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
+
 /**
  * Observa a vida que acabou: refaz a gravação comando a comando, confere que a vida refeita é a mesma (senão, observa
- * pelo livro) e guarda. Roda depois do cartão aparecer: nunca no caminho do toque, e um erro aqui não chega ao jogo.
+ * pelo livro) e guarda. Roda depois do cartão aparecer, em pedaços que devolvem a vez à interface (a vida inteira
+ * refeita com o observador leva uns 240 ms num computador): nunca no caminho do toque, e um erro aqui não chega ao jogo.
  */
-export function observarVidaQueAcabou(c: Conteudo, vida: EstadoVida, gravacao: Gravacao | undefined): VidaObservada | null {
+export async function observarVidaQueAcabou(c: Conteudo, vida: EstadoVida, gravacao: Gravacao | undefined, ceder: () => Promise<void> = cederAVez): Promise<VidaObservada | null> {
   try {
     const o = lerObservacao();
     if (!o.ligada) return null;
     const rotulo = { fonte: 'jogador' as const, partida: o.partida ?? `p${vida.semente.toString(36)}` };
     let observada: VidaObservada | null = null;
     if (gravacao) {
-      const { vida: v, estado } = observarGravacao(c, gravacao, rotulo);
+      const estado = structuredClone(gravacao.inicio);
+      const obs = comecarObservacao(estado, c, rotulo, gravacao.memoria);
+      for (let i = 0; i < gravacao.comandos.length; i++) {
+        observarComando(obs, estado, c, gravacao.memoria, gravacao.comandos[i]!);
+        if (i % COMANDOS_POR_VEZ === COMANDOS_POR_VEZ - 1) await ceder();
+      }
+      const v = terminarObservacao(obs, estado);
       const mesma = estado.historico.length === vida.historico.length && estado.historico.at(-1)?.id === vida.historico.at(-1)?.id && estado.idade === vida.idade;
       if (mesma) observada = v;
     }
