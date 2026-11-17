@@ -26,6 +26,7 @@ import { Menu } from './Menu.tsx';
 import { Palco } from './Palco.tsx';
 import { ehMarco, naLinhaDoTempo, NO_APP } from './formato.ts';
 import { exportarSave } from './exportar.ts';
+import { comecarPartida, observarVidaQueAcabou } from '../jogo/observacao.ts';
 import { vibrar } from './vibrar.ts';
 import { useVoltar } from './voltar.ts';
 
@@ -173,6 +174,7 @@ export function App() {
     const nova = nascer(conteudo, { semente: sementeNova(), ano: new Date().getFullYear(), ...(origem ? { origem } : {}) });
     vistas.current = 0;
     guardar({ versao: save.versao, vida: nova, memoria: save.memoria, vidas: save.vidas, gravacao: novaGravacao(nova, save.memoria) });
+    comecarPartida(nova);
     setFolha(null);
   }
 
@@ -200,6 +202,7 @@ export function App() {
       const nova = continuarComoHerdeiro(vida, conteudo);
       vistas.current = 0;
       guardar({ ...save, vida: nova, gravacao: novaGravacao(nova, save.memoria) });
+      comecarPartida(nova);
       setFolha(null);
     });
   }
@@ -213,6 +216,8 @@ export function App() {
       setDespedida(true);
       setFolha('cartao');
       vibrar('morte');
+      // A observação da vida que acabou (só leitura, refeita pela gravação) roda depois de o cartão aparecer, fora do toque.
+      setTimeout(() => observarVidaQueAcabou(conteudo, nova, gravacao), 400);
     } else {
       guardar({ ...save, vida: nova, ...comGravacao });
       // O momento se sente: o marco e o sonho realizado que o toque trouxe; senão, o aceno curto de quem decidiu.

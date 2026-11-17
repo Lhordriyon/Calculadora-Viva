@@ -5,6 +5,7 @@ import type { Conteudo } from '../motor/conteudo.ts';
 import { exportarSave } from './exportar.ts';
 import { anos, LINK_APK, NO_APP } from './formato.ts';
 import { ligarVibracao, podeVibrar, vibracaoLigada, vibrar } from './vibrar.ts';
+import { JeitoDeJogar } from './Observacao.tsx';
 
 interface Props {
   viva: boolean;
@@ -89,6 +90,7 @@ export function Menu({ viva, save, conteudo, aoFechar, aoNovaVida, aoImportar }:
             </div>
           </>
         )}
+        <JeitoDeJogar vida={save.vida ?? null} conteudo={conteudo} aoMensagem={setMensagem} />
         <h3 class="menu-save">O save</h3>
         <p class="meta">Fica neste aparelho. Exporte para guardar uma cópia ou levar para outro aparelho.</p>
         <div class="acoes">

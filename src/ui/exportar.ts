@@ -7,13 +7,18 @@ import { baixar } from './cartaoImagem.ts';
 import { NO_APP } from './formato.ts';
 
 export async function exportarSave(texto: string): Promise<string | null> {
-  const nome = `trajetoria-save-${new Date().toISOString().slice(0, 10)}.txt`;
-  const volta = 'Para trazer de volta, use “Importar um save”.';
+  return exportarTexto(texto, { prefixo: 'trajetoria-save', titulo: 'Trajetória: save', oQue: 'Save', volta: 'Para trazer de volta, use “Importar um save”.' });
+}
+
+/** O mesmo caminho para outro arquivo de texto (a observação do jeito de jogar). */
+export async function exportarTexto(texto: string, a: { prefixo: string; titulo: string; oQue: string; volta: string }): Promise<string | null> {
+  const nome = `${a.prefixo}-${new Date().toISOString().slice(0, 10)}.txt`;
+  const volta = a.volta;
   try {
     const doc = new File([texto], nome, { type: 'text/plain' });
     if (typeof navigator.share === 'function' && navigator.canShare?.({ files: [doc] })) {
-      await navigator.share({ files: [doc], title: 'Trajetória: save' });
-      return `Save enviado. ${volta}`;
+      await navigator.share({ files: [doc], title: a.titulo });
+      return `${a.oQue} enviado. ${volta}`.trim();
     }
   } catch (e) {
     if ((e as Error).name === 'AbortError') return null;
@@ -21,11 +26,11 @@ export async function exportarSave(texto: string): Promise<string | null> {
   if (NO_APP) {
     try {
       await navigator.clipboard.writeText(texto);
-      return `Save copiado. Cole numa nota ou mande para você mesmo. ${volta}`;
+      return `${a.oQue} copiado. Cole numa nota ou mande para você mesmo. ${volta}`.trim();
     } catch {
       // Sem área de transferência: baixa o arquivo.
     }
   }
   baixar(new Blob([texto], { type: 'text/plain' }), nome);
-  return `Save baixado (${nome}). ${volta}`;
+  return `${a.oQue} baixado (${nome}). ${volta}`.trim();
 }
