@@ -60,6 +60,8 @@ export interface Sinais {
   filhos: number;
   testamento: boolean;
   percentil: number;
+  /** Quanto do percentil é de quem joga (até os 21 é o da família; some até os 30, como na régua do lugar). */
+  daPropria: number;
   anosNoAperto: number;
   abriuEmpresa: boolean;
 }
@@ -95,6 +97,11 @@ function tocou(r: Registro, area: Area): boolean {
   return r.area === area || r.areas.includes(area);
 }
 
+/** O que quem joga tem, sem descontar a dívida: a conta, o aplicado, os títulos, os bens e a parte nas empresas. */
+function bruto(f: FotoDoAno): number {
+  return Math.max(0, f.caixa) + Math.max(0, f.investido) + Math.max(0, f.titulos) + Math.max(0, f.bens) + Math.max(0, f.empresas);
+}
+
 /** Os sinais dos registros e das fotos entre dois anos (inclusive). */
 export function sinaisDe(vida: VidaObservada, de: number, ate: number): Sinais {
   const registros = vida.registros.filter((r) => r.ano >= de && r.ano <= ate && r.tipo !== 'ano');
@@ -115,9 +122,14 @@ export function sinaisDe(vida: VidaObservada, de: number, ate: number): Sinais {
     if (q > 0) h -= q * Math.log(q);
   }
   const anos = Math.max(1, ate - de + 1);
-  const patrIni = Math.max(1, primeira?.patrimonio ?? 1);
-  const patrFim = Math.max(1, ultima?.patrimonio ?? 1);
-  const p = Math.max(1, ultima?.patrimonio ?? 1);
+  // O crescimento é o do que quem joga fez: a base é pelo menos um PIB por pessoa (o primeiro salário não conta como
+  // fortuna), e o que chegou de outras pessoas na janela (a herança, o fundo da família) sai do fim.
+  const recebido = fotos.slice(1).reduce((t, f) => t + (f.recebido ?? 0), 0);
+  const patrIni = Math.max(1, primeira?.mundo.pibPerCapita ?? 1, primeira?.patrimonio ?? 1);
+  const patrFim = Math.max(1, (ultima?.patrimonio ?? 1) - recebido);
+  // As partes do patrimônio se medem sobre o que se tem (sem descontar a dívida): com o patrimônio perto de zero, a
+  // parte aplicada não pode passar de 100%.
+  const p = Math.max(1, ultima ? bruto(ultima) : 1);
   return {
     anos,
     decisoes: registros.length,
@@ -139,12 +151,14 @@ export function sinaisDe(vida: VidaObservada, de: number, ate: number): Sinais {
     filhos: ultima?.filhos ?? 0,
     testamento: registros.some((r) => r.ref === 'testamento'),
     percentil: ultima?.percentil ?? 0,
-    anosNoAperto: fotos.filter((f) => f.percentil < 0.3 || (f.divida > 0 && f.divida > 2 * Math.max(1, f.renda)) || f.felicidade < 30).length,
+    daPropria: Math.min(1, Math.max(0, ((ultima?.idade ?? 0) - 21) / 9)),
+    anosNoAperto: fotos.filter((f) => f.percentil < 0.3 || (f.divida > 2 * Math.max(f.renda, 0.1 * f.mundo.pibPerCapita) && f.divida > 0.5 * bruto(f)) || f.felicidade < 30).length,
     abriuEmpresa: registros.some((r) => r.ref === 'abrir' || r.refs.includes('abrirEmpresa')),
   };
 }
 
 const pct = (x: number): string => `${Math.round(x * 100)}%`;
+const dec = (x: number, casas: number): string => x.toFixed(casas).replace('.', ',');
 
 /** As probabilidades dos dez perfis a partir dos sinais, com o porquê de cada uma. */
 export function perfisDosSinais(s: Sinais): Probabilidade[] {
@@ -169,7 +183,7 @@ export function perfisDosSinais(s: Sinais): Probabilidade[] {
     ], -2.5),
     regra('industrialista', [
       [Math.log10(1 + s.funcionarios) / 1.5, `${Math.round(s.funcionarios)} funcionários no grupo`],
-      [0.6 * Math.min(5, s.pesoNoPib), `o grupo é ${s.pesoNoPib.toFixed(2)}% do PIB`],
+      [0.6 * Math.min(5, s.pesoNoPib), `o grupo é ${dec(s.pesoNoPib, 2)}% do PIB`],
       [4 * s.maiorFatia, `${pct(s.maiorFatia)} de um mercado`],
       [0.5 * Math.min(4, s.nSubsidiarias), `${s.nSubsidiarias} subsidiária(s)`],
     ], -3.5),
@@ -185,25 +199,25 @@ export function perfisDosSinais(s: Sinais): Probabilidade[] {
       [s.testamento ? 1.2 : 0, 'decidiu o testamento'],
     ], -2.5),
     regra('acumulador', [
-      [1.6 * Math.max(0, s.crescimentoPorDecada), `o patrimônio cresceu ${s.crescimentoPorDecada.toFixed(2)} ordem(ns) de grandeza por década`],
-      [s.percentil >= 0.999 ? 2 : s.percentil >= 0.99 ? 1.3 : s.percentil >= 0.9 ? 0.6 : 0, `está no percentil ${(s.percentil * 100).toFixed(1)} da riqueza do país`],
+      [1.6 * Math.max(0, s.crescimentoPorDecada), `o patrimônio cresceu ${dec(s.crescimentoPorDecada, 2)} ordem(ns) de grandeza por década`],
+      [s.daPropria * (s.percentil >= 0.999 ? 2 : s.percentil >= 0.99 ? 1.3 : s.percentil >= 0.9 ? 0.6 : 0), `está no percentil ${dec((s.percentil * 100), 1)} da riqueza do país`],
       [2 * Math.max(0, s.aplicado + s.naEmpresa - 0.5), 'o patrimônio trabalha (aplicado ou em empresas)'],
     ], -2.5),
     regra('filantropo', [
       [12 * P.filantropia, `${pct(P.filantropia)} das decisões em doação, fundação ou causa`],
     ], -2.5),
     regra('explorador', [
-      [1.3 * (s.areasUsadas - areasEsperadas(s.anos)), `usou ${s.areasUsadas} das ${AREAS.length - 1} áreas (o comum, em ${s.anos} anos, é ${areasEsperadas(s.anos).toFixed(0)})`],
-      [s.decisoes / s.anos >= 4.6 ? 0.6 : 0, `${(s.decisoes / s.anos).toFixed(1)} decisões por ano`],
+      [1.3 * (s.areasUsadas - areasEsperadas(s.anos)), `usou ${s.areasUsadas} das ${AREAS.length - 1} áreas (o comum, em ${s.anos} anos, é ${dec(areasEsperadas(s.anos), 0)})`],
+      [s.decisoes / s.anos >= 4.6 ? 0.6 : 0, `${dec((s.decisoes / s.anos), 1)} decisões por ano`],
     ], -2),
     regra('generalista', [
-      [30 * (s.entropia - entropiaComum(s.anos)), `áreas equilibradas (entropia ${s.entropia.toFixed(2)}; o comum é ${entropiaComum(s.anos).toFixed(2)})`],
+      [30 * (s.entropia - entropiaComum(s.anos)), `áreas equilibradas (entropia ${dec(s.entropia, 2)}; o comum é ${dec(entropiaComum(s.anos), 2)})`],
       [s.maiorArea < 0.3 ? 0.8 : 0, `nenhuma área passa de ${pct(s.maiorArea)}`],
     ], -0.8),
     regra('sobrevivencia', [
       [4 * (s.anosNoAperto / s.anos), `${s.anosNoAperto} de ${s.anos} anos no aperto (pobreza, dívida ou tristeza)`],
       [6 * P.dividas, `${pct(P.dividas)} das decisões em dívidas`],
-      [s.percentil < 0.25 ? 1 : 0, `percentil ${(s.percentil * 100).toFixed(0)} da riqueza`],
+      [s.percentil < 0.25 ? 1 : 0, `percentil ${dec((s.percentil * 100), 0)} da riqueza`],
     ], -2.5),
   ];
 }

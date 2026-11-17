@@ -166,6 +166,8 @@ export interface FotoDoAno {
   /** Os storylets que apareceram no ano e os que já tinham aparecido antes (nesta vida ou nas anteriores). */
   mostrados: number;
   repetidos: number;
+  /** O que chegou a quem joga de outras pessoas desde a foto anterior (herança, fundo da família, presente): dinheiro que já era da família. */
+  recebido: number;
   oportunidades: Oportunidades;
   mundo: FotoDoMundo;
 }
@@ -388,7 +390,7 @@ function maiorFatiaDe(e: EstadoVida, c: Conteudo): number {
 }
 
 /** A foto da vida agora (só leitura). */
-export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fichasLivres: number; mostrados: number; repetidos: number }): FotoDoAno {
+export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fichasLivres: number; mostrados: number; repetidos: number; recebido: number }): FotoDoAno {
   const eu = e.entidades['eu']!;
   const n = eu.n;
   const patrimonio = patrimonioTotal(e);
@@ -438,6 +440,7 @@ export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fi
     fichasLivres: ano.fichasLivres,
     mostrados: ano.mostrados,
     repetidos: ano.repetidos,
+    recebido: ano.recebido,
     oportunidades: oportunidadesDe(e, c, patrimonio),
     mundo: fotoDoMundo(e),
   };
@@ -449,9 +452,23 @@ export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fi
 export interface Observando {
   vida: VidaObservada;
   memoria?: MemoriaJogador | undefined;
-  /** O ano aberto: as fichas usadas (pelo livro), os storylets que apareceram e os repetidos. */
+  /** O ano aberto: os storylets que apareceram, os repetidos e o que chegou de outras pessoas. */
   mostrados: number;
   repetidos: number;
+  recebido: number;
+}
+
+/**
+ * O dinheiro que chegou a quem joga de outra pessoa numa entrada: a herança, o fundo da família, o presente. É dinheiro
+ * que já existia na família: entra no patrimônio, mas não é o patrimônio crescendo pelo que quem joga fez com ele.
+ */
+export function recebidoNa(e: EstadoVida, h: Entrada): number {
+  let soma = 0;
+  for (const m of h.mudancas ?? []) {
+    if (m.c !== 'eu.dinheiro' || m.p === undefined || (m.d ?? 0) <= 0) continue;
+    if (e.entidades[m.p]?.tipo === 'pessoa') soma += m.d!;
+  }
+  return soma;
 }
 
 function primeiraVez(o: Observando, e: EstadoVida, h: Entrada): boolean {
@@ -480,8 +497,8 @@ export function comecarObservacao(e: EstadoVida, c: Conteudo, rotulo: Rotulo, me
     registros: [],
     anos: [],
   };
-  const o: Observando = { vida, memoria, mostrados: 0, repetidos: 0 };
-  vida.anos.push(fotografar(e, c, { fichas: 0, fichasLivres: 0, mostrados: 0, repetidos: 0 }));
+  const o: Observando = { vida, memoria, mostrados: 0, repetidos: 0, recebido: 0 };
+  vida.anos.push(fotografar(e, c, { fichas: 0, fichasLivres: 0, mostrados: 0, repetidos: 0, recebido: 0 }));
   return o;
 }
 
@@ -521,6 +538,7 @@ export function observarComando(o: Observando, e: EstadoVida, c: Conteudo, memor
       o.mostrados++;
       if (!primeiraVez(o, e, h)) o.repetidos++;
     }
+    o.recebido += recebidoNa(e, h);
   }
   const tipo = cmd.t === 'escolher' ? 'escolha' : cmd.t === 'agir' ? 'acao' : cmd.t === 'operar' ? 'operacao' : 'ano';
   const ref = cmd.t === 'escolher' ? (refDoEvento ?? '?') : cmd.t === 'agir' ? `${cmd.verbo}:${cmd.escolha?.id ?? ''}` : cmd.t === 'operar' ? cmd.op.tipo : 'ano';
@@ -548,9 +566,10 @@ export function observarComando(o: Observando, e: EstadoVida, c: Conteudo, memor
   if (e.ano !== anoAntes || !e.vivo) {
     const fichas = fichasDoAno(idadeAntes);
     const livres = cmd.t === 'ano' ? Math.max(0, fichas - usadas) : 0;
-    o.vida.anos.push(fotografar(e, c, { fichas, fichasLivres: livres, mostrados: o.mostrados, repetidos: o.repetidos }));
+    o.vida.anos.push(fotografar(e, c, { fichas, fichasLivres: livres, mostrados: o.mostrados, repetidos: o.repetidos, recebido: o.recebido }));
     o.mostrados = 0;
     o.repetidos = 0;
+    o.recebido = 0;
   }
   o.vida.registros.push(registro);
   if (!e.vivo) terminar(o, e);
@@ -620,7 +639,7 @@ export function observarPeloLivro(e: EstadoVida, c: Conteudo, rotulo: Rotulo): V
     inicio: e.historico[0]?.ano ?? e.ano,
     completa: false,
     registros,
-    anos: [fotografar(e, c, { fichas: 0, fichasLivres: 0, mostrados: 0, repetidos: 0 })],
+    anos: [fotografar(e, c, { fichas: 0, fichasLivres: 0, mostrados: 0, repetidos: 0, recebido: e.historico.reduce((t, h) => t + recebidoNa(e, h), 0) })],
   };
   if (!e.vivo) {
     const ultima = vida.anos[0]!;

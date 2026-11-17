@@ -14,6 +14,7 @@ import {
   observarComando,
   observarGravacao,
   observarPeloLivro,
+  recebidoNa,
   type FotoDoAno,
   type Registro,
   type VidaObservada,
@@ -59,7 +60,7 @@ function foto(ano: number, x: Partial<FotoDoAno> = {}): FotoDoAno {
     ano, idade: ano - 2000, patrimonio: 1e5, caixa: 1e4, investido: 0, titulos: 0, bens: 0, empresas: 0, divida: 0, renda: 50_000, custo: 30_000,
     felicidade: 60, saude: 80, nEmpresas: 0, nSubsidiarias: 0, nHoldings: 0, funcionarios: 0, pesoNoPib: 0, maiorFatia: 0, maiorRival: 0,
     infPessoal: 20, infPolitica: 0, infNegocios: 0, cargo: '', coroa: false, regime: false, percentil: 0.5, patrimonioSobrePib: 1e-8,
-    filhos: 0, lacosFortes: 2, planos: 1, sonhos: 0, possiveis: 3, conquistas: 0, mercadoCabe: 1, fichas: 3, fichasLivres: 0, mostrados: 2, repetidos: 0,
+    filhos: 0, lacosFortes: 2, planos: 1, sonhos: 0, possiveis: 3, conquistas: 0, mercadoCabe: 1, fichas: 3, fichasLivres: 0, mostrados: 2, repetidos: 0, recebido: 0,
     oportunidades: { elegiveis: 100, deEscala: 30, maiorImpacto: 0.5, jogadas: 0 },
     mundo: { pib: 2e13, populacao: 2e8, pibPerCapita: 1e5, crescimento: 1, inflacao: 4, desemprego: 8, fase: 'normal', governo: 'centrao' },
     ...x,
@@ -202,6 +203,19 @@ describe('os extremos', () => {
     expect(tipo('poder_politico')?.nivel).toBe('extremo');
     expect(tipo('dinastia_longa')?.nivel).toBe('extremo');
     for (const a of achados) expect(a.limiar).toBe(a.nivel === 'extremo' ? LIMIARES[a.tipo].extremo : LIMIARES[a.tipo].notavel);
+  });
+
+  it('a herança e o fundo da família não contam como enriquecimento', () => {
+    const anos = [foto(2040, { patrimonio: 1e5 }), ...Array.from({ length: 10 }, (_, i) => foto(2041 + i, { patrimonio: 1e10, recebido: i === 0 ? 1e10 : 0 }))];
+    expect(extremosDaVida(vidaDeMentira([], anos)).find((a) => a.tipo === 'crescimento_explosivo')).toBeUndefined();
+    const semHeranca = anos.map((f) => ({ ...f, recebido: 0 }));
+    expect(extremosDaVida(vidaDeMentira([], semHeranca)).find((a) => a.tipo === 'crescimento_explosivo')?.nivel).toBe('extremo');
+    // Na vida de robô, o que as fotos dizem que chegou de outras pessoas é o que o livro diz.
+    const { vida, e, inicio } = robo(21505, 'cautelosa', 7);
+    const pelasFotos = vida.anos.slice(1).reduce((t, f) => t + f.recebido, 0);
+    expect(pelasFotos).toBeGreaterThan(1e10);
+    const peloLivro = e.historico.slice(inicio.historico.length).reduce((t, h) => t + recebidoNa(e, h), 0);
+    expect(pelasFotos).toBeCloseTo(peloLivro, 0);
   });
 
   it('numa vida de robô, o topo da riqueza aparece quando, e só quando, a vida passou do 0,1% mais rico', () => {

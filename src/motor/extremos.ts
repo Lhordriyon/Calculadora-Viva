@@ -43,7 +43,7 @@ export const LIMIARES: Record<TipoDeExtremo, { notavel: number; extremo: number;
   fortuna_entre_geracoes: { notavel: 3, extremo: 5, medida: 'geração que ainda começa entre os 1% mais ricos', porque: 'a riqueza que atravessa três gerações já é rara; cinco é uma casa' },
   dinastia_longa: { notavel: 4, extremo: 8, medida: 'gerações da família', porque: 'quatro gerações passam de um século; oito, de dois' },
   exploracao_total: { notavel: 0.7, extremo: 0.85, medida: 'áreas do jogo usadas na vida', porque: 'quem toca mais de 70% das áreas já viu quase tudo o que o jogo oferece' },
-  crescimento_explosivo: { notavel: 100, extremo: 10000, medida: 'quantas vezes o patrimônio cresceu numa década', porque: 'cem vezes em dez anos é o que só uma empresa ou uma jogada dá; dez mil não acontece fora de um defeito' },
+  crescimento_explosivo: { notavel: 100, extremo: 10000, medida: 'quantas vezes o patrimônio cresceu numa década', porque: 'cem vezes em dez anos, sem contar herança, é o que só uma empresa ou uma jogada dá; dez mil pede que se leia o livro (a jogada certa ou um defeito)' },
 };
 
 const CARGOS_NACIONAIS = new Set(['presidente', 'rei', 'soberano', 'ditador']);
@@ -98,13 +98,15 @@ export function extremosDaVida(vida: VidaObservada): Achado[] {
     for (const a of r.areas) areas.add(a);
   }
   achar(saida, 'exploracao_total', areas.size / (AREAS.length - 1), vida.fim?.ano ?? vida.inicio, g);
-  // O maior salto do patrimônio em dez anos (com uma base de R$ 100 mil, para o salário do primeiro emprego não contar).
+  // O maior salto do patrimônio em dez anos: a base é pelo menos dois PIBs por pessoa (o primeiro emprego não conta), e
+  // o que chegou de outras pessoas no meio (a herança, o fundo da família) sai do fim: é dinheiro que já existia.
   let salto = 0;
   let anoDoSalto = vida.inicio;
   for (let i = 0; i < fotos.length; i++) {
     const j = fotos.findIndex((f) => f.ano >= fotos[i]!.ano + 10);
     if (j < 0) break;
-    const x = Math.max(0, fotos[j]!.patrimonio) / Math.max(1e5, fotos[i]!.patrimonio);
+    const recebido = fotos.slice(i + 1, j + 1).reduce((t, f) => t + (f.recebido ?? 0), 0);
+    const x = Math.max(0, fotos[j]!.patrimonio - recebido) / Math.max(2 * fotos[i]!.mundo.pibPerCapita, fotos[i]!.patrimonio, 1);
     if (x > salto) {
       salto = x;
       anoDoSalto = fotos[j]!.ano;

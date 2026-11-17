@@ -17,6 +17,7 @@
     "verificar": "npm run checar && npm test && npm run validar && npm run auditoria && npm run dinastias:ci && npm run tunel && npm run build",
     "telas": "node scripts/telas.cjs",
     "auditoria": "node scripts/auditoria.ts",
+    "observatorio": "node scripts/observatorio.ts",
     "dinastias": "node scripts/dinastias.ts",
     "dinastias:ci": "node scripts/dinastias.ts --geracoes=12 --sementes=1 --estrito --saida=dist-dinastias.json --md=dist-dinastias.md",
     "icones": "node scripts/icones.ts"

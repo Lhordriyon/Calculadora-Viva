@@ -58,7 +58,8 @@ export function saturacaoDoAno(f: FotoDoAno, decisoes: readonly Registro[]): Sat
   c.escala = 1 - entre01(f.oportunidades.deEscala / Math.max(1, f.oportunidades.elegiveis) / 0.15);
   c.investimento = 1 - entre01(f.mercadoCabe);
   if (f.nEmpresas > 0) c.concorrencia = 1 - entre01(f.maiorRival / 0.5);
-  c.objetivos = 1 - entre01((f.planos + f.sonhos + f.possiveis) / 4);
+  // Os objetivos só contam a partir dos 16: é quando a vida pergunta o que quem joga quer dela (o sonho aos 15).
+  if (f.idade >= 16) c.objetivos = 1 - entre01((f.planos + f.sonhos + f.possiveis) / 4);
   if (f.mostrados > 0) c.repeticao = f.repetidos / f.mostrados;
   const grandes = decisoes.filter(
     (r) =>

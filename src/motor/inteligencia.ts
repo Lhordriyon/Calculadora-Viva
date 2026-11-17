@@ -8,7 +8,7 @@
 import { extremosDaVida, LIMIARES, quantil, TIPOS_DE_EXTREMO, type Achado } from './extremos.ts';
 import { AREAS, type Area, type FotoDoAno, type VidaObservada } from './observacao.ts';
 import { NOMES_DOS_PERFIS, PERFIS, perfisDaVida, type Perfil } from './perfis.ts';
-import { COMPONENTES, saturacaoDaVida, type Componente, type SaturacaoDaVida } from './saturacao.ts';
+import { ANOS_DE_ESGOTAMENTO, COMPONENTES, LIMIAR_DE_ESGOTAMENTO, saturacaoDaVida, type Componente, type SaturacaoDaVida } from './saturacao.ts';
 import type { Conteudo } from './conteudo.ts';
 
 export type Natureza = 'fato' | 'hipotese';
@@ -62,7 +62,16 @@ function confiancaPorN(n: number, forte = true): Confianca {
   return 'baixa';
 }
 
-const pct = (x: number, casas = 0): string => `${(100 * x).toFixed(casas)}%`;
+/** Os números do relatório no jeito brasileiro: vírgula nos decimais; os grandes em mil e milhões. */
+export const dec = (x: number, casas: number): string => x.toFixed(casas).replace('.', ',');
+export function numero(x: number): string {
+  const a = Math.abs(x);
+  if (a >= 1e9) return `${dec(x / 1e9, 1)} bilhões`;
+  if (a >= 1e6) return `${dec(x / 1e6, 1)} milhões`;
+  if (a >= 1e4) return `${dec(x / 1e3, 1)} mil`;
+  return x.toPrecision(3).replace('.', ',');
+}
+const pct = (x: number, casas = 0): string => `${dec(100 * x, casas)}%`;
 const media = (xs: readonly number[]): number => (xs.length > 0 ? xs.reduce((s, x) => s + x, 0) / xs.length : 0);
 
 /** A fonte principal da riqueza no fim da vida (a maior parte do patrimônio). */
@@ -124,7 +133,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: `${NOMES_DOS_PERFIS[x.perfil]}: ${pct(x.vidas / vidas.length)} das vidas`,
       natureza: 'fato',
       confianca: confiancaPorN(vidas.length),
-      metrica: `probabilidade ≥ 0,6 na vida inteira em ${x.vidas} de ${vidas.length} vidas (média ${x.media.toFixed(2)})${porque ? `; num exemplo: ${porque}` : ''}`,
+      metrica: `probabilidade ≥ 0,6 na vida inteira em ${x.vidas} de ${vidas.length} vidas (média ${dec(x.media, 2)})${porque ? `; num exemplo: ${porque}` : ''}`,
       n: x.vidas,
       exemplos: exemplos.map((v) => exemplo(v)),
     });
@@ -139,7 +148,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
     titulo: 'Os perfis convivem e mudam com a vida',
     natureza: 'fato',
     confianca: confiancaPorN(vidas.length),
-    metrica: `em média ${media(fortesPorVida).toFixed(1)} perfis fortes (≥ 0,6) por vida; o perfil mais forte troca pelo menos uma vez, entre as janelas de dez anos, em ${pct(mudam.length / vidas.length)} das vidas`,
+    metrica: `em média ${dec(media(fortesPorVida), 1)} perfis fortes (≥ 0,6) por vida; o perfil mais forte troca pelo menos uma vez, entre as janelas de dez anos, em ${pct(mudam.length / vidas.length)} das vidas`,
     n: vidas.length,
     exemplos: mudam.slice(0, 2).map((v) => exemplo(v)),
   });
@@ -152,7 +161,12 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
     grupos.set(k, [...(grupos.get(k) ?? []), v]);
   }
   const resultado = (vs: readonly VidaObservada[]): { crescimento: number; p90: number; felicidade: number } => {
-    const cres = vs.map((v) => Math.log10(Math.max(1, v.anos.at(-1)!.patrimonio) / Math.max(1e4, v.anos[0]!.patrimonio)) / Math.max(1, (v.anos.length - 1) / 10));
+    // A base é pelo menos um PIB por pessoa, e o que chegou de outras pessoas (herança, fundo da família) sai do fim.
+    const cres = vs.map((v) => {
+      const ini = v.anos[0]!;
+      const recebido = v.anos.slice(1).reduce((t, f) => t + (f.recebido ?? 0), 0);
+      return Math.log10(Math.max(1, v.anos.at(-1)!.patrimonio - recebido) / Math.max(1, ini.mundo.pibPerCapita, ini.patrimonio)) / Math.max(1, (v.anos.length - 1) / 10);
+    });
     const fel = vs.map((v) => media(v.anos.map((f) => f.felicidade)));
     return { crescimento: quantil(cres, 0.5), p90: quantil(cres, 0.9), felicidade: media(fel) };
   };
@@ -164,7 +178,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: `Riqueza principalmente em ${linha.k}${domina ? ': candidata a estratégia dominante' : ''}`,
       natureza: domina ? 'hipotese' : 'fato',
       confianca: confiancaPorN(linha.vs.length, linha.vs.length >= 100),
-      metrica: `${linha.vs.length} vidas; o patrimônio cresce ${linha.crescimento.toFixed(2)} ordens de grandeza por década na mediana (p90 ${linha.p90.toFixed(2)}); felicidade média ${linha.felicidade.toFixed(0)}`,
+      metrica: `${linha.vs.length} vidas; o patrimônio cresce ${dec(linha.crescimento, 2)} ordens de grandeza por década na mediana (p90 ${dec(linha.p90, 2)}); felicidade média ${dec(linha.felicidade, 0)}`,
       n: linha.vs.length,
       exemplos: linha.vs.slice(0, 2).map((v) => exemplo(v)),
     });
@@ -181,7 +195,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
         titulo: `A estratégia "${l.k}" vence as outras em patrimônio, felicidade e idade ao mesmo tempo`,
         natureza: 'fato',
         confianca: confiancaPorN(l.vs.length),
-        metrica: `${l.vs.length} vidas; crescimento ${l.crescimento.toFixed(2)}, felicidade ${l.felicidade.toFixed(0)}, idade ${l.idade.toFixed(0)}`,
+        metrica: `${l.vs.length} vidas; crescimento ${dec(l.crescimento, 2)}, felicidade ${dec(l.felicidade, 0)}, idade ${dec(l.idade, 0)}`,
         n: l.vs.length,
         exemplos: l.vs.slice(0, 2).map((v) => exemplo(v)),
       });
@@ -355,20 +369,24 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       exemplos: [],
     });
   }
-  // O dinheiro miúdo para quem é grande: escolhas de quem está no 0,1% em storylets cujo maior valor em reais é menos de 0,001% do patrimônio.
+  // O dinheiro miúdo para quem é grande: escolhas de quem está no 0,1% mais rico (pela foto do ano) que mexem em menos
+  // de 0,001% do patrimônio.
   const miudos = new Map<string, number>();
   let escolhasDoTopo = 0;
-  for (const v of vidas) for (const reg of v.registros) {
-    if (reg.tipo !== 'escolha' || reg.antes < 1e9) continue;
+  for (const v of vidas) {
+    const percentilDoAno = new Map(v.anos.map((f) => [f.ano, f.percentil]));
+    for (const reg of v.registros) {
+    if (reg.tipo !== 'escolha' || reg.antes <= 0 || (percentilDoAno.get(reg.ano) ?? 0) < 0.999) continue;
     const s = c.porId.get(reg.ref);
     if (!s) continue;
     escolhasDoTopo++;
     if (Math.abs(reg.efeito.patrimonio) > 0 && Math.abs(reg.efeito.patrimonio) / reg.antes < 1e-5) miudos.set(reg.ref, (miudos.get(reg.ref) ?? 0) + 1);
+    }
   }
   if (escolhasDoTopo >= 20) {
     const total = [...miudos.values()].reduce((s, x) => s + x, 0);
     r.incoerencias.push({
-      titulo: `Quem tem mais de R$ 1 bilhão decide como gente comum: ${pct(total / escolhasDoTopo)} das escolhas mexem em menos de 0,001% do patrimônio`,
+      titulo: `Quem está no 0,1% mais rico decide como gente comum: ${pct(total / escolhasDoTopo)} das escolhas mexem em menos de 0,001% do patrimônio`,
       natureza: 'hipotese',
       confianca: confiancaPorN(escolhasDoTopo),
       metrica: `${total} de ${escolhasDoTopo} escolhas; as mais frequentes: ${[...miudos.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([id, n]) => `${id} (${n})`).join(', ')}. Pode ser vida normal (o jantar com a família), ou pode ser o conteúdo sem escala`,
@@ -376,15 +394,17 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       exemplos: [],
     });
   }
-  // O patrimônio que salta sem decisão grande no ano (a herança conta como mundo: é o caminho comum de quem salta).
+  // O patrimônio que salta sem decisão grande no ano. O que chegou de outras pessoas (a herança, o fundo da família) não
+  // conta como salto: é dinheiro que já existia; e a base é pelo menos dez PIBs por pessoa (o salário não salta).
   const saltos: string[] = [];
   let anosOlhados = 0;
   for (const v of vidas) {
     for (let i = 1; i < v.anos.length; i++) {
       const a = v.anos[i - 1]!;
       const b = v.anos[i]!;
+      if (a.patrimonio < 10 * a.mundo.pibPerCapita) continue;
       anosOlhados++;
-      if (a.patrimonio < 1e6 || b.patrimonio < a.patrimonio * 3) continue;
+      if (b.patrimonio - (b.recebido ?? 0) < a.patrimonio * 3) continue;
       const decidiu = v.registros.some((x) => x.ano === a.ano && x.tipo !== 'ano' && Math.abs(x.efeito.patrimonio) > 0.5 * a.patrimonio);
       if (!decidiu) saltos.push(exemplo(v, b.ano));
     }
@@ -394,7 +414,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: `O patrimônio triplica num ano sem uma decisão de quem joga do mesmo tamanho: ${saltos.length} vezes`,
       natureza: 'hipotese',
       confianca: saltos.length >= 30 ? 'media' : 'baixa',
-      metrica: `${saltos.length} de ${anosOlhados} anos olhados (patrimônio de R$ 1 milhão ou mais); a causa pode ser legítima (herança, a empresa que cresce, a bolsa) e precisa ser lida no livro`,
+      metrica: `${saltos.length} de ${anosOlhados} anos olhados (com patrimônio de dez PIBs por pessoa ou mais; a herança e o dinheiro da família ficam de fora); a causa pode ser legítima (a empresa que cresce, a bolsa) e precisa ser lida no livro`,
       n: anosOlhados,
       exemplos: saltos.slice(0, 3),
     });
@@ -419,23 +439,44 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
   if (topo && base) {
     const piores = (Object.entries(topo.componentes) as [Componente, number][]).sort((a, b) => b[1] - a[1]).slice(0, 3);
     r.conteudoInsuficiente.push({
-      titulo: `A saturação sobe com a riqueza: ${base.indice.toFixed(2)} na metade de baixo, ${topo.indice.toFixed(2)} no ${topo.faixa}`.replace('no 0,1%', 'no 0,1%'),
+      titulo: `A saturação sobe com a riqueza: ${dec(base.indice, 2)} na metade de baixo, ${dec(topo.indice, 2)} no ${topo.faixa}`.replace('no 0,1%', 'no 0,1%'),
       natureza: 'fato',
       confianca: confiancaPorN(topo.anos),
-      metrica: `no topo, os componentes que mais pesam: ${piores.map(([k, x]) => `${k} ${x.toFixed(2)}`).join(', ')} (${topo.anos} anos de vida adulta)`,
+      metrica: `no topo, os componentes que mais pesam: ${piores.map(([k, x]) => `${k} ${dec(x, 2)}`).join(', ')} (${topo.anos} anos de vida adulta)`,
       n: topo.anos,
       exemplos: [],
     });
-    for (const [k, x] of piores.filter(([, x]) => x >= 0.5)) {
-      r.conteudoInsuficiente.push({
-        titulo: `No topo, "${k}" está saturado (${x.toFixed(2)})`,
-        natureza: 'fato',
-        confianca: confiancaPorN(topo.anos),
-        metrica: textoDoComponente(k),
-        n: topo.anos,
-        exemplos: [],
-      });
-    }
+  }
+
+  // Os sistemas que deixam de servir: o componente que fica saturado (0,7 ou mais) cinco anos seguidos na vida adulta,
+  // nas vidas que chegaram ao 1% mais rico e nas outras. É a medida por sistema, ao lado do índice que junta todos.
+  const chegaramAoTopo = (v: VidaObservada): boolean => v.anos.some((f) => f.idade >= 25 && f.percentil >= 0.99);
+  const deixaDeServir: { k: Componente; parte: number; n: number }[] = [];
+  for (const k of COMPONENTES) {
+    const desde = (v: VidaObservada): number | null => {
+      let seguidos = 0;
+      for (const a of saturacoes.get(v)!.anos) {
+        const x = a.idade >= 25 ? a.componentes[k] : undefined;
+        if (x === undefined) continue;
+        seguidos = x >= LIMIAR_DE_ESGOTAMENTO ? seguidos + 1 : 0;
+        if (seguidos >= ANOS_DE_ESGOTAMENTO) return a.ano - ANOS_DE_ESGOTAMENTO + 1;
+      }
+      return null;
+    };
+    const topoV = vidas.filter(chegaramAoTopo);
+    const outras = vidas.filter((v) => !chegaramAoTopo(v));
+    const noTopo = topoV.map((v) => [v, desde(v)] as const).filter(([, a]) => a !== null);
+    const nasOutras = outras.filter((v) => desde(v) !== null).length;
+    if (topoV.length < 5 || noTopo.length === 0) continue;
+    deixaDeServir.push({ k, parte: noTopo.length / topoV.length, n: topoV.length });
+    r.conteudoInsuficiente.push({
+      titulo: `"${k}" deixa de servir: fica saturado cinco anos seguidos em ${pct(noTopo.length / topoV.length)} das vidas que chegaram ao 1% mais rico (${pct(nasOutras / Math.max(1, outras.length))} das outras)`,
+      natureza: 'fato',
+      confianca: confiancaPorN(topoV.length),
+      metrica: `${noTopo.length} de ${topoV.length} vidas do topo e ${nasOutras} de ${outras.length} das outras; ${textoDoComponente(k)}`,
+      n: topoV.length,
+      exemplos: noTopo.slice(0, 3).map(([v, a]) => exemplo(v, a!)),
+    });
   }
 
   // ---------------------------------------------------------------- as anomalias econômicas e os extremos
@@ -450,7 +491,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: `${l.medida}: ${ext.length} vidas passam do limiar extremo (${l.extremo})`,
       natureza: 'fato',
       confianca: confiancaPorN(ext.length, false),
-      metrica: `o maior: ${Math.max(...ext.map((x) => x.a.valor)).toPrecision(3)}; por que este limiar: ${l.porque}`,
+      metrica: `o maior: ${numero(Math.max(...ext.map((x) => x.a.valor)))}; por que este limiar: ${l.porque}`,
       n: ext.length,
       exemplos: ext.sort((a, b) => b.a.valor - a.a.valor).slice(0, 3).map((x) => exemplo(x.v, x.a.ano)),
     });
@@ -473,7 +514,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: 'Conteúdo para o topo: histórias e decisões com custo e risco proporcionais ao patrimônio',
       natureza: 'hipotese',
       confianca: confiancaPorN(topo.anos),
-      metrica: `a saturação do topo (${topo.indice.toFixed(2)}) passa a da metade de baixo (${base?.indice.toFixed(2)}) em ${(topo.indice - (base?.indice ?? 0)).toFixed(2)}; é a A-04 da etapa 01`,
+      metrica: `a saturação do topo (${dec(topo.indice, 2)}) passa a da metade de baixo (${dec(base?.indice ?? 0, 2)}) em ${dec((topo.indice - (base?.indice ?? 0)), 2)}; é a A-04 da etapa 01`,
       n: topo.anos,
       exemplos: [],
     });
@@ -484,6 +525,28 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       natureza: 'hipotese',
       confianca: 'baixa',
       metrica: `${n.titulo}. Com robôs, pode ser só que a regra deles nunca a escolhe`,
+      n: n.n,
+      exemplos: [],
+    });
+  }
+  for (const d of deixaDeServir.filter((x) => x.parte >= 0.3)) {
+    r.oportunidades.push({
+      titulo: SUGESTAO_DO_COMPONENTE[d.k],
+      natureza: 'hipotese',
+      confianca: confiancaPorN(d.n),
+      metrica: `"${d.k}" fica saturado cinco anos seguidos em ${pct(d.parte)} das vidas que chegaram ao 1% mais rico (seção Conteúdos insuficientes)`,
+      n: d.n,
+      exemplos: [],
+    });
+  }
+  for (const n of r.negligenciados.filter((x) => x.titulo.includes('abandonada') && x.n >= 10)) {
+    const parte = Number(/em (\d+)% das vidas/.exec(n.titulo)?.[1] ?? 0) / 100;
+    if (parte < 0.5) continue;
+    r.oportunidades.push({
+      titulo: `Dar continuidade à área ${n.titulo.split(':')[0]}: o que quem começa por ela encontra depois`,
+      natureza: 'hipotese',
+      confianca: 'baixa',
+      metrica: `${n.titulo}. Com robôs, pode ser a regra deles; com pessoas, seria o sinal de que a área não tem segundo ato`,
       n: n.n,
       exemplos: [],
     });
@@ -500,6 +563,17 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
   }
   return r;
 }
+
+/** A hipótese de melhoria de cada sistema que deixa de servir no topo (o que testar, não o que fazer). */
+const SUGESTAO_DO_COMPONENTE: Record<Componente, string> = {
+  escala: 'Conteúdo do topo: histórias e jogadas com custo e risco proporcionais ao patrimônio (a A-04 da etapa 01)',
+  investimento: 'Onde pôr o dinheiro que o mercado já não comporta (o mundo lá fora, a infraestrutura, o próprio país)',
+  concorrencia: 'Concorrência que cresce com o grupo (a estrangeira, a que se junta, o regulador) para o topo continuar disputado',
+  objetivos: 'Planos e sonhos para quem já chegou lá e para a velhice',
+  repeticao: 'Mais variações das histórias que se repetem no topo',
+  consequencia: 'Decisões do topo com efeito proporcional: as escolhas grandes de quem está no 1% mexem pouco no que ele tem',
+  salario: 'Dar à carreira de quem é rico outro peso além do salário (o poder, a influência, a fama, o legado)',
+};
 
 function textoDoComponente(k: Componente): string {
   switch (k) {
@@ -545,7 +619,7 @@ export function emMarkdown(r: Relatorio): string {
   l.push('Cada item diz se é **fato observado** nestas vidas ou **hipótese** tirada dele, a confiança (pelo tamanho da amostra) e como reproduzir os exemplos.', '');
   l.push(...secao('Comportamentos identificados', r.comportamentos));
   l.push('| Perfil | Vidas com probabilidade ≥ 0,6 | Probabilidade média |', '|---|---|---|');
-  for (const p of r.perfis) l.push(`| ${NOMES_DOS_PERFIS[p.perfil]} | ${p.vidas} (${pct(p.vidas / Math.max(1, r.vidas))}) | ${p.media.toFixed(2)} |`);
+  for (const p of r.perfis) l.push(`| ${NOMES_DOS_PERFIS[p.perfil]} | ${p.vidas} (${pct(p.vidas / Math.max(1, r.vidas))}) | ${dec(p.media, 2)} |`);
   l.push('');
   l.push(...secao('Estratégias dominantes', r.estrategias));
   l.push(...secao('Sistemas mais utilizados', r.maisUsados));
@@ -557,7 +631,7 @@ export function emMarkdown(r: Relatorio): string {
   l.push(...secao('Situações incoerentes', r.incoerencias));
   l.push(...secao('Conteúdos insuficientes', r.conteudoInsuficiente));
   l.push('| Faixa da riqueza (vida adulta) | Anos | Saturação | ' + COMPONENTES.join(' | ') + ' |', `|---|---|---|${COMPONENTES.map(() => '---').join('|')}|`);
-  for (const f of r.saturacaoPorFaixa) l.push(`| ${f.faixa} | ${f.anos} | ${f.indice.toFixed(2)} | ${COMPONENTES.map((k) => (f.componentes[k] === undefined ? '-' : f.componentes[k]!.toFixed(2))).join(' | ')} |`);
+  for (const f of r.saturacaoPorFaixa) l.push(`| ${f.faixa} | ${f.anos} | ${dec(f.indice, 2)} | ${COMPONENTES.map((k) => (f.componentes[k] === undefined ? '-' : dec(f.componentes[k]!, 2))).join(' | ')} |`);
   l.push('');
   l.push(...secao('Anomalias econômicas', r.anomalias));
   l.push('| Extremo | Notáveis | Extremos | Medida |', '|---|---|---|---|');
