@@ -168,6 +168,8 @@ export interface FotoDoAno {
   repetidos: number;
   /** O que chegou a quem joga de outras pessoas desde a foto anterior (herança, fundo da família, presente): dinheiro que já era da família. */
   recebido: number;
+  /** De onde veio o dinheiro que entrou na conta desde a foto anterior, por origem (`origemDoDinheiro`). */
+  entradas: Partial<Record<OrigemDoDinheiro, number>>;
   oportunidades: Oportunidades;
   mundo: FotoDoMundo;
 }
@@ -390,7 +392,7 @@ function maiorFatiaDe(e: EstadoVida, c: Conteudo): number {
 }
 
 /** A foto da vida agora (só leitura). */
-export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fichasLivres: number; mostrados: number; repetidos: number; recebido: number }): FotoDoAno {
+export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fichasLivres: number; mostrados: number; repetidos: number; recebido: number; entradas?: Partial<Record<OrigemDoDinheiro, number>> }): FotoDoAno {
   const eu = e.entidades['eu']!;
   const n = eu.n;
   const patrimonio = patrimonioTotal(e);
@@ -441,6 +443,7 @@ export function fotografar(e: EstadoVida, c: Conteudo, ano: { fichas: number; fi
     mostrados: ano.mostrados,
     repetidos: ano.repetidos,
     recebido: ano.recebido,
+    entradas: ano.entradas ?? {},
     oportunidades: oportunidadesDe(e, c, patrimonio),
     mundo: fotoDoMundo(e),
   };
@@ -456,6 +459,27 @@ export interface Observando {
   mostrados: number;
   repetidos: number;
   recebido: number;
+  entradas: Partial<Record<OrigemDoDinheiro, number>>;
+}
+
+/** De onde vem o dinheiro que entra na conta: as contas de fora, as pessoas, as empresas e os bens. */
+export const ORIGENS_DO_DINHEIRO = ['mercado', 'tesouro', 'banco', 'pessoas', 'empresas', 'bens', 'outros'] as const;
+export type OrigemDoDinheiro = (typeof ORIGENS_DO_DINHEIRO)[number];
+
+export function origemDoDinheiro(e: EstadoVida, p: string): OrigemDoDinheiro {
+  if (p === 'mercado' || p === 'tesouro' || p === 'banco') return p;
+  if (p === 'parentes') return 'pessoas';
+  const tipo = e.entidades[p]?.tipo;
+  return tipo === 'pessoa' ? 'pessoas' : tipo === 'empresa' ? 'empresas' : tipo === 'bem' ? 'bens' : 'outros';
+}
+
+/** Soma, por origem, o dinheiro que entrou na conta de quem joga numa entrada (a reavaliação não é dinheiro entrando). */
+function somarEntradas(soma: Partial<Record<OrigemDoDinheiro, number>>, e: EstadoVida, h: Entrada): void {
+  for (const m of h.mudancas ?? []) {
+    if (m.c !== 'eu.dinheiro' || m.p === undefined || m.p === 'reavaliacao' || (m.d ?? 0) <= 0) continue;
+    const k = origemDoDinheiro(e, m.p);
+    soma[k] = (soma[k] ?? 0) + m.d!;
+  }
 }
 
 /**
@@ -497,7 +521,7 @@ export function comecarObservacao(e: EstadoVida, c: Conteudo, rotulo: Rotulo, me
     registros: [],
     anos: [],
   };
-  const o: Observando = { vida, memoria, mostrados: 0, repetidos: 0, recebido: 0 };
+  const o: Observando = { vida, memoria, mostrados: 0, repetidos: 0, recebido: 0, entradas: {} };
   vida.anos.push(fotografar(e, c, { fichas: 0, fichasLivres: 0, mostrados: 0, repetidos: 0, recebido: 0 }));
   return o;
 }
@@ -539,6 +563,7 @@ export function observarComando(o: Observando, e: EstadoVida, c: Conteudo, memor
       if (!primeiraVez(o, e, h)) o.repetidos++;
     }
     o.recebido += recebidoNa(e, h);
+    somarEntradas(o.entradas, e, h);
   }
   const tipo = cmd.t === 'escolher' ? 'escolha' : cmd.t === 'agir' ? 'acao' : cmd.t === 'operar' ? 'operacao' : 'ano';
   const ref = cmd.t === 'escolher' ? (refDoEvento ?? '?') : cmd.t === 'agir' ? `${cmd.verbo}:${cmd.escolha?.id ?? ''}` : cmd.t === 'operar' ? cmd.op.tipo : 'ano';
@@ -566,10 +591,11 @@ export function observarComando(o: Observando, e: EstadoVida, c: Conteudo, memor
   if (e.ano !== anoAntes || !e.vivo) {
     const fichas = fichasDoAno(idadeAntes);
     const livres = cmd.t === 'ano' ? Math.max(0, fichas - usadas) : 0;
-    o.vida.anos.push(fotografar(e, c, { fichas, fichasLivres: livres, mostrados: o.mostrados, repetidos: o.repetidos, recebido: o.recebido }));
+    o.vida.anos.push(fotografar(e, c, { fichas, fichasLivres: livres, mostrados: o.mostrados, repetidos: o.repetidos, recebido: o.recebido, entradas: o.entradas }));
     o.mostrados = 0;
     o.repetidos = 0;
     o.recebido = 0;
+    o.entradas = {};
   }
   o.vida.registros.push(registro);
   if (!e.vivo) terminar(o, e);

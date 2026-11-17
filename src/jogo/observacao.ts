@@ -91,12 +91,15 @@ export function ligarObservacao(ligada: boolean): void {
   gravarObservacao({ ...o, ligada });
 }
 
+/** Apaga as vidas observadas e os resumos; a escolha de observar ou não fica como estava. */
 export function apagarObservacao(): void {
+  const ligada = lerObservacao().ligada;
   try {
     armazenamento()?.removeItem(CHAVE_DA_OBSERVACAO);
   } catch {
     // Sem armazenamento, não havia o que apagar.
   }
+  if (!ligada) gravarObservacao({ ...observacaoVazia(), ligada: false });
 }
 
 /** A vida nova da primeira geração começa uma partida; a do herdeiro continua a da família. */

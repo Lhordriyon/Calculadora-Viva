@@ -10,6 +10,7 @@ import { AREAS, type Area, type FotoDoAno, type VidaObservada } from './observac
 import { NOMES_DOS_PERFIS, PERFIS, perfisDaVida, type Perfil } from './perfis.ts';
 import { ANOS_DE_ESGOTAMENTO, COMPONENTES, LIMIAR_DE_ESGOTAMENTO, saturacaoDaVida, type Componente, type SaturacaoDaVida } from './saturacao.ts';
 import type { Conteudo } from './conteudo.ts';
+import { formatarDinheiro } from './texto.ts';
 
 export type Natureza = 'fato' | 'hipotese';
 export type Confianca = 'alta' | 'media' | 'baixa';
@@ -493,7 +494,7 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
       titulo: `${l.medida}: ${ext.length} vidas passam do limiar extremo (${String(l.extremo).replace(".", ",")})`,
       natureza: 'fato',
       confianca: confiancaPorN(ext.length, false),
-      metrica: `o maior: ${numero(Math.max(...ext.map((x) => x.a.valor)))}; por que este limiar: ${l.porque}`,
+      metrica: `o maior: ${numero(Math.max(...ext.map((x) => x.a.valor)))}; por que este limiar: ${l.porque}${deOndeVeio(ext.map((x) => x.a))}`,
       n: ext.length,
       exemplos: ext.sort((a, b) => b.a.valor - a.a.valor).slice(0, 3).map((x) => exemplo(x.v, x.a.ano)),
     });
@@ -564,6 +565,17 @@ export function relatorioDe(vidas: readonly VidaObservada[], c: Conteudo, capa: 
     });
   }
   return r;
+}
+
+/** De onde veio o dinheiro, nos achados que sabem (o crescimento explosivo): "o dinheiro veio sobretudo do tesouro (2 de 2 vidas)". */
+function deOndeVeio(achados: readonly Achado[]): string {
+  const com = achados.filter((a) => a.fonte);
+  if (com.length === 0) return '';
+  const contagem = new Map<string, number>();
+  for (const a of com) contagem.set(a.fonte!.origem, (contagem.get(a.fonte!.origem) ?? 0) + 1);
+  const [origem, n] = [...contagem.entries()].sort((a, b) => b[1] - a[1])[0]!;
+  const exemplo = com.find((a) => a.fonte!.origem === origem)!.fonte!;
+  return `. O dinheiro que entrou na década veio sobretudo de: ${origem} (em ${n} de ${com.length} vidas; num exemplo, ${formatarDinheiro(exemplo.valor)}, ${pct(exemplo.parte)} do que entrou)`;
 }
 
 /** A hipótese de melhoria de cada sistema que deixa de servir no topo (o que testar, não o que fazer). */

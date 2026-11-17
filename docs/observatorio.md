@@ -192,7 +192,7 @@ Cada item diz se é **fato observado** nestas vidas ou **hipótese** tirada dele
   - o maior: 0,811; por que este limiar: um quarto de um mercado já passa pelo Cade; metade é domínio
   - Para reproduzir: dinastia-rica-arriscada/arriscada, semente 1656503194, geração 7, 2266; trilionaria/arriscada, semente 21001, geração 1, 2057; dinastia-bilionaria-arriscada/arriscada, semente 715930113, geração 8, 2289
 - **quantas vezes o patrimônio cresceu numa década: 2 vidas passam do limiar extremo (10000)** · fato observado · confiança baixa (n = 2)
-  - o maior: 61,3 mil; por que este limiar: cem vezes em dez anos, sem contar herança, é o que só uma empresa ou uma jogada dá; dez mil pede que se leia o livro (a jogada certa ou um defeito)
+  - o maior: 61,3 mil; por que este limiar: cem vezes em dez anos, sem contar herança, é o que só uma empresa ou uma jogada dá; dez mil pede que se leia o livro (a jogada certa ou um defeito). O dinheiro que entrou na década veio sobretudo de: tesouro (em 2 de 2 vidas; num exemplo, R$ 98 bilhões, 99% do que entrou)
   - Para reproduzir: realeza/arriscada, semente 22002, geração 1, 2068; realeza/arriscada, semente 22007, geração 1, 2058
 
 | Extremo | Notáveis | Extremos | Medida |

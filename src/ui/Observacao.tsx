@@ -55,7 +55,7 @@ export function JeitoDeJogar({ vida, conteudo, aoMensagem }: Props) {
       </p>
       {obs.ligada && agora && agora.length > 0 && (
         <p class="meta">
-          Nesta vida, até agora: {agora.map((p) => `${NOMES_DOS_PERFIS[p.perfil]} (${pct(p.p)})`).join(', ')}. {agora[0]!.porque[0] ? `Porque ${agora[0]!.porque[0]}.` : ''}
+          Nesta vida, até agora: {agora.map((p) => `${NOMES_DOS_PERFIS[p.perfil]} (${pct(p.p)})`).join(', ')}. {agora[0]!.porque[0] ? `O que mais pesou: ${agora[0]!.porque[0]}.` : ''}
         </p>
       )}
       {obs.ligada && saturacao && (

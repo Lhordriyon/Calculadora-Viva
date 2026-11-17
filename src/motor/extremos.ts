@@ -16,6 +16,8 @@ export interface Achado {
   /** O ano (e a geração) em que o limiar foi passado pela primeira vez. */
   ano: number;
   geracao: number;
+  /** No crescimento explosivo: de onde veio a maior parte do dinheiro que entrou na década, e quanto. */
+  fonte?: { origem: string; valor: number; parte: number };
 }
 
 export const TIPOS_DE_EXTREMO = [
@@ -102,6 +104,7 @@ export function extremosDaVida(vida: VidaObservada): Achado[] {
   // mais o que chegou de outras pessoas no meio (a herança, o fundo da família): é dinheiro que já existia.
   let salto = 0;
   let anoDoSalto = vida.inicio;
+  let fonte: Achado['fonte'];
   for (let i = 0; i < fotos.length; i++) {
     const j = fotos.findIndex((f) => f.ano >= fotos[i]!.ano + 10);
     if (j < 0) break;
@@ -110,9 +113,17 @@ export function extremosDaVida(vida: VidaObservada): Achado[] {
     if (x > salto) {
       salto = x;
       anoDoSalto = fotos[j]!.ano;
+      // De onde veio o dinheiro da década (o mercado, o Tesouro, as empresas, as pessoas…): a pista para ler o livro.
+      const soma: Record<string, number> = {};
+      for (const f of fotos.slice(i + 1, j + 1)) for (const [k, v] of Object.entries(f.entradas ?? {})) soma[k] = (soma[k] ?? 0) + (v ?? 0);
+      const total = Object.values(soma).reduce((t, v) => t + v, 0);
+      const maior = Object.entries(soma).sort((a, b) => b[1] - a[1])[0];
+      fonte = maior && total > 0 ? { origem: maior[0], valor: maior[1], parte: maior[1] / total } : undefined;
     }
   }
   achar(saida, 'crescimento_explosivo', salto, anoDoSalto, g);
+  const explosivo = saida.find((a) => a.tipo === 'crescimento_explosivo');
+  if (explosivo && fonte) explosivo.fonte = fonte;
   return saida;
 }
 
