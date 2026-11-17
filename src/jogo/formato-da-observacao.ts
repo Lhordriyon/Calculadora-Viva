@@ -8,6 +8,8 @@ import * as z from 'zod/mini';
 import type { VidaObservada } from '../motor/observacao.ts';
 
 export const FORMATO_DA_OBSERVACAO = 'trajetoria-observacao';
+/** A chave do aparelho onde a observação fica, à parte do save (o save a apaga primeiro quando falta espaço). */
+export const CHAVE_DA_OBSERVACAO = 'trajetoria:observacao';
 export const VERSAO_DO_ARQUIVO = 1;
 
 /** O que vai junto do arquivo, para quem o abrir saber o que é. */

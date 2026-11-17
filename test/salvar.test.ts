@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { carregarConteudo } from '../scripts/disco.ts';
 import { AVISO_COPIA, AVISO_SAVE_ANTIGO, CHAVE_COPIA, CHAVE_SAVE, carregar, confirmarAbertura, escreverSave, gravarJa, avisarSeNaoGravar, importarSave, largarAVida, salvar, salvarDepois, lerComCopia, lerSave, saveCru, saveVazio, temCopiaParaVoltar, voltarACopia, VERSAO_SAVE } from '../src/jogo/salvar.ts';
+import { CHAVE_DA_OBSERVACAO } from '../src/jogo/formato-da-observacao.ts';
 import { lembrarVida } from '../src/motor/memoria.ts';
 import { novaGravacao } from '../src/motor/caminho.ts';
 import { criarRng } from '../src/motor/rng.ts';
@@ -197,6 +198,18 @@ describe('o save que o aparelho recusa (missão Ascensão AAA, I-150)', () => {
       expect(guardado.get(CHAVE_SAVE)).toBe(texto);
       expect(guardado.has(CHAVE_COPIA)).toBe(false);
       expect(avisos).toBe(0);
+    });
+  });
+
+  it('sem espaço, a observação do jeito de jogar sai antes da cópia de segurança (o save passa na frente)', () => {
+    const texto = escreverSave(umSave);
+    comArmazenamento(texto.length + 70, (guardado) => {
+      guardado.set(CHAVE_COPIA, 'x'.repeat(40));
+      guardado.set(CHAVE_DA_OBSERVACAO, 'y'.repeat(60));
+      expect(salvar(umSave)).toBe(true);
+      expect(guardado.get(CHAVE_SAVE)).toBe(texto);
+      expect(guardado.has(CHAVE_DA_OBSERVACAO)).toBe(false);
+      expect(guardado.has(CHAVE_COPIA)).toBe(true);
     });
   });
 

@@ -171,8 +171,15 @@ if (pedida) {
     const lido = lerArquivoDeObservacao(readFileSync(arquivo, 'utf8'));
     if ('erro' in lido) throw new Error(lido.erro);
     vidas = lido.vidas;
-    fonte = 'vidas exportadas por quem jogou';
-    descricao = `Um arquivo exportado pelo menu do jogo (${vidas.length} vidas). É uma pessoa, não o público: nada aqui fala de "os jogadores".`;
+    // A capa diz de quem são as vidas pela origem gravada em cada uma, não pelo caminho do arquivo.
+    const deRobo = vidas.filter((v) => v.fonte === 'robo').length;
+    const deJogador = vidas.length - deRobo;
+    fonte = deRobo === 0 ? 'vidas exportadas por quem jogou' : deJogador === 0 ? 'robôs (de um arquivo; não são jogadores)' : 'um arquivo com vidas de quem jogou e de robôs';
+    descricao = [
+      `Um arquivo de observação (${vidas.length} vidas: ${deJogador} de quem jogou, ${deRobo} de robôs).`,
+      deJogador > 0 ? 'As vidas de quem jogou são de uma pessoa, não do público: nada aqui fala de "os jogadores".' : '',
+      deRobo > 0 ? 'As vidas de robôs medem o jogo diante das regras deles, não o comportamento de pessoas.' : '',
+    ].filter(Boolean).join(' ');
   } else {
     vidas = plano().flatMap((t) => jogarTrilha(t));
     fonte = 'robôs (não são jogadores)';

@@ -16,6 +16,7 @@ import { migrarDividaSemContrato } from '../motor/dividas.ts';
 import { generoDoNome } from '../motor/empresa.ts';
 import { iniciarNumeros, migrarPais } from '../motor/pais.ts';
 import { FILHOS, ehFilho } from '../motor/constantes.ts';
+import { CHAVE_DA_OBSERVACAO } from './formato-da-observacao.ts';
 import { VERSAO_ESTADO } from '../motor/tipos.ts';
 import { novaMemoria } from '../motor/memoria.ts';
 
@@ -339,14 +340,18 @@ export function avisarSeNaoGravar(fn: (() => void) | null): void {
 }
 
 /**
- * Grava o save do aparelho; devolve se gravou. Sem espaço, a vida em andamento vale mais que o resto: sai a cópia de
- * segurança e tenta de novo; depois, sai a gravação do caminho não tomado. Se nem assim, o jogo continua e avisa (antes
- * falhava calado, e a vida se perdia ao fechar o app sem ninguém saber).
+ * Grava o save do aparelho; devolve se gravou. Sem espaço, a vida em andamento vale mais que o resto: sai a observação
+ * do jeito de jogar (etapa 03) e tenta de novo; depois, a cópia de segurança; depois, a gravação do caminho não tomado.
+ * Se nem assim, o jogo continua e avisa (antes falhava calado, e a vida se perdia ao fechar o app sem ninguém saber).
  */
 export function salvar(save: Save): boolean {
   const ls = globalThis.localStorage;
   const tentativas: (() => void)[] = [
     () => ls.setItem(CHAVE_SAVE, escreverSave(save)),
+    () => {
+      ls.removeItem(CHAVE_DA_OBSERVACAO);
+      ls.setItem(CHAVE_SAVE, escreverSave(save));
+    },
     () => {
       ls.removeItem(CHAVE_COPIA);
       ls.setItem(CHAVE_SAVE, escreverSave(save));

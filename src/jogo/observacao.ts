@@ -13,12 +13,12 @@ import { comecarObservacao, observarComando, observarPeloLivro, terminarObservac
 import { perfisDaVida, type Perfil } from '../motor/perfis.ts';
 import { saturacaoDaVida } from '../motor/saturacao.ts';
 import type { EstadoVida } from '../motor/tipos.ts';
-import { escreverArquivoDeObservacao } from './formato-da-observacao.ts';
+import { CHAVE_DA_OBSERVACAO, escreverArquivoDeObservacao } from './formato-da-observacao.ts';
 
-export const CHAVE_DA_OBSERVACAO = 'trajetoria:observacao';
+export { CHAVE_DA_OBSERVACAO };
 const VERSAO = 1;
-/** Quantas vidas inteiras ficam guardadas (cada uma tem umas dezenas de KB). */
-export const VIDAS_INTEIRAS = 4;
+/** Quantas vidas inteiras ficam guardadas (cada uma tem uns 150 KB; o save sempre passa na frente, salvar.ts). */
+export const VIDAS_INTEIRAS = 3;
 export const RESUMOS = 60;
 
 export interface ResumoDeVida {
