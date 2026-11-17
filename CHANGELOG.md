@@ -19,7 +19,7 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
   - no 1% mais rico, a consequência das decisões grandes deixa de servir em 66% das vidas, e o salário em 53%;
   - as duas fortunas explosivas vêm da renda da coroa paga pelo Tesouro (a A-02 da etapa 01);
   - nenhuma fonte de riqueza domina com folga.
-- CHANGELOG_NUMEROS
+- 📊 627 testes (29 novos), auditoria e bancada sem problema, telas 58 de 58. No túnel (10.000 vidas), as métricas saíram idênticas às da etapa 02, linha a linha (V5 53,6%, assinaturas 905, toques 485,2); só a CPU por vida mudou (182 → 172 ms).
 
 ## 🧪 O universo que não explode · Etapa 02, o laboratório de longo prazo · 16/11/2026
 

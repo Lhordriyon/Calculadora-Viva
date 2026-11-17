@@ -58,6 +58,7 @@ export function JeitoDeJogar({ vida, conteudo, aoMensagem }: Props) {
           Nesta vida, até agora: {agora.map((p) => `${NOMES_DOS_PERFIS[p.perfil]} (${pct(p.p)})`).join(', ')}. {agora[0]!.porque[0] ? `O que mais pesou: ${agora[0]!.porque[0]}.` : ''}
         </p>
       )}
+      {obs.ligada && agora && agora.length === 0 && <p class="meta">Nesta vida, ainda não dá para dizer: nenhum jeito de jogar passou de metade.</p>}
       {obs.ligada && saturacao && (
         <p class="meta">
           {saturacao.esgotadoDesde !== null

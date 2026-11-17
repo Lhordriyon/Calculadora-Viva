@@ -40,7 +40,7 @@
 - As duas fortunas que cresceram mais de 10 mil vezes numa década vieram da renda da coroa, paga pelo Tesouro.
 - Nenhuma fonte de riqueza domina as outras com folga.
 
-TUNEL_README
+No túnel de vento (10.000 vidas), as métricas saíram idênticas às da etapa 02, linha a linha: é a prova de que a observação não mexeu na simulação. Nenhuma história morta, saturação V5 53,6%, assinaturas 905, toques 485,2. Só a CPU por vida mudou (182 → 172 ms, que varia de máquina para máquina). São 627 testes (29 novos), a auditoria e a bancada sem problema e a régua de telas com 58 de 58.
 
 O relatório da etapa: [`docs/relatorio-etapa-03.md`](docs/relatorio-etapa-03.md).
 

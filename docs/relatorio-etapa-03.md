@@ -283,11 +283,20 @@ Trechos de `docs/observatorio.md` (vidas de robôs).
 | Pedido | Como o teste confere |
 |---|---|
 | Partidas longas | a dinastia de três gerações, com a mesma partida e a geração que sobe |
-| Desempenho | o relatório de 50 mil registros sai em menos de 10 s (o limite do teste; TEMPO_50K); a bancada inteira (81.634 registros) roda em 1 min 45 s |
+| Desempenho | o relatório de 50 mil registros sai em menos de 10 s (o limite do teste; saiu em 198 ms); a bancada inteira (81.634 registros) roda em 1 min 45 s |
 | Saves anteriores | a observação estragada, de outra versão ou ausente volta vazia; a vida sem gravação (o save de antes dela) é observada pelo livro; a gravação de outra vida cai para o livro; o save não muda de formato, e observar a vida lida de um save não muda o que o save guarda; sem espaço, a observação sai antes da cópia e o save grava |
 | A telemetria não altera a simulação | a mesma vida, observada e não observada, sai igual byte a byte (o estado e o livro); refazer a gravação observando dá o mesmo estado que refazer sem observar; observar em pedaços dá os mesmos registros que de uma vez |
 
-Resultados (`npm run verificar`, 17/11): VERIFICAR_RESULTADO
+Resultados (`npm run verificar`, 17/11, 16 min 36 s, saída 0):
+
+- **os tipos** passam;
+- **os testes:** 627 de 627 (61 arquivos), dos quais 28 do observatório e 1 novo do save;
+- **o validador:** conteúdo válido, 0 avisos;
+- **a auditoria:** 160 dinastias de até 4 gerações (464 vidas, 21.378 anos, 22.306 conferências do estado), nenhum problema;
+- **a bancada de dinastias:** os nove cenários chegam à 12ª geração, sem invariante de escala quebrado;
+- **o túnel:** 10.000 vidas, zero storylets mortos, as contas fechando em 4.247.981 entradas e as dívidas em 4.896.170, sem problema;
+- **a build** sai;
+- **a régua de telas** (`npm run telas`, contra a build com o menu novo): 58 de 58 critérios.
 
 ---
 
@@ -296,7 +305,7 @@ Resultados (`npm run verificar`, 17/11): VERIFICAR_RESULTADO
 - **Os perfis, os extremos e a saturação são medidas que eu escrevi**, com pesos e limiares escolhidos e o porquê ao lado. Não foram validados com pessoas: não há dados de pessoas. A calibração do explorador e do generalista usa robôs, e robôs não são a população de jogadores.
 - **Os robôs decidem por regras fixas.** O que eles escolhem em 95% das vezes, a filantropia que ninguém faz e a coroa que eles largam medem as regras deles tanto quanto o jogo. O relatório marca isso nos itens em que pesa.
 - **Nenhuma vida se esgotou pelo índice inteiro.** O índice é uma média de sete componentes, e alguns quase nunca saturam (o investimento cabe no mercado, a repetição fica perto de 0,2). O sinal útil está no componente, não no índice. Baixar o limiar para achar vidas esgotadas seria escolher o resultado.
-- **A observação pelo livro é mais pobre.** O save de antes da gravação e a vida em andamento no menu não têm as opções que estavam na mesa nem uma foto por ano.
+- **A observação pelo livro é mais pobre.** O save de antes da gravação e a vida em andamento no menu não têm as opções que estavam na mesa nem uma foto por ano. Por isso o menu subestima os perfis que dependem do tempo: em cinco vidas de robô comparadas, o estrategista (0,40 a 0,44) e o generalista (0,37 a 0,71) sumiram na leitura pelo livro, e o empreendedor caiu de 0,63 para 0,38 numa delas. A vida que acaba é observada pela gravação, completa.
 - **A origem do dinheiro só olha a conta corrente.** O que entra direto nos investimentos ou nos bens (o imóvel herdado) não aparece em `entradas`, e a herança que não é dinheiro (a parte numa empresa) não entra em `recebido`.
 - **O custo:**
   - a vida refeita com o observador leva uns 240 ms num computador, contra 124 ms sem ele (1,4 ms por ano de vida, em oito vidas); no celular não medi, e por isso ela roda em pedaços, depois do cartão;
@@ -321,5 +330,11 @@ Resultados (`npm run verificar`, 17/11): VERIFICAR_RESULTADO
 
 - **O código:** nenhum arquivo do motor que já existia mudou, e nenhum do conteúdo (`git diff d0dcbd5 -- src/motor conteudo`: só os cinco arquivos novos, que o motor não importa).
 - **O teste:** a mesma vida, observada e não observada, sai igual byte a byte; refazer observando dá o mesmo estado que refazer sem observar.
-- **O túnel (10.000 vidas):** TUNEL_RESULTADO
+- **O túnel (10.000 vidas):** depois de trocar os tempos de CPU por um marcador, o `docs/metricas.md` desta etapa é idêntico, linha a linha, ao da etapa 02. São iguais:
+  - a saturação V5 e V20 (53,6% e 86,8%);
+  - as assinaturas (905 por 1.000 vidas);
+  - a mobilidade, a dispersão, a agência, as fases do país, os capítulos e os portões;
+  - os toques (485,2 por vida).
+
+  Só a CPU por vida mudou (182 → 172 ms), e a CPU absoluta varia de máquina para máquina. Os portões que já estavam vermelhos na etapa 02 (os toques acima de 480 e os tetos antigos de CPU) continuam iguais.
 - **O save** não mudou de formato. A observação mora em outra chave, e o save passa na frente dela quando falta espaço.
