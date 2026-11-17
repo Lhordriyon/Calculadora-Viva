@@ -15,31 +15,34 @@
 
 ---
 
-## 🆕 Novidades: O universo que não explode (16/11/2026)
+## 🆕 Novidades: O observatório de jogadores (17/11/2026)
 
 > [!IMPORTANT]
-> **O que mudou:** você mostrou um PIB de R$ 51 mil trilhões e uma holding de R$ 5 mil trilhões. A auditoria achou as causas (o PIB crescia 2% ao ano para sempre, a população sumia, o salário era o de 2026 num país milhares de vezes mais rico e o caixa da holding rendia sem teto). Esta atualização corrigiu a economia de longo prazo e criou uma bancada que joga a mesma família por até 100 gerações para provar.
-> - **O país cresce para um lugar.** O que cada pessoa produz persegue uma renda que anda com o mundo, e o mundo desacelera: em 100 gerações, o PIB per capita fica entre 2,5 e 17 vezes o de hoje (antes: 10³¹ vezes).
-> - **A população para de sumir.** Com menos gente do que o país já teve, as famílias voltam a crescer: ela fica entre 100 e 120 milhões (antes: 7.515 pessoas em 100 gerações).
-> - **O salário anda com o país.** Quem é contratado, eleito ou herda o trabalho ganha de acordo com o que cada pessoa do país produz.
-> - **A holding rende dentro do mercado.** O mercado comporta 43% do PIB de um dono só, dividido entre a sua carteira e o caixa que a dupla do valor aplica (cripto e fundos imobiliários, 3% cada); o que passa disso e o caixa parado das empresas perdem a inflação, como a sua conta.
-> - **Nada compõe para sempre.** A ilha que você funda e os bens (a arte, os imóveis) também ganharam limite: antes, um bem chegava a valer 3 PIBs.
-> - **O dinheiro existe entre gerações.** Quem herda continua no mesmo país: as contas dos bancos e do governo passam inteiras (antes, a herança grande jogava o país numa depressão sem causa).
-> - **O ciclo é do país.** Num Brasil que envelhece, crescer 1% é um ano normal: o salário, as empresas e a aprovação do governo medem contra a tendência; e a economia aquecida é crescer acima do potencial.
+> **O que mudou:** você pediu um sistema que entenda como cada jogador usa o jogo e que perceba quando o mundo fica pequeno para quem chegou ao topo. O jogo agora observa o seu jeito de jogar. Ele faz isso sem mandar nada para lugar nenhum e sem mudar uma vírgula da simulação.
+> - **O seu jeito de jogar, no menu.** Os perfis da vida de agora (empreendedor, investidor, industrialista, estrategista político, construtor de dinastias, acumulador, filantropo, explorador, generalista, sobrevivência). São probabilidades que mudam com a vida, e você pode ser vários ao mesmo tempo, com o que mais pesou.
+> - **Quando a vida acaba**, o jogo a refaz por trás, com o observador, e guarda no aparelho as decisões, as opções que estavam na mesa, o que cada uma mudou e o mundo de cada ano. Não guarda nome, cidade nem texto.
+> - **Você manda na observação:** ligar e desligar, exportar o arquivo (se quiser mandar para alguém) e apagar. O save fica onde está e sempre passa na frente.
+> - **O observatório da bancada** (`npm run observatorio`) observa 328 vidas de robôs (comuns, das pontas e dinastias de oito gerações). O relatório (`docs/observatorio.md`) traz o que eles fazem, o que é extremo, o que satura, o que é incoerente e o que melhorar. Cada item diz se é fato ou hipótese, com a confiança e a semente para reproduzir.
 
 > [!TIP]
-> **Para testar:** jogue uma dinastia de três ou quatro gerações e abra a folha País em cada uma: o PIB, a população e o PIB per capita continuam do tamanho de um país. Com a holding e a dupla, veja na linha do tempo quanto o caixa aplicado rendeu e se o mercado comportou tudo.
+> **Para testar:** jogue uma vida até o fim e abra o Menu: "O seu jeito de jogar" mostra os seus perfis e se o mundo ficou pequeno para você. Se quiser, exporte a observação e me mande o arquivo: com ele, `npm run observatorio -- --arquivo=` escreve o relatório do seu jeito de jogar, o primeiro com dados de uma pessoa de verdade.
 
 | ✅ O que a atualização trouxe | ⏳ O que ela ainda não trouxe |
 |---|---|
-| 📏 A bancada de dinastias (até 100 gerações), no CI | 🧠 A rede neural: a próxima etapa é um explorador da bancada (sem servidor, não há dados de jogadores) |
-| 🌍 PIB, população e salário com escala de país | 🏆 Histórias para quem passou de R$ 1 trilhão |
-| 💼 A holding rendendo dentro do mercado | 🏠 O limite dos imóveis que as dinastias acumulam |
-| 🔢 Nenhum número acima de 2^53 em 100 gerações | 📉 Mais recessões no fim do século (o Brasil envelhece): medir se cansa |
+| 🔭 A observação de cada decisão, das opções e do mundo de cada ano | 🧠 A rede neural (sem dados de pessoas, não há o que treinar) |
+| 🎭 Dez perfis que convivem e mudam com a vida | 👥 A análise de vários jogadores juntos (o arquivo já está pronto para isso) |
+| 🏔️ Os extremos por medidas relativas (percentil, parte do PIB, fatia, poder, gerações) | 🏆 O conteúdo do topo que o observatório pede |
+| 🧭 A saturação: quando cada sistema deixa de servir | 👑 A renda da coroa revista (o observatório mostrou o caso) |
 
-No túnel de vento (10.000 vidas), nenhuma história morta, as contas e as dívidas fechando e nenhum portão novo falhando: saturação V5 52,4% → 53,6%, assinaturas 904 → 905, toques 483,7 → 485,2, CPU 184 → 182 ms por vida. As fases de uma vida mudaram: normal 64% → 50%, aquecida 23% → 27%, recessão 10% → 18%, crise 2% → 5% (o Brasil real teve o PIB caindo em 21% dos anos de 1981 a 2023). Na bancada de dinastias (27 de 12 gerações e 9 de 100), nenhum invariante de escala quebra; antes, a precisão, o resíduo do dinheiro, o PIB per capita, o salário, a população e as contas quebravam.
+**O que o observatório achou nos robôs:**
 
-O relatório completo, com as fórmulas de antes e de depois: [`docs/relatorio-etapa-02.md`](docs/relatorio-etapa-02.md).
+- No 1% mais rico, a consequência das decisões grandes deixa de servir em 66% das vidas, e o salário em 53%. Na metade de baixo, quase nunca.
+- As duas fortunas que cresceram mais de 10 mil vezes numa década vieram da renda da coroa, paga pelo Tesouro.
+- Nenhuma fonte de riqueza domina as outras com folga.
+
+TUNEL_README
+
+O relatório da etapa: [`docs/relatorio-etapa-03.md`](docs/relatorio-etapa-03.md).
 
 ## 🗺️ Os blocos do dono
 

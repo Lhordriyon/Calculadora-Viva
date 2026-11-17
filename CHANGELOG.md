@@ -4,6 +4,23 @@ Cada atualização vai ao ar inteira: jogável, medida pelo túnel de vento (10.
 
 ---
 
+## 🔭 O observatório de jogadores · Etapa 03 · 17/11/2026
+
+> [!NOTE]
+> O dono pediu um sistema que observe e explique como os jogadores usam o jogo (os perfis, os extremos, o conteúdo que acaba, o incoerente), local, sem dados inventados e sem mudar a simulação.
+
+- 🔭 **O observador que só lê** (`src/motor/observacao.ts`). Cada decisão vem com as opções na mesa, a escolhida e o que mudou; cada ano, com a foto da vida, do mundo, do dinheiro que entrou (e de onde) e das oportunidades que eram possíveis. A mesma vida, observada ou não, sai igual byte a byte.
+- 🎭 **Os perfis** (`perfis.ts`): dez probabilidades por janela de dez anos, várias ao mesmo tempo, com o porquê. A herança e o percentil da família não fazem de ninguém acumulador.
+- 🏔️ **Os extremos** (`extremos.ts`): dez medidas relativas, nenhuma em reais fixos. O crescimento explosivo diz de onde veio o dinheiro.
+- 🧭 **A saturação** (`saturacao.ts`): o índice de cada ano e o sistema que deixa de servir. Ela lê o que era possível no ano, não o que apareceu.
+- 📑 **O relatório** (`npm run observatorio` → `docs/observatorio.md`): as nove seções pedidas, com fato e hipótese separados, a confiança e a semente de cada exemplo. Com `--arquivo=`, o relatório de um arquivo exportado, com a origem de cada vida na capa.
+- 📱 **No aparelho:** a vida que acaba é observada pela gravação, em pedaços, à parte do save (3 vidas inteiras e 60 resumos). No Menu, "O seu jeito de jogar" mostra os perfis e tem os botões para ligar e desligar, exportar e apagar. Sem espaço, a observação sai antes da cópia de segurança.
+- 🔎 **Achados nos robôs:**
+  - no 1% mais rico, a consequência das decisões grandes deixa de servir em 66% das vidas, e o salário em 53%;
+  - as duas fortunas explosivas vêm da renda da coroa paga pelo Tesouro (a A-02 da etapa 01);
+  - nenhuma fonte de riqueza domina com folga.
+- CHANGELOG_NUMEROS
+
 ## 🧪 O universo que não explode · Etapa 02, o laboratório de longo prazo · 16/11/2026
 
 > [!NOTE]
